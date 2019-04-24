@@ -1,4 +1,4 @@
-package com.gmun.springaop.proxy4;
+package com.moong.springaop.proxy4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,9 +8,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.gmun.springaop.business.UserService;
-import com.gmun.springaop.business.UserServiceImple;
-import com.gmun.springaop.business.UserVO;
+import com.moong.springaop.business.UserService;
+import com.moong.springaop.business.UserServiceImple;
+import com.moong.springaop.business.UserVO;
 
 /*
 //SpringBoot with Run
