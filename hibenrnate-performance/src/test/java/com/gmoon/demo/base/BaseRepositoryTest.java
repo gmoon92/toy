@@ -4,10 +4,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.TestConstructor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public abstract class BaseRepositoryTest {
 
     protected static Logger log = LoggerFactory.getLogger(BaseRepositoryTest.class);
@@ -20,7 +22,7 @@ public abstract class BaseRepositoryTest {
         flushAndClear();
     }
 
-    private void flushAndClear() {
+    protected void flushAndClear() {
         entityManager.flush();
         entityManager.clear();
         log.debug("EntityManager flush and clear");

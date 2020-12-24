@@ -13,7 +13,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Getter
-@Setter
+@Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberOption {
 
@@ -29,5 +29,23 @@ public class MemberOption {
 
     @Column(name = "retired")
     private boolean retired;
+
+    public static MemberOption defaultOption(Member member) {
+        MemberOption option = new MemberOption();
+        option.setMember(member);
+        option.setDefaultOption();
+        return option;
+    }
+
+    protected void setMember(Member member) {
+        this.member = member;
+        this.memberId = member.getId();
+    }
+
+    private void setDefaultOption() {
+        this.enabled = false;
+        this.retired = false;
+    }
+
 
 }
