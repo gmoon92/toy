@@ -27,7 +27,7 @@ public class GoogleSpreadSheetUtils {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String APPLICATION_NAME = "Google Sheets API";
-    private static final String TOKENS_DIRECTORY_PATH = "src/test/resources/google/tokens";
+    private static final String TOKENS_DIRECTORY_PATH = "src/main/resources/google/tokens";
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/google/credentials.json";
     private static final int CREDENTIALS_LOCAL_SERVER_PORT = 8888;
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
