@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -21,9 +20,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Getter
-@Setter
-@NamedEntityGraph(name = "Member.options"
-        , attributeNodes = { @NamedAttributeNode("memberOption") })
+@NamedEntityGraph(name = "Member.options", attributeNodes = { @NamedAttributeNode("memberOption") })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
@@ -38,19 +35,24 @@ public class Member {
     private Team team;
 
     @Fetch(FetchMode.JOIN)
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private MemberOption memberOption;
 
-    @Builder
-    private Member(String name, Team team, MemberOption memberOption) {
+    @Builder(access = AccessLevel.PRIVATE, builderMethodName = "defaultMember")
+    private Member(String name) {
         this.name = name;
-        this.team = team;
-        this.memberOption = memberOption;
+        setMemberOption(MemberOption.defaultOption());
     }
 
     public static Member newInstance(String name) {
-        Member member = new Member();
-        member.setName(name);
-        return member;
+        return Member.defaultMember()
+                .name(name)
+                .build();
     }
+
+    public void setMemberOption(MemberOption memberOption) {
+        this.memberOption = memberOption;
+        memberOption.setMember(this);
+    }
+
 }
