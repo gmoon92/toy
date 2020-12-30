@@ -24,9 +24,7 @@ class MemberOptionRepositoryTest extends BaseRepositoryTest {
     @BeforeAll
     static void setup(@Autowired MemberRepository memberRepository) {
         memberRepository.deleteAllInBatch();
-        memberRepository.save(Member.builder()
-                .name("gmoon")
-                .build());
+        memberRepository.save(Member.newInstance("gmoon"));
     }
 
 
@@ -37,13 +35,14 @@ class MemberOptionRepositoryTest extends BaseRepositoryTest {
 
     /**
      * org.springframework.orm.jpa.JpaSystemException: ids for this class must be manually assigned before calling save()
-     * -> id 가 없기 때문
-     *
+     * -> 영속 상태가 아니기 때문에 ID가 존재하지 않았음, Id가 아니기 때문
      * @see MemberOption#setMember(Member)
      */
     @Test
     @DisplayName("대상 테이블 OneToOne 저장")
     void tetSave() {
-        memberOptionRepository.save(MemberOption.defaultOption(user));
+        MemberOption option = MemberOption.newInstance(user);
+        option.enabled();
+        memberOptionRepository.save(option);
     }
 }
