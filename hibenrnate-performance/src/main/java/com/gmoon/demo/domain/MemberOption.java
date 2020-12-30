@@ -3,25 +3,27 @@ package com.gmoon.demo.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberOption {
 
     @Id
+    @Column(name = "member_id")
     private Long memberId;
 
+    @MapsId
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
+    @PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "memberId")
     private Member member;
 
     @Column(name = "enabled")
@@ -30,10 +32,15 @@ public class MemberOption {
     @Column(name = "retired")
     private boolean retired;
 
-    public static MemberOption defaultOption(Member member) {
+    public static MemberOption defaultOption() {
         MemberOption option = new MemberOption();
-        option.setMember(member);
         option.setDefaultOption();
+        return option;
+    }
+
+    public static MemberOption newInstance(Member member) {
+        MemberOption option = defaultOption();
+        option.setMember(member);
         return option;
     }
 
@@ -47,5 +54,8 @@ public class MemberOption {
         this.retired = false;
     }
 
-
+    public void enabled() {
+        this.enabled = true;
+        this.retired = false;
+    }
 }
