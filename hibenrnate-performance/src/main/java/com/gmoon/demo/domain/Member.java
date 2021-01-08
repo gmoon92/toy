@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,13 +32,13 @@ public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
-    @Fetch(FetchMode.JOIN)
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false)
     private MemberOption memberOption;
 
     @Builder(access = AccessLevel.PRIVATE, builderMethodName = "defaultMember")
-    private Member(String name) {
+    private Member(String name, Team team) {
         this.name = name;
+        this.team = team;
         setMemberOption(MemberOption.defaultOption());
     }
 
@@ -48,6 +46,17 @@ public class Member {
         return Member.defaultMember()
                 .name(name)
                 .build();
+    }
+
+    public static Member newInstance(String name, Team team) {
+        return Member.defaultMember()
+                .name(name)
+                .team(team)
+                .build();
+    }
+
+    public void changeMemberInfo(String name) {
+        this.name = name;
     }
 
     public void setMemberOption(MemberOption memberOption) {

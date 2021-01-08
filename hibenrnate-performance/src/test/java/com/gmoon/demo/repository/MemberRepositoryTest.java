@@ -2,6 +2,7 @@ package com.gmoon.demo.repository;
 
 import com.gmoon.demo.base.BaseRepositoryTest;
 import com.gmoon.demo.domain.Member;
+import com.gmoon.demo.domain.MemberOption;
 import com.gmoon.demo.domain.QMember;
 import com.gmoon.demo.domain.QMemberOption;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,27 @@ class MemberRepositoryTest extends BaseRepositoryTest {
         memberRepository.deleteAllInBatch();
         memberRepository.save(Member.newInstance("gmoon"));
         log.debug("Database data setup done...");
+    }
+
+    @Test
+    @DisplayName("OneToOne 글로벌 패치 전략 테스트")
+    void testAccountEnabled() {
+        EntityManager em = getEntityManager();
+        Member member = em.find(Member.class, 1L);
+        log.info("계정 조회");
+        member.changeMemberInfo("web1_gmoon");
+        log.info("계정 이름 변경");
+
+        MemberOption option = member.getMemberOption();
+        log.info("option : {}", option.getClass());
+        option.enabled();
+        member.setMemberOption(option);
+        log.info("계정 활성화");
+    }
+
+    @Test
+    void testNPlus1WhenEagerAndFindAll() {
+        memberRepository.findAll();
     }
 
     /**
@@ -58,11 +80,11 @@ class MemberRepositoryTest extends BaseRepositoryTest {
      *        references member
     * */
     @Test
-    @DisplayName("연관 관계 맵핑 설정 - @OneToOne(mappedBy = \"member\", fetch = FetchType.LAZY, optional = false)")
+    @DisplayName("연관 관계 맵핑 설정 - @OneToOne(optional = false)")
     void testOneToOne() {
         EntityManager em = getEntityManager();
         Member member = em.find(Member.class, 1L);
-        log.debug("member : {}", member);
+        log.debug("member : {}", member.getClass());
     }
 
     @Test

@@ -1,9 +1,9 @@
 package com.gmoon.demo.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,7 +16,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Team {
 
@@ -29,4 +28,16 @@ public class Team {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Member> members = new ArrayList<>();
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private Team(String name, List<Member> members) {
+        this.name = name;
+        this.members = members;
+    }
+
+    public static Team newInstance(String name) {
+        return Team.builder()
+                .name(name)
+                .build();
+    }
 }
