@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+//    @Override
+//    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = { "memberOption" })
+//    List<Member> findAll();
+
     /**
      * 특히 특정 로직의 경우 항상 모든 필드를 로드에 해줘야 하는데 lazy로 되어 있으니
      * 꼭 한번 더 쿼리가 날라 가는 경우 짜증나니까
