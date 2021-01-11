@@ -18,7 +18,8 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Getter
-@NamedEntityGraph(name = "Member.options", attributeNodes = { @NamedAttributeNode("memberOption") })
+@NamedEntityGraph(name = "Member.withMemberOption"
+        , attributeNodes = { @NamedAttributeNode(value = "memberOption") })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
@@ -33,10 +34,11 @@ public class Member {
     private Team team;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false)
+//    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
     private MemberOption memberOption;
 
     @Builder(access = AccessLevel.PRIVATE, builderMethodName = "defaultMember")
-    private Member(String name, Team team) {
+    protected Member(String name, Team team) {
         this.name = name;
         this.team = team;
         setMemberOption(MemberOption.defaultOption());
@@ -59,9 +61,12 @@ public class Member {
         this.name = name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setMemberOption(MemberOption memberOption) {
         this.memberOption = memberOption;
         memberOption.setMember(this);
     }
-
 }
