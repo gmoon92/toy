@@ -1,14 +1,19 @@
 package com.gmoon.demo.base;
 
+import com.gmoon.demo.config.QueryDslConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@DataJpaTest
+@Import(QueryDslConfig.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public abstract class BaseRepositoryTest {
 

@@ -4,18 +4,13 @@ import com.gmoon.demo.base.BaseRepositoryTest;
 import com.gmoon.demo.domain.Member;
 import com.gmoon.demo.domain.Team;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@DataJpaTest
 @RequiredArgsConstructor
 class TeamRepositoryTest extends BaseRepositoryTest {
 
@@ -45,9 +40,9 @@ class TeamRepositoryTest extends BaseRepositoryTest {
 
         teamList.forEach(team -> {
             log.debug("team : {}", team);
-            team.getMembers().forEach(member -> log.debug("member : {}, {}, {}", member.getName()
-                    , Hibernate.isInitialized(member.getMemberOption())
-                    , member.getMemberOption().isEnabled()));
+//            team.getMembers().forEach(member -> log.debug("member : {}, {}, {}", member.getName()
+//                    , Hibernate.isInitialized(member.getMemberOption())
+//                    , member.getMemberOption().isEnabled()));
         });
 
     }
