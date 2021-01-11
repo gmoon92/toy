@@ -36,3 +36,11 @@ select member1
   from Member member1 
 left join member1.memberOption as memberOption fetch all properties
 ```
+
+
+단일 쿼리를 발생하진 않고, LAZY 패치 전략으로 설정된 필드 값을 즉시 사용할 수 있다.
+
+>If you are using property-level LAZY fetching (with bytecode instrumentation), it is possible to force Hibernate to fetch the LAZY properties in the first query immediately using fetch all properties.
+>[Hibernate reference - fetch all properties](https://docs.jboss.org/hibernate/core/3.3/reference/en/html/queryhql.html)
+
+- [Fetch All Properties not working](https://forum.hibernate.org/viewtopic.php?p=2249643)
