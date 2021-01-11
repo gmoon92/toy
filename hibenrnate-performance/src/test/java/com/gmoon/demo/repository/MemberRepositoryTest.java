@@ -10,11 +10,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@DataJpaTest
 @RequiredArgsConstructor
 class MemberRepositoryTest extends BaseRepositoryTest {
 
@@ -25,28 +32,11 @@ class MemberRepositoryTest extends BaseRepositoryTest {
         log.debug("Database data setup start...");
         memberRepository.deleteAllInBatch();
         memberRepository.save(Member.newInstance("gmoon"));
+        memberRepository.save(Member.newInstance("kim"));
+        memberRepository.save(Member.newInstance("lee"));
+        memberRepository.save(Member.newInstance("hong"));
+        memberRepository.save(Member.newInstance("kown"));
         log.debug("Database data setup done...");
-    }
-
-    @Test
-    @DisplayName("OneToOne 글로벌 패치 전략 테스트")
-    void testAccountEnabled() {
-        EntityManager em = getEntityManager();
-        Member member = em.find(Member.class, 1L);
-        log.info("계정 조회");
-        member.changeMemberInfo("web1_gmoon");
-        log.info("계정 이름 변경");
-
-        MemberOption option = member.getMemberOption();
-        log.info("option : {}", option.getClass());
-        option.enabled();
-        member.setMemberOption(option);
-        log.info("계정 활성화");
-    }
-
-    @Test
-    void testNPlus1WhenEagerAndFindAll() {
-        memberRepository.findAll();
     }
 
     /**
@@ -66,7 +56,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
      *         retired boolean,
      *         primary key (member_id)
      *     )
-    * Hibernate:
+     * Hibernate:
      *
      *     alter table member
      *        add constraint FKcjte2jn9pvo9ud2hyfgwcja0k
@@ -78,13 +68,129 @@ class MemberRepositoryTest extends BaseRepositoryTest {
      *        add constraint FKtn6oplo1yxuba8kk2ag9eu9gy
      *        foreign key (member_id)
      *        references member
-    * */
+     * */
     @Test
     @DisplayName("연관 관계 맵핑 설정 - @OneToOne(optional = false)")
-    void testOneToOne() {
+    void testOneToOneLazy() {
         EntityManager em = getEntityManager();
         Member member = em.find(Member.class, 1L);
-        log.debug("member : {}", member.getClass());
+        MemberOption memberOption = member.getMemberOption();
+        log.debug("memberOption class : {}", memberOption.getClass());
+//        assertEquals(false, Hibernate.isInitialized(memberOption), "isProxyObject");
+
+        member.setName("gmoon");
+        log.debug("사용자 이름 변경");
+
+        log.debug("option class : {}", memberOption.getClass());
+        memberOption.enabled();
+        member.setMemberOption(memberOption);
+        log.debug("계정 활성화");
+    }
+
+    @Test
+    @DisplayName("Spring Data JPA - @Query")
+    void testSpringDataJpa_JPQL_Query() {
+        memberRepository.findAllOfJpqlQuery();
+    }
+
+    @Test
+    @DisplayName("EntityManager - @EntityGraph, @NamedEntityGraph")
+    void testEntityManager_NamedEntityGraph() {
+
+        EntityManager em = getEntityManager();
+        EntityGraph graph = em.getEntityGraph("Member.withMemberOption");
+
+//        단일건 조회
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.fetchgraph", graph);
+        long primaryKey = 1L;
+        Member member = em.find(Member.class, primaryKey, hints);
+
+//        리스트 조회
+        Query query = em.createQuery("select m from Member m"
+                + " inner join fetch m.memberOption");
+//                      ^-- JPQL은 글로벌 패치를 고려하지 않고
+//                      항상 외부 조인을 사용하기 때문에 inner join fetch 명시한다.
+        query.setHint("javax.persistence.fetchgraph", graph);
+        List<Member> list = query.getResultList();
+    }
+
+    @Test
+    @DisplayName("EntityManager - @EntityGraph, @NamedEntityGraph")
+    void testEntityManager_EntityGraph() {
+        EntityManager em = getEntityManager();
+        EntityGraph<Member> graph = em.createEntityGraph(Member.class);
+        graph.addAttributeNodes("memberOption");
+
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.fetchgraph", graph);
+        Member member = em.find(Member.class, 1L, hints);
+    }
+
+    @Test
+    @DisplayName("Spring Data JPA - @EntityGraph, @NamedEntityGraph")
+    void testSpringDataJpa_EntityGraph() {
+        memberRepository.findAllOfEntityGraph();
+    }
+
+    @Test
+    void testSpringDataJpaFindAll_n_plus_one() {
+        memberRepository.findAll();
+    }
+
+    /**
+     * spring data jpa - findAll logic
+     * @see findAll : org.springframework.data.jpa.repository.support.SimpleJpaRepository#getQuery(Specification, Class, Sort)
+    * */
+    @Test
+    @DisplayName("JPQL fetch")
+    void testJpqlFetch() {
+        EntityManager em = getEntityManager();
+//        em.createQuery("select m from Member as m", Member.class).getResultList();
+        em.createQuery("select m "
+                       + "from Member as m "
+                      + "inner join fetch m.memberOption mo", Member.class)
+                .getResultList();
+    }
+
+    /**
+     * spring data jpa - findAll logic
+     * @see findAll : org.springframework.data.jpa.repository.support.SimpleJpaRepository#getQuery(Specification, Class, Sort)
+    * */
+    @Test
+    @DisplayName("Criteria Spring Data JPA findAll()")
+    void testCriteria() {
+        EntityManager em = getEntityManager();
+//        List<Member> list = em.createQuery("select m from Member as m", Member.class)
+//                .getResultList();
+
+        Class<Member> domainClass = Member.class;
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<Member> query = cb.createQuery(domainClass);
+        Root<Member> m = query.from(domainClass);
+        m.alias("m");
+        query.select(m);
+        List<Member> list = em.createQuery(query).getResultList();
+    }
+
+    @Test
+    @DisplayName("Criteria 특정 컬럼을 선택하여 조회하기")
+    void testCriteria_should_specify_columns() {
+        EntityManager em = getEntityManager();
+
+        Class<Member> domainClass = Member.class;
+        CriteriaBuilder cb = getEntityManager()
+                .getCriteriaBuilder();
+
+        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+
+        Root<Member> root = query.from(domainClass);
+        Selection<Long> id = root.get("id");
+        Selection<String> name = root.get("name");
+
+        query.select(cb.construct(Object[].class, id, name));
+        em.createQuery(query).getResultList();
     }
 
     @Test
@@ -127,4 +233,13 @@ class MemberRepositoryTest extends BaseRepositoryTest {
         log.debug("member : {}", member);
     }
 
+    @Test
+    void testFetchJoin_QueryDsl() {
+        memberRepository.findAllOfQueryDsl();
+    }
+
+    @Test
+    void testFetchJoin_QueryDsl_With_Projection() {
+        memberRepository.findAllOfQueryDslWithProjection();
+    }
 }
