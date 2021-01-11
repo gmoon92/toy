@@ -425,20 +425,65 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
 projection을 사용하여 필요한 부분만 가져온다.
 
+
+### 4.5.2. 주의 사항 - Cross join
+
 ````java
 @Override
-public List<MemberVO.Data> findAllOfQueryDslWithProjection() {
+public List<MemberVO.Data> getList() {
     QMember qMember = QMember.member;
-
+    
     return jpaQueryFactory
-            .select(new QMemberVO_Data(qMember.id, qMember.name))
+            .select(new QMemberVO_Data(qMember.id
+                                     , qMember.name
+                                     , qMember.memberOption.enabled))
             .from(qMember)
             .fetch();
 }
 ````
+![test-query-dsl-cross-join](./img/one_to_one/test-query-dsl-cross-join.png)
 
 
-----------------------------
+
+### 4.5.2. 주의 사항 - project with not fetchjoin
+
+```java
+return jpaQueryFactory
+        .select(new QMemberVO_Data(qMember.id
+                                 , qMember.name
+                                 , qMemberOption.enabled))
+                .from(qMember)
+                .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
+                .fetch();
+```
+![test-query-dsl-projection-with-fetchjoin](./img/one_to_one/test-query-dsl-projection-with-fetchjoin.png)
+```text
+Caused by: org.hibernate.QueryException: query specified join fetching, but the owner of the fetched association was not present in the select list [FromElement{explicit,not a collection join,fetch join,fetch non-lazy properties,
+```
+
+fetchJoin은 엔티티 객체의 엔티티 그래프를 참조할때 사용한다. 즉 VO 객체에선 불가능하다. Projection을 사용하여 VO를 반환하는 구조라면 fetchJoin을 제거하여 작성하면된다.
+
+```java
+return jpaQueryFactory
+        .select(new QMemberVO_Data(qMember.id
+                                , qMember.name
+                                , qMemberOption.enabled))
+    .from(qMember)
+    .innerJoin(qMember.memberOption, qMemberOption)
+    .fetch();
+```
+
+엔티티 그래프를 사용하기 위해 도메인으로 반환하려면 다음과 같이 작성하면 된다.  
+
+```java
+return jpaQueryFactory
+    .select(qMember)
+    .from(qMember)
+    .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
+    .fetch();
+```
+
+---
 
 ## 마무리
 
