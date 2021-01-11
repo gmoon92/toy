@@ -3,12 +3,11 @@ package com.gmoon.demo.repository;
 import com.gmoon.demo.domain.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+import java.util.List;
 
-//    @Override
-//    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = { "memberOption" })
-//    List<Member> findAll();
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     /**
      * 특히 특정 로직의 경우 항상 모든 필드를 로드에 해줘야 하는데 lazy로 되어 있으니
@@ -24,8 +23,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      * @see org.springframework.data.jpa.repository.EntityGraph.EntityGraphType
      * */
 //    https://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#jpa.entity-graph
-//    @EntityGraph(value = "Member.options", type = EntityGraph.EntityGraphType.FETCH)
-    @EntityGraph(value = "Member.options", type = EntityGraph.EntityGraphType.LOAD)
-//    @EntityGraph(attributePaths = "memberOption")
+//    @EntityGraph(value = "Member.withMemberOption", type = EntityGraph.EntityGraphType.FETCH)
+//    @EntityGraph(value = "Member.withMemberOption", type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = "memberOption")
     Member findByName(String name);
+
+    @Query("select m from Member m inner join fetch m.memberOption mo")
+    List<Member> findAllOfJpqlQuery();
+
+//    @EntityGraph(value = "Member.withMemberOption", attributePaths = {"memberOption"})
+//    @EntityGraph(attributePaths = {"memberOption"})
+    @EntityGraph(value = "Member.withMemberOption")
+    @Query("select m from Member m") // 엔티티 그래프 root 설정
+    List<Member> findAllOfEntityGraph();
 }
