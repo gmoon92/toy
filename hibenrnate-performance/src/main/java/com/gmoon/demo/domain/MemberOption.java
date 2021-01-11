@@ -22,7 +22,6 @@ public class MemberOption {
 
     @MapsId
     @OneToOne
-//    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
     @PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "memberId")
     private Member member;
 
