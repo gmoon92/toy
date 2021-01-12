@@ -4,7 +4,7 @@
 
 JPA의 ORM 기술은 양날의 칼과 같다.
  
-오늘날 ORM 기술은 개발자가 비즈니스 로직에 좀 더 집중할 수 있는 환경을 제공한다. 하지만 어떤 이들은 쿼리를 많이 발생시켜 애플리케이션의 성능 저하를 발생시킨다는 의견이 존재한다. 흔히 N+1 문제다.
+오늘날 ORM 기술은 비즈니스 로직에 좀 더 집중할 수 있는 환경을 개발자에게 제공해주고 있다. 하지만 어떤 이들은 쿼리를 많이 발생시켜 애플리케이션의 성능 저하를 발생시킨다는 의견이 존재한다. 흔히 N+1 문제다.
 
  이는 JPA의 동작 방식을 이해한다면, JPA 어노테이션과 다양한 방법을 통해 해결할 수 있다. 필자는 일대일 연관 관계를 통해 JPA의 전반적인 메커니즘과 N+1 문제에 대해 소개하려 한다.
 
@@ -27,7 +27,7 @@ JPA의 ORM 기술은 양날의 칼과 같다.
 
 우선 사용자 - 사용자 옵션의 도메인 모델을 구성해보자.
 
-![member-domain-relations](./img/one_to_one/member-domain-relations.png)
+![member-domain-relations](img/n-plus-one/member-domain-relations.png)
 
 - 식별 관계
 - 대상 테이블에서 외래키 관리
@@ -124,7 +124,7 @@ class MemberRepositoryTest{
 
 그러나 테스트 결과를 보면 Lazy 패치 설정이 동작되지 않는다.
 
-![test-one-to-one-lazy1](./img/one_to_one/test-one-to-one-lazy1.png)
+![test-one-to-one-lazy1](img/n-plus-one/test-one-to-one-lazy1.png)
 
 - MemberOption 클래스가 Proxy가 아니다.
 - MemberOption 필드에 접근하지 않았음에도 MemberOption를 조회 쿼리가 발생한다.
@@ -165,7 +165,7 @@ public class Member {
 - optional=false (default) : nullable, 외부 조인
 - optional=true : non-null, 내부 조인
 
-![test-one-to-one-lazy2](./img/one_to_one/test-one-to-one-lazy2.png)
+![test-one-to-one-lazy2](img/n-plus-one/test-one-to-one-lazy2.png)
 
 [1] `optional=false` 속성을 지정해주면 하이버네이트는 내부적으로 MemberOption에 대한 null을 허용하지 않음으로 비로소 lazy loading이 된다.
 
@@ -199,7 +199,7 @@ void testOneToOneLazy() {
     log.debug("계정 활성화");
 }
 ```
-![test-one-to-one-lazy3](./img/one_to_one/test-one-to-one-lazy3.png)
+![test-one-to-one-lazy3](img/n-plus-one/test-one-to-one-lazy3.png)
 
 1. [1] Member를 조회 쿼리가 발생한다.
 2. Lazy 패치 전략으로 MemberOption은 Proxy 객체로 반환된다.
@@ -226,7 +226,7 @@ public class Member {
 }
 ```
 
-![test-one-to-one-eager1](./img/one_to_one/test-one-to-one-eager1.png)
+![test-one-to-one-eager1](img/n-plus-one/test-one-to-one-eager1.png)
 
 Eager 패치를 통해 Member 도메인을 조회할 때 MemberOption 조인되어 하나의 조회 쿼리만 발생됐다. 더이상 Lazy-loading에서 발생하던 N+1 문제가 발생하지 않는다.
 
@@ -255,7 +255,7 @@ void testSpringDataJpaFindAll_n_plus_one() {
     memberRepository.findAll();
 }
 ```
-![test-spring-data-jpa-find-all-n-plus-one1](./img/one_to_one/test-spring-data-jpa-find-all-n-plus-one1.png)
+![test-spring-data-jpa-find-all-n-plus-one1](img/n-plus-one/test-spring-data-jpa-find-all-n-plus-one1.png)
 
 findAll 메서드에서 글로벌 패치가 제대로 동작하지 않는 이유는 Spring 내부에서 Criteria를 사용하여 JPQL 쿼리를 생성하게 된다. JPQL을 생성할 때 *Repository&lt;T, ID&gt;에 설정된 엔티티 타입을 ROOT 엔티티로 설정하여 반환한다. 반환된 조회 쿼리는 다음과 같다.
 
@@ -281,7 +281,7 @@ em.createQuery("select m "
                + "inner join fetch m.memberOption mo", Member.class)
         .getResultList();
 ```
-![test-jpql-fetch-join1](./img/one_to_one/test-jpql-fetch-join1.png)
+![test-jpql-fetch-join1](img/n-plus-one/test-jpql-fetch-join1.png)
 
 ## 4.2. Spring Data JPA - @Query
 
@@ -414,7 +414,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 Spring Data JPA는 내부적으로 result type이 단일 엔티티인 경우에만 ROOT 엔티티를 추적할 수 있고, 추적된 ROOT 엔티티 기준으로 엔티티 그래프 기능을 적용해준다. Collection과 같은 result type에선 ROOT 엔티티를 추적할 수 없으므로 [1] @Query 어노테이션을 사용하여 ROOT 엔티티를 지정해줘야 한다.
 
-![test-spring-data-jpa-entity-graph-non-root](./img/one_to_one/test-spring-data-jpa-entity-graph-non-root.png)
+![test-spring-data-jpa-entity-graph-non-root](img/n-plus-one/test-spring-data-jpa-entity-graph-non-root.png)
 
 > 참고) Spring Data JPA에선 @Fetch 모드를 무시한다. 이와 관련된 내용은 아래 링크를 참고하자. <br/>
 > I think that Spring Data ignores the FetchMode. I always use the @NamedEntityGraph and @EntityGraph annotations when working with Spring Data JPA... - [stackoverflow - How does the FetchMode work in Spring Data JPA](https://stackoverflow.com/questions/29602386/how-does-the-fetchmode-work-in-spring-data-jpa)
@@ -434,7 +434,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 }
 ```
-![test-query-dsl-n-plus-one1](./img/one_to_one/test-query-dsl-n-plus-one1.png)
+![test-query-dsl-n-plus-one1](img/n-plus-one/test-query-dsl-n-plus-one1.png)
 
 다음 코드에서도 마찬가지로 N+1 문제가 발생한다. 이러한 이유엔 QueryDsl은 SQL, JPQL을 코드로 작성할 수 있도록 도와주는 빌더 API이기 때문이다.
 
@@ -466,7 +466,7 @@ public List<MemberVO.Data> getList() {
             .fetch();
 }
 ````
-![test-query-dsl-cross-join](./img/one_to_one/test-query-dsl-cross-join.png)
+![test-query-dsl-cross-join](img/n-plus-one/test-query-dsl-cross-join.png)
 
 ### 4.6. QueryDsl - @QueryProjection
 
@@ -518,7 +518,7 @@ return jpaQueryFactory
                 .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
                 .fetch();
 ```
-![test-query-dsl-projection-with-fetchjoin](./img/one_to_one/test-query-dsl-projection-with-fetchjoin.png)
+![test-query-dsl-projection-with-fetchjoin](img/n-plus-one/test-query-dsl-projection-with-fetchjoin.png)
 ```text
 Caused by: org.hibernate.QueryException: query specified join fetching, but the owner of the fetched association was not present in the select list [FromElement{explicit,not a collection join,fetch join,fetch non-lazy properties,
 ```
@@ -539,9 +539,13 @@ return jpaQueryFactory
 
 ## 마무리
 
-정리하자면 LAZY 패치는 메모리 성능과 특정 도메인을 조회시 불필요한 컬럼이 포함하지 않기 때문에 비즈니스를 파악하기 수월하다는 장점이 존재하지만, 자칫 잘못 사용하는 경우   LazyInitializationException 와 N+1 문제를 직면하여 오히려 성능상의 이슈가 발생할 수 있다.
+코로나로 인해 회사가 커지면서 운영 중인 서버 사용량이 기하급수적으로 늘어났다.
 
-JPQL의 N+1 문제와 해결 방법에 대해 인지하고 각각 상황에 맞게 비즈니스 로직에 적용할 필요가 있다.
+2020년도엔 서버 장애와 긴급 이슈에 대응하며 서비스 안정화를 위해 바쁘게 보냈던 거 같다. 특히 RabbitMQ, DynamoDb 등 트래픽 부하 분산을 위한 인프라가 구축되어가면서 다행히도 안정된 수준에서 운영할 수 있었다. 이 과정에서 병목 현상이 일어나는 많은 로직을 개선했었는데, 그중 대표적으로 일대일 N+1 문제로 인해 개선했던 점이 기억에 남는다. (~~종종 타 부서에선 JPA는 많은 쿼리를 발생시킨다며 JPA에 대한 선입견과 부정적인 의견들도 있었다.~~)
+
+일반적으로 N+1 문제는 *ToMany 관계에서 주로 일어난다고 생각하는 것 같다. 따라서 *ToMany 관계에선 주의 깊게 로직을 구현하지만 비교적 OneToOne 관계에서도 N+1 문제가 발생한다는 점을 안일하게 생각했던 건 아니었는지... 일대일 연관관계와 N+1 문제에 대해 정리한 이유이기도 하다.
+
+끝으로 본 포스팅 내용을 정리하며 마무리하겠다. Lazy 패치는 메모리 성능과 특정 도메인을 조회 시 불필요한 컬럼이 포함하지 않기 때문에 비즈니스를 파악하기 수월하다는 장점이 존재하지만, 자칫 잘못 사용하는 경우 LazyInitializationException 와 N+1 문제를 직면하여 오히려 성능상의 이슈가 발생할 수 있다. JPQL의 N+1 문제와 해결 방법에 대해 인지하고 N+1 문제가 발생한다면 각각 상황에 맞게 비즈니스 로직을 개선해야 한다. 또한, 언제나 N+1 문제가 발생할 수 있다는 점을 인지하며 단순한 로직을 구현할 때도 여러 방면에서 생각하며 개발해 볼 필요가 있다.
 
 - 글로벌 패치 조인 : Proxy
 - OneToOne Lazy-loading
@@ -550,8 +554,11 @@ JPQL의 N+1 문제와 해결 방법에 대해 인지하고 각각 상황에 맞�
 
 ## TODO
 
-- fetch join - pageable
-  - [bottom-to-top-blog - fetch join 과 limit 을 같이 쓸 때 주의하자.](https://bottom-to-top.tistory.com/45)
+- JPA 튜닝
+- JPA hint
+- fetch join 문제점
+    - fetch join - pageable
+    - [bottom-to-top-blog - fetch join 과 limit 을 같이 쓸 때 주의하자.](https://bottom-to-top.tistory.com/45)
 
 ## 참고 
 
