@@ -22,7 +22,7 @@ public class MemberOption {
 
     @MapsId
     @OneToOne
-    @PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "memberId")
+    @PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
 
     @Column(name = "enabled")
