@@ -34,19 +34,19 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 
 //        cross join 조심
 //        return jpaQueryFactory
-//                .select(new QMemberVO_Data(qMember.id, qMember.name, qMember.memberOption.enabled))
+//                .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.accountOptionEmb.enabled))
 //                .from(qMember)
 //                .fetch();
 
 //        projection을 사용하여 엔티티 그래프는 도메인을 대상으로한다 vo는 도메인이 아니다.
 //        return jpaQueryFactory
-//                .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.enabled))
+//                .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.accountOptionEmb.enabled))
 //                .from(qMember)
 //                .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
 //                .fetch();
 
         return jpaQueryFactory
-                .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.enabled))
+                .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.accountOptionEmb.enabled))
                 .from(qMember)
                 .innerJoin(qMember.memberOption, qMemberOption)
                 .fetch();

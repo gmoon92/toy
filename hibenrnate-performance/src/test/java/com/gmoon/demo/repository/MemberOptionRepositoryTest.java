@@ -25,7 +25,6 @@ class MemberOptionRepositoryTest extends BaseRepositoryTest {
         memberRepository.save(Member.newInstance("gmoon"));
     }
 
-
     @BeforeEach
     void init() {
         user = memberRepository.findByName("gmoon");
@@ -42,5 +41,13 @@ class MemberOptionRepositoryTest extends BaseRepositoryTest {
         MemberOption option = MemberOption.newInstance(user);
         option.enabled();
         memberOptionRepository.save(option);
+    }
+
+    @Test
+    void testEmbeddedOption() {
+        MemberOption option = MemberOption.newInstance(user);
+        option.enabled();
+        option = memberOptionRepository.save(option);
+        log.debug("option : {}", option.getAccountOptionEmb());
     }
 }
