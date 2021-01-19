@@ -2,6 +2,7 @@ package com.gmoon.springsecurity.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,5 +22,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.formLogin(); // [2] form login 설정
     http.httpBasic();
 //    https://www.baeldung.com/spring-security-basic-authentication
+  }
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.inMemoryAuthentication()
+            .withUser("gmoon").password("{noop}gmoon").roles("USER").and()
+            .withUser("admin").password("{noop}admin").roles("ADMIN");
   }
 }
