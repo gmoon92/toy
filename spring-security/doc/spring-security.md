@@ -32,3 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 }
 ```
+
+## UserDetailsServiceAutoConfiguration
+
+### inMemoryUserDetailsManager
+SecurityProperties
+
+```text
+spring.security.user.name=admin
+spring.security.user.password=123
+spring.security.user.rols=ADMIN
+```
