@@ -1,4 +1,10 @@
 spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:~/test
+      driver-class-name: org.h2.Driver
+      username: sa
+      password:
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -9,6 +15,9 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+        hbm2ddl_auto: create-drop
+        dialect: org.hibernate.dialect.H2Dialect
+        audit_table_suffix: _h
       org:
         hibernate:
           envers:
