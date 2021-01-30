@@ -12,6 +12,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.FileInputStream;
@@ -32,18 +33,24 @@ public class GoogleSpreadSheetUtils {
     private static final int CREDENTIALS_LOCAL_SERVER_PORT = 8888;
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
 
-    private static Sheets getSheets() throws IOException, GeneralSecurityException {
+    private static Sheets getService() throws IOException, GeneralSecurityException {
         final NetHttpTransport googleNetHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
         return new Sheets.Builder(googleNetHttpTransport, JSON_FACTORY, getCredentials(googleNetHttpTransport))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
 
+    public static Spreadsheet getSpreadsheetIncludeGridData(String spreadsheetId) throws IOException, GeneralSecurityException {
+        return getService().spreadsheets()
+                .get(spreadsheetId)
+                .setPrettyPrint(false)
+                .setIncludeGridData(true)
+                .execute();
+    }
+
     public static ValueRange getValueRange(String spreadsheetId, String sheetName, String cellRange) throws IOException, GeneralSecurityException {
         final String range = String.format("%s!%s", sheetName, cellRange);
-        Sheets sheets = getSheets();
-
-        return sheets.spreadsheets().values()
+        return getService().spreadsheets().values()
                 .get(spreadsheetId, range)
                 .execute();
     }

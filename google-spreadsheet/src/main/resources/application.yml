@@ -1,6 +1,6 @@
 google:
   spreadsheet:
-    id: 1tNzC1E6g1aDuqUC63_oP1ELDiRUk6V_p64Gj1PoWbz4
+    id:
     range: A2:F
     sheet-names:
       - ApplicationResources
@@ -14,6 +14,8 @@ google:
       - ja
       - zh_CN
       - zh_TW
+    data-set:
+      id :
 
 logging:
   level:

@@ -17,12 +17,20 @@ import java.util.List;
 @ConfigurationProperties(prefix = "google.spreadsheet")
 public class GoogleSpreadSheetProperties {
 
+  private String id;
+
+  private String range;
+
+  private List<String> sheetNames;
+
+  private List<String> sheetHeads;
+
+  @Getter
+  @Setter
+  @ToString
+  public static class DataSet {
     private String id;
+  }
 
-    private String range;
-
-    private List<String> sheetNames;
-
-    private List<String> sheetHeads;
 
 }
