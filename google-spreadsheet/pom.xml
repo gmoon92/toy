@@ -79,6 +79,12 @@
 			<artifactId>google-api-services-sheets</artifactId>
 			<version>v4-rev493-${google-api-client.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-drive</artifactId>
+			<version>v3-rev110-1.23.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
