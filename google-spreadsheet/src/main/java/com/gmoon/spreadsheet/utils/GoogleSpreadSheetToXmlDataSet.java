@@ -42,7 +42,7 @@ public class GoogleSpreadSheetToXmlDataSet {
   public static void generate(String sampleDataFileName, String defaultDataFileName) throws Exception {
     log.debug("Create a DataSet XML file read from Google Spreadsheet...");
     String spreadsheetId = properties.getProperty("google.spreadsheet.data-set.id");
-    Spreadsheet spreadsheet = GoogleSpreadSheetUtils.getSpreadsheetIncludeGridData(spreadsheetId);
+    Spreadsheet spreadsheet = GoogleApiService.getSpreadsheetIncludeGridData(spreadsheetId);
 
     generateSampleData(sampleDataFileName, spreadsheet);
     generateDefaultData(defaultDataFileName, spreadsheet);

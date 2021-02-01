@@ -10,6 +10,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
@@ -21,27 +23,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-public class GoogleSpreadSheetUtils {
+public class GoogleApiService {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String APPLICATION_NAME = "Google Sheets API";
     private static final String TOKENS_DIRECTORY_PATH = "src/main/resources/google/tokens";
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/google/credentials.json";
     private static final int CREDENTIALS_LOCAL_SERVER_PORT = 8888;
-    private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
+    private static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY, DriveScopes.DRIVE, DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA_READONLY);
 
-    private static Sheets getService() throws IOException, GeneralSecurityException {
-        final NetHttpTransport googleNetHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    public static Sheets getSheetService() throws IOException, GeneralSecurityException {
+        final NetHttpTransport googleNetHttpTransport = getNetHttpTransport();
         return new Sheets.Builder(googleNetHttpTransport, JSON_FACTORY, getCredentials(googleNetHttpTransport))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
 
+    public static Drive getDriveService() throws GeneralSecurityException, IOException {
+        final NetHttpTransport HTTP_TRANSPORT = getNetHttpTransport();
+        return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+    }
+
+    private static NetHttpTransport getNetHttpTransport() throws GeneralSecurityException, IOException {
+        return GoogleNetHttpTransport.newTrustedTransport();
+    }
+
     public static Spreadsheet getSpreadsheetIncludeGridData(String spreadsheetId) throws IOException, GeneralSecurityException {
-        return getService().spreadsheets()
+        return getSheetService().spreadsheets()
                 .get(spreadsheetId)
                 .setPrettyPrint(false)
                 .setIncludeGridData(true)
@@ -50,7 +63,7 @@ public class GoogleSpreadSheetUtils {
 
     public static ValueRange getValueRange(String spreadsheetId, String sheetName, String cellRange) throws IOException, GeneralSecurityException {
         final String range = String.format("%s!%s", sheetName, cellRange);
-        return getService().spreadsheets().values()
+        return getSheetService().spreadsheets().values()
                 .get(spreadsheetId, range)
                 .execute();
     }
