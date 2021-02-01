@@ -33,7 +33,7 @@ public final class GoogleSpreadSheetToResources {
 
             for (String sheetName : getReadSheetNames()) {
                 log.debug("sheetId : {}, sheetName : {}, cellRange : {}", sheetId, sheetName, cellRange);
-                ValueRange sheet = GoogleSpreadSheetUtils.getValueRange(sheetId, sheetName, cellRange);
+                ValueRange sheet = GoogleApiService.getValueRange(sheetId, sheetName, cellRange);
                 List<ResourceVO> list = getResourceVOList(sheet);
                 for (ResourceVO vo : list) {
                     generatePropertiesResource(sheetName, vo, targetDirPath);
