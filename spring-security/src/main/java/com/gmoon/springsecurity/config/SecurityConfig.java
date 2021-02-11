@@ -21,7 +21,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers("/admin").hasRole("ADMIN")
             .anyRequest().authenticated(); // etc... 나머지 요청은 인증처리를 하겠다.
 
-    http.formLogin(); // [2] form login 설정
+    // [2] form login 설정
+    http.formLogin();
+
     http.httpBasic();
 //    https://www.baeldung.com/spring-security-basic-authentication
   }
