@@ -220,6 +220,19 @@ class LoginControllerTest {
 }
 ```
 
+- org.springframework.security.test.web.servlet.request
+- org.springframework.security.test.web.servlet.response
+
+---
+
+- 로그인 / 로그아웃 페이지 커스터마이징
+- HTTP BASIC 인증에 대해서 (Https 권장)
+- 뷰에서 인증 정보 참조하는 방법 학습 (뷰의 종류마다 방법이 다름)
+- OAuth 2
+- 메서드 시큐리티
+- 스프링 시큐리티 아키텍처
+
+HTTPS에서 Header에 특정한 값을 넣어서 서버에서 특정한 값을 통해 계정을 알 수 있다.
 
 
 
