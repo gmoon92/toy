@@ -225,6 +225,8 @@ class LoginControllerTest {
 
 ---
 
+# TODO
+
 - 로그인 / 로그아웃 페이지 커스터마이징
 - HTTP BASIC 인증에 대해서 (Https 권장)
 - 뷰에서 인증 정보 참조하는 방법 학습 (뷰의 종류마다 방법이 다름)
