@@ -87,3 +87,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ```
 
 antMatcher에 따라 @Order에 따라서 FilterChain이 순차적으로 필터를 실행한다.
+
+---
+
+# DelegatingFilterProxy와 FilterChainProxy
+
+Servlet 컨테이너는 Servlet 스펙을 지원한다. Servlet 스펙엔 필터가 존재한다.
+
+스프링 시큐리티엔 서블릿 필터의 구현체 중에 하나가, DelegatingFilterProxy가 있다.
+
+DelegatingFilterProxy
+- 일반적인 서블릿 필터
+- 서블릿 필터 처리를 스프링에 들어있는 빈으로 위임하고 싶을 때 사용하는 서블릿 필터
+- 타겟 빈 이름을 설정한다.
+- 스프링 부트 없이 스프링 시큐리티 설정할 때는 AbstractSecurityWebApplicationInitializer를 사용해서 등록
+- 스프링 부트를 사용할 때는 자동으로 등록 된다. (SecurityFilterAutoConfiguration)
+
+자기가 처리하지 않고 누군가에게 위임을 한다. 필터로써 역할을 하는게 아니라 위임한다. 특정 빈에게 Spring IO Context에 포함된 빈에게 자기가 할 일을 위임한다.
+
+FilterChainProxy
+- 보통 "springSecurityFilterChain"이라는 빈으로 등록된다.
+
+> SecurityFilterAutoConfiguration # DEFAULT_FILTER_NAME
+
+빈의 이름으로 위임을 한다.
+
+
+![DelegatingFilterProxy](./img/delegating-filter-proxy.png)
+
+[Spring security - DelegatingFilterProxy](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#servlet-delegatingfilterproxy)
