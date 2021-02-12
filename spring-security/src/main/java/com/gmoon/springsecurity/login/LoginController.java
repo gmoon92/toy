@@ -1,5 +1,7 @@
 package com.gmoon.springsecurity.login;
 
+import com.gmoon.springsecurity.account.AccountContext;
+import com.gmoon.springsecurity.account.MemberRepository;
 import com.gmoon.springsecurity.form.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,9 @@ public class LoginController {
 
   @Autowired
   private SampleService sampleService;
+
+  @Autowired
+  private MemberRepository memberRepository;
 
   @GetMapping("/")
   public String index(Model model, Principal principal) {
@@ -36,6 +41,8 @@ public class LoginController {
   @GetMapping("/dashboard")
   public String dashboard(Model model, Principal principal) {
     model.addAttribute("message", "Hello, Spring Security" + principal.getName());
+    AccountContext.setMember(memberRepository.findByUsername(principal.getName()));
+
     sampleService.dashboard();
     return "dashboard";
   }

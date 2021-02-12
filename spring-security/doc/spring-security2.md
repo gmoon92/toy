@@ -75,10 +75,38 @@ Authentication 객체를 리턴
 
 기본적인 AuthenticationManager 인터페이스 구현체는 ProviderManager를 사용하고 있다.
 
+```text
+org.springframework.security.authentication.ProviderManager
+```
+
 formLogin일 경우, Authentication 객체가 UsernamePasswordAuthenticationToken로 넘어오게 되는데, 여러 AuthenticationProvider의 구현체들을 통해 인증 처리가 되게 된다.
 
-> 참고 DaoAuthenticationProvider
+> 참고 formLogin DaoAuthenticationProvider
 
+---
 
+# ThreadLocal
 
+Java.lang 패키지에서 기본으로 제공하는 쓰레드 범위 변수, 즉, 쓰레드 수준의 데이터 저장소,.
+- 같은 쓰레드 내에서만 공유.
+- 따라서 같은 쓰레드라면 해당 데이터를 메소드 매개변수로 넘겨줄 필요 없음. 
+- SecurityContextHolder의 기본적략
+
+ThreadLocal를 이용하면, 한 쓰레드 내에서는 메서드 파라미터로 넘겨줄 필요가 없다.
+
+```java
+public class AccountContext {
+
+  private static final ThreadLocal<Member> ACCOUNT_THREAD_LOCAL 
+          = new ThreadLocal<>();
+
+  public static void setMember(Member member) {
+    ACCOUNT_THREAD_LOCAL.set(member);
+  }
+
+  public static Member getMember() {
+    return ACCOUNT_THREAD_LOCAL.get();
+  }
+}
+```
 
