@@ -1,5 +1,7 @@
 package com.gmoon.springsecurity.login;
 
+import com.gmoon.springsecurity.form.SampleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,9 @@ import java.security.Principal;
 
 @Controller
 public class LoginController {
+
+  @Autowired
+  private SampleService sampleService;
 
   @GetMapping("/")
   public String index(Model model, Principal principal) {
@@ -31,6 +36,7 @@ public class LoginController {
   @GetMapping("/dashboard")
   public String dashboard(Model model, Principal principal) {
     model.addAttribute("message", "Hello, Spring Security" + principal.getName());
+    sampleService.dashboard();
     return "dashboard";
   }
 
