@@ -49,8 +49,14 @@ public class LoginController {
 
   @GetMapping("/admin")
   public String admin(Model model, Principal principal) {
-    model.addAttribute("message", "Hello, Spring Security" + principal.getName());
+    model.addAttribute("message", "Hello, Admin" + principal.getName());
     return "admin";
+  }
+
+  @GetMapping("/user")
+  public String user(Model model, Principal principal) {
+    model.addAttribute("message", "Hello, User" + principal.getName());
+    return "user";
   }
 
 }
