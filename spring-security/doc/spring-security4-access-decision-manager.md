@@ -34,7 +34,14 @@ public interface AccessDecisionManager {
   - ConfigAttribute : 접근 권한
 
 ```java
-int result = voter.vote(authentication, object, configAttributes);
+public class AffirmativeBased extends AbstractAccessDecisionManager {
+
+  public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException {
+    int result = voter.vote(authentication, object, configAttributes);
+    // ... 생략
+  }
+  
+} 
 ```
 
 ```java
@@ -55,3 +62,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 }
 ```
+
+## AccessDecisionManager Custom
+
+AccessDecisionManager 또는 Voter를 커스터마이징 하는 방법
+
+1. AccessDecisionManager
+2. ExpressionHandler
+
+- AffirmativeBased (default)
+  - 여러 Voter중 한명이라도 허용하면 허용
+
+계층형 롤 관리 (RoleHierarchy)
+
+AccessDecisionManager를 누가 언제 호출하는가 ?
