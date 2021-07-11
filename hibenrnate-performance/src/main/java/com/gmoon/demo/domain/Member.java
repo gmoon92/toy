@@ -1,5 +1,6 @@
 package com.gmoon.demo.domain;
 
+import com.gmoon.demo.service.MemberOptionUpdate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,6 +69,10 @@ public class Member {
   public void setMemberOption(MemberOption memberOption) {
     this.memberOption = memberOption;
     memberOption.setMember(this);
+  }
+
+  public void changeMemberOption(MemberOptionUpdate memberOptionUpdate) {
+    memberOption.changeOptions(memberOptionUpdate);
   }
 
 }
