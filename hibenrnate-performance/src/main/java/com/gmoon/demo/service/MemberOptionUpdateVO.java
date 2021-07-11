@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberOptionUpdate {
+public class MemberOptionUpdateVO {
 
-  private String username;
-
+  private Long memberId;
   private boolean retired;
+
 }

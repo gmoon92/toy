@@ -13,8 +13,8 @@ public class MemberService {
   private final MemberRepository memberRepository;
 
   @Transactional
-  public void updateMemberOption(MemberOptionUpdate memberOptionUpdate) {
-    Member member = memberRepository.findByName(memberOptionUpdate.getUsername());
+  public void updateMemberOption(MemberOptionUpdateVO memberOptionUpdate) {
+    Member member = memberRepository.getOne(memberOptionUpdate.getMemberId());
 
     if (memberOptionUpdate.isRetired()) {
       member.getMemberOption().disabled();
