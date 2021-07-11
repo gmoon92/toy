@@ -1,7 +1,8 @@
-package com.gmoon.demo.service;
+package com.gmoon.demo.member.service;
 
-import com.gmoon.demo.domain.Member;
-import com.gmoon.demo.repository.MemberRepository;
+import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.model.MemberOptionUpdate;
+import com.gmoon.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

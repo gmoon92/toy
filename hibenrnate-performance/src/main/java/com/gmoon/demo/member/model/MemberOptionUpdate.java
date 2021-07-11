@@ -1,4 +1,4 @@
-package com.gmoon.demo.service;
+package com.gmoon.demo.member.model;
 
 import lombok.Getter;
 import lombok.Setter;

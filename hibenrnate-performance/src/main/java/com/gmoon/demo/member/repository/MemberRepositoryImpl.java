@@ -1,10 +1,10 @@
-package com.gmoon.demo.repository;
+package com.gmoon.demo.member.repository;
 
-import com.gmoon.demo.domain.Member;
-import com.gmoon.demo.domain.MemberVO;
 import com.gmoon.demo.domain.QMember;
 import com.gmoon.demo.domain.QMemberOption;
 import com.gmoon.demo.domain.QMemberVO_Data;
+import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.model.MemberVO;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
