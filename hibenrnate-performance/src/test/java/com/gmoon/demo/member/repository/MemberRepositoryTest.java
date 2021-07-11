@@ -25,17 +25,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 class MemberRepositoryTest extends BaseRepositoryTest {
 
+    static Long TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON;
+
     final MemberRepository memberRepository;
 
     @BeforeAll
     static void setup(@Autowired MemberRepository memberRepository) {
         log.debug("Database data setup start...");
         memberRepository.deleteAllInBatch();
-        memberRepository.save(Member.newInstance("gmoon"));
         memberRepository.save(Member.newInstance("kim"));
         memberRepository.save(Member.newInstance("lee"));
         memberRepository.save(Member.newInstance("hong"));
         memberRepository.save(Member.newInstance("kown"));
+        Member gmoon = memberRepository.save(Member.newInstance("gmoon"));
+        TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON = gmoon.getId();
         log.debug("Database data setup done...");
     }
 
@@ -241,5 +244,19 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     @Test
     void testFetchJoin_QueryDsl_With_Projection() {
         memberRepository.findAllOfQueryDslWithProjection();
+    }
+
+    /**
+     * org.springframework.orm.jpa.JpaSystemException: ids for this class must be manually assigned before calling save()
+     * -> 영속 상태가 아니기 때문에 ID가 존재하지 않았음, Id가 아니기 때문
+     * @see MemberOption#setMember(Member)
+     */
+    @Test
+    @DisplayName("대상 테이블 OneToOne 저장")
+    void testSaveMemberOption() {
+        Member member = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON);
+        MemberOption option = member.getMemberOption();
+        option.enabled();
+        memberRepository.save(member);
     }
 }
