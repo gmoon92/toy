@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,29 +17,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor
 class MemberServiceTest {
 
-  @PersistenceContext
-  EntityManager entityManager;
   final MemberService memberService;
   final MemberRepository memberRepository;
+  Long memberId;
 
   @BeforeEach
   void setUp() {
-    Member member = Member.newInstance("gmoon");
-    memberRepository.save(member);
+    Member member = memberRepository.save(Member.newInstance("gmoon"));
+    memberId = member.getId();
   }
 
   @Test
   void updateMemberOption() {
     // given
-    MemberOptionUpdate updateMemberOption = new MemberOptionUpdate();
-    updateMemberOption.setUsername("gmoon");
+    MemberOptionUpdateVO updateMemberOption = new MemberOptionUpdateVO();
+    updateMemberOption.setMemberId(memberId);
     updateMemberOption.setRetired(false);
 
     // when
     memberService.updateMemberOption(updateMemberOption);
+    Member member = memberRepository.findById(memberId)
+            .orElseThrow(EntityNotFoundException::new);
 
     // then
-    Member member = memberRepository.findByName("gmoon");
     assertThat(member.getMemberOption().isRetired())
             .isFalse();
   }
