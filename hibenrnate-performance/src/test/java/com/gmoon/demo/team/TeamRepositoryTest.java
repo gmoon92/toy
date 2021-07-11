@@ -1,8 +1,9 @@
-package com.gmoon.demo.repository;
+package com.gmoon.demo.team;
 
 import com.gmoon.demo.base.BaseRepositoryTest;
-import com.gmoon.demo.domain.Member;
-import com.gmoon.demo.domain.Team;
+import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.repository.MemberRepository;
+import com.gmoon.demo.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

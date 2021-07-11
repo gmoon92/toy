@@ -1,6 +1,6 @@
-package com.gmoon.demo.repository;
+package com.gmoon.demo.team.repository;
 
-import com.gmoon.demo.domain.Team;
+import com.gmoon.demo.team.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
