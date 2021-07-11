@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberOptionUpdateVO {
+public class MemberOptionUpdate {
 
   private Long memberId;
   private boolean retired;
