@@ -17,27 +17,27 @@ import javax.persistence.PersistenceContext;
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public abstract class BaseRepositoryTest {
 
-    protected static Logger log = LoggerFactory.getLogger(BaseRepositoryTest.class);
+  protected static Logger log = LoggerFactory.getLogger(BaseRepositoryTest.class);
 
-    @PersistenceContext
-    EntityManager entityManager;
+  @PersistenceContext
+  EntityManager entityManager;
 
-    @AfterEach
-    void tearDown() {
-        flushAndClear();
-    }
+  @AfterEach
+  void tearDown() {
+    flushAndClear();
+  }
 
-    protected void flushAndClear() {
-        entityManager.flush();
-        entityManager.clear();
-        log.debug("EntityManager flush and clear");
-    }
+  protected void flushAndClear() {
+    entityManager.flush();
+    entityManager.clear();
+    log.debug("EntityManager flush and clear");
+  }
 
-    protected EntityManager getEntityManager() {
-        return this.entityManager;
-    }
+  protected EntityManager getEntityManager() {
+    return this.entityManager;
+  }
 
-    protected JPAQueryFactory getJPAQuery() {
-        return new JPAQueryFactory(getEntityManager());
-    }
+  protected JPAQueryFactory getJPAQuery() {
+    return new JPAQueryFactory(getEntityManager());
+  }
 }

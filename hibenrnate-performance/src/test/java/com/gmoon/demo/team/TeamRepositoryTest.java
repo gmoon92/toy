@@ -15,36 +15,36 @@ import java.util.List;
 @RequiredArgsConstructor
 class TeamRepositoryTest extends BaseRepositoryTest {
 
-    final TeamRepository teamRepository;
+  final TeamRepository teamRepository;
 
-    @BeforeAll
-    static void setup(@Autowired MemberRepository memberRepository, @Autowired TeamRepository teamRepository) {
-        log.debug("Database data setup start...");
-        memberRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
+  @BeforeAll
+  static void setup(@Autowired MemberRepository memberRepository, @Autowired TeamRepository teamRepository) {
+    log.debug("Database data setup start...");
+    memberRepository.deleteAllInBatch();
+    teamRepository.deleteAllInBatch();
 
-        Team web1 = teamRepository.save(Team.newInstance("web1"));
-        memberRepository.saveAll(Arrays.asList(
-                 Member.newInstance("gmoon", web1)
-                ,Member.newInstance("kwon", web1)
-                ,Member.newInstance("kim", web1)
-                ,Member.newInstance("lee", web1)
-        ));
+    Team web1 = teamRepository.save(Team.newInstance("web1"));
+    memberRepository.saveAll(Arrays.asList(
+            Member.newInstance("gmoon", web1)
+            , Member.newInstance("kwon", web1)
+            , Member.newInstance("kim", web1)
+            , Member.newInstance("lee", web1)
+    ));
 
-        log.debug("Database data setup done...");
-    }
+    log.debug("Database data setup done...");
+  }
 
-    @Test
-    void testFindAll() {
-        List<Team> teamList = teamRepository.findAll();
+  @Test
+  void testFindAll() {
+    List<Team> teamList = teamRepository.findAll();
 //        Hibernate.isInitialized();
 
-        teamList.forEach(team -> {
-            log.debug("team : {}", team);
+    teamList.forEach(team -> {
+      log.debug("team : {}", team);
 //            team.getMembers().forEach(member -> log.debug("member : {}, {}, {}", member.getName()
 //                    , Hibernate.isInitialized(member.getMemberOption())
 //                    , member.getMemberOption().isEnabled()));
-        });
+    });
 
-    }
+  }
 }

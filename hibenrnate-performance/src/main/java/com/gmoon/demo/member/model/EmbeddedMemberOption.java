@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class EmbeddedMemberOption {
 
   private boolean enabled;
-
   private LocalDateTime enabledDt;
 
   public static EmbeddedMemberOption enabled() {
