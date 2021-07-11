@@ -1,5 +1,6 @@
 package com.gmoon.demo.domain;
 
+import com.gmoon.demo.service.MemberOptionUpdate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,5 +70,9 @@ public class MemberOption {
     public void disabled() {
         this.accountOptionEmb = AccountOptionEmb.disabled();
         this.retired = false;
+    }
+
+    public void changeOptions(MemberOptionUpdate memberOptionUpdate) {
+        retired = memberOptionUpdate.isRetired();
     }
 }
