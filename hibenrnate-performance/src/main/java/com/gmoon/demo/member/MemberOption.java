@@ -23,57 +23,57 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberOption {
 
-    @Id
-    @Column(name = "member_id")
-    private Long memberId;
+  @Id
+  @Column(name = "member_id")
+  private Long memberId;
 
-    @MapsId
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "id")
-    private Member member;
+  @MapsId
+  @OneToOne
+  @PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "id")
+  private Member member;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
-            @AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
-    })
-    private EmbeddedMemberOption accountOptionEmb;
+  @Embedded
+  @AttributeOverrides( {
+          @AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
+          @AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
+  })
+  private EmbeddedMemberOption accountOptionEmb;
 
-    @Column(name = "retired")
-    private boolean retired;
+  @Column(name = "retired")
+  private boolean retired;
 
-    public static MemberOption defaultOption() {
-        MemberOption option = new MemberOption();
-        option.setDefaultOption();
-        return option;
-    }
+  public static MemberOption defaultOption() {
+    MemberOption option = new MemberOption();
+    option.setDefaultOption();
+    return option;
+  }
 
-    public static MemberOption newInstance(Member member) {
-        MemberOption option = defaultOption();
-        option.setMember(member);
-        return option;
-    }
+  public static MemberOption newInstance(Member member) {
+    MemberOption option = defaultOption();
+    option.setMember(member);
+    return option;
+  }
 
-    protected void setMember(Member member) {
-        this.member = member;
-        this.memberId = member.getId();
-    }
+  protected void setMember(Member member) {
+    this.member = member;
+    this.memberId = member.getId();
+  }
 
-    private void setDefaultOption() {
-        disabled();
-    }
+  private void setDefaultOption() {
+    disabled();
+  }
 
-    public void enabled() {
-        this.accountOptionEmb = EmbeddedMemberOption.enabled();
-        this.retired = false;
-    }
+  public void enabled() {
+    this.accountOptionEmb = EmbeddedMemberOption.enabled();
+    this.retired = false;
+  }
 
-    public void disabled() {
-        this.accountOptionEmb = EmbeddedMemberOption.disabled();
-        this.retired = false;
-    }
+  public void disabled() {
+    this.accountOptionEmb = EmbeddedMemberOption.disabled();
+    this.retired = false;
+  }
 
-    public void changeOptions(MemberOptionUpdate memberOptionUpdate) {
-        retired = memberOptionUpdate.isRetired();
-    }
+  public void changeOptions(MemberOptionUpdate memberOptionUpdate) {
+    retired = memberOptionUpdate.isRetired();
+  }
 }
