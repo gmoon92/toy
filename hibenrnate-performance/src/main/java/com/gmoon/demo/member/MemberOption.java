@@ -1,6 +1,6 @@
 package com.gmoon.demo.member;
 
-import com.gmoon.demo.member.model.AccountOptionEmb;
+import com.gmoon.demo.member.model.EmbeddedMemberOption;
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class MemberOption {
             @AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
             @AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
     })
-    private AccountOptionEmb accountOptionEmb;
+    private EmbeddedMemberOption accountOptionEmb;
 
     @Column(name = "retired")
     private boolean retired;
@@ -64,12 +64,12 @@ public class MemberOption {
     }
 
     public void enabled() {
-        this.accountOptionEmb = AccountOptionEmb.enabled();
+        this.accountOptionEmb = EmbeddedMemberOption.enabled();
         this.retired = false;
     }
 
     public void disabled() {
-        this.accountOptionEmb = AccountOptionEmb.disabled();
+        this.accountOptionEmb = EmbeddedMemberOption.disabled();
         this.retired = false;
     }
 
