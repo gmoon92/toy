@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface MemberRepositoryCustom {
 
-    List<Member> findAllOfQueryDsl();
-
-    List<MemberVO.Data> findAllOfQueryDslWithProjection();
+  List<Member> findAllOfQueryDsl();
+  List<MemberVO.Data> findAllOfQueryDslWithProjection();
 }

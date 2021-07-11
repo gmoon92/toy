@@ -11,26 +11,26 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class MemberRepositoryImpl implements MemberRepositoryCustom{
+public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
-    private final JPAQueryFactory jpaQueryFactory;
+  private final JPAQueryFactory jpaQueryFactory;
 
-    @Override
-    public List<Member> findAllOfQueryDsl() {
-        QMember qMember = QMember.member;
-        QMemberOption qMemberOption = QMemberOption.memberOption;
+  @Override
+  public List<Member> findAllOfQueryDsl() {
+    QMember qMember = QMember.member;
+    QMemberOption qMemberOption = QMemberOption.memberOption;
 
-        return jpaQueryFactory
-                .select(qMember)
-                .from(qMember)
-                .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
-                .fetch();
-    }
+    return jpaQueryFactory
+            .select(qMember)
+            .from(qMember)
+            .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
+            .fetch();
+  }
 
-    @Override
-    public List<MemberVO.Data> findAllOfQueryDslWithProjection() {
-        QMember qMember = QMember.member;
-        QMemberOption qMemberOption = QMemberOption.memberOption;
+  @Override
+  public List<MemberVO.Data> findAllOfQueryDslWithProjection() {
+    QMember qMember = QMember.member;
+    QMemberOption qMemberOption = QMemberOption.memberOption;
 
 //        cross join 조심
 //        return jpaQueryFactory
@@ -45,12 +45,12 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 //                .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
 //                .fetch();
 
-        return jpaQueryFactory
-                .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.accountOptionEmb.enabled))
-                .from(qMember)
-                .innerJoin(qMember.memberOption, qMemberOption)
-                .fetch();
-    }
+    return jpaQueryFactory
+            .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.accountOptionEmb.enabled))
+            .from(qMember)
+            .innerJoin(qMember.memberOption, qMemberOption)
+            .fetch();
+  }
 
 
 }
