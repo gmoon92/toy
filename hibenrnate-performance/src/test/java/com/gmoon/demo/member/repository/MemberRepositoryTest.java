@@ -1,10 +1,10 @@
-package com.gmoon.demo.repository;
+package com.gmoon.demo.member.repository;
 
 import com.gmoon.demo.base.BaseRepositoryTest;
-import com.gmoon.demo.domain.Member;
-import com.gmoon.demo.domain.MemberOption;
 import com.gmoon.demo.domain.QMember;
 import com.gmoon.demo.domain.QMemberOption;
+import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.MemberOption;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
