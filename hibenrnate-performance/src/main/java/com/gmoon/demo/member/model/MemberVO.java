@@ -1,4 +1,4 @@
-package com.gmoon.demo.domain;
+package com.gmoon.demo.member.model;
 
 import com.querydsl.core.annotations.QueryProjection;
 
