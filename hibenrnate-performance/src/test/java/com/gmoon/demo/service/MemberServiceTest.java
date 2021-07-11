@@ -30,7 +30,7 @@ class MemberServiceTest {
   @Test
   void updateMemberOption() {
     // given
-    MemberOptionUpdateVO updateMemberOption = new MemberOptionUpdateVO();
+    MemberOptionUpdate updateMemberOption = new MemberOptionUpdate();
     updateMemberOption.setMemberId(memberId);
     updateMemberOption.setRetired(false);
 
