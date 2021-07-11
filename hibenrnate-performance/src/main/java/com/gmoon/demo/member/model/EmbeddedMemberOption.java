@@ -12,21 +12,21 @@ import java.time.LocalDateTime;
 @Embeddable
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AccountOptionEmb {
+public class EmbeddedMemberOption {
 
   private boolean enabled;
 
   private LocalDateTime enabledDt;
 
-  public static AccountOptionEmb enabled() {
-    AccountOptionEmb accountOption = new AccountOptionEmb();
+  public static EmbeddedMemberOption enabled() {
+    EmbeddedMemberOption accountOption = new EmbeddedMemberOption();
     accountOption.enabled = true;
     accountOption.enabledDt = LocalDateTime.now();
     return accountOption;
   }
 
-  public static AccountOptionEmb disabled() {
-    AccountOptionEmb accountOption = new AccountOptionEmb();
+  public static EmbeddedMemberOption disabled() {
+    EmbeddedMemberOption accountOption = new EmbeddedMemberOption();
     accountOption.enabled = false;
     accountOption.enabledDt = null;
     return accountOption;
