@@ -2,7 +2,15 @@ package com.gmoon.demo.member.model;
 
 import com.querydsl.core.annotations.QueryProjection;
 
-public class MemberVO {
+import java.util.List;
+
+public class Members {
+
+  private final List<Data> values;
+
+  public Members(List<Data> values) {
+    this.values = values;
+  }
 
   public static class Data {
 
@@ -24,4 +32,7 @@ public class MemberVO {
     }
   }
 
+  public List<Data> getValues() {
+    return values;
+  }
 }
