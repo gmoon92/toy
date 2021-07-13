@@ -4,7 +4,7 @@ import com.gmoon.demo.domain.QMember;
 import com.gmoon.demo.domain.QMemberOption;
 import com.gmoon.demo.domain.QMemberVO_Data;
 import com.gmoon.demo.member.Member;
-import com.gmoon.demo.member.model.MemberVO;
+import com.gmoon.demo.member.model.Members;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +28,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
   }
 
   @Override
-  public List<MemberVO.Data> findAllOfQueryDslWithProjection() {
+  public Members findAllOfQueryDslWithProjection() {
     QMember qMember = QMember.member;
     QMemberOption qMemberOption = QMemberOption.memberOption;
 
@@ -45,11 +45,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 //                .innerJoin(qMember.memberOption, qMemberOption).fetchJoin()
 //                .fetch();
 
-    return jpaQueryFactory
+    List<Members.Data> list = jpaQueryFactory
             .select(new QMemberVO_Data(qMember.id, qMember.name, qMemberOption.accountOptionEmb.enabled))
             .from(qMember)
             .innerJoin(qMember.memberOption, qMemberOption)
             .fetch();
+
+    return new Members(list);
   }
 
 
