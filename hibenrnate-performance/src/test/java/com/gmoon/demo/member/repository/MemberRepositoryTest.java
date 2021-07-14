@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RequiredArgsConstructor
 class MemberRepositoryTest extends BaseRepositoryTest {
 
@@ -75,19 +77,21 @@ class MemberRepositoryTest extends BaseRepositoryTest {
   @Test
   @DisplayName("연관 관계 맵핑 설정 - @OneToOne(optional = false)")
   void testOneToOneLazy() {
-    EntityManager em = getEntityManager();
-    Member member = em.find(Member.class, 1L);
-    MemberOption memberOption = member.getMemberOption();
-    log.debug("memberOption class : {}", memberOption.getClass());
-//        assertEquals(false, Hibernate.isInitialized(memberOption), "isProxyObject");
+    // given
+    Member member = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON);
 
-    member.setName("gmoon");
-    log.debug("사용자 이름 변경");
+    // when
+    member.setName("testName");
+    member.enabled();
+    flushAndClear();
+//    assertEquals(false, Hibernate.isInitialized(memberOption), "isProxyObject");
 
-    log.debug("option class : {}", memberOption.getClass());
+    // then
+    MemberOption memberOption = MemberOption.defaultOption();
     memberOption.enabled();
-    member.setMemberOption(memberOption);
-    log.debug("계정 활성화");
+    assertThat(memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON))
+            .hasFieldOrPropertyWithValue("name", "testName")
+            .hasFieldOrPropertyWithValue("memberOption", memberOption);
   }
 
   @Test
