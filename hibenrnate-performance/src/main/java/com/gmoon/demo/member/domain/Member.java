@@ -1,9 +1,10 @@
-package com.gmoon.demo.member;
+package com.gmoon.demo.member.domain;
 
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 import com.gmoon.demo.team.Team;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ import javax.persistence.OneToOne;
 @NamedEntityGraph(name = "Member.withMemberOption"
         , attributeNodes = { @NamedAttributeNode(value = "memberOption") })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id")
 public class Member {
 
   @Id
@@ -59,10 +61,6 @@ public class Member {
             .build();
   }
 
-  public void changeMemberInfo(String name) {
-    this.name = name;
-  }
-
   public void setName(String name) {
     this.name = name;
   }
@@ -74,6 +72,14 @@ public class Member {
 
   public void changeMemberOption(MemberOptionUpdate memberOptionUpdate) {
     memberOption.changeOptions(memberOptionUpdate);
+  }
+
+  public void enabled() {
+    memberOption.enabled();
+  }
+
+  public void disabled() {
+    memberOption.disabled();
   }
 
 }
