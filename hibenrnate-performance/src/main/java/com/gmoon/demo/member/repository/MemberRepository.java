@@ -1,6 +1,6 @@
 package com.gmoon.demo.member.repository;
 
-import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.domain.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
