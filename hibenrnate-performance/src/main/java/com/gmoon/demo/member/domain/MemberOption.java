@@ -3,6 +3,7 @@ package com.gmoon.demo.member.domain;
 import com.gmoon.demo.member.model.EmbeddedMemberOption;
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -19,8 +20,9 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(exclude = { "memberId", "member" })
 public class MemberOption {
 
   @Id
@@ -37,7 +39,7 @@ public class MemberOption {
           @AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
           @AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
   })
-  private EmbeddedMemberOption accountOptionEmb;
+  private EmbeddedMemberOption embeddedMemberOption;
 
   @Column(name = "retired")
   private boolean retired;
@@ -45,12 +47,6 @@ public class MemberOption {
   public static MemberOption defaultOption() {
     MemberOption option = new MemberOption();
     option.setDefaultOption();
-    return option;
-  }
-
-  public static MemberOption newInstance(Member member) {
-    MemberOption option = defaultOption();
-    option.setMember(member);
     return option;
   }
 
@@ -64,12 +60,12 @@ public class MemberOption {
   }
 
   public void enabled() {
-    this.accountOptionEmb = EmbeddedMemberOption.enabled();
-    this.retired = false;
+    this.embeddedMemberOption = EmbeddedMemberOption.enabled();
+    this.retired = true;
   }
 
   public void disabled() {
-    this.accountOptionEmb = EmbeddedMemberOption.disabled();
+    this.embeddedMemberOption = EmbeddedMemberOption.disabled();
     this.retired = false;
   }
 
