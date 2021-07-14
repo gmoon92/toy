@@ -1,4 +1,4 @@
-package com.gmoon.demo.member;
+package com.gmoon.demo.member.domain;
 
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 import com.gmoon.demo.team.Team;

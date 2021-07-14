@@ -1,6 +1,6 @@
 package com.gmoon.demo.team;
 
-import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
