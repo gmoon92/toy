@@ -3,7 +3,7 @@ package com.gmoon.demo.member.repository;
 import com.gmoon.demo.domain.QMember;
 import com.gmoon.demo.domain.QMemberOption;
 import com.gmoon.demo.domain.QMemberVO_Data;
-import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.domain.Member;
 import com.gmoon.demo.member.model.Members;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.gmoon.demo.team;
 
 import com.gmoon.demo.base.BaseRepositoryTest;
-import com.gmoon.demo.member.Member;
+import com.gmoon.demo.member.domain.Member;
 import com.gmoon.demo.member.repository.MemberRepository;
 import com.gmoon.demo.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
