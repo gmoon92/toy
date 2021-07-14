@@ -1,6 +1,7 @@
 package com.gmoon.demo.member.model;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Embeddable
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "enabled")
 public class EmbeddedMemberOption {
 
   private boolean enabled;
