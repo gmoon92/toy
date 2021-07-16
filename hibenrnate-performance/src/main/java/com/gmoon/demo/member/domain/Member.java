@@ -3,7 +3,6 @@ package com.gmoon.demo.member.domain;
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 import com.gmoon.demo.team.Team;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,33 +40,18 @@ public class Member {
 //    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
   private MemberOption memberOption;
 
-  @Builder(access = AccessLevel.PRIVATE, builderMethodName = "defaultMember")
-  protected Member(String name, Team team) {
+  private Member(String name, Team team) {
     this.name = name;
     this.team = team;
-    setMemberOption(MemberOption.defaultOption());
-  }
-
-  public static Member newInstance(String name) {
-    return Member.defaultMember()
-            .name(name)
-            .build();
+    this.memberOption = MemberOption.defaultOption(this);
   }
 
   public static Member newInstance(String name, Team team) {
-    return Member.defaultMember()
-            .name(name)
-            .team(team)
-            .build();
+    return new Member(name, team);
   }
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public void setMemberOption(MemberOption memberOption) {
-    this.memberOption = memberOption;
-    memberOption.setMember(this);
   }
 
   public void changeMemberOption(MemberOptionUpdate memberOptionUpdate) {
