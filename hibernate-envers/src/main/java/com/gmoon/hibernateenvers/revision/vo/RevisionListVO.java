@@ -59,19 +59,16 @@ public class RevisionListVO {
 
     private Object entityId;
 
-    private String targetTeamName;
-
     private String targetMemberName;
 
     @QueryProjection
-    public DataVO(Long rev, Date revDate, String memberId, String memberName, RevisionTarget revisionTarget, byte[] entityId, String targetTeamName, String targetMemberName) {
+    public DataVO(Long rev, Date revDate, String memberId, String memberName, RevisionTarget revisionTarget, byte[] entityId, String targetMemberName) {
       this.rev = rev;
       this.revDate = revDate;
       this.memberId = memberId;
       this.memberName = memberName;
       this.revisionTarget = revisionTarget;
       this.entityId = RevisionConverter.deSerializedObject(entityId);
-      this.targetTeamName = targetTeamName;
       this.targetMemberName = targetMemberName;
     }
   }
