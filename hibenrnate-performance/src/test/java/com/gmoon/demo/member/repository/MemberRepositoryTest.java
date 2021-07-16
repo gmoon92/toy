@@ -1,10 +1,10 @@
 package com.gmoon.demo.member.repository;
 
 import com.gmoon.demo.base.BaseRepositoryTest;
-import com.gmoon.demo.domain.QMember;
-import com.gmoon.demo.domain.QMemberOption;
 import com.gmoon.demo.member.domain.Member;
 import com.gmoon.demo.member.domain.MemberOption;
+import com.gmoon.demo.member.domain.QMember;
+import com.gmoon.demo.member.domain.QMemberOption;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -35,11 +35,11 @@ class MemberRepositoryTest extends BaseRepositoryTest {
   static void setup(@Autowired MemberRepository memberRepository) {
     log.debug("Database data setup start...");
     memberRepository.deleteAllInBatch();
-    memberRepository.save(Member.newInstance("kim"));
-    memberRepository.save(Member.newInstance("lee"));
-    memberRepository.save(Member.newInstance("hong"));
-    memberRepository.save(Member.newInstance("kown"));
-    Member gmoon = memberRepository.save(Member.newInstance("gmoon"));
+    memberRepository.save(Member.newInstance("kim", null));
+    memberRepository.save(Member.newInstance("lee", null));
+    memberRepository.save(Member.newInstance("hong", null));
+    memberRepository.save(Member.newInstance("kown", null));
+    Member gmoon = memberRepository.save(Member.newInstance("gmoon", null));
     TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON = gmoon.getId();
     log.debug("Database data setup done...");
   }
@@ -81,17 +81,14 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     Member member = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON);
 
     // when
-    member.setName("testName");
     member.enabled();
     flushAndClear();
-//    assertEquals(false, Hibernate.isInitialized(memberOption), "isProxyObject");
 
     // then
-    MemberOption memberOption = MemberOption.defaultOption();
-    memberOption.enabled();
-    assertThat(memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON))
-            .hasFieldOrPropertyWithValue("name", "testName")
-            .hasFieldOrPropertyWithValue("memberOption", memberOption);
+    MemberOption memberOption = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON)
+            .getMemberOption();
+    assertThat(memberOption)
+            .hasFieldOrPropertyWithValue("retired", true);
   }
 
   @Test
@@ -206,13 +203,13 @@ class MemberRepositoryTest extends BaseRepositoryTest {
   @DisplayName("queryDSL fetchJoin - 식별 관계 주 테이블(Member) OneToOne 양방향 관계")
   void testOneToOneWhenQueryDsl() {
 //        memberRepository.findById(1L);
-    QMember qMember = QMember.member;
-    QMemberOption qMemberOption = QMemberOption.memberOption;
+    QMember member = QMember.member;
+    QMemberOption memberOption = QMemberOption.memberOption;
 
 //      select member1 from Member member1 left join fetch member1.memberOption as memberOption
-    getJPAQuery().select(qMember)
-            .from(qMember)
-            .leftJoin(qMember.memberOption, qMemberOption).fetchJoin()
+    getJPAQuery().select(member)
+            .from(member)
+            .leftJoin(member.memberOption, memberOption).fetchJoin()
             .fetchOne();
   }
 
@@ -261,9 +258,13 @@ class MemberRepositoryTest extends BaseRepositoryTest {
   @Test
   @DisplayName("대상 테이블 OneToOne 저장")
   void testSaveMemberOption() {
+    // given
     Member member = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON);
-    MemberOption option = member.getMemberOption();
-    option.enabled();
+
+    // when
+    member.enabled();
+
+
     memberRepository.save(member);
   }
 }
