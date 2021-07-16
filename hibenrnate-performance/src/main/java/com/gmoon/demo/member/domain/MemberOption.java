@@ -44,32 +44,24 @@ public class MemberOption {
   @Column(name = "retired")
   private boolean retired;
 
-  public static MemberOption defaultOption() {
+  static MemberOption defaultOption(Member member) {
     MemberOption option = new MemberOption();
-    option.setDefaultOption();
+    option.member = member;
+    option.disabled();
     return option;
   }
 
-  protected void setMember(Member member) {
-    this.member = member;
-    this.memberId = member.getId();
-  }
-
-  private void setDefaultOption() {
-    disabled();
-  }
-
-  public void enabled() {
+  void enabled() {
     this.embeddedMemberOption = EmbeddedMemberOption.enabled();
     this.retired = true;
   }
 
-  public void disabled() {
+  void disabled() {
     this.embeddedMemberOption = EmbeddedMemberOption.disabled();
     this.retired = false;
   }
 
-  public void changeOptions(MemberOptionUpdate memberOptionUpdate) {
+  void changeOptions(MemberOptionUpdate memberOptionUpdate) {
     retired = memberOptionUpdate.isRetired();
   }
 }
