@@ -2,6 +2,7 @@ package com.gmoon.springsecurity.config;
 
 import com.gmoon.springsecurity.account.MemberRole;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
@@ -74,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().mvcMatchers("/favicon.ico");
+    web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
   }
 
   @Bean
