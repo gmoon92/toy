@@ -2,7 +2,9 @@ package com.gmoon.springsecurity.form;
 
 import com.gmoon.springsecurity.account.AccountContext;
 import com.gmoon.springsecurity.account.Member;
+import com.gmoon.springsecurity.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,5 +33,10 @@ public class SampleService {
 
     Member member = AccountContext.getMember();
     log.debug("AccountContext # member : {}", member.getUsername());
+  }
+
+  @Async
+  public void async() {
+    SecurityUtils.logging("async service");
   }
 }
