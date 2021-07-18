@@ -60,6 +60,16 @@ public enum StaticResourceLocation {
 
 `FilterChainProxy` 에서 확인해보면 ignore 할 요청에 대해선 filter 가 포함되어이지 않게된다.
 
+```java
+http.authorizeRequests()
+    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+```
+
+이런 설정으로도 같은 결과를 볼 수는 있지만 스프링 시큐리티 필터가 적용된다는 차이가 있다.
+
+- 동적 리소스는 http.authorizeRequests()에서 처리하는 것을 권장합니다.
+- 정적 리소스는 WebSecurity.ignore()를 권장하며 예외적인 정적 자원 (인증이 필요한 정적자원이 있는 경우)는 http.authorizeRequests()를 사용할 수 있습니다.
+
 WebSecurity 에서 ignore를 처리하지 않고 httpRequest chain에 설정을 하게 된다면 어떻게 될까?
 
 ```java
