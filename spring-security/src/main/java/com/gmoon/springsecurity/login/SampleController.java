@@ -1,10 +1,13 @@
 package com.gmoon.springsecurity.login;
 
+import com.gmoon.springsecurity.account.Account;
+import com.gmoon.springsecurity.account.AccountService;
 import com.gmoon.springsecurity.form.SampleService;
 import com.gmoon.springsecurity.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +18,13 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class SampleController {
 
+  private final AccountService accountService;
   private final SampleService sampleService;
+
+  @GetMapping("/account/{role}/{username}/{password}")
+  public Account createAccount(@ModelAttribute Account member) {
+    return accountService.createNew(member);
+  }
 
   @GetMapping("/async-handler")
   @ResponseBody

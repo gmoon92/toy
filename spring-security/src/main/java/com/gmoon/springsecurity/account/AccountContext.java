@@ -2,14 +2,14 @@ package com.gmoon.springsecurity.account;
 
 public class AccountContext {
 
-  private static final ThreadLocal<Member> ACCOUNT_THREAD_LOCAL
+  private static final ThreadLocal<Account> ACCOUNT_THREAD_LOCAL
           = new ThreadLocal<>();
 
-  public static void setMember(Member member) {
-    ACCOUNT_THREAD_LOCAL.set(member);
+  public static void setAccount(Account account) {
+    ACCOUNT_THREAD_LOCAL.set(account);
   }
 
-  public static Member getMember() {
+  public static Account getAccount() {
     return ACCOUNT_THREAD_LOCAL.get();
   }
 }

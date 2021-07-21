@@ -1,7 +1,7 @@
 package com.gmoon.springsecurity.login;
 
+import com.gmoon.springsecurity.account.Account;
 import com.gmoon.springsecurity.account.AccountService;
-import com.gmoon.springsecurity.account.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -107,7 +107,7 @@ class LoginControllerTest {
     String username = "gmoon";
     String password = "123";
 
-    Member member = createUser(username, password);
+    Account member = createUser(username, password);
     mockMvc.perform(formLogin()
               .user(member.getUsername())
               .password(password))
@@ -121,15 +121,15 @@ class LoginControllerTest {
     String username = "gmoon";
     String password = "123";
 
-    Member member = createUser(username, password);
+    Account member = createUser(username, password);
     mockMvc.perform(formLogin()
               .user(member.getUsername())
               .password("1234"))
             .andExpect(unauthenticated());
   }
 
-  private Member createUser(String username, String password) {
-    Member member = new Member();
+  private Account createUser(String username, String password) {
+    Account member = new Account();
     member.setUsername(username);
     member.setPassword(password);
     member.setRole("USER");
