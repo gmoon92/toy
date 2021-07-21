@@ -1,7 +1,7 @@
 package com.gmoon.springsecurity.form;
 
+import com.gmoon.springsecurity.account.Account;
 import com.gmoon.springsecurity.account.AccountContext;
-import com.gmoon.springsecurity.account.Member;
 import com.gmoon.springsecurity.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -31,8 +31,8 @@ public class SampleService {
     // true
     boolean authenticated = authentication.isAuthenticated();
 
-    Member member = AccountContext.getMember();
-    log.debug("AccountContext # member : {}", member.getUsername());
+    Account account = AccountContext.getAccount();
+    log.debug("AccountContext # account : {}", account.getUsername());
   }
 
   @Async
