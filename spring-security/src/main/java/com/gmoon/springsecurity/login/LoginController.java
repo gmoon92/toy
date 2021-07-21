@@ -1,9 +1,9 @@
 package com.gmoon.springsecurity.login;
 
 import com.gmoon.springsecurity.account.AccountContext;
-import com.gmoon.springsecurity.account.MemberRepository;
+import com.gmoon.springsecurity.account.AccountRepository;
 import com.gmoon.springsecurity.form.SampleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.security.Principal;
 
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
 
-  @Autowired
-  private SampleService sampleService;
-
-  @Autowired
-  private MemberRepository memberRepository;
+  private final SampleService sampleService;
+  private final AccountRepository accountRepository;
 
   @GetMapping("/")
   public String index(Model model, Principal principal) {
@@ -41,7 +39,7 @@ public class LoginController {
   @GetMapping("/dashboard")
   public String dashboard(Model model, Principal principal) {
     model.addAttribute("message", "Hello, Spring Security" + principal.getName());
-    AccountContext.setMember(memberRepository.findByUsername(principal.getName()));
+    AccountContext.setAccount(accountRepository.findByUsername(principal.getName()));
 
     sampleService.dashboard();
     return "dashboard";
