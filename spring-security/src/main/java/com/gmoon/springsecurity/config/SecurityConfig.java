@@ -73,6 +73,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.httpBasic();
 //    https://www.baeldung.com/spring-security-basic-authentication
 
+    // [3] logout
+    http.logout()
+        .logoutUrl("/logout") // logout page config
+        .logoutSuccessUrl("/login") // logout success event after page
+//      .logoutSuccessHandler() // custom logout success handler add
+//      .addLogoutHandler() // custom logout handler add
+//      .deleteCookies() // cookie login auth
+    ;
     SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
   }
 
