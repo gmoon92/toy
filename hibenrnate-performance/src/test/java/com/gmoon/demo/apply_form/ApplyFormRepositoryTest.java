@@ -6,6 +6,7 @@ import com.gmoon.demo.member.repository.MemberRepository;
 import com.gmoon.demo.team.Team;
 import com.gmoon.demo.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,23 +47,43 @@ class ApplyFormRepositoryTest extends BaseRepositoryTest {
   @DisplayName("업데이트 테스트")
   void update() {
     // given
-    saveDummyData();
+    save();
 
     // when
     ApplyForm applyForm = applyFormRepository.findByMemberAndTeam(member, team);
 
     // then
     applyForm.fillOut("title1", "content");
-    flushAndClear();
   }
 
-  private void saveDummyData() {
-    team = teamRepository.save(Team.newInstance("web1"));
-    member = memberRepository.save(Member.newInstance("gmoon", team));
+  @Test
+  @DisplayName("양방향 설정, CaseCade remove delete query 발생하는지")
+  void delete_when_member_delete_after_apply_form_delete() {
+    // given
+    save();
 
-    ApplyForm newApplyForm = ApplyForm.newInstance(member, team);
-    newApplyForm.fillOut("title", "content");
-    applyFormRepository.save(newApplyForm);
+    // when
+    flushAndClear();
+
+    // then
+    memberRepository.delete(member);
+  }
+
+  @Test
+  @DisplayName("양방향 설정, CaseCade remove delete query 발생하는지")
+  void delete_when_team_delete_after_apply_form_delete() {
+    // given
+    save();
+
+    // when
+    flushAndClear();
+
+    // then
+    teamRepository.delete(team);
+  }
+
+  @AfterEach
+  void tearDown() {
     flushAndClear();
   }
 }

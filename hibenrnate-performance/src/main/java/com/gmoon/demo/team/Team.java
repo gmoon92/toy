@@ -1,8 +1,8 @@
 package com.gmoon.demo.team;
 
+import com.gmoon.demo.apply_form.ApplyForm;
 import com.gmoon.demo.member.domain.Member;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,15 +30,12 @@ public class Team {
   @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Member> members = new ArrayList<>();
 
-  @Builder(access = AccessLevel.PRIVATE)
-  private Team(String name, List<Member> members) {
-    this.name = name;
-    this.members = members;
-  }
+  @OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<ApplyForm> applyForms = new ArrayList<>();
 
   public static Team newInstance(String name) {
-    return Team.builder()
-            .name(name)
-            .build();
+    Team newTeam = new Team();
+    newTeam.name = name;
+    return newTeam;
   }
 }
