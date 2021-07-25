@@ -1,5 +1,6 @@
 package com.gmoon.demo.member.domain;
 
+import com.gmoon.demo.apply_form.ApplyForm;
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 import com.gmoon.demo.team.Team;
 import lombok.AccessLevel;
@@ -13,10 +14,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,16 +39,25 @@ public class Member {
   private String name;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "team_id")
   private Team team;
 
   @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false)
 //    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
   private MemberOption memberOption;
 
+  @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+  private List<ApplyForm> applyForm = new ArrayList<>();
+
   private Member(String name, Team team) {
     this.name = name;
-    this.team = team;
+    setTeam(team);
     this.memberOption = MemberOption.defaultOption(this);
+  }
+
+  void setTeam(Team team) {
+    this.team = team;
+    team.getMembers().add(this);
   }
 
   public static Member newInstance(String name, Team team) {
