@@ -28,10 +28,12 @@ public class ApplyForm {
   @EmbeddedId
   private Id id = new Id();
 
+  @ToString.Exclude
   @ManyToOne(optional = false)
   @JoinColumn(name = "member_id", insertable = false, updatable = false)
   private Member member;
 
+  @ToString.Exclude
   @ManyToOne(optional = false)
   @JoinColumn(name = "team_id", insertable = false, updatable = false)
   private Team team;
@@ -41,9 +43,20 @@ public class ApplyForm {
   private String content;
 
   ApplyForm(Member member, Team team) {
-    this.member = member;
-    this.team = team;
+    setMember(member);
+    setTeam(team);
     this.id = new Id(member, team);
+  }
+
+  // 객체 참조 추가
+  void setMember(Member member) {
+    this.member = member;
+    member.getApplyForm().add(this);
+  }
+
+  void setTeam(Team team) {
+    this.team = team;
+    team.getApplyForms().add(this);
   }
 
   public static ApplyForm newInstance(Member member, Team team) {
