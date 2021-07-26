@@ -7,7 +7,7 @@
 - `AuthenticationManager`를 사용하여 인증을 시도한다.
 - `AuthenticationManager`(ProviderManager)는 여러 `AuthenticationProvider`를 사용하여 인증을 시도하는데, 그 중에 `DaoAuthenticationProvider`는 `UserDetailsService`를 사용하여 UserDetails 정보를 가져와 사용자가 입력한 password와 비교한다.
 
-![img](./img/username_password_authentication_filter.png)
+![img](img/username-password-authentication-filter.png)
 
 UsernamePasswordAuthenticationFilter 필터가 AuthenticationManager 에게 사용자 인증 처리를 위임한다.
 
