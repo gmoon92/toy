@@ -68,7 +68,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .expressionHandler(customExpressionHandler()); // 커스텀 2. expression handler
 
     // [2] form login 설정
-    http.formLogin();
+    http.formLogin()
+        .usernameParameter("my-username")
+        .passwordParameter("my-password")
+    ;
 
     http.httpBasic();
 //    https://www.baeldung.com/spring-security-basic-authentication
