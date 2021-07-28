@@ -69,9 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // [2] form login 설정
     http.formLogin()
-        .usernameParameter("my-username")
-        .passwordParameter("my-password")
-    ;
+            .loginPage("/login")
+            .usernameParameter("id")
+            .passwordParameter("password")
+            .permitAll();
 
     http.httpBasic();
 //    https://www.baeldung.com/spring-security-basic-authentication
