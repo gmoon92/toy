@@ -18,3 +18,5 @@ public interface HttpServletRequest extends ServletRequest {
   boolean authenticate(HttpServletResponse response) throws IOException, ServletException;  
 }
 ```
+
+![img](./img/security-context-holder-aware-request-filter.png)
