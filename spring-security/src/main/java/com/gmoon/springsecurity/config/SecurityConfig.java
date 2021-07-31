@@ -85,6 +85,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //      .addLogoutHandler() // custom logout handler add
 //      .deleteCookies() // cookie login auth
     ;
+
+    // [4] anonymous config
+    http.anonymous()
+            .principal("anonymousUser")
+            .authorities()
+            .key("anonymousUserKey1");
+
+
     SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
   }
 
