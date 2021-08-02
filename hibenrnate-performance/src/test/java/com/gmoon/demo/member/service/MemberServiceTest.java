@@ -24,7 +24,7 @@ class MemberServiceTest {
 
   @BeforeEach
   void setUp() {
-    Member member = memberRepository.save(Member.newInstance("gmoon", null));
+    Member member = memberRepository.save(Member.newInstance("gmoon"));
     memberId = member.getId();
   }
 

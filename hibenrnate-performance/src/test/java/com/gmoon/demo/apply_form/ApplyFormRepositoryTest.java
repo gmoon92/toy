@@ -28,7 +28,7 @@ class ApplyFormRepositoryTest extends BaseRepositoryTest {
   void save() {
     // given
     team = teamRepository.save(Team.newInstance("web1"));
-    member = memberRepository.save(Member.newInstance("gmoon", team));
+    member = memberRepository.save(Member.newInstance("gmoon"));
 
     // when
     ApplyForm newApplyForm = ApplyForm.newInstance(member, team);
