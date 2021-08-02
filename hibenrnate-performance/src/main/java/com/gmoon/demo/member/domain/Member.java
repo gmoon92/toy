@@ -2,7 +2,7 @@ package com.gmoon.demo.member.domain;
 
 import com.gmoon.demo.apply_form.ApplyForm;
 import com.gmoon.demo.member.model.MemberOptionUpdate;
-import com.gmoon.demo.team.Team;
+import com.gmoon.demo.team.TeamMember;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,17 +11,16 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,10 +37,6 @@ public class Member {
   @Column
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "team_id")
-  private Team team;
-
   @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false)
 //    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
   private MemberOption memberOption;
@@ -49,19 +44,20 @@ public class Member {
   @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
   private List<ApplyForm> applyForm = new ArrayList<>();
 
-  private Member(String name, Team team) {
+  @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+  private Set<TeamMember> teamMembers = new HashSet<>();
+
+  private Member(String name) {
     this.name = name;
-    setTeam(team);
-    this.memberOption = MemberOption.defaultOption(this);
+    defaultOption();
   }
 
-  void setTeam(Team team) {
-    this.team = team;
-    team.getMembers().add(this);
+  public static Member newInstance(String name) {
+    return new Member(name);
   }
 
-  public static Member newInstance(String name, Team team) {
-    return new Member(name, team);
+  private void defaultOption() {
+    memberOption = MemberOption.defaultOption(this);
   }
 
   public void setName(String name) {
@@ -79,5 +75,4 @@ public class Member {
   public void disabled() {
     memberOption.disabled();
   }
-
 }
