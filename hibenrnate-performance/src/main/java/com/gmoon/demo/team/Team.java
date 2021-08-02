@@ -13,7 +13,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -28,7 +32,7 @@ public class Team {
   private String name;
 
   @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Member> members = new ArrayList<>();
+  private Set<TeamMember> teamMembers = new HashSet<>();
 
   @OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<ApplyForm> applyForms = new ArrayList<>();
@@ -37,5 +41,12 @@ public class Team {
     Team newTeam = new Team();
     newTeam.name = name;
     return newTeam;
+  }
+
+  public void addMembers(Collection<Member> managedMembers) {
+    this.teamMembers.clear();
+    this.teamMembers.addAll(managedMembers.stream()
+            .map(member -> new TeamMember(member, this))
+            .collect(Collectors.toList()));
   }
 }
