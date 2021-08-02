@@ -3,6 +3,7 @@ package com.gmoon.demo.team;
 import com.gmoon.demo.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -10,22 +11,30 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import java.io.Serializable;
 
 @Entity
 @ToString
-@EqualsAndHashCode
+@Getter
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamMember {
 
   @EmbeddedId
-  private Id id;
+  private Id id = new Id();
 
-  @ManyToOne(optional = false)
+  @MapsId("memberId")
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id", referencedColumnName = "id", insertable = false, updatable = false)
   private Member member;
 
-  @ManyToOne(optional = false)
+  @MapsId("teamId")
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "team_id", referencedColumnName = "id", insertable = false, updatable = false)
   private Team team;
 
   public TeamMember(Member member, Team team) {
@@ -40,10 +49,10 @@ public class TeamMember {
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public static class Id implements Serializable {
 
-    @Column(name = "member_id")
+    @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "team_id")
+    @Column(name = "team_id", nullable = false)
     private Long teamId;
 
     Id(Member member, Team team) {
