@@ -35,11 +35,11 @@ class MemberRepositoryTest extends BaseRepositoryTest {
   static void setup(@Autowired MemberRepository memberRepository) {
     log.debug("Database data setup start...");
     memberRepository.deleteAllInBatch();
-    memberRepository.save(Member.newInstance("kim", null));
-    memberRepository.save(Member.newInstance("lee", null));
-    memberRepository.save(Member.newInstance("hong", null));
-    memberRepository.save(Member.newInstance("kown", null));
-    Member gmoon = memberRepository.save(Member.newInstance("gmoon", null));
+    memberRepository.save(Member.newInstance("kim"));
+    memberRepository.save(Member.newInstance("lee"));
+    memberRepository.save(Member.newInstance("hong"));
+    memberRepository.save(Member.newInstance("kown"));
+    Member gmoon = memberRepository.save(Member.newInstance("gmoon"));
     TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON = gmoon.getId();
     log.debug("Database data setup done...");
   }
