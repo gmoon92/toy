@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -28,12 +27,12 @@ public class TeamMember {
   private Id id = new Id();
 
   @MapsId("memberId")
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "member_id", referencedColumnName = "id", insertable = false, updatable = false)
   private Member member;
 
   @MapsId("teamId")
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "team_id", referencedColumnName = "id", insertable = false, updatable = false)
   private Team team;
 
