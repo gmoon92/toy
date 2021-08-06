@@ -1,8 +1,7 @@
-package com.gmoon.springsecurity.login;
+package com.gmoon.springsecurity.sample;
 
 import com.gmoon.springsecurity.account.Account;
 import com.gmoon.springsecurity.account.AccountService;
-import com.gmoon.springsecurity.form.SampleService;
 import com.gmoon.springsecurity.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

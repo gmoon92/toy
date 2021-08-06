@@ -1,4 +1,4 @@
-package com.gmoon.springsecurity.form;
+package com.gmoon.springsecurity.sample;
 
 import com.gmoon.springsecurity.account.Account;
 import com.gmoon.springsecurity.account.AccountContext;
