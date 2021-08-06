@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers("/", "/signup", "/info", "/account/**").permitAll()
             .mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getValue())
             .mvcMatchers("/user").hasRole(AccountRole.USER.getValue())
+            .antMatchers("/user/**").hasRole(AccountRole.ADMIN.getValue())
             .anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
 //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
             .expressionHandler(customExpressionHandler()); // 커스텀 2. expression handler
@@ -119,5 +120,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
-
 }
