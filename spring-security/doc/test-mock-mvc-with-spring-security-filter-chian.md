@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
-          .antMatchers("/user/**) // [1] Request URI 설정
+          .antMatchers("/user/**") // [1] Request URI 설정
               .hasAnyRole("ADMIN") // [2] Role 설정
     ;
   }
@@ -33,19 +33,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ### 2. MockMvc를 사용한 Controller 테스트
 
 ```java
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc
-class UserControllerTest {
+@WebAppConfiguration
+public class UserControllerTest {
 
   @Autowired
-  MockMVC mockMVC;
+  private WebApplicationContext context;
+  private MockMvc mockMvc;
+
+  @Before
+  public void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context)
+            .build();
+  }
 
   @Test
-  void testList() {
-    mockMVC.perform(MockMvcRequestBuilders.get("/user/list"))
-            .andExpect(MockMvcResultMatchers.view().name("user/list"))
-            .andExpect(status().is3xxRedirection());
+  @DisplayName("Security Chain이랑 같은 환경에서 도는건지")
+  public void list() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.get("/user/list"))
+            .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
   }
 }
 ```
@@ -57,13 +64,21 @@ class UserControllerTest {
 
 하지만, 테스트는 HTTP 응답 코드를 200 을 주며 테스트는 실패한다.
 
+```text
+java.lang.AssertionError: Range for response status value 200 
+Expected :REDIRECTION
+Actual   :SUCCESSFUL
+```
+
 ### 3. 원인
 
-mockMvc 테스트시 시큐리티 체인이 미적용되어 FilterChainProxy 에서 디버깅이 되지 않는 현상 발견
+MockMvc 테스트시 자체적으로 목 서블릿 컨테이너를 띄워 테스트를 수행한다. 이때 HTTP 요청 처리를 하지 않고, Controller 를 호출하는 방식으로 인해, 시큐리티 체인과 함께 테스트를 할 수 없다.
 
-mockMvc 별도의 목 서블릿을 띄우기 때문에 시큐리티 설정을 포함하여 목 서블릿을 띄울수 있게 해야된다.
+당연히 시큐리티 체인이 미적용되어 FilterChainProxy 에서 디버깅이 되지 않는 현상을 발견할 수 있다.
 
-3. 해결 방안
+### 4. 해결 방안
+
+따라서 MockMvc에 시큐리티 필터 체인을 설정하여 목 서블릿을 띄울수 있게 해야된다.
 
 MockMVC에 스프링 시큐리티를 설정하는 방법으론 DelegatingFilterProxy 필터를 등록하는 방법과
 SecurityMockMvcConfigurers 를 사용하는 두 가지 방법이 존재한다.
@@ -71,15 +86,41 @@ SecurityMockMvcConfigurers 를 사용하는 두 가지 방법이 존재한다.
 1. DelegatingFilterProxy 필터 등록
 2. SecurityMockMvcConfigurers.springSecurity() 사용
 
-3.1. DelegatingFilterProxy 필터 설정 방법
+### 4.1. DelegatingFilterProxy 필터 설정 방법
 
-첫 번째 해결 방법으론 MockMvcBuilders의 addFilter 에 DelegatingFilterProxy를 전달하는 방법이다.
+첫 번째 해결 방법으론 `MockMvcBuilders`의 addFilter 에 `DelegatingFilterProxy`를 전달하는 방법이다.
 
-FilterChainProxy에 설정된 breakPoint를 살펴보면 시큐리티 필터들이 정상적으로 적용됨을 확인할 수 있다.
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@WebAppConfiguration
+public class UserControllerTest {
+
+  @Autowired
+  private WebApplicationContext context;
+  private MockMvc mockMvc;
+
+  @Before
+  public void setUp() throws Exception {
+    DelegatingFilterProxy delegatingFilterProxy = new DelegatingFilterProxy();
+    delegatingFilterProxy.init(new MockFilterConfig(context.getServletContext(), BeanIds.SPRING_SECURITY_FILTER_CHAIN));
+
+    mockMvc = MockMvcBuilders.webAppContextSetup(context)
+            .addFilter(delegatingFilterProxy)
+            .build();
+  }
+  
+  //... 생략
+}
+```
+
+`FilterChainProxy`에 설정된 `breakPoint`를 살펴보면 시큐리티 필터들이 정상적으로 적용됨을 확인할 수 있다.
+
+![img](./img/mock-mvc-spring-filter-chain.png)
 
 테스트 결과 예상 시나리오대로 302 응답 코드를 확인해볼 수 있었다.
 
-인증된 사용자가 로그인 했다고 가정 해본다면 ?
+### 인증된 사용자가 로그인 했다고 가정 해본다면 ?
 
 인가(authorization) 테스트를 위해 SecurityContextHolder에 인증된 사용자를 강제로 넣어 테스트를 진행해보자.
 
