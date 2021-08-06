@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <junit-vintage-engine.version>5.7.0</junit-vintage-engine.version>
     </properties>
 
     <dependencies>
@@ -52,6 +53,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit-vintage-engine.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
