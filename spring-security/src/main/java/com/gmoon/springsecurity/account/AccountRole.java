@@ -2,13 +2,19 @@ package com.gmoon.springsecurity.account;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 @Getter
 @RequiredArgsConstructor
-public enum AccountRole {
+public enum AccountRole implements GrantedAuthority {
   ADMIN("ADMIN", "ROLE_ADMIN"),
   USER("USER", "ROLE_USER");
 
   private final String value;
   private final String name;
+
+  @Override
+  public String getAuthority() {
+    return name;
+  }
 }
