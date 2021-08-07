@@ -69,6 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
             .expressionHandler(customExpressionHandler()); // 커스텀 2. expression handler
 
+//    https://www.baeldung.com/spring-security-custom-access-denied-page
+    http.exceptionHandling().accessDeniedPage("/");
+
     // [2] form login 설정
     http.formLogin()
             .loginPage("/login")
@@ -89,10 +92,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     ;
 
     // [4] anonymous config
-    http.anonymous()
-            .principal("anonymousUser")
-            .authorities()
-            .key("anonymousUserKey1");
+//    http.anonymous()
+//            .principal("anonymousUser")
+//            .authorities()
+//            .key("anonymousUserKey1");
 
     // Session fixation
     http.sessionManagement()
@@ -103,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .migrateSession()
 //            .none()
               .changeSessionId()
-            .invalidSessionUrl("/login")
+//            .invalidSessionUrl("/login")
             .maximumSessions(1) // 동시성 제어
               .maxSessionsPreventsLogin(true)
     ;
