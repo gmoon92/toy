@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,9 +21,8 @@ public class SignUpController {
   }
 
   @PostMapping
-  public String save(@ModelAttribute Account account) {
-    account.setRole(AccountRole.USER.getValue());
-    accountService.createNew(account);
+  public String save(String username, String password) {
+    accountService.createNew(Account.newUser(username, password));
     return "redirect:/";
   }
 }
