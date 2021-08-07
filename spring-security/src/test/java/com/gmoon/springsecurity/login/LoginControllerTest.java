@@ -129,12 +129,7 @@ class LoginControllerTest {
   }
 
   private Account createUser(String username, String password) {
-    Account member = new Account();
-    member.setUsername(username);
-    member.setPassword(password);
-    member.setRole("USER");
-    return accountService.createNew(member);
+    return accountService.createNew(Account.newUser(username, password));
   }
-
 
 }

@@ -1,7 +1,6 @@
 package com.gmoon.springsecurity.account;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,11 +24,12 @@ public class AccountService implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException(username));
 
     // User.builder를 사용하여 UserDetails 타입으로 반환
-    return User.builder()
-            .username(account.getUsername())
-            .password(account.getPassword())
-            .roles(account.getRole())
-            .build();
+//    return User.builder()
+//            .username(account.getUsername())
+//            .password(account.getPassword())
+//            .roles(account.getRole())
+//            .build();
+    return account;
   }
 
   public Account createNew(Account account) {
