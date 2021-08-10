@@ -70,7 +70,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .expressionHandler(customExpressionHandler()); // 커스텀 2. expression handler
 
 //    https://www.baeldung.com/spring-security-custom-access-denied-page
-    http.exceptionHandling().accessDeniedPage("/");
+    // ExceptionTranslationFilter
+    http.exceptionHandling()
+            .accessDeniedPage("/access-denied");
 
     // [2] form login 설정
     http.formLogin()
