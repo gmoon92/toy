@@ -10,11 +10,6 @@ public enum AccountRole implements GrantedAuthority {
   ADMIN("ADMIN", "ROLE_ADMIN"),
   USER("USER", "ROLE_USER");
 
-  private final String value;
-  private final String name;
-
-  @Override
-  public String getAuthority() {
-    return name;
-  }
+  private final String role;
+  private final String authority;
 }
