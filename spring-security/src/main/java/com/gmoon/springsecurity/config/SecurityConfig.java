@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 히어러키 설정은 expressionHandler를 통해서만 설정 가능
     RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
     // Admin 계정은 User 계정도 볼 수 있다.
-    roleHierarchy.setHierarchy(String.format("%s > %s", AccountRole.ADMIN.getName(), AccountRole.USER.getName()));
+    roleHierarchy.setHierarchy(String.format("%s > %s", AccountRole.ADMIN.getAuthority(), AccountRole.USER.getAuthority()));
 
     DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
     handler.setRoleHierarchy(roleHierarchy);
@@ -69,9 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests() // [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
             .mvcMatchers("/", "/signup", "/info", "/account/**").permitAll()
-            .mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getValue())
-            .mvcMatchers("/user").hasRole(AccountRole.USER.getValue())
-            .antMatchers("/user/**").hasRole(AccountRole.ADMIN.getValue())
+            .mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
+            .mvcMatchers("/user").hasRole(AccountRole.USER.getRole())
+            .antMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
             .anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
 //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
             .expressionHandler(customExpressionHandler()); // 커스텀 2. expression handler
