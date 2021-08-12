@@ -23,6 +23,6 @@ public class SignUpController {
   @PostMapping
   public String save(String username, String password) {
     accountService.createNew(Account.newUser(username, password));
-    return "redirect:/";
+    return "redirect:/login";
   }
 }
