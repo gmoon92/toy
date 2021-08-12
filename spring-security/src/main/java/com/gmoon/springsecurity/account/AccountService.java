@@ -21,16 +21,14 @@ public class AccountService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Account account = Optional.ofNullable(accountRepository.findByUsername(username))
-            .orElseThrow(() -> new UsernameNotFoundException(username));
-
     // User.builder를 사용하여 UserDetails 타입으로 반환
 //    return User.builder()
 //            .username(account.getUsername())
 //            .password(account.getPassword())
 //            .roles(account.getRole())
 //            .build();
-    return account;
+    return Optional.ofNullable(accountRepository.findByUsername(username))
+            .orElseThrow(() -> new UsernameNotFoundException(username));
   }
 
   public Account createNew(Account account) {
