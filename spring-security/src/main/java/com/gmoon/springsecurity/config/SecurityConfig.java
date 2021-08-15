@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -113,18 +112,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .key("anonymousUserKey1");
 
     // Session fixation
-    http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            .sessionFixation()
-//            .newSession()
-//            .changeSessionId()
-//            .migrateSession()
-//            .none()
-              .changeSessionId()
-//            .invalidSessionUrl("/login")
-            .maximumSessions(1) // 동시성 제어
-              .maxSessionsPreventsLogin(true)
-    ;
+//    http.sessionManagement()
+//            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//            .sessionFixation()
+////            .newSession()
+////            .changeSessionId()
+////            .migrateSession()
+////            .none()
+//              .changeSessionId()
+////            .invalidSessionUrl("/login")
+//            .maximumSessions(1) // 동시성 제어
+//              .maxSessionsPreventsLogin(true)
+//    ;
 
     // remember me config
     http.rememberMe()
@@ -143,4 +142,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
+
 }
