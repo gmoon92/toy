@@ -127,6 +127,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // remember me config
     http.rememberMe()
+//            .useSecureCookie(true) // https 적용 후 true 권장
             .userDetailsService(accountService)
             .key("remember-me-sample");
 
