@@ -5,7 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-    <h1 th:text="${message}">Hello</h1>
-    <button type="button" th:onclick="'location.href=\'/logout\''">Logout</button>
+    <div th:if="${#authorization.expr('isAuthenticated()')}">
+        <h1 th:text="${message}"> Hello</h1>
+        <button type="button" th:onclick="'location.href=\'/logout\''">Logout</button>
+    </div>
+
+    <div th:unless="${#authorization.expr('isAuthenticated()')}">
+        <a href="/login" th:href="@{/login}">Login</a>
+    </div>
 </body>
 </html>
