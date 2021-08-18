@@ -5,6 +5,7 @@ import com.gmoon.springsecurity.account.AccountContext;
 import com.gmoon.springsecurity.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +34,12 @@ public class SampleService {
 
     Account account = AccountContext.getAccount();
     log.debug("AccountContext # account : {}", account.getUsername());
+  }
+
+  @Secured("ROLE_ADMIN")
+  public void secured() {
+    log.info("secured...");
+
   }
 
   @Async
