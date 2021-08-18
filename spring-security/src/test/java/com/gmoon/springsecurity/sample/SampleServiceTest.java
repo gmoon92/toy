@@ -55,7 +55,7 @@ class SampleServiceTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void security_with_mock_user() {
     sampleService.secured();
   }
