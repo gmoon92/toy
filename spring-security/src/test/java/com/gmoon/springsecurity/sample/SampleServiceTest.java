@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,6 +51,12 @@ class SampleServiceTest {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
+    sampleService.secured();
+  }
+
+  @Test
+  @WithMockUser
+  void security_with_mock_user() {
     sampleService.secured();
   }
 }
