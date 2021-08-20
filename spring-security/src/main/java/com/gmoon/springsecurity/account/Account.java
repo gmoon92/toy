@@ -102,4 +102,8 @@ public class Account implements UserDetails {
   public boolean isEnabled() {
     return enabled;
   }
+
+  public Account getAccount() {
+    return this;
+  }
 }
