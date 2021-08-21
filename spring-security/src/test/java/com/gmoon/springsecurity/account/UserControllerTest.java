@@ -1,66 +1,67 @@
 package com.gmoon.springsecurity.account;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockFilterConfig;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.DelegatingFilterProxy;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@WebAppConfiguration
-public class UserControllerTest {
+@AutoConfigureMockMvc
+class UserControllerTest {
 
   @Autowired
-  private WebApplicationContext context;
-  private MockMvc mockMvc;
+  MockMvc mockMvc;
 
   @Autowired
-  private AccountRepository accountRepository;
+  AccountRepository accountRepository;
 
-  @Before
-  public void setUp() throws Exception {
-    DelegatingFilterProxy delegatingFilterProxy = new DelegatingFilterProxy();
-    delegatingFilterProxy.init(new MockFilterConfig(context.getServletContext(), BeanIds.SPRING_SECURITY_FILTER_CHAIN));
-    mockMvc = MockMvcBuilders.webAppContextSetup(context)
-//            .addFilter(delegatingFilterProxy)
-            .apply(SecurityMockMvcConfigurers.springSecurity())
-            .alwaysDo(print())
-            .build();
+  @Autowired
+  AuthenticationManager authenticationManager;
 
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Account account = accountRepository.save(Account.newUser("user", "123"));
-
-    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(account.getUsername(), account.getPassword(), account.getAuthorities());
-    token.setDetails(account);
-    securityContext.setAuthentication(token);
-
-    SecurityContextHolder.setContext(securityContext);
-  }
+  @Autowired
+  AccountService accountService;
 
   @Test
   @DisplayName("Security Chain이랑 같은 환경에서 도는건지")
+  @WithMockUser
   public void list() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/user/list")
                     .with(csrf()))
             .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
+  }
+
+
+  @Test
+  @DisplayName("@AuthenticationPrincipal 테스트")
+  void currentUser_annotation_injection_principal_should_set_null_when_anonymous() throws Exception {
+    // given
+    SecurityContext context = SecurityContextHolder.getContext();
+    String principal = "admin";
+    String credentials = "123123";
+    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, credentials);
+    token.setDetails(accountService.createNew(Account.newAdmin(principal, credentials)));
+    context.setAuthentication(authenticationManager.authenticate(token));
+
+    // when
+    mockMvc.perform(MockMvcRequestBuilders.get("/sample/annotation"))
+            .andDo(print())
+            .andExpect(content().string(containsString(principal)))
+            .andExpect(status().isOk())
+            .andReturn();
   }
 }
