@@ -4,7 +4,19 @@ https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/reference/htmlsin
 
 웹 MVC 핸들러 아규먼트로 Principal 객체를 받을 수 있다.
 
-커스텀 유저 클래스 구현하기
+```java
+public class UserController {
+  @GetMapping("/sample/annotation")
+  public String annotation(Model model, @CurrentUser Account loginUser) {
+    model.addAttribute("username", loginUser.getUsername());
+    return "annotation";
+  }
+}
+```
+
+Principal 는 UserService loadUserByUsername 리턴 타입이 곧 Principal를 의미한다.
+
+## 커스텀 유저 클래스 구현하기
 
 ```java
 public class UserAccount extends User {
@@ -22,9 +34,9 @@ public class UserAccount extends User {
 }
 ```
 
-AccountService 수정
+## AccountService 수정
 
-``` java
+```java
 @Override
 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Account account = accountRepository.findByUsername(username);
