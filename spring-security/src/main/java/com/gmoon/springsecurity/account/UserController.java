@@ -1,13 +1,16 @@
 package com.gmoon.springsecurity.account;
 
+import com.gmoon.springsecurity.annotation.CurrentUser;
 import com.gmoon.springsecurity.sample.SampleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.security.Principal;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -59,5 +62,13 @@ public class UserController {
   public String list(Model model) {
     model.addAttribute("list", accountRepository.findAll());
     return "user/list";
+  }
+
+  @GetMapping("/sample/annotation")
+  public String annotation(Model model, @CurrentUser Account loginUser) {
+    log.info("loginUser : {}", loginUser);
+
+    model.addAttribute("username", loginUser.getUsername());
+    return "annotation";
   }
 }
