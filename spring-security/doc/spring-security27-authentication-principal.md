@@ -36,7 +36,6 @@ public class UserAccount extends User {
 
 ## AccountService 수정
 
-```java
 @Override
 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Account account = accountRepository.findByUsername(username);
