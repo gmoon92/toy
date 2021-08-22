@@ -4,13 +4,14 @@ https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/reference/htmlsin
 
 웹 MVC 핸들러 아규먼트로 Principal 객체를 받을 수 있다.
 
+AuthenticationPrincipalArgumentResolver
+
 ```java
-public class UserController {
-  @GetMapping("/sample/annotation")
-  public String annotation(Model model, @CurrentUser Account loginUser) {
-    model.addAttribute("username", loginUser.getUsername());
-    return "annotation";
-  }
+package org.springframework.security.web.method.annotation;
+
+public final class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
+  // ... 생략
 }
 ```
 
@@ -80,4 +81,14 @@ public UserDetails loadUserByUsername(String username) throws UsernameNotFoundEx
 @Target(ElementType.PARAMETER)
 @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : account")
 public @interface CurrentUser { }
+```
+
+```java
+public class UserController {
+  @GetMapping("/sample/annotation")
+  public String annotation(Model model, @CurrentUser Account loginUser) {
+    model.addAttribute("username", loginUser.getUsername());
+    return "annotation";
+  }
+}
 ```
