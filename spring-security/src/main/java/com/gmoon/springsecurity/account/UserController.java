@@ -1,6 +1,7 @@
 package com.gmoon.springsecurity.account;
 
 import com.gmoon.springsecurity.annotation.CurrentUser;
+import com.gmoon.springsecurity.board.BoardRepository;
 import com.gmoon.springsecurity.sample.SampleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ public class UserController {
 
   private final AccountRepository accountRepository;
   private final SampleService sampleService;
+  private final BoardRepository boardRepository;
 
   @GetMapping("/")
   public String index(Model model, Principal principal) {
@@ -46,6 +48,7 @@ public class UserController {
   @GetMapping("/user")
   public String user(Model model, Principal principal) {
     model.addAttribute("message", "Hello, User" + principal.getName());
+    model.addAttribute("boards", boardRepository.findCurrentUserBoards());
     return "user";
   }
 
