@@ -39,7 +39,7 @@ public class JpaConfig {
     final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
     em.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
     em.setDataSource(dataSource);
-    em.setPackagesToScan(new String[]{ "com.gmoon.**.domain" });
+    em.setPackagesToScan("com.gmoon.**.domain");
     em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
     em.setJpaPropertyMap(hibernateProperties());
 
@@ -62,9 +62,6 @@ public class JpaConfig {
 
   @Bean
   public JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
-    final JpaTransactionManager transactionManager = new JpaTransactionManager();
-    transactionManager.setEntityManagerFactory(entityManagerFactory);
-    return transactionManager;
+    return new JpaTransactionManager(entityManagerFactory);
   }
-
 }
