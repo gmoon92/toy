@@ -1,6 +1,6 @@
-package com.gmoon.hibernateenvers.global.config;
+package com.gmoon.hibernateenvers.global.envers;
 
-import com.gmoon.hibernateenvers.global.listener.RevisionHistoryEventListener;
+import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
