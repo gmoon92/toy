@@ -1,7 +1,7 @@
 package com.gmoon.hibernateenvers.revision.domain;
 
 import com.gmoon.hibernateenvers.global.domain.BaseEntity;
-import com.gmoon.hibernateenvers.global.listener.CustomRevisionListener;
+import com.gmoon.hibernateenvers.global.envers.listener.CustomRevisionListener;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
