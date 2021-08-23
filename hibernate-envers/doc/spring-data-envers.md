@@ -91,8 +91,6 @@ Spring Data Envers 단점
   - EnversRevisionRepositoryFactoryBean 커스텀 확정
     - QueryDsl interface forwarding 가능
 
+### 참고
 
-
-
-
-
+- https://docs.spring.io/spring-data/envers/docs/current/reference/html/#reference
