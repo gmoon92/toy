@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -20,7 +21,8 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = "com.gmoon.**")
+@EnableJpaRepositories(basePackages = "com.gmoon.**",
+        repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EnableTransactionManagement
 public class JpaConfig {
 
@@ -37,7 +39,7 @@ public class JpaConfig {
     final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
     em.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
     em.setDataSource(dataSource);
-    em.setPackagesToScan(new String[]{ "com.gmoon.**.domain" });
+    em.setPackagesToScan("com.gmoon.**.domain");
     em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
     em.setJpaPropertyMap(hibernateProperties());
 
@@ -60,9 +62,6 @@ public class JpaConfig {
 
   @Bean
   public JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
-    final JpaTransactionManager transactionManager = new JpaTransactionManager();
-    transactionManager.setEntityManagerFactory(entityManagerFactory);
-    return transactionManager;
+    return new JpaTransactionManager(entityManagerFactory);
   }
-
 }
