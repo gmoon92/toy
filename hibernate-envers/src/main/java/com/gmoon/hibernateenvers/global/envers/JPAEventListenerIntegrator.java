@@ -15,12 +15,15 @@ import javax.persistence.EntityManager;
 public class JPAEventListenerIntegrator implements Integrator {
 
   @Override
-  public void integrate(Metadata metadata, SessionFactoryImplementor sessionFactoryImplementor, SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
-    final EventListenerRegistry registry = sessionFactoryServiceRegistry.getService(EventListenerRegistry.class);
+  public void integrate(Metadata metadata,
+                        SessionFactoryImplementor sessionFactory,
+                        SessionFactoryServiceRegistry serviceRegistry) {
 
-    log.debug("sessionFactoryImplementor : {}", sessionFactoryImplementor);
-    EntityManager em = sessionFactoryImplementor.createEntityManager();
-    registry.appendListeners(EventType.POST_COMMIT_INSERT, new RevisionHistoryEventListener(em));
+
+    log.debug("sessionFactory : {}", sessionFactory);
+    final EventListenerRegistry listenerRegistry = serviceRegistry.getService(EventListenerRegistry.class);
+    EntityManager em = sessionFactory.createEntityManager();
+    listenerRegistry.appendListeners(EventType.POST_COMMIT_INSERT, new RevisionHistoryEventListener(em));
   }
 
   @Override
