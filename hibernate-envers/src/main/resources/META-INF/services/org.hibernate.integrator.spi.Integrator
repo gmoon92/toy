@@ -1,1 +1,1 @@
-com.gmoon.hibernateenvers.global.config.JPAEventListenerIntegrator
+com.gmoon.hibernateenvers.global.envers.JPAEventListenerIntegrator

@@ -1,4 +1,4 @@
-package com.gmoon.hibernateenvers.global.listener;
+package com.gmoon.hibernateenvers.global.envers.listener;
 
 import com.gmoon.hibernateenvers.global.utils.RevisionConverter;
 import com.gmoon.hibernateenvers.revision.AuditedEntityRepository;
