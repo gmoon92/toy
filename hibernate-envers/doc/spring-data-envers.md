@@ -1,11 +1,81 @@
 # Spring Data Envers
 
-### Config
+### 1. Config
+
+### 1.1. Dependency
+
+Spring Data Envers를 사용하기 위해선 Spring Data JPA와 별개로 `spring-data-envers` 의존성을 추가해줘야 한다.
+
+```xml
+<dependency>
+  <groupId>org.springframework.data</groupId>
+  <artifactId>spring-data-envers</artifactId>
+  <version>2.5.4</version>
+</dependency>
+```
+
+### 1.2. Java Config
+
+Spring Data JPA와 Spring Data Envers를 활성화 하기 위해선 `repositoryFactoryBeanClass` 를 추가해줘야 한다.
+
+````java
+@Configuration
+@EnableEnversRepositories
+@EnableTransactionManagement
+public class JpaEnversConfig {
+
+  @Autowired
+  DataSource dataSource;
+
+  @Bean
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+
+    HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+    vendorAdapter.setGenerateDdl(true);
+
+    LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+    factory.setJpaVendorAdapter(vendorAdapter);
+    factory.setPackagesToScan("example.springdata.jpa.envers");
+    factory.setDataSource(dataSource());
+    return factory;
+  }
+
+  @Bean
+  public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    JpaTransactionManager txManager = new JpaTransactionManager();
+    txManager.setEntityManagerFactory(entityManagerFactory);
+    return txManager;
+  }
+}
+````
+
+### 1.3 EnversRevisionRepositoryFactoryBean 설정
 
 ```java
-@EnableJpaRepositories(repositoryFactoryBeanClass 
-        = EnversRevisionRepositoryFactoryBean.class)
+@Configuration
+@EnableJpaAuditing
+@EnableJpaRepositories(basePackages = "com.gmoon.**",
+        repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
+@EnableTransactionManagement
+public class JpaConfig {
+  
+  // ... 생략
+}
 ```
+
+`@EnableJpaRepositories(repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)` 추가
+
+- repositoryFactoryBeanClass: Repository interface 를 스프링이 자동으로 bean 으로 생성해주는 클래스 타입 지정
+  - 아무 설정이 없다면 JpaRepositoryFactoryBean에 의해 빈 등록
+- EnversRevisionRepositoryFactoryBean: JpaRepositoryFactoryBean 를 확장한 리비전 Repository Factory Bean 클래스
+
+````java
+public class EnversRevisionRepositoryFactoryBean<T extends RevisionRepository<S, ID, N>, S, ID, N extends Number & Comparable<N>>
+		extends JpaRepositoryFactoryBean<T, S, ID> { // ㅇㄷ
+  
+  // ... 이하 생략
+}
+````
 
 
 ``` java
