@@ -34,6 +34,8 @@ Inversion of Control: 의존 관계 주입(Dependency Injection)이라고도 하
 
 ### 2.1. 스프링 IoC 컨테이너의 역할
 
+![img](./img/spring-ioc-container.png)
+
 - 빈 인스턴스 생성
 - 의존 관계 설정
 - 빈 제공
@@ -53,10 +55,14 @@ Inversion of Control: 의존 관계 주입(Dependency Injection)이라고도 하
   - 생성자 아규먼트 (constructor) 
   - 프로퍼트 (setter) 
   - ..
+- 빈 주입
+  - @Autowired
+  - @Inject
 
 ### 2.4. 컴포넌트 스캔
 
 - 설정 방법 
   - XML 설정에서는 context:component-scan 
+    - Spring 2.0 부터 애노테이션 설정
   - 자바 설정에서 @ComponentScan
 - 특정 패키지 이하의 모든 클래스 중에 @Component 애노테이션을 사용한 클래스를 빈으로 자동으로 등록 해 줌.
