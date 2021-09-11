@@ -1,6 +1,8 @@
 - l2 
   - HAZELCAST
   - EHCACHE
+  - REDIS
+- rabbitmq
 - redis
   - transaction
 - spring integration
