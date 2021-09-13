@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Arrays;
 
-public class BookApplication {
+public class BookApplicationTest {
 
   public static void main(String[] args) {
     ApplicationContext context = getAnnotationApplicationContext();
