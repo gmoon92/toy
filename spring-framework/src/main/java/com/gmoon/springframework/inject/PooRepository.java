@@ -1,4 +1,4 @@
 package com.gmoon.springframework.inject;
 
-public class PooRepository {
+public interface PooRepository {
 }
