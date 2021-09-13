@@ -184,11 +184,107 @@ public class PooService {
 
 ### 같은 타입의 빈이 여러개 일 때
 
+```java
+@Repository
+public class MyRepository implements PooRepository { }
+
+@Repository
+public class MoonRepository implements PooRepository { }
+```
+
 - @Primary
-- 해당 타입의 빈 모두 주입 받기
 - @Qualifier (빈 이름으로 주입)
+- 해당 타입의 빈 모두 주입 받기
 
+#### @Primary
 
+PooRepository 인터페이스를 구현한 여러 구현체들 중에 최종적으로 빈으로 등록할 구현체에 @Primary 애노테이션을 선언해준다.
+
+```java
+@Service
+public class PooService {
+
+  public PooRepository pooRepository;
+
+  public PooService(PooRepository pooRepository) {
+    System.out.println("PooRepository primary type is " + pooRepository);
+  }
+}
+
+@Primary
+@Repository
+public class MyRepository implements PooRepository {
+}
+```
+```text
+PooRepository primary type is com.gmoon.springframework.inject.MyRepository@22ba1904
+```
+
+#### @Qualifier
+
+@Qualifier 는 빈 id로 빈을 주입 받는 방식이다.
+
+빈 id는 애노테이션으로 명시할 수도 있지만 기본적으로 클래스 명의 스몰 케이스로 정의된다.
+
+```java
+@Service
+public class PooService {
+  
+  private PooRepository pooRepository;
+  
+  public PooService(PooRepository pooRepository,
+                    @Qualifier(value = "moonRepository") PooRepository pooRepository2,
+                    PooRepository moonRepository) {
+    System.out.println("PooRepository primary type is " + pooRepository);
+    System.out.println("PooRepository @Qualifier type is " + pooRepository2);
+    System.out.println("PooRepository bean id type is " + moonRepository);
+  }
+}
+
+@Primary
+@Repository
+public class MyRepository implements PooRepository {
+}
+```
+```text
+PooRepository primary type is com.gmoon.springframework.inject.MyRepository@7040ff81
+PooRepository @Qualifier type is com.gmoon.springframework.inject.MoonRepository@75eab670
+PooRepository bean id type is com.gmoon.springframework.inject.MyRepository@7040ff81
+```
+
+빈을 주입할 때, IoC 컨테이너는 Type을 먼저보고 빈의 이름을 찾게된다. @Primary 애노테이션으로 MyRepository 로 선언되어 MyRepository를 찾게 된다.
+bean id 를
+
+#### 해당 타입의 빈 모두 주입 받기
+
+모든 빈을 주입 받고 싶다면 다음과 같이 받을 수도 있다.
+
+```java
+@Service
+public class PooService {
+
+  private PooRepository pooRepository;
+
+  public PooService(PooRepository pooRepository,
+                    @Qualifier(value = "moonRepository") PooRepository pooRepository2,
+                    PooRepository moonRepository,
+                    List<PooRepository> pooRepositorys) {
+    System.out.println("PooRepository primary type is " + pooRepository);
+    System.out.println("PooRepository @Qualifier type is " + pooRepository2);
+    System.out.println("PooRepository bean id type is " + moonRepository);
+    pooRepositorys.forEach(System.out::println);
+    this.pooRepository = pooRepositorys.stream().findFirst()
+            .orElse(null);
+  }
+}
+```
+```text
+PooRepository primary type is com.gmoon.springframework.inject.MyRepository@7040ff81
+PooRepository @Qualifier type is com.gmoon.springframework.inject.MoonRepository@75eab670
+PooRepository bean id type is com.gmoon.springframework.inject.MyRepository@7040ff81
+com.gmoon.springframework.inject.MoonRepository@75eab670
+com.gmoon.springframework.inject.MyRepository@7040ff81
+```
 
 ### 동작 원리
 
@@ -197,3 +293,6 @@ public class PooService {
   - 새로 만든 빈 인스턴스를 수정할 수 있는 라이프 사이클 인터페이스
 - [AutowiredAnnotationBeanPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.html) extends BeanPostProcessor 
   - 스프링이 제공하는 @Autowired와 @Value 애노테이션 그리고 JSR-330의 @Inject 애노테이션을 지원하는 애노테이션 처리기.
+  - Initialization before, after callback
+
+BeanFactory 가 자기안에 등록되어 있는 빈의 beanPostProcessor를 찾는다. 빈에 등록된 다른 일반적인 빈들에게 beanPostProcessor를 적용을 시킨다.
