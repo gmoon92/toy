@@ -69,6 +69,8 @@ Inversion of Control: 의존 관계 주입(Dependency Injection)이라고도 하
     - 자바 설정에서 @ComponentScan
 - 특정 패키지 이하의 모든 클래스 중에 @Component 애노테이션을 사용한 클래스를 빈으로 자동으로 등록 해 줌.
 
+---
+
 ## 3. IoC 컨테이너 4부: @Component와 컴포넌트 스캔
 
 컨포넌트 스캔 주요 기능
@@ -76,12 +78,13 @@ Inversion of Control: 의존 관계 주입(Dependency Injection)이라고도 하
 - 스캔 위치 설정
 - 필터: 어떤 애노테이션을 스캔 할지 또는 하지 않을지
 
-### 3.1. @Component
+### 3.1. @Component를 선언되어 있는 애노테이션들이 등록된다.
 
-- @Repository
-- @Service
-- @Controller
-- @Configuration
+- @Component
+  - @Repository
+  - @Service
+  - @Controller
+  - @Configuration
 
 ### 3.2. 동작 원리
 
@@ -90,7 +93,11 @@ Inversion of Control: 의존 관계 주입(Dependency Injection)이라고도 하
   스캐닝은 [ConfigurationClassPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/ConfigurationClassPostProcessor.html)라는 [BeanFactoryPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanFactoryPostProcessor.html)에
   의해 처리 됨.
 
-### 3.3. Function을 사용한 빈 등록
+### 3.3. Functional을 사용한 빈 등록
+
+애플리케이션 구동되는 초기 시점에 모든 빈을 등록시키기 때문에, 등록된 빈이 많으면 구동시간이 늘어진다.
+구동 시간에 예민하다면, Functional 방법을 고려할 수 있다. 
+Spring5 부터 사용할 수 있고, 리플렉션이나 프록시 기법은 성능에 영향을 주지만 Functional 를 구동 시간의 성능상에 이점이 조금이나마 있다.
 
 ```java
 public static void main(String[]args){
@@ -103,6 +110,8 @@ public static void main(String[]args){
         .run(args);
 }
 ```
+
+---
 
 ### IoC 컨테이너 3부: @Autowire
 
