@@ -111,12 +111,69 @@ public static void main(String[]args){
 @Autowired 
 - required: 기본값은 true (따라서 못 찾으면 애플리케이션 구동 실패)
 
-사용할 수 있는 위치
+Construct 주입일 경우 반드시 
+
+
+### 빈 주입 사용할 수 있는 위치
+
 - 생성자 (스프링 4.3 부터는 생략 가능)
 - 세터
 - 필드
 
-경우의 수
+```java
+import com.gmoon.springframework.inject.PooRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PooService {
+
+  // 3. field 주입 방식: @Autowired
+  @Autowired
+  private PooRepository pooRepository;
+
+  // 1. 생성자 주입 방식: @Autowired 생략 가능
+  public PooService(PooRepository pooRepository) {
+    this.pooRepository = pooRepository;
+  }
+
+  // 2. Setter 주입 방식: @Autowired 필수
+  @Autowired
+  public void setPooRepository(PooRepository pooRepository) {
+    this.pooRepository = pooRepository;
+  }
+}
+```
+
+만약 PooRepository가 빈으로 등록되지 않는다면, Spring IoC 컨테이너에 의해 PooService 빈이 등록되는 시점에 PooRepository의 빈 타입을 찾을 수 없다는 에러를 발생한다.
+
+```text
+Parameter 0 of constructor in com.gmoon.springframework.inject.PooService required a bean of type 'com.gmoon.springframework.inject.PooRepository' that could not be found.
+```
+
+간혹 조건에 의해 생성되는 빈들도 존재할 수 있다. 이와 마찬가지로 PooRepository의 빈 생성이 어떠한 조건에 따라 결정된다면, @Autowired 애노테이션의 required 속성을 false로 주거나, 다음과 같이 `org.springframework.lang.Nullable` 애노테이션을 사용하여 해결할 수 있다.
+
+- @Autowired(required=false)
+- @Nullable
+
+```java
+import com.gmoon.springframework.inject.PooRepository;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PooService {
+
+  private PooRepository pooRepository;
+
+  public PooService(@Nullable PooRepository pooRepository) {
+    this.pooRepository = pooRepository;
+  }
+}
+```
+
+### 경우의 수
 
 - 해당 타입의 빈이 없는 경우
 - 해당 타입의 빈이 한 개인 경우
@@ -125,13 +182,15 @@ public static void main(String[]args){
     - 같은 이름의 빈 찾으면 해당 빈 사용
     - 같은 이름 못 찾으면 실패
 
-같은 타입의 빈이 여러개 일 때
+### 같은 타입의 빈이 여러개 일 때
 
 - @Primary
 - 해당 타입의 빈 모두 주입 받기
 - @Qualifier (빈 이름으로 주입)
 
-동작 원리
+
+
+### 동작 원리
 
 - 첫시간에 잠깐 언급했던 빈 라이프사이클 기억하세요?
 - [BeanPostProcessor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanPostProcessor.html) 
