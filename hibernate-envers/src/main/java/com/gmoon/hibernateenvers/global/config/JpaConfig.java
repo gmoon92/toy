@@ -1,22 +1,20 @@
 package com.gmoon.hibernateenvers.global.config;
 
-import com.gmoon.hibernateenvers.global.properties.HibernateProperties;
+import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Configuration
@@ -24,44 +22,18 @@ import java.util.Map;
 @EnableJpaRepositories(basePackages = "com.gmoon.**",
         repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class JpaConfig {
 
-  private final static String PERSISTENCE_UNIT_NAME = "defaultUnit";
+  private final EntityManagerFactory entityManagerFactory;
 
-  @Autowired
-  private DataSource dataSource;
+  @PostConstruct
+  public void init() {
+    SessionFactoryImpl sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
+    EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
 
-  @Autowired
-  private HibernateProperties hibernateProperties;
-
-  @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-    final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-    em.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
-    em.setDataSource(dataSource);
-    em.setPackagesToScan("com.gmoon.**.domain");
-    em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-    em.setJpaPropertyMap(hibernateProperties());
-
-    log.debug("dataSource : {}", dataSource);
-    log.debug("hibernateProperties() : {}", hibernateProperties());
-    return em;
-  }
-
-  public Map<String, String> hibernateProperties() {
-    Map<String, String> hibernatePropMap = hibernateProperties.getHibernate();
-    Map<String, String> map = new HashMap<>();
-    map.put("hibernate.hbm2ddl.auto", hibernatePropMap.get("hbm2ddl_auto"));
-    map.put("hibernate.dialect", hibernatePropMap.get("dialect"));
-    map.put("hibernate.show_sql", hibernatePropMap.get("show_sql"));
-    map.put("hibernate.format_sql", hibernatePropMap.get("format_sql"));
-    map.put("hibernate.use_sql_comments", hibernatePropMap.get("use_sql_comments"));
-    map.put("org.hibernate.envers.audit_table_suffix", hibernatePropMap.get("audit_table_suffix"));
-    return map;
-  }
-
-  @Bean
-  public JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
-    return new JpaTransactionManager(entityManagerFactory);
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    RevisionHistoryEventListener revisionHistoryEventListener = new RevisionHistoryEventListener(entityManager);
+    registry.appendListeners(EventType.POST_COMMIT_INSERT, revisionHistoryEventListener);
   }
 }
