@@ -9,8 +9,8 @@ import com.gmoon.hibernateenvers.revision.domain.RevisionHistoryDetail;
 import com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.event.spi.PostCommitInsertEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
-import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
 import javax.persistence.EntityManager;
@@ -21,7 +21,7 @@ import static com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus.ERROR
 import static com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus.UNCHANGED;
 
 @Slf4j
-public class RevisionHistoryEventListener implements PostInsertEventListener {
+public class RevisionHistoryEventListener implements PostCommitInsertEventListener {
 
   private final EntityManager entityManager;
 
@@ -105,5 +105,10 @@ public class RevisionHistoryEventListener implements PostInsertEventListener {
   @Override
   public boolean requiresPostCommitHanding(EntityPersister entityPersister) {
     return true;
+  }
+
+  @Override
+  public void onPostInsertCommitFailed(PostInsertEvent event) {
+
   }
 }
