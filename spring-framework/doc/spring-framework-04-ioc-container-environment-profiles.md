@@ -59,12 +59,19 @@ Environment 는 EnvironmentCapable 를 통해 가져온다.
 - & (and)
 - | (or)
 
+참고 - [baeldung Spring Profiles](https://www.baeldung.com/spring-profiles)
+
+## Environment 2 번째 핵심기능, property
 ## 프로퍼티
 
 - 다양한 방법으로 정의할 수 있는 설정값
-- Environment의 역할은 프로퍼티 소스 설정 및 프로퍼티 값 가져오기
+- `Environment`의 역할은 프로퍼티 소스 설정 및 프로퍼티 값 가져오기
 
 ### 프로퍼티에는 우선 순위가 있다.
+
+애플리케이션에 등록되어 있는 key, value 쌍으로 등록되어 있는 프로퍼티를 계층형으로 접근을 한다.
+
+os 환경변수 또는 자바로 실행할때 넘겨주는 VM -D 옵션, 서블릿 애플리케이션이라면 서블릿 컨텍스트 또는 컨피그에 등록되어 있는 profile
 
 - StandardServletEnvironment의 우선순위 
   - ServletConfig 매개변수 
