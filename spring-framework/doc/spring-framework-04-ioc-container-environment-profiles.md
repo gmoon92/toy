@@ -2,12 +2,38 @@
 
 프로파일과 프로퍼티를 다루는 인터페이스.
 
+ApplicationContext 상속 받고 있는 EnvironmentCapable 에 대해 다룬다.
+`EnvironmentCapable`는 제공하는 기능이 크게 2가지가 존재하는데 그중에 프로파일 기능에 대해 알아보자.
+
 ApplicationContext extends EnvironmentCapable - getEnvironment()
+
+```java
+public interface ApplicationContext extends EnvironmentCapable, 
+        ListableBeanFactory, 
+        HierarchicalBeanFactory, 
+        MessageSource, 
+        ApplicationEventPublisher, 
+        ResourcePatternResolver {
+  
+  // ...
+}
+```
 
 ### 프로파일
 
+profile은 빈들의 묶음이다.
+
 - 빈들의 그룹
 - `Environment`의 역할은 활성화할 프로파일 확인 및 설정
+
+각각의 환경에 따라 다른 빈들을 사용해야되는 경우 그 요구사항을 충족시키기 위해 Enviroment라는 인터페이스를 통해 사용할 수 있다.
+
+Environment 는 EnvironmentCapable 를 통해 가져온다.
+
+```text
+# jvm option
+-Dspring.profiles.active="test"
+```
 
 ### 프로파일 유즈케이스
 
