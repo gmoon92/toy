@@ -1,5 +1,8 @@
-package com.gmoon.springframework.environment;
+package com.gmoon.springframework.application_context;
 
+import com.gmoon.springframework.environment.AlphaRepository;
+import com.gmoon.springframework.environment.BaseRepository;
+import com.gmoon.springframework.environment.BetaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Import(EnvironmentConfigTest.ProfileTestConfig.class)
+@Import(EnvironmentTest.ProfileTestConfig.class)
 @TestPropertySource(value = "classpath:/environment.properties")
-class EnvironmentConfigTest {
+class EnvironmentTest {
 
   @Autowired
   BaseRepository baseRepository;
@@ -82,7 +85,7 @@ class EnvironmentConfigTest {
     @Bean
     @Profile("beta")
     public BaseRepository betaRepository() {
-      return new AlphaRepository();
+      return new BetaRepository();
     }
   }
 
