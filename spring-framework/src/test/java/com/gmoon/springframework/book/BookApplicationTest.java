@@ -24,7 +24,7 @@ public class BookApplicationTest {
   }
 
   private static ApplicationContext getXmlApplicationContext() {
-    return new ClassPathXmlApplicationContext("application.xml");
+    return new ClassPathXmlApplicationContext("application-bean-test.xml");
   }
 
   private static ApplicationContext getAnnotationApplicationContext() {
