@@ -11,7 +11,8 @@
 
 ### 인터페이스
 - boolean supports(Class clazz): 어떤 타입의 객체를 검증할 때 사용할 것인지 결정함
-- void validate(Object obj, Errors e): 실제 검증 로직을 이 안에서 구현 ○ 구현할 때 ValidationUtils 사용하며 편리 함.
+- void validate(Object obj, Errors e): 실제 검증 로직을 이 안에서 구현
+  - 구현할 때 ValidationUtils 사용하며 편리 함.
 
 ## 스프링 부트 2.0.5 이상 버전을 사용할 때
 - LocalValidatorFactoryBean 빈으로 자동 등록
