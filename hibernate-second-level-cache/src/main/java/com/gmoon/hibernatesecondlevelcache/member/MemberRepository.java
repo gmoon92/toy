@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberRepository {
 
-  @Cacheable(value = CacheConfig.MEMBER_FIND_BY_ID)
+  @Cacheable(value = CacheConfig.MEMBER_FIND_BY_ID, key = "#id")
   public Member getId(Long id) throws InterruptedException {
     Thread.sleep(2000);
 
