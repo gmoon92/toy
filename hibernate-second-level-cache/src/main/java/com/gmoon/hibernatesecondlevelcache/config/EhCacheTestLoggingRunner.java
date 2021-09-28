@@ -9,11 +9,15 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+import javax.cache.CacheManager;
 import java.util.Arrays;
 
 @Slf4j
 @Component
 public class EhCacheTestLoggingRunner implements ApplicationRunner {
+
+  @Autowired
+  CacheManager cacheManager;
 
   @Autowired
   CacheUtil cacheUtil;
@@ -25,27 +29,34 @@ public class EhCacheTestLoggingRunner implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
     StopWatch stopWatch = new StopWatch();
     log.info("=======================START=======================");
-    Long memberId = 0L;
+    log.info("cacheManager : {}", cacheManager);
+    Long adminId = 0L;
 
-    stopWatch.start("hit");
-    memberRepository.getId(memberId);
-    stopWatch.stop();
+    call(stopWatch, "hit", adminId);
+    call(stopWatch, "caching", adminId);
 
-    stopWatch.start("caching");
-    memberRepository.getId(memberId);
-    stopWatch.stop();
+    cacheUtil.evict(CacheConfig.MEMBER_FIND_BY_ID, adminId);
+    call(stopWatch, "evict", adminId);
+    call(stopWatch, "caching", adminId);
 
-    cacheUtil.evict(CacheConfig.MEMBER_FIND_BY_ID, memberId);
-    stopWatch.start("evict");
-    memberRepository.getId(memberId);
-    stopWatch.stop();
+    cacheUtil.evictAll(CacheConfig.MEMBER_FIND_BY_ID);
+    call(stopWatch, "evictAll", adminId);
+    call(stopWatch, "caching", adminId);
 
+    long memberId = 1L;
+    call(stopWatch, "hit", memberId);
     logging(stopWatch);
     log.info("=======================END=======================");
   }
 
+  private void call(StopWatch stopWatch, String taskName, Long memberId) throws InterruptedException {
+    stopWatch.start(taskName);
+    memberRepository.getId(memberId);
+    stopWatch.stop();
+  }
+
   private void logging(StopWatch stopWatch) {
     Arrays.stream(stopWatch.getTaskInfo())
-            .forEach(taskInfo -> log.info("{} : {}", taskInfo.getTaskName(), taskInfo.getTimeSeconds()));
+            .forEach(taskInfo -> log.info("{} : {}", taskInfo.getTaskName(), taskInfo.getTimeMillis()));
   }
 }
