@@ -1,6 +1,7 @@
 package com.gmoon.hibernatesecondlevelcache.config;
 
 import com.gmoon.hibernatesecondlevelcache.member.MemberRepository;
+import com.gmoon.hibernatesecondlevelcache.utils.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -15,6 +16,9 @@ import java.util.Arrays;
 public class EhCacheTestLoggingRunner implements ApplicationRunner {
 
   @Autowired
+  CacheUtil cacheUtil;
+
+  @Autowired
   MemberRepository memberRepository;
 
   @Override
@@ -23,11 +27,16 @@ public class EhCacheTestLoggingRunner implements ApplicationRunner {
     log.info("=======================START=======================");
     Long memberId = 0L;
 
-    stopWatch.start("cache hit");
+    stopWatch.start("hit");
     memberRepository.getId(memberId);
     stopWatch.stop();
 
-    stopWatch.start("caching data");
+    stopWatch.start("caching");
+    memberRepository.getId(memberId);
+    stopWatch.stop();
+
+    cacheUtil.evict(CacheConfig.MEMBER_FIND_BY_ID, memberId);
+    stopWatch.start("evict");
     memberRepository.getId(memberId);
     stopWatch.stop();
 
