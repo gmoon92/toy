@@ -1,30 +1,13 @@
 package com.gmoon.hibernatesecondlevelcache.config;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.cache.event.CacheEntryCreatedListener;
+import javax.cache.event.CacheEntryExpiredListener;
+import javax.cache.event.CacheEntryRemovedListener;
+import javax.cache.event.CacheEntryUpdatedListener;
 
-import javax.cache.event.CacheEntryEvent;
-import javax.cache.event.CacheEntryListenerException;
+interface CacheEventListener<K, V> extends CacheEntryCreatedListener<K, V>,
+        CacheEntryRemovedListener<K, V>,
+        CacheEntryUpdatedListener<K, V>,
+        CacheEntryExpiredListener<K, V> {
 
-@Slf4j
-public class CacheEventListener implements CacheEventLoggerListener<Object, Object> {
-
-  @Override
-  public void onCreated(Iterable<CacheEntryEvent<?, ?>> events) throws CacheEntryListenerException {
-    logging(events);
-  }
-
-  @Override
-  public void onExpired(Iterable<CacheEntryEvent<?, ?>> events) throws CacheEntryListenerException {
-    logging(events);
-  }
-
-  @Override
-  public void onRemoved(Iterable<CacheEntryEvent<?, ?>> events) throws CacheEntryListenerException {
-    logging(events);
-  }
-
-  @Override
-  public void onUpdated(Iterable<CacheEntryEvent<?, ?>> events) throws CacheEntryListenerException {
-    logging(events);
-  }
 }
