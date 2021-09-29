@@ -3,9 +3,9 @@
 ## dependencies
 
 - spring-boot-starter-cache
-- javax.cache:cache-api
-- org.ehcache:ehcache
-  - ehcache 3버전 부터는 `javax.cache:cache-api` 포함되어져 있다. 
+- javax.cache:cache-api:3.9.6
+- org.ehcache:ehcache:1.1.1
+    - ehcache 3버전 부터는 `javax.cache:cache-api` 포함되어져 있다.
 
 ```xml
 <dependencies>
@@ -19,6 +19,11 @@
         <artifactId>ehcache</artifactId>
         <version>3.9.6</version>
     </dependency>
+    <dependency>
+        <groupId>javax.cache</groupId>
+        <artifactId>cache-api</artifactId>
+        <version>1.1.1</version>
+    </dependency>
 </dependencies>
 ```
 
@@ -27,16 +32,15 @@
 ## evict
 
 - cacheManager
-- @CacheEvict  
+- @CacheEvict
 
 ## The Ehcache 3.x JSR-107 Provider
 
 jcache provider
 
-## listener add 
+## listener add
 
 ## xml -> jsr config
-
 
 ## 참고
 
