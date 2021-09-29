@@ -11,7 +11,7 @@
 
         <listeners>
             <listener>
-                <class>com.gmoon.hibernatesecondlevelcache.config.CacheEventListener</class>
+                <class>com.gmoon.hibernatesecondlevelcache.config.CacheEventLoggerListener</class>
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
                 <event-ordering-mode>UNORDERED</event-ordering-mode>
                 <events-to-fire-on>CREATED</events-to-fire-on>
