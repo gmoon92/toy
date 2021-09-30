@@ -1,6 +1,5 @@
 package com.gmoon.hibernatesecondlevelcache.config;
 
-import com.gmoon.hibernatesecondlevelcache.member.Member;
 import org.ehcache.jsr107.EhcacheCachingProvider;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +23,9 @@ public class EhCacheConfig extends CacheConfig {
     CacheManager manager = provider.getCacheManager();
 
     // config
-    MutableConfiguration configuration = new MutableConfiguration<Long, Member>()
-            .setTypes(Long.class, Member.class)
+//    MutableConfiguration configuration = new MutableConfiguration<Long, Member>()
+    MutableConfiguration configuration = new MutableConfiguration()
+//            .setTypes(Long.class, Member.class)
             .setStoreByValue(false)
             .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
 
@@ -39,6 +39,7 @@ public class EhCacheConfig extends CacheConfig {
     configuration.addCacheEntryListenerConfiguration(listenerConfiguration);
 
     // add cache
+    manager.createCache(MEMBER_ALL, configuration);
     manager.createCache(MEMBER_FIND_BY_ID, configuration);
     return manager;
   }
