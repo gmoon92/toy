@@ -45,6 +45,14 @@ public class EhCacheTestLoggingRunner implements ApplicationRunner {
 
     long memberId = 1L;
     call(stopWatch, "hit", memberId);
+
+    stopWatch.start("getAll hit");
+    memberRepository.getAll();
+    stopWatch.stop();
+    stopWatch.start("getAll caching");
+    memberRepository.getAll();
+    stopWatch.stop();
+
     logging(stopWatch);
     log.info("=======================END=======================");
   }
