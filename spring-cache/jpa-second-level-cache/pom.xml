@@ -10,10 +10,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.gmoon</groupId>
-    <artifactId>hibernate-second-level-cache</artifactId>
+    <artifactId>jpa-second-level-cache</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>hibernate-second-level-cache</name>
-    <description>hibernate-second-level-cache</description>
+    <name>jpa-second-level-cache</name>
+    <description>jpa-second-level-cache</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
