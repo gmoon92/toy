@@ -1,34 +1,29 @@
 package com.moong.springaop.proxy4;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.moong.springaop.business.UserService;
+import com.moong.springaop.business.UserServiceImpl;
+import com.moong.springaop.business.UserVO;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.moong.springaop.business.UserService;
-import com.moong.springaop.business.UserServiceImple;
-import com.moong.springaop.business.UserVO;
-
-/*
-//SpringBoot with Run
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Import(MessageConfig.class)
-*/
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {UserServiceConfig.class})
-public class ProfileFactoryBeanTest {
+class ProfileFactoryBeanTest {
 
 	@Autowired
 	private ApplicationContext context;
 	
 	@Test
 	@DirtiesContext
-	public void profileFactoryBeanTest() throws Exception {
-		UserService userService = new UserServiceImple(new UserVO(0, "Moon", null));
+	void profileFactoryBeanTest() throws Exception {
+		UserService userService = new UserServiceImpl(new UserVO(0, "Moon", null));
 		ProfileFactoryBean proxy = (ProfileFactoryBean)context.getBean("&pxuserService", ProfileFactoryBean.class);
 		proxy.setPattern("updateLevels");
 		proxy.setProfile(new ProfileImple());
@@ -38,6 +33,5 @@ public class ProfileFactoryBeanTest {
 		
 		UserService user = (UserService)proxy.getObject();
 					user.updateLevels();
-		
 	}
 }
