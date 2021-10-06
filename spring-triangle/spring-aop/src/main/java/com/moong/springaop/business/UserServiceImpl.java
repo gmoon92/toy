@@ -1,12 +1,10 @@
 package com.moong.springaop.business;
 
-public class UserServiceImple implements UserService{
+import lombok.RequiredArgsConstructor;
 
-private UserVO user;
-	
-	public UserServiceImple(UserVO user) {
-		this.user = user;
-	}
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+	private final UserVO user;
 
 	@Override
 	public void updateLevels() {
@@ -18,5 +16,4 @@ private UserVO user;
 		user.setName(name);
 		return user;
 	}
-
 }
