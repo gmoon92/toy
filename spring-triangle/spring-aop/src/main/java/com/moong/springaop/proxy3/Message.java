@@ -1,20 +1,16 @@
 package com.moong.springaop.proxy3;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * 팩토리 빈의 동작원리를 확인하기 위한 오브젝트
  * */
+@Getter
+@RequiredArgsConstructor
 public class Message {
-	
-	public String text;
+	public final String text;
 
-	private Message(String text) {
-		this.text = text;
-	}
-	
-	public String getText() {
-		return this.text;
-	}
-	
 	public static Message newMessage(String text) {
 		return new Message(text);
 	}

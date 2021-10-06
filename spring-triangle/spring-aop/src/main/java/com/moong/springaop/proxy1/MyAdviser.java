@@ -7,10 +7,14 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
 
-public class MyAdviser implements Advisor{
-private Advisor advisor;
-	
-	
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class MyAdviser implements Advisor {
+	private static final String INVOKE_METHOD_NAME_INFO_FORMAT = "Advice Method Name is {}";
+
+	private Advisor advisor;
+
 	@Override
 	public Advice getAdvice() {
 		return advisor.getAdvice();
@@ -20,18 +24,13 @@ private Advisor advisor;
 	public boolean isPerInstance() {
 		return false;
 	}
-	
-	
-	private void setConfig(){
-	}
-	
-	private class MyAdvice implements MethodInterceptor{
+
+	private class MyAdvice implements MethodInterceptor {
 		@Override
 		public Object invoke(MethodInvocation invocation) throws Throwable {
 			Method method = invocation.getMethod();
-			
-			System.out.println("Advice Method Name is " + method.getName());
-			
+			String methodName = method.getName();
+			log.info(INVOKE_METHOD_NAME_INFO_FORMAT, methodName);
 			return method.invoke(invocation.getClass(), invocation.getArguments());
 		}
 	}
