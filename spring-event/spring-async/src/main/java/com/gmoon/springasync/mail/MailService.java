@@ -8,8 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 @Slf4j
@@ -18,16 +22,30 @@ import java.util.function.Function;
 public class MailService {
   private final JavaMailSender mailSender;
   private final MailTemplate mailTemplate;
-
   private final MemberRepository memberRepository;
+  private MailService self;
+
+  @PostConstruct
+  public void init() {
+    self = new MailService(mailSender, mailTemplate, memberRepository);
+  }
 
   @Async
+  @Transactional(readOnly = true)
   public void sendInviteMailFrom(final String publicUrl) {
+    log.info("async send mail...");
     memberRepository.streamFindAll()
             .map(Member::getEmail)
             .filter(StringUtils::isNotBlank)
             .map(convertInviteMailVO(publicUrl))
             .forEach(this::sendMail);
+  }
+
+  @Async
+  @Transactional(readOnly = true)
+  public Future<String> sendInviteMailFromServerWillReturn(final String publicUrl) {
+    self.sendInviteMailFrom(publicUrl);
+    return new AsyncResult<>(publicUrl);
   }
 
   private void sendMail(InviteMailVO mailVO) {
@@ -36,6 +54,7 @@ public class MailService {
       String inviteServerUrl = mailVO.getInviteServerUrl();
       SimpleMailMessage message = mailTemplate.createInviteGithubMailMessage(email, inviteServerUrl);
       mailSender.send(message);
+      log.info("send mail success...");
     } catch (Exception e) {
       throw new SendMailException(e);
     }
