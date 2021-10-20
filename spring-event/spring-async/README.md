@@ -60,7 +60,6 @@ public class SpringAsyncConfig {
 @Async 어노테이션의 사용법은 간단하다.
 
 ```java
-
 @Service
 public class MailService {
 
@@ -85,9 +84,23 @@ public class MailService {
 
 비동기 처리된 결과를 받을 경우를 대비하여 `Future` 클래스를 사용하면 된다.
 
+```java
+@Service
+public class MailService {
+  
+  @Async
+  public Future<String> sendInviteMailFrom(final String publicUrl) {
+    // send mail logic...
+    return new AsyncResult<>(publicUrl);
+  }
+}
+```
+
 ## 참고
 
 - https://www.baeldung.com/spring-async
 - https://www.baeldung.com/spring-enable-annotations
 - https://www.baeldung.com/spring-security-async-principal-propagation
 - https://www.baeldung.com/spring-mvc-async-security
+- https://github.com/eugenp/tutorials/blob/master/spring-scheduling/src/test/java/com/baeldung/async/AsyncAnnotationExampleIntegrationTest.java
+- https://www.baeldung.com/spring-mvc-async-vs-webflux
