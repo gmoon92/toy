@@ -7,3 +7,14 @@ spring:
     properties:
       "[mail.smtp.auth]": true
       "[mail.smtp.starttls.enable]": true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl_auto: create-drop
