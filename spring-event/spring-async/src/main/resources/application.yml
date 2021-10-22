@@ -1,4 +1,13 @@
 spring:
+  task:
+    execution:
+      thread-name-prefix: thread-gmoon-pool
+      pool:
+        core-size: 16
+        max-size: 32
+        keep-alive: 120
+        queue-capacity: 500
+        allow-core-thread-timeout: false
   mail:
     host: smtp.gmail.com
     port: 587
