@@ -48,6 +48,26 @@ public class MailService {
     return new AsyncResult<>(publicUrl);
   }
 
+  @Async
+  @Transactional(readOnly = true)
+  public void sendMailIfPublicUrlIsBlankThrow(final String publicUrl) {
+    if (StringUtils.isBlank(publicUrl)) {
+      throw new SendMailException();
+    }
+
+    self.sendInviteMailFrom(publicUrl);
+  }
+
+  @Async
+  @Transactional(readOnly = true)
+  public Future<String> sendMailWillReturnIfPublicUrlIsBlankThrow(final String publicUrl) {
+    if (StringUtils.isBlank(publicUrl)) {
+      throw new SendMailException();
+    }
+
+    return self.sendInviteMailFromServerWillReturn(publicUrl);
+  }
+
   private void sendMail(InviteMailVO mailVO) {
     try {
       String email = mailVO.getReceiver();
