@@ -50,14 +50,15 @@ public class SpringAsyncConfig {
 
 ## 비동기 설정
 
-사용법은 다음 두 가지 방법이 존재한다. 본 글에선 @Async 어노테이션을 활용할 예정이다.
+사용법은 다음 두 가지 방법이 존재한다. 본 포스팅에선 Java Config 방식을 소개하려한다.
 
 - XML
 - @Async Annotation
 
 ## @Async 어노테이션
 
-@Async 어노테이션의 사용법은 간단하다.
+Spring MVC Async 처리는 `@Async` 어노테이션을 사용하면 된다.
+사용법은 간단하다. 메일 발송과 같은 비동기로 동작해야할 메서드에 `@Async` 어노테이션을 선언하면 된다.
 
 ```java
 
@@ -71,26 +72,22 @@ public class MailService {
 }
 ```
 
-메일 발송과 같은 비동기로 동작해야할 메서드에 선언하면 된다.
+이때 @Async 어노테이션이 선언된 비동기 메서드는 다음 2 가지 조건을 충족해야만 비동기적으로 동작하게 된다.
 
-하지만 2 가지 유의해야할 조건이 있다.
+- 반드시 public 접근제한자여야 한다.
+- `Self-invocation`을 주의해야한다. 이는 Spring AOP 개념을 알고 있다면 당연한 결과이다.
 
-- It must be applied to public methods only.
-- Self-invocation — calling the async method from within the same class — won't
+> It must be applied to public methods only. <br/>
+> Self-invocation — calling the async method from within the same class — won't
   work.
-
-스프링은 내부적으로 별도의 쓰레드를 생성하여 동작되기 때문에, 반환 타입은 기본적으로 void로 설정한다.
 
 ### 리턴 타입 비동기 메서드 
 
-Spring에선 비동기 메서드의 동작 방식은 `org.springframework.aop.interceptor.AsyncExecutionAspectSupport` 클래스를 살펴보면 된다.
-
-- CompletableFuture
-- ListenableFuture
-- Future
+Spring은 내부적으로 `Async` 어노테이션이 선언된 메서드에 대해 최종적으로 `org.springframework.aop.interceptor.AsyncExecutionAspectSupport` 클래스에서 리턴 타입에 따라 다르게 동작하게 된다.
 
 ```java
 public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
+  // ...
   
   protected Object doSubmit(Callable<Object> task, AsyncTaskExecutor executor, Class<?> returnType) {
     if (CompletableFuture.class.isAssignableFrom(returnType)) {
@@ -113,10 +110,17 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 }
 ```
 
-만약 비동기 처리된 결과를 받을 경우엔 `java.util.concurrent.Future` 인터페이스를 사용하면 된다.
+다음 `doSubmit` 메서드의 비동기 메서드 실행 방식을 살펴보면, void 메서드 외 3 가지의 리턴 타입에 따라 다르게 처리하고 있다는걸 알 수 있다.
+
+- CompletableFuture
+- ListenableFuture
+- Future
+
+따라서 비동기 처리된 결과를 받을 경우엔 다음 3 가지의 리턴 타입을 골라 사용하면 되는데, 참고로 `CompletableFuture`, `ListenableFuture` 클래스는 `java.util.concurrent.Future` 인터페이스를 구현한 클래스이다. 각각의 클래스별 동작 방식과 사용법이 다르다. 본 포스팅에선 해당 내용은 생략하겠다.
+
+다음과 같이 `Future`를 구현한 `AsyncResult` 클래스를 사용하면 된다.
 
 ```java
-
 @Service
 public class MailService {
 
@@ -126,11 +130,37 @@ public class MailService {
     return new AsyncResult<>(publicUrl);
   }
 }
+
+@Controller
+public class MailController {
+  @Autowried private MailService service;
+  
+  @PostMapping("/mail/send")
+  public ResponseEntity<String> sendInviteMail() {
+    String publicUrl = service.sendInviteMailFrom("https://gmoon92.github.io")
+            .get();
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+}
 ```
 
-반환 값은 `Future`를 구현한 `AsyncResult` 클래스를 사용하면 된다.
+## TaskExecutor, 독립적으로 실행한 가능한 작업기
 
-## TaskExecutor
+Spring은 비동기 메서드를 실행하기 위해 `org.springframework.core.task.TaskExecutor`를 사용하여 실행하게 된다.
+
+```java
+package org.springframework.core.task;
+
+@FunctionalInterface
+public interface TaskExecutor extends java.util.concurrent.Executor {
+  @Override
+  void execute(Runnable task);
+}
+```
+
+> `TaskExecutor`는 JDK 1.5의 Executor 인터페이스를 구현한 인터페이스로 기존 `Executor` 인터페이스의 기능과 완전히 같다. Spring 2.X 버전의 JDK 1.4 하위 호한성의 문제로 별도의 인터페이스로 분리되었다.<br/>
+> 1. Spring PSA: Third party TaskExcutor에 대한 어댑터 역할 (Quartz , CommonJ WorkManager...) <br/>
+> 2. Spring 자체적으로 확장 포인트를 주기 위함
 
 기본적으로 Spring은 컨텍스트에서 `org.springframework.core.task.TaskExecutor` 빈
 또는 `java.util.concurrent.Executor`를 사용하고 `taskExecutor` 빈 이름으로 등록된 Thread pool로
@@ -140,29 +170,25 @@ public class MailService {
 - java.util.concurrent.Executor
 - org.springframework.core.task.SimpleAsyncTaskExecutor
 
-주의 사항으로 `TaskExecutor`로 `SimpleAsyncTaskExecutor`를 사용하고 있다면 주의해야한다.
-`SimpleAsyncTaskExecutor`는 Thread Pool이 아니다. 따라서 비동기 메서드를 실행할 때마다 매번 Thread를
-생성하는데, Thread 생성하는 비용이 크기 때문에 Overflow의 위험이 있다.
+`SimpleAsyncTaskExecutor`는 Thread Pool이 아니므로 비동기 요청이 올때 마다 매번 Thread를 생성하게 된다. Thread 생성하는 비용이 크기 때문에 Overflow의 위험이 따른다.
 
-- This implementation does not reuse threads!
+> TaskExecutor implementation that fires up a new Thread for each task, executing it asynchronously.
+Supports limiting concurrent threads through the "concurrencyLimit" bean property. By default, the number of concurrent threads is unlimited.<br/>
+> NOTE: This implementation does not reuse threads! Consider a thread-pooling TaskExecutor implementation instead, in particular for executing a large number of short-lived tasks.<br/>
+> - [javadoc-api: SimpleAsyncTaskExecutor.java](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/task/SimpleAsyncTaskExecutor.html)
 
-```text
-TaskExecutor implementation that fires up a new Thread for each task, executing it asynchronously.
-Supports limiting concurrent threads through the "concurrencyLimit" bean property. By default, the number of concurrent threads is unlimited.
+`SimpleAsyncTaskExecutor`를 사용하고 있다면 Thread Pool를 구성하여 사용하도록 수정해야한다.
 
-NOTE: This implementation does not reuse threads! Consider a thread-pooling TaskExecutor implementation instead, in particular for executing a large number of short-lived tasks.
-```
+_**This implementation does not reuse threads!**_
 
-[javadoc-api: SimpleAsyncTaskExecutor.java](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/task/SimpleAsyncTaskExecutor.html)
+## ThreadPoolTaskExecutor 설정
 
 일반적으로 운영에선 `SimpleAsyncTaskExecutor`를 사용하지 않고 `TaskExecutor`를 재정의하여 사용한다.
 
-## TaskExecutor 설정
-
-먼저 `org.springframework.scheduling.annotation.AsyncConfigurer` 인터페이스를 구현한다.
+`TaskExecutor`를 재정의 하기 위해선 `org.springframework.scheduling.annotation.AsyncConfigurer` 인터페이스를 구현한다.
 
 `AsyncConfigurer` 인터페이스는 @EnableAsync 어노테이션이 달린 @Configuration 설정 클래스에 의해 구현될
-Async 관련 설정 인터페이스이다. 이 인터페이스는 비동기 메서드 호출에서 사용할 `Executor`를 지정하고, void 반환 타입 비동기
+Async 관련 설정 인터페이스이다. 이 인터페이스는 비동기 메서드 호출에서 사용할 `Executor`를 지정하고, 비동기
 메서드의 예외 처리를 지원하는 `AsyncUncaughtExceptionHandler` 클래스 설정을 도와준다.
 
 우선 TaskExecutor 설정을 살펴보자.
@@ -210,27 +236,24 @@ public class SpringAsyncConfig implements AsyncConfigurer {
     - initialize(): ExecutorService를 설정
 
 참고로 Spring Boot 2.1 이상을 사용하고 있는 프로젝트라면, 기본적으로 `TaskExecutionAutoConfiguration`에서
-등록되어진 Executor 빈이 없다면 `ThreadPoolTaskExecutor`을 등록하게 된다. `application.yml` 설정은
-다음과 같다.
+`ThreadPoolTaskExecutor`을 빈으로 등록해준다. `application.yml` 설정은 다음과 같다.
 
 ```properties
 spring:
-task:
-execution:
-thread-name-prefix:thread-gmoon-pool
-pool:
-core-size:16
-max-size:32
-keep-alive:120
-queue-capacity:500
-allow-core-thread-timeout:false
+  task:
+    execution:
+      thread-name-prefix: thread-gmoon-pool
+      pool:
+        core-size: 16
+        max-size: 32
+        keep-alive: 120
+        queue-capacity: 500
+        allow-core-thread-timeout: false
 ```
 
-그외 별도로 특정 TaskExecutor 빈을 통해 비동기 메서드를 실행할 경우라면 다음 처럼 @Async value 속성에
-TaskExecutor 빈 이름을 지정 해주면, 런타임 시 비동기 메서드는 지정된 TaskExecutor 빈을 사용하여 실행한다.
+그외 별도로 @Async value 속성에 TaskExecutor 빈 이름을 지정 해주면 런타임 시 비동기 메서드는 지정된 TaskExecutor 빈을 사용하여 실행한다.
 
 ```java
-
 @Service
 public class MailService {
   @Async("customTaskExecutor") // 커스텀한 TaskExecutor bean name 지정
@@ -241,9 +264,42 @@ public class MailService {
 }
 ```
 
-## 예외 처리
+## AsyncUncaughtExceptionHandler, 예외 처리
 
-반환 타입이 있는(`Future`) 비동기 메서드는 예외 처리를 하기 쉽다.
+반환 타입이 있는 비동기 메서드는 반환 값을 반환 받는 시점에 blocking 되기 때문에 예외 처리하기 쉽다.
+
+하지만 리턴 타입이 없는 비동기 메서드일 경우엔 메인 쓰레드가 먼저 닫히는 경우가 있다. 
+Spring에선 **리턴 타입이 없는 비동기 메서드**를 예외 처리를 할 수 있도록 `org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler` 인터페이스를 제공하고 있다.
+
+```java
+@Slf4j
+public class CustomAsyncUncaughtExceptionHandler implements AsyncUncaughtExceptionHandler {
+  @Override
+  public void handleUncaughtException(Throwable ex, Method method, Object... params) {
+    log.info("Exception message - {}", ex.getMessage());
+    log.info("Method name: {}", method.getName());
+    for (Object param : params) {
+      log.info("param: {}", param);
+    }
+  }
+}
+```
+
+다음과 같이 getAsyncUncaughtExceptionHandler 메서드를 재정의하면 된다.
+
+```java
+@EnableAsync
+@Configuration
+public class SpringAsyncConfig implements AsyncConfigurer {
+  // ...
+  
+  @Bean("asyncUncaughtExceptionHandler")
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return new CustomAsyncUncaughtExceptionHandler();
+  }
+}
+```
 
 ### Async 관련 클래스
 
