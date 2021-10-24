@@ -1,5 +1,7 @@
 package com.gmoon.springasync.config;
 
+import com.gmoon.springasync.handler.CustomAsyncUncaughtExceptionHandler;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,5 +34,11 @@ public class SpringAsyncConfig implements AsyncConfigurer {
     taskExecutor.setAllowCoreThreadTimeOut(false);
     taskExecutor.initialize();
     return taskExecutor;
+  }
+
+  @Bean("asyncUncaughtExceptionHandler")
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return new CustomAsyncUncaughtExceptionHandler();
   }
 }
