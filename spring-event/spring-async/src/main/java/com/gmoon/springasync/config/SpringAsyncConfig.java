@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @EnableAsync(mode = AdviceMode.PROXY, proxyTargetClass = true)
 @Configuration
@@ -32,6 +33,7 @@ public class SpringAsyncConfig implements AsyncConfigurer {
     taskExecutor.setKeepAliveSeconds(POOL_KEEP_ALIVE_SECONDS);
     taskExecutor.setQueueCapacity(POOL_QUEUE_CAPACITY);
     taskExecutor.setAllowCoreThreadTimeOut(false);
+    taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
     taskExecutor.initialize();
     return taskExecutor;
   }

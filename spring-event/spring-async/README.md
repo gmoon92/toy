@@ -215,6 +215,7 @@ public class SpringAsyncConfig implements AsyncConfigurer {
     taskExecutor.setKeepAliveSeconds(POOL_KEEP_ALIVE_SECONDS);
     taskExecutor.setQueueCapacity(POOL_QUEUE_CAPACITY);
     taskExecutor.setAllowCoreThreadTimeOut(false);
+    taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
     taskExecutor.initialize();
     return taskExecutor;
   }
@@ -233,6 +234,7 @@ public class SpringAsyncConfig implements AsyncConfigurer {
     - setKeepAliveSeconds(): 연결 유지 초를 설정 (default 60)
     - setQueueCapacity(): `BlockingQueue`에 대한 용량 설정 (default Integer.MAX_VALUE)
     - setAllowCoreThreadTimeOut(): 코어 스레드의 시간 초과를 허용할지 여부 (default false)
+    - setRejectedExecutionHandler(): 거부 정책 설정 (default AbortPolicy)
     - initialize(): ExecutorService를 설정
 
 참고로 Spring Boot 2.1 이상을 사용하고 있는 프로젝트라면, 기본적으로 `TaskExecutionAutoConfiguration`에서
@@ -250,6 +252,54 @@ spring:
         queue-capacity: 500
         allow-core-thread-timeout: false
 ```
+
+### workQueue(작업 큐) 종류
+
+`queueCapacity` 설정에 따라 내부적으로 결정
+
+- LinkedBlockingQueue: corePoolSize의 모든 Thread가 Busy 상태인 경우 새로운 테스크는 작업 큐에서 대기한다. 사실상 maximumPoolSize를 넘는 Thread는 생성되지 않기 때문에 이 값은 의미가 없다.
+- SynchronousQueue:  Producer에서 생긴 작업을 Consumer인 Thread에 직접 전달한다. 사실상 큐가 아니며 Thread 간에 작업을 넘겨주는 역할만 한다. newCachedThreadPool()로 만들어진 객체의 작업 큐이다.
+
+```java
+public class ThreadPoolTaskExecutor extends ExecutorConfigurationSupport
+        implements AsyncListenableTaskExecutor, SchedulingTaskExecutor {
+  // ...
+  
+  protected ExecutorService initializeExecutor(ThreadFactory threadFactory, RejectedExecutionHandler rejectedExecutionHandler) {
+    BlockingQueue<Runnable> queue = createQueue(this.queueCapacity);
+    // ...
+  }
+
+  protected BlockingQueue<Runnable> createQueue(int queueCapacity) {
+    if (queueCapacity > 0) {
+      return new LinkedBlockingQueue<>(queueCapacity);
+    } else {
+      return new SynchronousQueue<>();
+    }
+  }
+
+}
+```
+
+### RejectedExecutionHandler
+
+RejectedExecutionHandler는 ThreadPoolExecutor에서 task를 더 이상 받을 수 없을 때 호출된다. 
+이런 경우는 큐 허용치를 초과하거나 Executor가 종료되어서 Thread 또는 큐 슬롯을 사용할 수 없는 경우에 발생한다.
+
+### ThreadPoolExecutor Reject Policy
+
+Executor는 작업 큐가 꽉 찼을 때 아래 4가지 전략 중에 하나를 선택해서 사용할 수 있다.
+
+- AbortPolicy
+  - Default로 설정되어 있는 정책이다. Reject된 task가 `RejectedExecutionException`을 던진다.
+- CallerRunsPolicy
+  - 메인 쓰레드가 종료되지 않았다면, 거부된 task는 메인 쓰레드에서 직접 실행한다.
+- DiscardPolicy
+  - 거부된 task는 무시된다. Exception도 발생하지 않는다.
+- DiscardOldestPolicy
+  - 실행자를 종료하지 않는 한 가장 오래된 처리되지 않은 요청을 삭제하고 execute()를 다시 시도한다.
+
+### 비동기 메서드 별 Custom TaskExecutor 지정 
 
 그외 별도로 @Async value 속성에 TaskExecutor 빈 이름을 지정 해주면 런타임 시 비동기 메서드는 지정된 TaskExecutor 빈을 사용하여 실행한다.
 
