@@ -385,5 +385,5 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 - [https://www.baeldung.com/spring-enable-annotations](https://www.baeldung.com/spring-enable-annotations)
 - [https://www.baeldung.com/spring-security-async-principal-propagation](https://www.baeldung.com/spring-security-async-principal-propagation)
 - [https://www.baeldung.com/spring-mvc-async-security](https://www.baeldung.com/spring-mvc-async-security)
-- [https://github.com/eugenp/tutorials/blob/master/spring-scheduling/src/test/java/com/baeldung/async](https://github.com/eugenp/tutorials/blob/master/spring-scheduling/src/test/java/com/baeldung/async/AsyncAnnotationExampleIntegrationTest.java
+- [https://github.com/eugenp/tutorials/blob/master/spring-scheduling/src/test/java/com/baeldung/async](https://github.com/eugenp/tutorials/blob/master/spring-scheduling/src/test/java/com/baeldung/async/AsyncAnnotationExampleIntegrationTest.java)
 - [https://www.baeldung.com/spring-mvc-async-vs-webflux](https://www.baeldung.com/spring-mvc-async-vs-webflux)
