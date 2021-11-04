@@ -4,12 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.gmoon</groupId>
-        <artifactId>toy</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.5</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <groupId>com.gmoon</groupId>
     <artifactId>hibernate</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>hibernate</name>
     <packaging>pom</packaging>
 
     <modules>
@@ -19,5 +23,13 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <hibernate.version>5.4.32.Final</hibernate.version>
+        <querydsl-core.version>4.4.0</querydsl-core.version>
+        <h2.version>1.4.200</h2.version>
+        <log4j-web.version>2.14.0</log4j-web.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <log4jdbc-log4j2-jdbc4.1.version>1.16</log4jdbc-log4j2-jdbc4.1.version>
+        <querydsl-core.version>4.4.0</querydsl-core.version>
+        <spring-boot.version>2.4.2</spring-boot.version>
     </properties>
 </project>
