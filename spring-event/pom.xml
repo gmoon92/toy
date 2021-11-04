@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>org.gmoon</groupId>
+    <groupId>com.gmoon</groupId>
     <artifactId>spring-event</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>spring-event</name>
