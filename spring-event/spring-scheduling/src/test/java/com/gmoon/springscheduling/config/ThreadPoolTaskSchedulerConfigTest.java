@@ -1,13 +1,17 @@
 package com.gmoon.springscheduling.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.scheduling.support.PeriodicTrigger;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
@@ -21,13 +25,17 @@ class ThreadPoolTaskSchedulerConfigTest {
   @Autowired
   ThreadPoolTaskScheduler taskScheduler;
 
+  Runnable task;
+
+  @BeforeEach
+  void setUp() {
+    task = spy(SimpleMessageLoggerTask.create("Test!!!!..."));
+  }
+
   @Test
   @DisplayName("스케쥴러는 1초뒤에 예약된 작업을 실행한다.")
   void schedule() throws InterruptedException {
-    // given
-    Runnable task = spy(SimpleMessageLoggerTask.create("Test!!!!..."));
-
-    // when
+    // given when
     executeTaskOnSchedulerAfterOneSeconds(task);
     Thread.sleep(2_000);
 
@@ -46,11 +54,71 @@ class ThreadPoolTaskSchedulerConfigTest {
   @Test
   @DisplayName("스케쥴러는 지정된 주기마다 예약된 작업을 실행한다.")
   void scheduleWithFixedDelay() throws InterruptedException {
+    // given when
+    taskScheduler.scheduleWithFixedDelay(task, 100);
+    Thread.sleep(1_000);
+
+    // then
+    then(task).should(atLeastOnce()).run();
+  }
+
+  @Test
+  @DisplayName("스케쥴러는 지정된 일자 이후에, 지정된 주기마다 예약된 작업을 실행한다.")
+  void scheduleWithFixedDelay_should_execute_task_after_startDate() throws InterruptedException {
+    // given when
+    taskScheduler.scheduleWithFixedDelay(task, new Date(), 100);
+    Thread.sleep(1_000);
+
+    // then
+    then(task).should(atLeastOnce()).run();
+  }
+
+  @Test
+  @DisplayName("스케쥴러는 다음 작업 결과와 상관없이, 수행할 작업을 실행한다.")
+  void scheduleAtFixedRate() throws InterruptedException {
+    // given when
+    taskScheduler.scheduleAtFixedRate(task, 100);
+    Thread.sleep(1_000);
+
+    // then
+    then(task).should(atLeastOnce()).run();
+  }
+
+  @Test
+  @DisplayName("스케쥴러는 지정된 일자 이후에, 다음 작업 결과와 상관없이, 수행할 작업을 실행한다.")
+  void scheduleAtFixedRate_should_execute_task_after_startDate() throws InterruptedException {
+    // given when
+    taskScheduler.scheduleAtFixedRate(task, new Date(), 100);
+    Thread.sleep(1_000);
+
+    // then
+    then(task).should(atLeastOnce()).run();
+  }
+
+  @Test
+  @DisplayName("cron 표현식으로 스케쥴러 작업을 수행한다.")
+  void cronTrigger() throws InterruptedException {
     // given
-    Runnable task = spy(SimpleMessageLoggerTask.create("Test!!!..."));
+    CronTrigger cron = new CronTrigger("* * * * * *");
 
     // when
-    taskScheduler.scheduleWithFixedDelay(task, 100);
+    taskScheduler.schedule(task, cron);
+    Thread.sleep(1_100);
+
+    // then
+    then(task).should(atLeastOnce()).run();
+  }
+
+  @Test
+  @DisplayName("PeriodicTrigger를 사용하여 스케쥴러 작업을 수행한다.")
+  void periodicTrigger() throws InterruptedException {
+    // given
+    PeriodicTrigger trigger = new PeriodicTrigger(100, TimeUnit.MILLISECONDS);
+    trigger.setFixedRate(false);
+    trigger.setInitialDelay(500);
+
+    // when
+    taskScheduler.schedule(task, trigger);
     Thread.sleep(1_000);
 
     // then
