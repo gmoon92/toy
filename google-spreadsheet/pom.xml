@@ -5,18 +5,20 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.1</version>
+		<version>2.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gmoon</groupId>
 	<artifactId>google-spreadsheet</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>google-spreadsheet</name>
-	<description>Demo project for Spring Boot</description>
+	<description>google-spreadsheet</description>
 
 	<properties>
 		<java.version>1.8</java.version>
 		<google-api-client.version>1.23.0</google-api-client.version>
+		<google-api-services-sheets.version>v4-rev493-${google-api-client.version}</google-api-services-sheets.version>
+		<google-api-services-drive.version>v3-rev110-1.23.0</google-api-services-drive.version>
 		<junit-platform-engine.version>1.4.0</junit-platform-engine.version>
 		<commons-lang3.version>3.11</commons-lang3.version>
 		<commons-configuration.version>1.10</commons-configuration.version>
@@ -77,12 +79,12 @@
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-sheets</artifactId>
-			<version>v4-rev493-${google-api-client.version}</version>
+			<version>${google-api-services-sheets.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-drive</artifactId>
-			<version>v3-rev110-1.23.0</version>
+			<version>${google-api-services-drive.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -103,5 +105,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
