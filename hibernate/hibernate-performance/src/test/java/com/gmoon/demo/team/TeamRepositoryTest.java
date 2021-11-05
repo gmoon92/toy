@@ -26,8 +26,8 @@ class TeamRepositoryTest extends BaseRepositoryTest {
   @Transactional
   void setup() {
     log.info("Database data setup start...");
-    memberRepository.deleteAllInBatch();
-    teamRepository.deleteAllInBatch();
+    memberRepository.deleteAll();
+    teamRepository.deleteAll();
 
     List<Member> savedMembers = memberRepository.saveAll(
             Arrays.asList(

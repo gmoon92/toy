@@ -210,6 +210,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     getJPAQuery().select(member)
             .from(member)
             .leftJoin(member.memberOption, memberOption).fetchJoin()
+            .limit(1)
             .fetchOne();
   }
 
@@ -264,7 +265,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
     // when
     member.enabled();
 
-
+    // then
     memberRepository.save(member);
   }
 }
