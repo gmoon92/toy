@@ -64,7 +64,7 @@ class ThreadPoolTaskSchedulerConfigTest {
 
   @Test
   @DisplayName("스케쥴러는 지정된 일자 이후에, 지정된 주기마다 예약된 작업을 실행한다.")
-  void scheduleWithFixedDelay_should_execute_task_after_startDate() throws InterruptedException {
+  void scheduleWithFixedDelayWithInitialDelayTask() throws InterruptedException {
     // given when
     taskScheduler.scheduleWithFixedDelay(task, new Date(), 100);
     Thread.sleep(1_000);
@@ -86,7 +86,7 @@ class ThreadPoolTaskSchedulerConfigTest {
 
   @Test
   @DisplayName("스케쥴러는 지정된 일자 이후에, 다음 작업 결과와 상관없이, 수행할 작업을 실행한다.")
-  void scheduleAtFixedRate_should_execute_task_after_startDate() throws InterruptedException {
+  void scheduleAtFixedRateWithInitialDelayTask() throws InterruptedException {
     // given when
     taskScheduler.scheduleAtFixedRate(task, new Date(), 100);
     Thread.sleep(1_000);
