@@ -379,6 +379,30 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 }
 ```
 
+## ThreadLocal
+
+별도의 설정 없이 비동기 메서드에선 `ThreadLocal`를 사용할 수 없다.
+
+이를 해결할 수 있는 방식에 대해서도 소개하려한다.
+
+1. TaskDecorator 활용
+   - ThreadPoolTaskExecutor 에서 Decorator 적용
+   - Spring 4.3 이상부터 제공되는 TaskDecorator 를 이용해서 비동기처리하는 taskExecutor 생성시 커스터마이징
+2. DispatcherServlet 에서 inherit ThreadLocal 활성화
+
+```java
+@Configuration
+@RequiredArgsConstructor
+public class FilterConfig {
+  private final DispatcherServlet dispatcherServlet;
+
+  @PostConstruct
+  public void init() {
+    dispatcherServlet.setThreadContextInheritable(true);
+  }
+}
+```
+
 ## 참고
 
 - [https://www.baeldung.com/spring-async](https://www.baeldung.com/spring-async)
