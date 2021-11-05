@@ -10,6 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import java.util.Date;
 
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 
@@ -40,6 +41,20 @@ class ThreadPoolTaskSchedulerConfigTest {
     taskScheduler.schedule(task, startTime);
     taskScheduler.schedule(task, startTime);
     taskScheduler.schedule(task, startTime);
+  }
+
+  @Test
+  @DisplayName("스케쥴러는 지정된 주기마다 예약된 작업을 실행한다.")
+  void scheduleWithFixedDelay() throws InterruptedException {
+    // given
+    Runnable task = spy(SimpleMessageLoggerTask.create("Test!!!..."));
+
+    // when
+    taskScheduler.scheduleWithFixedDelay(task, 100);
+    Thread.sleep(1_000);
+
+    // then
+    then(task).should(atLeastOnce()).run();
   }
 
   static class SimpleMessageLoggerTask implements Runnable {
