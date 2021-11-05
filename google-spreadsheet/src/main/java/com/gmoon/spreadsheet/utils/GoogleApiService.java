@@ -16,6 +16,8 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +28,8 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
 
-public class GoogleApiService {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class GoogleApiService {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String APPLICATION_NAME = "Google Sheets API";
@@ -85,10 +88,11 @@ public class GoogleApiService {
 
     // Load client secrets.
     private static GoogleClientSecrets getClientSecrets() throws IOException {
-        InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
-        if (in == null)
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-
-        return GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        try {
+            InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
+            return GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(String.format("Resource not found: %s", CREDENTIALS_FILE_PATH), e);
+        }
     }
 }
