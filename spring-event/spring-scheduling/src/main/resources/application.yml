@@ -1,0 +1,8 @@
+schedule:
+  gmoon:
+    fixedDelay:
+      ms: 100
+    fixedRate:
+      ms: 100
+    cron:
+      expression: "* * * * * *"
