@@ -3,10 +3,8 @@ package com.gmoon.springscheduling.jobs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class SimpleScheduledJobs {
   private static final String FORMAT_OF_TASK_MESSAGE = "schedule tasks using {} jobs - {}";
 

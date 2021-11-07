@@ -1,4 +1,5 @@
 schedule:
+  type: default
   gmoon:
     fixedDelay:
       ms: 100

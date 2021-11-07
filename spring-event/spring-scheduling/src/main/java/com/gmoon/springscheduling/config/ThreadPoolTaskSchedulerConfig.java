@@ -1,5 +1,7 @@
 package com.gmoon.springscheduling.config;
 
+import com.gmoon.springscheduling.jobs.SimpleScheduledJobs;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -7,6 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @EnableScheduling
+@ConditionalOnProperty(value = "schedule.type", havingValue = "default")
 public class ThreadPoolTaskSchedulerConfig {
   private static final String NAME_OF_THREAD_SCHEDULER_TASK = "ThreadPoolTaskScheduler";
   private static final int SIZE_OF_POOL = 5;
@@ -17,5 +20,10 @@ public class ThreadPoolTaskSchedulerConfig {
     taskScheduler.setThreadNamePrefix(NAME_OF_THREAD_SCHEDULER_TASK);
     taskScheduler.setPoolSize(SIZE_OF_POOL);
     return taskScheduler;
+  }
+
+  @Bean
+  public SimpleScheduledJobs simpleScheduledJobs() {
+    return new SimpleScheduledJobs();
   }
 }

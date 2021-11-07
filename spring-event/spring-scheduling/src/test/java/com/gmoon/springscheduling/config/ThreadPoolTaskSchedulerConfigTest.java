@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.times;
 
 @Slf4j
 @SpringBootTest
+@EnabledIf(expression = "#{'${schedule.type}' == 'default'}", loadContext = true)
 class ThreadPoolTaskSchedulerConfigTest {
 
   @Autowired
