@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class PhoneAlarmService {
+public class PhoneAlarmJobs {
   private static final int MILLISECONDS_OF_PLUS_TIME = 500;
 
   private long delay = 0;
