@@ -1,6 +1,6 @@
 package com.gmoon.springscheduling.config;
 
-import com.gmoon.springscheduling.jobs.PhoneAlarmService;
+import com.gmoon.springscheduling.jobs.PhoneAlarmJobs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 @RequiredArgsConstructor
 public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
-  private final PhoneAlarmService phoneAlarmService;
+  private final PhoneAlarmJobs alarmJobs;
 
   @Bean
   public Executor taskExecutor() {
@@ -32,7 +32,7 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
   @Override
   public void configureTasks(ScheduledTaskRegistrar registrar) {
     registrar.setScheduler(taskExecutor());
-    registrar.addTriggerTask(phoneAlarmService::wakeUp, getDynamicDelayTimeTrigger());
+    registrar.addTriggerTask(alarmJobs::wakeUp, getDynamicDelayTimeTrigger());
   }
 
   private Trigger getDynamicDelayTimeTrigger() {
@@ -40,7 +40,7 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
       Optional<Date> lastCompletionTime = Optional.ofNullable(context.lastCompletionTime());
       Instant nextExecutionTime = lastCompletionTime.orElseGet(Date::new)
               .toInstant()
-              .plusMillis(phoneAlarmService.plusOneSecondsDelay());
+              .plusMillis(alarmJobs.plusOneSecondsDelay());
       return Date.from(nextExecutionTime);
     };
   }

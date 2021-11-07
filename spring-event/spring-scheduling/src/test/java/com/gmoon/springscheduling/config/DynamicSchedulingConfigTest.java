@@ -1,6 +1,6 @@
 package com.gmoon.springscheduling.config;
 
-import com.gmoon.springscheduling.jobs.PhoneAlarmService;
+import com.gmoon.springscheduling.jobs.PhoneAlarmJobs;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.atLeast;
 class DynamicSchedulingConfigTest {
 
   @SpyBean
-  PhoneAlarmService phoneAlarmService;
+  PhoneAlarmJobs alarmJobs;
 
   @Test
   @DisplayName("스케쥴러는 트리거에 지정된 시간만큼 더해서 job을 수행한다.")
@@ -26,7 +26,7 @@ class DynamicSchedulingConfigTest {
     Thread.sleep(3000);
 
     // then
-    then(phoneAlarmService)
+    then(alarmJobs)
             .should(atLeast(2))
             .plusOneSecondsDelay();
   }
