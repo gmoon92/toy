@@ -11,6 +11,8 @@ Spring은 3.0 부터 `org.springframework.scheduling.TaskScheduler`를 통해 �
 - 스케쥴러 job 생성 등록
 - 스케쥴러 예약 정책
 
+본 문서에서 다루는 모든 코드는 [GitHub](https://github.com/gmoon92/Toy/tree/master/spring-event/spring-scheduling) 을 참고하자.
+
 ## TaskScheduler
 
 `TaskScheduler` 인터페이스는 다음과 같다.
@@ -89,7 +91,7 @@ class ThreadPoolTaskSchedulerConfigTest {
 
 테스트 결과는 통과된다. 스케쥴러에 등록된 1초마다 작업을 실행한다.
 
-이외에도 cron 표현식을 지원하며, 단 하나의 인스턴스만 실행하는 `FixedDelay` 방식, 이외에도 이전 작업과 상관 없이 일정 시간이 되면 작업을 실행하는 `FixedRate` 방식을 지원한다. 그외 다양한 형식을 지원하는데 [Github 학습 테스트 코드](https://github.com/gmoon92/Toy/blob/master/spring-event/spring-scheduling/src/test/java/com/gmoon/springscheduling/config/ThreadPoolTaskSchedulerConfigTest.java) 를 참고하자.
+이외에도 cron 표현식을 지원하며, 단 하나의 인스턴스만 실행하는 `FixedDelay` 방식, 이외에도 이전 작업과 상관 없이 일정 시간이 되면 작업을 실행하는 `FixedRate` 방식을 지원한다. 그외 다양한 형식을 지원하는데 [GitHub 학습 테스트 코드](https://github.com/gmoon92/Toy/blob/master/spring-event/spring-scheduling/src/test/java/com/gmoon/springscheduling/config/ThreadPoolTaskSchedulerConfigTest.java) 를 참고하자.
 
 ## @Scheduled Annotation
 
@@ -266,6 +268,8 @@ public class ThreadPoolTaskSchedulerConfig implements AsyncConfigurer {
   }
 }
 ```
+
+본 문서에서 다루는 모든 코드는 [GitHub](https://github.com/gmoon92/Toy/tree/master/spring-event/spring-scheduling) 을 참고하자.
 
 ## 참고
 
