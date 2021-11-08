@@ -9,20 +9,26 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @EnableScheduling
-@ConditionalOnProperty(value = "schedule.type", havingValue = "default")
 public class ThreadPoolTaskSchedulerConfig {
   private static final String NAME_OF_THREAD_SCHEDULER_TASK = "ThreadPoolTaskScheduler";
   private static final int SIZE_OF_POOL = 5;
 
   @Bean
-  public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+  public ThreadPoolTaskScheduler threadPoolTaskScheduler(CustomErrorSchedulerHandler customErrorSchedulerHandler) {
     ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
     taskScheduler.setThreadNamePrefix(NAME_OF_THREAD_SCHEDULER_TASK);
     taskScheduler.setPoolSize(SIZE_OF_POOL);
+    taskScheduler.setErrorHandler(customErrorSchedulerHandler);
     return taskScheduler;
   }
 
   @Bean
+  public CustomErrorSchedulerHandler customErrorSchedulerHandler() {
+    return new CustomErrorSchedulerHandler();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "schedule.type", havingValue = "default")
   public SimpleScheduledJobs simpleScheduledJobs() {
     return new SimpleScheduledJobs();
   }

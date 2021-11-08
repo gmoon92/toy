@@ -3,18 +3,16 @@ package com.gmoon.springscheduling.config;
 import com.gmoon.springscheduling.jobs.PhoneAlarmJobs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
@@ -23,15 +21,11 @@ import java.util.concurrent.Executors;
 public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
   private final PhoneAlarmJobs alarmJobs;
-
-  @Bean
-  public Executor taskExecutor() {
-    return Executors.newSingleThreadScheduledExecutor();
-  }
+  private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
   @Override
   public void configureTasks(ScheduledTaskRegistrar registrar) {
-    registrar.setScheduler(taskExecutor());
+    registrar.setScheduler(threadPoolTaskScheduler);
     registrar.addTriggerTask(alarmJobs::wakeUp, getDynamicDelayTimeTrigger());
   }
 
@@ -40,7 +34,7 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
       Optional<Date> lastCompletionTime = Optional.ofNullable(context.lastCompletionTime());
       Instant nextExecutionTime = lastCompletionTime.orElseGet(Date::new)
               .toInstant()
-              .plusMillis(alarmJobs.plusOneSecondsDelay());
+              .plusMillis(alarmJobs.getPlusSecondsDelay());
       return Date.from(nextExecutionTime);
     };
   }

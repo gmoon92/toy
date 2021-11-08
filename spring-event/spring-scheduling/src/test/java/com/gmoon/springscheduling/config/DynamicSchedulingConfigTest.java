@@ -28,6 +28,6 @@ class DynamicSchedulingConfigTest {
     // then
     then(alarmJobs)
             .should(atLeast(2))
-            .plusOneSecondsDelay();
+            .getPlusSecondsDelay();
   }
 }
