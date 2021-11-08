@@ -2,6 +2,7 @@ package com.gmoon.springscheduling.jobs;
 
 import com.gmoon.springscheduling.jobs.exception.PhoneAlarmSchedulerException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -12,6 +13,7 @@ public class PhoneAlarmJobs {
 
   private long delay = 0;
 
+  @Async
   public void wakeUp() {
     if (delay > MAX_MILLISECONDS_OF_SLEEP_ON_PHONE) {
       throw new PhoneAlarmSchedulerException(MAX_MILLISECONDS_OF_SLEEP_ON_PHONE);
