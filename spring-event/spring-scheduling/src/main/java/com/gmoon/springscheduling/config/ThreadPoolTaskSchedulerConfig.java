@@ -1,7 +1,6 @@
 package com.gmoon.springscheduling.config;
 
 import com.gmoon.springscheduling.jobs.SimpleScheduledJobs;
-import lombok.RequiredArgsConstructor;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,12 +10,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+@Configuration
 @EnableAsync
 @EnableScheduling
-@Configuration
-@RequiredArgsConstructor
 public class ThreadPoolTaskSchedulerConfig implements AsyncConfigurer {
-  private static final String NAME_OF_THREAD_SCHEDULER_TASK = "ThreadPoolTaskScheduler";
+  private static final String NAME_OF_THREAD_SCHEDULER_TASK = "scheduler-thread-gmoon-pool";
   private static final int SIZE_OF_POOL = 5;
 
   @Bean
