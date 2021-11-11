@@ -27,7 +27,7 @@ Caused by: org.hibernate.MappingException: Repeated column in mapping for entity
 
 
 ```text
-javax.persistence.EntityExistsException: A different object with the same identifier value was already associated with the session : [com.rsupport.rv5x.core.domain.WebConsoleBannerTarget#WebConsoleBannerTarget.Id(webConsoleBannerId=1000000zwb00000003, partnerId=100000000p00000001)]
+javax.persistence.EntityExistsException: A different object with the same identifier value was already associated with the session : [com.ahea.core.domain.WebConsoleBannerTarget#WebConsoleBannerTarget.Id(webConsoleBannerId=1000000zwb00000003, partnerId=100000000p00000001)]
 
 	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:123)
 	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:181)
@@ -40,8 +40,8 @@ javax.persistence.EntityExistsException: A different object with the same identi
 	at java.lang.reflect.Method.invoke(Method.java:498)
 	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:314)
 	at com.sun.proxy.$Proxy178.flush(Unknown Source)
-	at com.rsupport.rv5x.core.base.BaseRepositoryTestCase.flushAndClear(BaseRepositoryTestCase.java:22)
-	at com.rsupport.rv5x.core.repository.WebConsoleBannerRepositoryJpaTest.tearDown(WebConsoleBannerRepositoryJpaTest.java:132)
+	at com.ahea.core.base.BaseRepositoryTestCase.flushAndClear(BaseRepositoryTestCase.java:22)
+	at com.ahea.core.repository.WebConsoleBannerRepositoryJpaTest.tearDown(WebConsoleBannerRepositoryJpaTest.java:132)
 ```
 
 ### TransientPropertyValueException 발생
