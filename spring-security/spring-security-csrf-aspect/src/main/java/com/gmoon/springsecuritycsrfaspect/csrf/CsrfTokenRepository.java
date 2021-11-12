@@ -1,49 +1,56 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
+import com.gmoon.springsecuritycsrfaspect.csrf.token.HttpSessionCsrfToken;
+import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Slf4j
 public class CsrfTokenRepository {
-  private static final String PARAMETER_NAME = "_csrf";
-  private static final String HEADER_NAME = "X-CSRF-TOKEN";
   private static final String SESSION_ATTRIBUTE_NAME = "CSRF_TOKEN";
 
   private final HttpSessionCsrfTokenRepository csrfTokenRepository;
 
   public CsrfTokenRepository() {
     csrfTokenRepository = new HttpSessionCsrfTokenRepository();
-    csrfTokenRepository.setParameterName(PARAMETER_NAME);
-    csrfTokenRepository.setHeaderName(HEADER_NAME);
     csrfTokenRepository.setSessionAttributeName(SESSION_ATTRIBUTE_NAME);
   }
 
   public void saveTokenOnHttpSession(HttpServletRequest request) {
-    CsrfToken newToken = generateToken(request);
-    saveToken(request, newToken);
+    CsrfToken newCsrfToken = HttpSessionCsrfToken.generate();
+    saveToken(request, newCsrfToken);
   }
 
-  private CsrfToken generateToken(HttpServletRequest request) {
-    return csrfTokenRepository.generateToken(request);
-  }
-
-  private void saveToken(HttpServletRequest request, CsrfToken newToken) {
-    csrfTokenRepository.saveToken(newToken, request, null);
+  private void saveToken(HttpServletRequest request, CsrfToken csrfToken) {
+    if (csrfToken == null) {
+      csrfToken = MissingCsrfToken.INSTANCE;
+    }
+    csrfTokenRepository.saveToken(csrfToken, request, null);
   }
 
   public CsrfToken getToken(HttpServletRequest request) {
-    return csrfTokenRepository.loadToken(request);
+    HttpSession session = request.getSession(false);
+    return getToken(session);
   }
 
-  public String getParameterName() {
-    return PARAMETER_NAME;
+  private CsrfToken getToken(HttpSession session) {
+    if (session == null) {
+      return MissingCsrfToken.INSTANCE;
+    }
+
+    CsrfToken csrfToken = (CsrfToken) session.getAttribute(getSessionAttributeName());
+    if (csrfToken == null) {
+      return MissingCsrfToken.INSTANCE;
+    }
+    return csrfToken;
   }
 
-  public String getHeaderName() {
-    return HEADER_NAME;
+  public String getTokenValue(HttpSession session) {
+    return getToken(session).getToken();
   }
 
   public String getSessionAttributeName() {
