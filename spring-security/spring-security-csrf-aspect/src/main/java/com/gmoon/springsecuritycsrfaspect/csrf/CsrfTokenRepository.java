@@ -17,21 +17,17 @@ public class CsrfTokenRepository {
   }
 
   private void saveToken(HttpServletRequest request, BaseCsrfToken token) {
-    boolean invalidatedSession = isInvalidatedSession(request);
     boolean missingToken = token == null;
-    if (invalidatedSession || missingToken) {
+    if (missingToken) {
       token = MissingCsrfToken.INSTANCE;
     }
 
     request.getSession().setAttribute(getSessionAttributeName(), token);
   }
 
-  private boolean isInvalidatedSession(HttpServletRequest request) {
-    return request.getSession(false) == null;
-  }
-
   public BaseCsrfToken getToken(HttpServletRequest request) {
-    if (isInvalidatedSession(request)) {
+    boolean invalidatedSession = request.getSession(false) == null;
+    if (invalidatedSession) {
       return MissingCsrfToken.INSTANCE;
     }
 
