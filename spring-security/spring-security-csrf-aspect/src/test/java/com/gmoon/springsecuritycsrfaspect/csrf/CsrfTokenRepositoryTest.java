@@ -1,5 +1,6 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
+import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class CsrfTokenRepositoryTest {
@@ -38,15 +38,9 @@ class CsrfTokenRepositoryTest {
   }
 
   @Test
-  @DisplayName("HttpSession이 없거나 저장된 csrf 토큰 값이 없을 경우 MissingCsrfToken token 값을 반환한다.")
+  @DisplayName("HttpSession에 저장된 csrf 토큰 값이 없을 경우 MissingCsrfToken token 값을 반환한다.")
   void missingCsrfTokenValue() {
-    assertAll(() -> {
-                // given
-                HttpSession session = request.getSession();
-
-                // when then
-                assertThat(csrfTokenRepository.getTokenValue(session)).isEmpty();
-              }
-              , () -> assertThat(csrfTokenRepository.getTokenValue(null)).isEmpty());
+    assertThat(csrfTokenRepository.getTokenValue(request))
+            .isEqualTo(MissingCsrfToken.INSTANCE.getValue());
   }
 }
