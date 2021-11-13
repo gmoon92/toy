@@ -1,56 +1,51 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
+import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.HttpSessionCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Slf4j
 public class CsrfTokenRepository {
   private static final String SESSION_ATTRIBUTE_NAME = "CSRF_TOKEN";
 
-  private final HttpSessionCsrfTokenRepository csrfTokenRepository;
-
-  public CsrfTokenRepository() {
-    csrfTokenRepository = new HttpSessionCsrfTokenRepository();
-    csrfTokenRepository.setSessionAttributeName(SESSION_ATTRIBUTE_NAME);
-  }
-
   public void saveTokenOnHttpSession(HttpServletRequest request) {
-    CsrfToken newCsrfToken = HttpSessionCsrfToken.generate();
-    saveToken(request, newCsrfToken);
+    BaseCsrfToken newToken = HttpSessionCsrfToken.generate();
+    saveToken(request, newToken);
   }
 
-  private void saveToken(HttpServletRequest request, CsrfToken csrfToken) {
-    if (csrfToken == null) {
-      csrfToken = MissingCsrfToken.INSTANCE;
+  private void saveToken(HttpServletRequest request, BaseCsrfToken token) {
+    boolean invalidatedSession = isInvalidatedSession(request);
+    boolean missingToken = token == null;
+    if (invalidatedSession || missingToken) {
+      token = MissingCsrfToken.INSTANCE;
     }
-    csrfTokenRepository.saveToken(csrfToken, request, null);
+
+    request.getSession().setAttribute(getSessionAttributeName(), token);
   }
 
-  public CsrfToken getToken(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    return getToken(session);
+  private boolean isInvalidatedSession(HttpServletRequest request) {
+    return request.getSession(false) == null;
   }
 
-  private CsrfToken getToken(HttpSession session) {
-    if (session == null) {
+  public BaseCsrfToken getToken(HttpServletRequest request) {
+    if (isInvalidatedSession(request)) {
       return MissingCsrfToken.INSTANCE;
     }
 
-    CsrfToken csrfToken = (CsrfToken) session.getAttribute(getSessionAttributeName());
-    if (csrfToken == null) {
+    BaseCsrfToken token = (BaseCsrfToken) request.getSession().getAttribute(getSessionAttributeName());
+    boolean missingToken = token == null;
+    if (missingToken) {
       return MissingCsrfToken.INSTANCE;
     }
-    return csrfToken;
+
+    return token;
   }
 
-  public String getTokenValue(HttpSession session) {
-    return getToken(session).getToken();
+  public String getTokenValue(HttpServletRequest request) {
+    return getToken(request).getValue();
   }
 
   public String getSessionAttributeName() {
