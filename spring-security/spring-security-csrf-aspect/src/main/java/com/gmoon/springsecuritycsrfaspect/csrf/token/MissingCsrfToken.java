@@ -1,26 +1,18 @@
 package com.gmoon.springsecuritycsrfaspect.csrf.token;
 
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.springframework.security.web.csrf.CsrfToken;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MissingCsrfToken implements CsrfToken {
-  public static final MissingCsrfToken INSTANCE = new MissingCsrfToken();
-  private static final String BLANK_STRING = "";
+@Getter
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MissingCsrfToken extends BaseCsrfToken {
+  public static final MissingCsrfToken INSTANCE;
+  private static final String BLANK_TOKEN_VALUE = "_blank";
 
-  @Override
-  public String getHeaderName() {
-    return BLANK_STRING;
-  }
+  private final String value;
 
-  @Override
-  public String getParameterName() {
-    return BLANK_STRING;
-  }
-
-  @Override
-  public String getToken() {
-    return BLANK_STRING;
+  static {
+    INSTANCE = new MissingCsrfToken(BLANK_TOKEN_VALUE);
   }
 }
