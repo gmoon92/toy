@@ -15,8 +15,8 @@ Accept: application/json
 Cookie: JSESSIONID={{jsessionId}}
 
 > {%
-client.global.set("csrf", response.body.csrf);
-client.log("csrf: " + client.global.get("csrf"));
+client.global.set("token", response.body.value);
+client.log("csrf token: " + client.global.get("token"));
 %}
 
 ### CSRF 토큰 제거
@@ -29,10 +29,10 @@ GET {{http-origin}}/user/delete
 Accept: application/json
 Content-Type: application/json
 Cookie: JSESSIONID={{jsessionId}}
-X-CSRF-TOKEN: {{csrf}}
+X-CSRF-TOKEN: {{token}}
 
 ### CSRF 파라미터 체크
-GET {{http-origin}}/user/delete?_csrf={{csrf}}
+GET {{http-origin}}/user/delete?_csrf={{token}}
 Accept: application/json
 Content-Type: application/json
 Cookie: JSESSIONID={{jsessionId}}
