@@ -11,16 +11,115 @@
 대신, Spring AOP를 통해 CSRF 공격을 방어할 수 있는 방법을 제시한다.
 
 1. [Custom Annotation](#custom-annotation)
-  - CSRF Token 생성 어노테이션
-  - CSRF Token 확인 어노테이션
+    - CSRF Token 생성 어노테이션
+    - CSRF Token 확인 어노테이션
 2. [CSRF Token Repository](#csrf-token-aspect)
 3. [CSRF Token Aspect](#csrf-token-aspect)
 
+전체 코드는 [GitHub 코드를 참고하자.](https://github.com/gmoon92/Toy/blob/master/spring-security/spring-security-csrf-aspect/README.md)
+
 ## Custom Annotation
+
+- `CSRFTokenGenerator`: CSRF Token 생성 어노테이션
+- `CSRF`: CSRF Token 체크 어노테이션
+
+```java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CSRFTokenGenerator {
+}
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CSRF {
+}
+```
 
 ## CSRF Token Repository
 
+생성된 CSRF 토큰은 HttpSession 에서 관리할 예정이다.
+
+- saveTokenOnHttpSession
+  - 새로운 토큰을 생성하고 `HTTP Session`에 저장한다.
+- getToken
+  - `HTTP Session` 에 저장된 토큰을 가져온다.
+
+> Repository 전체 코드는 [GitHub 코드를 참고하자.](https://github.com/gmoon92/Toy/blob/master/spring-security/spring-security-csrf-aspect/src/main/java/com/gmoon/springsecuritycsrfaspect/csrf/CsrfTokenRepository.java)
+
+```java
+public class CsrfTokenRepository {
+  private static final String SESSION_ATTRIBUTE_NAME = "CSRF_TOKEN";
+
+  public void saveTokenOnHttpSession(HttpServletRequest request) {
+    BaseCsrfToken newToken = HttpSessionCsrfToken.generate();
+    request.getSession().setAttribute(SESSION_ATTRIBUTE_NAME, newToken);
+  }
+
+  public BaseCsrfToken getToken(HttpServletRequest request) {
+    return (BaseCsrfToken) request.getSession().getAttribute(SESSION_ATTRIBUTE_NAME);
+  }
+}
+```
+
 ## CSRF Token Aspect
+
+- @AfterReturning 어드바이스 메서드
+  - CSRF 토큰을 생성한다.
+- @Before 어드바이스 메서드
+  - CSRF 토큰을 체크한다.
+
+> Aspect 전체 코드는 [GitHub 코드를 참고하자.](https://github.com/gmoon92/Toy/blob/master/spring-security/spring-security-csrf-aspect/src/main/java/com/gmoon/springsecuritycsrfaspect/csrf/CsrfTokenAspect.java) 
+
+```java
+@Aspect
+@RequiredArgsConstructor
+public class CsrfTokenAspect {
+  private final HttpServletRequest request;
+  private final CsrfTokenRepository csrfTokenRepository;
+
+  @AfterReturning("@annotation(com.gmoon.springsecuritycsrfaspect.csrf.annotation.CSRFTokenGenerator)")
+  public void generator() {
+    csrfTokenRepository.saveTokenOnHttpSession(request);
+  }
+
+  @Pointcut("within(@org.springframework.stereotype.Controller *)")
+  public void controller() {
+  }
+
+  @Pointcut("@annotation(com.gmoon.springsecuritycsrfaspect.csrf.annotation.CSRF)")
+  public void csrf() {
+  }
+
+  @Before("controller() && csrf()")
+  public void checkCsrfToken() {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return;
+    }
+
+    BaseCsrfToken sessionToken = csrfTokenRepository.getToken(request);
+    
+    String headerName = sessionToken.getHeaderName();
+    String parameterName = sessionToken.getParameterName();
+    String requestToken = getRequestToken(headerName, parameterName);
+    
+    checkRequestCsrfToken(sessionToken, requestToken);
+  }
+
+  private String getRequestToken(String headerName, String parameterName) {
+    String header = request.getHeader(headerName);
+    String parameter = request.getParameter(parameterName);
+    return StringUtils.defaultString(header, parameter);
+  }
+
+  private void checkRequestCsrfToken(CsrfToken sessionToken, String requestToken) {
+    boolean isExistsCRSFToken = StringUtils.equals(sessionToken.getToken(), requestToken);
+    if (!isExistsCRSFToken) {
+      throw new AccessDeniedException("csrf attack is prevented");
+    }
+  }
+}
+```
 
 ## 참고
 
