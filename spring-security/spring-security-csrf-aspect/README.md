@@ -102,7 +102,6 @@ public class CsrfTokenAspect {
     String headerName = sessionToken.getHeaderName();
     String parameterName = sessionToken.getParameterName();
     String requestToken = getRequestToken(headerName, parameterName);
-    
     checkRequestCsrfToken(sessionToken, requestToken);
   }
 
