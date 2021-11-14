@@ -29,7 +29,7 @@ public abstract class AbstractSecurityInterceptor
 
 1. SecurityContextHolder가 Authentication (인증 정보)를 가지고 있다.
 2. Authentication은 AuthenticationManager를 통해 인증 처리를 한다.
-    1. UsernamePasswordAuthenticationFiler
+    1. UsernamePasswordAuthenticationFilter
       - 폼 인증 처리를 하는 시큐리티 필터
       - 인증된 Authentication을 SecurityContextHolder에 넣어주는 필터
     2. SecurityContextPersistenceFilter
