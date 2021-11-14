@@ -1,0 +1,38 @@
+### Admin User Login
+POST {{http-origin}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=123
+
+> {%
+client.log("Headers: " +response.headers);
+client.log("Set-Cookie: " +response.headers.valueOf("Set-Cookie"));
+%}
+
+### CSRF 토큰 생성
+POST {{http-origin}}/csrf/create
+Accept: application/json
+Cookie: JSESSIONID={{jsessionId}}
+
+> {%
+client.global.set("csrf", response.body.csrf);
+client.log("csrf: " + client.global.get("csrf"));
+%}
+
+### CSRF 토큰 제거
+POST {{http-origin}}/csrf/delete
+Accept: application/json
+Cookie: JSESSIONID={{jsessionId}}
+
+### CSRF 토큰 헤더 체크
+GET {{http-origin}}/user/delete
+Accept: application/json
+Content-Type: application/json
+Cookie: JSESSIONID={{jsessionId}}
+X-CSRF-TOKEN: {{csrf}}
+
+### CSRF 파라미터 체크
+GET {{http-origin}}/user/delete?_csrf={{csrf}}
+Accept: application/json
+Content-Type: application/json
+Cookie: JSESSIONID={{jsessionId}}
