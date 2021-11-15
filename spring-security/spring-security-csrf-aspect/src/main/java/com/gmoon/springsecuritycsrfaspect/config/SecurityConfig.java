@@ -1,5 +1,6 @@
 package com.gmoon.springsecuritycsrfaspect.config;
 
+import com.gmoon.springsecuritycsrfaspect.login.CustomAuthenticationSuccessHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,10 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Slf4j
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
@@ -37,7 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
               .loginPage("/login")
               .defaultSuccessUrl("/user/info")
+              .successHandler(customSuccessHandler())
               .permitAll();
+  }
+
+  @Bean
+  public AuthenticationSuccessHandler customSuccessHandler() {
+    return new CustomAuthenticationSuccessHandler();
   }
 
   private AccessDeniedHandler accessDeniedHandler() {
