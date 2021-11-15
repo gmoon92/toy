@@ -3,13 +3,19 @@ package com.gmoon.springsecuritycsrfaspect.csrf;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.HttpSessionCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Slf4j
 public class CsrfTokenRepository {
   private static final String SESSION_ATTRIBUTE_NAME = "CSRF_TOKEN";
+
+  @Getter
+  private String sessionAttributeName;
+  
+  public CsrfTokenRepository() {
+    sessionAttributeName = SESSION_ATTRIBUTE_NAME;
+  }
 
   public void saveTokenOnHttpSession(HttpServletRequest request) {
     BaseCsrfToken newToken = HttpSessionCsrfToken.generate();
@@ -22,7 +28,7 @@ public class CsrfTokenRepository {
       token = MissingCsrfToken.INSTANCE;
     }
 
-    request.getSession().setAttribute(getSessionAttributeName(), token);
+    request.getSession().setAttribute(sessionAttributeName, token);
   }
 
   public BaseCsrfToken getToken(HttpServletRequest request) {
@@ -31,16 +37,12 @@ public class CsrfTokenRepository {
       return MissingCsrfToken.INSTANCE;
     }
 
-    BaseCsrfToken token = (BaseCsrfToken) request.getSession().getAttribute(getSessionAttributeName());
+    BaseCsrfToken token = (BaseCsrfToken) request.getSession().getAttribute(sessionAttributeName);
     boolean missingToken = token == null;
     if (missingToken) {
       return MissingCsrfToken.INSTANCE;
     }
 
     return token;
-  }
-
-  public String getSessionAttributeName() {
-    return SESSION_ATTRIBUTE_NAME;
   }
 }

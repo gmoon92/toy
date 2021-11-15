@@ -16,11 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class CsrfTokenRepositoryTest {
 
-  @Autowired
-  HttpServletRequest request;
-
-  @Autowired
-  CsrfTokenRepository csrfTokenRepository;
+  @Autowired HttpServletRequest request;
+  @Autowired CsrfTokenRepository csrfTokenRepository;
 
   @Test
   @DisplayName("생성한 CSRF 토큰을 HttpSession에 저장한다.")

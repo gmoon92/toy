@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -28,20 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 class UserControllerTest {
 
-  @Autowired
+  @Autowired HttpServletRequest request;
+  @Autowired CsrfTokenRepository repository;
+  @Autowired WebApplicationContext context;
   MockMvc mockMvc;
-
-  @Autowired
-  WebApplicationContext context;
-
-  @Autowired
-  HttpServletRequest request;
-
-  @Autowired
-  CsrfTokenRepository repository;
 
   @BeforeEach
   void setUp() {
@@ -70,7 +61,7 @@ class UserControllerTest {
   }
 
   @Test
-  @WithMockUser(username = "admin", password = "123", roles = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("CSRF 토큰을 체크한다.")
   void delete() throws Exception {
     // given
@@ -91,7 +82,7 @@ class UserControllerTest {
   }
 
   @Test
-  @WithMockUser(username = "admin", password = "123", roles = "ADMIN")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("CSRF 토큰이 없을 경우 예외가 발생한다.")
   void delete_non_csrf_token_error() throws Exception {
     // given
