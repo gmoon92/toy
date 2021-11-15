@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.csrf.CsrfToken;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +57,7 @@ public class CsrfTokenAspect {
   private BaseCsrfToken getSessionTokenOrElseThrow() {
     BaseCsrfToken sessionToken = csrfTokenRepository.getToken(request);
     if (sessionToken instanceof MissingCsrfToken) {
-      throw new AccessDeniedException("http session csrf token is null.");
+      throw new InvalidCsrfTokenException("http session csrf token is null.");
     }
     return sessionToken;
   }
@@ -66,7 +65,7 @@ public class CsrfTokenAspect {
   private String getRequestTokenOrElseThrow(String headerName, String parameterName) {
     String requestToken = getRequestToken(headerName, parameterName);
     if (StringUtils.isBlank(requestToken)) {
-      throw new AccessDeniedException("request csrf token is null.");
+      throw new InvalidCsrfTokenException("request csrf token is null.");
     }
     return requestToken;
   }
@@ -80,7 +79,7 @@ public class CsrfTokenAspect {
   private void checkRequestCsrfToken(CsrfToken sessionToken, String requestToken) {
     boolean isExistsCRSFToken = StringUtils.equals(sessionToken.getToken(), requestToken);
     if (!isExistsCRSFToken) {
-      throw new AccessDeniedException("csrf attack is prevented");
+      throw new InvalidCsrfTokenException("csrf attack is prevented");
     }
   }
 }
