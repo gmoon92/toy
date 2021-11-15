@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -100,7 +99,7 @@ class CsrfTokenAspectTest {
 
     // when then
     assertThatThrownBy(() -> testController.get())
-            .isInstanceOf(AccessDeniedException.class)
+            .isInstanceOf(InvalidCsrfTokenException.class)
             .hasMessage("http session csrf token is null.");
   }
 
@@ -112,7 +111,7 @@ class CsrfTokenAspectTest {
 
     // when then
     assertThatThrownBy(() -> testController.get())
-            .isInstanceOf(AccessDeniedException.class)
+            .isInstanceOf(InvalidCsrfTokenException.class)
             .hasMessage("request csrf token is null.");
   }
 
@@ -128,7 +127,7 @@ class CsrfTokenAspectTest {
 
     // then
     assertThatThrownBy(() -> testController.get())
-            .isInstanceOf(AccessDeniedException.class)
+            .isInstanceOf(InvalidCsrfTokenException.class)
             .hasMessage("csrf attack is prevented");
   }
 
