@@ -40,10 +40,6 @@ public class CsrfTokenRepository {
     return token;
   }
 
-  public String getTokenValue(HttpServletRequest request) {
-    return getToken(request).getValue();
-  }
-
   public String getSessionAttributeName() {
     return SESSION_ATTRIBUTE_NAME;
   }

@@ -2,6 +2,7 @@ package com.gmoon.springsecuritycsrfaspect.csrf;
 
 import com.gmoon.springsecuritycsrfaspect.csrf.annotation.CSRF;
 import com.gmoon.springsecuritycsrfaspect.csrf.annotation.CSRFTokenGenerator;
+import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +81,8 @@ class CsrfTokenAspectTest {
   void checkCsrfToken() {
     // given
     testController.generatorToken();
-    String token = csrfTokenRepository.getTokenValue(request);
+    BaseCsrfToken sessionToken = csrfTokenRepository.getToken(request);
+    String token = sessionToken.getValue();
 
     // when
     when(request.getParameter("_csrf")).thenReturn(token);
