@@ -48,7 +48,7 @@ class CsrfTokenAspectTest {
   }
 
   @Test
-  @DisplayName("@CSRFTokenGenerator 메서드는 SRF 토큰을 생성한다.")
+  @DisplayName("@CSRFTokenGenerator 메서드는 CSRF 토큰을 생성한다.")
   void generator() {
     // given
     testController.generatorToken();
