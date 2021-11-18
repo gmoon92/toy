@@ -16,6 +16,7 @@
         <module>spring-event</module>
         <module>spring-security</module>
         <module>spring-triangle</module>
+        <module>spring-utils</module>
     </modules>
 
     <properties>
