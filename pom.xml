@@ -10,6 +10,7 @@
     <name>toy</name>
 
     <modules>
+        <module>java-core</module>
         <module>google-spreadsheet</module>
         <module>hibernate</module>
         <module>spring-cache</module>
