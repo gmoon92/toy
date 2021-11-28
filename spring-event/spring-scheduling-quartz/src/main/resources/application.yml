@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/quartz?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    username: root
+    password: root
+    hikari:
+      pool-name: gmoon-pool
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+#      autoconfigure.orm.jpa.HibernateJpaConfiguration default naming strategy
+#      naming:
+#        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          time_zone: UTC
