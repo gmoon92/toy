@@ -1,18 +1,21 @@
 package com.gmoon.springschedulingquartz.server;
 
+import com.gmoon.springschedulingquartz.config.JpaConfig;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @DataJpaTest
+@Import(JpaConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
@@ -44,6 +47,19 @@ class ServerRepositoryTest {
     // then
     assertThat(webServer)
             .isEqualTo(repository.findServerByName(serverName));
+  }
+
+  @Test
+  @DisplayName("QueryDsl로 서버들을 조회한다.")
+  void testFindAllByName() {
+    // given
+    String serverName = "gmoon";
+
+    // when
+    List<Server> servers = repository.getServers(serverName);
+
+    // then
+    assertThat(servers).size().isZero();
   }
 
   private void flushAndClear() {
