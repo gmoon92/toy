@@ -62,6 +62,17 @@ class ServerRepositoryTest {
     assertThat(servers).size().isZero();
   }
 
+  @Test
+  void testGetEnabledServers() {
+    // given
+
+    // when
+    List<Server> servers = repository.getEnabledServers();
+
+    // then
+    assertThat(servers).size().isZero();
+  }
+
   private void flushAndClear() {
     entityManager.flush();
     entityManager.clear();

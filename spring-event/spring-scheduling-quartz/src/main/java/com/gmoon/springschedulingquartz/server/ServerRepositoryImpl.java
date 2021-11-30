@@ -14,6 +14,14 @@ public class ServerRepositoryImpl implements ServerRepositoryQueryDsl {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
+  public List<Server> getEnabledServers() {
+    return jpaQueryFactory.select(server)
+            .from(server)
+            .where(server.isEnabled())
+            .fetch();
+  }
+
+  @Override
   public List<Server> getServers(String serverName) {
     return jpaQueryFactory.select(server)
             .from(server)
