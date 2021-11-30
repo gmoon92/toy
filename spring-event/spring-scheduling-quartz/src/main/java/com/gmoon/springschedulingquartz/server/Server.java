@@ -1,10 +1,14 @@
 package com.gmoon.springschedulingquartz.server;
 
+import com.querydsl.core.annotations.QueryDelegate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +24,8 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@Getter
+@Immutable
 @Table(name = "nt_server",
         indexes = { @Index(name = "idx_type_host", columnList = "name, host, type") },
         uniqueConstraints = { @UniqueConstraint(name = "u_name_type_host", columnNames = { "name", "type", "host" }) })
@@ -88,5 +94,10 @@ public class Server {
   void setPrivateHost(String privateHost, int port2) {
     this.privateHost = privateHost;
     this.port2 = port2;
+  }
+
+  @QueryDelegate(Server.class)
+  public static BooleanExpression isEnabled(QServer server) {
+    return server.enabled.isTrue();
   }
 }
