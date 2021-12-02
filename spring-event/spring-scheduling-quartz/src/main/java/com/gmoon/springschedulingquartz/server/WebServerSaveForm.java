@@ -20,4 +20,14 @@ public class WebServerSaveForm {
     webServer.setPrivateHost(privateHost, port2);
     return webServer;
   }
+
+  public static WebServerSaveForm of(Server server) {
+    WebServerSaveForm saveForm = new WebServerSaveForm();
+    saveForm.name = server.getName();
+    saveForm.publicHost = server.getPublicHost();
+    saveForm.privateHost = server.getPrivateHost();
+    saveForm.port1 = server.getPort1();
+    saveForm.port2 = server.getPort2();
+    return saveForm;
+  }
 }
