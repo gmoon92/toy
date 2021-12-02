@@ -45,6 +45,8 @@ Job 은 Job 인터페이스를 구현하는 클래스를 정의하고 JobDetail�
 - [Baeldung - Introduction to Quartz](https://www.baeldung.com/quartz)
 - [Baeldung - Scheduling in Spring with Quartz](https://www.baeldung.com/spring-quartz-schedule)
 - [Quartz - GitHub](https://github.com/quartz-scheduler)
+  - [Quartz jdbc job store - sql server](https://github.com/quartz-scheduler/quartz/blob/master/quartz-core/src/main/resources/org/quartz/impl/jdbcjobstore/tables_sqlServer.sql)
+  - [Quartz jdbc job store - mysql](https://github.com/quartz-scheduler/quartz/blob/master/quartz-core/src/main/resources/org/quartz/impl/jdbcjobstore/tables_mysql.sql)
   - [Quartz - GitHub Best practices](https://github.com/quartz-scheduler/quartz/blob/master/docs/best-practices.adoc)
 - [Quartz - Examples index](http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/examples/index.html)
   - [Quartz - tutorials](http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/tutorials/index.html)
