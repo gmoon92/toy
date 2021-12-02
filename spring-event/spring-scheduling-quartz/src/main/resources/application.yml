@@ -15,10 +15,19 @@ spring:
     show-sql: true
     properties:
       hibernate:
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         format_sql: true
         use_sql_comments: true
         jdbc:
           time_zone: UTC
+
+  quartz:
+    job-store-type: jdbc
+    # http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/configuration.html#configuration-of-database-clustering-achieve-fail-over-and-load-balancing-with-jdbc-jobstore
+    properties:
+      "[org.quartz.jobStore.tablePrefix]": QUARTZ_
+      "[org.quartz.jobStore.isClustered]": true
+
 logging:
   level:
     "[org.hibernate.type.descriptor.sql]": trace
