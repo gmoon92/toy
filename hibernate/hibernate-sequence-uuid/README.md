@@ -1,0 +1,2 @@
+# Hibernate Sequence UUID Generator
+
