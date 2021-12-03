@@ -2,6 +2,7 @@ package com.gmoon.springschedulingquartz.job_store;
 
 import com.gmoon.springschedulingquartz.job_store.constants.QuartzColumnLength;
 import com.gmoon.springschedulingquartz.job_store.constants.QuartzColumnValue;
+import com.gmoon.springschedulingquartz.job_store.id.QuartzId;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +16,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 
 @Entity
@@ -56,11 +56,9 @@ public class QuartzJobDetails {
   private byte[] jobData;
 
   @Embeddable
-  @ToString
-  @EqualsAndHashCode
-  private static class Id implements Serializable {
-    @Column(name = "SCHED_NAME", length = QuartzColumnLength.SCHEDULER_NAME)
-    private String schedulerName;
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
+  private static class Id extends QuartzId {
 
     @Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME)
     private String jobName;
