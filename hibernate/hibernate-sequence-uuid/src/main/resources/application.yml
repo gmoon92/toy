@@ -1,0 +1,12 @@
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": trace
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show-sql: true
+        format_sql: true
+        use_sql_comments: true
+        ddl-auto: create-drop
