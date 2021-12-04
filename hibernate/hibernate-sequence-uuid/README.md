@@ -196,7 +196,7 @@ public DataAccessException translateExceptionIfPossible(RuntimeException ex) {
 
 ## 참고
 
-- [Hibernate Reference - GenericGenerator](https://docs.jboss.org/hibernate/orm/5.6/javadocs/org/hibernate/annotations/GenericGenerator.html)
-- [Hibernate Reference - identifiers-generators-GenericGenerator](https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#identifiers-generators-GenericGenerator)
+- [Hibernate javadocs - GenericGenerator](https://docs.jboss.org/hibernate/orm/5.6/javadocs/org/hibernate/annotations/GenericGenerator.html)
+- [Hibernate Reference - Identifiers generators GenericGenerator](https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#identifiers-generators-GenericGenerator)
 - [Hibernate Reference - Generate uuids primary keys](https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/)
 - [Hibernate Reference - Various additional generators](https://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/mapping.html#d0e5294)
