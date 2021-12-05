@@ -102,7 +102,7 @@ class TeamRepositoryTest extends InitTestDataExecutor {
 }
 ```
 
-이외 다양한 테스트 샘폴 코드는 [Github QuickPerf](https://github.com/quick-perf/quickperf-examples) 를 참고하자.
+이외 다양한 테스트 샘플 코드는 [Github QuickPerf](https://github.com/quick-perf/quickperf-examples) 를 참고하자.
 
 ## QuickPerf @Annotations
 
