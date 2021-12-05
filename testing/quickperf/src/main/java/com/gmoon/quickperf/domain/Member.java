@@ -46,4 +46,8 @@ public class Member {
   void defaultOption() {
     memberOption = MemberOption.defaultOption(this);
   }
+
+  public void removeTeam() {
+    team = null;
+  }
 }
