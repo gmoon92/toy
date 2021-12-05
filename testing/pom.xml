@@ -13,7 +13,7 @@
     <groupId>com.gmoon</groupId>
     <artifactId>testing</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>spring-triangle</name>
+    <name>spring-testing</name>
     <packaging>pom</packaging>
 
     <modules>
