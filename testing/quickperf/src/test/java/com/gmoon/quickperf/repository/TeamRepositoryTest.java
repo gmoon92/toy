@@ -52,7 +52,7 @@ class TeamRepositoryTest extends InitTestDataExecutor {
   @Test
   @ExpectSelect
   @DisplayName("모든 팀원을 조회 한다. 팀원을 주체로 fetchJoin")
-  void testFindAll_from_member_fetchJoin() {
+  void solution1() {
     // given
     EntityManager em = getEntityManager();
 
@@ -75,7 +75,7 @@ class TeamRepositoryTest extends InitTestDataExecutor {
   @Test
   @ExpectSelect
   @DisplayName("모든 팀원을 조회 한다. 팀을 주체로 컬렉션 fetch join ")
-  void testFindAll_from_team_fetchJoin() {
+  void solution2() {
     // given
     EntityManager em = getEntityManager();
 
