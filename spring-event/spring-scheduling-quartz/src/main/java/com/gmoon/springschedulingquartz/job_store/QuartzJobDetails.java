@@ -32,23 +32,23 @@ public class QuartzJobDetails {
   @Column(name = "DESCRIPTION", length = QuartzColumnLength.DESCRIPTION)
   private String description;
 
-  @Column(name = "JOB_CLASS_NAME", length = QuartzColumnLength.JOB_CLASS_NAME, nullable = false)
+  @Column(name = "JOB_CLASS_NAME", length = QuartzColumnLength.JOB_CLASS_NAME)
   private String JobClassName;
 
   @ColumnDefault(QuartzColumnValue.ENABLED)
-  @Column(name = "IS_DURABLE", length = QuartzColumnLength.IS_DURABLE, nullable = false)
+  @Column(name = "IS_DURABLE", length = QuartzColumnLength.IS_DURABLE)
   private String useDurability;
 
   @ColumnDefault(QuartzColumnValue.ENABLED)
-  @Column(name = "IS_NONCONCURRENT", length = QuartzColumnLength.IS_NONCONCURRENT, nullable = false)
+  @Column(name = "IS_NONCONCURRENT", length = QuartzColumnLength.IS_NONCONCURRENT)
   private String useNonConcurrent;
 
   @ColumnDefault(QuartzColumnValue.ENABLED)
-  @Column(name = "IS_UPDATE_DATA", length = QuartzColumnLength.IS_UPDATE_DATA, nullable = false)
+  @Column(name = "IS_UPDATE_DATA", length = QuartzColumnLength.IS_UPDATE_DATA)
   private String useUpdateData;
 
   @ColumnDefault(QuartzColumnValue.ENABLED)
-  @Column(name = "REQUESTS_RECOVERY", length = QuartzColumnLength.REQUESTS_RECOVERY, nullable = false)
+  @Column(name = "REQUESTS_RECOVERY", length = QuartzColumnLength.REQUESTS_RECOVERY)
   private String useRequestsRecovery;
 
   @Lob

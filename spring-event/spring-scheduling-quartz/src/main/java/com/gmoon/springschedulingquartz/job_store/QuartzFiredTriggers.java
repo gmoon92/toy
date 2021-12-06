@@ -27,39 +27,39 @@ public class QuartzFiredTriggers {
   @EmbeddedId
   private Id id;
 
-  @Column(name = "TRIGGER_NAME", length = QuartzColumnLength.TRIGGER_NAME, nullable = false)
+  @Column(name = "TRIGGER_NAME", length = QuartzColumnLength.TRIGGER_NAME)
   private String triggerName;
 
-  @Column(name = "TRIGGER_GROUP", length = QuartzColumnLength.TRIGGER_GROUP, nullable = false)
+  @Column(name = "TRIGGER_GROUP", length = QuartzColumnLength.TRIGGER_GROUP)
   private String triggerGroup;
 
-  @Column(name = "INSTANCE_NAME", length = QuartzColumnLength.INSTANCE_NAME, nullable = false)
+  @Column(name = "INSTANCE_NAME", length = QuartzColumnLength.INSTANCE_NAME)
   private String instanceName;
 
-  @Column(name = "FIRED_TIME", length = QuartzColumnLength.FIRED_TIME, nullable = false)
+  @Column(name = "FIRED_TIME", length = QuartzColumnLength.FIRED_TIME)
   private long firedTime;
 
-  @Column(name = "SCHED_TIME", length = QuartzColumnLength.SCHED_TIME, nullable = false)
+  @Column(name = "SCHED_TIME", length = QuartzColumnLength.SCHED_TIME)
   private long schedulerTime;
 
-  @Column(name = "PRIORITY", nullable = false)
+  @Column(name = "PRIORITY")
   private int priority;
 
-  @Column(name = "STATE", length = QuartzColumnLength.SATE ,nullable = false)
+  @Column(name = "STATE", length = QuartzColumnLength.SATE)
   private String state;
 
-  @Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME, nullable = false)
+  @Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME)
   private String jobName;
 
-  @Column(name = "JOB_GROUP", length = QuartzColumnLength.JOB_GROUP, nullable = false)
+  @Column(name = "JOB_GROUP", length = QuartzColumnLength.JOB_GROUP)
   private String jobGroup;
 
   @ColumnDefault(QuartzColumnValue.ENABLED)
-  @Column(name = "IS_NONCONCURRENT", length = QuartzColumnLength.IS_NONCONCURRENT, nullable = false)
+  @Column(name = "IS_NONCONCURRENT", length = QuartzColumnLength.IS_NONCONCURRENT)
   private String useNonConcurrent;
 
   @ColumnDefault(QuartzColumnValue.ENABLED)
-  @Column(name = "REQUESTS_RECOVERY", length = QuartzColumnLength.REQUESTS_RECOVERY, nullable = false)
+  @Column(name = "REQUESTS_RECOVERY", length = QuartzColumnLength.REQUESTS_RECOVERY)
   private String useRequestsRecovery;
 
   @Embeddable

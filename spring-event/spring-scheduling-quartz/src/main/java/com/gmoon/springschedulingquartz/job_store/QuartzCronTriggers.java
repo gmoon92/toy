@@ -36,7 +36,7 @@ public class QuartzCronTriggers {
   })
   private QuartzTriggers triggers;
 
-  @Column(name = "CRON_EXPRESSION", length = QuartzColumnLength.CRON_EXPRESSION, nullable = false)
+  @Column(name = "CRON_EXPRESSION", length = QuartzColumnLength.CRON_EXPRESSION)
   private String cronExpression;
 
   @Column(name = "TIME_ZONE_ID", length = QuartzColumnLength.TIME_ZONE_ID)
