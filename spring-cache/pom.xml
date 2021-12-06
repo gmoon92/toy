@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>spring-data-redis</module>
         <module>jpa-second-level-cache</module>
     </modules>
 
