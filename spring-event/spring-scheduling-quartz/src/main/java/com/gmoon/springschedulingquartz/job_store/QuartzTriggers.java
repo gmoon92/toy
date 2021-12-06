@@ -37,10 +37,10 @@ public class QuartzTriggers {
   })
   private QuartzJobDetails jobDetails;
 
-  @Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME, nullable = false)
+  @Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME)
   private String jobName;
 
-  @Column(name = "JOB_GROUP", length = QuartzColumnLength.JOB_GROUP, nullable = false)
+  @Column(name = "JOB_GROUP", length = QuartzColumnLength.JOB_GROUP)
   private String jobGroup;
 
   @Column(name = "DESCRIPTION", length = QuartzColumnLength.DESCRIPTION)
@@ -55,10 +55,10 @@ public class QuartzTriggers {
   @Column(name = "PRIORITY")
   private Integer priority;
 
-  @Column(name = "TRIGGER_STATE", length = QuartzColumnLength.TRIGGER_STATE, nullable = false)
+  @Column(name = "TRIGGER_STATE", length = QuartzColumnLength.TRIGGER_STATE)
   private String state;
 
-  @Column(name = "TRIGGER_TYPE", length = QuartzColumnLength.TRIGGER_TYPE, nullable = false)
+  @Column(name = "TRIGGER_TYPE", length = QuartzColumnLength.TRIGGER_TYPE)
   private String type;
 
   @Column(name = "START_TIME", length = QuartzColumnLength.START_TIME)

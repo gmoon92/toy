@@ -36,12 +36,12 @@ public class QuartzSimpleTriggers {
   })
   private QuartzTriggers triggers;
 
-  @Column(name = "REPEAT_COUNT", length = QuartzColumnLength.REPEAT_COUNT, nullable = false)
+  @Column(name = "REPEAT_COUNT", length = QuartzColumnLength.REPEAT_COUNT)
   private Long repeatCount;
 
-  @Column(name = "REPEAT_INTERVAL", length = QuartzColumnLength.REPEAT_INTERVAL, nullable = false)
+  @Column(name = "REPEAT_INTERVAL", length = QuartzColumnLength.REPEAT_INTERVAL)
   private Long repeatInterval;
 
-  @Column(name = "TIMES_TRIGGERED", length = QuartzColumnLength.TIMES_TRIGGERED, nullable = false)
+  @Column(name = "TIMES_TRIGGERED", length = QuartzColumnLength.TIMES_TRIGGERED)
   private Long timesTriggered;
 }
