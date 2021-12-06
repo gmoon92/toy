@@ -117,7 +117,7 @@ EHCache + Terracotta Server Array
   - [https://github.com/ehcache/ehcache3/issues/1097](https://github.com/ehcache/ehcache3/issues/1097)
   - [https://github.com/ehcache/ehcache3/issues/2909](https://github.com/ehcache/ehcache3/issues/2909)
 
-<expiry> : 기존 ehcache 2.x 버전에서 캐시 유지 시간을 관리하는 tti, ttl을 표현하는 속성이다.
+**`<expiry>`** : 기존 ehcache 2.x 버전에서 캐시 유지 시간을 관리하는 tti, ttl을 표현하는 속성이다.
 
 현재는 tti과 ttl을 함께 사용할 수는 없고, 원한다면 클래스를 새로 추가해서 두 속성 모두 사용되게 하면 된다. 
 
