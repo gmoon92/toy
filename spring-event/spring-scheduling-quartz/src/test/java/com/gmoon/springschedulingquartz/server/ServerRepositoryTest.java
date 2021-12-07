@@ -1,27 +1,17 @@
 package com.gmoon.springschedulingquartz.server;
 
-import com.gmoon.springschedulingquartz.config.JpaConfig;
+import com.gmoon.springschedulingquartz.test.BaseDataJpaTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestConstructor;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@Import(JpaConfig.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
-class ServerRepositoryTest {
+class ServerRepositoryTest extends BaseDataJpaTest {
   final ServerRepository repository;
-  final EntityManager entityManager;
 
   @Test
   void testCount() {
@@ -71,10 +61,5 @@ class ServerRepositoryTest {
 
     // then
     assertThat(servers).size().isZero();
-  }
-
-  private void flushAndClear() {
-    entityManager.flush();
-    entityManager.clear();
   }
 }
