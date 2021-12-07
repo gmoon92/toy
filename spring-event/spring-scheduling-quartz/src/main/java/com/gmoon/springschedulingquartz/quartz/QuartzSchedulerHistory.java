@@ -28,10 +28,6 @@ public class QuartzSchedulerHistory {
   @OneToMany(mappedBy = "schedulerHistory", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<QuartzSchedulerHistoryDetail> details = new ArrayList<>();
 
-  public static QuartzSchedulerHistory create() {
-    return new QuartzSchedulerHistory();
-  }
-
   public static QuartzSchedulerHistory from(List<String> ipAddresses) {
     QuartzSchedulerHistory history = new QuartzSchedulerHistory();
     for (String ip : ipAddresses) {
@@ -40,7 +36,7 @@ public class QuartzSchedulerHistory {
     return history;
   }
 
-  public void addHistoryDetail(String ip) {
+  private void addHistoryDetail(String ip) {
     details.add(QuartzSchedulerHistoryDetail.create(this, ip));
   }
 }
