@@ -1,6 +1,7 @@
-package com.gmoon.springschedulingquartz.job_store;
+package com.gmoon.springschedulingquartz.quartz.job_store;
 
-import com.gmoon.springschedulingquartz.job_store.id.QuartzTriggerId;
+import com.gmoon.springschedulingquartz.quartz.job_store.constants.QuartzColumnLength;
+import com.gmoon.springschedulingquartz.quartz.job_store.id.QuartzTriggerId;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,17 +14,16 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "QUARTZ_BLOB_TRIGGERS")
+@Table(name = "QRTZ_CRON_TRIGGERS")
 @Getter
 @ToString
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuartzBlobTriggers {
+public class QuartzCronTriggers {
 
   @EmbeddedId
   private QuartzTriggerId id;
@@ -36,7 +36,9 @@ public class QuartzBlobTriggers {
   })
   private QuartzTriggers triggers;
 
-  @Lob
-  @Column(name = "BLOB_DATA", columnDefinition = "BLOB")
-  private byte[] blobData;
+  @Column(name = "CRON_EXPRESSION", length = QuartzColumnLength.CRON_EXPRESSION)
+  private String cronExpression;
+
+  @Column(name = "TIME_ZONE_ID", length = QuartzColumnLength.TIME_ZONE_ID)
+  private String timeZoneId;
 }

@@ -1,7 +1,7 @@
-package com.gmoon.springschedulingquartz.job_store;
+package com.gmoon.springschedulingquartz.quartz.job_store;
 
-import com.gmoon.springschedulingquartz.job_store.constants.QuartzColumnLength;
-import com.gmoon.springschedulingquartz.job_store.id.QuartzId;
+import com.gmoon.springschedulingquartz.quartz.job_store.constants.QuartzColumnLength;
+import com.gmoon.springschedulingquartz.quartz.job_store.id.QuartzId;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,12 +15,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "QUARTZ_LOCKS")
+@Table(name = "QUARTZ_PAUSED_TRIGGER_GRPS")
 @Getter
 @ToString
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuartzLocks {
+public class QuartzPausedTriggerGrps {
 
   @EmbeddedId
   private Id id;
@@ -30,7 +30,7 @@ public class QuartzLocks {
   @EqualsAndHashCode(callSuper = true)
   private static class Id extends QuartzId {
 
-    @Column(name = "LOCK_NAME", length = QuartzColumnLength.LOCK_NAME)
-    private String lockName;
+    @Column(name = "TRIGGER_GROUP", length = QuartzColumnLength.TRIGGER_GROUP)
+    private String triggerGroup;
   }
 }
