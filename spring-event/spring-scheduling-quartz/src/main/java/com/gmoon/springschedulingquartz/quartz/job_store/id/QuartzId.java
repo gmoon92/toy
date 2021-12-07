@@ -14,7 +14,6 @@ import java.io.Serializable;
 @MappedSuperclass
 @EqualsAndHashCode
 public abstract class QuartzId implements Serializable {
-
   @Column(name = "SCHED_NAME", length = QuartzColumnLength.SCHEDULER_NAME)
   protected String schedulerName;
 }

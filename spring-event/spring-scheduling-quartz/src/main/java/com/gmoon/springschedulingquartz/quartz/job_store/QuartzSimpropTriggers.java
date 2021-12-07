@@ -24,7 +24,6 @@ import javax.persistence.Table;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuartzSimpropTriggers {
-
   @EmbeddedId
   private QuartzTriggerId id;
 

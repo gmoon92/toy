@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = { "com.gmoon.springschedulingquartz.*" })
 public class JpaConfig {
-
   @Bean
   public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
     return new JPAQueryFactory(entityManager);

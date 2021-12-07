@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuartzSchedulerHistoryDetail {
-
   @Id
   @GeneratedValue
   private Long id;

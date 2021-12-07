@@ -13,7 +13,6 @@ import javax.persistence.Embeddable;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class QuartzTriggerId extends QuartzId {
-
   @Column(name = "TRIGGER_NAME", length = QuartzColumnLength.TRIGGER_NAME)
   private String triggerName;
 
