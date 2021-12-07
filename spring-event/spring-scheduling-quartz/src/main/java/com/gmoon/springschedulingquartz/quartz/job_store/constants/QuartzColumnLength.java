@@ -1,4 +1,4 @@
-package com.gmoon.springschedulingquartz.job_store.constants;
+package com.gmoon.springschedulingquartz.quartz.job_store.constants;
 
 import com.gmoon.springschedulingquartz.exception.NotSupportedInitializerException;
 

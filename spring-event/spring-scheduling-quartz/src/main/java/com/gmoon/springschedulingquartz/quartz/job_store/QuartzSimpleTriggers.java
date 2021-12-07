@@ -1,7 +1,7 @@
-package com.gmoon.springschedulingquartz.job_store;
+package com.gmoon.springschedulingquartz.quartz.job_store;
 
-import com.gmoon.springschedulingquartz.job_store.constants.QuartzColumnLength;
-import com.gmoon.springschedulingquartz.job_store.id.QuartzTriggerId;
+import com.gmoon.springschedulingquartz.quartz.job_store.constants.QuartzColumnLength;
+import com.gmoon.springschedulingquartz.quartz.job_store.id.QuartzTriggerId;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
