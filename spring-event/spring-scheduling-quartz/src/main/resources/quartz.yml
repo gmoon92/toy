@@ -1,0 +1,7 @@
+# https://yaml.org/spec/1.2-old/spec.html#id2785586
+default-value: &default-value true
+
+service-check:
+  memory-usage: *default-value
+  disk-space: *default-value
+  cpu-usage: *default-value
