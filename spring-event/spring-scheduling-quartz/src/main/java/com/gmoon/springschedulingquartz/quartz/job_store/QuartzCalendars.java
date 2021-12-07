@@ -22,7 +22,6 @@ import javax.persistence.Table;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuartzCalendars {
-
   @EmbeddedId
   private Id id;
 

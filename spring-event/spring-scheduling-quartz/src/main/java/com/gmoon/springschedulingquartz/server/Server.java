@@ -33,7 +33,6 @@ import static lombok.AccessLevel.PROTECTED;
 @ToString
 @EqualsAndHashCode(of = { "name", "type", "host" })
 public class Server {
-
   @Id
   @GeneratedValue
   private Long id;

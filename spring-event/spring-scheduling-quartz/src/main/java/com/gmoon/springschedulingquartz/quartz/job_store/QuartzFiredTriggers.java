@@ -23,7 +23,6 @@ import javax.persistence.Table;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuartzFiredTriggers {
-
   @EmbeddedId
   private Id id;
 

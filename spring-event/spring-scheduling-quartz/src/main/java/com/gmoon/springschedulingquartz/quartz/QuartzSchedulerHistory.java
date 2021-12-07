@@ -20,7 +20,6 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuartzSchedulerHistory {
-
   @Id
   @GeneratedValue
   private Long id;
