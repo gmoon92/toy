@@ -34,7 +34,7 @@ spring:
       ###########################
 #      "[org.quartz.scheduler.instanceName]": NON_CLUSTERED
       "[org.quartz.scheduler.instanceId]": AUTO
-      "[org.quartz.scheduler.instanceIdGenerator.class]": com.gmoon.springschedulingquartz.spi.CustomInstanceIdGenerator
+      "[org.quartz.scheduler.instanceIdGenerator.class]": com.gmoon.springschedulingquartz.quartz.core.CustomInstanceIdGenerator
       ###########################
       # thread pool
       ###########################
