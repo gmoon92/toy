@@ -25,11 +25,17 @@ public class QuartzSchedulerHistory {
   @GeneratedValue
   private Long id;
 
+  private String instanceId;
+
   @OneToMany(mappedBy = "schedulerHistory", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<QuartzSchedulerHistoryDetail> details = new ArrayList<>();
 
-  public static QuartzSchedulerHistory from(List<String> ipAddresses) {
-    QuartzSchedulerHistory history = new QuartzSchedulerHistory();
+  private QuartzSchedulerHistory(String instanceId) {
+    this.instanceId = instanceId;
+  }
+
+  public static QuartzSchedulerHistory from(String instanceId, List<String> ipAddresses) {
+    QuartzSchedulerHistory history = new QuartzSchedulerHistory(instanceId);
     for (String ip : ipAddresses) {
       history.addHistoryDetail(ip);
     }
