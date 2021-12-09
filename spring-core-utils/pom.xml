@@ -10,10 +10,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.gmoon</groupId>
-    <artifactId>spring-utils</artifactId>
+    <artifactId>spring-core-utils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-utils</name>
-    <description>spring-utils</description>
+    <name>spring-core-utils</name>
+    <description>spring-core-utils</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
