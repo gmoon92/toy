@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="5 seconds">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <!--<include resource="org/springframework/boot/logging/logback/console-appender.xml" />-->
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{HH:mm:ss.SSS}){faint} %clr(%5p) %clr([%thread]){magenta} %clr(%-35.40logger{39}){cyan} %clr(:){red} %m%n%wEx"/>
+
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- in the absence of the class attribute, assume
+   ch.qos.logback.core.hook.DefaultShutdownHook -->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+    <logger name="com.gmoon.springlogging" level="INFO" />
+
+    <root level="error">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
