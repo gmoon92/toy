@@ -2,6 +2,12 @@
 default-value: &default-value true
 
 service-check:
-  memory-usage: *default-value
-  disk-space: *default-value
-  cpu-usage: *default-value
+  jvm-memory-usage:
+    enabled: *default-value
+    threshold-percentage: 98
+  disk-space:
+    enabled: *default-value
+    threshold-percentage: 98
+  cpu-usage:
+    enabled: *default-value
+    threshold-percentage: 90
