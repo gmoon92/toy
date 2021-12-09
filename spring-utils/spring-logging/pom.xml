@@ -9,10 +9,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>com.gmoon</groupId>
-    <artifactId>spring-log4j2</artifactId>
+    <artifactId>spring-logging</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-log4j2</name>
-    <description>spring-log4j2</description>
+    <name>spring-logging</name>
+    <description>spring-logging</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>

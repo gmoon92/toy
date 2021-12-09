@@ -18,7 +18,7 @@
 
 	<modules>
 		<module>spring-core-utils</module>
-		<module>spring-log4j2</module>
+		<module>spring-logging</module>
 	</modules>
 
 	<properties>
