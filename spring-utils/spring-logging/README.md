@@ -36,13 +36,13 @@ logging.group.gmoon=com.gmoon,com.gmoon.springlogging
 logging.level.gmoon=debug
 ```
 
-## 1. Customization
+## Customization
 
 가능하면 커스텀 로깅 파일 이름은  `*-spring.xml` 을 권장한다.
 
 ![logging-customization](img/logging-customization.png)
 
-### [1.1. Logback](http://logback.qos.ch/manual/configuration.html)
+## [1. Logback](http://logback.qos.ch/manual/configuration.html)
 
 `Spring boot` 는 다양한 Logging framework 중에 기본적으로 `Logback`을 지원한다.
 
@@ -61,7 +61,7 @@ Logback 설정 방법은 비교적 간단하다.
 - application.properties
 - logback-spring.xml
 
-### 1.1.1. Dependency
+## 1.1. Dependency
 
 ```xml
 <dependency>
@@ -70,7 +70,7 @@ Logback 설정 방법은 비교적 간단하다.
 </dependency>
 ```
 
-### 1.1.2. logback-spring.xml
+## 1.2. logback-spring.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -101,7 +101,7 @@ Logback 설정 방법은 비교적 간단하다.
 </configuration>
 ```
 
-### 1.1.3. Custom logback file path
+## 1.3. Custom logback file path
 
 기본적으로 `Spring boot`는 커스텀된 logging 파일 이름에 대해 **`*-spring.xml`** 으로 인식한다.
 
@@ -116,7 +116,7 @@ Logback 설정 방법은 비교적 간단하다.
 logging.config=classpath:custom-logback.xml
 ```
 
-## [1.2. Apache Log4j2](https://logging.apache.org/log4j/2.x/)
+## [2. Apache Log4j2](https://logging.apache.org/log4j/2.x/)
 
 **`Log4j2`** 는 성능적으로 보면 Logback 보다 더 효율적인 로깅 프레임워크다.
 
@@ -124,7 +124,7 @@ logging.config=classpath:custom-logback.xml
 
 > [참고 - logging.apache.org](https://logging.apache.org/log4j/log4j-2.12.1/performance.html)
 
-## 1.2.1. Dependency
+## 2.1. Dependency
 
 우선 Logback 을 예외 시켜고 `spring-boot-starter-log4j2` 추가해 주자.
 
@@ -145,7 +145,7 @@ logging.config=classpath:custom-logback.xml
 </dependency>
 ```
 
-### 1.2.2. Switching log4j2
+## 2.2. Switching log4j2
 
 정상적으로 Log4j2 로 변경됐는지 확인해보자. 
 
@@ -166,7 +166,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 
 ![switching-system-to-log4j2](img/logging-application-listener.png)
 
-### 1.2.3. Custom log4j2
+## 2.3. Log4j2 XML Configuration
 
 properties 설정 방법도 있지만 XML 설정을 다룬다.
 
@@ -197,7 +197,7 @@ properties 설정 방법도 있지만 XML 설정을 다룬다.
 </Configuration>
 ```
 
-### Spring boot 3 switching log4j2?!
+## Spring boot 3 switching log4j2?!
 
 그렇다면 왜 `Spring boot` 는 `Logback` 을 기본 로깅 프레임워크로 선택했을까?
 
