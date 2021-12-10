@@ -4,6 +4,7 @@ import com.gmoon.springschedulingquartz.server.Server;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
@@ -17,18 +18,18 @@ public class WebServerSaveForm {
 
   public Server createEnabledWebServer() {
     Server webServer = Server.createWebServer(name);
-    webServer.setPublicUrl(publicHost, port1);
-    webServer.setPrivateHost(privateHost, port2);
-    return webServer;
+    return toEntity(webServer);
   }
 
-  public static WebServerSaveForm of(Server server) {
+  public Server toEntity(Server from) {
+    from.setPublicUrl(publicHost, port1);
+    from.setPrivateHost(privateHost, port2);
+    return from;
+  }
+
+  public static WebServerSaveForm from(Server server) {
     WebServerSaveForm saveForm = new WebServerSaveForm();
-    saveForm.name = server.getName();
-    saveForm.publicHost = server.getPublicHost();
-    saveForm.privateHost = server.getPrivateHost();
-    saveForm.port1 = server.getPort1();
-    saveForm.port2 = server.getPort2();
+    BeanUtils.copyProperties(server, saveForm);
     return saveForm;
   }
 }
