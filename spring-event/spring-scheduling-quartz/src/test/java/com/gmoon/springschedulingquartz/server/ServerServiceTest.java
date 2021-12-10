@@ -1,5 +1,6 @@
 package com.gmoon.springschedulingquartz.server;
 
+import com.gmoon.springschedulingquartz.model.WebServerSaveForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ class ServerServiceTest {
   void testGetServer() {
     // given
     String serverName = "gmoonKR";
-    service.createWebServer(createWebServerForm(serverName));
+    service.saveWebServer(createWebServerForm(serverName));
 
     // when
     Server server = service.getServer(serverName);
@@ -50,7 +51,7 @@ class ServerServiceTest {
   private void saveDummyWebServer(int savableCount) {
     Stream.generate(this::createWebServerForm)
             .limit(savableCount)
-            .forEach(service::createWebServer);
+            .forEach(service::saveWebServer);
   }
 
   private WebServerSaveForm createWebServerForm() {
