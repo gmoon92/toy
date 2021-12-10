@@ -85,11 +85,6 @@ public class Server {
             .build();
   }
 
-  public void setServerNameAndType(String name, ServerType type) {
-    this.name = name;
-    this.type = type;
-  }
-
   public void setPublicUrl(String publicHost, int port1) {
     this.publicHost = publicHost;
     this.port1 = port1;
