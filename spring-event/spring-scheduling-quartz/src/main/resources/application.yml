@@ -22,6 +22,7 @@ spring:
         use_sql_comments: *show-sql
         jdbc:
           time_zone: UTC
+    open-in-view: false
 
   quartz:
     job-store-type: jdbc
