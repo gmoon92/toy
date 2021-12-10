@@ -1,5 +1,6 @@
-package com.gmoon.springschedulingquartz.server;
+package com.gmoon.springschedulingquartz.model;
 
+import com.gmoon.springschedulingquartz.server.Server;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
