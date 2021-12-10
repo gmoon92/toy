@@ -1,11 +1,14 @@
 package com.gmoon.springschedulingquartz.server;
 
+import com.gmoon.springschedulingquartz.model.WebServerSaveForm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +28,14 @@ public class ServerService {
   }
 
   @Transactional
-  public WebServerSaveForm createWebServer(WebServerSaveForm saveForm) {
-    Server savedServer = serverRepository.save(saveForm.createEnabledWebServer());
-    return WebServerSaveForm.of(savedServer);
+  @CacheEvict(value = ServerCacheNames.SERVER_FIND_BY_NAME, key = "#saveForm.name")
+  public WebServerSaveForm saveWebServer(WebServerSaveForm saveForm) {
+    String name = saveForm.getName();
+    Server webServer = Optional.ofNullable(serverRepository.findServerByName(name))
+            .map(saveForm::toEntity)
+            .orElseGet(saveForm::createEnabledWebServer);
+
+    Server savedServer = serverRepository.save(webServer);
+    return WebServerSaveForm.from(savedServer);
   }
 }
