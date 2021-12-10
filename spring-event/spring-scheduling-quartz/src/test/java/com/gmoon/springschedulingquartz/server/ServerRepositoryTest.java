@@ -1,5 +1,6 @@
 package com.gmoon.springschedulingquartz.server;
 
+import com.gmoon.springschedulingquartz.model.WebServerSaveForm;
 import com.gmoon.springschedulingquartz.test.BaseDataJpaTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
