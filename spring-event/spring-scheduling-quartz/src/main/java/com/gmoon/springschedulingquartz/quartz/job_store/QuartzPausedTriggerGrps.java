@@ -27,7 +27,7 @@ public class QuartzPausedTriggerGrps {
   @Embeddable
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  private static class Id extends QuartzId {
+  protected static class Id extends QuartzId {
 
     @Column(name = "TRIGGER_GROUP", length = QuartzColumnLength.TRIGGER_GROUP)
     private String triggerGroup;

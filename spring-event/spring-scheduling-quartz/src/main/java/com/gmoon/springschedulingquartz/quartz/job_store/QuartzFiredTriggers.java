@@ -64,7 +64,7 @@ public class QuartzFiredTriggers {
   @Embeddable
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  private static class Id extends QuartzId {
+  protected static class Id extends QuartzId {
 
     @Column(name = "ENTRY_ID", length = QuartzColumnLength.ENTRY_ID)
     private String entryId;

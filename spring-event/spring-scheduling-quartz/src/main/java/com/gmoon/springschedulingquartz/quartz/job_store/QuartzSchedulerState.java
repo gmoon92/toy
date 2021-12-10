@@ -33,7 +33,7 @@ public class QuartzSchedulerState {
   @Embeddable
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  private static class Id extends QuartzId {
+  protected static class Id extends QuartzId {
 
     @Column(name = "INSTANCE_NAME", length = QuartzColumnLength.INSTANCE_NAME)
     private String instanceName;

@@ -57,7 +57,7 @@ public class QuartzJobDetails {
   @Embeddable
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  private static class Id extends QuartzId {
+  protected static class Id extends QuartzId {
 
     @Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME)
     private String jobName;
