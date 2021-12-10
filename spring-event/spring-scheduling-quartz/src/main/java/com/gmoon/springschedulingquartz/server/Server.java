@@ -77,7 +77,7 @@ public class Server {
     this.enabled = enabled;
   }
 
-  static Server createWebServer(String name) {
+  public static Server createWebServer(String name) {
     return Server.builder()
             .name(name)
             .type(ServerType.WEB)
@@ -85,12 +85,17 @@ public class Server {
             .build();
   }
 
-  void setPublicUrl(String publicHost, int port1) {
+  public void setServerNameAndType(String name, ServerType type) {
+    this.name = name;
+    this.type = type;
+  }
+
+  public void setPublicUrl(String publicHost, int port1) {
     this.publicHost = publicHost;
     this.port1 = port1;
   }
 
-  void setPrivateHost(String privateHost, int port2) {
+  public void setPrivateHost(String privateHost, int port2) {
     this.privateHost = privateHost;
     this.port2 = port2;
   }
