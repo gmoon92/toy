@@ -32,7 +32,7 @@ public class QuartzCalendars {
   @Embeddable
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  private static class Id extends QuartzId {
+  protected static class Id extends QuartzId {
 
     @Column(name = "CALENDAR_NAME", length = QuartzColumnLength.CALENDAR_NAME)
     private String calendarName;

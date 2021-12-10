@@ -27,7 +27,7 @@ public class QuartzLocks {
   @Embeddable
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  private static class Id extends QuartzId {
+  protected static class Id extends QuartzId {
 
     @Column(name = "LOCK_NAME", length = QuartzColumnLength.LOCK_NAME)
     private String lockName;
