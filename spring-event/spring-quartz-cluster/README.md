@@ -7,7 +7,7 @@
 - 애플리케이션의 런타임 환경 관리를 담당한다.
 - 멀티 스레드 아키텍처를 기반으로 동작되며 확장성을 보장한다. 
 
-모든 소스는 [Gihub](https://github.com/gmoon92/Toy/tree/master/spring-event/spring-scheduling-quartz) 을 참고하자
+본 문서에 사용한 전체 소스는 [GitHub](https://github.com/gmoon92/Toy/tree/master/spring-event/spring-quartz-cluster) 을 참고하자
 
 ## Environment
 
@@ -124,7 +124,7 @@ scheduler.start();
 - [Quartz JobStore - Oracle](https://github.com/quartz-scheduler/quartz/blob/master/quartz-core/src/main/resources/org/quartz/impl/jdbcjobstore/tables_oracle.sql)
 
 > 참고로 필자는 엔티티를 통한 스케쥴러 조회 및 엔버스 히스토리를 관리하기 위해 Mysql 기반으로 도메인을 구성했다. <br/>
-> 소스는 [Github](https://github.com/gmoon92/Toy/blob/master/spring-event/spring-scheduling-quartz/src/main/java/com/gmoon/springschedulingquartz/quartz/job_store/QuartzBlobTriggers.java) 을 참고하자.
+> 소스는 [GitHub](https://github.com/gmoon92/Toy/tree/master/spring-event/spring-quartz-cluster/src/main/java/com/gmoon/springquartzcluster/quartz/job_store) 을 참고하자.
 
 ## Spring Quartz Properties
 
