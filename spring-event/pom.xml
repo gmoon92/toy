@@ -19,7 +19,7 @@
     <modules>
         <module>spring-async</module>
         <module>spring-scheduling</module>
-        <module>spring-scheduling-quartz</module>
+        <module>spring-quartz-cluster</module>
     </modules>
 
     <properties>
