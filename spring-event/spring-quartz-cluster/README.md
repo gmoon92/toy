@@ -164,7 +164,7 @@ spring:
       "[org.quartz.jobStore.clusterCheckinInterval]": 20000
 ```
 
-> 아래 자세한 옵션들은 [www.quartz-scheduler.org - Database clustering](http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/configuration.html#configuration-of-database-clustering-achieve-fail-over-and-load-balancing-with-jdbc-jobstore) 을 참고하자
+> 자세한 Quartz 옵션은 [www.quartz-scheduler.org - Database clustering](http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/configuration.html#configuration-of-database-clustering-achieve-fail-over-and-load-balancing-with-jdbc-jobstore) 을 참고하자
 
 ## org.springframework.scheduling.quartz.QuartzJobBean
 
