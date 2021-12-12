@@ -1,13 +1,13 @@
-package com.gmoon.springsecuritycors;
+package com.gmoon.resourceserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringSecurityCorsApplication {
+public class ResourceServerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(SpringSecurityCorsApplication.class, args);
+    SpringApplication.run(ResourceServerApplication.class, args);
   }
 
 }
