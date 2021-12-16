@@ -1,0 +1,52 @@
+## CORS Rest API Test
+### 북마크 저장
+POST http://localhost:9000/bookmark/{{$uuid}}
+Accept: application/json
+Origin: http://localhost:8081
+
+> {%
+function logging(){
+    client.log("===============CONSOLE===============");
+    client.log("Access-Control-Request-Headers   : " + response.headers.valueOf("Access-Control-Request-Headers"));
+    client.log("Access-Control-Request-Method    : " + response.headers.valueOf("Access-Control-Request-Method"));
+    client.log("Set-Cookie                       : " + response.headers.valueOf("Set-Cookie"));
+    client.log("status                           : " + response.status);
+    client.log("body                             : " + JSON.stringify(response.body));
+    client.log("=====================================");
+} logging();
+
+function setGlobalValue(find, key, value){
+    if (key == find) {
+        client.global.set(find, value);
+    }
+}
+
+JSON.parse(JSON.stringify(response.body), (key, value) => {
+    setGlobalValue("id", key, value);
+    setGlobalValue("name", key, value);
+});
+%}
+
+### 모든 북마크 조회
+GET http://localhost:9000/bookmark
+Origin: http://localhost:8081
+
+### 북마크 조회
+GET http://localhost:9000/bookmark/{{name}}
+Origin: http://localhost
+
+### 북마크 삭제
+DELETE http://localhost:9000/bookmark/{{name}}
+Origin: http://localhost
+
+######################################################################
+######################################################################
+######################################################################
+### Invalid CORS request
+### 북마크 조회
+GET http://localhost:9000/bookmark/{{name}}
+Origin: http://locaIhost:8081
+
+### 모든 북마크 조회
+GET http://localhost:9000/bookmark
+Origin: http://locaIhost:8081
