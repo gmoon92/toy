@@ -11,12 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @ResponseBody
 @RequestMapping("/bookmark")
 @RequiredArgsConstructor
 public class BookmarkController {
   private final BookmarkRepository repository;
+
+  @GetMapping
+  public ResponseEntity<List<Bookmark>> getAll() {
+    return ResponseEntity.ok(repository.findAll());
+  }
 
   @GetMapping("/{name}")
   public ResponseEntity<Bookmark> get(@PathVariable String name) {
