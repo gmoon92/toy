@@ -39,7 +39,7 @@ public class BookmarkController {
 
   @DeleteMapping("/{name}")
   public ResponseEntity<Void> remove(@PathVariable String name) {
-    repository.delete(Bookmark.create(name));
+    repository.delete(repository.findBookmarkByName(name));
     return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .build();
   }
