@@ -25,8 +25,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http
             .cors().and()
             .csrf().disable()
-            .authorizeRequests(requests -> requests.anyRequest().permitAll())
-            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            .authorizeRequests(requests
+                    -> requests.anyRequest().permitAll())
+            .sessionManagement(sessionManagement
+                    -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
   }
 
   @Bean
