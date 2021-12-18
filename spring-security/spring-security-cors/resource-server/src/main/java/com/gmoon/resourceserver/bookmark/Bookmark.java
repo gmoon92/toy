@@ -18,7 +18,7 @@ import java.io.Serializable;
 @ToString(of = "name")
 @EqualsAndHashCode(of = "name")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = { @UniqueConstraint(name = "u_id_and_name", columnNames = { "id", "name" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(name = "u_name", columnNames = { "name" }) })
 public class Bookmark implements Serializable {
   @Id
   @GeneratedValue
