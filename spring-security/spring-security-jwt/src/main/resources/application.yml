@@ -1,1 +1,4 @@
-
+api:
+  version: v1
+jwt:
+  secret: SERET
