@@ -44,7 +44,8 @@ class OriginPatternTest {
 		patternValue = patternValue.replace("*", "\\E.*\\Q");
 
 		if (portList != null) {
-			patternValue += (portList.equals(CorsConfiguration.ALL) ? "(:\\d+)?" : ":(" + portList.replace(',', '|') + ")");
+			patternValue += (portList.equals(CorsConfiguration.ALL) ? "(:\\d+)?" :
+				":(" + portList.replace(',', '|') + ")");
 		}
 
 		return Pattern.compile(patternValue);

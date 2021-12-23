@@ -101,7 +101,8 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 			transaction.commit();
 		} catch (Exception ex) {
 			log.warn(
-				String.format("[Error] Update RevisionModifiedEntity id : %s, target : %s, entityId : %s", id, eventStatus),
+				String.format("[Error] Update RevisionModifiedEntity id : %s, target : %s, entityId : %s", id,
+					eventStatus),
 				ex);
 			transaction.rollback();
 		}

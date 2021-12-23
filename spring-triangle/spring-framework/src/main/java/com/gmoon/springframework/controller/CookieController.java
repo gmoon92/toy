@@ -21,7 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CookieController {
 
 	@GetMapping("/create/{name}")
-	public String create(Model model, @PathVariable("name") String cookieName, HttpServletResponse httpServletResponse) {
+	public String create(Model model, @PathVariable("name") String cookieName,
+		HttpServletResponse httpServletResponse) {
 		log.info("create cookie start...");
 		String cookieValue = "data";
 		Cookie newCookie = new Cookie(cookieName, cookieValue);
