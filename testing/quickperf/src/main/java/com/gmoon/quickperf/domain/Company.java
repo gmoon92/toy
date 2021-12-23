@@ -1,17 +1,18 @@
 package com.gmoon.quickperf.domain;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Entity
@@ -20,22 +21,22 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
 
-  @Id
-  @GeneratedValue
-  private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-  @OneToMany(mappedBy = "company")
-  private List<Team> teams = new ArrayList<>();
+	@OneToMany(mappedBy = "company")
+	private List<Team> teams = new ArrayList<>();
 
-  private String name;
+	private String name;
 
-  public static Company create(String name) {
-    Company company = new Company();
-    company.name = name;
-    return company;
-  }
+	public static Company create(String name) {
+		Company company = new Company();
+		company.name = name;
+		return company;
+	}
 
-  void addTeam(Team team) {
-    teams.add(team);
-  }
+	void addTeam(Team team) {
+		teams.add(team);
+	}
 }

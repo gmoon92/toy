@@ -1,6 +1,10 @@
 package com.gmoon.springscheduling.config;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.Set;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,67 +20,65 @@ import org.springframework.scheduling.config.ScheduledTaskHolder;
 import org.springframework.scheduling.config.Task;
 import org.springframework.scheduling.config.TriggerTask;
 
-import java.util.Arrays;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
 class CustomErrorSchedulerHandlerTest {
 
-  @Autowired
-  ApplicationContext applicationContext;
+	@Autowired
+	ApplicationContext applicationContext;
 
-  @Autowired
-  ScheduledTaskHolder scheduledTaskHolder;
+	@Autowired
+	ScheduledTaskHolder scheduledTaskHolder;
 
-  @Test
-  @DisplayName("5.0.2 부터 도입된 ScheduledTaskHolder 를 통해 " +
-          "등록된 스케쥴러 테스크를 확인한다.")
-  void getScheduledTasks() {
-    // given
-    Set<ScheduledTask> tasks = scheduledTaskHolder.getScheduledTasks();
+	@Test
+	@DisplayName("5.0.2 부터 도입된 ScheduledTaskHolder 를 통해 " +
+		"등록된 스케쥴러 테스크를 확인한다.")
+	void getScheduledTasks() {
+		// given
+		Set<ScheduledTask> tasks = scheduledTaskHolder.getScheduledTasks();
 
-    // when
-    ScheduledAnnotationBeanPostProcessor postProcessor = applicationContext.getBean(ScheduledAnnotationBeanPostProcessor.class);
+		// when
+		ScheduledAnnotationBeanPostProcessor postProcessor = applicationContext.getBean(
+			ScheduledAnnotationBeanPostProcessor.class);
 
-    // then
-    assertThat(tasks)
-            .isNotEmpty()
-            .containsAll(postProcessor.getScheduledTasks());
-  }
+		// then
+		assertThat(tasks)
+			.isNotEmpty()
+			.containsAll(postProcessor.getScheduledTasks());
+	}
 
-  @Test
-  @Disabled
-  @DisplayName("3초 이상 알람이 실행시 강제 이셉션이 발생된다. 스케쥴러 이셉션을 로깅한다.")
-  void handleError() throws InterruptedException {
-    Set<ScheduledTask> tasks = scheduledTaskHolder.getScheduledTasks();
+	@Test
+	@Disabled
+	@DisplayName("3초 이상 알람이 실행시 강제 이셉션이 발생된다. 스케쥴러 이셉션을 로깅한다.")
+	void handleError() throws InterruptedException {
+		Set<ScheduledTask> tasks = scheduledTaskHolder.getScheduledTasks();
 
-    while (true) {
-      printStatusOfScheduledTasks(tasks);
-      Thread.sleep(1000);
-    }
-  }
+		while (true) {
+			printStatusOfScheduledTasks(tasks);
+			Thread.sleep(1000);
+		}
+	}
 
-  private void printStatusOfScheduledTasks(Set<ScheduledTask> tasks) {
-    for (ScheduledTask scheduledTask : tasks) {
-      Task task = getTask(scheduledTask);
-      log.info("task type is {}", task.getClass());
-      log.info("task: {}", task);
-    }
-  }
+	private void printStatusOfScheduledTasks(Set<ScheduledTask> tasks) {
+		for (ScheduledTask scheduledTask : tasks) {
+			Task task = getTask(scheduledTask);
+			log.info("task type is {}", task.getClass());
+			log.info("task: {}", task);
+		}
+	}
 
-  private <T extends Task> T getTask(ScheduledTask scheduledTask) {
-    final Class<T>[] ALLOWED_TASK_TYPES = new Class[]{ TriggerTask.class,
-            CronTask.class,
-            FixedDelayTask.class, FixedRateTask.class };
+	private <T extends Task> T getTask(ScheduledTask scheduledTask) {
+		final Class<T>[] ALLOWED_TASK_TYPES = new Class[] {TriggerTask.class,
+			CronTask.class,
+			FixedDelayTask.class, FixedRateTask.class};
 
-    Task task = scheduledTask.getTask();
-    return Arrays.stream(ALLOWED_TASK_TYPES)
-            .filter(clazz -> clazz == task.getClass())
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException(String.format("Not allowed task type is %s", task.getClass())))
-            .cast(task);
-  }
+		Task task = scheduledTask.getTask();
+		return Arrays.stream(ALLOWED_TASK_TYPES)
+			.filter(clazz -> clazz == task.getClass())
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException(String.format("Not allowed task type is %s", task.getClass())))
+			.cast(task);
+	}
 }

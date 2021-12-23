@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 public class SpringSecurityWhiteshipApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(com.gmoon.springsecuritywhiteship.SpringSecurityWhiteshipApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(com.gmoon.springsecuritywhiteship.SpringSecurityWhiteshipApplication.class, args);
+	}
 
 }

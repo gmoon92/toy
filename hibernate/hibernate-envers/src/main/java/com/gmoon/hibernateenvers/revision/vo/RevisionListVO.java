@@ -1,77 +1,79 @@
 package com.gmoon.hibernateenvers.revision.vo;
 
+import java.io.Serializable;
+import java.util.Date;
+
+import org.springframework.data.domain.Sort;
+
 import com.gmoon.hibernateenvers.global.annotation.TODO;
 import com.gmoon.hibernateenvers.global.utils.RevisionConverter;
 import com.gmoon.hibernateenvers.global.vo.BaseSearchVO;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.domain.Sort;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ToString
 public class RevisionListVO {
 
-  @Getter
-  @Setter
-  private SearchVO searchVO = new SearchVO();
+	@Getter
+	@Setter
+	private SearchVO searchVO = new SearchVO();
 
-  @Getter
-  @Setter
-  public static class SearchVO extends BaseSearchVO {
+	@Getter
+	@Setter
+	public static class SearchVO extends BaseSearchVO {
 
-    public enum SearchType {
-      EMPTY, MEMBER_NAME, TARGET_TEAM_NAME, TARGET_MEMBER_NAME
-    }
+		public enum SearchType {
+			EMPTY, MEMBER_NAME, TARGET_TEAM_NAME, TARGET_MEMBER_NAME
+		}
 
-    private RevisionTarget revisionTarget;
+		private RevisionTarget revisionTarget;
 
-    private SearchType searchType = SearchType.EMPTY;
+		private SearchType searchType = SearchType.EMPTY;
 
-    @TODO("order by type safe code...?")
-    public SearchVO() {
-      super(Sort.by(Sort.Direction.DESC, "revision.createdDt"));
-    }
+		@TODO("order by type safe code...?")
+		public SearchVO() {
+			super(Sort.by(Sort.Direction.DESC, "revision.createdDt"));
+		}
 
-    public void setPage(Integer page) {
-      this.page = page;
-    }
-  }
+		public void setPage(Integer page) {
+			this.page = page;
+		}
+	}
 
-  @Getter
-  @ToString
-  public static class DataVO implements Serializable {
-    private final long serialVersionUID = 4214996561651068387L;
+	@Getter
+	@ToString
+	public static class DataVO implements Serializable {
+		private final long serialVersionUID = 4214996561651068387L;
 
-    private Long rev;
+		private Long rev;
 
-    private Date revDate;
+		private Date revDate;
 
-    private String memberId;
+		private String memberId;
 
-    private String memberName;
+		private String memberName;
 
-    private RevisionTarget revisionTarget;
+		private RevisionTarget revisionTarget;
 
-    private Object entityId;
+		private Object entityId;
 
-    private String targetMemberName;
+		private String targetMemberName;
 
-    @QueryProjection
-    public DataVO(Long rev, Date revDate, String memberId, String memberName, RevisionTarget revisionTarget, byte[] entityId, String targetMemberName) {
-      this.rev = rev;
-      this.revDate = revDate;
-      this.memberId = memberId;
-      this.memberName = memberName;
-      this.revisionTarget = revisionTarget;
-      this.entityId = RevisionConverter.deSerializedObject(entityId);
-      this.targetMemberName = targetMemberName;
-    }
-  }
-
+		@QueryProjection
+		public DataVO(Long rev, Date revDate, String memberId, String memberName, RevisionTarget revisionTarget,
+			byte[] entityId, String targetMemberName) {
+			this.rev = rev;
+			this.revDate = revDate;
+			this.memberId = memberId;
+			this.memberName = memberName;
+			this.revisionTarget = revisionTarget;
+			this.entityId = RevisionConverter.deSerializedObject(entityId);
+			this.targetMemberName = targetMemberName;
+		}
+	}
 
 }

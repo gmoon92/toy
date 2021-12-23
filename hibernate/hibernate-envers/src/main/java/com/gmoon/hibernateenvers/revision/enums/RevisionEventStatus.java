@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum RevisionEventStatus {
-  WAIT, ERROR, UNCHANGED, DIRTY_CHECKING
+	WAIT, ERROR, UNCHANGED, DIRTY_CHECKING
 }

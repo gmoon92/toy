@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 /***
  * target은 실제 Core Cocerns 객체 즉 Aspect 기능이 부착될 객체
- * 
+ *
  */
 public class ProfileHandler implements InvocationHandler {
 
