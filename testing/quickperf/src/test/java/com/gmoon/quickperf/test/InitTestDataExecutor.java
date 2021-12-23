@@ -1,50 +1,53 @@
 package com.gmoon.quickperf.test;
 
-import com.gmoon.quickperf.domain.Company;
-import com.gmoon.quickperf.domain.Member;
-import com.gmoon.quickperf.domain.Team;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
+import com.gmoon.quickperf.domain.Company;
+import com.gmoon.quickperf.domain.Member;
+import com.gmoon.quickperf.domain.Team;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 public abstract class InitTestDataExecutor {
-  @Autowired private EntityManager entityManager;
+	@Autowired
+	private EntityManager entityManager;
 
-  @BeforeEach
-  void init() {
-    log.info("init sample data");
-    Company company = merge(Company.create("google"));
+	@BeforeEach
+	void init() {
+		log.info("init sample data");
+		Company company = merge(Company.create("google"));
 
-    Team newbie = merge(Team.create(company, "newbie"));
-    saveMember(newbie, "newbie-park");
+		Team newbie = merge(Team.create(company, "newbie"));
+		saveMember(newbie, "newbie-park");
 
-    Team backend = merge(Team.create(company, "backend"));
-    saveMember(backend, "gmoon");
-    saveMember(backend, "kim");
-    saveMember(backend, "lee");
+		Team backend = merge(Team.create(company, "backend"));
+		saveMember(backend, "gmoon");
+		saveMember(backend, "kim");
+		saveMember(backend, "lee");
 
-    flushAndClear();
-  }
+		flushAndClear();
+	}
 
-  private void saveMember(Team team, String memberName) {
-    persist(Member.create(team, memberName));
-  }
+	private void saveMember(Team team, String memberName) {
+		persist(Member.create(team, memberName));
+	}
 
-  private <T> void persist(T entity) {
-    entityManager.persist(entity);
-  }
+	private <T> void persist(T entity) {
+		entityManager.persist(entity);
+	}
 
-  private <T> T merge(T entity) {
-    return entityManager.merge(entity);
-  }
+	private <T> T merge(T entity) {
+		return entityManager.merge(entity);
+	}
 
-  protected void flushAndClear() {
-    entityManager.flush();
-    entityManager.clear();
-  }
+	protected void flushAndClear() {
+		entityManager.flush();
+		entityManager.clear();
+	}
 }

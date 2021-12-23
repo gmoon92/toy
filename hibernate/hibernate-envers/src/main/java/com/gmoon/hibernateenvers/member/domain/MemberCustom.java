@@ -11,7 +11,7 @@ import javax.persistence.InheritanceType;
 @DiscriminatorValue("CUSTOM")
 public class MemberCustom extends Member {
 
-  @Column(name = "access_account_fail_count")
-  private String accessAccountFailCount;
+	@Column(name = "access_account_fail_count")
+	private String accessAccountFailCount;
 
 }

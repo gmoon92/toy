@@ -1,10 +1,11 @@
 package com.gmoon.springquartzcluster.config;
 
-import com.gmoon.springquartzcluster.properties.QuartzProperties;
-import com.gmoon.springquartzcluster.properties.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import com.gmoon.springquartzcluster.properties.QuartzProperties;
+import com.gmoon.springquartzcluster.properties.YamlPropertySourceFactory;
 
 @Configuration
 @EnableConfigurationProperties(QuartzProperties.class)

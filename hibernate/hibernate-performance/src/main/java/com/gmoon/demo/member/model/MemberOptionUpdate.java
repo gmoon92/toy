@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class MemberOptionUpdate {
 
-  private Long memberId;
-  private boolean retired;
+	private Long memberId;
+	private boolean retired;
 
 }

@@ -10,15 +10,15 @@ import org.springframework.boot.web.server.LocalServerPort;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MailControllerTest {
 
-  @Autowired
-  TestRestTemplate restTemplate;
+	@Autowired
+	TestRestTemplate restTemplate;
 
-  @LocalServerPort
-  int port;
+	@LocalServerPort
+	int port;
 
-  @Test
-  @DisplayName("비동기 메일 발송 처리")
-  void asyncSendMail() {
-    restTemplate.getForEntity(String.format("http://localhost:%d/mail/send/invite", port), Void.class);
-  }
+	@Test
+	@DisplayName("비동기 메일 발송 처리")
+	void asyncSendMail() {
+		restTemplate.getForEntity(String.format("http://localhost:%d/mail/send/invite", port), Void.class);
+	}
 }

@@ -11,12 +11,12 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "value")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MissingCsrfToken extends BaseCsrfToken {
-  public static final MissingCsrfToken INSTANCE;
-  private static final String BLANK_TOKEN_VALUE = "_blank";
+	public static final MissingCsrfToken INSTANCE;
+	private static final String BLANK_TOKEN_VALUE = "_blank";
 
-  private final String value;
+	private final String value;
 
-  static {
-    INSTANCE = new MissingCsrfToken(BLANK_TOKEN_VALUE);
-  }
+	static {
+		INSTANCE = new MissingCsrfToken(BLANK_TOKEN_VALUE);
+	}
 }

@@ -81,6 +81,7 @@ class SimpleProxyTest {
 
 	interface Hello {
 		String sayHello(String str);
+
 		String sayMyName(String str);
 	}
 

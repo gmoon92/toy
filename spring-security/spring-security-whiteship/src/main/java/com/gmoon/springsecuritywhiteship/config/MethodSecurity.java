@@ -10,17 +10,17 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true,
-        prePostEnabled = true,
-        jsr250Enabled = true)
+	prePostEnabled = true,
+	jsr250Enabled = true)
 public class MethodSecurity extends GlobalMethodSecurityConfiguration {
 
-  @Override
-  protected AccessDecisionManager accessDecisionManager() {
-    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-    roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+	@Override
+	protected AccessDecisionManager accessDecisionManager() {
+		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+		roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
 
-    AffirmativeBased accessDecisionManager = (AffirmativeBased) super.accessDecisionManager();
-    accessDecisionManager.getDecisionVoters().add(new RoleHierarchyVoter(roleHierarchy));
-    return accessDecisionManager;
-  }
+		AffirmativeBased accessDecisionManager = (AffirmativeBased)super.accessDecisionManager();
+		accessDecisionManager.getDecisionVoters().add(new RoleHierarchyVoter(roleHierarchy));
+		return accessDecisionManager;
+	}
 }

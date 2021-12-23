@@ -1,8 +1,9 @@
 package com.gmoon.hibernateenvers.global.config;
 
-import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -12,28 +13,29 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "com.gmoon.**",
-        repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
+	repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EnableTransactionManagement
 @RequiredArgsConstructor
 public class JpaConfig {
 
-  private final EntityManagerFactory entityManagerFactory;
+	private final EntityManagerFactory entityManagerFactory;
 
-  @PostConstruct
-  public void init() {
-    SessionFactoryImpl sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
-    EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
+	@PostConstruct
+	public void init() {
+		SessionFactoryImpl sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
+		EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
 
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
-    RevisionHistoryEventListener revisionHistoryEventListener = new RevisionHistoryEventListener(entityManager);
-    registry.appendListeners(EventType.POST_COMMIT_INSERT, revisionHistoryEventListener);
-  }
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		RevisionHistoryEventListener revisionHistoryEventListener = new RevisionHistoryEventListener(entityManager);
+		registry.appendListeners(EventType.POST_COMMIT_INSERT, revisionHistoryEventListener);
+	}
 }

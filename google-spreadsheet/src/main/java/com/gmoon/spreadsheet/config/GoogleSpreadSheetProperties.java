@@ -1,13 +1,14 @@
 package com.gmoon.spreadsheet.config;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -17,20 +18,19 @@ import java.util.List;
 @ConfigurationProperties(prefix = "google.spreadsheet")
 public class GoogleSpreadSheetProperties {
 
-  private String id;
+	private String id;
 
-  private String range;
+	private String range;
 
-  private List<String> sheetNames;
+	private List<String> sheetNames;
 
-  private List<String> sheetHeads;
+	private List<String> sheetHeads;
 
-  @Getter
-  @Setter
-  @ToString
-  public static class DataSet {
-    private String id;
-  }
-
+	@Getter
+	@Setter
+	@ToString
+	public static class DataSet {
+		private String id;
+	}
 
 }

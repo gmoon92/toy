@@ -1,10 +1,5 @@
 package com.gmoon.hibernatesecondlevelcache.config;
 
-import org.ehcache.jsr107.EhcacheCachingProvider;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import javax.cache.CacheManager;
 import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
@@ -13,34 +8,39 @@ import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
 
+import org.ehcache.jsr107.EhcacheCachingProvider;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 @Configuration
 @EnableCaching
 public class EhCacheConfig extends CacheConfig {
 
-  @Bean
-  public CacheManager createManager() {
-    CachingProvider provider = new EhcacheCachingProvider();
-    CacheManager manager = provider.getCacheManager();
+	@Bean
+	public CacheManager createManager() {
+		CachingProvider provider = new EhcacheCachingProvider();
+		CacheManager manager = provider.getCacheManager();
 
-    // config
-//    MutableConfiguration configuration = new MutableConfiguration<Long, Member>()
-    MutableConfiguration configuration = new MutableConfiguration()
-//            .setTypes(Long.class, Member.class)
-            .setStoreByValue(false)
-            .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
+		// config
+		//    MutableConfiguration configuration = new MutableConfiguration<Long, Member>()
+		MutableConfiguration configuration = new MutableConfiguration()
+			//            .setTypes(Long.class, Member.class)
+			.setStoreByValue(false)
+			.setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
 
-    // listener config
-    MutableCacheEntryListenerConfiguration listenerConfiguration =
-            new MutableCacheEntryListenerConfiguration(FactoryBuilder.factoryOf(CacheEventLoggerListener.class),
-                    null,
-                    true,
-                    true
-            );
-    configuration.addCacheEntryListenerConfiguration(listenerConfiguration);
+		// listener config
+		MutableCacheEntryListenerConfiguration listenerConfiguration =
+			new MutableCacheEntryListenerConfiguration(FactoryBuilder.factoryOf(CacheEventLoggerListener.class),
+				null,
+				true,
+				true
+			);
+		configuration.addCacheEntryListenerConfiguration(listenerConfiguration);
 
-    // add cache
-    manager.createCache(MEMBER_ALL, configuration);
-    manager.createCache(MEMBER_FIND_BY_ID, configuration);
-    return manager;
-  }
+		// add cache
+		manager.createCache(MEMBER_ALL, configuration);
+		manager.createCache(MEMBER_FIND_BY_ID, configuration);
+		return manager;
+	}
 }

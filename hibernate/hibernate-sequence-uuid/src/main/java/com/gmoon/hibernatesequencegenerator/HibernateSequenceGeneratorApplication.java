@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class HibernateSequenceGeneratorApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(HibernateSequenceGeneratorApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(HibernateSequenceGeneratorApplication.class, args);
+	}
 
 }

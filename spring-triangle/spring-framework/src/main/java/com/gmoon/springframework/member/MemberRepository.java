@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberRepository {
 
-  public Member save(Member member) {
-    return null;
-  }
+	public Member save(Member member) {
+		return null;
+	}
 }

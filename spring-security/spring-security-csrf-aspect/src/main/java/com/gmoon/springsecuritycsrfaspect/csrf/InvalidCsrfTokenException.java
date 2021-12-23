@@ -4,7 +4,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 public class InvalidCsrfTokenException extends AccessDeniedException {
 
-  public InvalidCsrfTokenException(String message) {
-    super(message);
-  }
+	public InvalidCsrfTokenException(String message) {
+		super(message);
+	}
 }

@@ -1,14 +1,13 @@
 package com.gmoon.hibernateenvers.global.domain;
 
-import lombok.Getter;
+import java.io.Serializable;
 
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
+
+import lombok.Getter;
 
 @Getter
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
-
-  private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 1L;
 }

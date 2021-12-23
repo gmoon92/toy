@@ -1,7 +1,5 @@
 package com.gmoon.springsecuritycsrfaspect.config;
 
-import com.gmoon.springsecuritycsrfaspect.login.CustomAuthenticationSuccessHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,59 +16,63 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import com.gmoon.springsecuritycsrfaspect.login.CustomAuthenticationSuccessHandler;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Configuration
 @EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http
-            .headers()
-              .frameOptions().sameOrigin().and()
-              .csrf().disable()
-              .cors().disable()
-            .authorizeRequests()
-              .mvcMatchers("**/user/**").hasRole("ADMIN")
-              .anyRequest()
-              .permitAll().and()
-            .exceptionHandling()
-              .accessDeniedHandler(accessDeniedHandler()).and()
-            .formLogin()
-              .loginPage("/login")
-              .defaultSuccessUrl("/user/info")
-              .successHandler(customSuccessHandler())
-              .permitAll();
-  }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+			.headers()
+			.frameOptions().sameOrigin().and()
+			.csrf().disable()
+			.cors().disable()
+			.authorizeRequests()
+			.mvcMatchers("**/user/**").hasRole("ADMIN")
+			.anyRequest()
+			.permitAll().and()
+			.exceptionHandling()
+			.accessDeniedHandler(accessDeniedHandler()).and()
+			.formLogin()
+			.loginPage("/login")
+			.defaultSuccessUrl("/user/info")
+			.successHandler(customSuccessHandler())
+			.permitAll();
+	}
 
-  @Bean
-  public AuthenticationSuccessHandler customSuccessHandler() {
-    return new CustomAuthenticationSuccessHandler();
-  }
+	@Bean
+	public AuthenticationSuccessHandler customSuccessHandler() {
+		return new CustomAuthenticationSuccessHandler();
+	}
 
-  private AccessDeniedHandler accessDeniedHandler() {
-    return (request, response, accessDeniedException) -> {
-      SecurityContext context = SecurityContextHolder.getContext();
-      Authentication authentication = context.getAuthentication();
-      UserDetails user = (UserDetails) authentication.getPrincipal();
+	private AccessDeniedHandler accessDeniedHandler() {
+		return (request, response, accessDeniedException) -> {
+			SecurityContext context = SecurityContextHolder.getContext();
+			Authentication authentication = context.getAuthentication();
+			UserDetails user = (UserDetails)authentication.getPrincipal();
 
-      String username = user.getUsername();
-      String method = request.getMethod();
-      String url = request.getRequestURI();
-      String errorMessage = String.format("%s denied to access (%s) %s.", username, method, url);
-      log.error(errorMessage, accessDeniedException);
+			String username = user.getUsername();
+			String method = request.getMethod();
+			String url = request.getRequestURI();
+			String errorMessage = String.format("%s denied to access (%s) %s.", username, method, url);
+			log.error(errorMessage, accessDeniedException);
 
-      response.sendRedirect("/error/403");
-    };
-  }
+			response.sendRedirect("/error/403");
+		};
+	}
 
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-  }
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	}
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
 }
