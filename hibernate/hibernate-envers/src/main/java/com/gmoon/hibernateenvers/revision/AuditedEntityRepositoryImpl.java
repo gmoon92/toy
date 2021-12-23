@@ -49,7 +49,8 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 				revisionNumber, entityClass, entityId), ex);
 		} catch (Exception ex) {
 			throw new RuntimeException(
-				String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
+				String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
+					revisionNumber,
 					entityClass, entityId), ex);
 		} finally {
 			return Optional.ofNullable(entityClass.cast(auditedEntity));
@@ -72,7 +73,8 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 				revisionNumber, entityClass, entityId), ex);
 		} catch (Exception ex) {
 			throw new RuntimeException(
-				String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
+				String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
+					revisionNumber,
 					entityClass, entityId), ex);
 		} finally {
 			return Optional.ofNullable(entityClass.cast(auditedEntity));
@@ -88,12 +90,14 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 			auditedEntity = getAuditReader().find(entityClass, entityId, revisionNumber - 1);
 		} catch (IllegalArgumentException | NotAuditedException | IllegalStateException ex) {
 			String errorMessage = String.format(
-				"Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber, entityClass,
+				"Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
+				entityClass,
 				entityId);
 			log.warn(errorMessage, ex);
 		} catch (Exception ex) {
 			String errorMessage = String.format(
-				"Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber, entityClass,
+				"Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
+				entityClass,
 				entityId);
 			log.error(errorMessage, ex);
 			throw new RuntimeException(errorMessage, ex);

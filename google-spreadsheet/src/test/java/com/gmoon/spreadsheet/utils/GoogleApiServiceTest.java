@@ -44,7 +44,8 @@ class GoogleApiServiceTest {
 		log.debug("file name : {}", fileName);
 
 		files.export(fileId, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-			.executeMediaAndDownloadTo(new FileOutputStream(String.format("src/test/resources/google/%s.xlsx", fileName)));
+			.executeMediaAndDownloadTo(
+				new FileOutputStream(String.format("src/test/resources/google/%s.xlsx", fileName)));
 
 	}
 }
