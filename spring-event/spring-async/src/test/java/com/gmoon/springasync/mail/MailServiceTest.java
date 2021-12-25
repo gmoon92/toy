@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -25,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
+@Disabled("application.yml 메일 설정 후 테스트 진행 "
+	+ "username: @test.mail.username@"
+	+ "password: @test.mail.password@")
 class MailServiceTest {
 	static final int MILLISECOND_OF_WAIT = 3_000;
 
