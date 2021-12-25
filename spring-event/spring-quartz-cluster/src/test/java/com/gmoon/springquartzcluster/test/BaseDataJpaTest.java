@@ -8,10 +8,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
-import com.gmoon.springquartzcluster.config.JpaConfig;
-
 @DataJpaTest
-@Import(JpaConfig.class)
+@Import(TestConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public abstract class BaseDataJpaTest {
