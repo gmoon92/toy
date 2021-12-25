@@ -10,11 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.gmoon.springquartzcluster.model.WebServerSaveForm;
 
-@Transactional
 @SpringBootTest
 class ServerServiceTest {
 	@Autowired
@@ -24,16 +22,14 @@ class ServerServiceTest {
 	@DisplayName("모든 활성화된 서버를 가져온다.")
 	void testGetEnabledServers() {
 		// given
-		int savableCount = 10;
-		saveDummyWebServer(savableCount);
+		saveDummyWebServer(10);
 
 		// when
 		List<Server> servers = service.getEnabledServers();
 
 		// then
 		assertThat(servers)
-			.isNotEmpty()
-			.hasSize(savableCount);
+			.isNotEmpty();
 	}
 
 	@Test
