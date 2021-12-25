@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -83,10 +84,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling()
 			//            .accessDeniedPage("/access-denied");
 			.accessDeniedHandler((request, response, accessDeniedException) -> {
-				UserDetails user = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				String username = user.getUsername();
-				log.info("user : {} dined to access {}", username, request.getRequestURI());
-
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				if (authentication != null) {
+					UserDetails user = (UserDetails)authentication.getPrincipal();
+					String username = user.getUsername();
+					log.info("user : {} dined to access {}", username, request.getRequestURI());
+				}
 				response.sendRedirect("/access-denied");
 			});
 
@@ -103,11 +106,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// [3] logout
 		http.logout()
 			.logoutUrl("/logout") // logout page config
-			.logoutSuccessUrl("/login") // logout success event after page
+			.logoutSuccessUrl("/login"); // logout success event after page
 		//      .logoutSuccessHandler() // custom logout success handler add
 		//      .addLogoutHandler() // custom logout handler add
 		//      .deleteCookies() // cookie login auth
-		;
 
 		// [4] anonymous config
 		//    http.anonymous()
