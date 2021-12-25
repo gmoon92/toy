@@ -6,49 +6,57 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class SignUpControllerTest {
+	private static final String URL_OF_SIGNUP = "/signup";
 
-	@Autowired
-	MockMvc mockMvc;
+	@Autowired MockMvc mockMvc;
 
 	@Test
 	@DisplayName("회원가입 폼에 csrf 태그가 포함되는지")
 	void form() throws Exception {
-		mockMvc.perform(get("/signup"))
-			.andExpect(status().isOk())
+		// when
+		ResultActions result = mockMvc.perform(get(URL_OF_SIGNUP));
+
+		// then
+		result.andExpect(status().isOk())
 			.andExpect(content().string(containsString("_csrf")));
 	}
 
 	@Test
 	@DisplayName("회원 가입 csrf 토큰 미포함시 forbidden 403 에러 확인")
 	void save_403_error_when_non_csrf_token() throws Exception {
-		mockMvc.perform(post("/signup")
-				.param("username", "gmoon")
-				.param("password", "123123"))
-			.andDo(print())
-			.andExpect(status().is4xxClientError());
+		// when
+		ResultActions result = mockMvc.perform(post(URL_OF_SIGNUP)
+				.param("username", RandomStringUtils.randomAlphanumeric(8))
+				.param("password", RandomStringUtils.randomAlphanumeric(8)))
+			.andDo(print());
+
+		// then
+		result.andExpect(status().is3xxRedirection());
 	}
 
 	@Test
-	@DisplayName("회원 가입 csrf 토큰 포함 테스트")
+	@DisplayName("회원 가입 csrf 토큰을 포함한다.")
 	void save() throws Exception {
-		mockMvc.perform(post("/signup")
-				.param("username", "gmoon")
-				.param("password", "123123")
+		// when
+		ResultActions result = mockMvc.perform(post(URL_OF_SIGNUP)
+				.param("username", RandomStringUtils.randomAlphanumeric(8))
+				.param("password", RandomStringUtils.randomAlphanumeric(8))
 				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().is3xxRedirection());
+			.andDo(print());
+
+		// then
+		result.andExpect(status().is3xxRedirection());
 	}
 }
