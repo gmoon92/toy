@@ -2,8 +2,7 @@ package com.gmoon.springaop.proxy2;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,13 +11,12 @@ import lombok.RequiredArgsConstructor;
 class SimpleProxyTest {
 	private String name;
 
-	@BeforeAll
+	@BeforeEach
 	void init() {
 		name = "Moon";
 	}
 
 	@Test
-	@Disabled
 	void simpleProxyTest() {
 		Hello proxy = new HelloTarget();
 		assertThat(proxy.sayHello(name)).isEqualTo("Hello Moon");
@@ -27,7 +25,6 @@ class SimpleProxyTest {
 
 	@Test
 	@DisplayName("데코레이션 기법으로 부가 기능 적용")
-	@Disabled
 	void simpleAspectProxyTest() {
 		Hello proxy = new HelloAspect(new HelloTarget());
 		assertThat(proxy.sayHello(name)).isEqualTo("HELLO MOON");

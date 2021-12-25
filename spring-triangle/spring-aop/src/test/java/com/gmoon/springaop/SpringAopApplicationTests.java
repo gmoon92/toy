@@ -7,6 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class SpringAopApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	void contextLoads() {
 	}
 }
