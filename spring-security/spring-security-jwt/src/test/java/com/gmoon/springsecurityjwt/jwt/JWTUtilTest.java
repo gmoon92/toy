@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Base64;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +20,11 @@ class JWTUtilTest {
 	@Autowired
 	JWTUtil jwtUtil;
 
-	String token;
-
-	@BeforeEach
-	void setUp() {
-		User user = User.create("gmoon", "123", Role.ADMIN);
-		token = jwtUtil.generate(user);
-	}
-
 	@Test
 	@DisplayName("JWT 생성 및 구조 검증, header.payload.signature")
 	void testGenerate() {
 		// when
+		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJpc3MiOiJ2MSIsImV4cCI6MTY0MDUzNzQ0MCwiaWF0IjoxNjQwNDUxMDQwLCJ1c2VybmFtZSI6Imdtb29uIn0.VzZv7eaOHEHR6VPtwYrbtb-5ZpLjqxNDufZRZRaBCG4";
 		String[] parts = token.split("\\.");
 
 		String header = decodeToBase64(parts[0]);
@@ -54,6 +46,7 @@ class JWTUtilTest {
 	@DisplayName("JWT 복호화 검증")
 	void testDecode() {
 		// when
+		String token = jwtUtil.generate(User.create("gmoon", "123", Role.ADMIN));
 		User user = jwtUtil.decode(token);
 
 		// then
