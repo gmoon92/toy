@@ -2,7 +2,7 @@ package com.gmoon.springaop.business;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ class EnumTest {
 	private UserVO user2;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@BeforeAll
+	@BeforeEach
 	void init() {
 		user1 = new UserVO(1, "Moon", Level.BASIC);
 		user2 = new UserVO(1, "Moon", Level.SILVER);
