@@ -2,9 +2,9 @@ package com.gmoon.springsecuritywhiteship.sample;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -14,12 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gmoon.springsecuritywhiteship.account.Account;
 import com.gmoon.springsecuritywhiteship.account.AccountService;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 class SampleServiceTest {
 
@@ -42,11 +40,12 @@ class SampleServiceTest {
 	@Test
 	@DisplayName("어드민 계정이 로그인되어 있다면 접근 가능")
 	void secured_when_admin_login() {
+		String username = RandomStringUtils.randomAlphanumeric(5);
 		String credentials = "123";
-		Account account = Account.newAdmin("admin", credentials);
+		Account account = Account.newAdmin(username, credentials);
 		accountService.createNew(account);
 
-		UserDetails userDetails = accountService.loadUserByUsername("admin");
+		UserDetails userDetails = accountService.loadUserByUsername(username);
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, credentials);
 		Authentication authentication = authenticationManager.authenticate(token);
 
