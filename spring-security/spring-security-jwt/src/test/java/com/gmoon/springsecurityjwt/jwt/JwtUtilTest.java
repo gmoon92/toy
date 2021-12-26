@@ -15,10 +15,10 @@ import com.gmoon.springsecurityjwt.user.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest(classes = JWTUtil.class)
-class JWTUtilTest {
+@SpringBootTest(classes = JwtUtil.class)
+class JwtUtilTest {
 	@Autowired
-	JWTUtil jwtUtil;
+	JwtUtil jwtUtil;
 
 	@Test
 	@DisplayName("JWT 생성 및 구조 검증, header.payload.signature")
