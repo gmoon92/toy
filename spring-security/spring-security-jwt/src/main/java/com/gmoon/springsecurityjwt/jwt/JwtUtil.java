@@ -22,7 +22,7 @@ import com.gmoon.springsecurityjwt.user.Role;
 import com.gmoon.springsecurityjwt.user.User;
 
 @Component
-public final class JWTUtil {
+public final class JwtUtil {
 	private static final Pattern PATTERN_OF_TOKEN = Pattern.compile("^(\\w+)(\\s)(\\w+)");
 	private static final int DAY_OF_EXPIRATION = 1;
 	private static final int SECONDS_OF_TOLERANCE_RANGE = 30;
@@ -31,7 +31,7 @@ public final class JWTUtil {
 	private final Algorithm algorithm;
 	private final JWTVerifier verifier;
 
-	public JWTUtil(@Value("${jwt.secret}") String secret,
+	public JwtUtil(@Value("${jwt.secret}") String secret,
 		@Value("${api.version:v1}") String apiVersion) {
 		this.apiVersion = apiVersion;
 		this.algorithm = Algorithm.HMAC256(secret);
