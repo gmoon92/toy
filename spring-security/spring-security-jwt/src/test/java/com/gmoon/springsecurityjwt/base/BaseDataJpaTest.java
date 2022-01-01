@@ -3,6 +3,9 @@ package com.gmoon.springsecurityjwt.base;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.quickperf.junit5.QuickPerfTestExtension;
+import org.quickperf.spring.sql.QuickPerfSqlConfig;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
@@ -10,7 +13,8 @@ import org.springframework.test.context.TestConstructor;
 import com.gmoon.springsecurityjwt.config.JpaConfig;
 
 @DataJpaTest
-@Import(JpaConfig.class)
+@ExtendWith(QuickPerfTestExtension.class)
+@Import({JpaConfig.class, QuickPerfSqlConfig.class})
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public abstract class BaseDataJpaTest {
 	@PersistenceContext
