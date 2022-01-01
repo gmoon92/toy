@@ -20,6 +20,7 @@
         <java-jwt.version>3.8.2</java-jwt.version>
         <json-path.version>2.6.0</json-path.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
+        <quick-perf.version>1.1.0</quick-perf.version>
     </properties>
     <dependencies>
         <dependency>
@@ -100,6 +101,18 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <version>${spring-security.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.quickperf</groupId>
+            <artifactId>quick-perf-junit5</artifactId>
+            <version>${quick-perf.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.quickperf</groupId>
+            <artifactId>quick-perf-springboot2-sql-starter</artifactId>
+            <version>${quick-perf.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
