@@ -8,6 +8,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -16,28 +18,38 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.gmoon.springsecurityjwt.team.Team;
 import com.gmoon.springsecurityjwt.util.SecurityUtils;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Table(name = "tb_user", uniqueConstraints = {@UniqueConstraint(name = "u_username", columnNames = "username")})
 @Entity
 @Getter
+@ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(of = "username")
 public class User implements UserDetails {
 	@Id
 	@GeneratedValue
 	private Long id;
 
+	@ToString.Include
 	private String username;
 
 	private String password;
+
+	@ToString.Include
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "team_id", referencedColumnName = "id")
+	private Team team;
 
 	@Enumerated(value = EnumType.STRING)
 	@Column(nullable = false, length = 20)
 	private Role role;
 
+	@ToString.Include
 	@ColumnDefault("1")
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
