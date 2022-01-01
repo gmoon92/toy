@@ -2,3 +2,6 @@ api:
   version: v1
 jwt:
   secret: SERET
+spring:
+  jpa:
+    defer-datasource-initialization: true
