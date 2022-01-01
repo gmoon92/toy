@@ -52,7 +52,6 @@ class JwtUtilTest {
 		// then
 		assertThat(user)
 			.hasFieldOrPropertyWithValue("username", "gmoon")
-			.hasFieldOrPropertyWithValue("role", Role.ADMIN)
-			.hasFieldOrPropertyWithValue("password", "");
+			.hasFieldOrPropertyWithValue("role", Role.ADMIN);
 	}
 }
