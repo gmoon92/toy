@@ -20,4 +20,12 @@ public class TeamRepositoryCustomImpl implements TeamRepositoryCustom {
 			.leftJoin(team.users, user).fetchJoin()
 			.fetch();
 	}
+
+	@Override
+	public Team getById(Long teamId) {
+		QTeam team = QTeam.team;
+		return jpaQueryFactory.select(QTeam.create(team.id, team.name))
+			.from(team)
+			.fetchOne();
+	}
 }
