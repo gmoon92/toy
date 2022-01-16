@@ -38,4 +38,18 @@ class TeamRepositoryTest extends BaseDataJpaTest {
 		// then
 		assertThat(teams).isNotEmpty();
 	}
+
+	@Test
+	@ExpectSelect
+	void testGetId() {
+		// given
+		Long id = 0L;
+
+		// when
+		Team team = repository.getById(id);
+
+		// then
+		assertThat(team).isEqualTo(Team.create("web1"));
+		assertThat(team.getUsers()).isEmpty();
+	}
 }
