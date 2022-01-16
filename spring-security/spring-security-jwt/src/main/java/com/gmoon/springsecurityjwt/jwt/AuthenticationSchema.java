@@ -23,7 +23,7 @@ public enum AuthenticationSchema {
 	SHA256("SCRAM-SHA-256"),
 	VAPID("vapid");
 
-	public static final Map<String, AuthenticationSchema> MAP = Collections.unmodifiableMap(Stream.of(values())
+	private static final Map<String, AuthenticationSchema> MAP = Collections.unmodifiableMap(Stream.of(values())
 		.collect(Collectors.toMap(AuthenticationSchema::getName, Function.identity())));
 
 	private final String name;
