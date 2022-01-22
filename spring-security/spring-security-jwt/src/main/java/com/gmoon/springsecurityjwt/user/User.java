@@ -1,6 +1,8 @@
 package com.gmoon.springsecurityjwt.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.gmoon.springsecurityjwt.team.Team;
@@ -79,8 +79,10 @@ public class User implements UserDetails {
 	}
 
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return AuthorityUtils.createAuthorityList(role.getAuthority());
+	public Collection<Role> getAuthorities() {
+		List<Role> roles = new ArrayList<>();
+		roles.add(role);
+		return roles;
 	}
 
 	private void enableAccount() {
