@@ -5,3 +5,15 @@ jwt:
 spring:
   jpa:
     defer-datasource-initialization: true
+    show-sql: &show-sql true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show-sql: *show-sql
+        format_sql: *show-sql
+        use_sql_comments: *show-sql
+        jdbc:
+          time_zone: UTC
+    open-in-view: false
