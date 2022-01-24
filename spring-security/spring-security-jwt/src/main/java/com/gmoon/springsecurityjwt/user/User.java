@@ -10,15 +10,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.gmoon.springsecurityjwt.team.Team;
 import com.gmoon.springsecurityjwt.util.SecurityUtils;
 
 import lombok.EqualsAndHashCode;
@@ -31,6 +28,8 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(of = "username")
 public class User implements UserDetails {
+	private static final long serialVersionUID = -8809792987207423144L;
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -39,11 +38,6 @@ public class User implements UserDetails {
 	private String username;
 
 	private String password;
-
-	@ToString.Include
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "team_id", referencedColumnName = "id")
-	private Team team;
 
 	@Enumerated(value = EnumType.STRING)
 	@Column(nullable = false, length = 20)
