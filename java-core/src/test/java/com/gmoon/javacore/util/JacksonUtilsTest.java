@@ -2,11 +2,15 @@ package com.gmoon.javacore.util;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.json.JacksonTester;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -15,7 +19,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JsonTest
 class JacksonUtilsTest {
+	@Autowired private JacksonTester<User> json;
 
 	@Test
 	void testToString() {
@@ -27,6 +33,17 @@ class JacksonUtilsTest {
 
 		// then
 		assertThat(jsonString).contains("username", "gmoon", "enabled", "true");
+	}
+
+	@Test
+	void testToString_jacksonTester() throws IOException {
+		// given
+		User user = User.create("gmoon");
+
+		// when then
+		assertThat(json.write(user)).hasJsonPath("@.enabled");
+		assertThat(json.write(user)).extractingJsonPathStringValue("@.username")
+			.isEqualTo("gmoon");
 	}
 
 	@Test
