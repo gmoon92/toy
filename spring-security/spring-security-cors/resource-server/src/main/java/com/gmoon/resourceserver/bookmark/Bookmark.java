@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString(of = "name")
 @EqualsAndHashCode(of = "name")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = {@UniqueConstraint(name = "u_name", columnNames = {"name"})})
+@Table(name = "tb_bookmark", uniqueConstraints = {@UniqueConstraint(name = "u_name", columnNames = {"name"})})
 public class Bookmark implements Serializable {
 	@Id
 	@GeneratedValue
