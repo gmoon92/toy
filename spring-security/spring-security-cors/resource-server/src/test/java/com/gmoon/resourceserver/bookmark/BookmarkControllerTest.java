@@ -1,36 +1,34 @@
 package com.gmoon.resourceserver.bookmark;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@WebMvcTest(BookmarkController.class)
+@SpringBootTest
 class BookmarkControllerTest {
-	@Autowired
-	WebApplicationContext context;
-	@MockBean
-	BookmarkRepository repository;
+	@Autowired WebApplicationContext context;
 
 	MockMvc mockMvc;
-	String bookmarkName = "gmoon92.github.io";
+	String bookmarkName;
 
 	@BeforeEach
 	void setUp() {
+		bookmarkName = "gmoon92.github.io";
+
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
 			.alwaysDo(print())
 			.apply(springSecurity())
@@ -38,12 +36,8 @@ class BookmarkControllerTest {
 	}
 
 	@Test
-	@DisplayName("지정된 이름이로 북마크를 찾는다")
+	@DisplayName("지정된 이름으로 북마크를 찾는다")
 	void testGet() throws Exception {
-		// given
-		given(repository.findBookmarkByName(bookmarkName))
-			.willReturn(Bookmark.create(bookmarkName));
-
 		// when
 		ResultActions result = mockMvc.perform(get("/bookmark/" + bookmarkName)
 			.accept(MediaType.APPLICATION_JSON));
@@ -57,8 +51,7 @@ class BookmarkControllerTest {
 	@DisplayName("북마크를 저장한다")
 	void testSave() throws Exception {
 		// given
-		given(repository.save(any()))
-			.willReturn(Bookmark.create(bookmarkName));
+		String bookmarkName = "new bookmark! " + LocalDateTime.now();
 
 		// when
 		ResultActions result = mockMvc.perform(post("/bookmark/" + bookmarkName)
