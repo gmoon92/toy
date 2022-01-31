@@ -4,17 +4,18 @@ server:
 
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cors?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    username: root
+    password: root
+
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: &show-sql true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQL55Dialect
         show-sql: *show-sql
         format_sql: *show-sql
         use_sql_comments: *show-sql
@@ -22,10 +23,16 @@ spring:
           time_zone: UTC
     open-in-view: false
     defer-datasource-initialization: true
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
   sql:
     init:
       mode: always
       encoding: UTF-8
+      platform: mysql
+      schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
+      data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
+      continue-on-error: false
 
 logging:
   level:
