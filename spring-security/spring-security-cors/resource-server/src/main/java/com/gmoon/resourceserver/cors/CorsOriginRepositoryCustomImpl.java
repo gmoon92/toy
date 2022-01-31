@@ -1,6 +1,10 @@
 package com.gmoon.resourceserver.cors;
 
+import static com.gmoon.resourceserver.cors.QCorsOrigin.*;
+
 import java.util.List;
+
+import org.springframework.cache.annotation.Cacheable;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -11,8 +15,8 @@ public class CorsOriginRepositoryCustomImpl implements CorsOriginRepositoryCusto
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
+	@Cacheable
 	public List<String> getAllHost() {
-		QCorsOrigin corsOrigin = QCorsOrigin.corsOrigin;
 		return jpaQueryFactory.select(corsOrigin.origin.host)
 			.from(corsOrigin)
 			.groupBy(corsOrigin.origin.host)
