@@ -15,6 +15,7 @@
 
     <properties>
         <querydsl.core.version>4.4.0</querydsl.core.version>
+        <mysql-connector-java.version>8.0.20</mysql-connector-java.version>
     </properties>
 
     <dependencies>
@@ -24,9 +25,9 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
