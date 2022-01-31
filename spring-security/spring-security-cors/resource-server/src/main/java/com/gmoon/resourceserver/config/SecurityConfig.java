@@ -1,6 +1,6 @@
 package com.gmoon.resourceserver.config;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,6 +14,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import com.gmoon.resourceserver.cors.CorsOriginService;
+import com.gmoon.resourceserver.filter.CustomCorsFilter;
 
 @EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -32,6 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
+	public CorsFilter corsFilter(CorsOriginService service) {
+		return new CustomCorsFilter(corsConfigurationSource(), service);
+	}
+
+	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
@@ -45,12 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.applyPermitDefaultValues();
 		config.setMaxAge(SECONDS_OF_PRE_FLIGHT_MAX_AGE);
 		config.setAllowedMethods(getCorsAllowedMethods());
-		config.setAllowedOriginPatterns(
-			Arrays.asList(
-				"**localhost",
-				"**localhost:**"
-			)
-		);
+		config.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
 		// Access-Control-Allow-Credentials
 		config.setAllowCredentials(true);
 		return config;
