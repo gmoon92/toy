@@ -15,11 +15,13 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_cors_origin",
 	uniqueConstraints = {@UniqueConstraint(name = "u_schema_host_port", columnNames = {"schema", "host", "port"})})
+@Getter
 @EqualsAndHashCode(of = {"origin"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CorsOrigin implements Serializable {
