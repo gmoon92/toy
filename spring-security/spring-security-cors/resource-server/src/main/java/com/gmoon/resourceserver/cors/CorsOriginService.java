@@ -29,4 +29,20 @@ public class CorsOriginService {
 		}
 		return result;
 	}
+
+	@Transactional(readOnly = true)
+	public List<CorsOrigin> getAll() {
+		return repository.findAll();
+	}
+
+	@Transactional
+	public CorsOrigin save(CorsOrigin corsOrigin) {
+		return repository.save(corsOrigin);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		repository.findById(id)
+				.ifPresent(repository::delete);
+	}
 }
