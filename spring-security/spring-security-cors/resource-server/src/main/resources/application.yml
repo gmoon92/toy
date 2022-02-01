@@ -19,6 +19,7 @@ spring:
         show-sql: *show-sql
         format_sql: *show-sql
         use_sql_comments: *show-sql
+        globally_quoted_identifiers: true
         jdbc:
           time_zone: UTC
     open-in-view: false
