@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,4 +26,11 @@ public class Origin implements Serializable {
 
 	@Column(name = "port")
 	private Integer port;
+
+	@Builder
+	private Origin(String schema, String host, Integer port) {
+		this.schema = schema;
+		this.host = host;
+		this.port = port;
+	}
 }
