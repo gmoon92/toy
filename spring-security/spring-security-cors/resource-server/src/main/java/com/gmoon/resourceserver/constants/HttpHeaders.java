@@ -1,4 +1,4 @@
-package constants;
+package com.gmoon.resourceserver.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
