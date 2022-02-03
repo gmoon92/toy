@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import constants.HttpHeaders;
+import com.gmoon.resourceserver.constants.HttpHeaders;
 
 class RequestUtilsTest {
 	@Test
