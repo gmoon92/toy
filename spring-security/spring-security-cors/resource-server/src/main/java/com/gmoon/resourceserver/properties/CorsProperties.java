@@ -19,7 +19,7 @@ import lombok.Getter;
 @ConstructorBinding
 @ConfigurationProperties(prefix = "cors")
 public class CorsProperties {
-	private static final List<String> ALL_OF_HTTP_METHODS;
+	public static final List<String> ALL_OF_HTTP_METHODS;
 
 	static {
 		List<HttpMethod> httpMethods = new ArrayList<>(EnumSet.allOf(HttpMethod.class));
@@ -30,7 +30,7 @@ public class CorsProperties {
 	private final boolean enabled;
 	private final List<String> accessControlAllowMethods;
 
-	public CorsProperties(Boolean enabled, List<String> accessControlAllowMethods) {
+	protected CorsProperties(Boolean enabled, List<String> accessControlAllowMethods) {
 		this.enabled = Boolean.TRUE.equals(enabled);
 		this.accessControlAllowMethods = getHttpMethodAllIfEmpty(accessControlAllowMethods);
 	}
