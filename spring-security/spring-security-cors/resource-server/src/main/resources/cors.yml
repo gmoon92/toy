@@ -1,0 +1,4 @@
+cors:
+  enabled: true
+#  access-control-allow-methods: "*"
+  access-control-allow-methods: get,post,delete
