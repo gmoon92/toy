@@ -41,6 +41,12 @@ public final class RequestUtils {
 		return StringUtils.defaultIfBlank(originIpAddress, remoteIpAddress);
 	}
 
+	public static String getOrigin(HttpServletRequest request) {
+		String origin = request.getHeader(HttpHeaders.ORIGIN);
+		log.info("origin: {}", origin);
+		return StringUtils.defaultString(origin);
+	}
+
 	public static String getOriginSchema(HttpServletRequest request) {
 		return getOriginPatternGroup(getOrigin(request), PATTERN_GROUP_OF_SCHEMA);
 	}
@@ -56,12 +62,6 @@ public final class RequestUtils {
 		}
 
 		return Integer.parseInt(port);
-	}
-
-	private static String getOrigin(HttpServletRequest request) {
-		String origin = request.getHeader(HttpHeaders.ORIGIN);
-		log.info("origin: {}", origin);
-		return StringUtils.defaultString(origin);
 	}
 
 	private static String getOriginPatternGroup(String origin, int group) {
