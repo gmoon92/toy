@@ -1,6 +1,7 @@
 package com.gmoon.resourceserver.filter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.FilterChain;
@@ -13,6 +14,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.gmoon.resourceserver.cors.CorsOriginService;
+import com.gmoon.resourceserver.util.CorsUtils;
+import com.gmoon.resourceserver.util.RequestUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,19 +30,20 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomCorsFilter extends CorsFilter {
 	private final CorsConfigurationSource configSource;
 	private final CorsOriginService service;
+	private final CorsUtils utils;
 
-	public CustomCorsFilter(CorsConfigurationSource configSource, CorsOriginService service) {
+	public CustomCorsFilter(CorsConfigurationSource configSource, CorsOriginService service, CorsUtils utils) {
 		super(configSource);
 		this.configSource = configSource;
 		this.service = service;
+		this.utils = utils;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		loggingForClientRequest(request);
 
-		CorsConfiguration config = configSource.getCorsConfiguration(request);
-		setAllowedOriginPatterns(config);
+		CorsConfiguration config = obtainCorsConfiguration(request);
 
 		log.info("=============CORS Config=============");
 		log.info("Allowed Headers: {}", config.getAllowedHeaders());
@@ -62,9 +66,25 @@ public class CustomCorsFilter extends CorsFilter {
 		log.info("origin: {}://{}:{} uri: [{}] {}", scheme, remoteAddr, remotePort, method, requestURI);
 	}
 
-	// CORS checked only host. ignore schema, port
-	private void setAllowedOriginPatterns(CorsConfiguration config) {
-		List<String> allowedOriginPatterns = service.getAllowedOriginPatterns();
+	private CorsConfiguration obtainCorsConfiguration(HttpServletRequest request) {
+		CorsConfiguration config = configSource.getCorsConfiguration(request);
+
+		List<String> allowedOriginPatterns = getAllowedOriginPatterns(request);
 		config.setAllowedOriginPatterns(allowedOriginPatterns);
+		config.setAllowedMethods(utils.getCorsAllowedMethods(request));
+		return config;
+	}
+
+	private List<String> getAllowedOriginPatterns(HttpServletRequest request) {
+		if (skipCheckedOriginUri(request)) {
+			String host = RequestUtils.getOriginHost(request);
+			return utils.getAllowedOriginPatterns(Collections.singletonList(host));
+		} else {
+			return service.getAllowedOriginPatterns();
+		}
+	}
+
+	private boolean skipCheckedOriginUri(HttpServletRequest request) {
+		return utils.skipCheckedOriginUri(request);
 	}
 }

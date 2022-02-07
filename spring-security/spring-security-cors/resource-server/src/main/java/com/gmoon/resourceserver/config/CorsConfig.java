@@ -30,8 +30,8 @@ public class CorsConfig {
 	}
 
 	@Bean
-	public CorsFilter corsFilter(CorsOriginService service, CorsProperties properties) {
-		return new CustomCorsFilter(corsConfigurationSource(), service, properties);
+	public CorsFilter corsFilter(CorsOriginService service, CorsUtils utils) {
+		return new CustomCorsFilter(corsConfigurationSource(), service, utils);
 	}
 
 	@Bean
