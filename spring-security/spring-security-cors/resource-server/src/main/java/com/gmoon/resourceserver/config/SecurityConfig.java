@@ -2,11 +2,8 @@ package com.gmoon.resourceserver.config;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,8 +15,12 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.gmoon.resourceserver.cors.CorsOriginService;
 import com.gmoon.resourceserver.filter.CustomCorsFilter;
+import com.gmoon.resourceserver.properties.CorsProperties;
+
+import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity(debug = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String PATTERN_OF_CORS_CHECKED_URL = "/**";
 	private static final long SECONDS_OF_PRE_FLIGHT_MAX_AGE = 3_600L;
@@ -36,8 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public CorsFilter corsFilter(CorsOriginService service) {
-		return new CustomCorsFilter(corsConfigurationSource(), service);
+	public CorsFilter corsFilter(CorsOriginService service, CorsProperties properties) {
+		return new CustomCorsFilter(corsConfigurationSource(), service, properties);
 	}
 
 	@Bean
@@ -61,12 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	private List<String> getCorsAllowedMethods() {
-		return Stream.of(HttpMethod.GET,
-				HttpMethod.HEAD,
-				HttpMethod.POST,
-				HttpMethod.PATCH,
-				HttpMethod.DELETE)
-			.map(HttpMethod::name)
-			.collect(Collectors.toList());
+		return CorsProperties.ALL_OF_HTTP_METHODS;
 	}
 }
