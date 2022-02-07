@@ -22,9 +22,11 @@ public class CorsProperties {
 	public static final List<String> ALL_OF_HTTP_METHODS;
 
 	static {
-		List<HttpMethod> httpMethods = new ArrayList<>(EnumSet.allOf(HttpMethod.class));
-		ALL_OF_HTTP_METHODS = Collections.unmodifiableList(
-			httpMethods.stream().map(HttpMethod::name).collect(Collectors.toList()));
+		List<String> httpMethodNames = new ArrayList<>(EnumSet.allOf(HttpMethod.class))
+			.stream()
+			.map(HttpMethod::name)
+			.collect(Collectors.toList());
+		ALL_OF_HTTP_METHODS = Collections.unmodifiableList(httpMethodNames);
 	}
 
 	private final boolean enabled;
@@ -36,8 +38,9 @@ public class CorsProperties {
 	}
 
 	private List<String> getHttpMethodAllIfEmpty(List<String> accessControlAllowMethods) {
-		if (CollectionUtils.isEmpty(accessControlAllowMethods)
-			|| CollectionUtils.containsAny(accessControlAllowMethods, CorsConfiguration.ALL)) {
+		boolean emptyHttpMethods = CollectionUtils.isEmpty(accessControlAllowMethods);
+		boolean isAllPattern = CollectionUtils.containsAny(accessControlAllowMethods, CorsConfiguration.ALL);
+		if (emptyHttpMethods || isAllPattern) {
 			return ALL_OF_HTTP_METHODS;
 		}
 
