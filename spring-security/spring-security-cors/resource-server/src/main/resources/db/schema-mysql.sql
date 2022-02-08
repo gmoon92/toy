@@ -1,5 +1,18 @@
+DROP TABLE IF EXISTS tb_user;
 DROP TABLE IF EXISTS tb_bookmark;
 DROP TABLE IF EXISTS tb_cors_origin;
+
+CREATE TABLE tb_user
+(
+    id                      bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    account_non_expired     bit DEFAULT 1 NOT NULL,
+    account_non_locked      bit DEFAULT 1 NOT NULL,
+    credentials_non_expired bit DEFAULT 1 NOT NULL,
+    enabled                 bit DEFAULT 1 NOT NULL,
+    password                varchar(255),
+    role                    varchar(20)   NOT NULL,
+    username                varchar(255)
+);
 
 CREATE TABLE tb_bookmark
 (
@@ -10,7 +23,7 @@ CREATE TABLE tb_bookmark
 
 CREATE TABLE tb_cors_origin
 (
-    id   bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id       bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
     host     varchar(255),
     port     integer,
     `schema` varchar(255),
