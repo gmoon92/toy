@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class RedisConfig {
 	@Bean
-	public StringRedisTemplate redisTemplate(RedisConnectionFactory connectionFactory) {
+	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 		log.info("connectionFactory: {}", connectionFactory);
-		return new StringRedisTemplate(connectionFactory);
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+		redisTemplate.setConnectionFactory(connectionFactory);
+		redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
+		return redisTemplate;
 	}
 }
