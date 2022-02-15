@@ -65,7 +65,7 @@ public final class JwtUtils {
 		DecodedJWT jwt = JWT.decode(token);
 		String username = jwt.getClaim("username").asString();
 		Role role = Role.valueOf(jwt.getClaim("role").asString());
-		return User.create(username, null, role);
+		return User.create(username, "", role);
 	}
 
 	private String obtainTokenWithoutSchema(String tokenOfIncludeSchema) {
