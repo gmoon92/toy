@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RedisClient {
+public class RedisClientUtils {
 	private static final String ALL = "*";
 
 	private final RedisTemplate<String, Object> template;
