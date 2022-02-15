@@ -16,7 +16,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.gmoon.resourceserver.jwt.JwtAuthenticationFilter;
 import com.gmoon.resourceserver.jwt.JwtExceptionHandler;
-import com.gmoon.resourceserver.jwt.JwtUtil;
+import com.gmoon.resourceserver.jwt.JwtUtils;
 import com.gmoon.resourceserver.jwt.JwtVerifyFilter;
 import com.gmoon.resourceserver.util.SecurityUtils;
 
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final CorsConfigurationSource corsConfigurationSource;
 	private final MappingJackson2HttpMessageConverter converter;
-	private final JwtUtil jwtUtil;
+	private final JwtUtils jwtUtils;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -39,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.authorizeRequests(this::authorizeRequests)
 			.sessionManagement(this::httpStateless)
-			.addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtil))
-			.addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtil));
+			.addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtils))
+			.addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtils));
 	}
 
 	private void headers(HeadersConfigurer<HttpSecurity> config) {
