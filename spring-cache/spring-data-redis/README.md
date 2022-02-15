@@ -75,7 +75,7 @@ spring:
 
    jedis:
       pool:
-      enabled:true
+         enabled:true
 ```
 
 ### RedisTemplate
@@ -126,7 +126,7 @@ nested exception is org.springframework.data.redis.serializer.SerializationExcep
     Is the byte array a result of corresponding serialization for DefaultDeserializer?
 ```
 
-어쩌면 RedisTemplate 의 Value의 Serializer 를 JSon 타입을 지원하는 Serializer로 설정하는게 맞을 수 있다고 생각할 수 있다. 하지만 이 역시 운영 상의 이슈가 존재한다. 해당 이슈에 대해선 [다음 글을 참고하자.](https://mongsil-jeong.tistory.com/25)
+어쩌면 RedisTemplate 의 Value의 Serializer 를 JSon 타입을 지원하는 Serializer로 설정하는게 맞을 수 있다고 생각할 수 있다. 하지만 이 역시 운영 상의 이슈가 존재한다. [다음 글을 참고하자.](https://mongsil-jeong.tistory.com/25)
 
 결과적으로 `org.springframework.data.redis.core.StringRedisTemplate` 와 ObjectMapper 를 활용하여, 데이터를 직접 serialize/deserialize 하는 편이 용이할 수 있다.
 
