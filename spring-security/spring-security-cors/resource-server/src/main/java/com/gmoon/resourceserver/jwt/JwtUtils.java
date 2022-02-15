@@ -22,7 +22,7 @@ import com.gmoon.resourceserver.user.Role;
 import com.gmoon.resourceserver.user.User;
 
 @Component
-public final class JwtUtil {
+public final class JwtUtils {
 	private static final Pattern PATTERN_OF_TOKEN = Pattern.compile("^(\\w+)(\\s)(\\w+)");
 	private static final int DAY_OF_EXPIRATION = 1;
 	private static final int SECONDS_OF_TOLERANCE_RANGE = 30;
@@ -31,7 +31,7 @@ public final class JwtUtil {
 	private final Algorithm algorithm;
 	private final JWTVerifier verifier;
 
-	public JwtUtil(@Value("${jwt.secret}") String secret, @Value("${api.version:v1}") String apiVersion) {
+	public JwtUtils(@Value("${jwt.secret}") String secret, @Value("${api.version:v1}") String apiVersion) {
 		this.apiVersion = apiVersion;
 		this.algorithm = Algorithm.HMAC256(secret);
 		this.verifier = JWT.require(algorithm)

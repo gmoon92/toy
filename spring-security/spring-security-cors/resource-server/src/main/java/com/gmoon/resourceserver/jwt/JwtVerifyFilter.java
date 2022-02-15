@@ -22,18 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JwtVerifyFilter extends BasicAuthenticationFilter {
-	private final JwtUtil jwtUtil;
+	private final JwtUtils jwtUtils;
 
-	public JwtVerifyFilter(AuthenticationEntryPoint authenticationEntryPoint, JwtUtil jwtUtils) {
+	public JwtVerifyFilter(AuthenticationEntryPoint authenticationEntryPoint, JwtUtils jwtUtils) {
 		super(authentication -> authentication, authenticationEntryPoint);
-		this.jwtUtil = jwtUtils;
+		this.jwtUtils = jwtUtils;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 		String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 		try {
-			User user = jwtUtil.decode(token);
+			User user = jwtUtils.decode(token);
 
 			Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);

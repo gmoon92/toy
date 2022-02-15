@@ -19,18 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-	private final JwtUtil jwtUtil;
+	private final JwtUtils jwtUtils;
 
-	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
 		super(authenticationManager);
-		this.jwtUtil = jwtUtil;
+		this.jwtUtils = jwtUtils;
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
 		User user = (User)authentication.getPrincipal();
 
-		String token = jwtUtil.generate(user);
+		String token = jwtUtils.generate(user);
 		response.setHeader(HttpHeaders.AUTHORIZATION, token);
 	}
 
