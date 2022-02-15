@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.gmoon.resourceserver.util.SecurityUtils;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -60,5 +62,13 @@ public class User implements UserDetails {
 		List<Role> roles = new ArrayList<>();
 		roles.add(role);
 		return roles;
+	}
+
+	public static User create(String username, String password, Role role) {
+		User user = new User();
+		user.username = username;
+		user.password = SecurityUtils.encodePassword(password);
+		user.role = role;
+		return user;
 	}
 }
