@@ -16,6 +16,7 @@
     <properties>
         <querydsl.core.version>4.4.0</querydsl.core.version>
         <mysql-connector-java.version>8.0.20</mysql-connector-java.version>
+        <java-jwt.version>3.8.2</java-jwt.version>
     </properties>
 
     <dependencies>
@@ -50,6 +51,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
         </dependency>
     </dependencies>
 
