@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" type="text/css" href="http://localhost:9000/css/bootstrap.min.css"/>
+    <title>Hello CORS</title>
+</head>
+
+<body>
+<div class="container text-center">
+    <h1>My Bookmarks</h1>
+    <ul id="bookmarks" class="list-inline"></ul>
+
+    <div>
+        <input type="text" id="bookmarkName" placeholder="bookmark name" />
+        <button onclick="_save()">저장</button>
+        <button onclick="_delete()">삭제</button>
+    </div>
+
+    <input id="token" type="hidden" th:value="${#authentication.getPrincipal()}"/>
+    <!--
+    <div>
+        username: <div sec:authentication="name"></div>
+    </div>
+    -->
+</div>
+</body>
+
+<script type="text/javascript" src="http://localhost:9000/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://localhost:9000/js/datepicker.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        _callAjax(new _bookmark().getAll);
+    });
+
+    function _bookmark() {
+        const API = "http://localhost:9000/bookmark";
+        let $bookmarkName = $("#bookmarkName");
+
+        return {
+            getAll: {
+                uri: API,
+                type: "GET",
+                dataType: "json",
+                success: function (responseObj) {
+                    let $bookmarks = $("#bookmarks");
+                    $bookmarks.html("");
+
+                    for (const i in responseObj) {
+                        let bookmark = responseObj[i];
+                        let name = bookmark.name;
+                        $bookmarks.append("<li>" + name + "</li>");
+                    }
+                },
+                fail: function (status, errorThrown) {
+                    $("#bookmarks").html("오류가 발생했습니다.<br>")
+                        .append("오류명: " + errorThrown + "<br>")
+                        .append("상태: " + status);
+                }
+            },
+            save: {
+                uri: API + "/" + $bookmarkName.val(),
+                type: "POST",
+                dataType: "json",
+                success: function () {
+                    _callAjax(new _bookmark().getAll);
+                },
+                fail: function (status, errorThrown) {
+                    console.error("status: ", status, " error: ", errorThrown);
+                }
+            },
+            delete: {
+                uri: API + "/" + $bookmarkName.val(),
+                type: "DELETE",
+                dataType: "json",
+                success: function () {
+                    _callAjax(new _bookmark().getAll);
+                },
+                fail: function (status, errorThrown) {
+                    console.error("status: ", status, " error: ", errorThrown);
+                }
+            }
+        }
+    }
+
+    function _callAjax(_info) {
+        console.log("_info: ", _info);
+        $.ajax(
+            {
+                url: _info.uri,
+                type: _info.type,
+                dataType: _info.dataType,
+                contentType: "application/json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", $("#token").val());
+                },
+                xhrFields: {
+                    withCredentials: true
+                }
+            }
+        ).done(function (responseObj) {
+            console.log("done.");
+            _info.success(responseObj);
+        }).fail(function (xhr, status, errorThrown) {
+            console.log("fail.");
+            _info.fail(status, errorThrown);
+        }).always(function () {
+            console.log("completed request.");
+        });
+    }
+
+    function _save() {
+        if (isBlank($("#bookmarkName").val())) {
+            return;
+        }
+
+        _callAjax(new _bookmark().save);
+    }
+
+    function _delete() {
+        if (isBlank($("#bookmarkName").val())) {
+            return;
+        }
+
+        _callAjax(new _bookmark().delete);
+    }
+
+    function isBlank(str) {
+        return typeof str == "undefined"
+            || str == null
+            || str === "";
+    }
+</script>
+</html>
