@@ -1,45 +1,30 @@
 package com.gmoon.resourceserver.cors;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.gmoon.resourceserver.test.SampleData;
+import com.gmoon.resourceserver.test.BaseIntegrationTest;
 import com.gmoon.resourceserver.util.JacksonUtils;
 
-@SpringBootTest
-class CorsOriginControllerTest {
-	@Autowired WebApplicationContext context;
-
-	MockMvc mockMvc;
-
+class CorsOriginControllerTest extends BaseIntegrationTest {
 	@BeforeEach
 	void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.alwaysDo(print())
-			.apply(springSecurity())
-			.build();
+		setupMockMvc();
 	}
 
 	@Test
 	void testGetAll() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(get("/cors")
-			.header(HttpHeaders.AUTHORIZATION, SampleData.Token.ADMIN)
+			.header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
 			.accept(MediaType.APPLICATION_JSON)
 			.characterEncoding(Charset.defaultCharset()));
 
@@ -58,7 +43,7 @@ class CorsOriginControllerTest {
 
 		// when
 		ResultActions result = mockMvc.perform(post("/cors")
-			.header(HttpHeaders.AUTHORIZATION, SampleData.Token.ADMIN)
+			.header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(JacksonUtils.toString(origin)));
@@ -74,7 +59,7 @@ class CorsOriginControllerTest {
 
 		// when
 		ResultActions result = mockMvc.perform(delete("/cors/" + id)
-			.header(HttpHeaders.AUTHORIZATION, SampleData.Token.ADMIN)
+			.header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
 			.accept(MediaType.APPLICATION_JSON));
 
 		// then
