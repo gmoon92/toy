@@ -1,8 +1,10 @@
 package com.gmoon.resourceserver.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -28,6 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final CorsConfigurationSource corsConfigurationSource;
 	private final MappingJackson2HttpMessageConverter converter;
 	private final JwtUtils jwtUtils;
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
