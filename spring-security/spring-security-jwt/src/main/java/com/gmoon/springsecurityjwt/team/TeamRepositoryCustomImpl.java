@@ -1,8 +1,11 @@
 package com.gmoon.springsecurityjwt.team;
 
+import static com.gmoon.springsecurityjwt.team.QTeam.*;
+import static com.gmoon.springsecurityjwt.team.QTeamUser.*;
+import static com.gmoon.springsecurityjwt.user.QUser.*;
+
 import java.util.List;
 
-import com.gmoon.springsecurityjwt.user.QUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -13,17 +16,15 @@ public class TeamRepositoryCustomImpl implements TeamRepositoryCustom {
 
 	@Override
 	public List<Team> findAll() {
-		QTeam team = QTeam.team;
-		QUser user = QUser.user;
 		return jpaQueryFactory.select(team)
 			.from(team)
-			.leftJoin(team.users, user).fetchJoin()
+			.leftJoin(team.users, teamUser).fetchJoin()
+			.leftJoin(teamUser.user, user).fetchJoin()
 			.fetch();
 	}
 
 	@Override
 	public Team getById(Long teamId) {
-		QTeam team = QTeam.team;
 		return jpaQueryFactory.select(QTeam.create(team.id, team.name))
 			.from(team)
 			.fetchOne();
