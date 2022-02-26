@@ -51,7 +51,7 @@ public class TeamUser implements Serializable {
 	@Embeddable
 	@EqualsAndHashCode
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
-	private static class Id implements Serializable {
+	static class Id implements Serializable {
 		private static final long serialVersionUID = -6697347285557271747L;
 
 		@Column(name = "team_id", nullable = false)
