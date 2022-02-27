@@ -67,24 +67,34 @@ public class CustomCorsFilter extends CorsFilter {
 	}
 
 	private CorsConfiguration obtainCorsConfiguration(HttpServletRequest request) {
-		CorsConfiguration config = configSource.getCorsConfiguration(request);
+		CorsConfiguration config = newCorsConfiguration(request);
 
 		List<String> allowedOriginPatterns = getAllowedOriginPatterns(request);
 		config.setAllowedOriginPatterns(allowedOriginPatterns);
-		config.setAllowedMethods(utils.getCorsAllowedMethods(request));
+		config.setAllowedMethods(getAllowedHttpMethods());
 		return config;
+	}
+
+	// Thread safe
+	private CorsConfiguration newCorsConfiguration(HttpServletRequest request) {
+		CorsConfiguration origin = configSource.getCorsConfiguration(request);
+		return new CorsConfiguration(origin);
 	}
 
 	private List<String> getAllowedOriginPatterns(HttpServletRequest request) {
 		if (skipCheckedOriginUri(request)) {
 			String host = RequestUtils.getOriginHost(request);
 			return utils.getAllowedOriginPatterns(Collections.singletonList(host));
-		} else {
-			return service.getAllowedOriginPatterns();
 		}
+
+		return service.getAllowedOriginPatterns();
 	}
 
 	private boolean skipCheckedOriginUri(HttpServletRequest request) {
-		return utils.skipCheckedOriginUri(request);
+		return !utils.isEnabledCheckCorsRequest(request);
+	}
+
+	private List<String> getAllowedHttpMethods() {
+		return service.getAllowedHttpMethods();
 	}
 }
