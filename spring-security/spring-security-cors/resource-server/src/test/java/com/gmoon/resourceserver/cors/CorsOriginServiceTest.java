@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 
 @SpringBootTest
 class CorsOriginServiceTest {
@@ -59,5 +60,21 @@ class CorsOriginServiceTest {
 
 		// when then
 		service.delete(id);
+	}
+
+	@Test
+	@DisplayName("Access-Control-Allow-Methods 에 등록할 HTTP Method 조회")
+	void testGetAllowedHttpMethods() {
+		// when
+		List<String> methods = service.getAllowedHttpMethods();
+
+		// then
+		assertThat(methods)
+			.containsOnly(httpName(HttpMethod.GET), httpName(HttpMethod.POST), httpName(HttpMethod.DELETE),
+				httpName(HttpMethod.PUT));
+	}
+
+	private String httpName(HttpMethod httpMethod) {
+		return httpMethod.name();
 	}
 }
