@@ -42,7 +42,8 @@ public class CorsOriginService {
 				.ifPresent(corsOriginRepository::delete);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
+	@Cacheable(value = CacheNames.CORS_CONFIG, key = "#root.methodName")
 	public List<String> getAllowedHttpMethods() {
 		return corsHttpMethodRepository.findAllByEnabled();
 	}
