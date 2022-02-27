@@ -1,15 +1,11 @@
 package com.gmoon.resourceserver.properties;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
 
 @SpringBootTest
 class CorsPropertiesTest {
@@ -21,12 +17,9 @@ class CorsPropertiesTest {
 		// given
 
 		// when
-		List<String> allowedHttpMethods = properties.getAccessControlAllowMethods();
+		boolean enabled = properties.isEnabled();
 
 		// then
-		assertAll(
-			() -> assertThat(properties.isEnabled()).isTrue(),
-			() -> assertThat(allowedHttpMethods).contains(HttpMethod.GET.name())
-		);
+		assertThat(enabled).isTrue();
 	}
 }
