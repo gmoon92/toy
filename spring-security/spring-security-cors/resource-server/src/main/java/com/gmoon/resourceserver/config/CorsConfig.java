@@ -17,12 +17,17 @@ import com.gmoon.resourceserver.filter.CustomCorsFilter;
 import com.gmoon.resourceserver.properties.CorsProperties;
 import com.gmoon.resourceserver.util.CorsUtils;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableConfigurationProperties({CorsProperties.class})
 @PropertySource(value = "classpath:cors.yml", factory = YamlPropertySourceFactory.class)
+@RequiredArgsConstructor
 public class CorsConfig {
 	private static final String PATTERN_OF_CORS_CHECKED_URL = "/**";
 	private static final long SECONDS_OF_PRE_FLIGHT_MAX_AGE = 3_600L;
+
+	private final CorsOriginService service;
 
 	@Bean
 	public CorsUtils corsUtils(CorsProperties properties) {
@@ -31,19 +36,22 @@ public class CorsConfig {
 
 	@Bean
 	public CorsFilter corsFilter(CorsOriginService service, CorsUtils utils) {
-		return new CustomCorsFilter(corsConfigurationSource(), service, utils);
+		CorsConfigurationSource configSource = corsConfigurationSource();
+
+		return new CustomCorsFilter(configSource, service, utils);
 	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-		CorsConfiguration config = getCorsConfiguration();
+		CorsConfiguration config = new CorsConfiguration(corsConfiguration());
 		source.registerCorsConfiguration(PATTERN_OF_CORS_CHECKED_URL, config);
 		return source;
 	}
 
-	private CorsConfiguration getCorsConfiguration() {
+	@Bean
+	public CorsConfiguration corsConfiguration() {
 		CorsConfiguration config = new CorsConfiguration()
 			.applyPermitDefaultValues();
 		config.setMaxAge(SECONDS_OF_PRE_FLIGHT_MAX_AGE);
@@ -55,6 +63,6 @@ public class CorsConfig {
 	}
 
 	private List<String> getCorsAllowedMethods() {
-		return CorsProperties.ALL_OF_HTTP_METHODS;
+		return service.getAllowedHttpMethods();
 	}
 }
