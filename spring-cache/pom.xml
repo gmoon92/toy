@@ -25,16 +25,4 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.gmoon</groupId>
-                <artifactId>java-core</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <scope>compile</scope>
-                <type>jar</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
