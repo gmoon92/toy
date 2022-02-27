@@ -27,16 +27,9 @@ public class CorsUtils {
 		return result;
 	}
 
-	public List<String> getCorsAllowedMethods(HttpServletRequest request) {
-		if (skipCheckedOriginUri(request)) {
-			return CorsProperties.ALL_OF_HTTP_METHODS;
-		}
-
-		return properties.getAccessControlAllowMethods();
-	}
-
-	public boolean skipCheckedOriginUri(HttpServletRequest request) {
-		return !properties.isEnabled()
-			&& StringUtils.isBlank(RequestUtils.getOrigin(request));
+	public boolean isEnabledCheckCorsRequest(HttpServletRequest request) {
+		boolean isCheckCorsOrigin = properties.isEnabled();
+		String requestOrigin = RequestUtils.getOrigin(request);
+		return isCheckCorsOrigin && StringUtils.isNotBlank(requestOrigin);
 	}
 }
