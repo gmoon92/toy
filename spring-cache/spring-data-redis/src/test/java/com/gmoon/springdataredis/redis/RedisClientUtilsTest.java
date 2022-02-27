@@ -24,7 +24,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.util.CollectionUtils;
 
-import com.gmoon.javacore.util.JacksonUtils;
+import com.gmoon.springdataredis.util.JacksonUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -171,7 +171,7 @@ class RedisClientUtilsTest {
 
 				// then
 				assertThat(operations.members(key))
-					.containsExactly("redis", "hello");
+					.containsExactly("hello", "redis");
 			}
 		}
 
