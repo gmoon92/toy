@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CorsOriginService {
 	private final CorsOriginRepository corsOriginRepository;
+	private final CorsHttpMethodRepository corsHttpMethodRepository;
+
 	private final CorsUtils corsUtils;
 
 	@Transactional(readOnly = true)
@@ -38,5 +40,10 @@ public class CorsOriginService {
 	public void delete(Long id) {
 		corsOriginRepository.findById(id)
 				.ifPresent(corsOriginRepository::delete);
+	}
+
+	@Transactional
+	public List<String> getAllowedHttpMethods() {
+		return corsHttpMethodRepository.findAllByEnabled();
 	}
 }

@@ -28,10 +28,10 @@ class CorsHttpMethodRepositoryTest extends BaseJpaTest {
 	}
 
 	@Test
-	@DisplayName("Access-Control-Allow-Methods 에 등록할 HTTP Method 조회")
-	void testGetAllowedHttpMethods() {
+	@DisplayName("활성화된 HTTP Method 조회")
+	void testFindAllByEnabled() {
 		// when
-		List<String> allowedMethods = repository.getAllowedHttpMethods();
+		List<String> allowedMethods = repository.findAllByEnabled();
 
 		// then
 		assertThat(allowedMethods)
