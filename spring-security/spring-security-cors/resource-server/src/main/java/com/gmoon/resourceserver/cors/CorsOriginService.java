@@ -14,29 +14,29 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CorsOriginService {
-	private final CorsOriginRepository repository;
-	private final CorsUtils utils;
+	private final CorsOriginRepository corsOriginRepository;
+	private final CorsUtils corsUtils;
 
 	@Transactional(readOnly = true)
 	@Cacheable(value = CacheNames.CORS_CONFIG, key = "#root.methodName")
 	public List<String> getAllowedOriginPatterns() {
-		List<String> hosts = repository.getAllHost();
-		return utils.getAllowedOriginPatterns(hosts);
+		List<String> hosts = corsOriginRepository.getAllHost();
+		return corsUtils.getAllowedOriginPatterns(hosts);
 	}
 
 	@Transactional(readOnly = true)
 	public List<CorsOrigin> getAll() {
-		return repository.findAll();
+		return corsOriginRepository.findAll();
 	}
 
 	@Transactional
 	public CorsOrigin save(CorsOrigin corsOrigin) {
-		return repository.save(corsOrigin);
+		return corsOriginRepository.save(corsOrigin);
 	}
 
 	@Transactional
 	public void delete(Long id) {
-		repository.findById(id)
-				.ifPresent(repository::delete);
+		corsOriginRepository.findById(id)
+				.ifPresent(corsOriginRepository::delete);
 	}
 }
