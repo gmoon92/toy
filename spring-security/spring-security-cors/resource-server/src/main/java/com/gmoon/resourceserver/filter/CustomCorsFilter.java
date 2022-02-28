@@ -9,12 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.gmoon.resourceserver.cors.CorsOriginService;
-import com.gmoon.resourceserver.util.CorsUtils;
+import com.gmoon.resourceserver.properties.CorsProperties;
 import com.gmoon.resourceserver.util.RequestUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +31,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomCorsFilter extends CorsFilter {
 	private final CorsConfigurationSource configSource;
 	private final CorsOriginService service;
-	private final CorsUtils utils;
+	private final CorsProperties properties;
 
-	public CustomCorsFilter(CorsConfigurationSource configSource, CorsOriginService service, CorsUtils utils) {
+	public CustomCorsFilter(CorsConfigurationSource configSource, CorsOriginService service, CorsProperties properties) {
 		super(configSource);
 		this.configSource = configSource;
 		this.service = service;
-		this.utils = utils;
+		this.properties = properties;
 	}
 
 	@Override
@@ -84,14 +85,16 @@ public class CustomCorsFilter extends CorsFilter {
 	private List<String> getAllowedOriginPatterns(HttpServletRequest request) {
 		if (skipCheckedOriginUri(request)) {
 			String host = RequestUtils.getOriginHost(request);
-			return utils.getAllowedOriginPatterns(Collections.singletonList(host));
+			return service.getAllowedOriginPatterns(Collections.singletonList(host));
 		}
 
 		return service.getAllowedOriginPatterns();
 	}
 
 	private boolean skipCheckedOriginUri(HttpServletRequest request) {
-		return !utils.isEnabledCheckCorsRequest(request);
+		boolean isCheckCorsOrigin = properties.isEnabled();
+		String requestOrigin = RequestUtils.getOrigin(request);
+		return isCheckCorsOrigin && StringUtils.isNotBlank(requestOrigin);
 	}
 
 	private List<String> getAllowedHttpMethods() {

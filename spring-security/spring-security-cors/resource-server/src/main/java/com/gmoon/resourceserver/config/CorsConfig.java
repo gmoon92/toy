@@ -15,7 +15,6 @@ import org.springframework.web.filter.CorsFilter;
 import com.gmoon.resourceserver.cors.CorsOriginService;
 import com.gmoon.resourceserver.filter.CustomCorsFilter;
 import com.gmoon.resourceserver.properties.CorsProperties;
-import com.gmoon.resourceserver.util.CorsUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,15 +29,10 @@ public class CorsConfig {
 	private final CorsOriginService service;
 
 	@Bean
-	public CorsUtils corsUtils(CorsProperties properties) {
-		return new CorsUtils(properties);
-	}
-
-	@Bean
-	public CorsFilter corsFilter(CorsOriginService service, CorsUtils utils) {
+	public CorsFilter corsFilter(CorsOriginService service, CorsProperties properties) {
 		CorsConfigurationSource configSource = corsConfigurationSource();
 
-		return new CustomCorsFilter(configSource, service, utils);
+		return new CustomCorsFilter(configSource, service, properties);
 	}
 
 	@Bean

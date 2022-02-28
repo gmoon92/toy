@@ -17,13 +17,15 @@ public class CorsOriginService {
 	private final CorsOriginRepository corsOriginRepository;
 	private final CorsHttpMethodRepository corsHttpMethodRepository;
 
-	private final CorsUtils corsUtils;
-
 	@Transactional(readOnly = true)
 	@Cacheable(value = CacheNames.CORS_CONFIG, key = "#root.methodName")
 	public List<String> getAllowedOriginPatterns() {
 		List<String> hosts = corsOriginRepository.getAllHost();
-		return corsUtils.getAllowedOriginPatterns(hosts);
+		return getAllowedOriginPatterns(hosts);
+	}
+
+	public List<String> getAllowedOriginPatterns(List<String> hosts) {
+		return CorsUtils.getAllowedOriginPatterns(hosts);
 	}
 
 	@Transactional(readOnly = true)
