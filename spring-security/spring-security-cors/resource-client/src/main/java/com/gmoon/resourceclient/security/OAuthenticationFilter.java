@@ -24,6 +24,8 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import com.gmoon.resourceclient.util.CookieUtils;
+
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -33,6 +35,7 @@ import reactor.netty.http.client.HttpClient;
 
 public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private static final String ORIGIN_OF_RESOURCE_SERVER = "http://localhost:9000";
+	private static final String COOKIE_NAME_OF_AUTHORIZATION = HttpHeaders.AUTHORIZATION;
 
 	public OAuthenticationFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler) {
 		super(authenticationManager);
@@ -50,8 +53,10 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 
 		try {
 			OAuthenticationToken authRequest = getAuthToken(username, password);
+			CookieUtils.addHeaderCookie(response, COOKIE_NAME_OF_AUTHORIZATION, authRequest.getToken());
 			return getAuthenticationManager().authenticate(authRequest);
 		} catch (WebClientResponseException e) {
+			CookieUtils.delete(request, COOKIE_NAME_OF_AUTHORIZATION, response);
 			throw new OAuthLoginException(e);
 		}
 	}
