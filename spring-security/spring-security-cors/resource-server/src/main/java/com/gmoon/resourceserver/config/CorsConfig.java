@@ -1,5 +1,6 @@
 package com.gmoon.resourceserver.config;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +54,9 @@ public class CorsConfig {
 		config.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
 		// Access-Control-Allow-Credentials
 		config.setAllowCredentials(true);
+
+		// No caching
+		config.setMaxAge(Duration.ofSeconds(1));
 		return config;
 	}
 
