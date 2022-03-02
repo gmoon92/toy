@@ -68,18 +68,12 @@ public class CustomCorsFilter extends CorsFilter {
 	}
 
 	private CorsConfiguration obtainCorsConfiguration(HttpServletRequest request) {
-		CorsConfiguration config = newCorsConfiguration(request);
+		CorsConfiguration config = configSource.getCorsConfiguration(request);
 
 		List<String> allowedOriginPatterns = getAllowedOriginPatterns(request);
 		config.setAllowedOriginPatterns(allowedOriginPatterns);
 		config.setAllowedMethods(getAllowedHttpMethods());
 		return config;
-	}
-
-	// Thread safe
-	private CorsConfiguration newCorsConfiguration(HttpServletRequest request) {
-		CorsConfiguration origin = configSource.getCorsConfiguration(request);
-		return new CorsConfiguration(origin);
 	}
 
 	private List<String> getAllowedOriginPatterns(HttpServletRequest request) {
