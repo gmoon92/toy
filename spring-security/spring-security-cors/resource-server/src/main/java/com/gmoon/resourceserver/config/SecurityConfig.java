@@ -24,7 +24,7 @@ import com.gmoon.resourceserver.util.SecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final CorsConfigurationSource corsConfigurationSource;
