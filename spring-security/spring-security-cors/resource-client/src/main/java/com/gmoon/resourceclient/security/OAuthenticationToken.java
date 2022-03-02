@@ -6,6 +6,9 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import com.gmoon.resourceclient.user.Role;
 
+import lombok.Getter;
+
+@Getter
 public class OAuthenticationToken extends AbstractAuthenticationToken {
 	private final String token;
 
