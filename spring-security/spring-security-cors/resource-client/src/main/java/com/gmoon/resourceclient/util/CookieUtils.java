@@ -1,5 +1,7 @@
 package com.gmoon.resourceclient.util;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,13 +26,18 @@ public class CookieUtils {
 	private final Duration DEFAULT_MAX_AGE = Duration.ofDays(1);
 	private final String URI_PATH = "/";
 
+	// An invalid character [32] was present in the Cookie value
 	public Cookie create(String name, String value) {
-		Cookie cookie = new Cookie(name, value);
+		try {
+			Cookie cookie = new Cookie(name, URLEncoder.encode(value, StandardCharsets.UTF_8.displayName()));
 
-		cookie.setHttpOnly(true);
-		cookie.setPath(URI_PATH);
-		cookie.setMaxAge(Math.toIntExact(DEFAULT_MAX_AGE.getSeconds()));
-		return cookie;
+			cookie.setHttpOnly(true);
+			cookie.setPath(URI_PATH);
+			cookie.setMaxAge(Math.toIntExact(DEFAULT_MAX_AGE.getSeconds()));
+			return cookie;
+		} catch (Exception e) {
+			throw new RuntimeException("A cookie could not be created.", e);
+		}
 	}
 
 	public void addHeaderCookie(HttpServletResponse response, String name, String value) {
@@ -74,7 +81,7 @@ public class CookieUtils {
 			cookie.setPath(URI_PATH);
 			response.addCookie(cookie);
 		} catch (Exception e) {
-			log.error("Not found cookie.", e);
+			log.debug("Already deleted cookie.");
 		}
 	}
 }
