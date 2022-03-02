@@ -1,12 +1,21 @@
 package com.gmoon.resourceserver.jwt;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +40,7 @@ public class JwtVerifyFilter extends BasicAuthenticationFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+		String token = getToken(request);
 		try {
 			User user = jwtUtils.decode(token);
 
@@ -41,6 +50,39 @@ public class JwtVerifyFilter extends BasicAuthenticationFilter {
 		} catch (JWTVerificationException e) {
 			SecurityContextHolder.clearContext();
 			getAuthenticationEntryPoint().commence(request, response, new JwtVerifyException(e));
+		}
+	}
+
+	private String getToken(HttpServletRequest request) {
+		String cookieToken = getTokenFromCookie(request);
+		String headerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		return StringUtils.defaultString(cookieToken, headerToken);
+	}
+
+	private String getTokenFromCookie(HttpServletRequest request) {
+		return getCookies(request)
+			.stream()
+			.filter(cookie -> StringUtils.equals(HttpHeaders.AUTHORIZATION, cookie.getName()))
+			.findFirst()
+			.map(this::getCookieValue)
+			.orElse(StringUtils.EMPTY);
+	}
+
+	private List<Cookie> getCookies(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		if (ArrayUtils.isEmpty(cookies)) {
+			return new ArrayList<>();
+		}
+
+		return Arrays.asList(cookies);
+	}
+
+	private String getCookieValue(Cookie cookie) {
+		try {
+			String value = cookie.getValue();
+			return URLDecoder.decode(value, StandardCharsets.UTF_8.displayName());
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("invalid cookie value.", e);
 		}
 	}
 }
