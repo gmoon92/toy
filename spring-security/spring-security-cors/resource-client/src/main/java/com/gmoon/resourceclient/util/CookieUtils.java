@@ -16,16 +16,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.web.server.header.CacheControlServerHttpHeadersWriter;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @UtilityClass
 public class CookieUtils {
 	private final Duration DEFAULT_MAX_AGE = Duration.ofDays(1);
+	private final String URI_PATH = "/";
 
 	public Cookie create(String name, String value) {
 		Cookie cookie = new Cookie(name, value);
 
 		cookie.setHttpOnly(true);
-		cookie.setPath("/");
+		cookie.setPath(URI_PATH);
 		cookie.setMaxAge(Math.toIntExact(DEFAULT_MAX_AGE.getSeconds()));
 		return cookie;
 	}
@@ -42,11 +45,15 @@ public class CookieUtils {
 		response.addCookie(cookie);
 	}
 
-	public String read(HttpServletRequest request, String name) {
+	public String getCookieValue(HttpServletRequest request, String name) {
+		Cookie cookie = get(request, name);
+		return cookie.getValue();
+	}
+
+	public Cookie get(HttpServletRequest request, String name) {
 		return getCookies(request)
 			.stream()
 			.filter(cookie -> StringUtils.equals(name, cookie.getName()))
-			.map(Cookie::getValue)
 			.findFirst()
 			.orElseThrow(IllegalArgumentException::new);
 	}
@@ -58,5 +65,16 @@ public class CookieUtils {
 		}
 
 		return Collections.unmodifiableList(Arrays.asList(cookies));
+	}
+
+	public void delete(HttpServletRequest request, String name, HttpServletResponse response) {
+		try {
+			Cookie cookie = get(request, name);
+			cookie.setMaxAge(0);
+			cookie.setPath(URI_PATH);
+			response.addCookie(cookie);
+		} catch (Exception e) {
+			log.error("Not found cookie.", e);
+		}
 	}
 }

@@ -35,7 +35,7 @@ class CookieUtilsTest {
 	}
 
 	@Test
-	void testRead() {
+	void testGetCookieValue() {
 		// given
 		String name = "gmoon";
 		String value = "123";
@@ -46,8 +46,27 @@ class CookieUtilsTest {
 
 		// when then
 		assertAll(
-			() -> assertThat(CookieUtils.read(request, name)).isEqualTo(value),
-			() -> assertThrows(IllegalArgumentException.class, () -> CookieUtils.read(request, UUID.randomUUID().toString()))
+			() -> assertThat(CookieUtils.getCookieValue(request, name)).isEqualTo(value),
+			() -> assertThrows(IllegalArgumentException.class, () -> CookieUtils.getCookieValue(request, UUID.randomUUID().toString()))
 		);
+	}
+
+	@Test
+	void testDelete() {
+		// given
+		String name = "gmoon";
+		String value = "123";
+		Cookie cookie = CookieUtils.create(name, value);
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setCookies(cookie);
+
+		// when
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		CookieUtils.delete(request, name, response);
+
+		// then
+		assertThat(response.getHeader(HttpHeaders.SET_COOKIE))
+			.contains("Max-Age=0");
 	}
 }
