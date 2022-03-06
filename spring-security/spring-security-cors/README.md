@@ -69,7 +69,7 @@ https://gmoon.com
 ## SOP 위반, CORS 요청
 [X] https://gmoon.com:4244             포트 다름     
 [X] http://gmoon.com                   스키마 다름
-[X] https://api.gmoon.com/bookmark     도메인 다름
+[X] https://gmoon-api.com/bookmark     도메인 다름
 
 ## 기본 포트는 생략 가능하지만, 
 ## 브라우저 구현에 따라 다름
@@ -86,8 +86,8 @@ https://gmoon.com
 
 ![browser-resource-policy](doc/img/browser-resource-policy.png)
 
-- SOP: 같은 출처에 대한 요청
-- CORS: 다른 출처에 대한 요청
+- [SOP: 같은 출처에 대한 요청](https://developer.mozilla.org/ko/docs/Web/Security/Same-origin_policy)
+- [CORP: 다른 출처에 대한 요청](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cross-Origin_Resource_Policy_(CORP))
 
 ## CORS HTTP Request
 
