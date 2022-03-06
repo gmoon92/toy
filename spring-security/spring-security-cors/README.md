@@ -1,7 +1,5 @@
 # Spring Security CORS
 
-CORS 정책과 Spring Security 를 활용하여 런타임시 CORS 설정을 적용하는 방법에 대해 다룬다.
-
 ## Environment
 
 - Spring boot 2.6.3
@@ -22,14 +20,16 @@ CORS 정책과 Spring Security 를 활용하여 런타임시 CORS 설정을 적�
 
 ## CORS, Cross Origin Resource Sharing
 
-**`교차 출처 리소스 공유(Cross Origin Resource Sharing)`** 는 HTTP 헤더 기반의 메커니즘으로써, HTTP 헤더를 사용하여 **다른 출처(Origin)의 자원에 접근할 수 있는 권한을 부여하도록 브라우저에 알려주는 체제다.**
+**`교차 출처 리소스 공유(Cross Origin Resource Sharing)`** 는 
+HTTP 헤더 기반의 메커니즘으로써, `추가 HTTP 헤더`를 사용하여 **다른 출처(Origin)의 리소스에 접근할 수 있는 권한을 부여하도록 브라우저에 알려주는 체제다.**
 
 > 최신 브라우저는 [`XMLHttpRequest`](https://developer.mozilla.org/ko/docs/Web/API/XMLHttpRequest) 또는 [`Fetch API`](https://developer.mozilla.org/ko/docs/Web/API/Fetch_API) 와 같은 API에서 CORS를 사용하여 CORS HTTP 요청을 판단한다.
 
 ## [Origin](https://developer.mozilla.org/en-US/docs/Glossary/Origin)
 
-출처(`Origin`)란 서버들이 다른 서버들을 찾기 위한 가장 기본적인 단위로써,
-**`Web URL`** 에서 **`schema`**, **`host`**, **`port`** 세 가지 구성 요소를 모두 포함한 개념이다.
+출처(`Origin`)란 서버들이 다른 서버들을 찾기 위한 가장 기본적인 단위이다.
+
+**`Web URL`** 에서 **`schema`**, **`host`**, **`port`** 세 가지 구성 요소를 모두 포함한 개념을 뜻한다.
 
 - schema (protocol)
 - hostname or domain
@@ -48,15 +48,13 @@ https://gmoon.com:443
 
 브라우저에서 출처가 다른 리소스에 대한 허용 정책(CORS)이 왜 필요한걸까.
 
-근래 웹 생태계는 높은 트래픽을 분산 처리하기 위해, 목적에 따라 서버를 분리하고 도메인을 구성하므로 출처가 서버로 부터 데이터 요청을 하는 일이 너무나도 당연하다.
+근래 웹 생태계는 높은 트래픽을 분산 처리하기 위해, 목적에 따라 서버를 분리하고 도메인을 구성하므로 출처가 서버로 부터 데이터 요청을 하는 일이 너무나도 당연하다. 하지만 예전엔 웹 서버 환경은 단일 서버 구조를 가지고 있었으며, 그렇기에 출처가 다른 요청은 서버를 공격하려는 공격자로 인식했다.
 
-하지만 예전엔 웹 서버 환경은 단일 서버 구조를 가지고 있었으며, 그렇기에 출처가 다른 요청은 서버를 공격하려는 공격자로 인식했다.
-
-대부분의 브라우저에선 보안상 이유로 **`동일한 출처(Origin)`** 일 경우에만 자원을 사용할 수 있도록, 출처가 다른 자원에 대한 요청에 대해 제약하고 있다.
+대부분의 브라우저에선 보안상 이유로 **`동일한 출처(Origin)`** 일 경우에만 리소스를 사용할 수 있도록, 출처가 다른 리소스에 대한 요청에 대해 제약하고 있다.
 
 ## SOP, Same Origin Policy
 
-이를 같은 출처 자원 요청만 허용하는 브라우저 정책이라 하여, **`SOP(Same Origin Policy)`** 라 한다.
+이를 같은 출처 리소스 요청만 허용하는 브라우저 정책이라 하여, **`SOP(Same Origin Policy)`** 라 한다.
 
 기본적으로 브라우저 정책은 [**`SOP(Same Origin Policy)`**](https://en.wikipedia.org/wiki/Same-origin_policy) 다.
 
@@ -80,11 +78,11 @@ https://gmoon.com
 
 > 출처 비교시 포트를 무시하는 브라우저는 Internet Explorer 밖에 없다.
 
-## 브라우저 리소스 정책
+## 브라우저의 리소스 정책
 
-기본적으로 브라우저는 요청 헤더에 `Origin` 필드에 요청을 보내는 출처를 포함해준다.
+기본적으로 브라우저는 `Origin` 헤더에 필드 값으로 요청을 보내는 출처를 포함해준다.
 
-자신의 출처와 요청한 출처가 다를 때 브라우저는 `추가 HTTP 헤더`를 사용하여 CORS 를 판단한다.
+자신의 출처와 요청한 출처가 다른 경우, 브라우저는 `추가 HTTP 헤더`를 사용하여 CORS 권한 여부를 판단한다.
 
 ![browser-resource-policy](doc/img/browser-resource-policy.png)
 
@@ -102,10 +100,11 @@ CORS HTTP 요청은 다음과 같다.
 
 ### [Preflight request](https://developer.mozilla.org/ko/docs/Glossary/Preflight_request)
 
-브라우저는 실제 요청(main request)을 보내기전에 출처가 다른 리소스를 안전하게 사용할 수 있는지 판단하기 위해 예비 요청(preflight request)을 한다.
+preflight 는 비행기가 이륙하기 전 상태라는 사전적 의미를 가지고 있다.
 
-여기서 Preflight 는 비행기가 이륙하기 전 상태를 의미한다. 이를 빗대어 Preflight 는 본 요청을 보내기전, `OPTIONS` 메소드를 사용하여 서버로부터 미리 요청을 보낸다.
+이를 빗대어 실제 요청(main request)을 보내기전에 출처가 다른 리소스를 안전하게 사용할 수 있는지 판단하기 위해 예비 요청(preflight request)을 한다.
 
+> preflight 요청은 `실제 요청`을 보내기전, 사전에 `OPTIONS` 메소드를 사용하여 요청을 보낸다. <br/> 
 > `OPTIONS`는 서버에서 추가 정보를 판별하는데 사용하는 HTTP/1.1 메서드다.
 
 ![cors-preflight-request](doc/img/cors-preflight-request.png)
@@ -134,25 +133,25 @@ Access to XMLHttpRequest at 'http://localhost:9000/bookmark' from origin 'http:/
 
 ![developer-tools-cors-policy-failure2](doc/img/developer-tools-cors-policy-failure2.png)
 
-> 서버는 `Access-Control-Allow-Origin: *` 응답 헤더 값으로 모든 요청(*) 으로 설정해놨다면, 브라우저는 해당 서버의 자원을 마음껏 사용할 수 있다.
+> 서버는 `Access-Control-Allow-Origin: *` 응답 헤더 값으로 모든 요청(*) 으로 설정해놨다면, 브라우저는 해당 서버의 리소스를 마음껏 사용할 수 있다.
 
-매번 브라우저가 본 요청을 보내기전에 preflight 요청을 보낸다면 웹 서버 측면에선 부담이 된다.
+매번 브라우저가 실제 요청을 보내기전에 예비 요청을 보낸다면 웹 서버 측면에선 부담된다. 
 
-따라서 서버의 `Access-Control-Max-Age` 응답 헤더 설정을 통해, 브라우저는 preflight 요청에 대한 결과를 일정 기간 동안 캐싱할 수 있다.
+이에 예비 요청에 대한 결과를 일정 기간 동안 캐싱할 수 있도록, 서버에선 `Access-Control-Max-Age` 응답 헤더 값을 설정해주는 편이 좋다. 
 
-브라우저는 설정된 시간 동안은 preflight 요청을 생략하고 바로 본 요청을 보낸다.
+브라우저는 캐싱된 예비 응답 값을 통해 서버에서 설정한 일정 시간 동안은 preflight 요청을 생략하고 바로 본 요청을 보낸다.
 
 ### [Simple Request](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS#%EB%8B%A8%EC%88%9C_%EC%9A%94%EC%B2%ADsimple_requests)
 
-모든 HTTP 요청 마다 [CORS preflight Request](https://developer.mozilla.org/ko/docs/Glossary/Preflight_request) 을 보내는건 무의미하다.
+모든 HTTP 요청 마다 예비 요청(preflight request)을 보내는건 아니다.
 
-단순 요청(Simple Request)는 CORS Preflight Request 를 사용하지 않고, *단 한번의 요청과 응답으로 통신이 이뤄진다.*
+단순 요청(Simple Request)는 CORS Preflight Request 를 사용하지 않고, **단 한번의 요청과 응답으로 통신이 이뤄진다.**
+
+예비 요청과 마찬가지로 브라우저가 CORS 권한 여부를 판단하는 시나리오는 동일하다. **단 차이점은 예비 요청의 존재 여부다.**
 
 ![simple-request](doc/img/simple-request.png)
 
-브라우저가 CORS 정책 위반 여부를 판단하는 시나리오는 Preflight 요청과 마찬가지로 동일하다.
-
-단 차이점은 preflight 요청의 존재 여부다. 단순 요청에 대한 조건은 까다롭다. 아래 조건이 모두 충족할 경우에만 단순 요청으로 판단한다.
+단순 요청에 대한 조건은 까다롭다. 아래 조건이 모두 충족할 경우에만 단순 요청으로 판단한다.
 
 - HTTP Method
     - GET
@@ -177,9 +176,9 @@ Access to XMLHttpRequest at 'http://localhost:9000/bookmark' from origin 'http:/
 
 CORS는 기본적으로 보안상의 이유로 `HTTP Cookie` 와 `HTTP Authentication` 헤더 정보를 요청할 수 없도록 제약한다. 
 
-때론 Cookie 정보나 Authentication 헤더를 통한 서버 인증이 필요한 경우가 있다. **`Credential 요청`** 은 HTTP Cookie와 HTTP Authentication 정보를 인식할 수 있게 해주는 요청이다.
+때론 Cookie 정보나 Authentication 헤더를 통한 서버 인증이 필요한 경우가 있는데 **`Credential 요청`** 은 HTTP Cookie와 HTTP Authentication 정보를 인식할 수 있게 해주는 요청이다.
 
-> 그렇기에 `Preflight Request`와 `Simple Request`은 Non-Credential request 라 한다.
+> `Preflight Request`와 `Simple Request`은 Non-Credential request 라 한다.
 
 추가적으로 Fetch API 나 XMLHttpRequest 에서도 요청에 Cookie 나 Authentication 헤더를 포함하도록 별도로 설정해줘야 한다.
 
