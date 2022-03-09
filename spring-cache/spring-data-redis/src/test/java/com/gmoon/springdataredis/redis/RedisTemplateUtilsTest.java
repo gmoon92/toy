@@ -33,13 +33,13 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
-class RedisClientUtilsTest {
-	final RedisClientUtils redisClientUtils;
+class RedisTemplateUtilsTest {
+	final RedisTemplateUtils redisTemplateUtils;
 	final RedisTemplate<String, Object> template;
 
 	@BeforeEach
 	void setUp() {
-		redisClientUtils.deleteAll();
+		redisTemplateUtils.deleteAll();
 	}
 
 	@Test
@@ -51,15 +51,15 @@ class RedisClientUtilsTest {
 		Cache cache = Cache.create(key, Duration.ofSeconds(ttl));
 
 		// when
-		redisClientUtils.save(cache, value);
+		redisTemplateUtils.save(cache, value);
 
 		// then
 		assertAll(
-			() -> assertThat(redisClientUtils.getTTL(cache.getKey()))
+			() -> assertThat(redisTemplateUtils.getTTL(cache.getKey()))
 				.isInstanceOf(Long.class)
 				.isEqualTo(ttl),
 			() -> {
-				String actual = redisClientUtils.find(cache.getKey());
+				String actual = redisTemplateUtils.find(cache.getKey());
 				assertThat(actual).isEqualTo(value);
 			}
 		);
@@ -70,10 +70,10 @@ class RedisClientUtilsTest {
 		// given
 		Cache cache = Cache.create("hello");
 		String value = "redis";
-		redisClientUtils.save(cache, value);
+		redisTemplateUtils.save(cache, value);
 
 		// when
-		String actual = redisClientUtils.find(cache.getKey());
+		String actual = redisTemplateUtils.find(cache.getKey());
 
 		// then
 		assertThat(actual).isEqualTo(value);
@@ -87,7 +87,7 @@ class RedisClientUtilsTest {
 
 		// when then
 		assertThatExceptionOfType(NotFoundDataException.class)
-			.isThrownBy(() -> redisClientUtils.getOrElseThrow(key));
+			.isThrownBy(() -> redisTemplateUtils.getOrElseThrow(key));
 	}
 
 	@Test
@@ -96,13 +96,13 @@ class RedisClientUtilsTest {
 	void testGetAndChangedByEternalKey() {
 		// given
 		Cache cache = Cache.create("hello", Duration.ofSeconds(10));
-		redisClientUtils.save(cache, "redis");
+		redisTemplateUtils.save(cache, "redis");
 
 		// when
-		redisClientUtils.getAndChangedByEternalKey(cache.getKey());
+		redisTemplateUtils.getAndChangedByEternalKey(cache.getKey());
 
 		// then
-		assertThat(redisClientUtils.getTTL(cache.getKey())).isEqualTo(-1);
+		assertThat(redisTemplateUtils.getTTL(cache.getKey())).isEqualTo(-1);
 	}
 
 	@Test
@@ -110,27 +110,27 @@ class RedisClientUtilsTest {
 	void testChangeTTL() {
 		// given
 		Cache cache = Cache.create("hello");
-		redisClientUtils.save(cache, "redis");
+		redisTemplateUtils.save(cache, "redis");
 
 		// when
 		Duration ttl = Duration.ofSeconds(10);
-		redisClientUtils.changeTTL(cache.getKey(), ttl);
+		redisTemplateUtils.changeTTL(cache.getKey(), ttl);
 
 		// then
 		assertThat(ttl)
-			.isEqualTo(Duration.ofSeconds(redisClientUtils.getTTL(cache.getKey())));
+			.isEqualTo(Duration.ofSeconds(redisTemplateUtils.getTTL(cache.getKey())));
 	}
 
 	@Test
 	void testDelete() {
 		// given
 		Cache cache = Cache.create("TEST");
-		redisClientUtils.save(cache, UUID.randomUUID().toString());
+		redisTemplateUtils.save(cache, UUID.randomUUID().toString());
 
 		// when then
 		assertAll(
-			() -> assertThat(redisClientUtils.delete(cache.getKey())).isTrue(),
-			() -> assertThat(redisClientUtils.delete(cache.getKey())).isFalse()
+			() -> assertThat(redisTemplateUtils.delete(cache.getKey())).isTrue(),
+			() -> assertThat(redisTemplateUtils.delete(cache.getKey())).isFalse()
 		);
 	}
 
@@ -138,11 +138,11 @@ class RedisClientUtilsTest {
 	@DisplayName("정규식으로 등록된 캐시 키 조회")
 	void testKeys() {
 		// given
-		redisClientUtils.save(Cache.create("gmoon1"), "value");
-		redisClientUtils.save(Cache.create("gmoon2"), "value");
+		redisTemplateUtils.save(Cache.create("gmoon1"), "value");
+		redisTemplateUtils.save(Cache.create("gmoon2"), "value");
 
 		// when
-		Set<String> keys = redisClientUtils.keys(Cache.CACHE_KEY_STORAGE + ":gmoon*");
+		Set<String> keys = redisTemplateUtils.keys(Cache.CACHE_KEY_STORAGE + ":gmoon*");
 
 		// then
 		assertThat(keys).hasSize(2);
