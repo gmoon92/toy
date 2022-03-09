@@ -6,7 +6,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.resourceserver.constants.CacheNames;
+import com.gmoon.resourceserver.constants.CacheName;
 import com.gmoon.resourceserver.util.CorsUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class CorsOriginService {
 	private final CorsHttpMethodRepository corsHttpMethodRepository;
 
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheNames.CORS_CONFIG, key = "#root.methodName")
+	@Cacheable(value = CacheName.Constants.CORS_CONFIG, key = "#root.methodName")
 	public List<String> getAllowedOriginPatterns() {
 		List<String> hosts = corsOriginRepository.getAllHost();
 		return getAllowedOriginPatterns(hosts);
@@ -45,7 +45,7 @@ public class CorsOriginService {
 	}
 
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheNames.CORS_CONFIG, key = "#root.methodName")
+	@Cacheable(value = CacheName.Constants.CORS_CONFIG, key = "#root.methodName")
 	public List<String> getAllowedHttpMethods() {
 		return corsHttpMethodRepository.findAllByEnabled();
 	}
