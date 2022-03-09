@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableCaching
 @RequiredArgsConstructor
 public class RedisConfig {
+	private static final String REDIS_SERVER_TYPE_CONFIG_PROPERTY = "spring.redis.server-type";
 
 	private final RedisProperties redisProperties;
 
@@ -50,7 +51,7 @@ public class RedisConfig {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.redis.server-type", havingValue = RedisServerType.STANDALONE)
+	@ConditionalOnProperty(name = REDIS_SERVER_TYPE_CONFIG_PROPERTY, havingValue = RedisServerType.STANDALONE)
 	public RedisConfiguration standaloneConfig() {
 		String host = redisProperties.getHost();
 		int port = redisProperties.getPort();
@@ -58,7 +59,7 @@ public class RedisConfig {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.redis.server-type", havingValue = RedisServerType.SENTINEL)
+	@ConditionalOnProperty(name = REDIS_SERVER_TYPE_CONFIG_PROPERTY, havingValue = RedisServerType.SENTINEL)
 	public RedisConfiguration sentinelConfig() {
 		RedisProperties.Sentinel sentinel = redisProperties.getSentinel();
 		String nodeNameOfMaster = sentinel.getMaster();
@@ -67,7 +68,7 @@ public class RedisConfig {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.redis.server-type", havingValue = RedisServerType.ELASTI_CACHE)
+	@ConditionalOnProperty(name = REDIS_SERVER_TYPE_CONFIG_PROPERTY, havingValue = RedisServerType.ELASTI_CACHE)
 	public RedisConfiguration elastiCacheConfig() {
 		String host = redisProperties.getHost();
 		int port = redisProperties.getPort();
