@@ -1,14 +1,21 @@
 package com.gmoon.springdataredis.config;
 
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.CacheKeyPrefix;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
@@ -17,6 +24,7 @@ import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfigu
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.gmoon.springdataredis.redis.RedisServerType;
@@ -38,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableCaching
 @RequiredArgsConstructor
 public class RedisConfig {
+	private static final int DEFAULT_CACHE_EXPIRE_SECONDS = 30;
 	private static final String REDIS_SERVER_TYPE_CONFIG_PROPERTY = "spring.redis.server-type";
 
 	private final RedisProperties redisProperties;
@@ -113,7 +122,39 @@ public class RedisConfig {
 		log.info("connectionFactory: {}", connectionFactory);
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
-		redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
+		redisTemplate.setKeySerializer(getKeySerializer());
 		return redisTemplate;
+	}
+
+	@Bean
+	public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+		// todo: define all cache names
+		Set<String> allCacheNames = new HashSet<>();
+
+		// todo: cache ttl settings
+		Map<String, RedisCacheConfiguration> cacheExpireConfigs = new HashMap<>();
+		cacheExpireConfigs.put("CACHE_CONFIGS", createRedisCacheConfig(Duration.ofMinutes(1)));
+
+		return RedisCacheManager.builder(connectionFactory)
+			.cacheDefaults(createRedisCacheConfig(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_SECONDS)))
+			.initialCacheNames(allCacheNames) // set default cache config
+			.withInitialCacheConfigurations(cacheExpireConfigs)
+			.transactionAware()
+			.build();
+	}
+
+	private RedisCacheConfiguration createRedisCacheConfig(Duration expireTtl) {
+		return RedisCacheConfiguration.defaultCacheConfig()
+			.entryTtl(expireTtl)
+			.disableCachingNullValues()
+			.prefixCacheNameWith(CacheKeyPrefix.SEPARATOR)
+			.computePrefixWith(CacheKeyPrefix.simple())
+			.serializeKeysWith(RedisSerializationContext
+				.SerializationPair
+				.fromSerializer(getKeySerializer()));
+	}
+
+	private StringRedisSerializer getKeySerializer() {
+		return StringRedisSerializer.UTF_8;
 	}
 }
