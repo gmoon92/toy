@@ -24,8 +24,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.gmoon.springdataredis.constants.CacheName;
-import com.gmoon.springdataredis.constants.RedisServerType;
+import com.gmoon.springdataredis.cache.CacheName;
 import com.gmoon.springdataredis.util.RedisUtils;
 
 import io.lettuce.core.ReadFrom;
@@ -131,7 +130,7 @@ public class RedisConfig {
 		Set<String> allCacheNames = CacheName.getAll();
 
 		// cache ttl settings
-		Map<String, RedisCacheConfiguration> cacheExpireConfigs = CacheExpireConfigs.create()
+		Map<String, RedisCacheConfiguration> cacheExpireConfigs = RedisCacheExpireConfigs.create()
 			.putExpireMinutes(CacheName.USER, 1)
 			.getValues();
 
