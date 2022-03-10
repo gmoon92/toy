@@ -11,6 +11,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.gmoon.springdataredis.exception.NotFoundDataException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

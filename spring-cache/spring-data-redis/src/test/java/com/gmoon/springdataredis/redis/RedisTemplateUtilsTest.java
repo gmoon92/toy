@@ -24,6 +24,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.util.CollectionUtils;
 
+import com.gmoon.springdataredis.exception.NotFoundDataException;
 import com.gmoon.springdataredis.util.JacksonUtils;
 
 import lombok.RequiredArgsConstructor;
