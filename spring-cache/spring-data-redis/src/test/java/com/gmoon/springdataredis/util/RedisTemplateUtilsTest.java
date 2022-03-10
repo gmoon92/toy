@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.redis;
+package com.gmoon.springdataredis.util;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +25,8 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.util.CollectionUtils;
 
 import com.gmoon.springdataredis.exception.NotFoundDataException;
-import com.gmoon.springdataredis.util.JacksonUtils;
+import com.gmoon.springdataredis.redis.Cache;
+import com.gmoon.springdataredis.redis.DefaultCache;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.redis;
+package com.gmoon.springdataredis.util;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.gmoon.springdataredis.exception.NotFoundDataException;
+import com.gmoon.springdataredis.redis.Cache;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
