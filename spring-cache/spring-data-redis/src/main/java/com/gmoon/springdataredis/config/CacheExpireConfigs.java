@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 
-import com.gmoon.springdataredis.redis.CacheName;
+import com.gmoon.springdataredis.constants.CacheName;
 import com.gmoon.springdataredis.util.RedisUtils;
 
 import lombok.Getter;

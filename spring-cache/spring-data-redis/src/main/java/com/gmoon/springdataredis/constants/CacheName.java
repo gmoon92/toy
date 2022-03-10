@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.redis;
+package com.gmoon.springdataredis.constants;
 
 import java.util.Collections;
 import java.util.Set;
