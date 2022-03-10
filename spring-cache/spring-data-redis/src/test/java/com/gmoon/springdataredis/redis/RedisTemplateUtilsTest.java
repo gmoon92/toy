@@ -48,7 +48,7 @@ class RedisTemplateUtilsTest {
 		String key = "hello";
 		String value = "redis";
 		long ttl = 3;
-		Cache cache = Cache.create(key, Duration.ofSeconds(ttl));
+		Cache cache = DefaultCache.create(key, Duration.ofSeconds(ttl));
 
 		// when
 		redisTemplateUtils.save(cache, value);
@@ -68,7 +68,7 @@ class RedisTemplateUtilsTest {
 	@Test
 	void testFind() {
 		// given
-		Cache cache = Cache.create("hello");
+		Cache cache = DefaultCache.create("hello");
 		String value = "redis";
 		redisTemplateUtils.save(cache, value);
 
@@ -95,7 +95,7 @@ class RedisTemplateUtilsTest {
 		+ " 만료되지 않는 key 로 설정 후 조회")
 	void testGetAndChangedByEternalKey() {
 		// given
-		Cache cache = Cache.create("hello", Duration.ofSeconds(10));
+		Cache cache = DefaultCache.create("hello", Duration.ofSeconds(10));
 		redisTemplateUtils.save(cache, "redis");
 
 		// when
@@ -109,7 +109,7 @@ class RedisTemplateUtilsTest {
 	@DisplayName("TTL 설정 변경")
 	void testChangeTTL() {
 		// given
-		Cache cache = Cache.create("hello");
+		Cache cache = DefaultCache.create("hello");
 		redisTemplateUtils.save(cache, "redis");
 
 		// when
@@ -124,7 +124,7 @@ class RedisTemplateUtilsTest {
 	@Test
 	void testDelete() {
 		// given
-		Cache cache = Cache.create("TEST");
+		Cache cache = DefaultCache.create("TEST");
 		redisTemplateUtils.save(cache, UUID.randomUUID().toString());
 
 		// when then
@@ -138,11 +138,12 @@ class RedisTemplateUtilsTest {
 	@DisplayName("정규식으로 등록된 캐시 키 조회")
 	void testKeys() {
 		// given
-		redisTemplateUtils.save(Cache.create("gmoon1"), "value");
-		redisTemplateUtils.save(Cache.create("gmoon2"), "value");
+		String key = "gmoon";
+		redisTemplateUtils.save(DefaultCache.create(key + "1"), "value");
+		redisTemplateUtils.save(DefaultCache.create(key + "2"), "value");
 
 		// when
-		Set<String> keys = redisTemplateUtils.keys(Cache.CACHE_KEY_STORAGE + ":gmoon*");
+		Set<String> keys = redisTemplateUtils.keys(DefaultCache.create(key).getKey() + "*");
 
 		// then
 		assertThat(keys).hasSize(2);
