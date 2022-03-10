@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.redis;
+package com.gmoon.springdataredis.cache;
 
 import java.io.Serializable;
 import java.time.Duration;
