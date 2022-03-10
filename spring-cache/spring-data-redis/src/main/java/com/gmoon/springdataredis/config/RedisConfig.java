@@ -1,7 +1,6 @@
 package com.gmoon.springdataredis.config;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +12,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.CacheKeyPrefix;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConfiguration;
@@ -24,9 +22,9 @@ import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfigu
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.gmoon.springdataredis.redis.CacheName;
 import com.gmoon.springdataredis.redis.RedisServerType;
 
 import io.lettuce.core.ReadFrom;
@@ -128,12 +126,13 @@ public class RedisConfig {
 
 	@Bean
 	public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-		// todo: define all cache names
-		Set<String> allCacheNames = new HashSet<>();
+		// define all cache names
+		Set<String> allCacheNames = CacheName.getAll();
 
-		// todo: cache ttl settings
-		Map<String, RedisCacheConfiguration> cacheExpireConfigs = new HashMap<>();
-		cacheExpireConfigs.put("CACHE_CONFIGS", createRedisCacheConfig(Duration.ofMinutes(1)));
+		// cache ttl settings
+		Map<String, RedisCacheConfiguration> cacheExpireConfigs = CacheExpireConfigs.create()
+			.putExpireMinutes(CacheName.USER, 1)
+			.getValues();
 
 		return RedisCacheManager.builder(connectionFactory)
 			.cacheDefaults(createRedisCacheConfig(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_SECONDS)))
@@ -144,17 +143,10 @@ public class RedisConfig {
 	}
 
 	private RedisCacheConfiguration createRedisCacheConfig(Duration expireTtl) {
-		return RedisCacheConfiguration.defaultCacheConfig()
-			.entryTtl(expireTtl)
-			.disableCachingNullValues()
-			.prefixCacheNameWith(CacheKeyPrefix.SEPARATOR)
-			.computePrefixWith(CacheKeyPrefix.simple())
-			.serializeKeysWith(RedisSerializationContext
-				.SerializationPair
-				.fromSerializer(getKeySerializer()));
+		return RedisUtils.createRedisCacheConfig(expireTtl);
 	}
 
 	private StringRedisSerializer getKeySerializer() {
-		return StringRedisSerializer.UTF_8;
+		return RedisUtils.getKeySerializer();
 	}
 }
