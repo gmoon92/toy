@@ -6,24 +6,24 @@ import java.util.Map;
 
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 
-import com.gmoon.springdataredis.constants.CacheName;
+import com.gmoon.springdataredis.cache.CacheName;
 import com.gmoon.springdataredis.util.RedisUtils;
 
 import lombok.Getter;
 
 @Getter
-public class CacheExpireConfigs {
+public class RedisCacheExpireConfigs {
 	private final Map<String, RedisCacheConfiguration> values;
 
-	private CacheExpireConfigs() {
+	private RedisCacheExpireConfigs() {
 		this.values = new HashMap<>();
 	}
 
-	public static CacheExpireConfigs create() {
-		return new CacheExpireConfigs();
+	public static RedisCacheExpireConfigs create() {
+		return new RedisCacheExpireConfigs();
 	}
 
-	public CacheExpireConfigs putExpireMinutes(CacheName cacheName, int minutes) {
+	public RedisCacheExpireConfigs putExpireMinutes(CacheName cacheName, int minutes) {
 		Duration expireTtl = Duration.ofMinutes(minutes);
 		values.put(cacheName.getValue(), RedisUtils.createRedisCacheConfig(expireTtl));
 		return this;

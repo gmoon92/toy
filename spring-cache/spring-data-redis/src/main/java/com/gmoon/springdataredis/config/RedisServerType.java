@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.constants;
+package com.gmoon.springdataredis.config;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
