@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.config;
+package com.gmoon.springdataredis.util;
 
 import java.time.Duration;
 
