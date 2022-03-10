@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.redis;
+package com.gmoon.springdataredis.util;
 
 import java.io.Serializable;
 import java.util.Arrays;
