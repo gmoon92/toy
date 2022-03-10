@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.redis;
+package com.gmoon.springdataredis.constants;
 
 import static org.assertj.core.api.Assertions.*;
 

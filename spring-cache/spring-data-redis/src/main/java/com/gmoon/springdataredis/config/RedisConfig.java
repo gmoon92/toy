@@ -24,8 +24,8 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.gmoon.springdataredis.redis.CacheName;
-import com.gmoon.springdataredis.redis.RedisServerType;
+import com.gmoon.springdataredis.constants.CacheName;
+import com.gmoon.springdataredis.constants.RedisServerType;
 import com.gmoon.springdataredis.util.RedisUtils;
 
 import io.lettuce.core.ReadFrom;
