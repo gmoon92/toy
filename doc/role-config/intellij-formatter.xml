@@ -18,11 +18,7 @@
             <emptyLine/>
             <package name="" withSubpackages="true" static="false"/>
             <emptyLine/>
-            <package name="com.nhncorp" withSubpackages="true" static="false"/>
-            <emptyLine/>
-            <package name="com.navercorp" withSubpackages="true" static="false"/>
-            <emptyLine/>
-            <package name="com.naver" withSubpackages="true" static="false"/>
+            <package name="com.gmoon" withSubpackages="true" static="false"/>
             <emptyLine/>
         </value>
     </option>
