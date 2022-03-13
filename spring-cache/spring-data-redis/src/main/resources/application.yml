@@ -28,3 +28,30 @@ spring:
         - 127.0.0.1:26379 # default port
         - 127.0.0.1:26380
         - 127.0.0.1:26381
+
+  # JPA persistence
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: &show-sql true
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.H2Dialect
+          show-sql: *show-sql
+          format_sql: *show-sql
+          use_sql_comments: *show-sql
+          globally_quoted_identifiers: true
+          jdbc:
+            time_zone: UTC
+      open-in-view: false
+      defer-datasource-initialization: true
+
+  # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      platform: h2
+      schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
+      data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
+      continue-on-error: false
