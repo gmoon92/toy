@@ -76,6 +76,14 @@
             <artifactId>jedis</artifactId>
             <version>3.8.0</version>
         </dependency>
+
+        <!-- embedded redis server -->
+        <dependency>
+            <groupId>it.ozimov</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>0.7.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
