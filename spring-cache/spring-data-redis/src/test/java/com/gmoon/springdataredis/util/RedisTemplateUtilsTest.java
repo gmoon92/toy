@@ -24,6 +24,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.util.CollectionUtils;
 
+import com.gmoon.javacore.util.JacksonUtils;
 import com.gmoon.springdataredis.cache.Cache;
 import com.gmoon.springdataredis.cache.DefaultCache;
 import com.gmoon.springdataredis.exception.NotFoundDataException;
