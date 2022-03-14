@@ -12,7 +12,10 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class RedisUtils {
 	public RedisCacheConfiguration createRedisCacheConfig(Duration expireTtl) {
-		return RedisCacheConfiguration.defaultCacheConfig()
+		Thread thread = Thread.currentThread();
+		ClassLoader contextClassLoader = thread.getContextClassLoader();
+
+		return RedisCacheConfiguration.defaultCacheConfig(contextClassLoader)
 			.entryTtl(expireTtl)
 			.disableCachingNullValues()
 			.prefixCacheNameWith(CacheKeyPrefix.SEPARATOR)
