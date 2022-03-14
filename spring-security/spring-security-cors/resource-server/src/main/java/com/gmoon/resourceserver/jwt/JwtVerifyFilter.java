@@ -56,7 +56,7 @@ public class JwtVerifyFilter extends BasicAuthenticationFilter {
 	private String getToken(HttpServletRequest request) {
 		String cookieToken = getTokenFromCookie(request);
 		String headerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-		return StringUtils.defaultString(cookieToken, headerToken);
+		return StringUtils.defaultIfBlank(cookieToken, headerToken);
 	}
 
 	private String getTokenFromCookie(HttpServletRequest request) {
