@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CorsHttpMethod implements Serializable {
 	@Id
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	@Column(name = "id", length = 50)
 	private HttpMethod id;
 
