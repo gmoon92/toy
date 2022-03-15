@@ -4,8 +4,6 @@ import static com.gmoon.resourceserver.cors.QCorsOrigin.*;
 
 import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ public class CorsOriginRepositoryCustomImpl implements CorsOriginRepositoryCusto
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
-	@Cacheable
 	public List<String> getAllHost() {
 		return jpaQueryFactory.select(corsOrigin.origin.host)
 			.from(corsOrigin)
