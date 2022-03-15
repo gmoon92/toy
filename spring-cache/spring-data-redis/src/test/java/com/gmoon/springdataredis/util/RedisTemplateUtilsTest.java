@@ -180,7 +180,7 @@ class RedisTemplateUtilsTest {
 
 				// then
 				assertThat(operations.members(key))
-					.containsExactly("redis", "hello");
+					.contains("redis", "hello");
 			}
 		}
 
