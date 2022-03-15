@@ -1,13 +1,13 @@
-package com.gmoon.springredissession;
+package com.gmoon.springreactive;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringRedisSessionApplication {
+public class SpringReactiveApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringRedisSessionApplication.class, args);
+		SpringApplication.run(SpringReactiveApplication.class, args);
 	}
 
 }
