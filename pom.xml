@@ -18,6 +18,7 @@
         <module>spring-security</module>
         <module>spring-triangle</module>
         <module>spring-utils</module>
+        <module>spring-reactive</module>
         <module>testing</module>
     </modules>
 
