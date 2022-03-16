@@ -8,3 +8,4 @@
 
 - [Redis Template Examples](https://github.com/gmoon92/Toy/blob/master/spring-cache/spring-data-redis/doc/01-redis-template.md)
 - [HA(high-availability) Redis Config](https://github.com/gmoon92/Toy/blob/master/spring-cache/spring-data-redis/doc/02-high-availability-redis.md)
+- [Redis Repository](https://github.com/gmoon92/Toy/blob/master/spring-cache/spring-data-redis/doc/03-redis-repository.md)
