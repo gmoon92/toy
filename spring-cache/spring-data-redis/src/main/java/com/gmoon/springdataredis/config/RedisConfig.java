@@ -22,14 +22,16 @@ import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfigu
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.gmoon.springdataredis.cache.CacheName;
 import com.gmoon.springdataredis.util.RedisUtils;
 
-import io.lettuce.core.ReadFrom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import io.lettuce.core.ReadFrom;
 
 /**
  * RedisTemplate default key serializer is {@link org.springframework.data.redis.serializer.JdkSerializationRedisSerializer}
@@ -42,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableCaching
+@EnableRedisRepositories
 @RequiredArgsConstructor
 public class RedisConfig {
 	private static final int DEFAULT_CACHE_EXPIRE_SECONDS = 30;
