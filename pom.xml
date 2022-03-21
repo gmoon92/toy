@@ -12,7 +12,7 @@
     <modules>
         <module>java-core</module>
         <module>google-spreadsheet</module>
-        <module>hibernate</module>
+        <module>spring-jpa</module>
         <module>spring-cache</module>
         <module>spring-event</module>
         <module>spring-security</module>
