@@ -3,11 +3,11 @@
         "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
         "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
-<!-- Naver coding convention for Java (version 1.2)  -->
+<!-- Gmoon coding convention for Java (version 1.2)  -->
 <!-- This rule file requires Checkstyle version 8.24 or above. -->
 
 <!--
-The following rules in the Naver coding convention cannot be checked by this configuration file.
+The following rules in the Gmoon coding convention cannot be checked by this configuration file.
 - [avoid-korean-pronounce]
 - [class-noun]
 - [interface-noun-adj]
@@ -276,7 +276,7 @@ The following rules in the Naver coding convention cannot be checked by this con
         <!-- [blankline-after-package] -->
         <!--
         This module always requires an empty line between header and package.
-        But it is not forced in the Naver guide.
+        But it is not forced in the Gmoon guide.
         See https://github.com/checkstyle/checkstyle/issues/1035
         <module name="EmptyLineSeparator">
             <property name="tokens" value="PACKAGE_DEF"/>
@@ -288,7 +288,7 @@ The following rules in the Naver coding convention cannot be checked by this con
         <!-- [import-grouping] -->
         <module name="ImportOrder">
             <property name="groups"
-                      value="java., javax., org., net., /com\.(?!gmoon)/, /(?!java\.|javax\.|com\.|org\.|net\.)/, com.nhncorp., com.navercorp., com.naver."/>
+                      value="java., javax., org., net., /com\.(?!gmoon)/, /(?!java\.|javax\.|com\.|org\.|net\.)/, com.gmoon."/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="top"/>
