@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>com.gmoon</groupId>
-    <artifactId>hibernate</artifactId>
+    <artifactId>spring-jpa</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>hibernate</name>
+    <name>spring-jpa</name>
     <packaging>pom</packaging>
 
     <modules>
