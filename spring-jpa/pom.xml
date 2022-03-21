@@ -20,6 +20,7 @@
         <module>hibernate-envers</module>
         <module>hibernate-performance</module>
         <module>hibernate-sequence-generator</module>
+        <module>spring-jpa-pagination</module>
     </modules>
 
     <properties>
