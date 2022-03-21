@@ -1,0 +1,32 @@
+spring:
+  # JPA Persistence
+  jpa:
+    show-sql: &show-sql true
+    hibernate:
+      ddl-auto: create-drop
+      show-sql: *show-sql
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.H2Dialect
+          show-sql: *show-sql
+          format_sql: *show-sql
+          use_sql_comments: *show-sql
+          jdbc:
+            time_zone: UTC
+      open-in-view: false
+      defer-datasource-initialization: true
+
+  # Sql
+  # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      platform: h2
+      schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
+      data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
+      continue-on-error: false
+
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": trace
