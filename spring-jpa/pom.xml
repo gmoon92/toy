@@ -19,7 +19,7 @@
     <modules>
         <module>hibernate-envers</module>
         <module>hibernate-performance</module>
-        <module>hibernate-sequence-uuid</module>
+        <module>hibernate-sequence-generator</module>
     </modules>
 
     <properties>
