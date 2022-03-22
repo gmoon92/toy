@@ -1,13 +1,19 @@
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/toy_spring_jpa_pagination?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    username: root
+    password: root
+
   # JPA Persistence
   jpa:
     show-sql: &show-sql true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       show-sql: *show-sql
       properties:
         hibernate:
-          dialect: org.hibernate.dialect.H2Dialect
+          dialect: org.hibernate.dialect.MySQL55Dialect
           show-sql: *show-sql
           format_sql: *show-sql
           use_sql_comments: *show-sql
@@ -22,7 +28,7 @@ spring:
     init:
       mode: always
       encoding: UTF-8
-      platform: h2
+      platform: mysql
       schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
       data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
       continue-on-error: false
