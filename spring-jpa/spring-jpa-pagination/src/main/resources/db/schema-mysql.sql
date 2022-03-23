@@ -7,5 +7,6 @@ CREATE TABLE lt_user_login
     access_device varchar(50)  DEFAULT 'WEB',
     attempt_ip    varchar(50),
     attempt_dt    timestamp,
-    succeed       bit          DEFAULT 0
+    succeed       bit          DEFAULT 0,
+    INDEX idx_username (username)
 );
