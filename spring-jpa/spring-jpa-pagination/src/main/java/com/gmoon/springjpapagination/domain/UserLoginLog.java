@@ -9,6 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "lt_user_login")
+@Table(name = "lt_user_login", indexes = {@Index(name = "idx_username", columnList = "username")})
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserLoginLog implements Serializable {
