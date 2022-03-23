@@ -8,5 +8,6 @@ CREATE TABLE lt_user_login
     attempt_ip    varchar(50),
     attempt_dt    timestamp,
     succeed       bit          DEFAULT 0,
-    INDEX idx_username (username)
+    INDEX idx_username (username),
+    INDEX idx_attempt_dt (attempt_dt)
 );
