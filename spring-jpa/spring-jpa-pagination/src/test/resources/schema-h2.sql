@@ -9,3 +9,6 @@ CREATE TABLE lt_user_login
     attempt_dt    timestamp,
     succeed       boolean      DEFAULT 0
 );
+
+CREATE INDEX idx_username ON lt_user_login(username);
+CREATE INDEX idx_attempt_dt ON lt_user_login(attempt_dt);
