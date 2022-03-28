@@ -9,7 +9,7 @@ spring:
   jpa:
     show-sql: &show-sql true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       show-sql: *show-sql
       properties:
         hibernate:
@@ -28,7 +28,7 @@ spring:
     init:
       mode: always
       encoding: UTF-8
-      platform: mysql
+      platform: h2
       schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
       data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
       continue-on-error: false
