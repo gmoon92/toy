@@ -1,4 +1,4 @@
-package com.gmoon.springjpapagination.domain;
+package com.gmoon.springjpapagination.userloginlog;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

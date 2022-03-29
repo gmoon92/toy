@@ -1,6 +1,6 @@
-package com.gmoon.springjpapagination.domain;
+package com.gmoon.springjpapagination.userloginlog;
 
-import static com.gmoon.springjpapagination.domain.QUserLoginLog.*;
+import static com.gmoon.springjpapagination.userloginlog.QUserLoginLog.*;
 
 import java.util.List;
 
