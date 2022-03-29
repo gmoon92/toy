@@ -1,4 +1,4 @@
-package com.gmoon.springjpapagination.domain;
+package com.gmoon.springjpapagination.userloginlog;
 
 import static org.assertj.core.api.Assertions.*;
 
