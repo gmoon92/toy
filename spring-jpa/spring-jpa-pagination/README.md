@@ -19,8 +19,9 @@
     - [Cursor-based Pagination 다음 페이지](#cursor-based-pagination-다음-페이지)
     - [Cursor-based Pagination 문제점](#cursor-based-pagination-문제점)
 - [순서를 보장하지 않은 커서](#순서를-보장하지-않은-커서)
-- [트레이드 오프](#트레이드-오프)
+- [Spring Data JPA with Cursor-based Pagination](#spring-data-jpa-with-cursor-based-pagination)
   - [QueryDsl Cursor](#querydsl-cursor)
+- [트레이드 오프](#트레이드-오프)
 
 ## Offset-based Pagination
 
@@ -97,11 +98,15 @@ OFFSET 5;   -- 시작할 row number = LIMIT * (페이지 번호 -1)
         - Clustering index 고려
     - `Offset-based Pagination`의 조회 성능은 오로지 row 수에 영향이 미친다.
 
+Offset 기반 페이지네이션의 성능측면에서 가장 고려해야 될 부분은 인덱스 여부다. 조회 쿼리에 대한 실행 계획을 살펴보고 해당 쿼리에 맞는 인덱스를 추가해야만 한다.
+
 ![explain-offset-based-pagination.png](./img/explain-offset-based-pagination.png)
 
-실행 계획의 `type` 속성 값이 `ALL` 임으로 `Table full scan`이 발생된다는 점을 알 수 있다.
+조회 쿼리에 맞게 인덱스를 지정하지 않았다면, 다음과 같이 실행 계획의 `type` 속성 값이 `ALL`(`Table full scan`)이 발생된다는 점을 유의하자.
 
 > `ORDER BY` 와 `OFFSET` 으로 인해 `Using filesort` 발생.
+
+아무리 쿼리 튜닝을 하더라도 Offset 기반 페이지네이션에선 뒤 페이지를 조회할 수록 이전 데이터들을 다시 정렬해야되기 때문에 점차 성능이 느려질 수 밖에 없다.
 
 ### Offset-based Pagination 은 언제 사용해야 할까
 
@@ -360,11 +365,13 @@ LIMIT 5;
 
 > [stackoverflow - MySQL cursor based pagination with multiple columns](https://stackoverflow.com/questions/38017054/mysql-cursor-based-pagination-with-multiple-columns)
 
-## 트레이드 오프
+## Spring Data JPA with Cursor-based Pagination
 
-하지만 기준이 될 커서 데이터가 생성 일지가 아니라면, 클라이언트는 커서 데이터를 요청해줘야 한다.
+이처럼 기준이 될 커서 데이터가 순서를 보장하지 않는다면 순서를 보장하기 위한 조건이 추가 된다.
 
-또한 백엔드에선 클라이언트의 요청에 맞게 동적으로 커서 데이터 조건을 수정하고 정렬(`ORDER BY`)도 이에 맞게 맞춰줘야 한다.
+특히나 검색 조건이 많거나 동적으로 정렬을 요구하는 화면이라면 클라이언트에서도 이에 맞는 커서 데이터를 요청해줘야 한다.
+
+뿐만 아니라 백엔드에선 클라이언트의 요청에 맞게 동적으로 커서 데이터 조건을 수정하고 정렬(`ORDER BY`)도 이에 맞게 맞춰줘야 한다.
 
 - 클라이언트: 요청 파라미터에 커서 데이터 추가 
 - 백엔드: 요청된 커서 데이터에 맞게 조건 추가, 정렬 변경
@@ -483,18 +490,22 @@ order by userloginl0_.attempt_dt desc, userloginl0_.id desc
 limit ?
 ```
 
-## 마무리
+## 트레이드 오프
 
-일반적으론 아래와 같다면 오프셋 기반 페이지네이션을 고려해도 된다.
+무조건 페이지 기능은 커서 기반 페이지네이션이라기 보다는 상황에 맞게 선택적으로 개발해야 한다.
+
+일반적으론 아래와 같은 상황이라면 오프셋 기반 페이지네이션을 고려해도 된다.
 
 1. 사용자가 UI 에서 페이지를 선택하여 데이터를 조회해야 한다.
 2. 중복된 데이터가 노출되도 상관없다.
 3. 테이블에 관리되는 데이터가 적다.
    - 데이터의 `C/U/D` 가 빈번하지 않다.
 
-그외 대부분의 상황에선 커서 기반 페이지네이션을 사용하는 것이 무조건적으로 좋다.
+그외 대부분의 상황에선 성능적으로 커서 기반 페이지네이션을 사용하는 것이 무조건적으로 좋다.
 
-하지만 커서 데이터로써 2 가지 이상 조합해야할 컬럼이 많아질수록 성능이 느려질 수 있다. 되도록 별도의 조건을 추가하지 않는게 바람직하다.
+하지만 커서 데이터로써 2 가지 이상 조합해야할 컬럼이 많아질수록 성능이 느려질 수 있다. 
+따라서 검색 조건이 많거나, 동적으로 정렬하는 요구하는 화면에선 고려해야할 부분이 많다.
+되도록 별도의 조건을 추가하지 않는게 바람직하다.
 
 ## Reference
 
