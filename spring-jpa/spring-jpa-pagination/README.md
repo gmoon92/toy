@@ -284,7 +284,7 @@ FROM lt_user_login
 WHERE (
             attempt_dt < '2022-03-24 13:33:42' -- [1]
         OR (attempt_dt = '2022-03-24 13:33:42' 
-                AND id > '302dc710-3dd4-4303-bd4e-957ab55e46a3') -- [2]
+                AND id < '302dc710-3dd4-4303-bd4e-957ab55e46a3') -- [2]
     )
 ORDER BY attempt_dt DESC, 
          id DESC
@@ -392,7 +392,7 @@ LIMIT 5;
 
 ### QueryDsl Cursor
 
-다음은 위 쿼리를 `QueryDsl`를 활용한 소스 예제이다.
+위 쿼리를 `Spring data jpa`와 `QueryDsl`를 사용하면 다음과 같다.
 
 ```java
 @Service
@@ -431,7 +431,7 @@ public class UserLoginLogService {
 		return factory.selectOne()
 		  .from(userLoginLog)
 		  .where(cursorPagination(cursor, cursorOrder))
-          .orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
+		  .orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
 		  .fetchOne() != null;
 	}
 
@@ -442,7 +442,7 @@ public class UserLoginLogService {
 		  .reduce((data, other) -> other)
 		  .orElse("-1");
 	}
-	
+
 	private BooleanExpression cursorPagination(String cursor, Order cursorOrder) {
 		boolean isFirstPage = StringUtils.isBlank(cursor);
 		if (isFirstPage) { // 첫 페이지라면 조건 skip
@@ -459,7 +459,7 @@ public class UserLoginLogService {
 
 		throw new RuntimeException("must be specify the order of cursor data.");
 	}
-	
+
 	private StringExpression cursor() {
 		return Expressions.stringTemplate("CONCAT({0}, LPAD({1}, 50, '0'))", userLoginLog.attemptDt, userLoginLog.id);
 	}
