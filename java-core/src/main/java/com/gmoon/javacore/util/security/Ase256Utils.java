@@ -8,15 +8,38 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@Slf4j
-public class Ase256Utils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Ase256Utils {
+
+	// padding, CBC(Cipher Block Chaining)
+	// PKCS#5: 8바이트 기반 암호화 블록 패딩 처리 방식
+	// PKCS#7: 16바이트 기반 암호화 블록 패딩 처리 방식
+	// {alg}/{mode}/{padding}
+	private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
+
+	private static final SecretKeySpec KEY_SPEC;
+	private static final IvParameterSpec IV_SPEC;
+
 	private static final Charset CHARSET = StandardCharsets.UTF_8;
+
+	static {
+		// 키의 길이가 32 이면 AES-256
+		// 키의 길이가 24 이면 AES-192
+		// 키의 길이가 16 이면 AES-128
+		String secretKey = "f54ceaa2f4444adf91ad0abcb726007d";
+		// CBC 블록 암호 운용 방식이라면 IV(Initialization Vector) 값 필수
+		String iv = secretKey.substring(0, 16);
+
+		KEY_SPEC = new SecretKeySpec(secretKey.getBytes(CHARSET), "AES");
+		IV_SPEC = new IvParameterSpec(iv.getBytes(CHARSET));
+	}
 
 	public static String encode(String plainText) {
 		try {
-			Cipher cipher = CipherHolder.ENCRYPT;
+			Cipher cipher = newEncrypt();
 			byte[] encrypted = cipher.doFinal(plainText.getBytes(CHARSET));
 			return Base64.getEncoder().encodeToString(encrypted);
 		} catch (Exception e) {
@@ -25,7 +48,7 @@ public class Ase256Utils {
 	}
 
 	public static String decode(String cipherText) {
-		Cipher cipher = CipherHolder.DECRYPT;
+		Cipher cipher = newDecrypt();
 
 		byte[] decodeBytes = Base64.getDecoder().decode(cipherText);
 		try {
@@ -35,36 +58,24 @@ public class Ase256Utils {
 		}
 	}
 
-	private static class CipherHolder {
-		private static final Cipher ENCRYPT;
-		private static final Cipher DECRYPT;
+	// non thread safe
+	private static Cipher newEncrypt() {
+		try {
+			Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.ENCRYPT_MODE, KEY_SPEC, IV_SPEC);
+			return cipher;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-		// padding, CBC(Cipher Block Chaining)
-		// PKCS#5: 8바이트 기반 암호화 블록 패딩 처리 방식
-		// PKCS#7: 16바이트 기반 암호화 블록 패딩 처리 방식
-		// {alg}/{mode}/{padding}
-		private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
-
-		static {
-			// 키의 길이가 32 이면 AES-256
-			// 키의 길이가 24 이면 AES-192
-			// 키의 길이가 16 이면 AES-128
-			String secretKey = "f54ceaa2f4444adf91ad0abcb726007d";
-			// CBC 블록 암호 운용 방식이라면 IV(Initialization Vector) 값 필수
-			String iv = secretKey.substring(0, 16);
-
-			SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(CHARSET), "AES");
-			IvParameterSpec ivSpec = new IvParameterSpec(iv.getBytes(CHARSET));
-
-			try {
-				ENCRYPT = Cipher.getInstance(ALGORITHM);
-				ENCRYPT.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-
-				DECRYPT = Cipher.getInstance(ALGORITHM);
-				DECRYPT.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+	private static Cipher newDecrypt() {
+		try {
+			Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, KEY_SPEC, IV_SPEC);
+			return cipher;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }
