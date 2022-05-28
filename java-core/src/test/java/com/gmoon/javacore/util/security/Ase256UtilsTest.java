@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class Ase256UtilsTest {
 
 	@Test
-	void testEncodeAndDecrypt() {
+	void testEncodeAndDecode() {
 		// given
 		String plainText = "gmoon";
 
