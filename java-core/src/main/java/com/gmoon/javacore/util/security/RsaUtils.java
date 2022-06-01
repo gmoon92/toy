@@ -1,5 +1,6 @@
 package com.gmoon.javacore.util.security;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -7,8 +8,11 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
@@ -27,6 +31,7 @@ import sun.security.jca.JCAUtil;
 public final class RsaUtils {
 	private static final int KEY_SIZE = 2048;
 	private static final String ALGORITHM = "RSA";
+	private static final String ALGORITHM_OF_SIGNATURE = "SHA256withRSA";
 	private static final Charset CHARSET = StandardCharsets.UTF_8;
 
 	public static String encode(PublicKey publicKey, String plainText) {
@@ -53,6 +58,38 @@ public final class RsaUtils {
 		}
 	}
 
+	public static String sign(PrivateKey privateKey, String data) {
+		try {
+			Signature signature = Signature.getInstance(ALGORITHM_OF_SIGNATURE);
+			signature.initSign(privateKey);
+			signature.update(data.getBytes(CHARSET));
+			byte[] encodedHex = signature.sign();
+			return Base64Utils.encodeToString(encodedHex);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static boolean verify(PublicKey publicKey, String signatureText, String data) {
+		try {
+			Signature signature = Signature.getInstance(ALGORITHM_OF_SIGNATURE);
+			signature.initVerify(publicKey);
+			signature.update(data.getBytes(CHARSET));
+			byte[] decodedHex = Base64Utils.decodeFromString(signatureText);
+			return signature.verify(decodedHex);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static PublicKey convertToPublicKeyFromString(String publicKeyText) {
+		return KeyPairHolder.NO_OP.createPublicKey(publicKeyText);
+	}
+
+	public static PublicKey getPublicKeyFromPrivateKey(PrivateKey privateKey) {
+		return KeyPairHolder.getPublicKeyFromPrivateKey(privateKey);
+	}
+
 	@Getter
 	@RequiredArgsConstructor
 	static class KeyPairHolder {
@@ -68,11 +105,8 @@ public final class RsaUtils {
 		}
 
 		public static KeyPairHolder create(String privateKeyText, String publicKeyText) {
-			byte[] decodedPrivateKey = Base64Utils.decodeFromString(privateKeyText);
-			byte[] decodedPublicKey = Base64Utils.decodeFromString(publicKeyText);
-
-			PrivateKey privateKey = NO_OP.createPrivateKey(decodedPrivateKey);
-			PublicKey publicKey = NO_OP.createPublicKey(decodedPublicKey);
+			PrivateKey privateKey = NO_OP.createPrivateKey(privateKeyText);
+			PublicKey publicKey = NO_OP.createPublicKey(publicKeyText);
 			return new KeyPairHolder(privateKey, publicKey);
 		}
 
@@ -86,18 +120,33 @@ public final class RsaUtils {
 			}
 		}
 
-		private PrivateKey createPrivateKey(byte[] privateKey) {
+		private static PublicKey getPublicKeyFromPrivateKey(PrivateKey privateKey) {
 			try {
-				EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKey);
+				RSAPrivateCrtKey rsaPrivateCrtKey = (RSAPrivateCrtKey)privateKey;
+				BigInteger modulus = rsaPrivateCrtKey.getModulus();
+				BigInteger publicExponent = rsaPrivateCrtKey.getPublicExponent();
+				RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(modulus, publicExponent);
+
+				return KeyFactory.getInstance(ALGORITHM).generatePublic(publicKeySpec);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private PrivateKey createPrivateKey(String privateKeyText) {
+			try {
+				byte[] decoded = Base64Utils.decodeFromString(privateKeyText);
+				EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
 				return KeyFactory.getInstance(ALGORITHM).generatePrivate(keySpec);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 
-		private PublicKey createPublicKey(byte[] publicKey) {
+		private PublicKey createPublicKey(String publicKeyText) {
 			try {
-				EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey);
+				byte[] decoded = Base64Utils.decodeFromString(publicKeyText);
+				EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
 				return KeyFactory.getInstance(ALGORITHM).generatePublic(keySpec);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
