@@ -20,6 +20,7 @@
         <module>spring-security-cors</module>
         <module>spring-security-csrf-aspect</module>
         <module>spring-security-jwt</module>
+        <module>spring-security-password-encoder</module>
         <module>spring-security-whiteship</module>
     </modules>
 
