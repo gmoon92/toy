@@ -64,9 +64,9 @@ class PasswordUtilsTest {
 	void testIsNeedToUpgradeEncoding() {
 		String bcrypt = "$2a$10$d0QeuUkP.eRZnIXF66LPauq2NI6CYse/tmjml1M9PMsCw66z.TR5q";
 		String bcryptWithPrefixId = PasswordEncoderHolder.BCRYPT.getPrefixPasswordId() + bcrypt;
+
 		String sha1 = encodeSH1("$2a$10$d0QeuUkP.eRZnIXF66LPauq2NI6CYse/tmjml1M9PMsCw66z.TR5q");
 		String sha1WithPrefixId = PasswordEncoderHolder.SHA1.getPrefixPasswordId() + sha1;
-
 
 		// then
 		assertThat(PasswordUtils.isNeedToUpgradeEncoding(bcryptWithPrefixId)).isFalse();
