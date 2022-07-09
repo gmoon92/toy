@@ -19,14 +19,15 @@ class MemberRepositoryTest {
 	@Test
 	void testDelete() {
 		// given
-		long id = 0l;
+		Member newbie = new Member();
+		Member savedMember = memberRepository.save(newbie);
 
 		// when
-		memberRepository.deleteById(id);
+		memberRepository.delete(savedMember);
 		flushAndClear();
 
 		// then
-		assertThat(memberRepository.findById(id))
+		assertThat(memberRepository.findById(savedMember.getId()))
 			.isEqualTo(Optional.empty());
 	}
 
