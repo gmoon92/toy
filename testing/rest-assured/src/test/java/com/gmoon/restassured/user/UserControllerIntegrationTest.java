@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerIntegrationTest {
 
@@ -22,6 +26,28 @@ class UserControllerIntegrationTest {
 		RestAssured.port = port;
 	}
 
+	@Order(Integer.MIN_VALUE)
+	@Test
+	void testSave() {
+		save("gmoon");
+		save("guest");
+	}
+
+	private void save(String username) {
+		//@formatter:off
+		RestAssured
+			.given()
+			.accept(ContentType.JSON)
+			.contentType(ContentType.JSON)
+			.when()
+			.post("/user/" + username)
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.CREATED.value());
+		//@formatter:on
+	}
+
+	@Order(2)
 	@Test
 	void testFindAll() {
 		//@formatter:off
@@ -40,6 +66,7 @@ class UserControllerIntegrationTest {
 		//@formatter:on
 	}
 
+	@Order(3)
 	@Test
 	void testGet() {
 		// given
@@ -64,6 +91,7 @@ class UserControllerIntegrationTest {
 		//@formatter:on
 	}
 
+	@Order(4)
 	@Test
 	void testGet_with_assertj() {
 		// given
@@ -92,21 +120,7 @@ class UserControllerIntegrationTest {
 		assertThat(result).isEqualTo(user);
 	}
 
-	@Test
-	void testSave() {
-		//@formatter:off
-		RestAssured
-			.given()
-				.accept(ContentType.JSON)
-				.contentType(ContentType.JSON)
-			.when()
-				.post("/user/newbie")
-			.then()
-				.log().all()
-				.statusCode(HttpStatus.CREATED.value());
-		//@formatter:on
-	}
-
+	@Order(Integer.MAX_VALUE)
 	@Test
 	void testDelete() {
 		//@formatter:off
