@@ -18,7 +18,8 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 
 	@Test
 	void testCount() {
-		assertThat(repository.count()).isZero();
+		assertThat(repository.count())
+			.isInstanceOf(Long.class);
 	}
 
 	@Test
@@ -35,7 +36,6 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 
 		// when
 		Server webServer = repository.save(form.createEnabledWebServer());
-		flushAndClear();
 
 		// then
 		assertThat(webServer)
@@ -57,12 +57,7 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 
 	@Test
 	void testGetEnabledServers() {
-		// given
-
-		// when
-		List<Server> servers = repository.getEnabledServers();
-
-		// then
-		assertThat(servers).size().isZero();
+		// when then
+		assertThat(repository.getEnabledServers()).isNotEmpty();
 	}
 }
