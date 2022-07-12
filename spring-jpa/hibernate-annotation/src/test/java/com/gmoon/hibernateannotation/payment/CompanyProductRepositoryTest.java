@@ -1,15 +1,13 @@
 package com.gmoon.hibernateannotation.payment;
 
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import com.gmoon.hibernateannotation.base.BaseRepositoryTest;
 import com.gmoon.hibernateannotation.payment.constants.Currency;
 import com.gmoon.hibernateannotation.payment.constants.ProductType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-class ProductRepositoryTest extends BaseRepositoryTest {
+class CompanyProductRepositoryTest extends BaseRepositoryTest {
 
 	@Autowired
 	ProductRepository repository;
@@ -18,11 +16,11 @@ class ProductRepositoryTest extends BaseRepositoryTest {
 	void testSave() {
 		// given
 		ProductType productType = ProductType.ENTERPRISE;
-		Product product = Product.create(productType, 10_000d, Currency.WON);
+		CompanyProduct companyProduct = CompanyProduct.create(productType, 10_000d, Currency.WON);
 
 		// when then
-		assertThat(repository.save(product))
-			.isInstanceOf(Product.class)
+		assertThat(repository.save(companyProduct))
+			.isInstanceOf(CompanyProduct.class)
 			.hasFieldOrPropertyWithValue("name", productType.name())
 			.hasFieldOrPropertyWithValue("type", productType);
 	}
