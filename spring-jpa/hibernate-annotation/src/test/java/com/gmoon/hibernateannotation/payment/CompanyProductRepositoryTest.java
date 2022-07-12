@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 class CompanyProductRepositoryTest extends BaseRepositoryTest {
 
 	@Autowired
-	ProductRepository repository;
+	CompanyProductRepository repository;
 
 	@Test
 	void testSave() {
