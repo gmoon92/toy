@@ -1,9 +1,11 @@
 package com.gmoon.springasync.mail;
 
+import com.gmoon.springasync.file.FileUtils;
+import java.io.File;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -15,7 +17,9 @@ public class MailTemplate {
 		message.setFrom(template.getFrom());
 		message.setTo(to);
 		message.setSubject(String.format(template.getSubject(), to));
-		message.setText(String.format(template.getText(), githubPageUrl));
+		File file = FileUtils.getFileFromResource("templates/invite.html");
+		String html = FileUtils.convertFileToString(file);
+		message.setText(StringUtils.replace(html, "#githubPageUrl", githubPageUrl));
 		return message;
 	}
 }
