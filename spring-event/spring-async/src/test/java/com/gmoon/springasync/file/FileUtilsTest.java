@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 class FileUtilsTest {
 
-
 	@DisplayName("리소스 디렉토리 파일 읽기")
 	@Test
 	void getFileFromResource() {
