@@ -1,7 +1,7 @@
 package com.gmoon.hibernateannotation.payment;
 
+import com.gmoon.hibernateannotation.payment.constants.Currency;
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,9 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-
-import com.gmoon.hibernateannotation.payment.constants.Currency;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,7 +27,7 @@ public class Price implements Serializable {
 	@EqualsAndHashCode.Include
 	@Id
 	@Column(name = "id")
-	private Long productId;
+	private String productId;
 
 	@ToString.Exclude
 	@MapsId

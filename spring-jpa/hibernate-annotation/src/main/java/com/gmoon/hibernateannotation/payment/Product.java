@@ -18,9 +18,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // 상속 구현 전략
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // 상속 구현 전략
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -29,8 +30,9 @@ public abstract class Product implements Serializable {
 
 	@EqualsAndHashCode.Include
 	@Id
-	@GeneratedValue
-	private Long id;
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+	private String id;
 
 	@Column(name = "name")
 	private String name;
