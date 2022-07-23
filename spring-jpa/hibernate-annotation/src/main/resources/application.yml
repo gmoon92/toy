@@ -6,23 +6,24 @@ spring:
     password: root
   jpa:
     show-sql: &show-sql true
-    defer-datasource-initialization: true
+#    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+#      ddl-auto: update
+      ddl-auto: create-drop
       dialect: org.hibernate.dialect.MySQL55Dialect
       show-sql: *show-sql
       format_sql: *show-sql
       use_sql_comments: *show-sql
       jdbc:
         time_zone: UTC
-  sql:
-    init:
-      mode: always
-      encoding: UTF-8
-      platform: mysql
-      schema-locations: classpath*:db/schema.sql
-      data-locations: classpath*:db/data.sql
-      continue-on-error: false
+#  sql:
+#    init:
+#      mode: always
+#      encoding: UTF-8
+#      platform: mysql
+#      schema-locations: classpath*:db/schema.sql
+#      data-locations: classpath*:db/data.sql
+#      continue-on-error: false
 
 logging:
   level:
