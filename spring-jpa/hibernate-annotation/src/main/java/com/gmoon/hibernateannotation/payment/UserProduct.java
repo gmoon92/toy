@@ -1,5 +1,7 @@
 package com.gmoon.hibernateannotation.payment;
 
+import com.gmoon.hibernateannotation.payment.constants.Currency;
+import com.gmoon.hibernateannotation.payment.constants.ProductType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -13,6 +15,15 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserProduct extends Product {
 
-	@Column(nullable = false)
+	@Column
 	private String gender;
+
+	public UserProduct(ProductType productType) {
+		super(productType);
+	}
+
+	public static UserProduct create(ProductType productType, Double price, Currency currency) {
+		return (UserProduct) new UserProduct(productType)
+			.withPrice(price, currency);
+	}
 }
