@@ -42,10 +42,11 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 			.isEqualTo(repository.findServerByName(serverName));
 	}
 
+	@DisplayName("활성화된 서버 조회")
 	@Order(Integer.MAX_VALUE)
 	@Test
 	void testGetEnabledServers() {
 		// when then
-		assertThat(repository.getEnabledServers()).isEmpty();
+		assertThat(repository.getEnabledServers()).isNotEmpty();
 	}
 }
