@@ -5,6 +5,7 @@ import com.gmoon.hibernateannotation.payment.constants.ProductType;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,7 +22,8 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // 상속 구현 전략
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 구현 전략
+@DiscriminatorColumn(name = "discriminator_type")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

@@ -2,6 +2,7 @@ package com.gmoon.hibernateannotation.payment;
 
 import com.gmoon.hibernateannotation.payment.constants.Currency;
 import com.gmoon.hibernateannotation.payment.constants.ProductType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import lombok.AccessLevel;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@DiscriminatorValue("null")
 @PrimaryKeyJoinColumn(name = "company_product_id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
