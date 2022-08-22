@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>junit5</module>
         <module>mockito</module>
         <module>quickperf</module>
         <module>rest-assured</module>
