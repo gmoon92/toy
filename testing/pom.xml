@@ -18,6 +18,7 @@
 
     <modules>
         <module>junit5</module>
+        <module>localstack</module>
         <module>mockito</module>
         <module>quickperf</module>
         <module>rest-assured</module>
