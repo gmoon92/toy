@@ -15,7 +15,7 @@
     <description>spring-quartz-cluster</description>
     <properties>
         <java.version>1.8</java.version>
-        <mysql-connector-java.version>8.0.20</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <querydsl-core.version>4.4.0</querydsl-core.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
     </properties>
