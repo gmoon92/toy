@@ -15,7 +15,7 @@
 
     <properties>
         <querydsl.core.version>4.4.0</querydsl.core.version>
-        <mysql-connector-java.version>8.0.20</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <java-jwt.version>3.8.2</java-jwt.version>
     </properties>
 
