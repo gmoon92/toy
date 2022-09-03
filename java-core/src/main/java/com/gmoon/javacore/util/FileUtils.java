@@ -11,6 +11,8 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.util.UUID;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 public final class FileUtils {
 
@@ -48,14 +50,18 @@ public final class FileUtils {
 	}
 
 	private static File createTempFile() {
-		return createTempFile(null);
+		return createTempFile(".tmp");
 	}
 
-	private static File createTempFile(File file) {
+	private static File createTempFile(String extension) {
 		try {
-			File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".tmp", file);
-			tempFile.deleteOnExit();
+			File tempFile = File.createTempFile(
+				UUID.randomUUID().toString(),
+				"." + extension,
+				null
+			);
 
+			tempFile.deleteOnExit();
 			return tempFile;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -91,6 +97,20 @@ public final class FileUtils {
 
 			return builder.toString();
 		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static File convertFileToMultipartFile(MultipartFile multipartFile) {
+		String filename = multipartFile.getOriginalFilename();
+		String extension = FilenameUtils.getExtension(filename);
+
+		File temp = createTempFile(extension);
+		try (InputStream is = multipartFile.getInputStream()){
+			copyInputStreamToFile(is, temp);
+			multipartFile.transferTo(temp);
+			return temp;
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}

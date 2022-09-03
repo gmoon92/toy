@@ -2,11 +2,14 @@ package com.gmoon.javacore.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 @DisplayName("파일 유틸 클래스")
 class FileUtilsTest {
@@ -65,6 +68,23 @@ class FileUtilsTest {
 			// when then
 			assertThat(FileUtils.convertFileToString(file))
 				.isInstanceOf(String.class);
+		}
+
+		@DisplayName("MultipartFile -> File")
+		@Test
+		void convertFileToMultipartFile() throws IOException {
+			// given
+			File file = FileUtils.getResourceFile(fileNameWithResourceFilePath);
+			MockMultipartFile multipartFile = new MockMultipartFile(
+				"file",
+				file.getName(),
+				MediaType.IMAGE_PNG_VALUE,
+				FileUtils.convertFileToInputStream(file)
+			);
+
+			// when then
+			assertThat(FileUtils.convertFileToMultipartFile(multipartFile))
+				.isInstanceOf(File.class);
 		}
 	}
 }
