@@ -1,11 +1,19 @@
 package com.gmoon.localstack.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.gmoon.javacore.util.FileUtils;
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -14,19 +22,51 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 @Disabled("Testcontainers 로컬 테스트")
 @Testcontainers
 class LocalStackTestContainerTest {
 
-	final LocalStackS3Config config = new LocalStackS3Config();
-
 	@Container
-	final LocalStackContainer localstack = config.localStackContainer();
-	final AmazonS3 s3Client = config.amazonS3(localstack);
+	final LocalStackContainer localstack = new LocalStackContainer(
+		DockerImageName.parse("localstack/localstack:0.14.3")
+	);
+
+	final AmazonS3 s3Client = createAmazonS3();
+
+	private AmazonS3 createAmazonS3() {
+		String accessKey = localstack.getAccessKey();
+		String secretKey = localstack.getSecretKey();
+
+		URI endpoint = localstack.getEndpointOverride(LocalStackContainer.Service.S3);
+		return AmazonS3ClientBuilder.standard()
+			.withCredentials(awsCredentialsProvider(accessKey, secretKey))
+			.withEndpointConfiguration(
+				new AwsClientBuilder.EndpointConfiguration(
+					endpoint.toString(),
+					localstack.getRegion()
+				))
+			.build();
+	}
+
+	private AWSCredentialsProvider awsCredentialsProvider(String accessKey, String secretKey) {
+		return new AWSStaticCredentialsProvider(
+			new BasicAWSCredentials(accessKey, secretKey)
+		);
+	}
+
+	@Bean
+	public TransferManager transferManager(AmazonS3 amazonS3) {
+		return TransferManagerBuilder
+			.standard()
+			.withS3Client(amazonS3)
+			.build();
+	}
 
 	@DisplayName("Amazon S3")
 	@Nested
