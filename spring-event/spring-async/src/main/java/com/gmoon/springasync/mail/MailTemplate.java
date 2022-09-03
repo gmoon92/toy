@@ -1,6 +1,6 @@
 package com.gmoon.springasync.mail;
 
-import com.gmoon.springasync.file.FileUtils;
+import com.gmoon.javacore.util.FileUtils;
 import java.io.File;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ public class MailTemplate {
 		message.setFrom(template.getFrom());
 		message.setTo(to);
 		message.setSubject(String.format(template.getSubject(), to));
-		File file = FileUtils.getFileFromResource("templates/invite.html");
+		File file = FileUtils.getResourceFile("templates/invite.html");
 		String html = FileUtils.convertFileToString(file);
 		message.setText(StringUtils.replace(html, "#githubPageUrl", githubPageUrl));
 		return message;
