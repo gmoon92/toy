@@ -1,5 +1,6 @@
 package com.gmoon.springasync.file;
 
+import com.gmoon.javacore.util.FileUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class ResourceController {
 	@ResponseBody
 	@GetMapping("/image")
 	public ResponseEntity<byte[]> getImageFile() throws Exception {
-		File resourceFile = FileUtils.getFileFromResource("public/images/cat.png");
+		File resourceFile = FileUtils.getResourceFile("public/images/cat.png");
 		FileInputStream fis = new FileInputStream(resourceFile);
 		return new ResponseEntity<>(IOUtils.toByteArray(fis), IMAGE_CONTENT_TYPE, HttpStatus.CREATED);
 	}
