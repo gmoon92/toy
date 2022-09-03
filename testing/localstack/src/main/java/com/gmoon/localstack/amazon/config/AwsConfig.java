@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-public class AmazonConfig {
+public class AwsConfig {
 
 	@Bean
 	public AmazonS3 amazonS3(AmazonProperty property) {
