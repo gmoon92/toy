@@ -1,4 +1,4 @@
-package com.gmoon.localstack.amazon.config;
+package com.gmoon.localstack.aws.config;
 
 import java.util.Properties;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;

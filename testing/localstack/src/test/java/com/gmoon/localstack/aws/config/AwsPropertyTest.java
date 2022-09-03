@@ -1,8 +1,8 @@
-package com.gmoon.localstack.amazon.config;
+package com.gmoon.localstack.aws.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import com.gmoon.localstack.amazon.constants.AmazonRegion;
+import com.gmoon.localstack.aws.constants.AmazonRegion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

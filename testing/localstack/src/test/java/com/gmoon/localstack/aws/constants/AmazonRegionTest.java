@@ -1,4 +1,4 @@
-package com.gmoon.localstack.amazon.constants;
+package com.gmoon.localstack.aws.constants;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.params.ParameterizedTest;

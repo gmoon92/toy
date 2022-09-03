@@ -1,4 +1,4 @@
-package com.gmoon.localstack.amazon.constants;
+package com.gmoon.localstack.aws.constants;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;
