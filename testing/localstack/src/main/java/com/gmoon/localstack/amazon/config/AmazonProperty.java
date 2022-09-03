@@ -16,5 +16,6 @@ public class AmazonProperty {
 	public static class S3 {
 		public final AmazonRegion region;
 		public final String accessKey;
+		public final String secretKey;
 	}
 }

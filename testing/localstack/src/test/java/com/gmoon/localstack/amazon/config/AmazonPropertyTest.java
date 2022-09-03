@@ -19,7 +19,8 @@ class AmazonPropertyTest {
 	void getValue() {
 		assertAll(
 			() -> assertThat(property.s3.region).isEqualTo(AmazonRegion.AP_NORTHEAST_2),
-			() -> assertThat(property.s3.accessKey).isNotBlank()
+			() -> assertThat(property.s3.accessKey).isNotBlank(),
+			() -> assertThat(property.s3.secretKey).isNotBlank()
 		);
 	}
 }
