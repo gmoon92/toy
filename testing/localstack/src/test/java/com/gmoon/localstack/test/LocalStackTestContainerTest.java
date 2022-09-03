@@ -1,18 +1,11 @@
 package com.gmoon.localstack.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.gmoon.javacore.util.FileUtils;
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,54 +17,27 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 @Disabled("Testcontainers 로컬 테스트")
 @Testcontainers
 class LocalStackTestContainerTest {
 
-	private static final LocalStackContainer.Service S3 = LocalStackContainer.Service.S3;
+	final LocalStackS3Config config = new LocalStackS3Config();
 
 	@Container
-	final LocalStackContainer localstack = new LocalStackContainer(
-		DockerImageName.parse("localstack/localstack:0.14.3")
-	).withServices(S3);
-
-	final String BUCKET_NAME = "gmoon-local-bucket";
-	AmazonS3 s3Client;
-
-	@BeforeEach
-	void setUp() {
-		s3Client = createAmazonS3Client();
-		s3Client.createBucket(BUCKET_NAME);
-	}
-
-	private AmazonS3 createAmazonS3Client() {
-		String accessKey = localstack.getAccessKey();
-		String secretKey = localstack.getSecretKey();
-
-		return AmazonS3ClientBuilder.standard()
-			.withCredentials(awsCredentialsProvider(accessKey, secretKey))
-			.withEndpointConfiguration(getEndpointConfiguration())
-			.build();
-	}
-
-	private AwsClientBuilder.EndpointConfiguration getEndpointConfiguration() {
-		URI endpoint = localstack.getEndpointOverride(S3);
-		return new AwsClientBuilder.EndpointConfiguration(
-			endpoint.toString(),
-			localstack.getRegion()
-		);
-	}
-
-	private AWSCredentialsProvider awsCredentialsProvider(String accessKey, String secretKey) {
-		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-		return new AWSStaticCredentialsProvider(credentials);
-	}
+	final LocalStackContainer localstack = config.localStackContainer();
+	final AmazonS3 s3Client = config.amazonS3(localstack);
 
 	@DisplayName("Amazon S3")
 	@Nested
 	class S3Test {
+
+		final String BUCKET_NAME = "gmoon-local-bucket";
+
+		@BeforeEach
+		void setUp() {
+			s3Client.createBucket(BUCKET_NAME);
+		}
 
 		@DisplayName("S3는 우선 버킷을 생성해야 한다.")
 		@Test
