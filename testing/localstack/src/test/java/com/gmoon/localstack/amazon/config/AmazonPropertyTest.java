@@ -1,0 +1,25 @@
+package com.gmoon.localstack.amazon.config;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import com.gmoon.localstack.amazon.constants.AmazonRegion;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class AmazonPropertyTest {
+
+	@Autowired
+	AmazonProperty property;
+
+	@DisplayName("프로퍼티 값 검증")
+	@Test
+	void getValue() {
+		assertAll(
+			() -> assertThat(property.s3.region).isEqualTo(AmazonRegion.AP_NORTHEAST_2),
+			() -> assertThat(property.s3.accessKey).isNotBlank()
+		);
+	}
+}
