@@ -4,9 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.gmoon.javacore.util.FileUtils;
 import com.gmoon.localstack.aws.model.S3RequestVO;
 import com.gmoon.localstack.aws.model.S3ResponseVO;
-import com.gmoon.localstack.test.LocalStackS3Config;
+import com.gmoon.localstack.test.config.LocalStackS3Config;
 import java.io.File;
 import java.io.IOException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+@Disabled
 @SpringBootTest(classes = LocalStackS3Config.class)
 class AmazonS3ServiceTest {
 
