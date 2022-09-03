@@ -1,4 +1,4 @@
-amazon:
+aws:
   s3:
     region: AP_NORTHEAST_2
     access-key: gmoon-access

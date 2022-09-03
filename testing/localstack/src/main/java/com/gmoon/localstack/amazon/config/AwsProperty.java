@@ -6,9 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
 @ConstructorBinding
-@ConfigurationProperties("amazon")
+@ConfigurationProperties("aws")
 @RequiredArgsConstructor
-public class AmazonProperty {
+public class AwsProperty {
 
 	public final S3 s3;
 

@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AmazonPropertyTest {
+class AwsPropertyTest {
 
 	@Autowired
-	AmazonProperty property;
+	AwsProperty property;
 
 	@DisplayName("프로퍼티 값 검증")
 	@Test

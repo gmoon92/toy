@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 public class AwsConfig {
 
 	@Bean
-	public AmazonS3 amazonS3(AmazonProperty property) {
-		AmazonProperty.S3 s3 = property.s3;
+	public AmazonS3 amazonS3(AwsProperty property) {
+		AwsProperty.S3 s3 = property.s3;
 		AmazonRegion region = s3.region;
 		String accessKey = s3.accessKey;
 		String secretKey = s3.secretKey;
