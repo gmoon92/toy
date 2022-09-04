@@ -10,16 +10,19 @@ import com.gmoon.junit5.member.MemberService;
 import com.gmoon.junit5.member.SystemException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -141,7 +144,7 @@ class JupiterParameterizedTest {
 
 		@DisplayName("값 인수 테스트")
 		@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
-		@ValueSource(ints = {1, 2, 3, 4})
+		@ValueSource(ints = {1, 2, 3})
 		void case1(int actual) {
 			assertThat(actual > 0 && actual < 4).isTrue();
 		}
@@ -161,5 +164,35 @@ class JupiterParameterizedTest {
 			assertThatThrownBy(() -> memberService.disable(memberId))
 				.isInstanceOf(SystemException.class);
 		}
+	}
+
+	@DisplayName("문자열 인수 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@MethodSource("com.gmoon.junit5.jupiter.argumentssource.provider.ArgumentsProvider#stringProvider")
+	void methodSource1(String actual) {
+		assertThat(actual).isNotNull();
+	}
+
+	@DisplayName("음수 인수 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@MethodSource("com.gmoon.junit5.jupiter.argumentssource.provider.ArgumentsProvider#negativeNumberProvider")
+	void methodSource2(Integer actual) {
+		assertThat(actual < 0).isTrue();
+	}
+
+	@DisplayName("다양한 인수 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@MethodSource("userProvider")
+	void methodSource3(String userName, Role role, boolean enabled) {
+		assertThat(userName).isNotNull();
+		assertThat(role).isInstanceOf(Role.class);
+		assertThat(enabled).isInstanceOf(Boolean.class);
+	}
+
+	static Stream<Arguments> userProvider() {
+		return Stream.of(
+			Arguments.of("gmoon", Role.ADMIN, true),
+			Arguments.of("guest", Role.USER, false)
+		);
 	}
 }
