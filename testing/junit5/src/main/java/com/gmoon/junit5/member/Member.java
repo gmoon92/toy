@@ -15,5 +15,9 @@ public class Member {
 	@GeneratedValue
 	private Long id;
 
+	private Role role;
+
+	private String name;
+
 	private Boolean enabled;
 }
