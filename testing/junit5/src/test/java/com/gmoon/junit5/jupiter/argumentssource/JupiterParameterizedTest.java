@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 import static org.mockito.Mockito.when;
 import com.gmoon.junit5.jupiter.argumentssource.aggregator.MemberAggregator;
+import com.gmoon.junit5.jupiter.argumentssource.annotation.NegativeNumbers;
 import com.gmoon.junit5.jupiter.argumentssource.converter.ToStringArgumentConverter;
 import com.gmoon.junit5.member.Member;
 import com.gmoon.junit5.member.MemberRepository;
@@ -234,5 +235,12 @@ class JupiterParameterizedTest {
 	void enumSourceWithConvert(@ConvertWith(ToStringArgumentConverter.class) String roleName) {
 		assertThat(Role.valueOf(roleName))
 			.isNotNull();
+	}
+
+	@DisplayName("커스텀 음수 어노테이션 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@NegativeNumbers
+	void customAnnotation(int actual) {
+		assertThat(actual < 0).isTrue();
 	}
 }
