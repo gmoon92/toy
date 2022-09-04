@@ -1,4 +1,4 @@
-package com.gmoon.junit5.jupiter.argumentssource.contants;
+package com.gmoon.junit5.member;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;
