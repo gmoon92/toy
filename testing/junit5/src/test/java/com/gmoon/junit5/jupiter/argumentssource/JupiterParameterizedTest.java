@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 import static org.mockito.Mockito.when;
-import com.gmoon.junit5.jupiter.argumentssource.contants.Role;
+import com.gmoon.junit5.jupiter.argumentssource.aggregator.MemberAggregator;
+import com.gmoon.junit5.jupiter.argumentssource.converter.ToStringArgumentConverter;
+import com.gmoon.junit5.member.Member;
 import com.gmoon.junit5.member.MemberRepository;
 import com.gmoon.junit5.member.MemberService;
+import com.gmoon.junit5.member.Role;
 import com.gmoon.junit5.member.SystemException;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +20,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -144,7 +150,7 @@ class JupiterParameterizedTest {
 
 		@DisplayName("값 인수 테스트")
 		@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
-		@ValueSource(ints = {1, 2, 3})
+		@ValueSource(ints = { 1, 2, 3 })
 		void case1(int actual) {
 			assertThat(actual > 0 && actual < 4).isTrue();
 		}
@@ -194,5 +200,39 @@ class JupiterParameterizedTest {
 			Arguments.of("gmoon", Role.ADMIN, true),
 			Arguments.of("guest", Role.USER, false)
 		);
+	}
+
+	@DisplayName("ArgumentsAccessor 학습 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@MethodSource("userProvider")
+	void methodSourceWithArgumentsAccessor(ArgumentsAccessor arguments) {
+		String userName = arguments.getString(0);
+		Role role = arguments.get(1, Role.class);
+		boolean enabled = arguments.getBoolean(2);
+
+		assertThat(userName).isNotNull();
+		assertThat(role).isInstanceOf(Role.class);
+		assertThat(enabled).isInstanceOf(Boolean.class);
+	}
+
+	@DisplayName("ArgumentsAccessor 학습 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@MethodSource("userProvider")
+	void methodSourceWithArgumentsAccessor(@AggregateWith(MemberAggregator.class) Member member) {
+		String userName = member.getName();
+		Role role = member.getRole();
+		boolean enabled = member.getEnabled();
+
+		assertThat(userName).isNotNull();
+		assertThat(role).isInstanceOf(Role.class);
+		assertThat(enabled).isInstanceOf(Boolean.class);
+	}
+
+	@DisplayName("인수 변환 테스트")
+	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
+	@EnumSource(Role.class)
+	void enumSourceWithConvert(@ConvertWith(ToStringArgumentConverter.class) String roleName) {
+		assertThat(Role.valueOf(roleName))
+			.isNotNull();
 	}
 }
