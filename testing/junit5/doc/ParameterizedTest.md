@@ -457,7 +457,7 @@ public class ToStringArgumentConverter extends SimpleArgumentConverter {
 
 ## Custom @ArgumentsSource
 
-@ArgumentsSource, ArgumentsProvider 인터페이스를 구현한 한다.
+@ArgumentsSource, ArgumentsProvider 인터페이스를 구현한다.
 
 - ParameterizedTestExtension#provideTestTemplateInvocationContexts(ExtensionContext extensionContext)
     - org.junit.jupiter.params.provider.Arguments
