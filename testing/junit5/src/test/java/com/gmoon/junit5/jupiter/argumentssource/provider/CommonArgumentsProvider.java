@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArgumentsProvider {
+public final class CommonArgumentsProvider {
 
 	static Stream<String> stringProvider() {
 		return Stream.of("gmoon", "guest");

@@ -174,14 +174,14 @@ class JupiterParameterizedTest {
 
 	@DisplayName("문자열 인수 테스트")
 	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
-	@MethodSource("com.gmoon.junit5.jupiter.argumentssource.provider.ArgumentsProvider#stringProvider")
+	@MethodSource("com.gmoon.junit5.jupiter.argumentssource.provider.CommonArgumentsProvider#stringProvider")
 	void methodSource1(String actual) {
 		assertThat(actual).isNotNull();
 	}
 
 	@DisplayName("음수 인수 테스트")
 	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
-	@MethodSource("com.gmoon.junit5.jupiter.argumentssource.provider.ArgumentsProvider#negativeNumberProvider")
+	@MethodSource("com.gmoon.junit5.jupiter.argumentssource.provider.CommonArgumentsProvider#negativeNumberProvider")
 	void methodSource2(Integer actual) {
 		assertThat(actual < 0).isTrue();
 	}
