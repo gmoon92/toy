@@ -9,13 +9,27 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+import org.reflections.util.ConfigurationBuilder;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectionUtils {
 
 	private static class ReflectionsHolder {
 
-		private static final Reflections INSTANCE = new Reflections();
+		private static final Reflections INSTANCE;
+
+		static {
+			ConfigurationBuilder config = new ConfigurationBuilder()
+				.forPackage("com.gmoon")
+//				.filterInputsBy(
+//					new FilterBuilder()
+//						.includePackage("com.my.project.include")
+////						.excludePackage("com.my.project.exclude")
+//				)
+				.setScanners(Scanners.values());
+			INSTANCE = new Reflections(config);
+		}
 	}
 
 	public static List<Object> getFieldValues(Object object, List<Field> fields) {
