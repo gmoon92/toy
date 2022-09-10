@@ -22,7 +22,7 @@
         <module>mockito</module>
         <module>quickperf</module>
         <module>rest-assured</module>
-        <module>caching-application-context</module>
+        <module>test-context-caching</module>
     </modules>
 
     <properties>
