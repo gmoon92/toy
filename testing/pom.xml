@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>awaitility</module>
         <module>junit5</module>
         <module>localstack</module>
         <module>mockito</module>
