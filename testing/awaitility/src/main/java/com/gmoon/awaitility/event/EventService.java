@@ -27,16 +27,12 @@ public class EventService {
 		repository.deleteAll();
 	}
 
-	@Async
-	public void handle() {
-		sleep(Duration.ofSeconds(1));
-		Thread thread = Thread.currentThread();
-		log.info("[{}] tid: {}", thread.getName(), thread.getId());
-	}
-
 	private void sleep(Duration duration) {
 		try {
 			Thread.sleep(duration.toMillis());
+
+			Thread thread = Thread.currentThread();
+			log.info("[{}] tid: {}", thread.getName(), thread.getId());
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
