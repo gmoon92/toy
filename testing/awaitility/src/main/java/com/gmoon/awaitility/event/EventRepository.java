@@ -15,7 +15,7 @@ public class EventRepository {
 		return data;
 	}
 
-	public int size() {
+	public int count() {
 		return MEMORY.size();
 	}
 

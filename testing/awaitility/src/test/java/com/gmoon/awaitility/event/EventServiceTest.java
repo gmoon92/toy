@@ -54,7 +54,7 @@ class EventServiceTest {
 				.atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
 				// assertion
 				// .until(() -> eventRepository.size() == 1)
-				.until(eventRepository::size, CoreMatchers.equalTo(1));
+				.until(eventRepository::count, CoreMatchers.equalTo(1));
 		}
 
 		@DisplayName("AssertJ 단언문 사용")
@@ -66,7 +66,7 @@ class EventServiceTest {
 				.pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
 				.atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
 				.untilAsserted(
-					() -> assertThat(eventRepository.size()).isNotZero()
+					() -> assertThat(eventRepository.count()).isNotZero()
 				);
 		}
 
@@ -79,7 +79,7 @@ class EventServiceTest {
 						.atMost(Duration.ofMillis(200)) // 최대 대기 시간 설정, default 10 초
 //					.timeout(Duration.ofMillis(200))
 						.untilAsserted(() ->
-							Assertions.assertThat(eventRepository.size())
+							Assertions.assertThat(eventRepository.count())
 								.isNotZero()
 						)
 			).isInstanceOf(ConditionTimeoutException.class);
