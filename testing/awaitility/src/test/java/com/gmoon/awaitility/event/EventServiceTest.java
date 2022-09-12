@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
@@ -19,13 +19,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class EventServiceTest {
 
-	@Autowired
 	EventService eventService;
 
 	@DisplayName("비동기 검증, Awaitility 활용")
@@ -34,11 +30,13 @@ class EventServiceTest {
 
 		@BeforeEach
 		void setUp() {
+			EventRepository repository = new EventRepository();
+			eventService = new EventService(repository);
 			eventService.deleteAll();
 
-			Event saveEvent = new Event("hello gmoon.");
-			// 2 seconds delay
-			eventService.save(saveEvent);
+			// 500 millisecond delay
+			ExecutorService executor = Executors.newCachedThreadPool();
+			executor.submit(() -> eventService.save(new Event("hello gmoon.")));
 		}
 
 		@DisplayName("lambda 표현식")
@@ -89,17 +87,25 @@ class EventServiceTest {
 
 		CountDownLatch counter;
 		List<Thread> workers;
+		int threadCount = 5;
 
 		@BeforeEach
 		void setUp() {
-			int threadCount = 5;
+			EventRepository repository = new EventRepository();
+			eventService = new EventService(repository);
+			eventService.deleteAll();
+
 			counter = new CountDownLatch(threadCount);
 
 			// create worker
-			workers = Stream
-				.generate(() -> new Worker(counter, eventService::handle))
+			workers = IntStream.range(0, threadCount)
+				.mapToObj(i ->
+					new Worker(
+						counter,
+						() -> eventService.save(new Event("gmoon" + i))
+					)
+				)
 				.map(Thread::new)
-				.limit(threadCount)
 				.collect(Collectors.toList());
 		}
 
@@ -117,8 +123,7 @@ class EventServiceTest {
 			counter.await(2, TimeUnit.SECONDS);
 
 			// then
-			assertThat(counter.getCount()).isZero();
-//			Thread.sleep(1000);
+			assertThat(eventService.count()).isEqualTo(threadCount);
 		}
 
 		@DisplayName("CountDownLatch await timeout")
@@ -132,10 +137,10 @@ class EventServiceTest {
 
 			// wait until task is finished
 			// when
-			counter.await(1, TimeUnit.SECONDS);
+			counter.await(1, TimeUnit.MILLISECONDS);
 
 			// then
-			assertThat(counter.getCount()).isZero();
+			assertThat(eventService.count()).isLessThan(threadCount);
 		}
 	}
 }
