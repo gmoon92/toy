@@ -28,19 +28,16 @@ class EventServiceTest {
 	@Autowired
 	EventService eventService;
 
-	@Autowired
-	EventRepository eventRepository;
-
 	@DisplayName("비동기 검증, Awaitility 활용")
 	@Nested
 	class AwaitilityTest {
 
 		@BeforeEach
 		void setUp() {
-			eventRepository.deleteAll();
+			eventService.deleteAll();
 
 			Event saveEvent = new Event("hello gmoon.");
-			// 저장 시간 2초
+			// 2 seconds delay
 			eventService.save(saveEvent);
 		}
 
@@ -54,7 +51,7 @@ class EventServiceTest {
 				.atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
 				// assertion
 				// .until(() -> eventRepository.size() == 1)
-				.until(eventRepository::count, CoreMatchers.equalTo(1));
+				.until(eventService::count, CoreMatchers.equalTo(1));
 		}
 
 		@DisplayName("AssertJ 단언문 사용")
@@ -66,7 +63,7 @@ class EventServiceTest {
 				.pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
 				.atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
 				.untilAsserted(
-					() -> assertThat(eventRepository.count()).isNotZero()
+					() -> assertThat(eventService.count()).isNotZero()
 				);
 		}
 
@@ -79,7 +76,7 @@ class EventServiceTest {
 						.atMost(Duration.ofMillis(200)) // 최대 대기 시간 설정, default 10 초
 //					.timeout(Duration.ofMillis(200))
 						.untilAsserted(() ->
-							Assertions.assertThat(eventRepository.count())
+							Assertions.assertThat(eventService.count())
 								.isNotZero()
 						)
 			).isInstanceOf(ConditionTimeoutException.class);

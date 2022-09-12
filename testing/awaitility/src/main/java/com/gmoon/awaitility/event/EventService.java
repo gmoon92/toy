@@ -19,6 +19,14 @@ public class EventService {
 		return repository.save(event);
 	}
 
+	public int count() {
+		return repository.count();
+	}
+
+	public void deleteAll() {
+		repository.deleteAll();
+	}
+
 	@Async
 	public void handle() {
 		sleep(Duration.ofSeconds(1));
