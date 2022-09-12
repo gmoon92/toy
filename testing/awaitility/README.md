@@ -20,22 +20,19 @@
 자세한 사용법은 [github awaitility - Usage](https://github.com/awaitility/awaitility/wiki/Usage) 참고하자.
 
 ```java
-@SpringBootTest
 class EventServiceTest {
 
-  @Autowired
   EventService eventService;
-
-  @Autowired
-  EventRepository eventRepository;
 
   @BeforeEach
   void setUp() {
-    eventRepository.clear();
+    EventRepository repository = new EventRepository();
+    eventService = new EventService(repository);
+    eventService.deleteAll();
 
-    Event saveEvent = new Event("hello gmoon.");
-    // 저장 시간 2초
-    eventService.save(saveEvent);
+    // 500 millisecond delay
+    ExecutorService executor = Executors.newCachedThreadPool();
+    executor.submit(() -> eventService.save(new Event("hello gmoon.")));
   }
 
   @DisplayName("lambda 표현식")
@@ -48,7 +45,7 @@ class EventServiceTest {
       .atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
       // assertion
       // .until(() -> eventRepository.size() == 1)
-      .until(eventRepository::size, CoreMatchers.equalTo(1));
+      .until(eventService::count, CoreMatchers.equalTo(1));
   }
 
   @DisplayName("AssertJ 단언문 사용")
@@ -60,7 +57,7 @@ class EventServiceTest {
       .pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
       .atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
       .untilAsserted(
-        () -> assertThat(eventRepository.size()).isNotZero()
+        () -> assertThat(eventService.count()).isNotZero()
       );
   }
 
@@ -73,7 +70,7 @@ class EventServiceTest {
           .atMost(Duration.ofMillis(200)) // 최대 대기 시간 설정, default 10 초
 //					.timeout(Duration.ofMillis(200))
           .untilAsserted(() ->
-            Assertions.assertThat(eventRepository.size())
+            Assertions.assertThat(eventService.count())
               .isNotZero()
           )
     ).isInstanceOf(ConditionTimeoutException.class);
