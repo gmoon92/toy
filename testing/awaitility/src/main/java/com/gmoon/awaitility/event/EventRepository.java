@@ -19,7 +19,7 @@ public class EventRepository {
 		return MEMORY.size();
 	}
 
-	public void clear() {
+	public void deleteAll() {
 		MEMORY.clear();
 	}
 }

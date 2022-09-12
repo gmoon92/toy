@@ -37,7 +37,7 @@ class EventServiceTest {
 
 		@BeforeEach
 		void setUp() {
-			eventRepository.clear();
+			eventRepository.deleteAll();
 
 			Event saveEvent = new Event("hello gmoon.");
 			// 저장 시간 2초
