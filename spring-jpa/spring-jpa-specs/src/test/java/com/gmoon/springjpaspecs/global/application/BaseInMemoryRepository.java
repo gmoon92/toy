@@ -1,7 +1,5 @@
 package com.gmoon.springjpaspecs.global.application;
 
-import static java.util.stream.Collectors.toList;
-
 import com.gmoon.springjpaspecs.global.BaseEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,12 +43,15 @@ public abstract class BaseInMemoryRepository<T extends BaseEntity, ID extends Se
 		return new ArrayList<>(CACHE.values());
 	}
 
-	public List<T> findAllById(List<ID> ids) {
-		return ids.stream()
-			.filter(this::existsById)
-			.map(this::findById)
-			.map(Optional::get)
-			.collect(toList());
+	public List<T> findAllById(Iterable<ID> ids) {
+		List<T> result = new ArrayList<>();
+		for (ID id : ids) {
+			if (existsById(id)) {
+				result.add(CACHE.get(id));
+			}
+		}
+
+		return result;
 	}
 
 	public T getReferenceById(ID id) {

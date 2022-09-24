@@ -26,8 +26,18 @@ class JpaBookRepositoryTest {
 		assertThat(saved.getName()).isEqualTo(new BookName("gmoon"));
 	}
 
+	/**
+	 * error: reference to save is ambiguous
+	 *         repository.save(new Product());
+	 *                   ^
+	 *   both method save(Product) in ProductRepository and method <S>save(S) in CrudRepository match
+	 *   where S,T are type-variables:
+	 *     S extends T declared in method <S>save(S)
+	 *     T extends Object declared in interface CrudRepository
+	 * */
 	@Test
-	void name() {
+	void ambiguousReference() {
+		repository.save(new Book());
 		repository.findById(UUID.randomUUID());
 		repository.findAllById(Arrays.asList(UUID.randomUUID()));
 		repository.findAll();
