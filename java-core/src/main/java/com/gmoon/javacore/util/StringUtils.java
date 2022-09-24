@@ -2,9 +2,15 @@ package com.gmoon.javacore.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtils {
+
+	public static String randomAlphabetic(int length) {
+		return RandomStringUtils.randomAlphabetic(length);
+	}
+
 	public static boolean isEmpty(String str) {
 		return org.apache.commons.lang3.StringUtils.isEmpty(str);
 	}
