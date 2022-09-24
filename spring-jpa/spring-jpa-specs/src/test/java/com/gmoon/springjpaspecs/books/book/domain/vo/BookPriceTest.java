@@ -1,4 +1,4 @@
-package com.gmoon.springjpaspecs.books.book.domain;
+package com.gmoon.springjpaspecs.books.book.domain.vo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;

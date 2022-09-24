@@ -1,18 +1,19 @@
-package com.gmoon.springjpaspecs.books.book.infra;
+package com.gmoon.springjpaspecs.books.book.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.gmoon.springjpaspecs.books.book.domain.Book;
-import com.gmoon.springjpaspecs.books.book.domain.BookName;
+import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
+import java.util.Arrays;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
-class BookJpaRepositoryTest {
+class JpaBookRepositoryTest {
 
 	@Autowired
-	BookJpaRepository repository;
+	JpaBookRepository repository;
 
 	@Test
 	void create() {
@@ -23,5 +24,12 @@ class BookJpaRepositoryTest {
 		assertThat(saved).isNotNull();
 		assertThat(saved.getId()).isNotNull();
 		assertThat(saved.getName()).isEqualTo(new BookName("gmoon"));
+	}
+
+	@Test
+	void name() {
+		repository.findById(UUID.randomUUID());
+		repository.findAllById(Arrays.asList(UUID.randomUUID()));
+		repository.findAll();
 	}
 }
