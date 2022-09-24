@@ -1,4 +1,4 @@
-package com.gmoon.springjpaspecs.book.domain;
+package com.gmoon.springjpaspecs.books.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -1,9 +1,9 @@
-package com.gmoon.springjpaspecs.book.infra;
+package com.gmoon.springjpaspecs.books.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.gmoon.springjpaspecs.book.domain.Book;
-import com.gmoon.springjpaspecs.book.domain.BookName;
+import com.gmoon.springjpaspecs.books.domain.Book;
+import com.gmoon.springjpaspecs.books.domain.BookName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

@@ -1,10 +1,9 @@
-package com.gmoon.springjpaspecs.book.infra;
+package com.gmoon.springjpaspecs.books.infra;
 
-import com.gmoon.springjpaspecs.book.domain.BookRepository;
+import com.gmoon.springjpaspecs.books.domain.Book;
+import com.gmoon.springjpaspecs.books.domain.BookRepository;
 import java.io.Serializable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.gmoon.springjpaspecs.book.domain.Book;
 
 public interface BookJpaRepository extends BookRepository, JpaRepository<Book, Serializable> {
 }
