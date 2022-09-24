@@ -1,4 +1,4 @@
-package com.gmoon.springjpaspecs.books.domain;
+package com.gmoon.springjpaspecs.books.book.domain;
 
 import java.io.Serializable;
 import java.util.Objects;

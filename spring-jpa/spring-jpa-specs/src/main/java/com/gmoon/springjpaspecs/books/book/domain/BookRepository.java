@@ -1,4 +1,4 @@
-package com.gmoon.springjpaspecs.books.domain;
+package com.gmoon.springjpaspecs.books.book.domain;
 
 import java.util.List;
 import java.util.Optional;
