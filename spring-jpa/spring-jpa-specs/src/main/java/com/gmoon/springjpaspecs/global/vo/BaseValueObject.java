@@ -1,4 +1,4 @@
-package com.gmoon.springjpaspecs.global;
+package com.gmoon.springjpaspecs.global.vo;
 
 import java.io.Serializable;
 
