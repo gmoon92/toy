@@ -1,6 +1,6 @@
 package com.gmoon.springjpaspecs.global.application;
 
-import com.gmoon.springjpaspecs.global.BaseEntity;
+import com.gmoon.springjpaspecs.global.vo.BaseEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
