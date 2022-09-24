@@ -1,5 +1,6 @@
 package com.gmoon.springjpaspecs.book.domain;
 
+import com.gmoon.springjpaspecs.global.BaseEntity;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,7 +12,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Book {
+public class Book extends BaseEntity<UUID> {
 
 	@Id
 	@Column(name = "id")
