@@ -1,6 +1,6 @@
 package com.gmoon.springjpaspecs.books.book.domain.vo;
 
-import java.io.Serializable;
+import com.gmoon.springjpaspecs.global.vo.BaseValueObject;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
 @Getter
-public class BookName implements Serializable {
+public class BookName extends BaseValueObject {
 
 	@Column(name = "name")
 	private String value;

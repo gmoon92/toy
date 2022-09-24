@@ -1,6 +1,6 @@
 package com.gmoon.springjpaspecs.books.book.domain.vo;
 
-import java.io.Serializable;
+import com.gmoon.springjpaspecs.global.vo.BaseValueObject;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode
-public class BookPrice implements Serializable {
+public class BookPrice extends BaseValueObject {
 
 	@Column(name = "price")
 	private BigDecimal value;
