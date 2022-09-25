@@ -3,7 +3,7 @@ package com.gmoon.springjpaspecs.books.book.domain;
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookPrice;
 import com.gmoon.springjpaspecs.books.book.domain.vo.IStandardBookNumber;
-import com.gmoon.springjpaspecs.global.BaseEntity;
+import com.gmoon.springjpaspecs.global.vo.BaseEntity;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
