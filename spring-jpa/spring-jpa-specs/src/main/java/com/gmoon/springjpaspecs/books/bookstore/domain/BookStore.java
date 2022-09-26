@@ -1,12 +1,23 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain;
 
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookId;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
 import com.gmoon.springjpaspecs.global.vo.BaseEntity;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "tb_bookstor")
 @Entity
@@ -15,8 +26,29 @@ import lombok.NoArgsConstructor;
 public class BookStore extends BaseEntity {
 
 	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	private String id;
 
+	@Column(name = "name", nullable = false)
 	private String name;
 
+	@OneToMany(mappedBy = "bookStore", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private List<BookStoreBook> storedBooks = new ArrayList<>();
+
+	public BookStore(String name) {
+		this.name = name;
+	}
+
+	public void addBook(BookId bookId, BookQuantity quantity, BookType etc) {
+		BookStoreBook storeBook = BookStoreBook.builder()
+			.bookId(bookId)
+			.bookStore(this)
+			.quantity(quantity)
+			.type(etc)
+			.status(BookStatus.DISPLAY)
+			.build();
+
+		storedBooks.add(storeBook);
+	}
 }

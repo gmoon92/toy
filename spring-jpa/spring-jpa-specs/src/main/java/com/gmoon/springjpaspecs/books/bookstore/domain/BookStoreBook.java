@@ -12,37 +12,50 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "tb_bookstor_book")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BookStoreBook extends BaseEntity<Long> {
+public class BookStoreBook extends BaseEntity<String> {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+	private String id;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "book_store_id", referencedColumnName = "id", updatable = false)
+	private BookStore bookStore;
 
 	@Embedded
 	private BookId bookId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "type")
+	@Column(name = "type", nullable = false)
 	private BookType type;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	private BookStatus status;
 
 	@Embedded
 	private BookQuantity quantity;
 
-	public BookStoreBook(BookId bookId, BookQuantity quantity) {
+	@Builder
+	private BookStoreBook(BookId bookId, BookStore bookStore, BookType type, BookStatus status, BookQuantity quantity) {
 		this.bookId = bookId;
+		this.bookStore = bookStore;
+		this.type = type;
+		this.status = status;
 		this.quantity = quantity;
 	}
 }
