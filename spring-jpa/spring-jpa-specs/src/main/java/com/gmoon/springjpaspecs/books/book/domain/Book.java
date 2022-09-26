@@ -9,17 +9,19 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@Table(name = "tb_book")
 @Entity
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Book extends BaseEntity<UUID> {
+public class Book extends BaseEntity<String> {
 
 	@Id
 	@Column(name = "id")
-	private UUID id;
+	private String id;
 
 	@Embedded
 	private IStandardBookNumber isbn;
@@ -31,7 +33,7 @@ public class Book extends BaseEntity<UUID> {
 	private BookPrice price;
 
 	protected Book() {
-		id = UUID.randomUUID();
+		id = UUID.randomUUID().toString();
 	}
 
 	public static Book create(String name) {

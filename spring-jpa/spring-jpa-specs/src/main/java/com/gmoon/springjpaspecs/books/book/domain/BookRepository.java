@@ -3,13 +3,13 @@ package com.gmoon.springjpaspecs.books.book.domain;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookRepository<Book, UUID> {
+public interface BookRepository<Entity, ID> {
 
-	Book save(Book book);
+	Entity save(Entity entity);
 
-	List<Book> findAll();
+	List<Entity> findAll();
 
-	Optional<Book> findById(UUID id);
+	Optional<Entity> findById(ID id);
 
-	List<Book> findAllById(Iterable<UUID> ids);
+	List<Entity> findAllById(Iterable<ID> ids);
 }

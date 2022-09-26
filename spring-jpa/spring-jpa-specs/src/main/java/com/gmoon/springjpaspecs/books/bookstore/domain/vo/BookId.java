@@ -2,7 +2,6 @@ package com.gmoon.springjpaspecs.books.bookstore.domain.vo;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -17,15 +16,15 @@ import lombok.NoArgsConstructor;
 public class BookId implements Serializable {
 
 	@Column(name = "book_id")
-	private UUID value;
+	private String value;
 
-	public BookId(UUID value) {
+	public BookId(String value) {
 		validate(value);
 		this.value = value;
 	}
 
-	private void validate(UUID bookId) {
-		if (Objects.isNull(bookId))
+	private void validate(String bookId) {
+		if (Objects.isNull(bookId) || bookId.isEmpty())
 			throw new IllegalArgumentException();
 	}
 }
