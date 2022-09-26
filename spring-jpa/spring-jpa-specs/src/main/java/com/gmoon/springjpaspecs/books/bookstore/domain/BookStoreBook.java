@@ -12,10 +12,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "tb_bookstor_book")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
