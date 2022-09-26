@@ -13,9 +13,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookQuantity extends BaseValueObject {
 
+	@EqualsAndHashCode.Include
 	@Column(name = "quantity")
 	@ColumnDefault("0")
 	private Integer value;

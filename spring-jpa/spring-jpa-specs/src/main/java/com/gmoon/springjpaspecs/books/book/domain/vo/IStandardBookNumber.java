@@ -10,9 +10,10 @@ import lombok.Getter;
 
 @Embeddable
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class IStandardBookNumber extends BaseValueObject {
 
+	@EqualsAndHashCode.Include
 	@Column(name = "isbn")
 	private String value;
 

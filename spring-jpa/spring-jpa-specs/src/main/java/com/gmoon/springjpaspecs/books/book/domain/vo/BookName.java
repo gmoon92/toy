@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookName extends BaseValueObject {
 
+	@EqualsAndHashCode.Include
 	@Column(name = "name")
 	private String value;
 

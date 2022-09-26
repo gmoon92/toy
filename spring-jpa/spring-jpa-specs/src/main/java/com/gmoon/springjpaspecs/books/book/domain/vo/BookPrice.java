@@ -13,9 +13,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookPrice extends BaseValueObject {
 
+	@EqualsAndHashCode.Include
 	@Column(name = "price")
 	private BigDecimal value;
 

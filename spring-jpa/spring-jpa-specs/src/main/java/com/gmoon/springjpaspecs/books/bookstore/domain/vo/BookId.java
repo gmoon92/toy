@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookId implements Serializable {
 
+	@EqualsAndHashCode.Include
 	@Column(name = "book_id")
 	private String value;
 
