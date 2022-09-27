@@ -1,5 +1,6 @@
 package com.gmoon.springjpaspecs.books.book.domain;
 
+import static com.gmoon.springjpaspecs.books.Fixtures.book;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -18,7 +19,7 @@ class JpaBookRepositoryTest {
 
 	@Test
 	void create() {
-		Book book = Book.create("gmoon");
+		Book book = book("gmoon", BigDecimal.ONE);
 
 		Book saved = repository.save(book);
 

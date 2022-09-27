@@ -1,8 +1,9 @@
 package com.gmoon.springjpaspecs.books.book.domain;
 
+import static com.gmoon.javacore.util.StringUtils.randomAlphabetic;
+
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookPrice;
-import com.gmoon.springjpaspecs.books.book.domain.vo.IStandardBookNumber;
 import com.gmoon.springjpaspecs.global.vo.BaseEntity;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -23,8 +25,9 @@ public class Book extends BaseEntity<String> {
 	@Column(name = "id")
 	private String id;
 
-	@Embedded
-	private IStandardBookNumber isbn;
+	@EqualsAndHashCode.Include
+	@Column(name = "isbn", nullable = false, length = 16)
+	private String isbn;
 
 	@Embedded
 	private BookName name;
@@ -34,11 +37,13 @@ public class Book extends BaseEntity<String> {
 
 	protected Book() {
 		id = UUID.randomUUID().toString();
+		isbn = randomAlphabetic(16);
 	}
 
-	public static Book create(String name) {
-		Book book = new Book();
-		book.name = new BookName(name);
-		return book;
+	@Builder
+	private Book(BookName name, BookPrice price) {
+		this();
+		this.name = name;
+		this.price = price;
 	}
 }

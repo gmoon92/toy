@@ -1,6 +1,5 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookId;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
@@ -40,7 +39,7 @@ public class BookStore extends BaseEntity {
 		this.name = name;
 	}
 
-	public void addBook(BookId bookId, BookQuantity quantity, BookType etc) {
+	public void addBook(String bookId, BookQuantity quantity, BookType etc) {
 		BookStoreBook storeBook = BookStoreBook.builder()
 			.bookId(bookId)
 			.bookStore(this)

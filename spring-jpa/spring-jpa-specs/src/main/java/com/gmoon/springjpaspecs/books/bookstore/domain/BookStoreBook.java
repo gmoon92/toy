@@ -1,6 +1,5 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookId;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
@@ -36,8 +35,8 @@ public class BookStoreBook extends BaseEntity<String> {
 	@JoinColumn(name = "book_store_id", referencedColumnName = "id", updatable = false)
 	private BookStore bookStore;
 
-	@Embedded
-	private BookId bookId;
+	@Column(name = "book_id", nullable = false)
+	private String bookId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type", nullable = false)
@@ -51,7 +50,7 @@ public class BookStoreBook extends BaseEntity<String> {
 	private BookQuantity quantity;
 
 	@Builder
-	private BookStoreBook(BookId bookId, BookStore bookStore, BookType type, BookStatus status, BookQuantity quantity) {
+	private BookStoreBook(String bookId, BookStore bookStore, BookType type, BookStatus status, BookQuantity quantity) {
 		this.bookId = bookId;
 		this.bookStore = bookStore;
 		this.type = type;

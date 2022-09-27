@@ -2,7 +2,6 @@ package com.gmoon.springjpaspecs.books.bookstore.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookId;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
 import javax.persistence.EntityManager;
@@ -25,7 +24,7 @@ class JpaBookStoreRepositoryTest {
 	void create() {
 		BookStore bookStore = new BookStore("gmoon-store1");
 		bookStore.addBook(
-			new BookId("book-no0"),
+			"book-no0",
 			new BookQuantity(10),
 			BookType.ETC
 		);
