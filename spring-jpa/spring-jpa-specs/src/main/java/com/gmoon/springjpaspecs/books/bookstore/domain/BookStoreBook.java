@@ -11,8 +11,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,9 +29,10 @@ public class BookStoreBook extends BaseEntity<String> {
 	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	private String id;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "book_store_id", referencedColumnName = "id", updatable = false)
-	private BookStore bookStore;
+//	@ManyToOne(optional = false)
+//	@JoinColumn(name = "book_store_id", referencedColumnName = "id", updatable = false)
+	@Column(name = "book_store_id", insertable = false, updatable = false)
+	private String bookStoreId;
 
 	@Column(name = "book_id", nullable = false)
 	private String bookId;
@@ -50,9 +49,8 @@ public class BookStoreBook extends BaseEntity<String> {
 	private BookQuantity quantity;
 
 	@Builder
-	private BookStoreBook(String bookId, BookStore bookStore, BookType type, BookStatus status, BookQuantity quantity) {
+	private BookStoreBook(String bookId, BookType type, BookStatus status, BookQuantity quantity) {
 		this.bookId = bookId;
-		this.bookStore = bookStore;
 		this.type = type;
 		this.status = status;
 		this.quantity = quantity;

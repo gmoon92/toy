@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
@@ -32,7 +33,14 @@ public class BookStore extends BaseEntity {
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@OneToMany(mappedBy = "bookStore", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(
+		name = "book_store_id",
+		nullable = false
+//		nullable = false,
+//		columnDefinition = "binary(16)",
+//		foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"
+	)
 	private List<BookStoreBook> storedBooks = new ArrayList<>();
 
 	public BookStore(String name) {
@@ -42,7 +50,6 @@ public class BookStore extends BaseEntity {
 	public void addBook(String bookId, BookQuantity quantity, BookType etc) {
 		BookStoreBook storeBook = BookStoreBook.builder()
 			.bookId(bookId)
-			.bookStore(this)
 			.quantity(quantity)
 			.type(etc)
 			.status(BookStatus.DISPLAY)
