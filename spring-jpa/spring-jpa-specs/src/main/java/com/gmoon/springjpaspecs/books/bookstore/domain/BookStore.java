@@ -37,9 +37,6 @@ public class BookStore extends BaseEntity {
 	@JoinColumn(
 		name = "book_store_id",
 		nullable = false
-//		nullable = false,
-//		columnDefinition = "binary(16)",
-//		foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"
 	)
 	private List<BookStoreBook> storedBooks = new ArrayList<>();
 

@@ -29,11 +29,6 @@ public class BookStoreBook extends BaseEntity<String> {
 	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	private String id;
 
-//	@ManyToOne(optional = false)
-//	@JoinColumn(name = "book_store_id", referencedColumnName = "id", updatable = false)
-	@Column(name = "book_store_id", insertable = false, updatable = false)
-	private String bookStoreId;
-
 	@Column(name = "book_id", nullable = false)
 	private String bookId;
 
