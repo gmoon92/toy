@@ -1,6 +1,6 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain.vo;
 
-import com.gmoon.springjpaspecs.global.vo.BaseValueObject;
+import com.gmoon.springjpaspecs.global.vo.ValueObject;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,7 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class BookQuantity extends BaseValueObject {
+public class BookQuantity extends ValueObject {
 
 	@EqualsAndHashCode.Include
 	@Column(name = "quantity")

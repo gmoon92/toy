@@ -1,6 +1,6 @@
 package com.gmoon.springjpaspecs.books.book.domain.vo;
 
-import com.gmoon.springjpaspecs.global.vo.BaseValueObject;
+import com.gmoon.springjpaspecs.global.vo.ValueObject;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class BookName extends BaseValueObject {
+public class BookName extends ValueObject {
 
 	@EqualsAndHashCode.Include
 	@Column(name = "name")
