@@ -1,13 +1,13 @@
 package com.gmoon.springwebconverter.model;
 
-import com.gmoon.springwebconverter.config.converter.EnumStringParamProvider;
+import com.gmoon.springwebconverter.config.converter.StringToEnumConverter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum PaymentType implements EnumStringParamProvider {
+public enum PaymentType implements StringToEnumConverter {
 
 	KAKAO_BANK("0001"),
 	NAVER_PAY("0002"),

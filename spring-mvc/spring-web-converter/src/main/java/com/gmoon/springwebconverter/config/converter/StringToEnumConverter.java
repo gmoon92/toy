@@ -1,6 +1,6 @@
 package com.gmoon.springwebconverter.config.converter;
 
-public interface EnumStringParamProvider {
+public interface StringToEnumConverter {
 
 	String getValue();
 }

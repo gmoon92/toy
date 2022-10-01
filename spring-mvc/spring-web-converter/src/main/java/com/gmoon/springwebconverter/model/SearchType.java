@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.gmoon.springwebconverter.config.converter.EnumStringParamProvider;
+import com.gmoon.springwebconverter.config.converter.StringToEnumConverter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum SearchType implements EnumStringParamProvider {
+public enum SearchType implements StringToEnumConverter {
 
 	DATE("date"),
 	USER_NAME("username");
