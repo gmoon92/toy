@@ -1,16 +1,14 @@
 package com.gmoon.springquartzcluster.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
+
 import com.gmoon.springquartzcluster.model.WebServerSaveForm;
 import com.gmoon.springquartzcluster.test.BaseDataJpaTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @RequiredArgsConstructor
 class ServerRepositoryTest extends BaseDataJpaTest {
 	final ServerRepository repository;
@@ -21,9 +19,8 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 			.isInstanceOf(Long.class);
 	}
 
-	@Order(Integer.MIN_VALUE)
-	@Test
 	@DisplayName("활성화된 웹 서버를 생성 조회")
+	@Test
 	void testSaveAndGet() {
 		// given
 		String serverName = "gmoon-web";
@@ -43,10 +40,10 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 	}
 
 	@DisplayName("활성화된 서버 조회")
-	@Order(Integer.MAX_VALUE)
 	@Test
 	void testGetEnabledServers() {
 		// when then
-		assertThat(repository.getEnabledServers()).isNotEmpty();
+		assertThatCode(() -> repository.getEnabledServers())
+				.doesNotThrowAnyException();
 	}
 }

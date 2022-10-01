@@ -1,7 +1,10 @@
 package com.gmoon.springquartzcluster.server;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
 
+import com.querydsl.core.annotations.QueryDelegate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,18 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Immutable;
-
-import com.querydsl.core.annotations.QueryDelegate;
-import com.querydsl.core.types.dsl.BooleanExpression;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Getter
@@ -98,7 +96,7 @@ public class Server {
 	}
 
 	@QueryDelegate(Server.class)
-	public static BooleanExpression isEnabled(QServer server) {
+	public static BooleanExpression isEnabled(com.gmoon.springquartzcluster.server.QServer server) {
 		return server.enabled.isTrue();
 	}
 }
