@@ -3,7 +3,7 @@ package com.gmoon.springjpaspecs.books.bookstore.domain;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
-import com.gmoon.springjpaspecs.global.vo.BaseEntity;
+import com.gmoon.springjpaspecs.global.vo.EntityObject;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -22,7 +22,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BookStoreBook extends BaseEntity<String> {
+public class BookStoreBook extends EntityObject<String> {
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")

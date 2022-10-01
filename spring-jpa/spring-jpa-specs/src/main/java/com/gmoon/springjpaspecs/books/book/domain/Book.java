@@ -4,7 +4,7 @@ import static com.gmoon.javacore.util.StringUtils.randomAlphabetic;
 
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookPrice;
-import com.gmoon.springjpaspecs.global.vo.BaseEntity;
+import com.gmoon.springjpaspecs.global.vo.EntityObject;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -19,7 +19,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Book extends BaseEntity<String> {
+public class Book extends EntityObject<String> {
 
 	@Id
 	@Column(name = "id")
