@@ -1,11 +1,11 @@
-package com.gmoon.springwebconverter.config.handler;
+package com.gmoon.springwebconverter.config.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.gmoon.springwebconverter.config.converter.exception.ConversionFailedException;
+import com.gmoon.springwebconverter.config.error.exception.ConversionFailedException;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {

@@ -1,4 +1,4 @@
-package com.gmoon.springwebconverter.config.converter.exception;
+package com.gmoon.springwebconverter.config.error.exception;
 
 public class ConversionFailedException extends IllegalArgumentException {
 
