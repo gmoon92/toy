@@ -39,7 +39,7 @@ public class SearchTypeConverter implements Converter<String, SearchType> {
 }
 ````
 
-## WebMvcConfigurer
+## WebMvcConfigurer Config
 
 ```java
 import com.gmoon.springwebconverter.config.converter.SearchTypeConverter;
@@ -79,14 +79,14 @@ public class GlobalControllerExceptionHandler {
 ### Custom binder interface
 
 ```java
-public interface ValueToEnumBinder<T> {
+public interface StringToEnumBinder {
 
-	T getValue();
+	String getValue();
 }
 
 @RequiredArgsConstructor
 @Getter
-public enum PaymentType implements ValueToEnumBinder {
+public enum PaymentType implements StringToEnumBinder {
 
 	KAKAO_BANK("0001"),
 	NAVER_PAY("0002"),
@@ -100,39 +100,65 @@ public enum PaymentType implements ValueToEnumBinder {
 ### Custom Converter Factory
 
 ```java
-public class EnumConverterFactory implements ConverterFactory<Object, Enum<? extends ValueToEnumBinder>> {
+@Slf4j
+public class EnumConverterFactory implements ConverterFactory<String, Enum<?>> {
 
 	private static final Map<Class, Converter> CACHE = new ConcurrentHashMap<>();
 
 	@Override
-	public <T extends Enum<? extends ValueToEnumBinder>> Converter<Object, T> getConverter(Class<T> targetClass) {
+	public <T extends Enum<?>> Converter<String, T> getConverter(Class<T> targetClass) {
 		if (CACHE.get(targetClass) == null) {
-			CACHE.put(targetClass, new EnumConverter(targetClass));
+			log.info("targetClass: {}", targetClass);
+			CACHE.put(targetClass, StringToEnumFactory.create(targetClass));
 		}
 
 		return CACHE.get(targetClass);
 	}
 
-	private static class EnumConverter implements Converter<Object, Enum<? extends ValueToEnumBinder>> {
+	private static class StringToEnumFactory {
 
-		private final Map<Object, Enum<? extends ValueToEnumBinder>> ALL;
-
-		private EnumConverter(Class<? extends Enum<? extends ValueToEnumBinder>> targetClass) {
-			ALL = stream(targetClass.getEnumConstants())
-				.collect(collectingAndThen(
-					toMap(o -> ((ValueToEnumBinder)o).getValue(), Function.identity()),
-					Collections::unmodifiableMap
-				));
-		}
-
-		@Override
-		public Enum<? extends ValueToEnumBinder> convert(Object source) {
-			Enum<? extends ValueToEnumBinder> result = ALL.get(source);
-			if (result == null) {
-				throw new ConversionFailedException();
+		static Converter create(Class<? extends Enum<?>> targetClass) {
+			boolean isCustomBinder = stream(targetClass.getInterfaces())
+			  .anyMatch(i -> i == StringToEnumBinder.class);
+			if (isCustomBinder) {
+				return new CustomStringToEnum(targetClass);
 			}
 
-			return result;
+			return new DefaultStringToEnum(targetClass);
+		}
+
+		@RequiredArgsConstructor
+		static class DefaultStringToEnum implements Converter<String, Enum> {
+
+			private final Class<? extends Enum> targetClass;
+
+			@Override
+			public Enum convert(String source) {
+				return Enum.valueOf(targetClass, source);
+			}
+		}
+
+		static class CustomStringToEnum implements Converter<String, Enum<? extends StringToEnumBinder>> {
+
+			private final Map<String, Enum> binder;
+
+			private CustomStringToEnum(Class<? extends Enum> targetClass) {
+				binder = stream(targetClass.getEnumConstants())
+				  .collect(collectingAndThen(
+					toMap(o -> ((StringToEnumBinder)o).getValue(), Function.identity()),
+					Collections::unmodifiableMap
+				  ));
+			}
+
+			@Override
+			public Enum<? extends StringToEnumBinder> convert(String source) {
+				Enum<? extends StringToEnumBinder> result = binder.get(source);
+				if (result == null) {
+					throw new ConversionFailedException();
+				}
+
+				return result;
+			}
 		}
 	}
 
@@ -142,7 +168,7 @@ public class EnumConverterFactory implements ConverterFactory<Object, Enum<? ext
 }
 ```
 
-### Web Config
+### WebMvcConfigurer Config
 
 ````java
 import org.springframework.boot.convert.ApplicationConversionService;
@@ -158,11 +184,72 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		ApplicationConversionService.configure(registry);
-		registry.removeConvertible(String.class, Enum.class);
+		// registry.addConverter(new SearchTypeConverter());
 		registry.addConverterFactory(new EnumConverterFactory());
 	}
 }
 ````
+
+### 동작 방식
+
+```java
+package org.springframework.core.convert.converter;
+
+@FunctionalInterface
+public interface Converter<S, T> {
+}
+
+public interface ConverterFactory<S, R> {
+}
+```
+
+- 커스텀 구현한 Converter 또는 Converter Factory 를 등록한다.
+    - registry.addConverter(Converter)
+    - registry.addConverterFactory(ConverterFactory)
+- 제네릭 `타입 토큰` 클래스로 `ConvertiblePair`를 생성한다.
+    - GenericConversionService.addConverterFactory(ConverterFactory<?, ?>)
+    - 첫 번째 타입: 요청 파라미터 타입
+    - 두 번째 타입: 변환할 타입
+- 요청이 오면 내부적으로 GenericConversionService.convert 호출
+  - 내부적으로 Converter 는 캐시로 관리
+  - 캐시 키는 등록할 때 생성된 `ConvertiblePair` 로 Converter 반환
+
+```java
+package org.springframework.core.convert.support;
+
+public class GenericConversionService implements ConfigurableConversionService {
+
+	@Override
+	@Nullable
+	public Object convert(
+	  @Nullable Object source,
+	  @Nullable TypeDescriptor sourceType,
+	  TypeDescriptor targetType
+	) {
+		// ...
+
+		GenericConverter converter = getConverter(sourceType, targetType);
+		if (converter != null) { // LenientStringToEnumConverterFactory.class
+			Object result = ConversionUtils.invokeConverter(converter, source, sourceType, targetType);
+			return handleResult(sourceType, targetType, result);
+		}
+		return handleConverterNotFound(source, sourceType, targetType);
+	}
+}
+```
+
+- GenericConversionService
+    - convert(Object, TypeDescriptor, TypeDescriptor)
+        - getConverter(TypeDescriptor, TypeDescriptor)
+            - Converters.find(TypeDescriptor, TypeDescriptor)
+            - Converters.getRegisteredConverter(TypeDescriptor, TypeDescriptor, ConvertiblePair)
+        - handleConverterNotFound(Object, TypeDescriptor, TypeDescriptor)
+- ApplicationConversionService
+    - addApplicationConverters
+        - GenericConversionService.addConverter(Converter<?, ?>)
+            - GenericConversionService.addConverter(GenericConverter)
+                - Converters.add(GenericConverter)
+        - GenericConversionService.addConverterFactory(ConverterFactory<?, ?>)
 
 ## Reference
 
