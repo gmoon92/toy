@@ -21,6 +21,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.gmoon.springwebconverter.model.PaymentType;
 import com.gmoon.springwebconverter.model.SearchType;
+import com.gmoon.springwebconverter.model.ServerType;
 
 @SpringBootTest
 class ApiControllerTest {
@@ -37,17 +38,28 @@ class ApiControllerTest {
 			.build();
 	}
 
-	@DisplayName("요청 문자열을 Enum 타입으로 변환한다.")
 	@ParameterizedTest
 	@EnumSource(SearchType.class)
-	void convertStringToEnum(SearchType searchType) throws Exception {
+	void searchType(SearchType type) throws Exception {
 		ResultActions result = mockMvc.perform(get("/api/searchType")
 			.accept(MediaType.APPLICATION_JSON)
-			.param("searchType", searchType.getValue())
+			.param("searchType", type.getValue())
 		);
 
 		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$").value(searchType.name()));
+		result.andExpect(jsonPath("$").value(type.name()));
+	}
+
+	@ParameterizedTest
+	@EnumSource(PaymentType.class)
+	void paymentType(PaymentType type) throws Exception {
+		ResultActions result = mockMvc.perform(get("/api/paymentType")
+			.accept(MediaType.APPLICATION_JSON)
+			.param("paymentType", type.getValue())
+		);
+
+		result.andExpect(status().isOk());
+		result.andExpect(jsonPath("$").value(type.name()));
 	}
 
 	@DisplayName("요청 문자열을 Enum 타입으로 변환하지 못할 경우 예외가 발생한다.")
@@ -67,16 +79,15 @@ class ApiControllerTest {
 		);
 	}
 
-	@DisplayName("요청 문자열을 Enum 타입으로 변환한다.")
+	@DisplayName("기본 문자열 Enum 타입으로 변환")
 	@ParameterizedTest
-	@EnumSource(PaymentType.class)
-	void dynamicConvertFactory(PaymentType paymentType) throws Exception {
-		ResultActions result = mockMvc.perform(get("/api/paymentType")
+	@EnumSource(ServerType.class)
+	void serverType(ServerType type) throws Exception {
+		ResultActions result = mockMvc.perform(get("/api/" + type.name())
 			.accept(MediaType.APPLICATION_JSON)
-			.param("paymentType", paymentType.getValue())
 		);
 
 		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$").value(paymentType.name()));
+		result.andExpect(jsonPath("$").value(type.name()));
 	}
 }
