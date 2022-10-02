@@ -1,4 +1,4 @@
-package com.gmoon.springwebconverter.config.exception;
+package com.gmoon.springwebconverter.config.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
