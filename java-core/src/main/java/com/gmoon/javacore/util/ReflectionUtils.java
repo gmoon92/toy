@@ -86,13 +86,13 @@ public final class ReflectionUtils {
 	}
 
 	public static Class<?> extractGenericType(Class<?> target, Class<?> findGenericClass, int indexOfGenericType) {
-		Type superclass = getSuperClassType(target, findGenericClass);
-		ParameterizedType parameterizedType = (ParameterizedType)superclass;
+		Type genericType = getGenericClassType(target, findGenericClass);
+		ParameterizedType parameterizedType = (ParameterizedType)genericType;
 		Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 		return (Class<?>)actualTypeArguments[indexOfGenericType];
 	}
 
-	private static Type getSuperClassType(Class<?> target, Class<?> findGenericClass) {
+	private static Type getGenericClassType(Class<?> target, Class<?> findGenericClass) {
 		Class<?> superclass = target.getSuperclass();
 		boolean existSuperClass = superclass != Object.class;
 		if (!existSuperClass && !existsImplementInterface(target)) {
@@ -107,7 +107,7 @@ public final class ReflectionUtils {
 		return Arrays.stream(target.getGenericInterfaces())
 			.filter(type -> ((ParameterizedType)type).getRawType() == findGenericClass)
 			.findFirst()
-			.orElseGet(() -> getSuperClassType(superclass, findGenericClass));
+			.orElseGet(() -> getGenericClassType(superclass, findGenericClass));
 	}
 
 	private static boolean existsImplementInterface(Class<?> clazz) {
