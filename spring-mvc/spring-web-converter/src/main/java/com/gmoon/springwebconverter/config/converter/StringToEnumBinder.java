@@ -1,6 +1,6 @@
 package com.gmoon.springwebconverter.config.converter;
 
-public interface ValueToEnumBinder<T> {
+public interface StringToEnumBinder {
 
-	T getValue();
+	String getValue();
 }

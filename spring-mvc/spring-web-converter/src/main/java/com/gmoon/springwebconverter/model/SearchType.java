@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.gmoon.springwebconverter.config.converter.ValueToEnumBinder;
+import com.gmoon.springwebconverter.config.converter.StringToEnumBinder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum SearchType implements ValueToEnumBinder {
+public enum SearchType implements StringToEnumBinder {
 
 	DATE("date"),
 	USER_NAME("username");
