@@ -1,19 +1,28 @@
 package com.gmoon.javacore.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import com.gmoon.javacore.persistence.EmbeddedId;
-import com.gmoon.javacore.persistence.Entity;
-import com.gmoon.javacore.persistence.Id;
-import com.gmoon.javacore.test.domain.Favorites;
-import com.gmoon.javacore.test.domain.User;
+import static com.gmoon.javacore.util.ReflectionUtils.*;
+import static org.assertj.core.api.Assertions.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import com.gmoon.javacore.persistence.EmbeddedId;
+import com.gmoon.javacore.persistence.Entity;
+import com.gmoon.javacore.persistence.Id;
+import com.gmoon.javacore.test.domain.Favorites;
+import com.gmoon.javacore.test.domain.User;
+import com.gmoon.javacore.util.exception.NotFoundGenericTypeClassException;
 
 class ReflectionUtilsTest {
 
@@ -82,5 +91,61 @@ class ReflectionUtilsTest {
 
 		// then
 		assertThat(values).contains(id);
+	}
+
+	@DisplayName("제네릭 타입 추출")
+	@Nested
+	class ExtractGenericTypeTest {
+
+		@DisplayName("지정된 제네릭 타입 추출")
+		@ParameterizedTest
+		@MethodSource("com.gmoon.javacore.util.ReflectionUtilsTest#extractGenericTypeProvider")
+		void success(Class<?> target, Class<?> findGenericClass, Class<?> expected) {
+			Class<?> genericTypeClass = extractGenericType(target, findGenericClass, 0);
+
+			assertThat(genericTypeClass).isEqualTo(expected);
+		}
+
+		@DisplayName("제네릭 클래스를 찾을 수 없을 경우 "
+			+ "예외가 발생한다.")
+		@Test
+		void error1() {
+			assertThatExceptionOfType(NotFoundGenericTypeClassException.class)
+				.isThrownBy(() -> extractGenericType(NonSuperClassAndImplementClass.class, GenericInterface.class, 0));
+		}
+
+		@DisplayName("제네릭 타입 인덱스가 잘못된 경우 "
+			+ "예외가 발생한다.")
+		@Test
+		void error2() {
+			assertThatExceptionOfType(IndexOutOfBoundsException.class)
+				.isThrownBy(() -> extractGenericType(SuperClass.class, AbstractGeneric.class, 1));
+		}
+	}
+
+	class NonSuperClassAndImplementClass {
+	}
+
+	static Stream<Arguments> extractGenericTypeProvider() {
+		return Stream.of(
+			Arguments.of(SuperClass.class, AbstractGeneric.class, UUID.class),
+			Arguments.of(ImplementClass.class, GenericInterface.class, Integer.class),
+			Arguments.of(EnumClass.class, GenericInterface.class, String.class)
+		);
+	}
+
+	class SuperClass extends AbstractGeneric<UUID> {
+	}
+
+	class ImplementClass implements GenericInterface<Integer> {
+	}
+
+	enum EnumClass implements GenericInterface<String> {
+	}
+
+	abstract class AbstractGeneric<T> {
+	}
+
+	interface GenericInterface<T> {
 	}
 }
