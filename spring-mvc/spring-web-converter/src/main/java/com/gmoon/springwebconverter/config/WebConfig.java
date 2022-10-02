@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		ApplicationConversionService.configure(registry);
-		registry.removeConvertible(String.class, Enum.class);
+		// registry.addConverter(new SearchTypeConverter());
 		registry.addConverterFactory(new EnumConverterFactory());
 	}
 }
