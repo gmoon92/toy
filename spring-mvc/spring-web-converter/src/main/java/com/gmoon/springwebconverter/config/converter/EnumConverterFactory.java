@@ -11,6 +11,8 @@ import java.util.function.Function;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
+import com.gmoon.springwebconverter.config.error.exception.ConversionFailedException;
+
 public class EnumConverterFactory implements ConverterFactory<Object, Enum<? extends ValueToEnumBinder>> {
 
 	private static final Map<Class, Converter> CACHE = new ConcurrentHashMap<>();
@@ -38,7 +40,12 @@ public class EnumConverterFactory implements ConverterFactory<Object, Enum<? ext
 
 		@Override
 		public Enum<? extends ValueToEnumBinder> convert(Object source) {
-			return ALL.get(source);
+			Enum<? extends ValueToEnumBinder> result = ALL.get(source);
+			if (result == null) {
+				throw new ConversionFailedException();
+			}
+
+			return result;
 		}
 	}
 
