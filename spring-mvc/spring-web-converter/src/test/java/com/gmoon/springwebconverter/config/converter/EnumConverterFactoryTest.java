@@ -30,7 +30,7 @@ class EnumConverterFactoryTest {
 	@DisplayName("컨버터 반환")
 	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
 	@MethodSource("enumClassProvider")
-	void getConverter(Class enumClass, ValueToEnumBinder binder) {
+	void getConverter(Class enumClass, StringToEnumBinder binder) {
 		Converter converter = factory.getConverter(enumClass);
 
 		Object value = binder.getValue();

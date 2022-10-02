@@ -13,39 +13,68 @@ import org.springframework.core.convert.converter.ConverterFactory;
 
 import com.gmoon.springwebconverter.config.error.exception.ConversionFailedException;
 
-public class EnumConverterFactory implements ConverterFactory<Object, Enum<? extends ValueToEnumBinder>> {
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class EnumConverterFactory implements ConverterFactory<String, Enum<?>> {
 
 	private static final Map<Class, Converter> CACHE = new ConcurrentHashMap<>();
 
 	@Override
-	public <T extends Enum<? extends ValueToEnumBinder>> Converter<Object, T> getConverter(Class<T> targetClass) {
+	public <T extends Enum<?>> Converter<String, T> getConverter(Class<T> targetClass) {
 		if (CACHE.get(targetClass) == null) {
-			CACHE.put(targetClass, new EnumConverter(targetClass));
+			log.info("targetClass: {}", targetClass);
+			CACHE.put(targetClass, StringToEnumFactory.create(targetClass));
 		}
 
 		return CACHE.get(targetClass);
 	}
 
-	private static class EnumConverter implements Converter<Object, Enum<? extends ValueToEnumBinder>> {
+	private static class StringToEnumFactory {
 
-		private final Map<Object, Enum<? extends ValueToEnumBinder>> ALL;
-
-		private EnumConverter(Class<? extends Enum<? extends ValueToEnumBinder>> targetClass) {
-			ALL = stream(targetClass.getEnumConstants())
-				.collect(collectingAndThen(
-					toMap(o -> ((ValueToEnumBinder)o).getValue(), Function.identity()),
-					Collections::unmodifiableMap
-				));
-		}
-
-		@Override
-		public Enum<? extends ValueToEnumBinder> convert(Object source) {
-			Enum<? extends ValueToEnumBinder> result = ALL.get(source);
-			if (result == null) {
-				throw new ConversionFailedException();
+		static Converter create(Class<? extends Enum<?>> targetClass) {
+			boolean isCustomBinder = stream(targetClass.getInterfaces())
+				.anyMatch(i -> i == StringToEnumBinder.class);
+			if (isCustomBinder) {
+				return new CustomStringToEnum(targetClass);
 			}
 
-			return result;
+			return new DefaultStringToEnum(targetClass);
+		}
+
+		@RequiredArgsConstructor
+		static class DefaultStringToEnum implements Converter<String, Enum> {
+
+			private final Class<? extends Enum> targetClass;
+
+			@Override
+			public Enum convert(String source) {
+				return Enum.valueOf(targetClass, source);
+			}
+		}
+
+		static class CustomStringToEnum implements Converter<String, Enum<? extends StringToEnumBinder>> {
+
+			private final Map<String, Enum> binder;
+
+			private CustomStringToEnum(Class<? extends Enum> targetClass) {
+				binder = stream(targetClass.getEnumConstants())
+					.collect(collectingAndThen(
+						toMap(o -> ((StringToEnumBinder)o).getValue(), Function.identity()),
+						Collections::unmodifiableMap
+					));
+			}
+
+			@Override
+			public Enum<? extends StringToEnumBinder> convert(String source) {
+				Enum<? extends StringToEnumBinder> result = binder.get(source);
+				if (result == null) {
+					throw new ConversionFailedException();
+				}
+
+				return result;
+			}
 		}
 	}
 
