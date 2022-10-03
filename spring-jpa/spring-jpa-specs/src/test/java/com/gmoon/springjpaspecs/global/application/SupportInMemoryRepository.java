@@ -1,6 +1,5 @@
 package com.gmoon.springjpaspecs.global.application;
 
-import com.gmoon.springjpaspecs.global.vo.EntityObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class BaseInMemoryRepository<T extends EntityObject, ID extends Serializable> {
+import com.gmoon.springjpaspecs.global.vo.EntityObject;
+
+public abstract class SupportInMemoryRepository<T extends EntityObject, ID extends Serializable> {
 
 	private final Map<ID, T> CACHE = new HashMap<>();
 

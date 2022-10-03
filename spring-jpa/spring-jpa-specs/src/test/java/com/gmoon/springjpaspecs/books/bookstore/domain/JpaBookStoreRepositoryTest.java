@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
-import com.gmoon.springjpaspecs.global.vo.DataJpaTestSupport;
+import com.gmoon.springjpaspecs.global.vo.SupportDataJpaTest;
 
-class JpaBookStoreRepositoryTest extends DataJpaTestSupport {
+class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 
 	@Autowired
 	private JpaBookStoreRepository repository;

@@ -10,7 +10,7 @@ import com.gmoon.springjpaspecs.global.config.JpaConfig;
 
 @DataJpaTest
 @Import(JpaConfig.class)
-public abstract class DataJpaTestSupport {
+public abstract class SupportDataJpaTest {
 
 	@Autowired
 	EntityManager em;

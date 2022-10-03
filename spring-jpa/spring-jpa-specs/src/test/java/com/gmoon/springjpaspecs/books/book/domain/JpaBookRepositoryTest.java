@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
-import com.gmoon.springjpaspecs.global.vo.DataJpaTestSupport;
+import com.gmoon.springjpaspecs.global.vo.SupportDataJpaTest;
 
-class JpaBookRepositoryTest extends DataJpaTestSupport {
+class JpaBookRepositoryTest extends SupportDataJpaTest {
 
 	@Autowired
 	JpaBookRepository repository;
