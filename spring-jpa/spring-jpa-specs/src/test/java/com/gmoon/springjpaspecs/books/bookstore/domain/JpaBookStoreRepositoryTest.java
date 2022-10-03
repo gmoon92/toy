@@ -1,24 +1,21 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJpaTest
-class JpaBookStoreRepositoryTest {
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
+import com.gmoon.springjpaspecs.global.vo.DataJpaTestSupport;
+
+class JpaBookStoreRepositoryTest extends DataJpaTestSupport {
 
 	@Autowired
 	private JpaBookStoreRepository repository;
-
-	@PersistenceContext
-	private EntityManager em;
 
 	@Test
 	void create() {
@@ -35,9 +32,18 @@ class JpaBookStoreRepositoryTest {
 		assertThat(savedBookStore.getName()).isNotBlank();
 	}
 
+	@Test
+	void findById() {
+		String id = "book-store-1";
+
+		BookStore bookStore = repository.findById(id)
+			.orElseThrow(EntityNotFoundException::new);
+
+		assertThat(bookStore.getName()).isEqualTo("gmoons");
+	}
+
 	@AfterEach
 	void tearDown() {
-		em.flush();
-		em.clear();
+		flushAndClear();
 	}
 }

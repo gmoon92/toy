@@ -1,18 +1,21 @@
 package com.gmoon.springjpaspecs.books.book.domain;
 
-import static com.gmoon.springjpaspecs.books.Fixtures.book;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static com.gmoon.springjpaspecs.books.Fixtures.*;
+import static java.util.Arrays.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import java.math.BigDecimal;
-import java.util.Arrays;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJpaTest
-class JpaBookRepositoryTest {
+import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
+import com.gmoon.springjpaspecs.global.vo.DataJpaTestSupport;
+
+class JpaBookRepositoryTest extends DataJpaTestSupport {
 
 	@Autowired
 	JpaBookRepository repository;
@@ -41,20 +44,20 @@ class JpaBookRepositoryTest {
 	void ambiguousReference() {
 		repository.save(new Book());
 		repository.findById("book-no0");
-		repository.findAllById(Arrays.asList("book-no0"));
+		repository.findAllById(asList("book-no0"));
 		repository.findAll();
 	}
 
 	@Test
 	void findById() {
-		Book book = repository.findById("book-no0").get();
+		Book book = repository.findById("book-no0").
+			orElseThrow(EntityNotFoundException::new);
 
 		assertThat(book).isNotNull();
 		assertAll(
 			() -> assertThat(book.getId()).isNotBlank(),
 			() -> assertThat(book.getName()).isEqualTo(new BookName("START! DDD")),
 			() -> assertThat(book.getIsbn()).isNotNull(),
-			() -> assertThat(book.getPrice().getValue().setScale(2)).isEqualTo(
-				BigDecimal.valueOf(36_000).setScale(2)));
+			() -> assertThat(book.getPrice()).isNotNull());
 	}
 }
