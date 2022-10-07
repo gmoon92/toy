@@ -20,6 +20,7 @@
         <module>spring-async</module>
         <module>spring-scheduling</module>
         <module>spring-quartz-cluster</module>
+        <module>spring-event-listener</module>
     </modules>
 
     <properties>
