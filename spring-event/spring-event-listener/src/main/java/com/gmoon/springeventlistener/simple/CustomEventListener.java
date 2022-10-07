@@ -24,7 +24,7 @@ public class CustomEventListener implements ApplicationListener<CustomEvent> {
 
 	private void slowProcess() {
 		try {
-			sleep(Duration.ofSeconds(1).toMillis());
+			sleep(Duration.ofMillis(500).toMillis());
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
