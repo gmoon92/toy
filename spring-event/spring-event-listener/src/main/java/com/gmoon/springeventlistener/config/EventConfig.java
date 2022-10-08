@@ -44,7 +44,7 @@ public class EventConfig {
 
 	@Bean
 	@ConditionalOnMissingBean(Executor.class)
-	public SimpleAsyncTaskExecutor simpleAsyncTaskExecutor() {
+	public Executor simpleAsyncTaskExecutor() {
 		return new SimpleAsyncTaskExecutor();
 	}
 }
