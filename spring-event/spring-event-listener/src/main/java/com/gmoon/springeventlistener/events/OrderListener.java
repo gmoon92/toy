@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderListener {
 
 	@Async
-	@EventListener
+	@EventListener(condition = "#event.orderNo != null && !#event.orderNo.isEmpty()")
 	public void complete(CompletedOrderEvent event) {
 		sendMessage(event);
 	}
