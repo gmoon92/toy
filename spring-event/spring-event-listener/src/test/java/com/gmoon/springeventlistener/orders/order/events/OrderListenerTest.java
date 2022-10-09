@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.orders.events;
+package com.gmoon.springeventlistener.orders.order.events;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
