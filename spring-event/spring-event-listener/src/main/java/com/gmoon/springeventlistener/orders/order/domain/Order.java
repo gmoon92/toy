@@ -38,7 +38,7 @@ public class Order implements Serializable {
 	private String id;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "order_status", length = 10, nullable = false)
+	@Column(name = "status", length = 10, nullable = false)
 	@ColumnDefault("'WAITE'")
 	private OrderStatus status;
 

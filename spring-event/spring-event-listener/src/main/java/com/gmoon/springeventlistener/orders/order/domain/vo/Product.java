@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class Product implements Serializable {
 
-	@Column(name = "product_id", length = 50, nullable = false)
+	@Column(name = "product_no", length = 50, nullable = false)
 	private String id;
 
 	@Column(name = "product_name", length = 50, nullable = false)
