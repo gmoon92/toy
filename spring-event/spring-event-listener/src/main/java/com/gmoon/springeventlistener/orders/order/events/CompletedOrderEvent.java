@@ -1,6 +1,8 @@
-package com.gmoon.springeventlistener.orders.events;
+package com.gmoon.springeventlistener.orders.order.events;
 
 import java.io.Serializable;
+
+import com.gmoon.springeventlistener.orders.order.domain.Order;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,5 +27,15 @@ public class CompletedOrderEvent implements Serializable {
 		this.productName = productName;
 		this.userName = userName;
 		this.userEmail = userEmail;
+	}
+
+	public static CompletedOrderEvent create(Order order) {
+		return CompletedOrderEvent.builder()
+			.orderNo(order.getId())
+			.orderPrice(order.totalPrice())
+			.productName(order.getProductNames())
+			.userName(order.getUser().getUserName())
+			.userEmail(order.getUser().getUserEmail())
+			.build();
 	}
 }
