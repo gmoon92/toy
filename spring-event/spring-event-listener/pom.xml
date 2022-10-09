@@ -15,6 +15,7 @@
 	<description>spring-event-listener</description>
 	<properties>
 		<java.version>1.8</java.version>
+		<quick-perf.version>1.1.0</quick-perf.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -48,6 +49,18 @@
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
 			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quickperf</groupId>
+			<artifactId>quick-perf-springboot2-sql-starter</artifactId>
+			<version>${quick-perf.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.quickperf</groupId>
+			<artifactId>quick-perf-junit5</artifactId>
+			<version>${quick-perf.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
