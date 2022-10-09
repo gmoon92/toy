@@ -36,7 +36,7 @@ class OrderListenerTest {
 			.atMost(Duration.ofSeconds(3))
 			.untilAsserted(() -> then(listener)
 				.should(times(1))
-				.complete(any()));
+				.syncOrderLines(any()));
 	}
 
 	private CompletedOrderEvent completedOrderEvent(String orderNo) {
@@ -62,6 +62,6 @@ class OrderListenerTest {
 			.atMost(Duration.ofSeconds(3))
 			.untilAsserted(() -> then(listener)
 				.should(never())
-				.complete(any()));
+				.syncOrderLines(any()));
 	}
 }
