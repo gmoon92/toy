@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.events;
+package com.gmoon.springeventlistener.orders.events;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;

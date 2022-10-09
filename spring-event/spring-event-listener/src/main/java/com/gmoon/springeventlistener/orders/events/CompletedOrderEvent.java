@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.events;
+package com.gmoon.springeventlistener.orders.events;
 
 import java.io.Serializable;
 
