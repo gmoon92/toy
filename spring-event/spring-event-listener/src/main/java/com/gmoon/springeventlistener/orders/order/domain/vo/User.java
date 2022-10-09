@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.orders.domain.vo;
+package com.gmoon.springeventlistener.orders.order.domain.vo;
 
 import java.io.Serializable;
 
