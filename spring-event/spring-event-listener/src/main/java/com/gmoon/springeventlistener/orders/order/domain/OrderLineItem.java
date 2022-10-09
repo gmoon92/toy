@@ -3,6 +3,7 @@ package com.gmoon.springeventlistener.orders.order.domain;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,8 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.gmoon.springeventlistener.orders.order.domain.vo.Product;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,30 +40,30 @@ public class OrderLineItem implements Serializable {
 	)
 	private Order order;
 
-	@Column(name = "product_name", length = 50, nullable = false)
-	private String productName;
+	@Embedded
+	private Product product;
 
 	@Column(name = "quantity", nullable = false)
 	@ColumnDefault("0")
 	private long quantity;
 
-	@Column(name = "price", nullable = false)
-	@ColumnDefault("0")
-	private long price;
 
 	@Builder
-	private OrderLineItem(Order order, String productName, long quantity, long price) {
+	private OrderLineItem(Order order, Product product, long quantity) {
 		this.order = order;
-		this.productName = productName;
+		this.product = product;
 		this.quantity = quantity;
-		this.price = price;
 	}
 
 	protected void setOrder(Order order) {
 		this.order = order;
 	}
 
-	public long getTotalPrice() {
-		return quantity * price;
+	public String getProductName() {
+		return product.getName();
+	}
+
+	public long getPrice() {
+		return quantity * product.getPrice();
 	}
 }

@@ -76,7 +76,7 @@ public class Order implements Serializable {
 
 	public long totalPrice() {
 		return lines.stream()
-			.mapToLong(OrderLineItem::getTotalPrice)
+			.mapToLong(OrderLineItem::getPrice)
 			.sum();
 	}
 

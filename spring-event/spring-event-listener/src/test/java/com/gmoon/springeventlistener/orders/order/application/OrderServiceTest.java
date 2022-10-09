@@ -32,8 +32,8 @@ class OrderServiceTest {
 	void complete() {
 		Order order = new Order(OrderStatus.ACCEPTED, user())
 			.addOrderItems(
-				orderLineItem(16_000, "p1"),
-				orderLineItem(36_000, "p2")
+				orderLineItem(1, product("p1", 16_000)),
+				orderLineItem(1, product("p2", 36_000))
 			);
 
 		service.complete(order);
@@ -55,8 +55,8 @@ class OrderServiceTest {
 	void error1() {
 		Order order = new Order(OrderStatus.WAITE, user())
 			.addOrderItems(
-				orderLineItem(16_000, "p1"),
-				orderLineItem(36_000, "p2")
+				orderLineItem(1, product("p1", 16_000)),
+				orderLineItem(1, product("p2", 36_000))
 			);
 
 		assertThatExceptionOfType(IllegalStateException.class)
