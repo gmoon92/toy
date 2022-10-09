@@ -13,6 +13,7 @@ spring:
         format_sql: true
         use_sql_comments: true
         globally_quoted_identifiers: true
+    defer-datasource-initialization: true
 
 logging:
   level:
