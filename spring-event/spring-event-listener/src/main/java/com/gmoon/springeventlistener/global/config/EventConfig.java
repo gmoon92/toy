@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.config;
+package com.gmoon.springeventlistener.global.config;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
