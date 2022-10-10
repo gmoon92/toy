@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.users.user;
+package com.gmoon.springeventlistener.users.user.domain;
 
 import java.util.Optional;
 

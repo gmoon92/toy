@@ -13,8 +13,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import com.gmoon.springeventlistener.orders.cart.application.CartService;
 import com.gmoon.springeventlistener.products.product.domain.JpaProductRepository;
 import com.gmoon.springeventlistener.products.product.domain.Product;
-import com.gmoon.springeventlistener.users.user.JpaUserRepository;
-import com.gmoon.springeventlistener.users.user.User;
+import com.gmoon.springeventlistener.users.user.domain.JpaUserRepository;
+import com.gmoon.springeventlistener.users.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
