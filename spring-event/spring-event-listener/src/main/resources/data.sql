@@ -1,3 +1,6 @@
+INSERT INTO "product" ("product_no", "name", "price") VALUES ('product0', 'Clean Architecture', 50000);
+INSERT INTO "product" ("product_no", "name", "price") VALUES ('product1', 'Start! DDD', 36000);
+
 INSERT INTO "user" ("id", "name", "email") VALUES ('user0', 'gmoon', 'gmoon0929@gmail.com');
 
 INSERT INTO "cart" ("id", "user_id", "product_no") VALUES ('cart0', 'user0', 'product0');
