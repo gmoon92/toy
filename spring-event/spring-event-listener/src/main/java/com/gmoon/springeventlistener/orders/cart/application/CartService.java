@@ -16,7 +16,10 @@ public class CartService {
 	private final JpaCartRepository cartRepository;
 
 	@Transactional
-	public void remove(UserId userId, ProductNo productNo) {
-		cartRepository.deleteAllByUserIdAndProductNo(userId, productNo);
+	public void remove(String userId, String productNo) {
+		cartRepository.deleteAllByUserIdAndProductNo(
+			new UserId(userId),
+			new ProductNo(productNo)
+		);
 	}
 }
