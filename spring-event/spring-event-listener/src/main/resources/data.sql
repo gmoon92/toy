@@ -1,3 +1,5 @@
+INSERT INTO "user" ("id", "name", "email") VALUES ('user0', 'gmoon', 'gmoon0929@gmail.com');
+
 INSERT INTO "cart" ("id", "user_id", "product_no") VALUES ('cart0', 'user0', 'product0');
 INSERT INTO "cart" ("id", "user_id", "product_no") VALUES ('cart1', 'user0', 'product1');
 
