@@ -31,6 +31,7 @@ class JpaCartRepositoryTest extends SupportDataJpaTest {
 		Cart cart = new Cart(userId, productNo);
 
 		Cart savedCart = repository.save(cart);
+		flushAndClear();
 
 		assertThat(savedCart.getId()).isNotBlank();
 	}
