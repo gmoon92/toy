@@ -12,6 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Fixtures {
 
+	public static final String ORDER_NO = "order0";
+	public static final String ORDER_LINE_ITEM0 = "item0";
+	public static final String ORDER_LINE_ITEM1 = "item1";
+	public static final String USER_ID = "user0";
+	public static final String PRODUCT_NO0 = "product0";
+	public static final String PRODUCT_NO1 = "product1";
+
 	public static User user() {
 		return new User("0001", "gmoon", "gmoon0929@gmail.com");
 	}
