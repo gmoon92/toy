@@ -48,7 +48,7 @@ public class RedissonClientTest {
 		while (lock.remainTimeToLive() > 0) {
 			boolean isLocked = lock.isLocked();
 			assertThat(isLocked).isTrue();
-			log.info("isLocked: {}, ttl: {}", lock.remainTimeToLive(), isLocked);
+			log.info("isLocked: {}, ttl: {}", isLocked, lock.remainTimeToLive());
 		}
 
 		assertThat(lock.isLocked()).isFalse();
