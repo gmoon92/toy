@@ -200,8 +200,7 @@ class RedissonClientTest {
         - lock 획득/해제를 고수준 계층에서 관리
         - entityManager.flush 시점 이후 lock 해제
 
-> Spring 은 ThreadLocal 변수를 통해 트랜잭션 상태를 관리하기 때문에 다른 스레드에서 시작된 트랜잭션 (ex : @Async, Executors) 은
-> 상위 스레드에 대해 관리되는 트랜잭션에 참여할 수 없으므로 롤백할 수 없다.
+> Spring 은 ThreadLocal 변수를 통해 트랜잭션 상태를 관리하기 때문에 다른 스레드에서 시작된 트랜잭션 (ex : @Async, Executors) 은 상위 스레드에 대해 관리되는 트랜잭션에 참여할 수 없으므로 롤백할 수 없다.
 
 ## Reference
 
