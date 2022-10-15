@@ -168,9 +168,9 @@ public class RedissonClientTest {
 			String hitCountKey = lockKey + "-hitCount";
 			RAtomicLong atomicLong = redisson.getAtomicLong(hitCountKey);
 
-			task.execute(() -> getIncrementAndGet(lock, hitCountKey));
-			task.execute(() -> getIncrementAndGet(lock, hitCountKey));
-			task.execute(() -> getIncrementAndGet(lock, hitCountKey));
+			task.execute(() -> incrementAndGet(lock, hitCountKey));
+			task.execute(() -> incrementAndGet(lock, hitCountKey));
+			task.execute(() -> incrementAndGet(lock, hitCountKey));
 
 			Awaitility.await()
 				.pollDelay(Duration.ofMillis(10))
@@ -178,7 +178,7 @@ public class RedissonClientTest {
 				.untilAsserted(() -> assertThat(atomicLong.get()).isEqualTo(3));
 		}
 
-		private long getIncrementAndGet(RLock lock, String hitCountKey) {
+		private long incrementAndGet(RLock lock, String hitCountKey) {
 			try {
 				if (lock.tryLock(10, 10, TimeUnit.SECONDS)) {
 					RAtomicLong atomicLong = redisson.getAtomicLong(hitCountKey);
