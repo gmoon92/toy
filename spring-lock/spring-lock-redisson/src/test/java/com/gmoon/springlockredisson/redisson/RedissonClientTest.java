@@ -184,7 +184,7 @@ public class RedissonClientTest {
 					RAtomicLong atomicLong = redisson.getAtomicLong(hitCountKey);
 					return atomicLong.incrementAndGet();
 				}
-			} catch (Exception e) {
+			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			} finally {
 				if (lock.isLocked()) {
