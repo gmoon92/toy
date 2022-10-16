@@ -142,7 +142,7 @@ public class RedissonClientTest {
 		}
 
 		private void releaseLock(RLock lock) {
-			if (lock.isLocked()) {
+			if (lock.isLocked() && lock.isHeldByCurrentThread()) {
 				lock.unlock();
 			}
 		}
@@ -187,7 +187,7 @@ public class RedissonClientTest {
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			} finally {
-				if (lock.isLocked()) {
+				if (lock.isLocked() && lock.isHeldByCurrentThread()) {
 					lock.unlock();
 				}
 			}
