@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
@@ -193,6 +194,19 @@ public class RedissonClientTest {
 			}
 
 			throw new RuntimeException("lock try timeout...");
+		}
+
+		@DisplayName("RAtomicLong 동시성 보장 검증")
+		@RepeatedTest(5)
+		void parallel() {
+			String key = UUID.randomUUID().toString();
+			RAtomicLong atomicLong = redisson.getAtomicLong(key);
+
+			IntStream.range(0, 5)
+				.parallel()
+				.forEach(i -> atomicLong.incrementAndGet());
+
+			assertThat(atomicLong.get()).isEqualTo(5);
 		}
 	}
 }
