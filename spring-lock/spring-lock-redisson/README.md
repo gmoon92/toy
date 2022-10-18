@@ -157,9 +157,9 @@ class RedissonClientTest {
 		RAtomicLong atomicLong = redisson.getAtomicLong(hitCountKey);
 
 		Executor task = Executors.newFixedThreadPool(3);
-		task.execute(() -> getIncrementAndGet(lock, hitCountKey));
-		task.execute(() -> getIncrementAndGet(lock, hitCountKey));
-		task.execute(() -> getIncrementAndGet(lock, hitCountKey));
+		task.execute(() -> incrementAndGet(lock, hitCountKey));
+		task.execute(() -> incrementAndGet(lock, hitCountKey));
+		task.execute(() -> incrementAndGet(lock, hitCountKey));
 
 		Awaitility.await()
 		  .pollDelay(Duration.ofMillis(10))
@@ -167,13 +167,15 @@ class RedissonClientTest {
 		  .untilAsserted(() -> assertThat(atomicLong.get()).isEqualTo(3));
 	}
 
-	private long getIncrementAndGet(RLock lock, String hitCountKey) {
+	private long incrementAndGet(RLock lock, String hitCountKey) {
 		try {
 			// lock 획득
 			if (lock.tryLock(10, 10, TimeUnit.SECONDS)) {
 				RAtomicLong atomicLong = redisson.getAtomicLong(hitCountKey);
 				return atomicLong.incrementAndGet();
-			}
+			} else {
+                throw new RuntimeException("lock try timeout...");
+            }
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -182,8 +184,6 @@ class RedissonClientTest {
 				lock.unlock();
 			}
 		}
-
-		throw new RuntimeException("lock try timeout...");
 	}
 }
 ```
@@ -211,5 +211,6 @@ class RedissonClientTest {
     - [Redisson - Wiki](https://github.com/redisson/redisson/wiki/Table-of-Content)
     - [Redisson - Distributed locks and synchronizers](https://github.com/redisson/redisson/wiki/8.-distributed-locks-and-synchronizers/#89-spin-lock)
     - [Redisson - Quick start](https://github.com/redisson/redisson#quick-start)
+- [baeldung - redis-redisson](https://www.baeldung.com/redis-redisson)
 - [레디스와 분산 락(1/2) - 레디스를 활용한 분산 락과 안전하고 빠른 락의 구현](https://hyperconnect.github.io/2019/11/15/redis-distributed-lock-1.html)
 - [MySQL을 이용한 분산락으로 여러 서버에 걸친 동시성 관리](https://techblog.woowahan.com/2631/)
