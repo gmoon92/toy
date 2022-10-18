@@ -24,11 +24,11 @@ public class LockKey implements Serializable {
 		this.leaseTime = leaseTime;
 	}
 
-	public long getWaitTimeSeconds() {
+	protected long getWaitTimeSeconds() {
 		return waitTime.getSeconds();
 	}
 
-	public long getLeaseTimeSeconds() {
+	protected long getLeaseTimeSeconds() {
 		return leaseTime.getSeconds();
 	}
 }
