@@ -45,4 +45,11 @@ public class LockUtils {
 			lock.release();
 		}
 	}
+
+	public void synchronize(Lock lock, Runnable task) {
+		synchronize(lock, () -> {
+			task.run();
+			return Void.class;
+		});
+	}
 }
