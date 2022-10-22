@@ -20,6 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.gmoon.springeventlistener.orders.order.domain.vo.Product;
 import com.gmoon.springeventlistener.orders.order.domain.vo.User;
 
 import lombok.AccessLevel;
@@ -84,5 +85,12 @@ public class Order implements Serializable {
 		return lines.stream()
 			.map(OrderLineItem::getProductName)
 			.collect(Collectors.joining());
+	}
+
+	public List<String> getProductNos() {
+		return lines.stream()
+			.map(OrderLineItem::getProduct)
+			.map(Product::getId)
+			.collect(Collectors.toList());
 	}
 }
