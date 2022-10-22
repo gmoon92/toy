@@ -1,4 +1,4 @@
-package com.gmoon.demo.member.model;
+package com.gmoon.demo.member.domain;
 
 import java.time.LocalDateTime;
 
@@ -15,20 +15,20 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "enabled")
-public class EmbeddedMemberOption {
+public class Enabled {
 
 	private boolean enabled;
 	private LocalDateTime enabledDt;
 
-	public static EmbeddedMemberOption enabled() {
-		EmbeddedMemberOption accountOption = new EmbeddedMemberOption();
+	public static Enabled enabled() {
+		Enabled accountOption = new Enabled();
 		accountOption.enabled = true;
 		accountOption.enabledDt = LocalDateTime.now();
 		return accountOption;
 	}
 
-	public static EmbeddedMemberOption disabled() {
-		EmbeddedMemberOption accountOption = new EmbeddedMemberOption();
+	public static Enabled disabled() {
+		Enabled accountOption = new Enabled();
 		accountOption.enabled = false;
 		accountOption.enabledDt = null;
 		return accountOption;

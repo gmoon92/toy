@@ -10,7 +10,6 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import com.gmoon.demo.member.model.EmbeddedMemberOption;
 import com.gmoon.demo.member.model.MemberOptionUpdate;
 
 import lombok.AccessLevel;
@@ -40,7 +39,7 @@ public class MemberOption {
 		@AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
 		@AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
 	})
-	private EmbeddedMemberOption embeddedMemberOption;
+	private Enabled enabled;
 
 	@Column(name = "retired")
 	private boolean retired;
@@ -53,12 +52,12 @@ public class MemberOption {
 	}
 
 	void enabled() {
-		this.embeddedMemberOption = EmbeddedMemberOption.enabled();
+		this.enabled = Enabled.enabled();
 		this.retired = true;
 	}
 
 	void disabled() {
-		this.embeddedMemberOption = EmbeddedMemberOption.disabled();
+		this.enabled = Enabled.disabled();
 		this.retired = false;
 	}
 
