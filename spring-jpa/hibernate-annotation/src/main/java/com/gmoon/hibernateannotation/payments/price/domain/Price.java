@@ -45,7 +45,7 @@ public class Price implements Serializable {
 	@Column(name = "currency")
 	private Currency currency;
 
-	@Builder(access = AccessLevel.PACKAGE)
+	@Builder
 	private Price(Product product, Double price, Currency currency) {
 		this.productId = product.getId();
 		this.product = product;

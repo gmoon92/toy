@@ -1,4 +1,4 @@
-package com.gmoon.hibernateannotation.domain;
+package com.gmoon.hibernateannotation.members.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,9 +9,6 @@ import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import com.gmoon.hibernateannotation.members.domain.Member;
-import com.gmoon.hibernateannotation.members.domain.MemberRepository;
 
 @DataJpaTest
 class MemberRepositoryTest {

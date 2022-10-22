@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.gmoon.demo.member.model.Members;
 import com.gmoon.demo.member.model.QMembers_Data;
-import com.gmoon.demo.team.QTeamMember;
+import com.gmoon.demo.team.domain.QTeamMember;
 import com.querydsl.core.types.Expression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -47,7 +47,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 		//                .fetch();
 
 		List<Members.Data> list = jpaQueryFactory
-			.select(new QMembers_Data(member.id, member.name, memberOption.embeddedMemberOption.enabled))
+			.select(new QMembers_Data(member.id, member.name, memberOption.enabled.enabled))
 			.from(member)
 			.innerJoin(member.memberOption, memberOption)
 			.fetch();
