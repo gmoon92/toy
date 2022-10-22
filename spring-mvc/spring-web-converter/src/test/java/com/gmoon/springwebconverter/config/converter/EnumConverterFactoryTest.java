@@ -50,6 +50,6 @@ class EnumConverterFactoryTest {
 	@AfterAll
 	static void afterAll() {
 		log.info("factory cache size: {}", factory.size());
-		assertThat(factory.size()).isEqualTo(2);
+		assertThat(factory.size()).isGreaterThanOrEqualTo(2);
 	}
 }
