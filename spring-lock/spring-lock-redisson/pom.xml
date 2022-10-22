@@ -50,6 +50,13 @@
 			<artifactId>awaitility</artifactId>
 			<version>4.2.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.kstyrc</groupId>
+			<artifactId>embedded-redis</artifactId>
+			<version>0.6</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

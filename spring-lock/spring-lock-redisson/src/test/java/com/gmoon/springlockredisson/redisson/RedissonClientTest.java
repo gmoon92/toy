@@ -23,10 +23,12 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.gmoon.springlockredisson.config.EmbeddedRedisConfig;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest
+@SpringBootTest(classes = EmbeddedRedisConfig.class)
 public class RedissonClientTest {
 
 	@Autowired
