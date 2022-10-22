@@ -12,14 +12,15 @@
     <modules>
         <module>java-core</module>
         <module>google-spreadsheet</module>
-        <module>spring-mvc</module>
-        <module>spring-jpa</module>
         <module>spring-cache</module>
         <module>spring-event</module>
+        <module>spring-jpa</module>
+        <module>spring-lock</module>
+        <module>spring-mvc</module>
+        <module>spring-reactive</module>
         <module>spring-security</module>
         <module>spring-triangle</module>
         <module>spring-utils</module>
-        <module>spring-reactive</module>
         <module>testing</module>
     </modules>
 
