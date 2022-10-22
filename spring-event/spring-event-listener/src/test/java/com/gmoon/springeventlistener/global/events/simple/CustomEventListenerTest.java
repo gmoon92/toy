@@ -1,4 +1,4 @@
-package com.gmoon.springeventlistener.simple;
+package com.gmoon.springeventlistener.global.events.simple;
 
 import static org.mockito.BDDMockito.*;
 
