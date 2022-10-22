@@ -1,4 +1,4 @@
-package com.gmoon.demo.member.service;
+package com.gmoon.demo.member.application;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 
 import com.gmoon.demo.member.domain.Member;
+import com.gmoon.demo.member.domain.MemberRepository;
 import com.gmoon.demo.member.model.MemberOptionUpdateRequestVO;
-import com.gmoon.demo.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,12 +1,10 @@
-package com.gmoon.demo.member.repository;
+package com.gmoon.demo.member.domain;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import com.gmoon.demo.member.domain.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 

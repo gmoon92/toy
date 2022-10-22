@@ -1,4 +1,4 @@
-package com.gmoon.demo.config;
+package com.gmoon.demo.global.config;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

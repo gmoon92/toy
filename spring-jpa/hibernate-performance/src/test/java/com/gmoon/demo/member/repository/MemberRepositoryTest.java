@@ -19,9 +19,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gmoon.demo.base.BaseRepositoryTest;
+import com.gmoon.demo.global.base.BaseRepositoryTest;
 import com.gmoon.demo.member.domain.Member;
 import com.gmoon.demo.member.domain.MemberOption;
+import com.gmoon.demo.member.domain.MemberRepository;
 import com.gmoon.demo.member.domain.QMember;
 import com.gmoon.demo.member.domain.QMemberOption;
 

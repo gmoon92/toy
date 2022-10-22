@@ -15,8 +15,8 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import com.gmoon.demo.apply_form.ApplyForm;
-import com.gmoon.demo.team.TeamMember;
+import com.gmoon.demo.applyform.domain.ApplyForm;
+import com.gmoon.demo.team.domain.TeamMember;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

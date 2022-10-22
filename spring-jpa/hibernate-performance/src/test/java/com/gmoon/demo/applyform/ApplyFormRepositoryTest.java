@@ -1,4 +1,4 @@
-package com.gmoon.demo.apply_form;
+package com.gmoon.demo.applyform;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -7,11 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.demo.base.BaseRepositoryTest;
+import com.gmoon.demo.applyform.domain.ApplyForm;
+import com.gmoon.demo.applyform.domain.ApplyFormRepository;
+import com.gmoon.demo.global.base.BaseRepositoryTest;
 import com.gmoon.demo.member.domain.Member;
-import com.gmoon.demo.member.repository.MemberRepository;
-import com.gmoon.demo.team.Team;
-import com.gmoon.demo.team.repository.TeamRepository;
+import com.gmoon.demo.member.domain.MemberRepository;
+import com.gmoon.demo.team.domain.Team;
+import com.gmoon.demo.team.domain.TeamRepository;
 
 import lombok.RequiredArgsConstructor;
 

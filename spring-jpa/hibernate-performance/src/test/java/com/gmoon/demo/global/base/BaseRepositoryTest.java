@@ -1,4 +1,4 @@
-package com.gmoon.demo.base;
+package com.gmoon.demo.global.base;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
-import com.gmoon.demo.config.QueryDslConfig;
+import com.gmoon.demo.global.config.QueryDslConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @DataJpaTest

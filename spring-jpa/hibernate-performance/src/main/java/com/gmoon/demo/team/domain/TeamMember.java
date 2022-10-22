@@ -1,4 +1,4 @@
-package com.gmoon.demo.team;
+package com.gmoon.demo.team.domain;
 
 import java.io.Serializable;
 

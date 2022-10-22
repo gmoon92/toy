@@ -1,4 +1,4 @@
-package com.gmoon.demo.base;
+package com.gmoon.demo.global.base;
 
 import java.io.Serializable;
 

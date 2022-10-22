@@ -1,4 +1,4 @@
-package com.gmoon.demo.apply_form;
+package com.gmoon.demo.applyform.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,9 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.gmoon.demo.base.EntityId;
+import com.gmoon.demo.global.base.EntityId;
 import com.gmoon.demo.member.domain.Member;
-import com.gmoon.demo.team.Team;
+import com.gmoon.demo.team.domain.Team;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

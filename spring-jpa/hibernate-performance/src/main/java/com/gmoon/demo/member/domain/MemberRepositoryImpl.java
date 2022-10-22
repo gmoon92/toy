@@ -1,10 +1,7 @@
-package com.gmoon.demo.member.repository;
+package com.gmoon.demo.member.domain;
 
 import java.util.List;
 
-import com.gmoon.demo.member.domain.Member;
-import com.gmoon.demo.member.domain.QMember;
-import com.gmoon.demo.member.domain.QMemberOption;
 import com.gmoon.demo.member.model.Members;
 import com.gmoon.demo.member.model.QMembers_Data;
 import com.gmoon.demo.team.QTeamMember;

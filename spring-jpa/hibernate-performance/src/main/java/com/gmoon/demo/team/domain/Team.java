@@ -1,4 +1,4 @@
-package com.gmoon.demo.team;
+package com.gmoon.demo.team.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.gmoon.demo.apply_form.ApplyForm;
+import com.gmoon.demo.applyform.domain.ApplyForm;
 import com.gmoon.demo.member.domain.Member;
 
 import lombok.AccessLevel;

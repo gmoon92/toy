@@ -1,4 +1,4 @@
-package com.gmoon.demo.team;
+package com.gmoon.demo.team.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,10 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.demo.base.BaseRepositoryTest;
+import com.gmoon.demo.global.base.BaseRepositoryTest;
 import com.gmoon.demo.member.domain.Member;
-import com.gmoon.demo.member.repository.MemberRepository;
-import com.gmoon.demo.team.repository.TeamRepository;
+import com.gmoon.demo.member.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
