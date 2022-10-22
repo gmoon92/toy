@@ -1,10 +1,12 @@
-package com.gmoon.hibernateannotation.payment;
+package com.gmoon.hibernateannotation.payments.product.domain;
 
-import com.gmoon.hibernateannotation.payment.constants.Currency;
-import com.gmoon.hibernateannotation.payment.constants.ProductType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
+
+import com.gmoon.hibernateannotation.payments.price.domain.Currency;
+import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.gmoon.hibernateannotation.domain;
+package com.gmoon.hibernateannotation.members.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

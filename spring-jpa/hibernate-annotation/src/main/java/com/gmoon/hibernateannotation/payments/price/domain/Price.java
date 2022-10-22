@@ -1,7 +1,7 @@
-package com.gmoon.hibernateannotation.payment;
+package com.gmoon.hibernateannotation.payments.price.domain;
 
-import com.gmoon.hibernateannotation.payment.constants.Currency;
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+
+import com.gmoon.hibernateannotation.payments.product.domain.Product;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

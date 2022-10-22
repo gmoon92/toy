@@ -1,13 +1,18 @@
-package com.gmoon.hibernateannotation.payment;
+package com.gmoon.hibernateannotation.payments;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import com.gmoon.hibernateannotation.base.BaseRepositoryTest;
-import com.gmoon.hibernateannotation.payment.constants.Currency;
-import com.gmoon.hibernateannotation.payment.constants.ProductType;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gmoon.hibernateannotation.base.BaseRepositoryTest;
+import com.gmoon.hibernateannotation.payments.price.domain.Currency;
+import com.gmoon.hibernateannotation.payments.product.domain.CompanyProduct;
+import com.gmoon.hibernateannotation.payments.product.domain.ProductRepository;
+import com.gmoon.hibernateannotation.payments.product.domain.UserProduct;
+import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
 
 class ProductRepositoryTest extends BaseRepositoryTest {
 

@@ -1,8 +1,7 @@
-package com.gmoon.hibernateannotation.payment;
+package com.gmoon.hibernateannotation.payments.product.domain;
 
-import com.gmoon.hibernateannotation.payment.constants.Currency;
-import com.gmoon.hibernateannotation.payment.constants.ProductType;
 import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -14,12 +13,18 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.gmoon.hibernateannotation.payments.price.domain.Currency;
+import com.gmoon.hibernateannotation.payments.price.domain.Price;
+import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
+
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 구현 전략

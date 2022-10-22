@@ -1,8 +1,10 @@
-package com.gmoon.hibernateannotation.payment;
+package com.gmoon.hibernateannotation.payments.product.domain;
 
-import com.gmoon.hibernateannotation.payment.constants.ProductType;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
 
 public interface ProductRepository extends JpaRepository<Product, String> {
 	List<CompanyProduct> findAllByType(ProductType type);

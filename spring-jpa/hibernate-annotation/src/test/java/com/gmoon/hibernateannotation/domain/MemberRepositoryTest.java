@@ -10,10 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.gmoon.hibernateannotation.members.domain.Member;
+import com.gmoon.hibernateannotation.members.domain.MemberRepository;
+
 @DataJpaTest
 class MemberRepositoryTest {
 
-	@Autowired MemberRepository memberRepository;
+	@Autowired
+	MemberRepository memberRepository;
 	@Autowired EntityManager entityManager;
 
 	@Test

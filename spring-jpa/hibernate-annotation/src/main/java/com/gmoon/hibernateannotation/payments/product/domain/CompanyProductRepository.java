@@ -1,4 +1,4 @@
-package com.gmoon.hibernateannotation.payment;
+package com.gmoon.hibernateannotation.payments.product.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.gmoon.hibernateannotation.payment.constants;
+package com.gmoon.hibernateannotation.payments.product.domain.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

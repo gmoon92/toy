@@ -1,7 +1,10 @@
-package com.gmoon.hibernateannotation.payment.constants;
+package com.gmoon.hibernateannotation.payments.constants;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
+
+import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
 
 class CompanyProductTypeTest {
 
