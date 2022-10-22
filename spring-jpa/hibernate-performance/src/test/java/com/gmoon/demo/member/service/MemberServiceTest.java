@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 
 import com.gmoon.demo.member.domain.Member;
-import com.gmoon.demo.member.model.MemberOptionUpdate;
+import com.gmoon.demo.member.model.MemberOptionUpdateRequestVO;
 import com.gmoon.demo.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,12 +33,12 @@ class MemberServiceTest {
 	@Test
 	void updateMemberOption() {
 		// given
-		MemberOptionUpdate updateMemberOption = new MemberOptionUpdate();
-		updateMemberOption.setMemberId(memberId);
-		updateMemberOption.setRetired(false);
+		MemberOptionUpdateRequestVO requestVO = new MemberOptionUpdateRequestVO();
+		requestVO.setMemberId(memberId);
+		requestVO.setRetired(false);
 
 		// when
-		memberService.updateMemberOption(updateMemberOption);
+		memberService.updateMemberOption(requestVO);
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(EntityNotFoundException::new);
 

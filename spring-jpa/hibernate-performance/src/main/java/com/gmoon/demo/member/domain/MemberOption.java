@@ -10,8 +10,6 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import com.gmoon.demo.member.model.MemberOptionUpdate;
-
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -61,7 +59,10 @@ public class MemberOption {
 		this.retired = false;
 	}
 
-	void changeOptions(MemberOptionUpdate memberOptionUpdate) {
-		retired = memberOptionUpdate.isRetired();
+	void retire(boolean retired) {
+		this.retired = retired;
+		if (!retired) {
+			this.enabled = Enabled.disabled();
+		}
 	}
 }

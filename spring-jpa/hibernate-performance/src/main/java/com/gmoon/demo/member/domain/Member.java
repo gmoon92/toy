@@ -16,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.gmoon.demo.apply_form.ApplyForm;
-import com.gmoon.demo.member.model.MemberOptionUpdate;
 import com.gmoon.demo.team.TeamMember;
 
 import lombok.AccessLevel;
@@ -66,8 +65,8 @@ public class Member {
 		this.name = name;
 	}
 
-	public void changeMemberOption(MemberOptionUpdate memberOptionUpdate) {
-		memberOption.changeOptions(memberOptionUpdate);
+	public void retire(boolean retired) {
+		memberOption.retire(retired);
 	}
 
 	public void enabled() {
