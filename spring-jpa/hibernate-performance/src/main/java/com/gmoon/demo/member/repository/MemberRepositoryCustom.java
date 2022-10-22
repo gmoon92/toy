@@ -10,4 +10,6 @@ public interface MemberRepositoryCustom {
 	List<Member> findAllOfQueryDsl();
 
 	Members findAllOfQueryDslWithProjection();
+
+	long bulkUpdateRetireMembers();
 }

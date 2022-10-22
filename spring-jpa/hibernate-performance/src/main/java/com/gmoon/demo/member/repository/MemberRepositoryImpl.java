@@ -7,6 +7,9 @@ import com.gmoon.demo.member.domain.QMember;
 import com.gmoon.demo.member.domain.QMemberOption;
 import com.gmoon.demo.member.model.Members;
 import com.gmoon.demo.member.model.QMembers_Data;
+import com.gmoon.demo.team.QTeamMember;
+import com.querydsl.core.types.Expression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -55,4 +58,19 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 		return new Members(list);
 	}
 
+	public long bulkUpdateRetireMembers() {
+		QMemberOption memberOption = QMemberOption.memberOption;
+		return jpaQueryFactory.update(memberOption)
+			.set(memberOption.retired, false)
+			.where(memberOption.memberId.in(notExistsTeamMember(memberOption)))
+			.execute();
+	}
+
+	private Expression<Long> notExistsTeamMember(QMemberOption memberOption) {
+		QTeamMember teamMember = QTeamMember.teamMember;
+		return JPAExpressions.select(teamMember.id.memberId)
+			.from(teamMember)
+			.where(teamMember.id.memberId.eq(memberOption.memberId))
+			.fetchAll();
+	}
 }

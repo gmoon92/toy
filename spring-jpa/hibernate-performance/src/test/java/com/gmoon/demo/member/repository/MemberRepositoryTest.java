@@ -271,4 +271,10 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 		// then
 		memberRepository.save(member);
 	}
+
+	@DisplayName("update where sub-query")
+	@Test
+	void bulkUpdateRetireMembers() {
+		memberRepository.bulkUpdateRetireMembers();
+	}
 }
