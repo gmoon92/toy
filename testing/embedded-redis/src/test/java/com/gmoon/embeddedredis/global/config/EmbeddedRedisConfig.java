@@ -26,9 +26,8 @@ public class EmbeddedRedisConfig {
 	@Configuration
 	protected static class RedisServerConfig {
 
-		// https://github.com/kstyrc/embedded-redis
 		@Bean(initMethod = "start", destroyMethod = "stop")
-		@ConditionalOnProperty(value = "spring.redis.embedded-type", havingValue = "kstyrc")
+		@ConditionalOnProperty(value = "env", havingValue = "local")
 		public redis.embedded.RedisServer redisServer(RedisProperties redisProperties) throws IOException {
 			int port = redisProperties.getPort();
 			log.info("embedded redis server(kstyrc) start. port: {}", port);
