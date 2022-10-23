@@ -18,6 +18,7 @@
 
     <modules>
         <module>spring-lock-redisson</module>
+        <module>spring-jpa-lock</module>
     </modules>
 
     <properties>
