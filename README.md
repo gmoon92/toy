@@ -40,6 +40,7 @@
     - [spring-logging](https://github.com/gmoon92/toy/blob/master/spring-utils/spring-logging/README.md)
 - testing
     - [awaitility](https://github.com/gmoon92/toy/blob/master/testing/awaitility/README.md)
+    - [embedded-redis](https://github.com/gmoon92/toy/blob/master/testing/embedded-redis/README.md#1-embedded-redis-for-kstyrc)
     - [junit5](https://github.com/gmoon92/toy/blob/master/testing/junit5/src/test/java/com/gmoon/junit5/Junit5ApplicationTests.java)
     - [localstack](https://github.com/gmoon92/toy/blob/master/testing/localstack/README.md)
     - [mockito](https://github.com/gmoon92/toy/blob/master/testing/mockito/README.md)
