@@ -1,0 +1,6 @@
+spring:
+  redis:
+    port: 6379
+    # embedded redis server for local test
+    # kstyrc, ozimov
+    embedded-type: kstyrc
