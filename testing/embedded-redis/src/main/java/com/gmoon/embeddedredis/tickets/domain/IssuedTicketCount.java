@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,7 +19,7 @@ import lombok.ToString;
 @ToString
 public class IssuedTicketCount implements Serializable {
 
-	static final String CACHE_KEY_NAME = "issued-ticket-count";
+	protected static final String CACHE_KEY_NAME = "issued-ticket-count";
 
 	@Id
 	@EqualsAndHashCode.Include
@@ -36,7 +35,6 @@ public class IssuedTicketCount implements Serializable {
 		count = 0;
 	}
 
-	@Builder
 	public static IssuedTicketCount create(String ticketNo) {
 		IssuedTicketCount count = new IssuedTicketCount();
 		count.ticketNo = ticketNo;
