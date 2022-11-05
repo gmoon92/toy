@@ -6,11 +6,16 @@ import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
+import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
+import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
 import com.gmoon.springjpaspecs.global.vo.SupportDataJpaTest;
+import com.querydsl.core.types.Order;
 
 class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 
@@ -40,6 +45,15 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 			.orElseThrow(EntityNotFoundException::new);
 
 		assertThat(bookStore.getName()).isEqualTo("gmoons");
+	}
+
+	@ParameterizedTest
+	@EnumSource(SortTargetType.class)
+	void findAll(SortTargetType sortTargetType) {
+		OrderSpecification orderSpec = BookStoreOrderSpec.create(Order.ASC, sortTargetType);
+
+		assertThatCode(() -> repository.findAll(orderSpec))
+			.doesNotThrowAnyException();
 	}
 
 	@AfterEach
