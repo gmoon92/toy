@@ -1,0 +1,34 @@
+package com.gmoon.springjpaspecs.books.bookstore.domain;
+
+import static com.gmoon.springjpaspecs.books.book.domain.QBook.*;
+import static com.gmoon.springjpaspecs.books.bookstore.domain.QBookStore.*;
+import static com.gmoon.springjpaspecs.books.bookstore.domain.QBookStoreBook.*;
+
+import java.util.List;
+
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
+import com.gmoon.springjpaspecs.books.bookstore.dto.BookStoreContentResponse;
+import com.gmoon.springjpaspecs.books.bookstore.dto.QBookStoreContentResponse;
+import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class SupportBookStoreRepositoryImpl implements SupportBookStoreRepository{
+
+	private final JPAQueryFactory factory;
+
+	@Override
+	public List<BookStoreContentResponse> findAll(OrderSpecification orderSpec) {
+		JPAQuery<BookStoreContentResponse> query = factory.select(new QBookStoreContentResponse(book, bookStoreBook))
+			.from(bookStore)
+			.join(bookStore.storedBooks, bookStoreBook)
+			.join(book).on(book.id.eq(bookStoreBook.bookId))
+			.where(bookStoreBook.status.eq(BookStatus.DISPLAY));
+
+		orderSpec.orderBy(query);
+		return query.fetch();
+	}
+}
