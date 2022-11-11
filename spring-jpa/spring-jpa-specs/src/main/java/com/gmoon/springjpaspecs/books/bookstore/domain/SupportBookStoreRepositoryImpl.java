@@ -10,6 +10,7 @@ import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.dto.BookStoreContentResponse;
 import com.gmoon.springjpaspecs.books.bookstore.dto.QBookStoreContentResponse;
 import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -26,9 +27,22 @@ public class SupportBookStoreRepositoryImpl implements SupportBookStoreRepositor
 			.from(bookStore)
 			.join(bookStore.storedBooks, bookStoreBook)
 			.join(book).on(book.id.eq(bookStoreBook.bookId))
-			.where(bookStoreBook.status.eq(BookStatus.DISPLAY));
+			.where(
+				bookStoreBook.status.eq(BookStatus.DISPLAY),
+				bookStoreBook.status.eq(BookStatus.DISPLAY)
+			);
 
 		orderSpec.orderBy(query);
 		return query.fetch();
+	}
+
+	@Override
+	public List<BookStore> findAll(Predicate predicate) {
+		return factory.select(bookStore)
+			.from(bookStore)
+			.join(bookStore.storedBooks, bookStoreBook)
+			.where(predicate)
+			.fetch()
+			;
 	}
 }

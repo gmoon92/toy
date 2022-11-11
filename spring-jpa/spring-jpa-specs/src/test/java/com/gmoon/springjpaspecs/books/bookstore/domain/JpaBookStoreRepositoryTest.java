@@ -10,12 +10,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.gmoon.springjpaspecs.books.bookstore.domain.spec.BookSpecs;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
 import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
 import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
 import com.gmoon.springjpaspecs.global.vo.SupportDataJpaTest;
 import com.querydsl.core.types.Order;
+import com.querydsl.core.types.Predicate;
 
 class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 
@@ -54,6 +56,22 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 
 		assertThatCode(() -> repository.findAll(orderSpec))
 			.doesNotThrowAnyException();
+	}
+
+	@Test
+	void findAllByDisplayedSpec() {
+		QBookStoreBook root = QBookStoreBook.bookStoreBook;
+		Predicate isDisplayedBook = BookSpecs.display(root);
+
+		repository.findAll(isDisplayedBook);
+	}
+
+	@Test
+	void findAllByHiddenSpec() {
+		QBookStoreBook root = QBookStoreBook.bookStoreBook;
+		Predicate isHiddenBook = BookSpecs.hidden(root);
+
+		repository.findAll(isHiddenBook);
 	}
 
 	@AfterEach
