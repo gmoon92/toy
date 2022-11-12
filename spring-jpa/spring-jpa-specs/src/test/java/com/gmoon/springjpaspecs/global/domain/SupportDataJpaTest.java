@@ -1,4 +1,4 @@
-package com.gmoon.springjpaspecs.global.vo;
+package com.gmoon.springjpaspecs.global.domain;
 
 import javax.persistence.EntityManager;
 

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
-import com.gmoon.springjpaspecs.global.vo.SupportDataJpaTest;
+import com.gmoon.springjpaspecs.global.domain.SupportDataJpaTest;
 
 class JpaBookRepositoryTest extends SupportDataJpaTest {
 

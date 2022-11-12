@@ -14,8 +14,8 @@ import com.gmoon.springjpaspecs.books.bookstore.domain.spec.BookSpecs;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
 import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
+import com.gmoon.springjpaspecs.global.domain.SupportDataJpaTest;
 import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
-import com.gmoon.springjpaspecs.global.vo.SupportDataJpaTest;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.Predicate;
 
