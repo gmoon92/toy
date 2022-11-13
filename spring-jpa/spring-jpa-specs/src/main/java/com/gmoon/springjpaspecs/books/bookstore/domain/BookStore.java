@@ -1,11 +1,8 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
-import com.gmoon.springjpaspecs.global.vo.EntityObject;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
+import com.gmoon.springjpaspecs.global.domain.EntityObject;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "tb_bookstor")
 @Entity

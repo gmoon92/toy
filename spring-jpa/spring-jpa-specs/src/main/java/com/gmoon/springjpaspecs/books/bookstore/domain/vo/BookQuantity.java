@@ -1,14 +1,18 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain.vo;
 
-import com.gmoon.springjpaspecs.global.vo.ValueObject;
 import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
+import org.hibernate.annotations.ColumnDefault;
+
+import com.gmoon.springjpaspecs.global.domain.ValueObject;
+
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

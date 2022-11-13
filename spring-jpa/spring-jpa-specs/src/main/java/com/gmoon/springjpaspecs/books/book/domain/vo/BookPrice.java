@@ -1,6 +1,6 @@
 package com.gmoon.springjpaspecs.books.book.domain.vo;
 
-import com.gmoon.springjpaspecs.global.vo.ValueObject;
+import com.gmoon.springjpaspecs.global.domain.ValueObject;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
