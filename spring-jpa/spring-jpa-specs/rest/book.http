@@ -1,0 +1,36 @@
+## Rest API Test
+### 서점에 전시된 책 조회
+GET http://localhost:8080/bookstore
+Accept: application/json
+Content-Type: application/json
+
+{
+  "sortTargetType": "NAME",
+  "Order": "DESC",
+  "search": {
+    "name": "START! DDD"
+  }
+}
+
+> {%
+function logging(){
+    client.log("===============CONSOLE===============");
+    client.log("Access-Control-Request-Headers   : " + response.headers.valueOf("Access-Control-Request-Headers"));
+    client.log("Access-Control-Request-Method    : " + response.headers.valueOf("Access-Control-Request-Method"));
+    client.log("Set-Cookie                       : " + response.headers.valueOf("Set-Cookie"));
+    client.log("status                           : " + response.status);
+    client.log("body                             : " + JSON.stringify(response.body));
+    client.log("=====================================");
+} logging();
+
+function setGlobalValue(find, key, value){
+    if (key == find) {
+        client.global.set(find, value);
+    }
+}
+
+JSON.parse(JSON.stringify(response.body), (key, value) => {
+    setGlobalValue("id", key, value);
+    setGlobalValue("name", key, value);
+});
+%}
