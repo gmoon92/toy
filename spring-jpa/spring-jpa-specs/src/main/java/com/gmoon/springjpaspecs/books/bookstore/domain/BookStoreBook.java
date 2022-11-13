@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
-import com.gmoon.springjpaspecs.global.vo.AuditedEntityObject;
+import com.gmoon.springjpaspecs.global.domain.AuditedEntityObject;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +35,9 @@ public class BookStoreBook extends AuditedEntityObject<String> {
 	@Column(name = "book_id", nullable = false)
 	private String bookId;
 
+	@Column(name = "book_name", nullable = false)
+	private String bookName;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type", nullable = false)
 	private BookType type;
@@ -47,8 +50,9 @@ public class BookStoreBook extends AuditedEntityObject<String> {
 	private BookQuantity quantity;
 
 	@Builder
-	private BookStoreBook(String bookId, BookType type, BookStatus status, BookQuantity quantity) {
+	private BookStoreBook(String bookId, String bookName, BookType type, BookStatus status, BookQuantity quantity) {
 		this.bookId = bookId;
+		this.bookName = bookName;
 		this.type = type;
 		this.status = status;
 		this.quantity = quantity;
