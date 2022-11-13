@@ -1,5 +1,9 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain.spec;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import com.gmoon.springjpaspecs.books.book.domain.QBook;
 import com.gmoon.springjpaspecs.books.bookstore.domain.QBookStoreBook;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.global.specs.conditional.CompositeSpecification;
@@ -25,4 +29,16 @@ public class BookSpecs {
 			.or(NotSpecification.of(BookSpecs::display))
 			.isSatisfiedBy(root);
 	}
+
+	@SuppressWarnings("unchecked")
+	public static Predicate discountBook(QBook root) {
+		LocalDateTime now = LocalDateTime.now();
+
+		return CompositeSpecification.<QBook>create()
+			.and(
+				entityPath -> entityPath.publicationDate.between(now.plus(40, ChronoUnit.YEARS), now)
+			)
+			.isSatisfiedBy(root);
+	}
+
 }
