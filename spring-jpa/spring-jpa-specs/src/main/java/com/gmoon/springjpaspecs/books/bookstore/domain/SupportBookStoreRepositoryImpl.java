@@ -27,11 +27,7 @@ public class SupportBookStoreRepositoryImpl implements SupportBookStoreRepositor
 			.from(bookStore)
 			.join(bookStore.storedBooks, bookStoreBook)
 			.join(book).on(book.id.eq(bookStoreBook.bookId))
-			.where(
-				bookStoreBook.status.eq(BookStatus.DISPLAY),
-				bookStoreBook.status.eq(BookStatus.DISPLAY)
-			);
-
+			.where(bookStoreBook.status.eq(BookStatus.DISPLAY));
 		orderSpec.orderBy(query);
 		return query.fetch();
 	}
@@ -42,7 +38,18 @@ public class SupportBookStoreRepositoryImpl implements SupportBookStoreRepositor
 			.from(bookStore)
 			.join(bookStore.storedBooks, bookStoreBook)
 			.where(predicate)
-			.fetch()
-			;
+			.fetch();
+	}
+
+	@Override
+	public List<BookStoreContentResponse> findAll(Predicate predicate, OrderSpecification orderSpec) {
+		JPAQuery<BookStoreContentResponse> query = factory.select(new QBookStoreContentResponse(book, bookStoreBook))
+			.from(bookStore)
+			.join(bookStore.storedBooks, bookStoreBook)
+			.join(book).on(book.id.eq(bookStoreBook.bookId))
+			.where(predicate);
+
+		orderSpec.orderBy(query);
+		return query.fetch();
 	}
 }

@@ -10,4 +10,5 @@ public interface SupportBookStoreRepository {
 
 	List<BookStoreContentResponse> findAll(OrderSpecification orderSpec);
 	List<BookStore> findAll(Predicate predicate);
+	List<BookStoreContentResponse> findAll(Predicate predicate, OrderSpecification orderSpec);
 }
