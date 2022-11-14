@@ -27,7 +27,6 @@
     - QuerydslPredicateExecutor
     - BooleanBuilder
     - @QueryDelegate
-    - QuerydslPredicateExecutor
 
 ### Java Spec with Composite Pattern
 
