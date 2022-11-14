@@ -35,7 +35,7 @@ public class BookStoreBook extends AuditedEntityObject<String> {
 	@Column(name = "book_id", nullable = false)
 	private String bookId;
 
-	@Column(name = "book_name", nullable = false)
+	@Column(name = "book_name")
 	private String bookName;
 
 	@Enumerated(EnumType.STRING)
@@ -56,5 +56,14 @@ public class BookStoreBook extends AuditedEntityObject<String> {
 		this.type = type;
 		this.status = status;
 		this.quantity = quantity;
+	}
+
+	public boolean isDisplay() {
+		return BookStatus.DISPLAY == status
+			&& availableSale();
+	}
+
+	public boolean availableSale() {
+		return quantity.grateThanZero();
 	}
 }

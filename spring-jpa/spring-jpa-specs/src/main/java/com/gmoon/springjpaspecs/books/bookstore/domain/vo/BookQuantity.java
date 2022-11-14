@@ -35,4 +35,8 @@ public class BookQuantity extends ValueObject {
 			throw new IllegalArgumentException();
 		}
 	}
+
+	public boolean grateThanZero() {
+		return value > 0;
+	}
 }
