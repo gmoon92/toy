@@ -2,22 +2,27 @@ package com.gmoon.springjpaspecs.books.bookstore.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.spec.BookSpecs;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
 import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
 import com.gmoon.springjpaspecs.global.domain.SupportDataJpaTest;
+import com.gmoon.springjpaspecs.global.specs.conditional.Specification;
+import com.gmoon.springjpaspecs.global.specs.conditional.Specs;
 import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
 import com.querydsl.core.types.Order;
-import com.querydsl.core.types.Predicate;
 
 class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 
@@ -58,20 +63,26 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 			.doesNotThrowAnyException();
 	}
 
+	@SuppressWarnings("unchecked")
+	@DisplayName("Java Spec 조합의 장점")
 	@Test
-	void findAllByDisplayedSpec() {
-		QBookStoreBook root = QBookStoreBook.bookStoreBook;
-		Predicate isDisplayedBook = BookSpecs.display(root);
+	void specOfCompoundExpression() {
+		List<BookStore> all = repository.findAll();
 
-		repository.findAll(isDisplayedBook);
-	}
+		Specification<BookStoreBook> isDisPlayed = Specs.<BookStoreBook>create()
+			.and(
+				BookStoreBook::isDisplay,
+				BookStoreBook::availableSale
+			);
 
-	@Test
-	void findAllByHiddenSpec() {
-		QBookStoreBook root = QBookStoreBook.bookStoreBook;
-		Predicate isHiddenBook = BookSpecs.hidden(root);
+		List<BookStoreBook> actual = all.stream()
+			.flatMap(bookStore -> bookStore.getStoredBooks().stream())
+			.filter(isDisPlayed::isSatisfiedBy)
+			.collect(Collectors.toList());
 
-		repository.findAll(isHiddenBook);
+		assertThat(actual)
+			.map(BookStoreBook::getStatus)
+			.containsOnly(BookStatus.DISPLAY);
 	}
 
 	@AfterEach

@@ -3,25 +3,23 @@ package com.gmoon.springjpaspecs.global.specs.conditional;
 import java.util.Arrays;
 import java.util.List;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
+class AndSpecification<T> implements Specification<T> {
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+	private final List<Specification<T>> values;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class AndSpecification<T> extends CompositeSpecification<T> {
-
-	private final List<Specification<T>> specs;
-
-	public static <T> AndSpecification<T> of(Specification<T>... specs) {
-		return new AndSpecification<>(Arrays.asList(specs));
+	protected AndSpecification(Specification<T>... specs) {
+		values = Arrays.asList(specs);
 	}
 
 	@Override
-	public Predicate isSatisfiedBy(T root) {
-		return specs.stream()
-			.map(spec -> new BooleanBuilder(spec.isSatisfiedBy(root)))
-			.reduce(new BooleanBuilder(), BooleanBuilder::and);
+	public boolean isSatisfiedBy(T root) {
+		for (Specification<T> spec : values) {
+			if (!spec.isSatisfiedBy(root)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
+

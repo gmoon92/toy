@@ -1,23 +1,15 @@
 package com.gmoon.springjpaspecs.global.specs.conditional;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class NotSpecification<T> extends CompositeSpecification<T> {
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+class NotSpecification<T> implements Specification<T> {
 
-	private final Specification<T> spec;
-
-	public static <T> NotSpecification<T> of(Specification<T> spec) {
-		return new NotSpecification<>(spec);
-	}
+	private final Specification<T> value;
 
 	@Override
-	public Predicate isSatisfiedBy(T root) {
-		return new BooleanBuilder(spec.isSatisfiedBy(root))
-			.not();
+	public boolean isSatisfiedBy(T root) {
+		return !value.isSatisfiedBy(root);
 	}
 }
