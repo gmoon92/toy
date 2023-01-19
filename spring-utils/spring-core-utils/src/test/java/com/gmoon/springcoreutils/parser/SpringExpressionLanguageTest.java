@@ -16,6 +16,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +42,22 @@ class SpringExpressionLanguageTest {
 		String message = exp.getValue(String.class);
 
 		assertThat(message).isEqualTo("Hello World!");
+	}
+
+	@Test
+	void npl() {
+		ExpressionParser parser = new SpelExpressionParser();
+		Account account = new Account();
+		StandardEvaluationContext context = new StandardEvaluationContext(account);
+
+		String actual = parser.parseExpression("(username?:'Anonymous').toLowerCase()").getValue(context, String.class);
+
+		assertThat(actual).isEqualTo("anonymous");
+	}
+
+	@Getter // ExpressionParser 내부적으로 getter 메서드 필요
+	static class Account {
+		private String username;
 	}
 
 	@Test
