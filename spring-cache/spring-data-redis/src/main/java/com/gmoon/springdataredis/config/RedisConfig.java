@@ -23,15 +23,15 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.gmoon.springdataredis.cache.CacheName;
 import com.gmoon.springdataredis.util.RedisUtils;
 
+import io.lettuce.core.ReadFrom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import io.lettuce.core.ReadFrom;
 
 /**
  * RedisTemplate default key serializer is {@link org.springframework.data.redis.serializer.JdkSerializationRedisSerializer}
@@ -124,6 +124,9 @@ public class RedisConfig {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
 		redisTemplate.setKeySerializer(getKeySerializer());
+		// JdkSerializationRedisSerializer default
+		// redisTemplate.setValueSerializer(RedisSerializer.java());
+		redisTemplate.setValueSerializer(RedisSerializer.json());
 		return redisTemplate;
 	}
 
