@@ -18,6 +18,7 @@
 
   <modules>
     <module>spring-web-converter</module>
+    <module>spring-web-session</module>
   </modules>
 
   <properties>
