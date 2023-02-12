@@ -38,11 +38,11 @@ public class EhCacheTestLoggingRunner implements ApplicationRunner {
 		call(stopWatch, "hit", adminId);
 		call(stopWatch, "caching", adminId);
 
-		cacheUtil.evict(CacheConfig.MEMBER_FIND_BY_ID, adminId);
+		cacheUtil.evict(CachePolicy.CacheName.MEMBER_FIND_BY_ID, adminId);
 		call(stopWatch, "evict", adminId);
 		call(stopWatch, "caching", adminId);
 
-		cacheUtil.evictAll(CacheConfig.MEMBER_FIND_BY_ID);
+		cacheUtil.evictAll(CachePolicy.CacheName.MEMBER_FIND_BY_ID);
 		call(stopWatch, "evictAll", adminId);
 		call(stopWatch, "caching", adminId);
 

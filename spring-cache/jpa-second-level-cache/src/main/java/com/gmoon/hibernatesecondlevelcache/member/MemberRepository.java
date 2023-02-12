@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.gmoon.hibernatesecondlevelcache.config.CacheConfig;
+import com.gmoon.hibernatesecondlevelcache.config.CachePolicy;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class MemberRepository {
 
-	@Cacheable(value = CacheConfig.MEMBER_FIND_BY_ID, key = "#id")
+	@Cacheable(value = CachePolicy.CacheName.MEMBER_FIND_BY_ID, key = "#id")
 	public Member getId(Long id) throws InterruptedException {
 		log.info("getId start...");
 		Thread.sleep(2000);
@@ -25,7 +25,7 @@ public class MemberRepository {
 		return member;
 	}
 
-	@Cacheable(value = CacheConfig.MEMBER_ALL)
+	@Cacheable(value = CachePolicy.CacheName.MEMBER_ALL)
 	public List<Member> getAll() throws InterruptedException {
 		log.info("getAll start...");
 		Thread.sleep(3000);

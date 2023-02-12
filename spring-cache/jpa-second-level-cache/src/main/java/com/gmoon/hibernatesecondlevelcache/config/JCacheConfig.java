@@ -14,13 +14,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.hibernatesecondlevelcache.member.Member;
-
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableCaching
-public class JCacheConfig extends CacheConfig {
+public class JCacheConfig {
 
 	@Bean
 	public CacheManager jCacheManager() {
@@ -39,9 +35,9 @@ public class JCacheConfig extends CacheConfig {
 	}
 
 	private void createJCaches(CacheManager jCacheManager) {
-		for (JCachePolicy cachePolicy : JCachePolicy.values()) {
-			String cacheName = cachePolicy.cacheName;
-			Duration ttl = cachePolicy.ttl;
+		for (CachePolicy cachePolicy : CachePolicy.values()) {
+			String cacheName = cachePolicy.getCacheName();
+			Duration ttl = cachePolicy.getTtl();
 			jCacheManager.createCache(cacheName, getJCacheConfig(ttl));
 		}
 	}
@@ -65,18 +61,5 @@ public class JCacheConfig extends CacheConfig {
 			true,
 			false
 		);
-	}
-
-	@RequiredArgsConstructor
-	enum JCachePolicy {
-
-		MEMBER(Member.class);
-
-		private final String cacheName;
-
-		private final Duration ttl;
-		JCachePolicy(Class<?> entity) {
-			this(entity.getName(), Duration.ONE_MINUTE);
-		}
 	}
 }
