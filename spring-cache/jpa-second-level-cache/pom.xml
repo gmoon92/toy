@@ -28,7 +28,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- cache -->
+        <!-- cache start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -43,6 +43,28 @@
             <artifactId>cache-api</artifactId>
             <version>1.1.1</version>
         </dependency>
+        <!-- cache end -->
+
+        <!-- persistence start -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <!-- persistence end -->
     </dependencies>
 
     <build>
