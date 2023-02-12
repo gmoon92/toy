@@ -1,24 +1,45 @@
 package com.gmoon.hibernatesecondlevelcache.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Component
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public final class CacheUtil {
+@RequiredArgsConstructor
+public class CacheUtil {
 
-	@Autowired
-	CacheManager cacheManager;
+	private final CacheManager cacheManager;
+
+	public Cache getCache(String cacheName) {
+		Cache cache = cacheManager.getCache(cacheName);
+		return cache;
+	}
+
+	public Object getValue(String cacheName, String cacheKey) {
+		Cache cache = getCache(cacheName);
+		Cache.ValueWrapper value = cache.get(cacheKey);
+		if (value == null) {
+			return null;
+		}
+		return value.get();
+	}
+
+	public void put(String cacheName, String cacheKey, Object cacheValue) {
+		Cache cache = getCache(cacheName);
+		cache.put(cacheKey, cacheValue);
+	}
 
 	public void evict(String cacheName, Object cacheKey) {
-		cacheManager.getCache(cacheName).evict(cacheKey);
+		Cache cache = getCache(cacheName);
+
+		cache.evict(cacheKey);
 	}
 
 	public void evictAll(String cacheName) {
-		cacheManager.getCache(cacheName).clear();
+		Cache cache = getCache(cacheName);
+
+		cache.clear();
 	}
 }
