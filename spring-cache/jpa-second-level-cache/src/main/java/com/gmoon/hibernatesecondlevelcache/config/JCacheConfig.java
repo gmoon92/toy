@@ -10,31 +10,45 @@ import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
+@EnableConfigurationProperties(L2CacheProperties.class)
 public class JCacheConfig {
 
 	@Bean
-	public CacheManager jCacheManager() {
-		CachingProvider provider = getCachingProvider();
-		CacheManager jCacheManager = provider.getCacheManager();
+	public CacheManager jCacheManager(CachingProvider jCacheProvider) {
+		CacheManager jCacheManager = jCacheProvider.getCacheManager();
 
 		// add cache
 		createJCaches(jCacheManager);
 		return jCacheManager;
 	}
 
-	private CachingProvider getCachingProvider() {
+	@Bean
+	public CachingProvider jCacheProvider(L2CacheProperties properties) {
+		log.info("L2CacheProperties: {}", properties);
+		// EH Cache 3
 		// return new EhcacheCachingProvider();
-		String fqcn = "org.ehcache.jsr107.EhcacheCachingProvider";
+		String fqcn = properties.getCachingProviderFqcn();
 		return Caching.getCachingProvider(fqcn);
 	}
 
 	private void createJCaches(CacheManager jCacheManager) {
 		for (CachePolicy cachePolicy : CachePolicy.values()) {
 			String cacheName = cachePolicy.getCacheName();
+
+			// ehcache3 는 @Cache 어노테이션이 선언된 엔티티는 자동으로 캐시 등록
+			boolean existsAlreadyCacheConfig = jCacheManager.getCache(cacheName) != null;
+			if (existsAlreadyCacheConfig) {
+				continue;
+			}
+
 			Duration ttl = cachePolicy.getTtl();
 			jCacheManager.createCache(cacheName, getJCacheConfig(ttl));
 		}
