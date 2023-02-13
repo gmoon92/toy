@@ -25,7 +25,12 @@ public class L2CacheProperties {
 		if (CacheType.EHCACHE.name().equals(cacheStorage)) {
 			return "org.ehcache.jsr107.EhcacheCachingProvider";
 		} else if (CacheType.HAZELCAST.name().equals(cacheStorage)){
-			return "com.hazelcast.cache.HazelcastCachingProvider";
+			// Hazelcast server/client
+			// return "com.hazelcast.cache.HazelcastCachingProvider";
+			// return "com.hazelcast.client.cache.HazelcastClientCachingProvider";
+
+			// Hazelcast Embedded Server
+			return "com.hazelcast.cache.impl.HazelcastServerCachingProvider";
 		} else if (CacheType.REDIS.name().equals(cacheStorage)) {
 			return "org.redisson.jcache.JCachingProvider";
 		}
