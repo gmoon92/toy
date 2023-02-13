@@ -10,6 +10,8 @@ import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
 
+import org.hibernate.cache.jcache.ConfigSettings;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @EnableConfigurationProperties(L2CacheProperties.class)
 public class JCacheConfig {
+
+	@Bean
+	public HibernatePropertiesCustomizer hibernateSecondLevelCacheCustomizer(CacheManager jCacheManager) {
+		return (properties) -> properties.put(ConfigSettings.CACHE_MANAGER, jCacheManager);
+	}
 
 	@Bean
 	public CacheManager jCacheManager(CachingProvider jCacheProvider) {
