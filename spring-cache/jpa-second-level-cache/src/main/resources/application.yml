@@ -1,7 +1,21 @@
 # xml config disable
 #spring.cache.jcache.config=classpath:ehcache.xml
 
+l2:
+  ## EHCACHE, HAZELCAST, REDIS
+  cache-storage: EHCACHE
 spring:
+  ## CACHE
+  cache:
+    # org.springframework.boot.autoconfigure.cache.CacheProperties
+    # org.springframework.boot.autoconfigure.cache.CacheConfigurations
+    type: jcache
+    # JCache Custom cache provider 지정
+    jcache:
+      provider: &jcache-provider org.ehcache.jsr107.EhcacheCachingProvider
+#      provider: &jcache-provider com.hazelcast.cache.impl.HazelcastServerCachingProvider
+#      provider: &jcache-provider org.redisson.jcache.JCachingProvider
+  ## JPA
   datasource:
     driver-class-name: org.h2.Driver
     jdbc-url: jdbc:h2:mem:testdb
@@ -12,6 +26,17 @@ spring:
     properties:
       hibernate:
         show_sql: true
-#        format_sql: true
+        # format_sql: true
         use_sql_comments: true
+        ## Hibernate L2 Cache
+        cache:
+          "[use_second_level_cache]": true
+          "[use_query_cache]": true
+          "[ehcache.missing_cache_strategy]": create
+          ## 캐싱 구현체 지정
+#          "[region.factory_class]": org.hibernate.cache.jcache.internal.JCacheRegionFactory
+          "[region.factory_class]": jcache
+        ## org.hibernate.cache.jcache.ConfigSettings
+        javax:
+          "[cache.provider]": *jcache-provider
     defer-datasource-initialization: true
