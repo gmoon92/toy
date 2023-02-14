@@ -58,9 +58,10 @@
             <version>4.2.2</version>
         </dependency>
 
+        <!-- redisson -->
         <dependency>
             <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
+            <artifactId>redisson</artifactId>
             <version>3.17.7</version>
         </dependency>
         <!-- cache end -->
