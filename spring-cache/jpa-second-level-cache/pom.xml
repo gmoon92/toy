@@ -64,6 +64,14 @@
             <artifactId>redisson</artifactId>
             <version>3.17.7</version>
         </dependency>
+
+        <!-- embedded redis server -->
+        <dependency>
+            <groupId>it.ozimov</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>0.7.3</version>
+            <scope>test</scope>
+        </dependency>
         <!-- cache end -->
 
         <dependency>
