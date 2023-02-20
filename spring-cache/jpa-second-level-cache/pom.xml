@@ -66,6 +66,10 @@
         </dependency>
         <!-- cache end -->
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
         <!-- persistence start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
