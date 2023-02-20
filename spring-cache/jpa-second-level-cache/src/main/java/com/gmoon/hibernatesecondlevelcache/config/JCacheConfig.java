@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
 
 import com.hazelcast.cache.impl.HazelcastServerCachingProvider;
 
@@ -31,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JCacheConfig {
 
+	@Nullable
 	private final RedissonClient redissonClient;
 
 	@Bean
