@@ -1,0 +1,9 @@
+## https://hub.docker.com/r/hazelcast/hazelcast/tags
+## https://docs.hazelcast.com/hazelcast/5.2/getting-started/get-started-docker
+## http://localhost:38080/mancenter
+services:
+  hazelcast-manager:
+    container_name: "hazelcast-manager"
+    image: hazelcast/management-center:3.9.4
+    ports:
+      - "38080:8080"

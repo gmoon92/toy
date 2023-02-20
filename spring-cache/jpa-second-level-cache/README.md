@@ -9,6 +9,13 @@
 - com.hazelcast:hazelcast:4.2.2
 - org.redisson:redisson:3.17.7
 
+## docker run
+
+```sh
+cd ./build
+docker compose -p jpa-l2-cache up -d
+```
+
 ## 1. EHCache
 
 ### 1.1. Dependency
