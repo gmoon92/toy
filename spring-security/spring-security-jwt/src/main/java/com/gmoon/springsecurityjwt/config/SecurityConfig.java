@@ -5,12 +5,14 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,18 +29,25 @@ import lombok.RequiredArgsConstructor;
 @Configurable
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 	private final MappingJackson2HttpMessageConverter converter;
 	private final JwtUtil jwtUtil;
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.headers(headers -> headers.frameOptions().sameOrigin())
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManagerBuilder.class)
+			.build();
+
+		return http
+			.authenticationManager(authenticationManager)
+			.headers(headers -> headers
+				.frameOptions()
+				.sameOrigin())
 			.csrf().disable()
 			.cors().and()
 			.httpBasic().disable()
@@ -52,8 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers("/", "**/login**").permitAll()
 					.antMatchers(HttpMethod.DELETE, "**").hasRole(Role.ADMIN.name())
 					.anyRequest().authenticated())
-			.addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtil))
-			.addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtil));
+			.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
+			.addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtil))
+			.build();
 	}
 
 	@Bean
