@@ -17,3 +17,6 @@ spring:
         jdbc:
           time_zone: UTC
     open-in-view: false
+logging:
+  level:
+    "[org.springframework.security]": trace
