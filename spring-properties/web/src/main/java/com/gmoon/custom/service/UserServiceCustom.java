@@ -1,4 +1,4 @@
-package com.gmoon.web.service;
+package com.gmoon.custom.service;
 
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,6 @@
-package com.gmoon.web.service;
+package com.gmoon.custom.service;
+
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,10 @@ class UserServiceCustomTest {
 	private UserService userService;
 
 	@Test
-	void test() {
+	void getUsername() {
 		String username = userService.getUsername();
-		System.out.println("username: " + username);
+
+		assertThat(username)
+			.isEqualTo("web admin");
 	}
 }
