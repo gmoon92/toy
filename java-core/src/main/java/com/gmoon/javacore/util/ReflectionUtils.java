@@ -21,6 +21,7 @@ import com.gmoon.javacore.util.exception.NotFoundGenericTypeClassException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+// ref: https://github.com/ronmamo/reflections
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectionUtils {
 
