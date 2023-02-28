@@ -156,3 +156,4 @@ class ReflectionUtilsTest {
 	interface GenericInterface<T> {
 	}
 }
+

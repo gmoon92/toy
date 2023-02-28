@@ -58,9 +58,14 @@ public final class ReflectionUtils {
 	}
 
 	public static Set<Class<?>> getDeclaredAnnotationClasses(final Class<? extends Annotation>... annotations) {
+		return getDeclaredAnnotationClasses(ReflectionsHolder.INSTANCE, annotations);
+	}
+
+	public static Set<Class<?>> getDeclaredAnnotationClasses(Reflections reflections, Class<? extends Annotation>... annotations) {
 		Set<Class<?>> classes = new HashSet<>();
+		reflections.get(Scanners.TypesAnnotated.with(annotations));
 		for (Class<? extends Annotation> annotation : annotations) {
-			Set<Class<?>> declaredAnnotationClasses = ReflectionsHolder.INSTANCE.getTypesAnnotatedWith(annotation);
+			Set<Class<?>> declaredAnnotationClasses = reflections.getTypesAnnotatedWith(annotation);
 			classes.addAll(declaredAnnotationClasses);
 		}
 		return classes;
