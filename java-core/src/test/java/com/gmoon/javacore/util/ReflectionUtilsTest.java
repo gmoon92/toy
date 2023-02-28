@@ -16,26 +16,33 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.stereotype.Repository;
 
 import com.gmoon.javacore.persistence.EmbeddedId;
 import com.gmoon.javacore.persistence.Entity;
 import com.gmoon.javacore.persistence.Id;
 import com.gmoon.javacore.test.domain.Favorites;
 import com.gmoon.javacore.test.domain.User;
+import com.gmoon.javacore.test.repository.UserRepository;
 import com.gmoon.javacore.util.exception.NotFoundGenericTypeClassException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 class ReflectionUtilsTest {
 
 	@DisplayName("어노테이션이 선언된 클래스 목록 조회")
 	@Test
 	void getDeclaredAnnotationClasses() {
-		// given
-		Class<Entity> annotation = Entity.class;
+		Set<Class<?>> declaredAnnotationClasses = ReflectionUtils.getDeclaredAnnotationClasses(
+			Entity.class,
+			Repository.class
+		);
 
-		// when then
-		assertThat(ReflectionUtils.getDeclaredAnnotationClasses(annotation))
+		log.info("declared: {}", declaredAnnotationClasses);
+		assertThat(declaredAnnotationClasses)
 			.isInstanceOf(Set.class)
-			.contains(User.class, Favorites.class);
+			.contains(User.class, Favorites.class, UserRepository.class);
 	}
 
 	@DisplayName("지정된 어노테이션이 선언된 필드 목록 조회")
@@ -43,7 +50,7 @@ class ReflectionUtilsTest {
 	void getFieldsByDeclaredAnnotation() {
 		// given
 		Class<?> entity = Favorites.class;
-		Class<? extends Annotation>[] annotations = new Class[] { Id.class, EmbeddedId.class };
+		Class<? extends Annotation>[] annotations = new Class[] {Id.class, EmbeddedId.class};
 
 		// when
 		List<Field> ids = ReflectionUtils.getDeclaredAnnotationFields(entity, annotations);
@@ -63,7 +70,7 @@ class ReflectionUtilsTest {
 	void getDeclaredAnnotationFieldsByUsingRecursive() {
 		// given
 		Class<?> entity = User.class;
-		Class<? extends Annotation>[] annotations = new Class[] { Id.class, EmbeddedId.class };
+		Class<? extends Annotation>[] annotations = new Class[] {Id.class, EmbeddedId.class};
 
 		// when
 		List<Field> fields = ReflectionUtils.getDeclaredAnnotationFieldsByUsingRecursive(entity, annotations);
@@ -80,7 +87,7 @@ class ReflectionUtilsTest {
 	void getFieldValues() {
 		// given
 		Class<?> entity = User.class;
-		Class<? extends Annotation>[] annotations = new Class[] { Id.class, EmbeddedId.class };
+		Class<? extends Annotation>[] annotations = new Class[] {Id.class, EmbeddedId.class};
 
 		List<Field> fields = ReflectionUtils.getDeclaredAnnotationFieldsByUsingRecursive(entity, annotations);
 

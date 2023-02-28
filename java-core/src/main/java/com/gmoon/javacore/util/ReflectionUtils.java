@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -55,8 +56,13 @@ public final class ReflectionUtils {
 		}
 	}
 
-	public static Set<Class<?>> getDeclaredAnnotationClasses(final Class<? extends Annotation> annotation) {
-		return ReflectionsHolder.INSTANCE.getTypesAnnotatedWith(annotation);
+	public static Set<Class<?>> getDeclaredAnnotationClasses(final Class<? extends Annotation>... annotations) {
+		Set<Class<?>> classes = new HashSet<>();
+		for (Class<? extends Annotation> annotation : annotations) {
+			Set<Class<?>> declaredAnnotationClasses = ReflectionsHolder.INSTANCE.getTypesAnnotatedWith(annotation);
+			classes.addAll(declaredAnnotationClasses);
+		}
+		return classes;
 	}
 
 	public static List<Field> getDeclaredAnnotationFields(final Class<?> clazz,
