@@ -4,13 +4,16 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -110,6 +113,17 @@ public final class FileUtils {
 			copyInputStreamToFile(is, temp);
 			multipartFile.transferTo(temp);
 			return temp;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static File write(File target, String str) {
+		try (FileOutputStream os = new FileOutputStream(target)){
+			os.write(str.getBytes(StandardCharsets.UTF_8));
+			os.flush();
+			os.close();
+			return target;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
