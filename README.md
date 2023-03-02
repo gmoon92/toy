@@ -23,6 +23,7 @@
     - [spring-jpa-specs](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-specs/README.md)
 - spring-lock
     - [spring-lock-redisson](https://github.com/gmoon92/toy/blob/master/spring-lock/spring-lock-redisson/README.md)
+- [spring-properties](https://github.com/gmoon92/toy/blob/master/spring-properties/README.md)
 - spring-mvc
     - [spring-web-converter](https://github.com/gmoon92/toy/blob/master/spring-mvc/spring-web-converter/README.md)
 - [spring-reactive](https://github.com/gmoon92/toy/blob/master/spring-reactive/README.md)
