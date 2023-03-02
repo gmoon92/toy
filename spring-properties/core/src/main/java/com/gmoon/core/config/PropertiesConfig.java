@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import lombok.RequiredArgsConstructor;
 
 // https://www.baeldung.com/spring-boot-jasypt
+// @Import(EnableEncryptablePropertiesConfiguration.class)
 @Configuration
 @RequiredArgsConstructor
 public class PropertiesConfig {
@@ -43,26 +44,22 @@ public class PropertiesConfig {
 	}
 
 	// ref @EnableEncryptableProperties, EncryptablePropertySourceConverter
-	class JasyptConfig {
+	@Bean
+	public StringEncryptor stringEncryptor() {
+		PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+		encryptor.setConfig(getPBEConfig());
+		return encryptor;
+	}
 
-		//JasyptEncryptorConfigurationProperties
-		@Bean
-		public StringEncryptor stringEncryptor() {
-			PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-			encryptor.setConfig(getPBEConfig());
-			return encryptor;
-		}
-
-		private PBEConfig getPBEConfig() {
-			SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-			config.setPassword("jasyptPassword");
-			config.setAlgorithm("PBEWithMD5AndDES");
-			config.setKeyObtentionIterations("1000");
-			config.setPoolSize("1");
-			config.setProviderName("SunJCE");
-			config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-			config.setStringOutputType("base64");
-			return config;
-		}
+	private PBEConfig getPBEConfig() {
+		SimpleStringPBEConfig config = new SimpleStringPBEConfig();
+		config.setPassword("jasyptPassword");
+		config.setAlgorithm("PBEWithMD5AndDES");
+		config.setKeyObtentionIterations("1000");
+		config.setPoolSize("1");
+		config.setProviderName("SunJCE");
+		config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
+		config.setStringOutputType("base64");
+		return config;
 	}
 }
