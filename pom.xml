@@ -17,6 +17,7 @@
         <module>spring-jpa</module>
         <module>spring-lock</module>
         <module>spring-mvc</module>
+        <module>spring-properties</module>
         <module>spring-reactive</module>
         <module>spring-security</module>
         <module>spring-triangle</module>
