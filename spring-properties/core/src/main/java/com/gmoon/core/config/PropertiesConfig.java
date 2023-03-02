@@ -42,6 +42,7 @@ public class PropertiesConfig {
 		}
 	}
 
+	// ref @EnableEncryptableProperties, EncryptablePropertySourceConverter
 	class JasyptConfig {
 
 		//JasyptEncryptorConfigurationProperties
