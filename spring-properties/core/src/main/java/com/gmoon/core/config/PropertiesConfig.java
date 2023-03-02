@@ -22,7 +22,9 @@ public class PropertiesConfig {
 
 	private final Environment env;
 
-	// org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+	/**
+	 * @see org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+	 * */
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
@@ -43,7 +45,11 @@ public class PropertiesConfig {
 		}
 	}
 
-	// ref @EnableEncryptableProperties, EncryptablePropertySourceConverter
+	/**
+	 * @see com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration
+	 * @see com.ulisesbocchio.jasyptspringboot.EncryptablePropertySourceConverter
+	 * @see com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
+	 * */
 	@Bean
 	public StringEncryptor stringEncryptor() {
 		PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();

@@ -14,6 +14,14 @@ public class SystemProperties {
 	private final PropertiesConfiguration runtimeProperties;
 
 	public String getModuleName() {
-		return runtimeProperties.getString("module-name", env.getProperty("module-name"));
+		return getString("module-name");
+	}
+
+	public String getEmailPassword() {
+		return getString("email.password");
+	}
+
+	private String getString(String key) {
+		return runtimeProperties.getString(key, env.getProperty(key));
 	}
 }

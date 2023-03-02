@@ -24,4 +24,10 @@ public class SystemPropertiesTest {
 		log.info("moduleName: {}", moduleName);
 		assertThat(moduleName).isEqualTo("web");
 	}
+
+	@Test
+	void decrypt() {
+		assertThat(systemProperties.getEmailPassword())
+			.isEqualTo("123");
+	}
 }
