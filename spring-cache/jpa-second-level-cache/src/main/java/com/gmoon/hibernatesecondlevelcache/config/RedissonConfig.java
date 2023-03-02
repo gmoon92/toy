@@ -31,7 +31,8 @@ public class RedissonConfig {
 
 		Duration connectTimeout = properties.getConnectTimeout();
 		config.useSingleServer()
-			.setAddress(properties.getUrl())
+			// .setAddress(properties.getUrl())
+			.setAddress(String.format("redis://%s:%d", properties.getHost(), properties.getPort()))
 			.setTimeout((int)connectTimeout.toMillis());
 		return Redisson.create(config);
 	}
