@@ -9,6 +9,7 @@ import org.jasypt.encryption.pbe.config.PBEConfig;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
@@ -46,11 +47,13 @@ public class PropertiesConfig {
 	}
 
 	/**
+	 * @see com.ulisesbocchio.jasyptspringboot.configuration.EncryptablePropertyResolverConfiguration
 	 * @see com.ulisesbocchio.jasyptspringboot.configuration.EnableEncryptablePropertiesConfiguration
 	 * @see com.ulisesbocchio.jasyptspringboot.EncryptablePropertySourceConverter
 	 * @see com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 	 * */
-	@Bean
+	@Primary
+	@Bean("customBeanName")
 	public StringEncryptor stringEncryptor() {
 		PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
 		encryptor.setConfig(getPBEConfig());
@@ -65,6 +68,7 @@ public class PropertiesConfig {
 		config.setPoolSize("1");
 		config.setProviderName("SunJCE");
 		config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
+		config.setIvGeneratorClassName("org.jasypt.iv.RandomIvGenerator");
 		config.setStringOutputType("base64");
 		return config;
 	}
