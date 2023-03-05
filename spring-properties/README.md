@@ -3,6 +3,25 @@
 - jasypt encrypt/decrypt
 - runtime.properties
 
+## Dependencies
+
+- [com.github.ulisesbocchio:jasypt-spring-boot-starter](https://github.com/ulisesbocchio/jasypt-spring-boot)
+
+```text
+Key	                                      Required	Default Value
+jasypt.encryptor.password                   True	      -
+jasypt.encryptor.algorithm	                False	      PBEWITHHMACSHA512ANDAES_256
+jasypt.encryptor.key-obtention-iterations	False	      1000
+jasypt.encryptor.pool-size	                False	      1
+jasypt.encryptor.provider-name	            False	      SunJCE
+jasypt.encryptor.provider-class-name	    False	      null
+jasypt.encryptor.salt-generator-classname	False	      org.jasypt.salt.RandomSaltGenerator
+jasypt.encryptor.iv-generator-classname	    False	      org.jasypt.iv.RandomIvGenerator
+jasypt.encryptor.string-output-type	        False	      base64
+jasypt.encryptor.proxy-property-sources	    False	      false
+jasypt.encryptor.skip-property-sources	    False	      empty list
+```
+
 ## Custom Environment PropertySource
 
 - ApplicationContextInitializer
