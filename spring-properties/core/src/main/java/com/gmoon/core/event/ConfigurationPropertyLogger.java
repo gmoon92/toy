@@ -1,7 +1,6 @@
 package com.gmoon.core.event;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.springframework.context.ApplicationContext;
@@ -38,7 +37,8 @@ public class ConfigurationPropertyLogger {
 	}
 
 	private boolean isTargetPropertySource(PropertySource<?> propertySource) {
-		return Stream.of("runtime.properties", "application-core.properties")
-			.anyMatch(name -> name.contains(propertySource.getName()));
+		// return Stream.of("runtime.properties", "application-core.properties")
+		// 	.anyMatch(name -> name.contains(propertySource.getName()));
+		return true;
 	}
 }
