@@ -6,8 +6,9 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
 import com.gmoon.core.config.PropertiesConfig;
+import com.gmoon.core.config.TeamConfig;
 
-@Import(PropertiesConfig.class)
+@Import({PropertiesConfig.class, TeamConfig.class})
 @Configuration
 @ComponentScan(
 	basePackages = {"com.gmoon"},
