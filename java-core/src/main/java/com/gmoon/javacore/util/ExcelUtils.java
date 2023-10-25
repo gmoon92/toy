@@ -24,7 +24,7 @@ public class ExcelUtils {
 	private static final String FILE_EXTENSION_NAME = ".xlsx";
 	private static final int DEFAULT_ROW_SIZE = 1_000;
 
-	public static <T> Path download(String storagePath, String fileName, List<T> datas, Class<T> clazz) {
+	public static <T> Path upload(String filePath, List<T> datas, Class<T> clazz) {
 		Workbook wb = new SXSSFWorkbook(DEFAULT_ROW_SIZE);
 		Sheet sheet = wb.createSheet();
 
@@ -36,17 +36,17 @@ public class ExcelUtils {
 			writeRow(columnFields, data, row);
 		}
 
-		Path path = getLocalStoragePath(storagePath, fileName);
+		Path path = getLocalStoragePath(filePath);
 		uploadExcelFileToLocalStorage(wb, path);
 		return path;
 	}
 
-	private static Path getLocalStoragePath(String storagePath, String fileName) {
-		if (!fileName.endsWith(FILE_EXTENSION_NAME)) {
-			fileName += FILE_EXTENSION_NAME;
+	private static Path getLocalStoragePath(String filePath) {
+		if (!filePath.endsWith(FILE_EXTENSION_NAME)) {
+			filePath += FILE_EXTENSION_NAME;
 		}
 
-		return Paths.get(storagePath, fileName);
+		return Paths.get(filePath);
 	}
 
 	private static void writeRow(List<Field> excelColumnFields, Object data, Row row) {

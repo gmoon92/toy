@@ -1,7 +1,10 @@
 package com.gmoon.javacore.util;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 class ExcelUtilsTest {
 
 	@Test
-	void download() {
-		String resourceDirectoryPath = getResourceDirectoryPath();
-		String storagePath = resourceDirectoryPath + "/storage";
-		String fileName = "account";
+	void upload() {
+		String storagePath = getStoragePath();
+		String fileName = "account_" + LocalDate.now();
+		String filePath = String.format("%s/%s", storagePath, fileName);
 
 		List<Account> accounts = Arrays.asList(
 			new Account("toy", 10),
@@ -24,11 +27,12 @@ class ExcelUtilsTest {
 			new Account("lee", 30)
 		);
 
-		ExcelUtils.download(storagePath, fileName, accounts, Account.class);
+		Path uploadPath = ExcelUtils.upload(filePath, accounts, Account.class);
+		assertThat(uploadPath).isNotNull();
 	}
 
-	private String getResourceDirectoryPath() {
-		Path resourceDirectory = Paths.get("src", "test", "resources");
+	private String getStoragePath() {
+		Path resourceDirectory = Paths.get("src", "test", "resources", "storage");
 		return resourceDirectory.toFile().getAbsolutePath();
 	}
 
