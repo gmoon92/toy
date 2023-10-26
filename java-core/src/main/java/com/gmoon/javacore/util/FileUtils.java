@@ -12,14 +12,22 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 public final class FileUtils {
 
+	private static final Logger log = LoggerFactory.getLogger(FileUtils.class);
+
 	public static File getResourceFile(String fileNameWithResourceFilePath) {
+		// ResourceUtils.getFile(fileNameWithResourceFilePath);
 		URI resourceUri = getResourceUri(fileNameWithResourceFilePath);
 		return new File(resourceUri);
 	}
@@ -94,7 +102,7 @@ public final class FileUtils {
 			StringBuilder builder = new StringBuilder();
 
 			String line;
-			while (( line = br.readLine() ) != null) {
+			while ((line = br.readLine()) != null) {
 				builder.append(line).append("\n");
 			}
 
@@ -109,7 +117,7 @@ public final class FileUtils {
 		String extension = FilenameUtils.getExtension(filename);
 
 		File temp = createTempFile(extension);
-		try (InputStream is = multipartFile.getInputStream()){
+		try (InputStream is = multipartFile.getInputStream()) {
 			copyInputStreamToFile(is, temp);
 			multipartFile.transferTo(temp);
 			return temp;
@@ -119,13 +127,23 @@ public final class FileUtils {
 	}
 
 	public static File write(File target, String str) {
-		try (FileOutputStream os = new FileOutputStream(target)){
+		try (FileOutputStream os = new FileOutputStream(target)) {
 			os.write(str.getBytes(StandardCharsets.UTF_8));
 			os.flush();
 			os.close();
 			return target;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	public static boolean exists(String fullPath) {
+		try {
+			Path path = Paths.get(fullPath);
+			return Files.exists(path);
+		} catch (Exception e) {
+			log.debug("{}", e);
+			return false;
 		}
 	}
 }
