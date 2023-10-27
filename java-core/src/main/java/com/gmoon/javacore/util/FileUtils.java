@@ -38,7 +38,7 @@ public final class FileUtils {
 			URL resource = classLoader.getResource(fileName);
 			return resource.toURI();
 		} catch (Exception e) {
-			throw new IllegalArgumentException(fileName + "is not found", e);
+			throw new IllegalArgumentException(fileName + " is not found", e);
 		}
 	}
 
