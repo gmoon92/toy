@@ -20,6 +20,7 @@ import com.gmoon.springjooq.accesslog.domain.vo.OperatingSystem;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -27,6 +28,7 @@ import lombok.ToString;
 @Table(name = "tb_access_log")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @EqualsAndHashCode
 @ToString
 public class AccessLog implements Serializable {
