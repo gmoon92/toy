@@ -2,3 +2,10 @@ spring:
   profiles:
     active: local
     include: persistence
+  jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
+
+logging:
+  level:
+    org.jooq: debug
