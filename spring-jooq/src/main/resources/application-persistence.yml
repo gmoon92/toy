@@ -1,0 +1,41 @@
+--- # mysql
+jooq:
+  properties:
+    schema: jooq
+    # org.jooq.meta.*.*Database
+    driver-class-name: org.jooq.meta.mysql.MySQLDatabase
+    target-dir: spring-jooq/src/main/java
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jooq?createDatabaseIfNotExist=true
+    username: root
+    password: 111111
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+
+--- # h2
+jooq:
+  properties:
+    schema: PUBLIC
+    driver-class-name: org.jooq.meta.h2.H2Database
+    target-dir: spring-jooq/src/test/java
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    # org.jooq.meta.*.*Database
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true

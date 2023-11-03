@@ -43,9 +43,6 @@
             <version>1.4.200</version>
             <scope>test</scope>
         </dependency>
-
-        <!--
-        -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -60,6 +57,23 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- jooq -->
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
         </dependency>
     </dependencies>
 
@@ -79,6 +93,7 @@
             </plugin>
 
             <!-- https://www.jooq.org/doc/latest/manual/code-generation/codegen-maven/ -->
+            <!--
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
@@ -102,14 +117,14 @@
                                     <inputSchema>${jdbc.schema}</inputSchema>
                                 </database>
                                 <generate>
-                                    <!-- Never generate deprecated code -->
+                                    &lt;!&ndash; Never generate deprecated code &ndash;&gt;
                                     <deprecated>false</deprecated>
                                     <instanceFields>true</instanceFields>
                                     <pojos>false</pojos>
                                     <records>false</records>
                                 </generate>
                                 <target>
-                                    <!-- <directory>target/generated-sources/</directory> -->
+                                    &lt;!&ndash; <directory>target/generated-sources/</directory> &ndash;&gt;
                                     <directory>src/main/java</directory>
                                     <packageName>com.gmoon.springjooq.global.jooqschema</packageName>
                                 </target>
@@ -118,6 +133,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
