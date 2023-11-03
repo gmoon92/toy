@@ -24,7 +24,7 @@ jooq:
   properties:
     schema: PUBLIC
     driver-class-name: org.jooq.meta.h2.H2Database
-    target-dir: spring-jooq/src/test/java
+    target-dir: src/test/java
 spring:
   config:
     activate:
