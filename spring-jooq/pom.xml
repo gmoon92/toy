@@ -75,6 +75,13 @@
             <artifactId>jooq</artifactId>
             <version>${jooq.version}</version>
         </dependency>
+        <!-- jooq -->
+
+        <dependency>
+            <groupId>com.gmoon</groupId>
+            <artifactId>java-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
