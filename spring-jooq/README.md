@@ -105,7 +105,7 @@ public class JooqConfig {
 </plugin>
 ```
 
-## CRUD Tests
+## 2. CRUD Operations Tests
 
 ```java
 package com.gmoon.springjooq.domain;
