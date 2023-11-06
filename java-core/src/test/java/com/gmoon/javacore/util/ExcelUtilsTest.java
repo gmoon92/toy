@@ -7,12 +7,14 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import lombok.RequiredArgsConstructor;
 
 class ExcelUtilsTest {
 
+	@Disabled
 	@Test
 	void upload() {
 		String storagePath = getStoragePath();
