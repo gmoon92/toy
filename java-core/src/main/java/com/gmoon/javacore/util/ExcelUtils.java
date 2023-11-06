@@ -70,11 +70,10 @@ public class ExcelUtils {
 		return Arrays.asList(fields);
 	}
 
-	private static Path uploadExcelFileToLocalStorage(Workbook wb, Path path) {
+	private static void uploadExcelFileToLocalStorage(Workbook wb, Path path) {
 		try (OutputStream out = Files.newOutputStream(path)) {
 			wb.write(out);
 			out.flush();
-			return path;
 		} catch (Exception ex) {
 			throw new RuntimeException("Excel download error because: ", ex);
 		} finally {
