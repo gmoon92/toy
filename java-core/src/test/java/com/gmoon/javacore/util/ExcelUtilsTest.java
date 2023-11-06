@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +16,7 @@ class ExcelUtilsTest {
 	@Test
 	void upload() {
 		String storagePath = getStoragePath();
-		String fileName = "account_" + LocalDate.now();
+		String fileName = "account_2023-11-06";
 		String filePath = String.format("%s/%s", storagePath, fileName);
 
 		List<Account> accounts = Arrays.asList(
