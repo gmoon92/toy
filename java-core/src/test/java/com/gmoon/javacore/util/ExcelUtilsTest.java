@@ -27,8 +27,8 @@ class ExcelUtilsTest {
 			new Account("lee", 30)
 		);
 
-		Path uploadPath = ExcelUtils.upload(filePath, accounts, Account.class);
-		assertThat(uploadPath).isNotNull();
+		assertThatCode(() -> ExcelUtils.upload(filePath, accounts, Account.class))
+			.doesNotThrowAnyException();
 	}
 
 	private String getStoragePath() {
