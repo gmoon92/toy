@@ -1,9 +1,11 @@
 package com.gmoon.javacore.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +21,7 @@ class FileUtilsTest {
 	@BeforeEach
 	void setUp() {
 		String fileName = "key.properties";
-		fileNameWithResourceFilePath = String.format("security/rsa/%s", fileName);
+		fileNameWithResourceFilePath = String.format("src/test/resources/security/rsa/%s", fileName);
 	}
 
 	@DisplayName("resource 파일 읽기")
