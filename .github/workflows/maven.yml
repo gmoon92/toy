@@ -1,6 +1,6 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
+# https://docs.github.com/ko/actions/using-workflows
 name: Java CI with Maven
 
 on:
@@ -10,10 +10,20 @@ on:
     branches: [ master ]
 
 jobs:
+#  redis:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: connect to redis
+    # Service containers to run with `container-job`
   test:
-
     runs-on: ubuntu-latest
-
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        ports:
+          - 6379:6379
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 8
