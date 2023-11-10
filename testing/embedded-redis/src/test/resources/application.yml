@@ -1,4 +1,4 @@
 env: local
 spring:
   redis:
-    port: 6379
+    port: 6380
