@@ -23,7 +23,7 @@ jobs:
         # Docker Hub image
         image: redis
         ports:
-          - 6380:6380
+          - 6379:6379
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 8
