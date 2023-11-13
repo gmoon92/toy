@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConfiguration;
@@ -20,7 +21,7 @@ import io.lettuce.core.ReadFrom;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Configuration
+@TestConfiguration
 public class EmbeddedRedisConfig {
 
 	@Configuration
