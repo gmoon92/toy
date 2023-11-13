@@ -1,4 +1,4 @@
-package com.gmoon.springlockredisson.redisson;
+package com.gmoon.springlockredisson.config;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,8 +22,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.gmoon.springlockredisson.config.EmbeddedRedisConfig;
 
 import lombok.extern.slf4j.Slf4j;
 
