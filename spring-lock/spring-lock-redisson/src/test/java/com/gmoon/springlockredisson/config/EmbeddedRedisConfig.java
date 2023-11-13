@@ -7,7 +7,6 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
@@ -19,7 +18,7 @@ import redis.embedded.RedisServer;
  * [X] https://github.com/kstyrc/embedded-redis
  * */
 @Slf4j
-@TestConfiguration
+// @TestConfiguration
 public class EmbeddedRedisConfig {
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
