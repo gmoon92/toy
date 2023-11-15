@@ -1,0 +1,46 @@
+basedir: @project.basedir@
+resources-dir: ${basedir}/src/main/resources
+
+## service
+service:
+  storage:
+    path: storage
+    absolute-path: ${resources-dir}/${service.storage.path}
+
+## jooq
+jooq:
+  properties:
+    schema: batchinsert
+    # org.jooq.meta.*.*Database
+    driver-class-name: org.jooq.meta.mysql.MySQLDatabase
+    target-dir: src/main/java
+
+## spirng
+spring:
+  # persistence
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:mysql://localhost:3306
+    user: &username root
+    password: &password 111111
+    create-schemas: true
+    default-schema: ${jooq.properties.schema}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${spring.flyway.url}/${spring.flyway.default-schema}?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    username: *username
+    password: *password
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    database-platform: &dialect org.hibernate.dialect.MySQL8Dialect
+    show-sql: &showsql true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: *dialect
+        #        format_sql: *showsql
+        format_sql: false

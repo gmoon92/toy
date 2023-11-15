@@ -23,6 +23,7 @@
         <module>hibernate-sequence-generator</module>
         <module>spring-jpa-pagination</module>
         <module>spring-jpa-specs</module>
+        <module>batch-insert</module>
     </modules>
 
     <properties>
