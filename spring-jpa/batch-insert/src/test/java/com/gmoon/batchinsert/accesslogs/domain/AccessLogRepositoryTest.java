@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Import(JpaConfig.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class AccessRepositoryTest {
+class AccessLogRepositoryTest {
 
 	@Autowired
-	private AccessRepository repository;
+	private AccessLogRepository repository;
 
 	@Test
 	void saveAll() {
