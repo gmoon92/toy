@@ -12,7 +12,7 @@ jooq:
   properties:
     schema: batchinsert
     # org.jooq.meta.*.*Database
-    driver-class-name: org.jooq.meta.mysql.MySQLDatabase
+    driver-class-name: org.jooq.meta.mariadb.MariaDBDatabase
     target-dir: src/main/java
 
 ## spirng
@@ -44,3 +44,7 @@ spring:
         dialect: *dialect
         #        format_sql: *showsql
         format_sql: false
+
+logging:
+  level:
+    org.jooq: debug
