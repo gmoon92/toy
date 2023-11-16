@@ -13,12 +13,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import com.gmoon.batchinsert.accesslogs.domain.vo.OperatingSystem;
+import com.gmoon.batchinsert.global.JooqConfig;
 import com.gmoon.batchinsert.global.JpaConfig;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Import(JpaConfig.class)
+@Import({JpaConfig.class, JooqConfig.class})
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AccessLogRepositoryTest {
