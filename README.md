@@ -16,6 +16,7 @@
     - [spring-scheduling](https://github.com/gmoon92/toy/blob/master/spring-event/spring-scheduling/README.md)
 - [spring-jooq](https://github.com/gmoon92/toy/tree/master/spring-jooq/README.md)
 - spring-jpa
+    - [batch-insert](https://github.com/gmoon92/toy/blob/master/spring-jpa/batch-insert/README.md)
     - [hibernate-annotation](https://github.com/gmoon92/toy/blob/master/spring-jpa/hibernate-annotation/README.md)
     - [hibernate-envers](https://github.com/gmoon92/toy/blob/master/spring-jpa/hibernate-envers/doc/spring-data-envers.md)
     - [hibernate-performance](https://github.com/gmoon92/toy/tree/master/spring-jpa/hibernate-performance/doc)
