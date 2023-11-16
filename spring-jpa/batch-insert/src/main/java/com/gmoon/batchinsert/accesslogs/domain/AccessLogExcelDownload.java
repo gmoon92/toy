@@ -2,6 +2,7 @@ package com.gmoon.batchinsert.accesslogs.domain;
 
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,8 +45,8 @@ public class AccessLogExcelDownload implements Serializable {
 	private String attemptDt;
 
 	@Builder
-	private AccessLogExcelDownload(String id, String username, String ip, String os, String attemptDt) {
-		this.id = id;
+	private AccessLogExcelDownload(String username, String ip, String os, String attemptDt) {
+		this.id = UUID.randomUUID().toString();
 		this.username = username;
 		this.ip = ip;
 		this.os = os;
@@ -54,7 +55,6 @@ public class AccessLogExcelDownload implements Serializable {
 
 	public static AccessLogExcelDownload create(AccessLog accessLog) {
 		return AccessLogExcelDownload.builder()
-			.id(accessLog.getId())
 			.username(accessLog.getUsername())
 			.ip(accessLog.getIp())
 			.os(accessLog.getOs().name())
