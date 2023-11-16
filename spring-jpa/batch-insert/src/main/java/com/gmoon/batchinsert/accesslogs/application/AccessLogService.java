@@ -28,7 +28,7 @@ public class AccessLogService {
 	private final AccessLogRepository accessLogRepository;
 	private final AccessLogExcelDownloadRepository accessLogExcelDownloadRepository;
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public File createExcelFile(String filePath, LocalDate attemptDt) {
 		if (FileUtils.exists(filePath)) {
 			return FileUtils.getResourceFile(filePath);
