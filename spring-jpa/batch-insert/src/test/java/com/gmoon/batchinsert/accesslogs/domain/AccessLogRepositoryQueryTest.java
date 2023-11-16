@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @SpringBootTest
 class AccessLogRepositoryQueryTest {
 
@@ -14,7 +17,7 @@ class AccessLogRepositoryQueryTest {
 
 	@Test
 	void findAllByUsername() {
-		assertThat(accessLogRepositoryQuery.findAllByUsername("gmoon"))
+		assertThat(accessLogRepositoryQuery.findAllByUsername("admin"))
 			.isNotEmpty();
 	}
 }

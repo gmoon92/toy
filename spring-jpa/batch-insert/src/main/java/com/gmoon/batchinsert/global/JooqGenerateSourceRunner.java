@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Component
 @RequiredArgsConstructor
-public class JooqGenerateSource implements ApplicationRunner {
+public class JooqGenerateSourceRunner implements ApplicationRunner {
 
 	private final DSLContext dsl;
 

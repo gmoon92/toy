@@ -18,7 +18,7 @@ public class AccessLogRepositoryQuery {
 	private final DSLContext dsl;
 
 	public List<AccessLog> findAllByUsername(String username) {
-		return dsl.select(jAccessLog.IP)
+		return dsl.select()
 			.from(jAccessLog)
 			.where(jAccessLog.USERNAME.eq(username))
 			.fetchInto(AccessLog.class);
