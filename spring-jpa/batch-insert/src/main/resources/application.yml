@@ -28,7 +28,7 @@ spring:
     default-schema: ${jooq.properties.schema}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${spring.flyway.url}/${spring.flyway.default-schema}?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    url: ${spring.flyway.url}/${spring.flyway.default-schema}?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&rewriteBatchedStatements=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
     username: *username
     password: *password
     hikari:
@@ -44,6 +44,7 @@ spring:
         dialect: *dialect
         #        format_sql: *showsql
         format_sql: false
+        "[jdbc.batch_size]": 1000
 
 logging:
   level:
