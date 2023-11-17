@@ -24,10 +24,9 @@ docker compose -p batchinsert up -d
 - [Exposed](https://github.com/JetBrains/Exposed)
     - kotlin sql framework
 
-
 ### 2.1. Benchmarking
 
-- hibernate
+- hibernate batch insert/update
 - jooq
 
 > 선정 기준, Batch insert DSL, TypeSafe 지원
@@ -62,9 +61,9 @@ docker compose -p batchinsert up -d
             - [performance](https://dev.mysql.com/doc/connectors/en/connector-j-connp-props-performance-extensions.html)
                 - `rewriteBatchedStatements`: 다중 쿼리 지원, 기본 값 false
             - [profiling](https://dev.mysql.com/doc/connectors/en/connector-j-connp-props-debugging-profiling.html)
-              - `profileSQL`: Driver 에서 전송하는 쿼리 출력, 기본 값 false
-              - `logger`: 로그 출력에 사용되는 로거 클래스, 기본 값 com.mysql.cj.log.StandardLogger
-              - `maxQuerySizeToLog`: 출력할 쿼리 최대 길이
+                - `profileSQL`: Driver 에서 전송하는 쿼리 출력, 기본 값 false
+                - `logger`: 로그 출력에 사용되는 로거 클래스, 기본 값 com.mysql.cj.log.StandardLogger
+                - `maxQuerySizeToLog`: 출력할 쿼리 최대 길이
 
 ```yaml
 spring:
@@ -91,8 +90,8 @@ Hibernate: insert into ex_access_log (attempt_dt, ip, os, username, id) values (
 
 - @Id 생성 전략
 - 연관 관계에 따른 Batch insert 미지원
-  - hibernate.order_inserts
-  - hibernate.order_update
+    - hibernate.order_inserts
+    - hibernate.order_update
 
 ### 4.2.1. @Id 생성 전략
 
@@ -122,16 +121,44 @@ Session Heap memory clear
 
 ### 6. [StatelessSession](https://docs.jboss.org/hibernate/orm/6.1/userguide/html_single/Hibernate_User_Guide.html#_statelesssession)
 
-StatelessSession 는 데이터 저장시 1차 캐시를 사용하지 않고, 데이터베이스와 데이터를 스트리밍하는데 사용한다. 
+StatelessSession 는 데이터 저장시 영속성 컨텍스트를 사용하지 않고, 더 낮은 수준으로 데이터베이스와 데이터를 스트리밍하는데 사용한다.
 
 - 캐시 미지원(1차 캐시, 2차 캐시)
 - 더티 체킹 미지원
 - 지연로딩 미지원
+- 영속성 전이 미지원
 - Hibernate 의 Event model, interceptor 우회
 
 ```java
-SessionFactory sessionFactory = entityManagerFactory().unwrap(SessionFactory.class);
-statelessSession = sessionFactory.openStatelessSession();
+@RequiredArgsConstructor
+public class AccessLogExcelDownloadRepositoryQueryImpl implements AccessLogExcelDownloadRepositoryQuery {
+
+	private final EntityManager em;
+
+	@Override
+	public List<AccessLogExcelDownload> bulkSaveAllByStatelessSession(List<AccessLog> accessLogs) {
+		Session session = em.unwrap(Session.class);
+		SessionFactory sessionFactory = session.getSessionFactory();
+
+		try (StatelessSession statelessSession = sessionFactory.openStatelessSession()) {
+			Transaction tx = statelessSession.beginTransaction();
+
+			List<AccessLogExcelDownload> result = new ArrayList<>(accessLogs.size());
+			for (AccessLog accessLog : accessLogs) {
+				AccessLogExcelDownload data = AccessLogExcelDownload.create(accessLog);
+
+				statelessSession.insert(data);
+
+				result.add(data);
+			}
+
+			tx.commit();
+			return result;
+		} catch (Exception e) {
+			throw new RuntimeException("Not saved excel download data", e);
+		}
+	}
+}
 ```
 
 ### 7. Global temporary table Bulk-id strategies
@@ -150,23 +177,77 @@ DB 성능을 고려하여 생성된 임시 테이블의 key 기준으로 대량 
 - InlineIdsInClauseBulkIdStrategy: PostgreSQL 만 지원
 - InlineIdsSubSelectValueListBulkIdStrategy: PostgreSQL 만 지원
 - InlineIdsOrClauseBulkIdStrategy: Oracle, SQL Server, MySQL, PostgreSQL
-- CteValuesListBulkIdStrategy: CTE(Common Table Expressions) 지원해야 하며, PostgreSQL 만 지원 
+- CteValuesListBulkIdStrategy: CTE(Common Table Expressions) 지원해야 하며, PostgreSQL 만 지원
 
 > [Hibernate - Non-temporary table bulk mutation strategies](https://docs.jboss.org/hibernate/orm/6.1/userguide/html_single/Hibernate_User_Guide.html#batch-bulk-hql-strategies-non-temporary-table)
 > [Hibernate -
-Bulk-id strategies when you can’t use temporary tables](https://in.relation.to/2017/02/01/non-temporary-table-bulk-id-strategies/) 
+Bulk-id strategies when you can’t use temporary tables](https://in.relation.to/2017/02/01/non-temporary-table-bulk-id-strategies/)
+
+### 8. 결과
+
+1000 건 데이터 기준으로 batch insert 성능 비교 결과.
+
+- [X] hibernate batch option + StatelessSession 사용 = 117m 
+- [ ] hibernate batch option 만 적용 = 2초
+- [ ] jooq = 117m 
+
+최종적으로 메모리와 쿼리 성능 최적화, 그리고 유지보수 관점으로 하이버네이트에서 지원하는 StatelessSession 를 사용하여 해결했다.
+
+```java
+@SpringBootTest
+class AccessLogExcelDownloadRepositoryTest {
+
+	private static List<AccessLog> accessLogs;
+
+	@Autowired
+	private AccessLogExcelDownloadRepository repository;
+
+
+	@BeforeAll
+	static void beforeAll(@Autowired AccessLogRepository accessLogRepository) {
+		accessLogs = accessLogRepository.findAll();
+	}
+
+	@DisplayName("JPA 2 sec")
+	@Test
+	void saveAll() {
+		List<AccessLogExcelDownload> registered = accessLogs.stream()
+			.map(AccessLogExcelDownload::create)
+			.collect(Collectors.toList());
+
+		repository.saveAll(registered);
+	}
+
+	@DisplayName("JOOQ 117m")
+	@Test
+	void bulkSaveAllByJooq() {
+		repository.bulkSaveAllByJooq(accessLogs);
+	}
+
+	@DisplayName("StatelessSession 117m")
+	@Test
+	void bulkSaveAllByStatelessSession() {
+		repository.bulkSaveAllByStatelessSession(accessLogs);
+	}
+
+	@AfterEach
+	void tearDown() {
+		repository.flush();
+	}
+}
+
+```
 
 ## Reference
 
-- [MySQL 환경의 스프링부트에 하이버네이트 배치 설정 해보기](https://techblog.woowahan.com/2695/)
-- https://www.baeldung.com/jpa-hibernate-batch-insert-update
-- [권남 - Hibernate Batch/Bulk Insert/Update](https://kwonnam.pe.kr/wiki/java/hibernate/batch)
-- https://github.com/JetBrains/Exposed
+- [Baeldung - JPA Hibernate batch insert update](https://www.baeldung.com/jpa-hibernate-batch-insert-update)
 - [Spring boot support for jooq](https://www.baeldung.com/spring-boot-support-for-jooq)
 - [Hibernate jooq a match mad in heaven](https://thorben-janssen.com/hibernate-jooq-a-match-made-in-heaven/)
 - Hibernate StatelessSession
-    - [Spring with StatelessSessionFactoryBean](https://stackoverflow.com/questions/15460601/how-to-use-statelesssession-with-spring-data-jpa-and-hibernate)
-    - [Hibernate StatelessSession](https://thorben-janssen.com/hibernates-statelesssession/)
-        - [Hibernate: Improving application performance with StatelessSession](https://medium.com/javarevisited/hibernate-improving-application-performance-with-statelesssession-11536ebe9f80)
+    - [Hibernate User Guide -_Stateless Session](https://docs.jboss.org/hibernate/orm/6.1/userguide/html_single/Hibernate_User_Guide.html#_statelesssession)
+    - [Hibernate User Guide - Batch](https://docs.jboss.org/hibernate/core/3.5/reference/en/html/batch.html)
+    - [Hibernate: Improving application pe****rformance with StatelessSession](https://medium.com/javarevisited/hibernate-improving-application-performance-with-statelesssession-11536ebe9f80)
     - [Hibernate’s StatelessSession](https://thorben-janssen.com/hibernates-statelesssession/)
     - [SOLVED-BULK INSERT/UPDATE USING STATELESS SESSION - HIBERNATE-HIBERNATE](https://www.appsloveworld.com/hibernate/100/24/bulk-insert-update-using-stateless-session-hibernate)
+- [MySQL 환경의 스프링부트에 하이버네이트 배치 설정 해보기](https://techblog.woowahan.com/2695/)
+- [권남 - Hibernate Batch/Bulk Insert/Update](https://kwonnam.pe.kr/wiki/java/hibernate/batch)
