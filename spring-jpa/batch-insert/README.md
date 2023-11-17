@@ -220,14 +220,14 @@ class AccessLogExcelDownloadRepositoryTest {
 
 	@DisplayName("JOOQ 117m")
 	@Test
-	void bulkSaveAllByJooq() {
-		repository.bulkSaveAllByJooq(accessLogs);
+	void bulkSaveAllAtJooq() {
+		repository.bulkSaveAllAtJooq(accessLogs);
 	}
 
 	@DisplayName("StatelessSession 117m")
 	@Test
-	void bulkSaveAllByStatelessSession() {
-		repository.bulkSaveAllByStatelessSession(accessLogs);
+	void bulkSaveAllAtStatelessSession() {
+		repository.bulkSaveAllAtStatelessSession(accessLogs);
 	}
 
 	@AfterEach
