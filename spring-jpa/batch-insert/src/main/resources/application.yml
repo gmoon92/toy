@@ -44,6 +44,10 @@ spring:
         dialect: *dialect
         #        format_sql: *showsql
         format_sql: false
+
+        # batch
+        order_inserts: true
+        order_updates: true
         "[jdbc.batch_size]": 1000
 
 logging:
