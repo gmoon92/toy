@@ -28,6 +28,7 @@
 - [spring-properties](https://github.com/gmoon92/toy/blob/master/spring-properties/README.md)
 - spring-mvc
     - [spring-web-converter](https://github.com/gmoon92/toy/blob/master/spring-mvc/spring-web-converter/README.md)
+    - [spring-web-session](https://github.com/gmoon92/toy/blob/master/spring-mvc/spring-web-session/README.md)
 - [spring-reactive](https://github.com/gmoon92/toy/blob/master/spring-reactive/README.md)
 - [spring-security](https://github.com/gmoon92/toy/blob/master/spring-security/README.md)
     - [spring-security-cors](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-cors/README.md)
