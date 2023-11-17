@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface AccessLogExcelDownloadRepositoryJooq {
 
-	List<AccessLogExcelDownload> bulkSaveAll(List<AccessLog> accessLogs);
+	List<AccessLogExcelDownload> bulkSaveAllAtJooq(List<AccessLog> accessLogs);
 }

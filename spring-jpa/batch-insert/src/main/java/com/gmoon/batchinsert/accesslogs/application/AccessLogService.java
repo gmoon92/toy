@@ -44,6 +44,6 @@ public class AccessLogService {
 		LocalDateTime from = attemptDt.atStartOfDay();
 		LocalDateTime to = attemptDt.plusYears(1).atTime(LocalTime.MAX);
 		List<AccessLog> accessLogs = accessLogRepository.findAllByAttemptDtBetween(from, to);
-		return accessLogExcelDownloadRepository.bulkSaveAll(accessLogs);
+		return accessLogExcelDownloadRepository.bulkSaveAllAtJooq(accessLogs);
 	}
 }

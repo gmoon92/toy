@@ -22,7 +22,7 @@ public class AccessLogExcelDownloadRepositoryJooqImpl implements AccessLogExcelD
 	// https://www.jooq.org/doc/latest/manual/sql-building/sql-statements/insert-statement/insert-values/
 	// Jooq 타입 추론 이슈 https://github.com/jOOQ/jOOQ/issues/6604
 	@Override
-	public List<AccessLogExcelDownload> bulkSaveAll(List<AccessLog> accessLogs) {
+	public List<AccessLogExcelDownload> bulkSaveAllAtJooq(List<AccessLog> accessLogs) {
 		InsertValuesStepN<ExAccessLogRecord> insertInto = (InsertValuesStepN<ExAccessLogRecord>)dsl.insertInto(
 			jExAccessLog,
 			jExAccessLog.ID,
