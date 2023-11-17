@@ -1,0 +1,47 @@
+GET http://localhost:8080/room
+Content-Type: application/x-www-form-urlencoded
+
+### INDEX
+GET {{http-origin}}/room
+Content-Type: application/x-www-form-urlencoded
+Content-Type: application/x-www-form-urlencoded
+
+### SAVE
+POST {{http-origin}}/room
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=123
+
+> {%
+client.log("Headers: " + response.headers);
+client.log("Set-Cookie: " + response.headers.valueOf("Set-Cookie"));
+client.global.set("JSESSIONID", response.headers.valueOf("Set-Cookie").split(";")[0]);
+%}
+
+### CSRF 토큰 생성
+POST {{http-origin}}/csrf/create
+Accept: application/json
+Cookie: {{JSESSIONID}}
+
+> {%
+client.global.set("token", response.body.value);
+client.log("csrf token: " + client.global.get("token"));
+%}
+
+### CSRF 토큰 제거
+POST {{http-origin}}/csrf/delete
+Accept: application/json
+Cookie: {{JSESSIONID}}
+
+### CSRF 토큰 헤더 체크
+GET {{http-origin}}/user/delete
+Accept: application/json
+Content-Type: application/json
+Cookie: {{JSESSIONID}}
+X-CSRF-TOKEN: {{token}}
+
+### CSRF 파라미터 체크
+GET {{http-origin}}/user/delete?_csrf={{token}}
+Accept: application/json
+Content-Type: application/json
+Cookie: {{JSESSIONID}}
