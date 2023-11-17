@@ -246,7 +246,7 @@ class AccessLogExcelDownloadRepositoryTest {
 - Hibernate StatelessSession
     - [Hibernate User Guide -_Stateless Session](https://docs.jboss.org/hibernate/orm/6.1/userguide/html_single/Hibernate_User_Guide.html#_statelesssession)
     - [Hibernate User Guide - Batch](https://docs.jboss.org/hibernate/core/3.5/reference/en/html/batch.html)
-    - [Hibernate: Improving application pe****rformance with StatelessSession](https://medium.com/javarevisited/hibernate-improving-application-performance-with-statelesssession-11536ebe9f80)
+    - [Hibernate: Improving application performance with StatelessSession](https://medium.com/javarevisited/hibernate-improving-application-performance-with-statelesssession-11536ebe9f80)
     - [Hibernate’s StatelessSession](https://thorben-janssen.com/hibernates-statelesssession/)
     - [SOLVED-BULK INSERT/UPDATE USING STATELESS SESSION - HIBERNATE-HIBERNATE](https://www.appsloveworld.com/hibernate/100/24/bulk-insert-update-using-stateless-session-hibernate)
 - [MySQL 환경의 스프링부트에 하이버네이트 배치 설정 해보기](https://techblog.woowahan.com/2695/)
