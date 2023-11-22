@@ -36,7 +36,7 @@ spring:
   jpa:
     open-in-view: false
     database-platform: &dialect org.hibernate.dialect.MySQL8Dialect
-    show-sql: &showsql true
+    show-sql: &showsql false
     hibernate:
       ddl-auto: validate
     properties:
@@ -48,7 +48,7 @@ spring:
         # batch
         order_inserts: true
         order_updates: true
-        "[jdbc.batch_size]": 1000
+        "[jdbc.batch_size]": 200
 
 logging:
   level:
