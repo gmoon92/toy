@@ -40,7 +40,7 @@ class AccessLogExcelDownloadRepositoryTest {
 		repository.bulkSaveAllAtJooq(accessLogs);
 	}
 
-	@DisplayName("StatelessSession 117m")
+	@DisplayName("StatelessSession 51m")
 	@Test
 	void bulkSaveAllAtStatelessSession() {
 		repository.bulkSaveAllAtStatelessSession(accessLogs);
