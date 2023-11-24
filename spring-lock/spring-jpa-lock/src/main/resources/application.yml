@@ -12,8 +12,8 @@ spring:
 #    database-platform: org.hibernate.dialect.MySQL8Dialect
     database-platform: org.hibernate.dialect.MariaDB10Dialect
     hibernate:
-#      ddl-auto: create
-      ddl-auto: create-drop
+      ddl-auto: create
+#      ddl-auto: create-drop
     properties:
       ['javax.persistence.query.timeout']: 1000
       hibernate:
