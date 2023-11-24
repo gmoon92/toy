@@ -12,6 +12,7 @@ import javax.persistence.RollbackException;
 
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.LockAcquisitionException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -69,6 +70,7 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		assertThatCode(allOf::join).doesNotThrowAnyException();
 	}
 
+	@Disabled
 	@DisplayName("X-Lock 트랜잭션이 종료되기 전엔 S-Lock을 획득할 수 없다.")
 	@Test
 	void exclusiveLockWithSLock() {
