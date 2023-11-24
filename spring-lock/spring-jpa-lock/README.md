@@ -250,7 +250,7 @@ public class SessionImpl
     - PESSIMISTIC_FORCE_INCREMENT
     - ~~FORCE~~
 
-## 주의 사항
+## 5. 주의 사항
 
 하이버네이트에서 DB Lock 설정을 하지 않더라도, DBMS의 락 메커니즘에 따라 데드락이 발생할 수 있다.
 
@@ -300,13 +300,32 @@ MySql 같은 경우엔 FK 테이블에 제약 조건이 정의된 경우, 제약
 - [If a FOREIGN KEY constraint is defined on a table, any insert, update, or delete that requires the constraint condition to be checked sets shared record-level locks on the records that it looks at to check the constraint. InnoDB also sets these locks in the case where the constraint fails.](https://dev.mysql.com/doc/refman/8.0/en/innodb-locks-set.html)
 - [UPDATE ... WHERE ... sets an exclusive next-key lock on every record the search encounters. However, only an index record lock is required for statements that lock rows using a unique index to search for a unique row.](https://dev.mysql.com/doc/refman/8.0/en/innodb-locks-set.html)
 
+### 5.1. DB DeadLock 발생 원인
+
 1. TX-A 주문 생성(INSERT)시 Menu ID 를 포함함으로, 해당 Menu 테이블의 ROW 에 대해 S-Lock 획득
 2. TX-B 주문 생성(INSERT)시 Menu ID 를 포함함으로, 해당 Menu 테이블의 ROW 에 대해 S-Lock 획득
 3. TX-A 메뉴 제고 감소 시도(UPDATE ~ WHERE), 해당 Menu 테이블의 ROW에 대해 X-Lock 획득 시도, TX-B 트랜잭션 종료 대기
 4. TX-B 메뉴 제고 감소 시도(UPDATE ~ WHERE), 해당 Menu 테이블의 ROW에 대해 X-Lock 획득 시도, TX-A 트랜잭션 종료 대기
 5. Deadlock!!!
 
-정리하자면 데드락은 언제든 발생할 수 있고, 디비 환경에 따라 락 메커니즘을 이해하며 개발해야 한다.
+### 6. 마무리
+
+정리하자면 동시성 문제를 해결하기 위해선 우선적으로 애플리케이션 비즈니스에 대한 이해가 필요하다.
+
+그 다음 낙관적/비관적 락의 장단점을 고려해야 하며, 데드락은 언제든 발생할 수 있다는점을 인지하고, 디비 환경에 따라 락 메커니즘을 이해하며 개발해야 한다.
+
+- 낙관적 락
+  - 실패에 대한 데이터 롤백 정책 고려 및 실패 이벤트 추가 개발 및 관리
+- 비관적 락
+  - 대량의 트래픽으로 디비 성능 저하 및 전체 시스템 성능 저하 우려
+  - Redis Sorted Set, Lua Script
+  - 메시지 큐 시스템 도입(Kafka, RabbitMQ)
+  - 처리율 제한기 미들웨어 도입(API Gateway)
+- 테이블 반정규화 고려
+  - 특정 엔티티에서 대량의 데이터 수정사항 존재하고, 루트 엔티티의 변경이 필요한 경우.
+- DB 분산 환경이라면 분산 락 고려(Distributed Lock)
+  - 비관적 락으로 동시성을 해결할 수 없다.
+  - [Redis lock](https://redis.com/glossary/redis-lock/) 고려
 
 ## Reference
 
