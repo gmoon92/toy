@@ -9,6 +9,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 
+import com.querydsl.jpa.impl.JPAInsertClause;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AccessLogExcelDownloadRepositoryQueryImpl implements AccessLogExcelDownloadRepositoryQuery {
 
+	private final JPAQueryFactory factory;
 	private final EntityManager em;
 
 	// https://docs.jboss.org/hibernate/core/3.5/reference/en/html/batch.html
@@ -42,5 +46,33 @@ public class AccessLogExcelDownloadRepositoryQueryImpl implements AccessLogExcel
 		} catch (Exception e) {
 			throw new RuntimeException("Not saved excel download data", e);
 		}
+	}
+
+	@Override
+	public List<AccessLogExcelDownload> bulkSaveAllAtQueryDsl(List<AccessLog> accessLogs) {
+		List<AccessLogExcelDownload> result = new ArrayList<>(accessLogs.size());
+
+		for (AccessLog accessLog : accessLogs) {
+			QAccessLogExcelDownload qAccessLogExcelDownload = QAccessLogExcelDownload.accessLogExcelDownload;
+			AccessLogExcelDownload data = AccessLogExcelDownload.create(accessLog);
+			JPAInsertClause clause = new JPAInsertClause(em, qAccessLogExcelDownload)
+				.columns(
+					qAccessLogExcelDownload.id,
+					qAccessLogExcelDownload.username,
+					qAccessLogExcelDownload.ip,
+					qAccessLogExcelDownload.os,
+					qAccessLogExcelDownload.attemptDt
+				).values(
+					data.getId(),
+					data.getUsername(),
+					data.getIp(),
+					data.getOs(),
+					data.getAttemptDt()
+				);
+
+			clause.execute();
+		}
+
+		return result;
 	}
 }

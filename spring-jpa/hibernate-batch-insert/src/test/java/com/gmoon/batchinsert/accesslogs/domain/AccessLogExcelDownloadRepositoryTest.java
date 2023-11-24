@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,16 @@ class AccessLogExcelDownloadRepositoryTest {
 	@Test
 	void bulkSaveAllAtStatelessSession() {
 		repository.bulkSaveAllAtStatelessSession(accessLogs);
+	}
+
+	@Disabled
+	@DisplayName("JPA not supported insert query"
+		+ "https://github.com/querydsl/querydsl/issues/3027"
+		+ "https://github.com/querydsl/querydsl/issues/2663"
+		+ "https://github.com/querydsl/querydsl/issues/2724")
+	@Test
+	void bulkSaveAllAtQueryDsl() {
+		repository.bulkSaveAllAtQueryDsl(accessLogs);
 	}
 
 	@AfterEach

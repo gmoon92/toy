@@ -12,6 +12,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.gmoon.javacore.util.StringUtils;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -47,10 +49,10 @@ public class AccessLogExcelDownload implements Serializable {
 	@Builder
 	private AccessLogExcelDownload(String username, String ip, String os, String attemptDt) {
 		this.id = UUID.randomUUID().toString();
-		this.username = username;
-		this.ip = ip;
-		this.os = os;
-		this.attemptDt = attemptDt;
+		this.username = StringUtils.defaultString(username);
+		this.ip = StringUtils.defaultString(ip);
+		this.os = StringUtils.defaultString(os);
+		this.attemptDt = StringUtils.defaultString(attemptDt);
 	}
 
 	public static AccessLogExcelDownload create(AccessLog accessLog) {
