@@ -1,4 +1,4 @@
-package com.gmoon.springjpalock.orders;
+package com.gmoon.springjpalock.orders.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -12,16 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.springjpalock.orders.domain.Order;
-import com.gmoon.springjpalock.orders.domain.OrderRepository;
+import com.gmoon.springjpalock.global.Fixtures;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @DataJpaTest
 class OrderRepositoryTest {
-
-	private final String orderNo = "order-no-001";
 
 	@Autowired
 	private OrderRepository repository;
@@ -49,10 +46,10 @@ class OrderRepositoryTest {
 	@Transactional
 	void readWithSLock() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(orderNo)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(orderNo)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(orderNo)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(orderNo))
+			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
+			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
+			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
+			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO))
 		);
 
 		assertThatCode(allOf::join)
@@ -65,10 +62,10 @@ class OrderRepositoryTest {
 	@Test
 	void readWithXLock() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(orderNo)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(orderNo)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(orderNo)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(orderNo))
+			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
+			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
+			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
+			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO))
 		);
 
 		assertThatCode(allOf::join)

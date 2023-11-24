@@ -1,4 +1,4 @@
-package com.gmoon.springjpalock.lock;
+package com.gmoon.springjpalock.global.lock;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,11 +10,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.gmoon.springjpalock.global.BaseJpaTestCase;
+import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
 
 public class LockModeTest extends BaseJpaTestCase {
-
-	private final String orderNo = "order-no-001";
 
 	@DisplayName("@Version 은 강제로 증가시킬 수 없다.")
 	@Test
@@ -24,14 +23,14 @@ public class LockModeTest extends BaseJpaTestCase {
 		 * [QUERY] update `tb_order` set `version`=2 where `no`='order-no-001' and `version`=1
 		 * [QUERY] commit
 		 * */
-		executeQuery(em -> em.find(Order.class, orderNo, LockModeType.OPTIMISTIC_FORCE_INCREMENT), RuntimeException::new);
+		executeQuery(em -> em.find(Order.class, Fixtures.ORDER_NO, LockModeType.OPTIMISTIC_FORCE_INCREMENT), RuntimeException::new);
 
 		/**
 		 * [QUERY] select * from `tb_order` where `no`='order-no-001'
 		 * [QUERY] select `version` as version_ from `tb_order` where `no` ='order-no-001'
 		 * [QUERY] commit
 		 * */
-		executeQuery(em -> em.find(Order.class, orderNo, LockModeType.OPTIMISTIC), RuntimeException::new);
+		executeQuery(em -> em.find(Order.class, Fixtures.ORDER_NO, LockModeType.OPTIMISTIC), RuntimeException::new);
 	}
 
 	@DisplayName("낙관적 락 모드 유형")
@@ -50,7 +49,7 @@ public class LockModeTest extends BaseJpaTestCase {
 			long version10 = 10L;
 			executeQuery(em -> {
 				// default LockModeType.OPTIMISTIC
-				Order order = em.find(Order.class, orderNo);
+				Order order = em.find(Order.class, Fixtures.ORDER_NO);
 				assertThat(order.getVersion()).isNotNull();
 				assertThat(em.getLockMode(order)).isEqualTo(LockModeType.OPTIMISTIC);
 
@@ -62,7 +61,7 @@ public class LockModeTest extends BaseJpaTestCase {
 			}, RuntimeException::new);
 
 			EntityManager em = factory.createEntityManager();
-			assertThat(em.find(Order.class, orderNo).getVersion())
+			assertThat(em.find(Order.class, Fixtures.ORDER_NO).getVersion())
 				.isNotEqualTo(version10);
 		}
 
@@ -80,7 +79,7 @@ public class LockModeTest extends BaseJpaTestCase {
 		void optimisticForceIncrement() {
 			long version10 = 10L;
 			executeQuery(em -> {
-				Order order = em.find(Order.class, orderNo, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+				Order order = em.find(Order.class, Fixtures.ORDER_NO, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 				assertThat(order.getVersion()).isNotNull();
 				assertThat(em.getLockMode(order)).isEqualTo(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
@@ -90,7 +89,7 @@ public class LockModeTest extends BaseJpaTestCase {
 			}, RuntimeException::new);
 
 			EntityManager em = factory.createEntityManager();
-			assertThat(em.find(Order.class, orderNo).getVersion())
+			assertThat(em.find(Order.class, Fixtures.ORDER_NO).getVersion())
 				.isNotEqualTo(version10);
 		}
 	}

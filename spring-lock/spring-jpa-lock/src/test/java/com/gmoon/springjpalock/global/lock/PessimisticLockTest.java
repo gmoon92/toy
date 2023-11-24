@@ -1,4 +1,4 @@
-package com.gmoon.springjpalock.lock;
+package com.gmoon.springjpalock.global.lock;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.gmoon.springjpalock.global.BaseJpaTestCase;
+import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
 import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 
@@ -23,8 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PessimisticLockTest extends BaseJpaTestCase {
-
-	private final String orderNo = "order-no-001";
 
 	@DisplayName("S-Lock 교착 상태 검증"
 		+ "[QUERY] select * from `tb_order` where `no`='order-no-001' lock in share mode"
@@ -96,7 +95,7 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 
 	private void saveWithLockMode(LockModeType lockMode) {
 		executeQuery(em -> {
-			Order order = em.find(Order.class, orderNo, lockMode);
+			Order order = em.find(Order.class, Fixtures.ORDER_NO, lockMode);
 			order.changeAddress(UUID.randomUUID().toString());
 			return em.merge(order);
 		}, throwable -> log.error("Data conflict occurs.", throwable));

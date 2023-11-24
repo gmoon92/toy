@@ -1,13 +1,18 @@
 package com.gmoon.springjpalock.orders.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -20,6 +25,7 @@ import org.hibernate.annotations.OptimisticLocking;
 import com.gmoon.springjpalock.orders.domain.vo.OrderStatus;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,6 +58,21 @@ public class Order implements Serializable {
 	@OptimisticLock(excluded = true)
 	@Column(name = "issued_count")
 	private Long issuedCount;
+
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(name = "order_no")
+	private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+	@Builder
+	private Order(String no, String address, OrderStatus status, Long version, Long issuedCount,
+		List<OrderLineItem> orderLineItems) {
+		this.no = no;
+		this.address = address;
+		this.status = status;
+		this.version = version;
+		this.issuedCount = issuedCount;
+		this.orderLineItems = orderLineItems;
+	}
 
 	public Order(String address) {
 		this.address = address;
