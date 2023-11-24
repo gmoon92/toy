@@ -17,13 +17,13 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>hibernate-annotation</module>
+        <module>hibernate-batch-insert</module>
         <module>hibernate-envers</module>
         <module>hibernate-performance</module>
-        <module>hibernate-annotation</module>
         <module>hibernate-sequence-generator</module>
         <module>spring-jpa-pagination</module>
         <module>spring-jpa-specs</module>
-        <module>batch-insert</module>
     </modules>
 
     <properties>
