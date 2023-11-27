@@ -326,6 +326,7 @@ MySql 같은 경우엔 FK 테이블에 제약 조건이 정의된 경우, 제약
 - DB 분산 환경이라면 분산 락 고려(Distributed Lock)
   - 비관적 락으로 동시성을 해결할 수 없다.
   - [Redis lock](https://redis.com/glossary/redis-lock/) 고려
+  - JTA Atomikos
 
 ## Reference
 
