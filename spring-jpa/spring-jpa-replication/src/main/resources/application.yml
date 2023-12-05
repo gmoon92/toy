@@ -1,1 +1,40 @@
+spring:
+  datasource:
+    jdbc-url-option: createDatabaseIfNotExist=true
+#    EntityManager 는 데이터베이스 및 dialect 는 단 하나만 존재 설정 가능
+    driver-class-name: &driverClassName org.mariadb.jdbc.Driver
+    master:
+      driver-class-name: *driverClassName
+      url: jdbc:mariadb://localhost:3306/spring-jpa-replication?${spring.datasource.jdbc-url-option}
+      username: root
+      password: 111111
+    slave:
+      driver-class-name: *driverClassName
+      url: jdbc:mariadb://localhost:3306/spring-jpa-replication?${spring.datasource.jdbc-url-option}
+      username: root
+      password: 111111
 
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MariaDB106Dialect
+    show-sql: &showSql true
+    hibernate:
+      ddl-auto: create-drop
+      show-sql: *showSql
+      format_sql: *showSql
+      use_sql_comments: *showSql
+      globally_quoted_identifiers: true
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+
+  test:
+    database:
+      replace: none
+
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": trace
