@@ -13,6 +13,7 @@ spring:
       url: jdbc:mariadb://localhost:3306/spring-jpa-replication?${spring.datasource.jdbc-url-option}
       username: root
       password: 111111
+      read-only: true
 
   jpa:
     defer-datasource-initialization: true
