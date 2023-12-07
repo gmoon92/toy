@@ -44,4 +44,8 @@ public class DynamicRoutingDatabaseSource extends AbstractRoutingDataSource {
 
 		return TargetDataBase.MASTER;
 	}
+
+	private enum TargetDataBase {
+		MASTER, SLAVE
+	}
 }
