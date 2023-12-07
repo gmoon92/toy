@@ -24,7 +24,7 @@
         <module>hibernate-sequence-generator</module>
         <module>spring-jpa-pagination</module>
         <module>spring-jpa-specs</module>
-        <module>spring-db-connection-cluster</module>
+        <module>spring-jpa-multi-datasource</module>
     </modules>
 
     <properties>
