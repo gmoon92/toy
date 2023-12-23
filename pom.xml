@@ -22,6 +22,7 @@
         <module>spring-reactive</module>
         <module>spring-security</module>
         <module>spring-triangle</module>
+        <module>spring-tx</module>
         <module>spring-utils</module>
         <module>testing</module>
     </modules>
