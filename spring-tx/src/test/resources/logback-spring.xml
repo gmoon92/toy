@@ -14,10 +14,10 @@
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
     <logger name="com.gmoon" level="DEBUG" />
-    <logger name="org.hibernate.internal" level="TRACE" />
-    <logger name="org.hibernate.engine" level="TRACE" />
-    <logger name="org.springframework.transaction" level="TRACE" />
-    <logger name="org.springframework.orm.jpa" level="TRACE" />
+    <logger name="org.hibernate.internal" level="OFF" />
+    <logger name="org.hibernate.engine" level="OFF" />
+    <logger name="org.springframework.transaction" level="OFF" />
+    <logger name="org.springframework.orm.jpa" level="OFF" />
 
     <logger name="org.hibernate.type.descriptor.sql" level="OFF" />
     <logger name="MySQL" level="OFF" />
