@@ -42,6 +42,7 @@
 - spring-triangle
     - [spring-aop](https://github.com/gmoon92/toy/blob/master/spring-triangle/spring-aop/src/test/java/com/gmoon/springaop/SpringAopApplicationTests.java)
     - [spring-framework](https://github.com/gmoon92/toy/blob/master/spring-triangle/spring-framework/doc)
+- [spring-tx](https://github.com/gmoon92/toy/blob/master/spring-tx/README.md)
 - spring-utils
     - [spring-core-utils](https://github.com/gmoon92/toy/blob/master/spring-utils/spring-core-utils/src/test/java/com/gmoon/springcoreutils/SpringCoreUtilsApplicationTests.java)
     - [spring-logging](https://github.com/gmoon92/toy/blob/master/spring-utils/spring-logging/README.md)
