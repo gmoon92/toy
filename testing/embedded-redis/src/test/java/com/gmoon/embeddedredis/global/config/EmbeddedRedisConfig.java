@@ -19,6 +19,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import io.lettuce.core.ReadFrom;
 import lombok.extern.slf4j.Slf4j;
+import redis.embedded.RedisServer;
 
 @Slf4j
 @TestConfiguration
@@ -27,12 +28,17 @@ public class EmbeddedRedisConfig {
 	@Configuration
 	protected static class RedisServerConfig {
 
-		@Bean(initMethod = "start", destroyMethod = "stop")
+		// @Bean(initMethod = "start", destroyMethod = "stop")
+		@Bean
 		@ConditionalOnProperty(value = "env", havingValue = "local")
 		public redis.embedded.RedisServer redisServer(RedisProperties redisProperties) throws IOException {
 			int port = redisProperties.getPort();
 			log.info("embedded redis server(kstyrc) start. port: {}", port);
-			return new redis.embedded.RedisServer(port);
+			RedisServer redisServer = new RedisServer(port);
+			if (!redisServer.isActive()) {
+				redisServer.start();
+			}
+			return redisServer;
 		}
 	}
 
