@@ -23,7 +23,7 @@ public class FavoriteEventHandler {
 		fallbackExecution = true
 	)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handleDelete(DeleteFavoriteEvent deleteFavoriteEvent) {
+	public void delete(DeleteFavoriteEvent deleteFavoriteEvent) {
 		String userId = deleteFavoriteEvent.getUserId();
 		log.info("userId: {}", userId);
 		favoriteService.delete(userId);
