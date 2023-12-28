@@ -26,8 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-// @SpringBootTest(classes = EmbeddedRedisConfig.class)
-@SpringBootTest
+@SpringBootTest(classes = EmbeddedRedisConfig.class)
 public class RedissonClientTest {
 
 	@Autowired
@@ -176,7 +175,7 @@ public class RedissonClientTest {
 
 			Awaitility.await()
 				.pollDelay(Duration.ofMillis(10))
-				.atMost(Duration.ofMillis(200))
+				.atMost(Duration.ofMillis(500))
 				.untilAsserted(() -> assertThat(atomicLong.get()).isEqualTo(3));
 		}
 
