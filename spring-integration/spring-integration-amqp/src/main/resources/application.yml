@@ -1,1 +1,12 @@
-
+spring:
+  rabbitmq:
+    dynamic: true
+#    virtual-host: /
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 1000
+    cache:
+      connection:
+        mode: CHANNEL
