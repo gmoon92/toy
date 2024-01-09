@@ -1,0 +1,2 @@
+POST http://localhost:8080/mail/send?message=hi
+Content-Type: application/json
