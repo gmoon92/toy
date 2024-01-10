@@ -41,13 +41,17 @@ public class RabbitMqConfig {
 		return new AmqpUtils(amqpAdmin, client);
 	}
 
+	/**
+	 * https://github.com/rabbitmq/hop
+	 */
 	@Bean
 	public Client client(RabbitProperties properties) throws MalformedURLException, URISyntaxException {
 		return new Client(new ClientParameters()
 			.url(UriComponentsBuilder.newInstance()
 				.scheme("http")
 				.host(properties.getHost())
-				.port(properties.getPort())
+				.path("api")
+				.port("1" + properties.getPort())
 				.toUriString())
 			.username(properties.getUsername())
 			.password(properties.getPassword()));
