@@ -1,4 +1,4 @@
-package com.gmoon.springintegrationamqp.config;
+package com.gmoon.springintegrationamqp.global.amqp;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +13,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RabbitMqConfigTest {
+public class AmqpConfigTest {
 
 	@Disabled
 	@Test
