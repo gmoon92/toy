@@ -1,12 +1,16 @@
 spring:
   rabbitmq:
     dynamic: true
-#    virtual-host: /
+    #    virtual-host: /
     host: localhost
     port: 5672
     username: guest
     password: guest
     connection-timeout: 1000
+    # return-channel Using a return-channel requires a RabbitTemplate with the mandatory property set to true and a CachingConnectionFactory with the publisherReturns property set to true. When using multiple outbound endpoints with returns, a separate RabbitTemplate is needed for each endpoint.
+    publisher-returns: true
+    template:
+      mandatory: true
     cache:
       connection:
         mode: CHANNEL
