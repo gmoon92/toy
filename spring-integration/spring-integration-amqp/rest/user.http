@@ -1,0 +1,10 @@
+POST http://localhost:8080/user/signup
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "gmoon0929@gmail.com",
+  "username": "gmoon",
+  "password": "@password",
+  "role": "ADMIN"
+}
