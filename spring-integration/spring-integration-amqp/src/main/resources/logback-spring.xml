@@ -14,6 +14,7 @@
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
     <logger name="com.gmoon" level="DEBUG" />
+    <logger name="org.springframework.integration" level="DEBUG" />
     <logger name="org.springframework.integration.handler.LoggingHandler" level="DEBUG" />
 
     <root level="INFO">

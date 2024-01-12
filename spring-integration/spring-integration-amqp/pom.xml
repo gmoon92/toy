@@ -49,6 +49,12 @@
             <artifactId>http-client</artifactId>
             <version>3.12.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.gmoon</groupId>
+            <artifactId>java-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

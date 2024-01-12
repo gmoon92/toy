@@ -2,10 +2,12 @@ package com.gmoon.springintegrationamqp.global.amqp;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,16 +16,15 @@ import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.amqp.dsl.Amqp;
-import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.dsl.Transformers;
+import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.handler.LoggingHandler;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.gmoon.springintegrationamqp.mail.application.MailService;
-import com.gmoon.springintegrationamqp.mail.model.MailMessage;
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.http.client.Client;
 import com.rabbitmq.http.client.ClientParameters;
 
@@ -69,48 +70,48 @@ public class AmqpConfig {
 
 		private final MailService mailService;
 
-		@Bean
-		public MessageChannel mailChannel() {
-			return new DirectChannel();
-		}
-
 		/***
 		 * inboundSendMail -> outboundSendMail -> inboundLogMail
 		 */
 		@Bean
-		public IntegrationFlow inSendMail(ConnectionFactory connectionFactory, MessageChannel mailChannel) {
+		public IntegrationFlow inSendMail(ConnectionFactory connectionFactory) {
+			String queueName = AmqpMessageDestination.SEND_MAIL.value;
 			return IntegrationFlows
-				.from(Amqp.inboundAdapter(connectionFactory, AmqpMessageDestination.SEND_MAIL.value))
+				.from(Amqp.inboundAdapter(connectionFactory, queueName))
+				.handle(mailService, "send") // @ServiceActivator
+				.channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
 				.log(LoggingHandler.Level.DEBUG)
-				.channel(mailChannel)
-				.transform(Transformers.fromStream(StandardCharsets.UTF_8.name()))
-				.handle(mailService, "send")
 				.get();
 		}
 
-
 		/**
 		 * https://docs.spring.io/spring-integration/reference/amqp/outbound-channel-adapter.html
-		 * */
+		 */
 		@Bean
-		public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate, MessageChannel mailChannel) {
+		public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate, IntegrationFlow inSendMail,
+			IntegrationFlow inWelcomeMail) {
 			return IntegrationFlows
-				.from(mailChannel)
-				.log(LoggingHandler.Level.DEBUG)
-				.handle(Amqp.outboundAdapter(amqpTemplate)
-					.routingKey(AmqpMessageDestination.WELCOME_MAIL.value)
+				.from(inSendMail.getInputChannel())
+				.handle(
+					Amqp.outboundAdapter(amqpTemplate)
+						.routingKey(AmqpMessageDestination.WELCOME_MAIL.value)
 				)
 				.get();
 		}
 
+		/**
+		 * @see AmqpInboundChannelAdapter.Listener#createMessageFromAmqp(Message, Channel)
+		 * @see AmqpInboundChannelAdapter.Listener#createMessageFromPayload(Object, Channel, Map, long, List)
+		 */
 		@Bean
 		public IntegrationFlow inWelcomeMail(ConnectionFactory connectionFactory) {
+			String routingKey = AmqpMessageDestination.WELCOME_MAIL.value;
 			return IntegrationFlows
-				.from(Amqp.inboundAdapter(connectionFactory, AmqpMessageDestination.WELCOME_MAIL.value))
+				.from(Amqp.inboundAdapter(connectionFactory, routingKey))
+				.handle(mailService, "welcome")  // @ServiceActivator
 				.log(LoggingHandler.Level.DEBUG)
-				.convert(MailMessage.Payload.class)
-				.handle(mailService, "welcome")
 				.get();
 		}
+
 	}
 }
