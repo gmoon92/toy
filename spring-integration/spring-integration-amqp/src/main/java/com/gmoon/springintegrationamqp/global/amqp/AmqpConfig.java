@@ -24,6 +24,7 @@ import org.springframework.integration.handler.LoggingHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.gmoon.springintegrationamqp.mail.application.MailService;
+import com.gmoon.springintegrationamqp.mail.model.SaveMailLogVO;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.http.client.Client;
 import com.rabbitmq.http.client.ClientParameters;
@@ -88,13 +89,12 @@ public class AmqpConfig {
 		 * https://docs.spring.io/spring-integration/reference/amqp/outbound-channel-adapter.html
 		 */
 		@Bean
-		public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate, IntegrationFlow inSendMail,
-			IntegrationFlow inWelcomeMail) {
+		public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate, IntegrationFlow inSendMail) {
 			return IntegrationFlows
 				.from(inSendMail.getInputChannel())
 				.handle(
 					Amqp.outboundAdapter(amqpTemplate)
-						.routingKey(AmqpMessageDestination.WELCOME_MAIL.value)
+						.routingKey(AmqpMessageDestination.SAVE_MAIL_LOG.value)
 				)
 				.get();
 		}
@@ -104,11 +104,12 @@ public class AmqpConfig {
 		 * @see AmqpInboundChannelAdapter.Listener#createMessageFromPayload(Object, Channel, Map, long, List)
 		 */
 		@Bean
-		public IntegrationFlow inWelcomeMail(ConnectionFactory connectionFactory) {
-			String routingKey = AmqpMessageDestination.WELCOME_MAIL.value;
+		public IntegrationFlow inSaveMailLog(ConnectionFactory connectionFactory) {
+			String routingKey = AmqpMessageDestination.SAVE_MAIL_LOG.value;
 			return IntegrationFlows
 				.from(Amqp.inboundAdapter(connectionFactory, routingKey))
-				.handle(mailService, "welcome")  // @ServiceActivator
+				.transform(SaveMailLogVO::of)
+				.handle(mailService, "saveLog")  // @ServiceActivator
 				.log(LoggingHandler.Level.DEBUG)
 				.get();
 		}
