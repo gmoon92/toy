@@ -35,7 +35,7 @@ public class AmqpUtils {
 	private void declareQueues() {
 		for (AmqpMessageDestination destination : AmqpMessageDestination.values()) {
 			String queueName = destination.value;
-			amqpAdmin.deleteQueue(queueName);
+			deleteQueue(queueName);
 			declarePersistenceQueue(queueName);
 		}
 	}
@@ -53,18 +53,23 @@ public class AmqpUtils {
 	 *
 	 * <p>https://www.rabbitmq.com/queues.html#properties
 	 * <p>https://stackoverflow.com/questions/21248563/rabbitmq-difference-between-exclusive-and-auto-delete
+	 *
+	 * @return
 	 */
-	private Queue declarePersistenceQueue(String name) {
-		Queue queue = new Queue(
-			name,
-			true,
-			false,
-			false,
-			getQueueArguments()
-		);
-
-		amqpAdmin.declareQueue(queue);
-		return queue;
+	private String declarePersistenceQueue(String name) {
+		try {
+			Queue queue = new Queue(
+				name,
+				true,
+				false,
+				false,
+				getQueueArguments()
+			);
+			return amqpAdmin.declareQueue(queue);
+		} catch (Exception e) {
+			log.warn("Not declare queue " + name, e);
+		}
+		return null;
 	}
 
 	/**
@@ -80,12 +85,19 @@ public class AmqpUtils {
 	}
 
 	private void deleteGarbageQueues() {
-		List<QueueInfo> queues = client.getQueues();
+		List<QueueInfo> queues = getQueueInfos();
 		for (QueueInfo queue : queues) {
 			if (queue.getConsumerCount() == 0) {
-				amqpAdmin.deleteQueue(queue.getName());
+				deleteQueue(queue.getName());
 			}
 		}
 	}
 
+	private List<QueueInfo> getQueueInfos() {
+		return client.getQueues();
+	}
+
+	private void deleteQueue(String queue) {
+		amqpAdmin.deleteQueue(queue);
+	}
 }
