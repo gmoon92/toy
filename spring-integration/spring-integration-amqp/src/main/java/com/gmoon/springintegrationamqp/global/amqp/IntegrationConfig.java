@@ -1,0 +1,72 @@
+package com.gmoon.springintegrationamqp.global.amqp;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.amqp.dsl.Amqp;
+import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.MessageChannels;
+import org.springframework.integration.handler.LoggingHandler;
+
+import com.gmoon.springintegrationamqp.mail.application.MailService;
+import com.gmoon.springintegrationamqp.mail.model.SaveMailLogVO;
+import com.rabbitmq.client.Channel;
+
+import lombok.RequiredArgsConstructor;
+
+@Configuration
+@RequiredArgsConstructor
+class IntegrationConfig {
+
+	private final MailService mailService;
+
+	/***
+	 * inboundSendMail -> outboundSendMail -> inboundLogMail
+	 */
+	@Bean
+	public IntegrationFlow inSendMail(ConnectionFactory connectionFactory) {
+		String queueName = AmqpMessageDestination.SEND_MAIL.value;
+		return IntegrationFlows
+			.from(Amqp.inboundAdapter(connectionFactory, queueName))
+			.handle(mailService, "send") // @ServiceActivator
+			.channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
+			.log(LoggingHandler.Level.DEBUG)
+			.get();
+	}
+
+	/**
+	 * https://docs.spring.io/spring-integration/reference/amqp/outbound-channel-adapter.html
+	 */
+	@Bean
+	public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate, IntegrationFlow inSendMail) {
+		return IntegrationFlows
+			.from(inSendMail.getInputChannel())
+			.handle(
+				Amqp.outboundAdapter(amqpTemplate)
+					.routingKey(AmqpMessageDestination.SAVE_MAIL_LOG.value)
+			)
+			.get();
+	}
+
+	/**
+	 * @see AmqpInboundChannelAdapter.Listener#createMessageFromAmqp(Message, Channel)
+	 * @see AmqpInboundChannelAdapter.Listener#createMessageFromPayload(Object, Channel, Map, long, List)
+	 */
+	@Bean
+	public IntegrationFlow inSaveMailLog(ConnectionFactory connectionFactory) {
+		String routingKey = AmqpMessageDestination.SAVE_MAIL_LOG.value;
+		return IntegrationFlows
+			.from(Amqp.inboundAdapter(connectionFactory, routingKey))
+			.transform(SaveMailLogVO::of)
+			.handle(mailService, "saveLog")  // @ServiceActivator
+			.log(LoggingHandler.Level.DEBUG)
+			.get();
+	}
+}
