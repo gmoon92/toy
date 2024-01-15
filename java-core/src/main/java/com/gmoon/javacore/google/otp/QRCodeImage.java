@@ -12,18 +12,18 @@ import dev.samstevens.totp.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GoogleQRCode {
+public class QRCodeImage {
 
 	private static final int IMAGE_SIZE = 250;
 
-	public static byte[] createImageBytes(String contents) {
+	public static byte[] create(String contents) {
 		BitMatrix bitMatrix = newBitMatrix(contents);
 		return createImageOutputStream(bitMatrix)
 			.toByteArray();
 	}
 
 	public static String getImageDataUrl(String contents) {
-		byte[] imageData = createImageBytes(contents);
+		byte[] imageData = create(contents);
 		return Utils.getDataUriForImage(imageData, "image/png");
 	}
 
