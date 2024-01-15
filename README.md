@@ -9,6 +9,8 @@
 - spring-cache
     - [jpa-second-level-cache](https://github.com/gmoon92/toy/blob/master/spring-cache/jpa-second-level-cache/README.md)
     - [spring-data-redis](https://github.com/gmoon92/toy/blob/master/spring-cache/spring-data-redis/README.md)
+- [spring-integration](https://github.com/gmoon92/toy/tree/master/spring-integration)
+  - [spring-integration-amqp](https://github.com/gmoon92/toy/tree/master/spring-integration/spring-integration-amqp)
 - spring-event
     - [spring-async](https://github.com/gmoon92/toy/blob/master/spring-event/spring-async/README.md)
     - [spring-event-listener](https://github.com/gmoon92/toy/blob/master/spring-event/spring-event-listener/README.md)
