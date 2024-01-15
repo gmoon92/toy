@@ -8,10 +8,13 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import dev.samstevens.totp.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class GoogleQRCode {
+
+	private static final int IMAGE_SIZE = 250;
 
 	public static byte[] createImageBytes(String contents) {
 		BitMatrix bitMatrix = newBitMatrix(contents);
@@ -19,9 +22,14 @@ public class GoogleQRCode {
 			.toByteArray();
 	}
 
+	public static String getImageDataUrl(String contents) {
+		byte[] imageData = createImageBytes(contents);
+		return Utils.getDataUriForImage(imageData, "image/png");
+	}
+
 	private static BitMatrix newBitMatrix(String contents) {
-		int width = 200;
-		int height = 200;
+		int width = IMAGE_SIZE;
+		int height = IMAGE_SIZE;
 		try {
 			QRCodeWriter writer = new QRCodeWriter();
 			return writer.encode(contents, BarcodeFormat.QR_CODE, width, height);

@@ -21,6 +21,7 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <poi.version>4.1.1</poi.version>
         <zxing.version>3.5.1</zxing.version>
+        <totp.version>1.7.1</totp.version>
     </properties>
     <dependencies>
         <dependency>
@@ -105,6 +106,12 @@
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
             <version>${zxing.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.samstevens.totp</groupId>
+            <artifactId>totp</artifactId>
+            <version>${totp.version}</version>
         </dependency>
     </dependencies>
 </project>
