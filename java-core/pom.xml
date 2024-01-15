@@ -20,6 +20,7 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <poi.version>4.1.1</poi.version>
+        <zxing.version>3.5.1</zxing.version>
     </properties>
     <dependencies>
         <dependency>
@@ -94,5 +95,16 @@
             <version>${poi.version}</version>
         </dependency>
         <!--// excel -->
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
     </dependencies>
 </project>
