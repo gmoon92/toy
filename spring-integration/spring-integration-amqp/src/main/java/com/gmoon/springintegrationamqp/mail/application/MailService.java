@@ -1,5 +1,8 @@
 package com.gmoon.springintegrationamqp.mail.application;
 
+import java.util.Map;
+
+import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Service;
 
 import com.gmoon.springintegrationamqp.mail.model.SaveMailLogVO;
@@ -16,7 +19,7 @@ public class MailService {
 		return message;
 	}
 
-	public void saveLog(SaveMailLogVO message) {
-		log.info("logging: {}", message);
+	public void saveLog(@Headers Map<Object, Object> headers, SaveMailLogVO message) {
+		log.info("headers: {}, payload: {}", headers, message);
 	}
 }
