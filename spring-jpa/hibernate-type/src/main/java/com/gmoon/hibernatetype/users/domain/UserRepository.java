@@ -2,5 +2,6 @@ package com.gmoon.hibernatetype.users.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, String>,
+	UserRepositoryCustom {
 }

@@ -10,8 +10,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import com.gmoon.hibernatetype.global.type.ColumnEncryptionConstants;
+import com.gmoon.hibernatetype.global.type.EncryptStringType;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@TypeDef(name = "encStr", typeClass = EncryptStringType.class)
 @Entity
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,6 +46,8 @@ public class User implements Serializable {
 	private String email;
 
 
+	// @Type(type = "com.gmoon.hibernatetype.global.type.EncryptStringType")
+	@Type(type = "encStr")
 	@Column(length = 200, name = "enc_email")
 	private String encEmail;
 
