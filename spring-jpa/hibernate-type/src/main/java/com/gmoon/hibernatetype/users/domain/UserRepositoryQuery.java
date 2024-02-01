@@ -1,28 +1,8 @@
 package com.gmoon.hibernatetype.users.domain;
 
-import static com.gmoon.hibernatetype.users.domain.QUser.*;
-
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+public interface UserRepositoryQuery {
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import lombok.RequiredArgsConstructor;
-
-@Repository
-@RequiredArgsConstructor
-public class UserRepositoryQuery implements UserRepositoryCustom {
-
-	private final JPAQueryFactory factory;
-
-	@Override
-	public List<User> findAllByEncEmail(String email) {
-		return factory.select(user)
-			.from(user)
-			.where(
-				user.encEmail.eq(email)
-			)
-			.fetch();
-	}
+	List<User> findAllByEncEmail(String email);
 }

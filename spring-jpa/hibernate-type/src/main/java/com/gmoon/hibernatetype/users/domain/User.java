@@ -15,6 +15,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.gmoon.hibernatetype.global.type.ColumnEncryptionConstants;
 import com.gmoon.hibernatetype.global.type.EncryptStringType;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,6 +39,8 @@ public class User implements Serializable {
 	@Column(length = 50)
 	private String id;
 
+	// select user0_.id as id1_0_, CAST(AES_DECRYPT(UNHEX(user0_.email), 'SECRETKEY') AS CHAR) as email2_0_, user0_.enc_email as enc_emai3_0_
+	// from tb_user user0_ where ()user0_.email=?
 	@ColumnTransformer(
 		read = ColumnEncryptionConstants.DEC_EMAIL,
 		write = ColumnEncryptionConstants.ENC_COLUMN
@@ -52,7 +55,8 @@ public class User implements Serializable {
 	private String encEmail;
 
 	@Builder
-	private User(String email, String encEmail) {
+	@QueryProjection
+	public User(String email, String encEmail) {
 		this.email = email;
 		this.encEmail = encEmail;
 	}
