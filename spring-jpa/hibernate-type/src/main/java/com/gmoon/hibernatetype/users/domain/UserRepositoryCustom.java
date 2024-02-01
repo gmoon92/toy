@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface UserRepositoryCustom {
 
-	List<User> findAllByEmail(String email);
+	List<User> findAllByEncEmail(String email);
 }

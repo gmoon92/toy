@@ -17,12 +17,11 @@ public class UserRepositoryQuery implements UserRepositoryCustom {
 	private final JPAQueryFactory factory;
 
 	@Override
-	public List<User> findAllByEmail(String email) {
+	public List<User> findAllByEncEmail(String email) {
 		return factory.select(user)
 			.from(user)
 			.where(
-				user.email.eq(email)
-					.or(user.encEmail.eq(email))
+				user.encEmail.eq(email)
 			)
 			.fetch();
 	}

@@ -1,5 +1,7 @@
 package com.gmoon.hibernatetype.users.domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -30,9 +32,15 @@ class UserRepositoryTest {
 	}
 
 	@Test
-	void findAllByEmail() {
-		String mail = "gmoon92@gmail.com";
+	void findAllByEncEmail() {
+		String mail = "test@gmail.com";
 
-		repository.findAllByEmail(mail);
+		repository.save(User.builder()
+			.email(mail)
+			.encEmail(mail)
+			.build());
+
+		assertThat(repository.findAllByEncEmail(mail))
+			.isNotEmpty();
 	}
 }
