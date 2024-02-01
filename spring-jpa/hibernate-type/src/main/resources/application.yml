@@ -1,16 +1,15 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hibernate-type?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/hibernate-type?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
     username: root
     password: 111111
   jpa:
     open-in-view: false
-    defer-datasource-initialization: true
     show-sql: &show-sql true
     database-platform: org.hibernate.dialect.MariaDB10Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       properties:
         hibernate:
           "[id.new_generator_mappings]": false
@@ -19,6 +18,11 @@ spring:
           format_sql: *show-sql
           use_sql_comments: *show-sql
           "[jdbc.time_zone]": UTC
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
 logging:
   level:
     "[org.hibernate.type.descriptor.sql]": trace
