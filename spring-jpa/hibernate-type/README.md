@@ -77,12 +77,12 @@ where email = HEX(AES_ENCRYPT('gmoon92@gmail.com', 'SECRETKEY'))
 - `AbstractSingleColumnStandardBasicType` 
 
 ```java
-public class EncryptStringType
+public class EncryptedStringType
 	extends AbstractSingleColumnStandardBasicType<String>
 	implements DiscriminatorType<String> {
 
-	public EncryptStringType() {
-		super(VarcharTypeDescriptor.INSTANCE, EncryptStringTypeDescriptor.INSTANCE);
+	public EncryptedStringType() {
+		super(VarcharTypeDescriptor.INSTANCE, EncryptedStringTypeDescriptor.INSTANCE);
 	}
 
 	@Override
@@ -109,12 +109,12 @@ public class EncryptStringType
 - org.hibernate.type.descriptor.java.AbstractTypeDescriptor
 
 ```java
-public class EncryptStringTypeDescriptor extends AbstractTypeDescriptor<String> {
+public class EncryptedStringTypeDescriptor extends AbstractTypeDescriptor<String> {
 
-	public static final EncryptStringTypeDescriptor INSTANCE = new EncryptStringTypeDescriptor();
+	public static final EncryptedStringTypeDescriptor INSTANCE = new EncryptedStringTypeDescriptor();
 
 	@SuppressWarnings({"unchecked"})
-	private EncryptStringTypeDescriptor() {
+	private EncryptedStringTypeDescriptor() {
 		super(String.class, ImmutableMutabilityPlan.INSTANCE);
 	}
 
