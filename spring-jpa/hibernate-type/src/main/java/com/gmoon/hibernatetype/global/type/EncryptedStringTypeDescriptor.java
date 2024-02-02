@@ -10,12 +10,12 @@ import com.gmoon.hibernatetype.global.crypt.CryptoUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EncryptStringTypeDescriptor extends AbstractTypeDescriptor<String> {
+public class EncryptedStringTypeDescriptor extends AbstractTypeDescriptor<String> {
 
-	public static final EncryptStringTypeDescriptor INSTANCE = new EncryptStringTypeDescriptor();
+	public static final EncryptedStringTypeDescriptor INSTANCE = new EncryptedStringTypeDescriptor();
 
 	@SuppressWarnings({"unchecked"})
-	private EncryptStringTypeDescriptor() {
+	private EncryptedStringTypeDescriptor() {
 		super(String.class, ImmutableMutabilityPlan.INSTANCE);
 	}
 

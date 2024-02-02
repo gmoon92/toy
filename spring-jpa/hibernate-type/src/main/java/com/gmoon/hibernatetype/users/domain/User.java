@@ -14,7 +14,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import com.gmoon.hibernatetype.global.type.ColumnEncryptionConstants;
-import com.gmoon.hibernatetype.global.type.EncryptStringType;
+import com.gmoon.hibernatetype.global.type.EncryptedStringType;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@TypeDef(name = "encStr", typeClass = EncryptStringType.class)
+@TypeDef(name = "secure", typeClass = EncryptedStringType.class)
 @Entity
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -50,7 +50,7 @@ public class User implements Serializable {
 
 
 	// @Type(type = "com.gmoon.hibernatetype.global.type.EncryptStringType")
-	@Type(type = "encStr")
+	@Type(type = "secure")
 	@Column(length = 200, name = "enc_email")
 	private String encEmail;
 

@@ -8,12 +8,12 @@ import org.hibernate.type.descriptor.sql.VarcharTypeDescriptor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EncryptStringType
+public class EncryptedStringType
 	extends AbstractSingleColumnStandardBasicType<String>
 	implements DiscriminatorType<String> {
 
-	public EncryptStringType() {
-		super(VarcharTypeDescriptor.INSTANCE, EncryptStringTypeDescriptor.INSTANCE);
+	public EncryptedStringType() {
+		super(VarcharTypeDescriptor.INSTANCE, EncryptedStringTypeDescriptor.INSTANCE);
 	}
 
 	@Override
@@ -30,6 +30,6 @@ public class EncryptStringType
 
 	@Override
 	public String getName() {
-		return "encryptString";
+		return "encryptedString";
 	}
 }
