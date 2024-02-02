@@ -61,6 +61,8 @@ from tb_user
 where email = HEX(AES_ENCRYPT('gmoon92@gmail.com', 'SECRETKEY'))
 ```
 
+> AES_DECRYPT 함수는 MySQL 에서 지원하는 내장 함수다.
+
 ## [BasicTypeRegistry](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#basic-legacy-registry)
 
 하이버네이트에서 SQL 타입과의 Java 타입간의 마샬링을 하는 부분을 [BasicTypeRegistry](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#basic-legacy-registry)에서 관리한다.
@@ -239,6 +241,8 @@ Hibernate: select user0_.email as col_0_0_ from tb_user user0_ where user0_.emai
 - `ColumnTransformer` 는 암호화 키가 로그상 노출된다.
   - CAST(AES_DECRYPT(UNHEX(email), `'SECRETKEY'`) AS CHAR)
   - HEX(AES_ENCRYPT('gmoon92@gmail.com', `'SECRETKEY'`))
+
+또한, 데이터베이스는 되게 비싼 리소스라서 왠만하면, 함수 사용(AES_DECRYPT 와 같은)을 지양한다. 애플리케이션 단에서 암복호화를 하기 때문에 데이터베이스 서버 부담을 줄일 수 있는 효과도 있다.
 
 단, 애플리케이션단에서 암복호화하기 때문에 `like` 키워드를 활용한 문자열 검색은 지원할 수 없다.
 
