@@ -30,6 +30,6 @@ public class EncryptStringType
 
 	@Override
 	public String getName() {
-		return "rcrypt";
+		return "encryptString";
 	}
 }
