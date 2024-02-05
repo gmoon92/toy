@@ -15,11 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 public class MailService {
 
 	public SendMailVO send(SendMailVO message) {
-		log.info("send mail: {}", message);
+		log.info("send mail=========================");
+		log.info("payload: {}", message);
+		log.info("send mail=========================");
 		return message;
 	}
 
 	public void saveLog(@Headers Map<Object, Object> headers, SaveMailLogVO message) {
-		log.info("headers: {}, payload: {}", headers, message);
+		log.info("after event=========================");
+		log.info("headers: {}", headers);
+		log.info("payload: {}", message);
+		log.info("after event=========================");
 	}
 }

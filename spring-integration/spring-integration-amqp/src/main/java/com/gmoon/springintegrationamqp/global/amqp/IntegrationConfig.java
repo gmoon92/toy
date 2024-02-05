@@ -38,9 +38,9 @@ class IntegrationConfig {
 		String queueName = AmqpMessageDestination.SEND_MAIL.value;
 		return IntegrationFlows
 			.from(Amqp.inboundAdapter(connectionFactory, queueName))
+			.log(LoggingHandler.Level.DEBUG)
 			.channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
 			.handle(mailService, "send") // @ServiceActivator
-			.log(LoggingHandler.Level.DEBUG)
 			.get();
 	}
 
@@ -67,9 +67,9 @@ class IntegrationConfig {
 		String routingKey = AmqpMessageDestination.SAVE_MAIL_LOG.value;
 		return IntegrationFlows
 			.from(Amqp.inboundAdapter(connectionFactory, routingKey))
+			.log(LoggingHandler.Level.DEBUG)
 			.transform(SaveMailLogVO::of)
 			.handle(mailService, "saveLog")  // @ServiceActivator
-			.log(LoggingHandler.Level.DEBUG)
 			.get();
 	}
 
