@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.amqp.dsl.Amqp;
@@ -20,7 +21,9 @@ import com.gmoon.springintegrationamqp.mail.model.SaveMailLogVO;
 import com.rabbitmq.client.Channel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 class IntegrationConfig {
@@ -35,8 +38,8 @@ class IntegrationConfig {
 		String queueName = AmqpMessageDestination.SEND_MAIL.value;
 		return IntegrationFlows
 			.from(Amqp.inboundAdapter(connectionFactory, queueName))
-			.handle(mailService, "send") // @ServiceActivator
 			.channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
+			.handle(mailService, "send") // @ServiceActivator
 			.log(LoggingHandler.Level.DEBUG)
 			.get();
 	}
@@ -45,9 +48,9 @@ class IntegrationConfig {
 	 * https://docs.spring.io/spring-integration/reference/amqp/outbound-channel-adapter.html
 	 */
 	@Bean
-	public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate, IntegrationFlow inSendMail) {
+	public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate) {
 		return IntegrationFlows
-			.from(inSendMail.getInputChannel())
+			.from(AmqpMessageDestination.SEND_MAIL.value)
 			.handle(
 				Amqp.outboundAdapter(amqpTemplate)
 					.routingKey(AmqpMessageDestination.SAVE_MAIL_LOG.value)
@@ -68,5 +71,10 @@ class IntegrationConfig {
 			.handle(mailService, "saveLog")  // @ServiceActivator
 			.log(LoggingHandler.Level.DEBUG)
 			.get();
+	}
+
+	@Bean
+	public AmqpSender amqpSender(BeanFactory beanFactory) {
+		return new AmqpSender(beanFactory);
 	}
 }
