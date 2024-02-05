@@ -13,6 +13,7 @@
         <module>java-core</module>
         <module>google-spreadsheet</module>
         <module>spring-cache</module>
+        <module>spring-data-r2dbc</module>
         <module>spring-event</module>
         <module>spring-integration</module>
         <module>spring-jooq</module>
