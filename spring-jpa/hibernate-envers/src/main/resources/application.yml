@@ -24,10 +24,5 @@ spring:
             audit_table_suffix: _h
 logging:
   level:
-    com:
-      gmoon: trace
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
+    "[com.gmoon]": trace
+    "[org.hibernate.type.descriptor.sql]": trace

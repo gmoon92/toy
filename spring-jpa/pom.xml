@@ -30,12 +30,12 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <hibernate.version>5.4.32.Final</hibernate.version>
+        <hibernate.version>5.6.15.Final</hibernate.version>
         <querydsl-core.version>5.0.0</querydsl-core.version>
         <h2.version>1.4.200</h2.version>
         <log4j-web.version>2.14.0</log4j-web.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <log4jdbc-log4j2-jdbc4.1.version>1.16</log4jdbc-log4j2-jdbc4.1.version>
-        <spring-boot.version>2.4.2</spring-boot.version>
+        <spring-boot.version>2.7.14</spring-boot.version>
     </properties>
 </project>
