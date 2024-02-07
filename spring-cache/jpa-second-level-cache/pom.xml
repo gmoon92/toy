@@ -71,6 +71,12 @@
             <artifactId>embedded-redis</artifactId>
             <version>0.7.3</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- cache end -->
 
@@ -101,6 +107,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <version>1.4.200</version>
         </dependency>
         <!-- persistence end -->
 
