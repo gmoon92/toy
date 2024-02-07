@@ -15,6 +15,8 @@ spring:
     password: root
 
   jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
     show-sql: &show-sql true
@@ -22,13 +24,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
         show-sql: *show-sql
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
         globally_quoted_identifiers: true
         jdbc:
           time_zone: UTC
-    open-in-view: false
-    defer-datasource-initialization: true
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
   sql:
