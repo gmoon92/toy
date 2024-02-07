@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,16 +29,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.headers()
-			.frameOptions().sameOrigin().and()
-			.csrf().disable()
-			.cors().disable()
-			.authorizeRequests()
-			.mvcMatchers("**/user/**").hasRole("ADMIN")
-			.anyRequest()
-			.permitAll().and()
+			.headers(header -> header.frameOptions().sameOrigin())
+			.csrf(AbstractHttpConfigurer::disable)
+			.cors(AbstractHttpConfigurer::disable)
+			.authorizeRequests(request ->
+				// request.mvcMatchers("**/user/**").hasRole("ADMIN")
+				request
+					.antMatchers("**/user/**").hasRole("ADMIN")
+					.anyRequest()
+					.permitAll()
+			)
 			.exceptionHandling()
-			.accessDeniedHandler(accessDeniedHandler()).and()
+			.accessDeniedHandler(accessDeniedHandler())
+			.and()
 			.formLogin()
 			.loginPage("/login")
 			.defaultSuccessUrl("/user/info")
