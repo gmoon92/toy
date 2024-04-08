@@ -2,9 +2,8 @@ service:
   storage-path: @project.basedir@/storage
 
 firebase:
-  project-id: gmoon-app
+  enabled: 0
   credentials: file:${service.storage-path}/service-account.json
-  server-key: AAAAyYjB7sc:APA91bHe6FUh_Z2TFjDg3TyERMhqgcahWn1Bb4Y1S-p-mFD0BlRivRKzSNbzFsCo2mZbimOrWqvWe88rlCZl21P-LVuA0-8hfvGeUKoPNeUOaMOVbNysV3ldJhhEjux6A_ErSRbLzTAD
 
 logging:
   level:
