@@ -2,7 +2,7 @@
 
 ## Environment
 
-- org.springframework.boot 2.6.1
+- org.springframework.boot 2.7.14
 - JDK 8
 - H2 Database
 
