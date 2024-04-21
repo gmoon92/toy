@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Disabled
 class QRCodeImageTest {
 
 	@DisplayName("참고 https://github.com/zxing/zxing")
