@@ -10,8 +10,9 @@
     <name>toy</name>
 
     <modules>
-        <module>java-core</module>
         <module>google-spreadsheet</module>
+        <module>java-core</module>
+        <module>spring-batch</module>
         <module>spring-cache</module>
         <module>spring-data-r2dbc</module>
         <module>spring-event</module>
