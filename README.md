@@ -6,6 +6,7 @@
 
 - [google-spreadsheet](https://github.com/gmoon92/toy/blob/master/google-spreadsheet/README.md)
 - [java-core](https://github.com/gmoon92/toy/blob/master/java-core/src/main/java/com/gmoon/javacore/JavaCoreApplication.java)
+- [spring-batch](https://github.com/gmoon92/toy/blob/master/spring-batch/README.md)
 - spring-cache
     - [jpa-second-level-cache](https://github.com/gmoon92/toy/blob/master/spring-cache/jpa-second-level-cache/README.md)
     - [spring-data-redis](https://github.com/gmoon92/toy/blob/master/spring-cache/spring-data-redis/README.md)
@@ -39,6 +40,7 @@
 - [spring-security](https://github.com/gmoon92/toy/blob/master/spring-security/README.md)
     - [spring-security-cors](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-cors/README.md)
     - [spring-security-csrf-aspect](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-csrf-aspect/README.md)
+    - [spring-security-jwk](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-jwk/README.md)
     - [spring-security-jwt](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-jwt/README.md)
     - [spring-security-password-encoder](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-password-encoder/README.md)
     - [spring-security-whiteship](https://github.com/gmoon92/toy/blob/master/spring-security/spring-security-whiteship/doc)
