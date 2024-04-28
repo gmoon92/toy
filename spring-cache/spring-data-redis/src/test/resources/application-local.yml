@@ -1,3 +1,5 @@
 spring:
+  config:
+    import: classpath:application.yml
   redis:
     port: 4000
