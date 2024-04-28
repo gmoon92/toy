@@ -18,12 +18,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.util.CollectionUtils;
 
@@ -31,14 +29,13 @@ import com.gmoon.javacore.util.JacksonUtils;
 import com.gmoon.springdataredis.cache.Cache;
 import com.gmoon.springdataredis.cache.DefaultCache;
 import com.gmoon.springdataredis.exception.NotFoundDataException;
-import com.gmoon.springdataredis.test.EmbeddedRedisConfig;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@ActiveProfiles("local")
-@Import(EmbeddedRedisConfig.class)
+// @ActiveProfiles("local")
+// @Import(EmbeddedRedisConfig.class)
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
