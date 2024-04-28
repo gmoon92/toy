@@ -1,1 +1,10 @@
-spring.application.name=spring-batch
+spring:
+  datasource:
+    hikari:
+      #      jdbc-url: jdbc:h2:tcp://localhost:9092/~/testdb
+      jdbc-url: jdbc:h2:mem:testdb
+      driver-class-name: org.h2.Driver
+      username: sa
+      password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect

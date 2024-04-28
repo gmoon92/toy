@@ -15,6 +15,8 @@
     <description>spring-batch</description>
     <properties>
         <java.version>1.8</java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
+        <h2.version>2.1.214</h2.version>
     </properties>
     <dependencies>
         <dependency>
@@ -30,6 +32,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
