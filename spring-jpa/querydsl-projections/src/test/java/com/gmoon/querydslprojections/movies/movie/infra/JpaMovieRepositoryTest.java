@@ -7,10 +7,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class MovieJpaRepositoryTest {
+class JpaMovieRepositoryTest {
 
 	@Autowired
-	private MovieJpaRepository repository;
+	private JpaMovieRepository repository;
 
 	@Test
 	void name() {
