@@ -13,9 +13,8 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     generate-ddl: true
-
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 
 "[logging.level.MySQL]": debug
 
