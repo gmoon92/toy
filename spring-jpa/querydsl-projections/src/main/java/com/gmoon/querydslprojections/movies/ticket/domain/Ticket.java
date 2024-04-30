@@ -1,4 +1,4 @@
-package com.gmoon.querydslprojections.movies.domain;
+package com.gmoon.querydslprojections.movies.ticket.domain;
 
 import java.io.Serializable;
 
@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.gmoon.querydslprojections.movies.movie.domain.Movie;
 
 @Entity
 public class Ticket implements Serializable {

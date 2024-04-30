@@ -1,4 +1,4 @@
-package com.gmoon.querydslprojections.movies.infra;
+package com.gmoon.querydslprojections.movies.movie.infra;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

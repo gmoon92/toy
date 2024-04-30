@@ -1,7 +1,6 @@
-package com.gmoon.querydslprojections.movies.domain;
+package com.gmoon.querydslprojections.movies.movie.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-public class Coupon implements Serializable {
+public class Movie implements Serializable {
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")
@@ -19,5 +18,5 @@ public class Coupon implements Serializable {
 	@Column(name = "id", length = 50)
 	private String id;
 
-	private LocalDateTime expireDt;
+	private String name;
 }
