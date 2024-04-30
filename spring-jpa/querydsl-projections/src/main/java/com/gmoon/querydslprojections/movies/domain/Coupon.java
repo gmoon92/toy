@@ -1,4 +1,4 @@
-package com.gmoon.querydslprojections.movies;
+package com.gmoon.querydslprojections.movies.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
