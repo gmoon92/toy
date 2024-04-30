@@ -1,0 +1,47 @@
+version: v1
+name: toy
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  # https://mariadb.com/kb/en/how-to-quickly-insert-data-into-mariadb/
+  mariadb:
+    image: mariadb:10.3
+    environment:
+      - TZ=UTC
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=111111
+    ports:
+      - 3306:3306
+    command:
+      - --lower_case_table_names=1
+      - --skip-ssl
+      - --character_set_server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  localstack:
+    image: localstack/localstack:0.14.3   # 버전에 따라 설정이 다른점이 많아서 지정하였음
+    network_mode: bridge
+    ports:
+      - "4510-4559:4510-4559"  # external service port range
+      - "4566:4566"            # LocalStack Edge Proxy
+    environment:
+      - SERVICES=sns,sqs,s3,dynamodb   # 사용할 서비스 목록
+      - DEBUG=${DEBUG-0}
+      - DATA_DIR=${DATA_DIR-}          #LocalStack::todo
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=test            # 내부에서 aws 커맨드 사용을 위해 지정 awslocal 을 사용하면 필요 없음
+      - AWS_SECRET_ACCESS_KEY=test        # 위와 동일
+      - AWS_DEFAULT_REGION=ap-northeast-2 # 위와 동일
+    volumes:
+      - "${TMPDIR-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
