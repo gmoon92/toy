@@ -24,6 +24,22 @@
 3. `Import Scheme` > `IntelliJ IDEA code style XML` 선택
 4. `intellij-formatter.xml` 파일 적용
 
+## File ends with a line break
+
+파일의 마지막에 새줄 문자가 없는 경우 자동으로 추가하는 옵션 활성화
+
+`Editor` > `General` > `Ensure every saved file ends with a line break`
+
+![intellij-code-style_editor_line_break.png](./img/intellij-code-style_editor_line_break.png)
+
+## Actions on Save
+
+파일 저장시 코드 스타일 적용
+
+`Tools` > `Actions on Save` > `Reformat code`, `Optimize imports` 활성화
+
+![intellij-code-style_actions_on_save.png](./img/intellij-code-style_actions_on_save.png)
+
 ## Checkstyle Settings
 
 ### Install CheckStyle-IDEA Plugin
