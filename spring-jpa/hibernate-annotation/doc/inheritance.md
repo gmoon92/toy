@@ -223,18 +223,22 @@ Table per Class 전략은 하위 엔티티 클래스에 해당하는 테이블�
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // 상속 구현 전략
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@TableGenerator(name = "PRODUCT_SEQ_GENERATOR",
+@TableGenerator(
+        name = "PRODUCT_SEQ_GENERATOR",
 	table = "PRODUCT_SEQUENCES",
 	pkColumnValue = "PRODUCT_SEQ",
-	allocationSize = 1)
+        allocationSize = 1
+)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public abstract class Product implements Serializable {
 
 	@EqualsAndHashCode.Include
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE,
-		generator = "PRODUCT_SEQ_GENERATOR")
+    @GeneratedValue(
+            strategy = GenerationType.TABLE,
+            generator = "PRODUCT_SEQ_GENERATOR"
+    )
 	private String id;
     
     // ...
@@ -282,6 +286,19 @@ CREATE TABLE CompanyProduct
   - 다형성 쿼리나 관계가 필요하지 않은 경우 
   - 제약 조건을 사용하여 데이터 일관성을 보장하고, 다형성 쿼리 옵션을 제공 
   - 그러나 다형성 쿼리는 테이블 구조 특성상 매우 복잡해 질 가능성이 높다.
+
+## @MappedSuperclass vs @Inheritance
+
+@MappedSuperclass 는 상속 개념을 통해 공통적으로 반복되는 상태와 행위를 추상화하기 위한 목적을 가진 애노테이션이다.
+
+반면 데이터베이스에선 OOP의 상속 개념이 없기 때문에, JPA의 @Inheritance 은 전략 패턴을 기반으로 OOP 상속 개념을 구체화한 모델을 테이블 기반으로 지원하기 위한 애노테이션이다. OOP 상속 개념을
+표현하기 위해, @Inheritance 전략에 따라 상위 테이블과 상위 테이블과의 참조 제약조건으로 여러 하위 테이블로 구성하거나, 하나의 테이블로 구성한다.
+
+따라서 @MappedSuperclass 상위 클래스에서 쿼리 질의를 수행하지 못하고, @Inheritance 상위 클래스에선 쿼리 질의를 수행할 수 있고, 연관 관계 설정도 가능하다.
+
+단순히 공통된 상태와 행위를 추상화 하기 위한 목적이라면, @MappedSuperclass 를 사용하는게 맞다.
+
+> [stackoverflow - JPA: Implementing Model Hierarchy - @MappedSuperclass vs. @Inheritance](https://stackoverflow.com/questions/9667703/jpa-implementing-model-hierarchy-mappedsuperclass-vs-inheritance)
 
 ## Reference
 
