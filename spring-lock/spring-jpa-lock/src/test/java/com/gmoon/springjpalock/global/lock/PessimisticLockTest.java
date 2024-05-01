@@ -16,10 +16,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
+
 import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +37,10 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		LockModeType sLock = LockModeType.PESSIMISTIC_READ;
 
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
+			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
+			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
+			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
+			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
 			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
 			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
 			CompletableFuture.runAsync(() -> saveWithLockMode(sLock))
