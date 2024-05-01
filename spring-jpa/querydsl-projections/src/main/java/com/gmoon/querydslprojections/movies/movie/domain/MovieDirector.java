@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.gmoon.querydslprojections.movies.users.director.domain.Director;
+import com.gmoon.querydslprojections.movies.users.user.domain.Director;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

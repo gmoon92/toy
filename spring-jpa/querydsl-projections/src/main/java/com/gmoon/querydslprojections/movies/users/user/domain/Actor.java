@@ -1,4 +1,4 @@
-package com.gmoon.querydslprojections.movies.users.actor.domain;
+package com.gmoon.querydslprojections.movies.users.user.domain;
 
 import java.io.Serializable;
 
