@@ -1,5 +1,7 @@
 package com.gmoon.querydslprojections.movies.movie.infra;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,7 +15,7 @@ class JpaMovieRepositoryTest {
 	private JpaMovieRepository repository;
 
 	@Test
-	void name() {
-
+	void findAll() {
+		assertThat(repository.findAll()).isNotEmpty();
 	}
 }

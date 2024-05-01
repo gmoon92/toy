@@ -16,5 +16,8 @@ spring:
     hibernate:
       ddl-auto: create
 
-"[logging.level.MySQL]": debug
+  sql:
+    init:
+      mode: always
 
+"[logging.level.MySQL]": debug
