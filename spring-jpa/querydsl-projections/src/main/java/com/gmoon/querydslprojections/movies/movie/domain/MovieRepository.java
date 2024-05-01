@@ -1,13 +1,13 @@
 package com.gmoon.querydslprojections.movies.movie.domain;
 
-import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
-public interface MovieRepository<T extends Movie, ID extends Serializable> {
+public interface MovieRepository<T extends Movie, ID> {
 
 	T save(T movie);
 
-	T getReferenceById(ID id);
+	Optional<T> findById(ID id);
 
 	List<T> findAll();
 }

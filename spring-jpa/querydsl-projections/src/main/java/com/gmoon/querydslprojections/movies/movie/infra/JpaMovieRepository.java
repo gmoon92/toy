@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.gmoon.querydslprojections.movies.movie.domain.Movie;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieRepository;
 
-public interface JpaMovieRepository extends MovieRepository, JpaRepository<Movie, String> {
+public interface JpaMovieRepository extends MovieRepository<Movie, String>, JpaRepository<Movie, String> {
 }

@@ -18,4 +18,10 @@ class JpaMovieRepositoryTest {
 	void findAll() {
 		assertThat(repository.findAll()).isNotEmpty();
 	}
+
+	@Test
+	void findById() {
+		assertThatCode(() -> repository.findById("movie001"))
+			.doesNotThrowAnyException();
+	}
 }
