@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 public class MovieReleaseTime implements Serializable {
 
-	private LocalDateTime releaseTime;
+	private LocalDateTime value;
 
 	private int year;
 
@@ -26,11 +26,11 @@ public class MovieReleaseTime implements Serializable {
 
 	private int hour;
 
-	public MovieReleaseTime(LocalDateTime releaseTime) {
-		this.releaseTime = releaseTime;
-		this.year = releaseTime.getYear();
-		this.month = releaseTime.getMonthValue();
-		this.dayOfMonth = releaseTime.getDayOfMonth();
-		this.hour = releaseTime.getHour();
+	public MovieReleaseTime(LocalDateTime value) {
+		this.value = value;
+		this.year = value.getYear();
+		this.month = value.getMonthValue();
+		this.dayOfMonth = value.getDayOfMonth();
+		this.hour = value.getHour();
 	}
 }
