@@ -77,38 +77,38 @@ INSERT INTO tb_movie (id, film_rating, genre, name, running_minutes,
 VALUES ('movie002', 'G', 'ANIMATION', '쿵푸팬더4', '93', '2024-04-09 15:00:00', 2024, 04, 9, 15);
 
 -- movie director
-INSERT INTO tb_movie_director (id, director_id, movie_id)
-VALUES ('movie-director001', 'user001', 'movie001');
-INSERT INTO tb_movie_director (id, director_id, movie_id)
-VALUES ('movie-director002', 'user010', 'movie002');
+INSERT INTO tb_movie_director (director_id, movie_id)
+VALUES ('user001', 'movie001');
+INSERT INTO tb_movie_director (director_id, movie_id)
+VALUES ('user010', 'movie002');
 
 -- movie cast
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast001', 'user002', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast002', 'user003', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast003', 'user004', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast004', 'user005', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast005', 'user006', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast006', 'user007', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast007', 'user008', 'movie001');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast008', 'user009', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user002', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user003', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user004', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user005', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user006', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user007', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user008', 'movie001');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user009', 'movie001');
 
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast009', 'user011', 'movie002');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast010', 'user012', 'movie002');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast011', 'user013', 'movie002');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast012', 'user014', 'movie002');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast013', 'user015', 'movie002');
-INSERT INTO tb_movie_cast (id, actor_id, movie_id)
-VALUES ('movie-cast014', 'user016', 'movie002');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user011', 'movie002');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user012', 'movie002');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user013', 'movie002');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user014', 'movie002');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user015', 'movie002');
+INSERT INTO tb_movie_cast (actor_id, movie_id)
+VALUES ('user016', 'movie002');
