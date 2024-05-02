@@ -3,11 +3,11 @@ package com.gmoon.querydslprojections.movies.movie.domain;
 import java.util.List;
 import java.util.Optional;
 
-public interface MovieRepository<T extends Movie, ID> {
+public interface MovieRepository {
 
-	T save(T movie);
+	Movie save(Movie movie);
 
-	Optional<T> findById(ID id);
+	Optional<Movie> findById(String id);
 
-	List<T> findAll();
+	List<Movie> findAll();
 }
