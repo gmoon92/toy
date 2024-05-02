@@ -29,8 +29,8 @@ public abstract class User implements Serializable {
 	@GeneratedValue(generator = "system-uuid")
 	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	@Column(name = "id", length = 50)
-	private String id;
+	protected String id;
 
 	@Column(name = "name", length = 50, nullable = false)
-	private String name;
+	protected String name;
 }

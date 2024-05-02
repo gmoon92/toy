@@ -15,4 +15,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "id")
 public class Director extends User {
 
+	public Director(String id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 }

@@ -15,4 +15,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "id")
 public class Actor extends User {
 
+	public Actor(String id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 }
