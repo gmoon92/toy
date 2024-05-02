@@ -1,0 +1,47 @@
+package com.gmoon.querydslprojections.global;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.gmoon.querydslprojections.movies.movie.domain.FilmRatings;
+import com.gmoon.querydslprojections.movies.movie.domain.Movie;
+import com.gmoon.querydslprojections.movies.movie.domain.MovieGenre;
+import com.gmoon.querydslprojections.movies.movie.domain.MovieReleaseTime;
+import com.gmoon.querydslprojections.movies.users.user.domain.Actor;
+import com.gmoon.querydslprojections.movies.users.user.domain.Director;
+
+import lombok.Builder;
+
+public class Fixtures {
+
+	@Builder(
+		builderMethodName = "newMovie",
+		setterPrefix = "with",
+		buildMethodName = "create"
+	)
+	public static Movie movie(
+		String name,
+		MovieGenre genre,
+		FilmRatings filmRatings
+	) {
+		return Movie.builder()
+			.id(uuid())
+			.name(name)
+			.genre(genre)
+			.filmRatings(filmRatings)
+			.releaseTime(new MovieReleaseTime(LocalDateTime.now()))
+			.build();
+	}
+
+	public static Director director(String name) {
+		return new Director(uuid(), name);
+	}
+
+	public static Actor actor(String name) {
+		return new Actor(uuid(), name);
+	}
+
+	private static String uuid() {
+		return UUID.randomUUID().toString();
+	}
+}
