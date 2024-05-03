@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.stream.IntStream;
 
 import javax.persistence.LockModeType;
 import javax.persistence.OptimisticLockException;
@@ -25,7 +26,6 @@ import com.gmoon.springjpalock.orders.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Disabled("todo gmoon S-Lock 검증 다시 확인, 멱등성 유지되도록 수정")
 public class PessimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("S-Lock 교착 상태 검증"
@@ -38,13 +38,9 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		LockModeType sLock = LockModeType.PESSIMISTIC_READ;
 
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(sLock))
+			IntStream.range(0, 100)
+				.mapToObj(number -> CompletableFuture.runAsync(() -> saveWithLockMode(sLock)))
+				.toArray(CompletableFuture[]::new)
 		);
 
 		assertThatCode(allOf::join)
@@ -68,9 +64,9 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		LockModeType xLock = LockModeType.PESSIMISTIC_WRITE;
 
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(xLock))
+			IntStream.range(0, 100)
+				.mapToObj(number -> CompletableFuture.runAsync(() -> saveWithLockMode(xLock)))
+				.toArray(CompletableFuture[]::new)
 		);
 
 		assertThatCode(allOf::join).doesNotThrowAnyException();
