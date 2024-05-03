@@ -13,9 +13,9 @@
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
-    <logger name="org.hibernate.type.descriptor.sql" level="TRACE" />
-    <logger name="MySQL" level="TRACE" />
-    <logger name="com.gmoon" level="DEBUG" />
+    <logger name="org.hibernate.type.descriptor.sql" level="OFF"/>
+    <logger name="MySQL" level="DEBUG"/>
+    <logger name="com.gmoon" level="WARN"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
