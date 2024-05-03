@@ -22,7 +22,7 @@ class MovieReleaseTimeTest {
 
 		assertThat(releaseTime)
 			.hasNoNullFieldsOrProperties()
-			.hasFieldOrPropertyWithValue("releaseTime", dateTime)
+			.hasFieldOrPropertyWithValue("value", dateTime)
 			.hasFieldOrPropertyWithValue("year", 2024)
 			.hasFieldOrPropertyWithValue("month", 4)
 			.hasFieldOrPropertyWithValue("dayOfMonth", 30)
