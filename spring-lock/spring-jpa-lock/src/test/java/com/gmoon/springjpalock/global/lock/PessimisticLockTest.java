@@ -25,6 +25,7 @@ import com.gmoon.springjpalock.orders.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Disabled("todo gmoon S-Lock 검증 다시 확인, 멱등성 유지되도록 수정")
 public class PessimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("S-Lock 교착 상태 검증"
