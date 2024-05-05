@@ -28,6 +28,11 @@ public class InMemoryMovieRepository implements MovieRepository {
 	}
 
 	@Override
+	public Movie get(String id) {
+		return CACHE.get(id);
+	}
+
+	@Override
 	public Optional<Movie> findById(String id) {
 		return Optional.ofNullable(CACHE.get(id));
 	}

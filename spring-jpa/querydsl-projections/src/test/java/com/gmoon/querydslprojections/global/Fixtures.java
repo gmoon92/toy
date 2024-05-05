@@ -14,6 +14,9 @@ import lombok.Builder;
 
 public class Fixtures {
 
+	public static String MOVIE_ID_001 = "movie001";
+	public static String MOVIE_ID_002 = "movie002";
+
 	@Builder(
 		builderMethodName = "newMovie",
 		setterPrefix = "with",
