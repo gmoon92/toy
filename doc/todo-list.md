@@ -1,8 +1,7 @@
-- l2 
-  - HAZELCAST
-  - EHCACHE
-  - REDIS
+- spring-integration
+- spring-reactive
+- spring-batch
+- spring-security-jwk
 - rabbitmq
 - redis
   - transaction
-- spring integration
