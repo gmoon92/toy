@@ -26,6 +26,7 @@
     - [hibernate-performance](https://github.com/gmoon92/toy/tree/master/spring-jpa/hibernate-performance/doc)
     - [hibernate-sequence-generator](https://github.com/gmoon92/toy/blob/master/spring-jpa/hibernate-sequence-generator/README.md)
     - [hibernate-type](https://github.com/gmoon92/toy/blob/master/spring-jpa/hibernate-type/README.md)
+    - [querydsl-projections](https://github.com/gmoon92/toy/blob/master/spring-jpa/querydsl-projections/README.md)
     - [spring-jpa-pagination](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-pagination/README.md)
     - [spring-jpa-specs](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-specs/README.md)
     - [spring-jpa-multi-datasource](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-multi-datasource/README.md)
