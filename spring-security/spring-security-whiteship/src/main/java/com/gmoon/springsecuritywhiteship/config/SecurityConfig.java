@@ -2,6 +2,8 @@ package com.gmoon.springsecuritywhiteship.config;
 
 import java.util.Arrays;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,15 +12,23 @@ import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
@@ -28,23 +38,41 @@ import com.gmoon.springsecuritywhiteship.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * <pre>
+ * @see WebSecurityConfigurerAdapter
+ * @link {https://spring.io/guides/topicals/spring-security-architecture}
+ * </pre>
+ * */
 @Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-	final AccountService accountService;
+	private final AccountService accountService;
 
-	// 히어러키 커스텀 1. AccessDecisionManager
-	// 복잡.....
-	// 계층형 Role 관리를 위한 AccessDecisionManager 추가
+	@PostConstruct
+	public void init() {
+		// 	https://github.com/spring-projects/spring-security/issues/6856
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+	}
 
-	// 커스텀2 expressionHandler 정의
-	// 히어러키는 voter 핸들러를 통해 설정이 가능함으로. expressionHandler를 커스텀
+	/**
+	 * @implNote
+	 * <pre>
+	 * 히어러키
+	 * 커스텀 1. AccessDecisionManager
+	 * 복잡.....
+	 * 계층형 Role 관리를 위한 AccessDecisionManager 추가
+	 *
+	 * 커스텀2 expressionHandler 정의
+	 * 히어러키는 voter 핸들러를 통해 설정이 가능함으로 expressionHandler 를 커스텀
+	 * </pre>
+	 * */
 	public AccessDecisionManager customAccessDecisionManager() {
 		// handler 생성
-		SecurityExpressionHandler handler = customExpressionHandler();
+		SecurityExpressionHandler<FilterInvocation> handler = customExpressionHandler();
 
 		// voter 생성
 		WebExpressionVoter webExpressionVoter = new WebExpressionVoter();
@@ -55,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return new AffirmativeBased(Arrays.asList(webExpressionVoter));
 	}
 
-	private SecurityExpressionHandler customExpressionHandler() {
+	private SecurityExpressionHandler<FilterInvocation> customExpressionHandler() {
 		// 히어러키 설정은 expressionHandler를 통해서만 설정 가능
 		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
 		// Admin 계정은 User 계정도 볼 수 있다.
@@ -68,23 +96,109 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	// Role Hierarchy
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests() // [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
-			.mvcMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
-			.mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
-			.mvcMatchers("/user").hasRole(AccountRole.USER.getRole())
-			.antMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
-			.anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
-			//            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
-			.expressionHandler(customExpressionHandler()); // 커스텀 2. expression handler
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		return http
+			// [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
+			.authorizeRequests(request ->
+				request
+					.mvcMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
+					.mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
+					.mvcMatchers("/user").hasRole(AccountRole.USER.getRole())
+					.antMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
+					.anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
+					//            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
+					.expressionHandler(customExpressionHandler()) // 커스텀 2. expression handler
+			)
 
-		//    https://www.baeldung.com/spring-security-custom-access-denied-page
-		// ExceptionTranslationFilter
-		http.exceptionHandling()
-			//            .accessDeniedPage("/access-denied");
+			// https://www.baeldung.com/spring-security-custom-access-denied-page
+			// ExceptionTranslationFilter
+			.exceptionHandling(this::exceptionHandling)
+
+			// [2] form login 설정
+			.formLogin(config ->
+				config.loginPage("/login")
+					.usernameParameter("id")
+					.passwordParameter("password")
+					.permitAll()
+			)
+
+			// [3] logout
+			.logout(config ->
+					config.logoutUrl("/logout") // logout page config
+						.logoutSuccessUrl("/login") // logout success event after page
+				// .logoutSuccessHandler() // custom logout success handler add
+				// .addLogoutHandler() // custom logout handler add
+				// .deleteCookies() // cookie login auth
+			)
+
+			// [4] anonymous config
+			// .anonymous(config ->
+			// 	config.principal("anonymousUser")
+			// 		.authorities()
+			// 		.key("anonymousUserKey1")
+			// )
+
+			/**
+			 * @see SessionManagementConfigurer
+			 * */
+			// Session fixation
+			// .sessionManagement(config ->
+			// 	config
+			// 		.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+			// 		.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
+			// 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession)
+			// 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)
+			// 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::none)
+			// 		// .invalidSessionUrl("/login")
+			// 		.maximumSessions(1) // 동시성 제어
+			// 		.maxSessionsPreventsLogin(true)
+			// )
+
+			// remember me config
+			.rememberMe(config ->
+				config
+					// .useSecureCookie(true) // https 적용 후 true 권장
+					.userDetailsService(accountService)
+					.key("remember-me-sample")
+			)
+
+			// https://www.baeldung.com/spring-security-basic-authentication
+			.httpBasic(Customizer.withDefaults())
+			.build();
+	}
+
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	}
+
+	@Bean
+	public static PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+	/**
+	 * @implNote
+	 * <pre>
+	 * @link {https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html#servlet-authentication-unpwd-storage}
+	 * @link {https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html#publish-authentication-manager-bean}
+	 * </pre>
+	 * */
+	@Bean
+	public AuthenticationManager authenticationManager() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setPasswordEncoder(passwordEncoder());
+		provider.setUserDetailsService(accountService);
+		return new ProviderManager(provider);
+	}
+
+	private void exceptionHandling(ExceptionHandlingConfigurer<HttpSecurity> configurer) {
+		configurer
+			// .accessDeniedPage("/access-denied")
 			.accessDeniedHandler((request, response, accessDeniedException) -> {
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				SecurityContext context = SecurityContextHolder.getContext();
+				Authentication authentication = context.getAuthentication();
 				if (authentication != null) {
 					UserDetails user = (UserDetails)authentication.getPrincipal();
 					String username = user.getUsername();
@@ -92,67 +206,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				}
 				response.sendRedirect("/access-denied");
 			});
-
-		// [2] form login 설정
-		http.formLogin()
-			.loginPage("/login")
-			.usernameParameter("id")
-			.passwordParameter("password")
-			.permitAll();
-
-		http.httpBasic();
-		//    https://www.baeldung.com/spring-security-basic-authentication
-
-		// [3] logout
-		http.logout()
-			.logoutUrl("/logout") // logout page config
-			.logoutSuccessUrl("/login"); // logout success event after page
-		//      .logoutSuccessHandler() // custom logout success handler add
-		//      .addLogoutHandler() // custom logout handler add
-		//      .deleteCookies() // cookie login auth
-
-		// [4] anonymous config
-		//    http.anonymous()
-		//            .principal("anonymousUser")
-		//            .authorities()
-		//            .key("anonymousUserKey1");
-
-		// Session fixation
-		//    http.sessionManagement()
-		//            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-		//            .sessionFixation()
-		////            .newSession()
-		////            .changeSessionId()
-		////            .migrateSession()
-		////            .none()
-		//              .changeSessionId()
-		////            .invalidSessionUrl("/login")
-		//            .maximumSessions(1) // 동시성 제어
-		//              .maxSessionsPreventsLogin(true)
-		//    ;
-
-		// remember me config
-		http.rememberMe()
-			//            .useSecureCookie(true) // https 적용 후 true 권장
-			.userDetailsService(accountService)
-			.key("remember-me-sample");
-
-		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-	}
-
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
-
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
 	}
 }
