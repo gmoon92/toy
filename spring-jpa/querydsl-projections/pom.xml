@@ -7,6 +7,7 @@
         <artifactId>spring-jpa</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>com.gmoon</groupId>
     <artifactId>querydsl-projections</artifactId>
     <version>0.0.1-SNAPSHOT</version>
