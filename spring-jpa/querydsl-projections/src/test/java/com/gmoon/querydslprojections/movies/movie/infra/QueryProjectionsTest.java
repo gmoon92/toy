@@ -3,8 +3,6 @@ package com.gmoon.querydslprojections.movies.movie.infra;
 import static com.gmoon.querydslprojections.movies.movie.domain.QMovie.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
-import com.querydsl.core.annotations.QueryProjection;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +21,8 @@ import com.gmoon.querydslprojections.global.Fixtures;
 import com.gmoon.querydslprojections.global.JpaConfig;
 import com.gmoon.querydslprojections.movies.movie.domain.FilmRatings;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieGenre;
+import com.gmoon.querydslprojections.movies.movie.dto.MovieResponse;
+import com.gmoon.querydslprojections.movies.movie.dto.QMovieResponse;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -56,10 +55,53 @@ public class QueryProjectionsTest {
 	@DisplayName("bean setter prop. Constructor and setter props must be public modifiers.")
 	@Test
 	void bean() {
-		MovieResponse response = queryFactory
+		MovieDTO result = queryFactory
 			.select(
 				Projections.bean(
-					MovieResponse.class,
+					MovieDTO.class,
+					movie.id,
+					// movie.name, // 타깃 객체에 setName 필요.
+					Expressions.as(movie.name, "movieName"),
+					movie.genre
+				)
+			)
+			.from(movie)
+			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
+			.fetchFirst();
+
+		assertThat(result.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
+		assertThat(result.getMovieName()).isEqualTo("범죄도시4");
+		assertThat(result.getGenre()).isEqualTo(MovieGenre.ACTION);
+	}
+
+	@DisplayName("fields. Constructor must be public modifiers.")
+	@Test
+	void fields() {
+		MovieDTO result = queryFactory
+			.select(
+				Projections.fields(
+					MovieDTO.class,
+					movie.id,
+					Expressions.as(movie.name, "movieName"),
+					movie.genre
+				)
+			)
+			.from(movie)
+			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
+			.fetchFirst();
+
+		assertThat(result.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
+		assertThat(result.getMovieName()).isEqualTo("범죄도시4");
+		assertThat(result.getGenre()).isEqualTo(MovieGenre.ACTION);
+	}
+
+	@DisplayName("constructor. Constructor must be public modifiers.")
+	@Test
+	void constructor() {
+		MovieDTO result = queryFactory
+			.select(
+				Projections.constructor(
+					MovieDTO.class,
 					movie.id,
 					movie.name,
 					movie.genre
@@ -69,42 +111,22 @@ public class QueryProjectionsTest {
 			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
 			.fetchFirst();
 
-		assertThat(response.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
-		assertThat(response.getMovieName()).isEqualTo("범죄도시4");
-		assertThat(response.getGenre()).isEqualTo(MovieGenre.ACTION);
+		assertThat(result.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
+		assertThat(result.getMovieName()).isEqualTo("범죄도시4");
+		assertThat(result.getGenre()).isEqualTo(MovieGenre.ACTION);
 	}
 
-	@DisplayName("fields. Constructor and setter props must be public modifiers.")
 	@Test
-	void fields() {
+	void queryProjectionsAnnotation() {
 		MovieResponse response = queryFactory
 			.select(
-				Projections.fields(
-					MovieResponse.class,
+				new QMovieResponse(
 					movie.id,
-					Expressions.as(movie.name, "movieName"),
-					movie.genre
-				)
-			)
-			.from(movie)
-			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
-			.fetchFirst();
-
-		assertThat(response.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
-		assertThat(response.getMovieName()).isEqualTo("범죄도시4");
-		assertThat(response.getGenre()).isEqualTo(MovieGenre.ACTION);
-	}
-
-	@DisplayName("constructor. Constructor and setter props must be public modifiers.")
-	@Test
-	void constructor() {
-		MovieResponse response = queryFactory
-			.select(
-				Projections.constructor(
-					MovieResponse.class,
-					movie.id,
-					Expressions.as(movie.name, "movieName"),
-					movie.genre
+					movie.name,
+					movie.genre,
+					movie.filmRatings,
+					movie.director.director.name,
+					movie.releaseTime
 				)
 			)
 			.from(movie)
@@ -119,7 +141,7 @@ public class QueryProjectionsTest {
 	@NoArgsConstructor(access = AccessLevel.PUBLIC)
 	@Getter
 	@Setter(AccessLevel.PUBLIC)
-	public static class MovieResponse {
+	public static class MovieDTO {
 
 		private String id;
 		private String movieName;
@@ -129,28 +151,10 @@ public class QueryProjectionsTest {
 		private List<String> castNames;
 		private Long releaseDateTime;
 
-		public MovieResponse(String id, String movieName, MovieGenre genre2) {
-			this.id = id;
-			this.movieName = movieName;
-			this.genre = genre2;
-		}
-
-		@QueryProjection
-		public MovieResponse(String id, String movieName, MovieGenre genre, FilmRatings filmRatings,
-			String directorName,
-			List<String> castNames,
-			LocalDateTime releaseDateTime) {
+		public MovieDTO(String id, String movieName, MovieGenre genre) {
 			this.id = id;
 			this.movieName = movieName;
 			this.genre = genre;
-			this.filmRatings = filmRatings;
-			this.directorName = directorName;
-			this.castNames = castNames;
-			this.releaseDateTime = releaseDateTime.toEpochSecond(ZoneOffset.UTC);
-		}
-
-		public void setName(String movieName) {
-			this.movieName = movieName;
 		}
 	}
 }

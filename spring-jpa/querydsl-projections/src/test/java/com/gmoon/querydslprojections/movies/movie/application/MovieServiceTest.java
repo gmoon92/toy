@@ -33,7 +33,7 @@ class MovieServiceTest {
 
 		assertThat(movieResponse)
 			.hasFieldOrPropertyWithValue("id", movie.getId())
-			.hasFieldOrPropertyWithValue("name", movie.getName())
+			.hasFieldOrPropertyWithValue("movieName", movie.getName())
 			.hasFieldOrPropertyWithValue("genre", movie.getGenre())
 			.hasFieldOrPropertyWithValue("filmRatings", movie.getFilmRatings())
 			.hasFieldOrPropertyWithValue("directorName", movie.getDirectorName())

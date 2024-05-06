@@ -2,6 +2,7 @@ package com.gmoon.querydslprojections.movies.movie.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import javax.persistence.Embeddable;
 
@@ -32,5 +33,9 @@ public class MovieReleaseTime implements Serializable {
 		this.month = value.getMonthValue();
 		this.dayOfMonth = value.getDayOfMonth();
 		this.hour = value.getHour();
+	}
+
+	public long toSeconds() {
+		return value.toEpochSecond(ZoneOffset.UTC);
 	}
 }
