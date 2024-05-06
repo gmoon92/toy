@@ -193,7 +193,7 @@ public class MovieResponse {
 }
 ```
 
-`select` 구문에 생성된 Querydsl projection 객체를 생성자 인수에 맞게 지정해주면 된다.
+`select` 구문에 생성된 Querydsl projection 객체의 생성자 인수에 맞게 지정해주면 된다.
 
 ```java
 public class QueryProjectionsTest {
