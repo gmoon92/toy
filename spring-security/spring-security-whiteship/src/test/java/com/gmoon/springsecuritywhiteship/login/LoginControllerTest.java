@@ -34,16 +34,25 @@ import com.gmoon.springsecuritywhiteship.sample.SampleService;
 
 @WebMvcTest(value = {UserController.class})
 class LoginControllerTest {
-	@Autowired WebApplicationContext context;
-	MockMvc mockMvc;
 
-	@MockBean AccountService accountService;
-	@MockBean AccountRepository accountRepository;
-	@MockBean SampleService sampleService;
-	@MockBean BoardRepository boardRepository;
+	@Autowired
+	private WebApplicationContext context;
+	private MockMvc mockMvc;
 
-	String username;
-	String password;
+	@MockBean
+	private AccountService accountService;
+
+	@MockBean
+	private AccountRepository accountRepository;
+
+	@MockBean
+	private SampleService sampleService;
+
+	@MockBean
+	private BoardRepository boardRepository;
+
+	private String username;
+	private String password;
 
 	@BeforeEach
 	void setUp() {

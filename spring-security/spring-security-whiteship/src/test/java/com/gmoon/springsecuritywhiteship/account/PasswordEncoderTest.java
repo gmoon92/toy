@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PasswordEncoderTest {
 
 	@Autowired
-	PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Test
 	void encode() {

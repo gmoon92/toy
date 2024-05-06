@@ -20,7 +20,8 @@ import org.springframework.test.web.servlet.ResultActions;
 class SignUpControllerTest {
 	private static final String URL_OF_SIGNUP = "/signup";
 
-	@Autowired MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
 	@Test
 	@DisplayName("회원가입 폼에 csrf 태그가 포함되는지")

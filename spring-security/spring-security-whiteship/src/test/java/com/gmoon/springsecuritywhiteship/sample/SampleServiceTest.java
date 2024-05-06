@@ -22,13 +22,13 @@ import com.gmoon.springsecuritywhiteship.account.AccountService;
 class SampleServiceTest {
 
 	@Autowired
-	SampleService sampleService;
+	private SampleService sampleService;
 
 	@Autowired
-	AccountService accountService;
+	private AccountService accountService;
 
 	@Autowired
-	AuthenticationManager authenticationManager;
+	private AuthenticationManager authenticationManager;
 
 	@Test
 	@DisplayName("시큐리티 메서드로 인한 권한 에러 발생")

@@ -24,10 +24,18 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerTest {
-	@Autowired MockMvc mockMvc;
-	@Autowired AccountRepository accountRepository;
-	@Autowired AuthenticationManager authenticationManager;
-	@Autowired AccountService accountService;
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@Autowired
+	private AccountRepository accountRepository;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private AccountService accountService;
 
 	@Test
 	@DisplayName("Security Chain이랑 같은 환경에서 도는건지")
