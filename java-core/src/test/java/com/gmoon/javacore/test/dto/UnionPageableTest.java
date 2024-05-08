@@ -18,103 +18,102 @@ public class UnionPageableTest {
 	private int pageSize = 10;
 
 	@Test
-	void otherEntity00() {
-		int otherEntityTotalCount = 0;
+	void other00() {
+		int prevTotalCount = 0;
 
-		PaginatedVO page1 = getPaginatedListVO(1, otherEntityTotalCount);
+		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
 		assertThat(page1.getPageSize()).isEqualTo(pageSize);
 		assertThat(page1.getFirstRecordIndex()).isZero();
 
-		PaginatedVO page2 = getPaginatedListVO(2, otherEntityTotalCount);
+		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
 		assertThat(page2.getPageSize()).isEqualTo(pageSize);
 		assertThat(page2.getFirstRecordIndex()).isEqualTo(pageSize);
 
-		PaginatedVO page3 = getPaginatedListVO(3, otherEntityTotalCount);
+		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getFirstRecordIndex()).isEqualTo(pageSize * 2);
 
-		PaginatedVO page4 = getPaginatedListVO(4, otherEntityTotalCount);
+		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getFirstRecordIndex()).isEqualTo(pageSize * 3);
 	}
 
 	@Test
-	void otherEntity09() {
-		int otherEntityTotalCount = 9;
+	void other09() {
+		int prevTotalCount = 9;
 
-		PaginatedVO page1 = getPaginatedListVO(1, otherEntityTotalCount);
+		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
 		assertThat(page1.getPageSize()).isEqualTo(1);
 		assertThat(page1.getFirstRecordIndex()).isEqualTo(0);
 
-		PaginatedVO page2 = getPaginatedListVO(2, otherEntityTotalCount);
+		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
 		assertThat(page2.getPageSize()).isEqualTo(pageSize);
 		assertThat(page2.getFirstRecordIndex()).isEqualTo(1);
 
-		PaginatedVO page3 = getPaginatedListVO(3, otherEntityTotalCount);
+		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getFirstRecordIndex()).isEqualTo(11);
 
-		PaginatedVO page4 = getPaginatedListVO(4, otherEntityTotalCount);
+		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getFirstRecordIndex()).isEqualTo(21);
 	}
 
 	@Test
-	void otherEntity10() {
-		int otherEntityTotalCount = 10;
+	void other10() {
+		int prevTotalCount = 10;
 
-		PaginatedVO page1 = getPaginatedListVO(1, otherEntityTotalCount);
+		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
 		assertThat(page1.getPageSize()).isZero();
 		assertThat(page1.getFirstRecordIndex()).isZero();
 
-		PaginatedVO page2 = getPaginatedListVO(2, otherEntityTotalCount);
+		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
 		assertThat(page2.getPageSize()).isEqualTo(pageSize);
 		assertThat(page2.getFirstRecordIndex()).isEqualTo(0);
 
-		PaginatedVO page3 = getPaginatedListVO(3, otherEntityTotalCount);
+		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getFirstRecordIndex()).isEqualTo(10);
 
-		PaginatedVO page4 = getPaginatedListVO(4, otherEntityTotalCount);
+		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getFirstRecordIndex()).isEqualTo(20);
 	}
 
 	@Test
-	void otherEntity11() {
-		int otherEntityTotalCount = 11;
+	void other11() {
+		int prevTotalCount = 11;
 
-		PaginatedVO page1 = getPaginatedListVO(1, otherEntityTotalCount);
+		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
 		assertThat(page1.getPageSize()).isZero();
 		assertThat(page1.getFirstRecordIndex()).isZero();
 
-		PaginatedVO page2 = getPaginatedListVO(2, otherEntityTotalCount);
+		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
 		assertThat(page2.getPageSize()).isEqualTo(9);
 		assertThat(page2.getFirstRecordIndex()).isEqualTo(0);
 
-		PaginatedVO page3 = getPaginatedListVO(3, otherEntityTotalCount);
+		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getFirstRecordIndex()).isEqualTo(9);
 
-		PaginatedVO page4 = getPaginatedListVO(4, otherEntityTotalCount);
+		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getFirstRecordIndex()).isEqualTo(19);
 	}
 
-	private PaginatedVO getPaginatedListVO(int page, long otherEntityTotalCount) {
-		PaginatedVO listVO = new PaginatedVO();
-		listVO.setTotalCount(totalCount);
-		listVO.setPageSize(pageSize);
-		listVO.setPage(page);
+	private PaginatedVO getPaginatedVO(int page, long prevTotalCount) {
+		PaginatedVO vo = new PaginatedVO();
+		vo.setTotalCount(totalCount);
+		vo.setPageSize(pageSize);
+		vo.setPage(page);
 
-		listVO.resizingUserPage(otherEntityTotalCount);
-		return listVO;
+		vo.resizingPage(prevTotalCount);
+		return vo;
 	}
 
 	@Getter
 	@Setter
 	static class PaginatedVO {
-
 
 		public static final int DEFAULT_PAGE_SIZE = 15;
 
@@ -145,7 +144,7 @@ public class UnionPageableTest {
 		}
 
 		protected int obtainOffset(int page, int pageSize) {
-			return (page-1) * pageSize;
+			return (page - 1) * pageSize;
 		}
 
 		public void resizingPage(long pageSize, long firstRecordIndex) {
@@ -153,102 +152,51 @@ public class UnionPageableTest {
 			this.firstRecordIndex = Math.toIntExact(firstRecordIndex);
 		}
 
-		public void resizingUserPage(long otherEntityTotalCount) {
-			final int otherEntityTotalPage = obtainOtherEntityTotalPage(otherEntityTotalCount);
-			final int otherEntityLastPageSize = obtainOtherEntityLastPageSize(otherEntityTotalCount);
-			final int otherEntitySize = obtainOtherEntitySize(otherEntityTotalPage, otherEntityLastPageSize);
+		public void resizingPage(long prevTotalCount) {
+			final long requestPage = getPage();
+			final long pageSize = getPageSize();
 
+			final int dataPresent = 1;
+			final long resizingStartPage = obtainTotalPage(prevTotalCount + dataPresent);
+			final long prevLastPageSize = getLastPageSize(prevTotalCount);
+
+			long adjustedPage = Math.max(requestPage - resizingStartPage, 0);
+			long adjustedPageSize = 0;
+			long adjustedOffset = adjustedPage * pageSize;
+
+			if (requestPage == resizingStartPage) {
+				adjustedPageSize = pageSize - prevLastPageSize;
+			} else if (requestPage > resizingStartPage) {
+				adjustedPageSize = pageSize;
+				adjustedOffset -= prevLastPageSize;
+			}
+
+			resizingPage(adjustedPageSize, adjustedOffset);
+			log.debug("===========Page{}-{}===========", requestPage, prevTotalCount);
+			log.debug("resizingStartPage       : {}", resizingStartPage);
+			log.debug("prevLastPageSize        : {}", prevLastPageSize);
+			log.debug("adjusted page           : {}", adjustedPage);
+			log.debug("adjusted pageSize       : {}", adjustedPageSize);
+			log.debug("adjusted offset         : {}", adjustedOffset);
+		}
+
+		private long getLastPageSize(long totalCount) {
 			int pageSize = getPageSize();
-			boolean otherEntityExists = otherEntityTotalCount > 0;
-			boolean withOtherEntity = otherEntitySize < pageSize;
-			boolean resizing = otherEntityExists && withOtherEntity;
-
-			int userPage = getUserPage(otherEntityTotalPage, resizing);
-			int userPageSize = pageSize - otherEntitySize;
-			int userFirstRecordIndex = getUserFirstRecordIndex(userPage, userPageSize, otherEntityLastPageSize);
-
-			resizingPage(userPageSize, userFirstRecordIndex);
-			log.debug("===========page{}-{}===========", otherEntityTotalCount, getPage());
-			log.debug("resizing         : {}", resizing);
-			log.debug("includeOtherEntityPage : {}", otherEntitySize > 0);
-			log.debug("otherEntityTotalPage   : {}", otherEntityTotalPage);
-			log.debug("otherEntityLastPageSize: {}", otherEntityLastPageSize);
-			log.debug("otherEntitySize        : {}", otherEntitySize);
-			log.debug("userPage         : {}", userPage);
-			log.debug("userPageSize     : {}", userPageSize);
-			log.debug("userFirstRecord  : {}", userFirstRecordIndex);
-		}
-
-		private int getUserFirstRecordIndex(int userPage, int userPageSize, int otherEntityLastPageSize) {
-			int offset = obtainOffset(userPage, userPageSize);
-			int pushback = offset - otherEntityLastPageSize;
-			return Math.max(pushback, 0);
-		}
-
-		private int obtainOtherEntityLastPageSize(long otherEntityTotalCount) {
-			if (otherEntityTotalCount > 0) {
-				int pageSize = getPageSize();
-				int result = (int)(otherEntityTotalCount % pageSize);
-				if (result == 0) {
-					return pageSize;
-				}
-
-				return result;
-			}
-
-			return 0;
-		}
-
-		private int getUserPage(int otherEntityTotalPage, boolean resizing) {
-			if (otherEntityTotalPage == 0) {
-				return getPage();
-			}
-
-			int page = getPage();
-			if (otherEntityTotalPage > page) {
+			int totalPage = obtainTotalPage(totalCount);
+			long lastPageSize = pageSize - ((long)totalPage * pageSize - totalCount);
+			if (pageSize == lastPageSize) {
 				return 0;
 			}
-
-			int userPage = page - otherEntityTotalPage;
-			if (resizing) {
-				if (obtainOtherEntityLastPageSize(otherEntityTotalPage) < getPageSize()) {
-					return ++userPage;
-				}
-
-				return userPage;
-			}
-			return userPage;
+			return lastPageSize;
 		}
 
-		private int obtainOtherEntityTotalPage(long otherEntityTotalCount) {
-			if (otherEntityTotalCount > 0) {
-				int pageSize = getPageSize();
-				return toBigDecimal(otherEntityTotalCount)
-					.divide(toBigDecimal(pageSize), RoundingMode.UP)
-					.setScale(0, RoundingMode.DOWN)
-					.toBigInteger()
-					.intValue();
-			}
-
-			return 0;
-		}
-
-		private int obtainOtherEntitySize(int otherEntityTotalPage, int otherEntityLastPageSize) {
-			if (otherEntityTotalPage > 0) {
-				int page = getPage();
-				boolean lastPage = otherEntityTotalPage == page;
-				if (lastPage) {
-					return otherEntityLastPageSize;
-				} else if (page < otherEntityTotalPage) {
-					return getPageSize();
-				}
-			}
-			return 0;
-		}
-
-		private BigDecimal toBigDecimal(long l) {
-			return new BigDecimal(l);
+		private int obtainTotalPage(long prevTotalCount) {
+			long pageSize = getPageSize();
+			return new BigDecimal(prevTotalCount)
+				.divide(new BigDecimal(pageSize), RoundingMode.UP)
+				.setScale(0, RoundingMode.DOWN)
+				.toBigInteger()
+				.intValue();
 		}
 	}
-
 }
