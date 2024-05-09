@@ -13,7 +13,7 @@ public class ZeroBasedPage<T extends Number> {
 		if (page == null) {
 			value = 0;
 		} else {
-			value = positiveNumber(toInt(page) - 1);
+			value = positiveNumberOrZero(toInt(page) - 1);
 		}
 	}
 

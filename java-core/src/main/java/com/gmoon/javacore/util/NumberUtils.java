@@ -19,7 +19,11 @@ public class NumberUtils {
 		}
 	}
 
-	public static int positiveNumber(int a) {
+	public static int positiveNumberOrZero(int a) {
+		return Math.max(a, 0);
+	}
+
+	public static long positiveNumberOrZero(long a) {
 		return Math.max(a, 0);
 	}
 }
