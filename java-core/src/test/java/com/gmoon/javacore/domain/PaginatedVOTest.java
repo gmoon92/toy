@@ -1,4 +1,4 @@
-package com.gmoon.javacore.test.dto;
+package com.gmoon.javacore.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class UnionPageableTest {
+class PaginatedVOTest {
 
 	private int totalCount = 120;
 	private int pageSize = 10;

@@ -1,4 +1,4 @@
-package com.gmoon.javacore.test.dto;
+package com.gmoon.javacore.domain;
 
 import static com.gmoon.javacore.util.NumberUtils.*;
 
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-class PaginatedVO {
+public class PaginatedVO {
 
 	public static final int DEFAULT_PAGE_SIZE = 15;
 
