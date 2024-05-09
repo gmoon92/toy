@@ -1,5 +1,7 @@
 package com.gmoon.javacore.domain;
 
+import static com.gmoon.javacore.util.NumberUtils.*;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -11,22 +13,11 @@ public class ZeroBasedPage<T extends Number> {
 		if (page == null) {
 			value = 0;
 		} else {
-			value = toInt(page);
+			value = positiveNumber(toInt(page) - 1);
 		}
 	}
 
 	public static <T extends Number> int from(T page) {
 		return new ZeroBasedPage<>(page).value;
-	}
-
-	private int toInt(T page) {
-		try {
-			long value = page.longValue();
-			log.trace("page: {}, value: {}", page, value);
-			return Math.max(Math.toIntExact(value) - 1, 0);
-		} catch (ArithmeticException e) {
-			log.debug("value is overflows.");
-			return Integer.MAX_VALUE;
-		}
 	}
 }
