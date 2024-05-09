@@ -1,5 +1,7 @@
 package com.gmoon.javacore.test.dto;
 
+import static com.gmoon.javacore.util.NumberUtils.*;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -15,7 +17,7 @@ class PaginatedVO {
 	private long totalCount;
 	private int pageSize;
 	private Integer page;
-	private Integer offset;
+	private long offset;
 
 	public PaginatedVO() {
 		this.pageSize = DEFAULT_PAGE_SIZE;
@@ -23,6 +25,7 @@ class PaginatedVO {
 		this.offset = 0;
 	}
 
+	// todo zerobased.
 	public void resizingPage(long prevTotalCount) {
 		final long requestPage = getPage();
 		final long pageSize = getPageSize();
@@ -31,9 +34,9 @@ class PaginatedVO {
 		final long resizingStartPage = obtainTotalPage(prevTotalCount + dataPresent);
 		final long prevLastPageSize = getLastPageSize(prevTotalCount);
 
-		long adjustedPage = Math.max(requestPage - resizingStartPage, 0);
+		long zeroBasedPage = positiveNumberOrZero(requestPage - resizingStartPage);
 		long adjustedPageSize = 0;
-		long adjustedOffset = adjustedPage * pageSize;
+		long adjustedOffset = zeroBasedPage * pageSize;
 
 		if (requestPage == resizingStartPage) {
 			adjustedPageSize = pageSize - prevLastPageSize;
@@ -42,22 +45,23 @@ class PaginatedVO {
 			adjustedOffset -= prevLastPageSize;
 		}
 
-		this.page = Math.toIntExact(adjustedPage);
-		this.pageSize = Math.toIntExact(adjustedPageSize);
-		this.offset = Math.toIntExact(adjustedOffset);
+		this.page = toInt(zeroBasedPage);
+		this.pageSize = toInt(adjustedPageSize);
+		this.offset = adjustedOffset;
 	}
 
 	private long getLastPageSize(long totalCount) {
 		int pageSize = getPageSize();
-		int totalPage = obtainTotalPage(totalCount);
-		long lastPageSize = pageSize - ((long)totalPage * pageSize - totalCount);
+		long totalPage = obtainTotalPage(totalCount);
+		long totalPageSize = totalPage * pageSize;
+		long lastPageSize = pageSize - (totalPageSize - totalCount);
 		if (pageSize == lastPageSize) {
 			return 0;
 		}
 		return lastPageSize;
 	}
 
-	private int obtainTotalPage(long prevTotalCount) {
+	private long obtainTotalPage(long prevTotalCount) {
 		long pageSize = getPageSize();
 		return new BigDecimal(prevTotalCount)
 			.divide(new BigDecimal(pageSize), 0, RoundingMode.UP)
