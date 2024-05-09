@@ -14,37 +14,13 @@ class PaginatedVO {
 
 	private long totalCount;
 	private int pageSize;
-	private long fullListSize;
-	private String sortTargetColumn;
 	private Integer page;
-	private Integer firstRecordIndex;
 	private Integer offset;
 
 	public PaginatedVO() {
 		this.pageSize = DEFAULT_PAGE_SIZE;
 		this.page = 1;
-		this.firstRecordIndex = 0;
-	}
-
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-		this.firstRecordIndex = (this.page - 1) * this.pageSize;
-	}
-
-	public void setPage(Integer page) {
-		if (page == null || page.compareTo(1) < 0)
-			page = 1;
-		this.page = page;
-		this.firstRecordIndex = obtainOffset(this.page, this.pageSize);
-	}
-
-	protected int obtainOffset(int page, int pageSize) {
-		return (page - 1) * pageSize;
-	}
-
-	public void resizingPage(long pageSize, long firstRecordIndex) {
-		this.pageSize = Math.toIntExact(pageSize);
-		this.firstRecordIndex = Math.toIntExact(firstRecordIndex);
+		this.offset = 0;
 	}
 
 	public void resizingPage(long prevTotalCount) {
@@ -66,7 +42,9 @@ class PaginatedVO {
 			adjustedOffset -= prevLastPageSize;
 		}
 
-		resizingPage(adjustedPageSize, adjustedOffset);
+		this.page = Math.toIntExact(adjustedPage);
+		this.pageSize = Math.toIntExact(adjustedPageSize);
+		this.offset = Math.toIntExact(adjustedOffset);
 	}
 
 	private long getLastPageSize(long totalCount) {
@@ -82,8 +60,7 @@ class PaginatedVO {
 	private int obtainTotalPage(long prevTotalCount) {
 		long pageSize = getPageSize();
 		return new BigDecimal(prevTotalCount)
-			.divide(new BigDecimal(pageSize), RoundingMode.UP)
-			.setScale(0, RoundingMode.DOWN)
+			.divide(new BigDecimal(pageSize), 0, RoundingMode.UP)
 			.toBigInteger()
 			.intValue();
 	}
