@@ -25,7 +25,6 @@ public class PaginatedVO {
 		this.offset = 0;
 	}
 
-	// todo zerobased.
 	public void resizingPage(long prevTotalCount) {
 		final long requestPage = getPage();
 		final long pageSize = getPageSize();
@@ -63,8 +62,8 @@ public class PaginatedVO {
 
 	private long obtainTotalPage(long prevTotalCount) {
 		long pageSize = getPageSize();
-		return new BigDecimal(prevTotalCount)
-			.divide(new BigDecimal(pageSize), 0, RoundingMode.UP)
+		return BigDecimal.valueOf(prevTotalCount)
+			.divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
 			.toBigInteger()
 			.intValue();
 	}
