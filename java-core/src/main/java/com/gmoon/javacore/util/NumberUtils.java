@@ -26,4 +26,16 @@ public class NumberUtils {
 	public static long positiveNumberOrZero(long a) {
 		return Math.max(a, 0);
 	}
+
+	public static int defaultInteger(Integer i) {
+		return defaultInteger(i, 0);
+	}
+
+	public static int defaultInteger(Integer value, Integer defaultValue) {
+		if (value == null) {
+			return defaultValue;
+		}
+
+		return value;
+	}
 }
