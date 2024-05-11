@@ -1,4 +1,4 @@
-package com.gmoon.springjpapagination.common;
+package com.gmoon.springjpapagination.global.domain;
 
 import java.io.Serializable;
 
@@ -7,6 +7,7 @@ public abstract class CursorPagination implements Serializable {
 	public static final String EMPTY_CURSOR = "-1";
 
 	public abstract String getCursor();
+
 	public abstract boolean isHasNextPage();
 
 	public abstract int getPageSize();

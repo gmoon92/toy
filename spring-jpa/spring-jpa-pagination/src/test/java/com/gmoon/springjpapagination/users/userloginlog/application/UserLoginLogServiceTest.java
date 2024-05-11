@@ -1,4 +1,4 @@
-package com.gmoon.springjpapagination.userloginlog;
+package com.gmoon.springjpapagination.users.userloginlog.application;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.springjpapagination.common.CursorPagination;
+import com.gmoon.springjpapagination.global.domain.CursorPagination;
+import com.gmoon.springjpapagination.users.userloginlog.dto.UserLoginLogListVO;
 
 import lombok.extern.slf4j.Slf4j;
 

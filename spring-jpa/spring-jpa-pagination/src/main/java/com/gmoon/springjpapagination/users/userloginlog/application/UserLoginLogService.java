@@ -1,6 +1,6 @@
-package com.gmoon.springjpapagination.userloginlog;
+package com.gmoon.springjpapagination.users.userloginlog.application;
 
-import static com.gmoon.springjpapagination.userloginlog.QUserLoginLog.*;
+import static com.gmoon.springjpapagination.users.userloginlog.domain.QUserLoginLog.*;
 
 import java.util.List;
 
@@ -8,13 +8,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.springjpapagination.common.CursorPagination;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import com.gmoon.springjpapagination.global.domain.CursorPagination;
+import com.gmoon.springjpapagination.users.userloginlog.dto.QUserLoginLogListVO_Data;
+import com.gmoon.springjpapagination.users.userloginlog.dto.UserLoginLogListVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

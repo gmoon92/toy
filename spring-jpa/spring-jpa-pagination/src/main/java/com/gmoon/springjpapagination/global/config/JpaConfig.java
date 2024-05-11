@@ -1,4 +1,4 @@
-package com.gmoon.springjpapagination.config;
+package com.gmoon.springjpapagination.global.config;
 
 import javax.persistence.EntityManager;
 
