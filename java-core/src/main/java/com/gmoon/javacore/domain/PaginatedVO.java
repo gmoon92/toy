@@ -2,15 +2,12 @@ package com.gmoon.javacore.domain;
 
 import static com.gmoon.javacore.util.NumberUtils.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PaginatedVO {
+public class PaginatedVO implements BasePageable {
 
 	public static final int DEFAULT_PAGE_SIZE = 15;
 
@@ -44,27 +41,8 @@ public class PaginatedVO {
 			adjustedOffset -= prevLastPageSize;
 		}
 
-		this.page = toInt(zeroBasedPage);
+		this.page = toInt(zeroBasedPage) + 1;
 		this.pageSize = toInt(adjustedPageSize);
 		this.offset = adjustedOffset;
-	}
-
-	private long getLastPageSize(long totalCount) {
-		int pageSize = getPageSize();
-		long totalPage = obtainTotalPage(totalCount);
-		long totalPageSize = totalPage * pageSize;
-		long lastPageSize = pageSize - (totalPageSize - totalCount);
-		if (pageSize == lastPageSize) {
-			return 0;
-		}
-		return lastPageSize;
-	}
-
-	private long obtainTotalPage(long prevTotalCount) {
-		long pageSize = getPageSize();
-		return BigDecimal.valueOf(prevTotalCount)
-			.divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
-			.toBigInteger()
-			.intValue();
 	}
 }

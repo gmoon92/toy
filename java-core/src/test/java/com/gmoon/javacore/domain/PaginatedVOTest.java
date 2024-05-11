@@ -17,22 +17,26 @@ class PaginatedVOTest {
 		int prevTotalCount = 0;
 
 		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
-		assertThat(page1.getPage()).isEqualTo(0);
+		assertThat(page1.getPage()).isEqualTo(1);
+		assertThat(page1.getZeroBasedPage()).isEqualTo(ZeroBasedPage.zero());
 		assertThat(page1.getPageSize()).isEqualTo(pageSize);
-		assertThat(page1.getOffset()).isZero();
+		assertThat(page1.getOffset()).isEqualTo(0);
 
 		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
-		assertThat(page2.getPage()).isEqualTo(1);
+		assertThat(page2.getPage()).isEqualTo(2);
+		assertThat(page2.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(1));
 		assertThat(page2.getPageSize()).isEqualTo(pageSize);
 		assertThat(page2.getOffset()).isEqualTo(pageSize);
 
 		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
-		assertThat(page3.getPage()).isEqualTo(2);
+		assertThat(page3.getPage()).isEqualTo(3);
+		assertThat(page3.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(2));
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getOffset()).isEqualTo(pageSize * 2);
 
 		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
-		assertThat(page4.getPage()).isEqualTo(3);
+		assertThat(page4.getPage()).isEqualTo(4);
+		assertThat(page4.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(3));
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getOffset()).isEqualTo(pageSize * 3);
 	}
@@ -42,22 +46,26 @@ class PaginatedVOTest {
 		int prevTotalCount = 9;
 
 		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
-		assertThat(page1.getPage()).isEqualTo(0);
+		assertThat(page1.getPage()).isEqualTo(1);
+		assertThat(page1.getZeroBasedPage()).isEqualTo(ZeroBasedPage.zero());
 		assertThat(page1.getPageSize()).isEqualTo(1);
 		assertThat(page1.getOffset()).isEqualTo(0);
 
 		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
-		assertThat(page2.getPage()).isEqualTo(1);
+		assertThat(page2.getPage()).isEqualTo(2);
+		assertThat(page2.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(1));
 		assertThat(page2.getPageSize()).isEqualTo(pageSize);
 		assertThat(page2.getOffset()).isEqualTo(1);
 
 		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
-		assertThat(page3.getPage()).isEqualTo(2);
+		assertThat(page3.getPage()).isEqualTo(3);
+		assertThat(page3.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(2));
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getOffset()).isEqualTo(11);
 
 		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
-		assertThat(page4.getPage()).isEqualTo(3);
+		assertThat(page4.getPage()).isEqualTo(4);
+		assertThat(page4.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(3));
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getOffset()).isEqualTo(21);
 	}
@@ -67,22 +75,26 @@ class PaginatedVOTest {
 		int prevTotalCount = 10;
 
 		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
-		assertThat(page1.getPage()).isZero();
-		assertThat(page1.getPageSize()).isZero();
-		assertThat(page1.getOffset()).isZero();
+		assertThat(page1.getPage()).isEqualTo(1);
+		assertThat(page1.getZeroBasedPage()).isEqualTo(ZeroBasedPage.zero());
+		assertThat(page1.getPageSize()).isEqualTo(0);
+		assertThat(page1.getOffset()).isEqualTo(0);
 
 		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
-		assertThat(page2.getPage()).isEqualTo(0);
+		assertThat(page2.getPage()).isEqualTo(1);
+		assertThat(page2.getZeroBasedPage()).isEqualTo(ZeroBasedPage.zero());
 		assertThat(page2.getPageSize()).isEqualTo(pageSize);
 		assertThat(page2.getOffset()).isEqualTo(0);
 
 		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
-		assertThat(page3.getPage()).isEqualTo(1);
+		assertThat(page3.getPage()).isEqualTo(2);
+		assertThat(page3.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(1));
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getOffset()).isEqualTo(10);
 
 		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
-		assertThat(page4.getPage()).isEqualTo(2);
+		assertThat(page4.getPage()).isEqualTo(3);
+		assertThat(page4.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(2));
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getOffset()).isEqualTo(20);
 	}
@@ -92,22 +104,26 @@ class PaginatedVOTest {
 		int prevTotalCount = 11;
 
 		PaginatedVO page1 = getPaginatedVO(1, prevTotalCount);
-		assertThat(page1.getPage()).isZero();
-		assertThat(page1.getPageSize()).isZero();
-		assertThat(page1.getOffset()).isZero();
+		assertThat(page1.getPage()).isEqualTo(1);
+		assertThat(page1.getZeroBasedPage()).isEqualTo(ZeroBasedPage.zero());
+		assertThat(page1.getPageSize()).isEqualTo(0);
+		assertThat(page1.getOffset()).isEqualTo(0);
 
 		PaginatedVO page2 = getPaginatedVO(2, prevTotalCount);
-		assertThat(page2.getPage()).isEqualTo(0);
+		assertThat(page2.getPage()).isEqualTo(1);
+		assertThat(page2.getZeroBasedPage()).isEqualTo(ZeroBasedPage.zero());
 		assertThat(page2.getPageSize()).isEqualTo(9);
 		assertThat(page2.getOffset()).isEqualTo(0);
 
 		PaginatedVO page3 = getPaginatedVO(3, prevTotalCount);
-		assertThat(page3.getPage()).isEqualTo(1);
+		assertThat(page3.getPage()).isEqualTo(2);
+		assertThat(page3.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(1));
 		assertThat(page3.getPageSize()).isEqualTo(pageSize);
 		assertThat(page3.getOffset()).isEqualTo(9);
 
 		PaginatedVO page4 = getPaginatedVO(4, prevTotalCount);
-		assertThat(page4.getPage()).isEqualTo(2);
+		assertThat(page4.getPage()).isEqualTo(3);
+		assertThat(page4.getZeroBasedPage()).isEqualTo(ZeroBasedPage.from(2));
 		assertThat(page4.getPageSize()).isEqualTo(pageSize);
 		assertThat(page4.getOffset()).isEqualTo(19);
 	}
@@ -121,6 +137,7 @@ class PaginatedVOTest {
 		vo.resizingPage(prevTotalCount);
 		log.debug("===========Page{}-{}===========", requestPage, prevTotalCount);
 		log.debug("adjusted page           : {}", vo.getPage());
+		log.debug("adjusted zeroBasedPage  : {}", vo.getZeroBasedPage());
 		log.debug("adjusted pageSize       : {}", vo.getPageSize());
 		log.debug("adjusted offset         : {}", vo.getOffset());
 		return vo;
