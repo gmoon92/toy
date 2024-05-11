@@ -5,7 +5,6 @@ import static com.gmoon.querydslprojections.movies.movie.domain.QMovie.*;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MovieRepositoryAdapter implements MovieRepository {
 
-	@Nullable
 	private final JPAQueryFactory queryFactory;
-
-	@Nullable
 	private final JpaMovieRepository repository;
 
 	@Override
