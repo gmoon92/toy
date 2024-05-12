@@ -1,8 +1,12 @@
 package com.gmoon.springjpapagination.users.user.domain;
 
-import com.gmoon.springjpapagination.users.user.dto.UserContentListVO;
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+
+import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
 
 public interface UserRepository {
 
-	UserContentListVO getUserContentListVO(UserContentListVO listVO);
+	List<UserContentVO> getUserContents(String groupId, String keyword, Pageable pageable);
 }

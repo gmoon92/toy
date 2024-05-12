@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.domain.PageRequest;
 
 import com.gmoon.springjpapagination.global.config.JpaConfig;
 import com.gmoon.springjpapagination.users.user.domain.UserRepository;
-import com.gmoon.springjpapagination.users.user.dto.UserContentListVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,10 +30,14 @@ class UserRepositoryTest {
 	private UserRepository repository;
 
 	@Test
-	void getUserContentListVO() {
-		UserContentListVO listVO = new UserContentListVO();
-		
-		assertThatCode(() -> repository.getUserContentListVO(listVO))
-			.doesNotThrowAnyException();
+	void getUserContents() {
+		String groupId = "";
+		String keyword = "";
+
+		assertThatCode(() -> repository.getUserContents(
+			groupId,
+			keyword,
+			PageRequest.of(0, 10)
+		)).doesNotThrowAnyException();
 	}
 }
