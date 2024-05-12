@@ -12,3 +12,26 @@ CREATE TABLE lt_user_login
 
 CREATE INDEX idx_username ON lt_user_login(username);
 CREATE INDEX idx_attempt_dt ON lt_user_login(attempt_dt);
+
+
+DROP TABLE IF EXISTS tb_user_group;
+
+CREATE TABLE tb_user_group
+(
+    id                  varchar(50)  NOT NULL PRIMARY KEY,
+    name                varchar(50),
+    parent_group_id     varchar(50) null,
+    CONSTRAINT FK_parent_group_id
+        FOREIGN KEY (parent_group_id) REFERENCES tb_user_group(id)
+);
+
+DROP TABLE IF EXISTS tb_user;
+
+CREATE TABLE tb_user
+(
+    id            varchar(50)  NOT NULL PRIMARY KEY,
+    username      varchar(20),
+    user_group_id varchar(50) not null,
+    CONSTRAINT FK_user_group_id
+        FOREIGN KEY (user_group_id) REFERENCES tb_user_group(id)
+);

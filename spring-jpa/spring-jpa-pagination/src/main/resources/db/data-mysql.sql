@@ -1,3 +1,14 @@
+INSERT INTO tb_user_grouop (id, name, parent_id) VALUES ('ug000', 'root', null);
+INSERT INTO tb_user_grouop (id, name, parent_id) VALUES ('ug001', 'A', 'ug000');
+INSERT INTO tb_user_grouop (id, name, parent_id) VALUES ('ug002', 'B', 'ug000');
+
+INSERT INTO tb_user (id, username, user_group_id) VALUES ('u000', 'admin', 'ug000');
+INSERT INTO tb_user (id, username, user_group_id) VALUES ('u001', 'user1', 'ug000');
+INSERT INTO tb_user (id, username, user_group_id) VALUES ('u002', 'user2', 'ug000');
+INSERT INTO tb_user (id, username, user_group_id) VALUES ('u003', 'user3', 'ug000');
+INSERT INTO tb_user (id, username, user_group_id) VALUES ('u004', 'user4', 'ug000');
+INSERT INTO tb_user (id, username, user_group_id) VALUES ('u005', 'user5', 'ug000');
+
 INSERT INTO lt_user_login (id, username, attempt_ip, attempt_dt) VALUES ('lul00', 'admin', '127.0.0.1', '2022-02-24 12:34:43');
 INSERT INTO lt_user_login (id, username, attempt_ip, attempt_dt) VALUES ('lul02', 'admin', '127.0.0.1', '2023-02-25 12:34:43');
 INSERT INTO lt_user_login (id, username, attempt_ip, attempt_dt) VALUES ('lul03', 'admin', '127.0.0.1', '2023-02-26 12:34:43');
