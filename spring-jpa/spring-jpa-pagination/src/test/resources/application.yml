@@ -36,5 +36,5 @@ spring:
 
 logging:
   level:
-    "[org.hibernate.SQL]": trace
-    "[org.hibernate.type.descriptor.sql]": trace
+    "[org.hibernate.SQL]": off
+    "[org.hibernate.type.descriptor.sql]": off
