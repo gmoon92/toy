@@ -1,4 +1,4 @@
-package com.gmoon.springjpapagination.users.userloginlog.domain;
+package com.gmoon.springjpapagination.users.user.domain;
 
 import java.io.Serializable;
 
