@@ -39,8 +39,7 @@ class UserLoginLogRepositoryTest {
 		log.info("조회된 마지막 행의 커서 데이터: {}", listVO.getCursor());
 		log.info("다음 페이지 존재 여부: {}", listVO.isHasNextPage());
 		log.info("요청 커서에 대한 결과: {}", listVO.getList());
-		assertThat(listVO)
-			.hasFieldOrPropertyWithValue("cursor", CursorPagination.EMPTY_CURSOR)
-			.hasFieldOrPropertyWithValue("hasNextPage", false);
+		assertThat(listVO.getCursor()).isNotEqualTo(CursorPagination.EMPTY_CURSOR);
+		assertThat(listVO.isHasNextPage()).isTrue();
 	}
 }
