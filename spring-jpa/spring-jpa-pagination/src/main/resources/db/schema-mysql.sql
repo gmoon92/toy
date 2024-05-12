@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS lt_user_login;
 
 CREATE TABLE lt_user_login
@@ -18,9 +19,9 @@ CREATE TABLE tb_user_group
 (
     id                  varchar(50)  NOT NULL PRIMARY KEY,
     name                varchar(50),
-    parent_group_id     varchar(50) null,
-    CONSTRAINT FK_parent_group_id
-        FOREIGN KEY (parent_group_id) REFERENCES tb_user_group(id)
+    parent_id           varchar(50) null,
+    CONSTRAINT FK_parent_id
+        FOREIGN KEY (parent_id) REFERENCES tb_user_group(id)
 );
 
 DROP TABLE IF EXISTS tb_user;
@@ -33,3 +34,4 @@ CREATE TABLE tb_user
     CONSTRAINT FK_user_group_id
         FOREIGN KEY (user_group_id) REFERENCES tb_user_group(id)
 );
+SET FOREIGN_KEY_CHECKS=1;

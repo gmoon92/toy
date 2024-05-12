@@ -20,9 +20,9 @@ CREATE TABLE tb_user_group
 (
     id                  varchar(50)  NOT NULL PRIMARY KEY,
     name                varchar(50),
-    parent_group_id     varchar(50) null,
+    parent_id           varchar(50) null,
     CONSTRAINT FK_parent_group_id
-        FOREIGN KEY (parent_group_id) REFERENCES tb_user_group(id)
+        FOREIGN KEY (parent_id) REFERENCES tb_user_group(id)
 );
 
 DROP TABLE IF EXISTS tb_user;

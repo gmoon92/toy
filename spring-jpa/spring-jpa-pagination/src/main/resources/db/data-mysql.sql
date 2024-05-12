@@ -1,6 +1,6 @@
-INSERT INTO tb_user_grouop (id, name, parent_id) VALUES ('ug000', 'root', null);
-INSERT INTO tb_user_grouop (id, name, parent_id) VALUES ('ug001', 'A', 'ug000');
-INSERT INTO tb_user_grouop (id, name, parent_id) VALUES ('ug002', 'B', 'ug000');
+INSERT INTO tb_user_group (id, name, parent_id) VALUES ('ug000', 'root', null);
+INSERT INTO tb_user_group (id, name, parent_id) VALUES ('ug001', 'A', 'ug000');
+INSERT INTO tb_user_group (id, name, parent_id) VALUES ('ug002', 'B', 'ug000');
 
 INSERT INTO tb_user (id, username, user_group_id) VALUES ('u000', 'admin', 'ug000');
 INSERT INTO tb_user (id, username, user_group_id) VALUES ('u001', 'user1', 'ug000');
