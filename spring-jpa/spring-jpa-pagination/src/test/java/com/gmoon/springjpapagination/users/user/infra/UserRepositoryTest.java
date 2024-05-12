@@ -40,4 +40,15 @@ class UserRepositoryTest {
 			PageRequest.of(0, 10)
 		)).doesNotThrowAnyException();
 	}
+
+	@Test
+	void getUserContentTotalCount() {
+		String groupId = "";
+		String keyword = "";
+
+		assertThatCode(() -> repository.getUserContentTotalCount(
+			groupId,
+			keyword
+		)).doesNotThrowAnyException();
+	}
 }

@@ -9,4 +9,6 @@ import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
 public interface UserRepository {
 
 	List<UserContentVO> getUserContents(String groupId, String keyword, Pageable pageable);
+
+	long getUserContentTotalCount(String groupId, String keyword);
 }
