@@ -40,6 +40,10 @@ public abstract class BasePaginatedVO implements Pageable {
 
 	protected long obtainTotalPage(long totalCount) {
 		int pageSize = getPageSize();
+		if (pageSize == 0 || totalCount == 0) {
+			return 1;
+		}
+
 		return BigDecimal.valueOf(totalCount)
 			.divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
 			.toBigInteger()
