@@ -5,3 +5,5 @@
 - rabbitmq
 - redis
   - transaction
+- pns
+- async merged
