@@ -7,3 +7,5 @@
   - transaction
 - pns
 - async merged
+- jpa union pagination
+- generic
