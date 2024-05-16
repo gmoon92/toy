@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserContentListListVO extends BasePaginatedListVO<UserContentVO> {
+public class UserContentListVO extends BasePaginatedListVO<UserContentVO> {
 
 	private Search search = new Search();
 

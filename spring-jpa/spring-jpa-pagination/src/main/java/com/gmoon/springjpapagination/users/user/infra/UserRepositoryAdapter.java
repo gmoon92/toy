@@ -4,9 +4,14 @@ import static com.gmoon.springjpapagination.users.user.domain.QUser.*;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.gmoon.javacore.util.StringUtils;
+import com.gmoon.springjpapagination.global.domain.BasePaginatedVO;
+import com.gmoon.springjpapagination.users.user.domain.UserRepository;
+import com.gmoon.springjpapagination.users.user.dto.QUserContentVO;
+import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
+import com.gmoon.springjpapagination.users.user.dto.UserContentVO.Type;
 import com.querydsl.core.JoinExpression;
 import com.querydsl.core.QueryMetadata;
 import com.querydsl.core.QueryModifiers;
@@ -18,12 +23,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberOperation;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import com.gmoon.javacore.util.StringUtils;
-import com.gmoon.springjpapagination.users.user.domain.UserRepository;
-import com.gmoon.springjpapagination.users.user.dto.QUserContentVO;
-import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
-import com.gmoon.springjpapagination.users.user.dto.UserContentVO.Type;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +36,15 @@ public class UserRepositoryAdapter implements UserRepository {
 	private final JpaUserRepository repository;
 
 	@Override
-	public List<UserContentVO> getUserContents(String groupId, String keyword, Pageable pageable) {
-		return getUserContentQuery(groupId, keyword, pageable)
+	public List<UserContentVO> getUserContents(String groupId, String keyword, BasePaginatedVO pageable) {
+		JPAQuery<UserContentVO> userContentQuery = getUserContentQuery(groupId, keyword);
+		pagination(userContentQuery, pageable);
+		return userContentQuery
 			.fetch();
 	}
 
-	private JPAQuery<UserContentVO> getUserContentQuery(String groupId, String keyword, Pageable pageable) {
-		return pagingQuery(pageable)
+	private JPAQuery<UserContentVO> getUserContentQuery(String groupId, String keyword) {
+		return queryFactory
 			.select(new QUserContentVO(
 				Expressions.asEnum(Type.USER),
 				user.id,
@@ -58,14 +59,16 @@ public class UserRepositoryAdapter implements UserRepository {
 			.clone();
 	}
 
-	private JPAQuery<?> pagingQuery(Pageable pageable) {
-		JPAQuery<?> query = queryFactory.query();
-		if (pageable.isPaged()) {
-			query.limit(pageable.getPageSize())
-				.offset(pageable.getOffset());
-		}
+	private JPAQuery<?> pagingQuery(BasePaginatedVO pageable) {
+		return queryFactory.query()
+			.limit(pageable.getPageSize())
+			.offset(pageable.getOffset());
+	}
 
-		return query;
+	private <T> JPAQuery<T> pagination(JPAQuery<T> query, BasePaginatedVO pageable) {
+		return query
+			.limit(pageable.getPageSize())
+			.offset(pageable.getOffset());
 	}
 
 	@Override
@@ -73,8 +76,7 @@ public class UserRepositoryAdapter implements UserRepository {
 		return getCount(
 			getUserContentQuery(
 				groupId,
-				keyword,
-				Pageable.unpaged()
+				keyword
 			)
 		);
 	}

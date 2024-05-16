@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.gmoon.springjpapagination.users.user.dto.UserContentListListVO;
+import com.gmoon.springjpapagination.users.user.dto.UserContentListVO;
 
 @SpringBootTest
 class UserServiceTest {
@@ -16,7 +16,7 @@ class UserServiceTest {
 
 	@Test
 	void getUserContentListVO() {
-		UserContentListListVO listVO = new UserContentListListVO();
+		UserContentListVO listVO = new UserContentListVO();
 
 		listVO = service.getUserContentListVO(listVO);
 
