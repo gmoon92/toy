@@ -2,12 +2,12 @@ package com.gmoon.springjpapagination.users.user.domain;
 
 import java.util.List;
 
-import com.gmoon.springjpapagination.global.domain.BasePaginatedVO;
-import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
+import com.gmoon.springjpapagination.global.domain.Pageable;
+import com.gmoon.springjpapagination.users.user.dto.UserVO;
 
 public interface UserRepository {
 
-	List<UserContentVO> getUserContents(String groupId, String keyword, BasePaginatedVO pageable);
+	List<UserVO> getUserContents(String groupId, String keyword, Pageable pageable);
 
 	long getUserContentTotalCount(String groupId, String keyword);
 }

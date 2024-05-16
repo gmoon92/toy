@@ -11,12 +11,12 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import com.gmoon.javacore.util.StringUtils;
-import com.gmoon.springjpapagination.global.domain.BasePaginatedVO;
 import com.gmoon.springjpapagination.global.domain.BaseRepository;
+import com.gmoon.springjpapagination.global.domain.Pageable;
 import com.gmoon.springjpapagination.users.user.domain.UserRepository;
-import com.gmoon.springjpapagination.users.user.dto.QUserContentVO;
-import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
-import com.gmoon.springjpapagination.users.user.dto.UserContentVO.Type;
+import com.gmoon.springjpapagination.users.user.dto.QUserVO;
+import com.gmoon.springjpapagination.users.user.dto.UserVO;
+import com.gmoon.springjpapagination.users.user.dto.UserVO.Type;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,16 +29,16 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 	private final JpaUserRepository repository;
 
 	@Override
-	public List<UserContentVO> getUserContents(String groupId, String keyword, BasePaginatedVO pageable) {
-		JPAQuery<UserContentVO> userContentQuery = getUserContentQuery(groupId, keyword);
+	public List<UserVO> getUserContents(String groupId, String keyword, Pageable pageable) {
+		JPAQuery<UserVO> userContentQuery = getUserContentQuery(groupId, keyword);
 		pagination(userContentQuery, pageable);
 		return userContentQuery
 			.fetch();
 	}
 
-	private JPAQuery<UserContentVO> getUserContentQuery(String groupId, String keyword) {
+	private JPAQuery<UserVO> getUserContentQuery(String groupId, String keyword) {
 		return queryFactory
-			.select(new QUserContentVO(
+			.select(new QUserVO(
 				Expressions.asEnum(Type.USER),
 				user.id,
 				user.username

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.gmoon.springjpapagination.users.user.domain.UserRepository;
 import com.gmoon.springjpapagination.users.user.dto.UserContentListVO;
-import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
+import com.gmoon.springjpapagination.users.user.dto.UserVO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,13 +22,13 @@ public class UserService {
 		long count = repository.getUserContentTotalCount(search.getGroupId(), search.getKeyword());
 		listVO.setTotalCount(count);
 
-		List<UserContentVO> userContents = repository.getUserContents(
+		List<UserVO> userContents = repository.getUserContents(
 			search.getGroupId(),
 			search.getKeyword(),
 			listVO
 		);
 
-		listVO.setData(userContents);
+		listVO.setContent(userContents);
 		return listVO;
 	}
 }

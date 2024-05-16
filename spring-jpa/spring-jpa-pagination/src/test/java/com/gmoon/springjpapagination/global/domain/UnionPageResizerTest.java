@@ -166,25 +166,25 @@ class UnionPageResizerTest {
 			verifyOffset(page5, 29);
 		}
 
-		private void verifyUnmergedPage(BasePaginatedVO paginatedVO) {
-			verifyPage(paginatedVO, 1);
-			verifyPageSize(paginatedVO, 0);
-			verifyOffset(paginatedVO, 0);
+		private void verifyUnmergedPage(Pageable pageable) {
+			verifyPage(pageable, 1);
+			verifyPageSize(pageable, 0);
+			verifyOffset(pageable, 0);
 		}
 
-		private void verifyOffset(BasePaginatedVO paginatedVO, int expected) {
-			assertThat(paginatedVO.getOffset()).isEqualTo(expected);
+		private void verifyOffset(Pageable pageable, int expected) {
+			assertThat(pageable.getOffset()).isEqualTo(expected);
 		}
 
-		private void verifyPage(BasePaginatedVO paginatedVO, int expected) {
-			assertThat(paginatedVO.getPage()).isEqualTo(expected);
+		private void verifyPage(Pageable pageable, int expected) {
+			assertThat(pageable.getPage()).isEqualTo(expected);
 		}
 
-		private void verifyPageSize(BasePaginatedVO paginatedVO, int pageSize) {
-			assertThat(paginatedVO.getPageSize()).isEqualTo(pageSize);
+		private void verifyPageSize(Pageable pageable, int pageSize) {
+			assertThat(pageable.getPageSize()).isEqualTo(pageSize);
 		}
 
-		private <T extends BasePaginatedVO> T resizedPage(int page, int groupTotalCount, Class<T> clazz) {
+		private <T extends Pageable> T resizedPage(int page, int groupTotalCount, Class<T> clazz) {
 			UnionPageResizer resizer = obtainProvider(page, pageSize, groupTotalCount, userTotalCount);
 			T listVO = resizer.getBasePaginatedVO(clazz);
 			log.debug("===========Page{}-{}===========", page, groupTotalCount);
@@ -219,10 +219,10 @@ class UnionPageResizerTest {
 		return userListVO;
 	}
 
-	static class UserGroupListVO extends BasePaginatedVO {
+	static class UserGroupListVO extends Pageable {
 	}
 
-	static class UserListVO extends BasePaginatedVO {
+	static class UserListVO extends Pageable {
 	}
 
 }

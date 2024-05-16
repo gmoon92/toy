@@ -20,6 +20,6 @@ class UserServiceTest {
 
 		listVO = service.getUserContentListVO(listVO);
 
-		assertThat(listVO.getData()).isNotEmpty();
+		assertThat(listVO.getContent()).isNotEmpty();
 	}
 }
