@@ -1,17 +1,17 @@
 package com.gmoon.springjpapagination.global.domain;
 
 import java.io.Serializable;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import com.gmoon.javacore.util.NumberUtils;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class BasePaginatedVO implements Serializable, Pageable {
+public abstract class BasePaginatedVO implements Serializable {
 
 	public static final int DEFAULT_PAGE_SIZE = 15;
 
@@ -20,62 +20,33 @@ public abstract class BasePaginatedVO implements Serializable, Pageable {
 	private Integer page = 1;
 	private long offset = 0;
 
-	private Pageable pageable() {
-		return PageRequestVO.of(page, pageSize, offset);
+	public BasePaginatedVO initialize() {
+		this.page = 1;
+		this.pageSize = 0;
+		this.offset = 0;
+		return this;
 	}
 
-	@Override
-	public Optional<Pageable> toOptional() {
-		return pageable().toOptional();
+	public BasePaginatedVO initialize(long page, long pageSize, long firstRecordIndex) {
+		this.page = Math.max(NumberUtils.toInt(page), 1);
+		this.pageSize = Math.max(NumberUtils.toInt(pageSize), 0);
+		this.offset = Math.max(NumberUtils.toInt(firstRecordIndex), 0);
+		return this;
 	}
 
-	@Override
-	public Sort getSortOr(Sort sort) {
-		return pageable().getSortOr(sort);
+
+	public int getTotalPages() {
+		return getTotalPage(totalCount, pageSize);
 	}
 
-	@Override
-	public boolean isUnpaged() {
-		return pageable().isUnpaged();
-	}
+	protected int getTotalPage(long totalCount, int pageSize) {
+		if (pageSize == 0) {
+			return 1;
+		}
 
-	@Override
-	public boolean isPaged() {
-		return pageable().isPaged();
-	}
-
-	@Override
-	public boolean hasPrevious() {
-		return pageable().hasPrevious();
-	}
-
-	@Override
-	public Pageable withPage(int pageNumber) {
-		return pageable().withPage(pageNumber);
-	}
-
-	@Override
-	public Pageable first() {
-		return pageable().first();
-	}
-
-	@Override
-	public Pageable previousOrFirst() {
-		return pageable().previousOrFirst();
-	}
-
-	@Override
-	public Pageable next() {
-		return pageable().next();
-	}
-
-	@Override
-	public Sort getSort() {
-		return pageable().getSort();
-	}
-
-	@Override
-	public int getPageNumber() {
-		return pageable().getPageNumber();
+		return BigDecimal.valueOf(totalCount)
+			.divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
+			.toBigInteger()
+			.intValue();
 	}
 }
