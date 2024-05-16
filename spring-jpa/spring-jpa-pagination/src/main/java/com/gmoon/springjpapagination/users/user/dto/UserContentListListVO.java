@@ -2,7 +2,7 @@ package com.gmoon.springjpapagination.users.user.dto;
 
 import java.io.Serializable;
 
-import com.gmoon.springjpapagination.global.domain.BasePaginatedVO;
+import com.gmoon.springjpapagination.global.domain.BasePaginatedListVO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserContentListVO extends BasePaginatedVO<UserContentVO> {
+public class UserContentListListVO extends BasePaginatedListVO<UserContentVO> {
 
 	private Search search = new Search();
 

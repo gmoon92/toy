@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BasePaginatedVO<T> implements Serializable, Pageable {
+public class BasePaginatedListVO<T> implements Serializable, Pageable {
 
 	public static final int DEFAULT_PAGE_SIZE = 15;
 
