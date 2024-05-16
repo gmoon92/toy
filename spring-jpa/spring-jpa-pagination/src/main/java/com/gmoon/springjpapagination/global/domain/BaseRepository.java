@@ -63,7 +63,7 @@ public abstract class BaseRepository {
 
 		return Expressions.numberOperation(
 			Long.class,
-			Ops.AggOps.COUNT_AGG,
+			Ops.AggOps.COUNT_ALL_AGG,
 			from
 		);
 	}
