@@ -517,3 +517,5 @@ limit ?
 - [기억보단 기억을 - 페이징 성능 개선하기 No Offset 사용하기](https://jojoldu.tistory.com/528)
 - [velog.io @minsangk - cursor-based pagination](https://velog.io/@minsangk/%EC%BB%A4%EC%84%9C-%EA%B8%B0%EB%B0%98-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%84%A4%EC%9D%B4%EC%85%98-Cursor-based-Pagination-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0)
 - [elky84.github.io - MySQL Limit + Offset 쿼리 성능 문제](https://elky84.github.io/2018/10/05/mysql/)
+- [querydsl reference](http://querydsl.com/static/querydsl/4.0.1/reference/ko-KR/html_single/)
+    - [querydsl - codegen](http://querydsl.com/static/querydsl/4.0.1/reference/ko-KR/html_single/#codegen)
