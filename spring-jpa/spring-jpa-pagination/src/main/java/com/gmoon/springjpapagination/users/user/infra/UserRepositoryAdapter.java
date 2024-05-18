@@ -26,22 +26,20 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 
 	@Override
 	public List<User> findAll(String groupId, String keyword, Pageable pageable) {
-		JPAQuery<User> userContentQuery = getUserQuery(groupId, keyword);
-		pagination(userContentQuery, pageable);
-		return userContentQuery
+		return getUserQuery(groupId, keyword, pageable)
 			.fetch();
 	}
 
-	private JPAQuery<User> getUserQuery(String groupId, String keyword) {
-		return queryFactory
-			.selectFrom(user)
+	private JPAQuery<User> getUserQuery(String groupId, String keyword, Pageable pageable) {
+		return pagingQuery(pageable)
+			.select(user)
+			.from(user)
 			.join(user.userGroup, userGroup)
 			.where(
 				userGroup.assignedGroup(groupId),
 				user.likeName(keyword)
 			)
-			.orderBy(user.username.desc())
-			.clone();
+			.orderBy(user.username.desc());
 	}
 
 	@Override
@@ -49,7 +47,8 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 		return countQuery(
 			getUserQuery(
 				groupId,
-				keyword
+				keyword,
+				Pageable.unpaged()
 			)
 		);
 	}
