@@ -1,15 +1,14 @@
 package com.gmoon.springjpapagination.users.user.infra;
 
 import static com.gmoon.springjpapagination.users.user.domain.QUser.*;
+import static com.gmoon.springjpapagination.users.user.domain.QUserGroup.*;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 
-import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springjpapagination.global.domain.BaseRepository;
 import com.gmoon.springjpapagination.global.domain.Pageable;
 import com.gmoon.springjpapagination.users.user.domain.User;
@@ -36,9 +35,10 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 	private JPAQuery<User> getUserQuery(String groupId, String keyword) {
 		return queryFactory
 			.selectFrom(user)
+			.join(user.userGroup, userGroup)
 			.where(
-				findAssignedGroup(groupId),
-				searchKeyword(keyword)
+				userGroup.assignedGroup(groupId),
+				user.likeName(keyword)
 			)
 			.orderBy(user.username.desc())
 			.clone();
@@ -52,21 +52,5 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 				keyword
 			)
 		);
-	}
-
-	private Predicate findAssignedGroup(String groupId) {
-		if (StringUtils.isNotBlank(groupId)) {
-			return user.userGroup.id.eq(groupId);
-		}
-
-		return null;
-	}
-
-	private Predicate searchKeyword(String keyword) {
-		if (StringUtils.isNotBlank(keyword)) {
-			return user.username.like(keyword + "%");
-		}
-
-		return null;
 	}
 }

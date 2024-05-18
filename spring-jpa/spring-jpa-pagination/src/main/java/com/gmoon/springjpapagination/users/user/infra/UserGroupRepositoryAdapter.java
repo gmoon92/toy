@@ -6,9 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 
-import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springjpapagination.global.domain.BaseRepository;
 import com.gmoon.springjpapagination.global.domain.Pageable;
 import com.gmoon.springjpapagination.users.user.domain.UserGroup;
@@ -24,39 +23,24 @@ public class UserGroupRepositoryAdapter extends BaseRepository implements UserGr
 
 	@Override
 	public List<UserGroup> findAll(String groupId, String keyword, Pageable pageable) {
+		return getGroupQuery(groupId, keyword, pageable)
+			.fetch();
+	}
+
+	private JPAQuery<UserGroup> getGroupQuery(String groupId, String keyword, Pageable pageable) {
 		return pagingQuery(pageable)
 			.select(userGroup)
 			.from(userGroup)
 			.where(
-				findAssignedGroup(groupId),
-				searchKeyword(keyword)
-			)
-			.fetch();
-	}
-
-	private Predicate searchKeyword(String keyword) {
-		if (StringUtils.isBlank(keyword)) {
-			return null;
-		}
-		return userGroup.name.like(keyword + "%");
-	}
-
-	private Predicate findAssignedGroup(String groupId) {
-		if (StringUtils.isBlank(groupId)) {
-			return null;
-		}
-		return userGroup.id.eq(groupId);
+				userGroup.assignedGroup(groupId),
+				userGroup.likeName(keyword)
+			);
 	}
 
 	@Override
 	public long countBy(String groupId, String keyword) {
 		return countQuery(
-			queryFactory
-				.selectFrom(userGroup)
-				.where(
-					findAssignedGroup(groupId),
-					searchKeyword(keyword)
-				)
+			getGroupQuery(groupId, keyword, Pageable.unpaged())
 		);
 	}
 }

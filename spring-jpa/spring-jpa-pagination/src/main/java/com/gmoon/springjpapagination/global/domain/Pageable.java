@@ -15,6 +15,8 @@ public abstract class Pageable implements Serializable {
 
 	private static final long serialVersionUID = -2648676657463697561L;
 
+	private static final Pageable UNPAGED = new UnpagedPageable();
+
 	public static final int DEFAULT_PAGE = 1;
 	public static final int DEFAULT_PAGE_SIZE = 15;
 	public static final int UNPAGED_PAGE_SIZE = 0;
@@ -37,6 +39,13 @@ public abstract class Pageable implements Serializable {
 		this.pageSize = Math.max(NumberUtils.toInt(pageSize), UNPAGED_PAGE_SIZE);
 		this.offset = Math.max(NumberUtils.toInt(firstRecordIndex), DEFAULT_OFFSET);
 		return this;
+	}
+
+	public static Pageable unpaged() {
+		return UNPAGED;
+	}
+
+	private static class UnpagedPageable extends Pageable {
 	}
 
 	public int getTotalPages() {
