@@ -311,3 +311,5 @@ public class MenuService {
 - [Domain-Driven Design: Specification Pattern](https://medium.com/@pawel_klimek/domain-driven-design-specification-pattern-82867540305c)
 - [Specification Pattern vs Always-Valid Domain Model](https://enterprisecraftsmanship.com/posts/specification-pattern-always-valid-domain-model/)
 - [stackoverflow - Replacing deprecated QuerydslJpaRepository with QuerydslJpaPredicateExecutor fails](https://stackoverflow.com/questions/53083047/replacing-deprecated-querydsljparepository-with-querydsljpapredicateexecutor-fai)
+- [querydsl reference](http://querydsl.com/static/querydsl/4.0.1/reference/ko-KR/html_single/)
+  - [querydsl - codegen](http://querydsl.com/static/querydsl/4.0.1/reference/ko-KR/html_single/#codegen)
