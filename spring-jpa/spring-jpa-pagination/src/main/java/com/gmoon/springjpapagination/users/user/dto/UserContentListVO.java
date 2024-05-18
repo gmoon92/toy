@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserContentListVO extends PaginatedContent<List<UserVO>> {
+public class UserContentListVO extends PaginatedContent<List<UserContentVO>> {
 
 	private static final long serialVersionUID = -6252002883733589738L;
 

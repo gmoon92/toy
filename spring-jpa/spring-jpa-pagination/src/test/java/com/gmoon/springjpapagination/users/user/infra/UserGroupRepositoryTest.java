@@ -11,7 +11,7 @@ import org.springframework.context.annotation.FilterType;
 import com.gmoon.springjpapagination.global.config.JpaConfig;
 import com.gmoon.springjpapagination.global.domain.Pageable;
 import com.gmoon.springjpapagination.users.user.domain.UserGroupRepository;
-import com.gmoon.springjpapagination.users.user.dto.UserGroupContentListVO;
+import com.gmoon.springjpapagination.users.user.dto.UserGroupListVO;
 
 @DataJpaTest(
 	includeFilters = @ComponentScan.Filter(
@@ -29,7 +29,7 @@ class UserGroupRepositoryTest {
 
 	@Test
 	void findAll() {
-		Pageable pageable = new UserGroupContentListVO();
+		Pageable pageable = new UserGroupListVO();
 
 		assertThatCode(() -> repository.findAll(null, null, pageable))
 			.doesNotThrowAnyException();

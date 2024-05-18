@@ -30,11 +30,11 @@ class UserRepositoryTest {
 	private UserRepository repository;
 
 	@Test
-	void getUserContents() {
+	void findAll() {
 		String groupId = "";
 		String keyword = "";
 
-		assertThatCode(() -> repository.getUserContents(
+		assertThatCode(() -> repository.findAll(
 			groupId,
 			keyword,
 			new UserContentListVO()
@@ -42,11 +42,11 @@ class UserRepositoryTest {
 	}
 
 	@Test
-	void getUserContentTotalCount() {
+	void countBy() {
 		String groupId = "";
 		String keyword = "";
 
-		assertThatCode(() -> repository.getUserContentTotalCount(
+		assertThatCode(() -> repository.countBy(
 			groupId,
 			keyword
 		)).doesNotThrowAnyException();

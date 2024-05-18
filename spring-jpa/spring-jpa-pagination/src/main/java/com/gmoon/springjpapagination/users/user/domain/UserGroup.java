@@ -22,14 +22,17 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 @ToString
 public class UserGroup implements Serializable {
+
+	private static final long serialVersionUID = 6473490199061694565L;
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")
 	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	@Column(name = "id", length = 50)
+	@EqualsAndHashCode.Include
 	private String id;
 
 	@Column(name = "name", length = 50)
@@ -37,5 +40,6 @@ public class UserGroup implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
+	@ToString.Exclude
 	private UserGroup parentGroup;
 }
