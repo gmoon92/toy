@@ -31,6 +31,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class ReflectionUtilsTest {
 
+	@DisplayName("private 접근제한자 인스턴스 생성")
+	@Test
+	void newInstance() {
+		assertThat(ReflectionUtils.newInstance(ModifierPrivateClass.class))
+			.isNotNull();
+	}
+
+	static class ModifierPrivateClass {
+
+		private ModifierPrivateClass() {
+		}
+	}
+
 	@DisplayName("어노테이션이 선언된 클래스 목록 조회")
 	@Test
 	void getDeclaredAnnotationClasses() {

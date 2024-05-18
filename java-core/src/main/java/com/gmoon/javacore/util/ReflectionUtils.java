@@ -3,7 +3,9 @@ package com.gmoon.javacore.util;
 import static java.util.stream.Collectors.*;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -42,6 +44,17 @@ public final class ReflectionUtils {
 		}
 	}
 
+	public static <T> T newInstance(Class<T> clazz) {
+		try {
+			Constructor<T> constructor = clazz.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			return constructor.newInstance();
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+				 IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static List<Object> getFieldValues(Object object, List<Field> fields) {
 		return fields.stream()
 			.map(field -> getFieldValue(object, field))
@@ -61,7 +74,8 @@ public final class ReflectionUtils {
 		return getDeclaredAnnotationClasses(ReflectionsHolder.INSTANCE, annotations);
 	}
 
-	public static Set<Class<?>> getDeclaredAnnotationClasses(Reflections reflections, Class<? extends Annotation>... annotations) {
+	public static Set<Class<?>> getDeclaredAnnotationClasses(Reflections reflections,
+		Class<? extends Annotation>... annotations) {
 		Set<Class<?>> classes = new HashSet<>();
 		reflections.get(Scanners.TypesAnnotated.with(annotations));
 		for (Class<? extends Annotation> annotation : annotations) {
