@@ -48,6 +48,20 @@ public class UnionPageResizer extends Pageable {
 		}
 	}
 
+	public UnionPageResizer(Pageable unionPageable, List<CreatePagination> createPaginations) {
+		this.page = unionPageable.getPage();
+		this.pageSize = unionPageable.getPageSize();
+
+		long prevTotalCount = 0;
+
+		for (CreatePagination createPagination : createPaginations) {
+			Pageable pageable = createPagination.newPagination();
+			ResizedPage resizedPage = obtainResizedPage(pageable, prevTotalCount);
+			prevTotalCount += resizedPage.getTotalCount();
+			resizedPages.add(resizedPage);
+		}
+	}
+
 	public UnionPageResizer(int requestPage, int pageSize, List<Pageable> pageableList) {
 		this.page = requestPage;
 		this.pageSize = pageSize;
