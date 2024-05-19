@@ -51,7 +51,7 @@
         <option name="TERNARY_OPERATION_WRAP" value="1"/>
         <option name="ARRAY_INITIALIZER_WRAP" value="1"/>
         <indentOptions>
-            <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+            <option name="CONTINUATION_INDENT_SIZE" value="5"/>
             <option name="INDENT_SIZE" value="4"/>
             <option name="TAB_SIZE" value="4"/>
             <option name="USE_TAB_CHARACTER" value="true"/>

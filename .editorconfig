@@ -21,7 +21,7 @@ indent_style = tab
 # [4-spaces-tab]
 indent_size = 4
 tab_width = 4
-continuation_indent_size = 4
+continuation_indent_size = 5
 
 # [no-trailing-spaces]
 trim_trailing_whitespace = true
