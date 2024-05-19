@@ -20,8 +20,8 @@ public class SpringIntegrationTest {
 		@Test
 		void create() {
 			Message<String> message = MessageBuilder.withPayload("hi")
-				.setHeader("jwt", "uuid")
-				.build();
+				 .setHeader("jwt", "uuid")
+				 .build();
 
 			assertThat(message.getPayload()).isEqualTo("hi");
 			assertThat(message.getHeaders().getId()).isNotNull();

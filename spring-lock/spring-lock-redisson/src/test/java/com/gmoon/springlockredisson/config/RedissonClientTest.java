@@ -64,7 +64,7 @@ public class RedissonClientTest {
 		lock.lock(10, TimeUnit.SECONDS);
 
 		task.execute(() -> assertThrows(IllegalMonitorStateException.class,
-			() -> lock.unlock()));
+			 () -> lock.unlock()));
 	}
 
 	@DisplayName("락 획득")
@@ -96,7 +96,7 @@ public class RedissonClientTest {
 		}
 
 		@DisplayName("대기 시간(waitTime) 초과인 경우,"
-			+ "tryLock 은 false 를 반환한다.")
+			 + "tryLock 은 false 를 반환한다.")
 		@Test
 		void waitTime() {
 			String lockKey = "gmoon-" + UUID.randomUUID().toString();
@@ -107,20 +107,20 @@ public class RedissonClientTest {
 			});
 
 			Awaitility.await()
-				.pollDelay(Duration.ofSeconds(1))
-				.atMost(Duration.ofSeconds(2))
-				.untilAsserted(() -> {
-					RLock lock = redisson.getLock(lockKey);
-					boolean hasLock = lock.tryLock(1, 10, TimeUnit.SECONDS);
-					log.info("lock.isLocked(): {}, hasLock: {}", lock.isLocked(), hasLock);
-					assertThat(hasLock).isFalse();
-				});
+				 .pollDelay(Duration.ofSeconds(1))
+				 .atMost(Duration.ofSeconds(2))
+				 .untilAsserted(() -> {
+					 RLock lock = redisson.getLock(lockKey);
+					 boolean hasLock = lock.tryLock(1, 10, TimeUnit.SECONDS);
+					 log.info("lock.isLocked(): {}, hasLock: {}", lock.isLocked(), hasLock);
+					 assertThat(hasLock).isFalse();
+				 });
 		}
 
 		@DisplayName("지정한 임대 시간(leaseTime)이 지나면 자동으로 해제 된다."
-			+ "직접 락 해제(unlock)를 하지 않는 경우 "
-			+ "락을 획득한 이후 락을 유지하는 최대 시간이다."
-			+ "-1 인 경우 락 해제(unlock) 될 때까지 락을 유지한다.")
+			 + "직접 락 해제(unlock)를 하지 않는 경우 "
+			 + "락을 획득한 이후 락을 유지하는 최대 시간이다."
+			 + "-1 인 경우 락 해제(unlock) 될 때까지 락을 유지한다.")
 		@Test
 		void leaseTime() {
 			String lockKey = "gmoon-" + UUID.randomUUID().toString();
@@ -132,14 +132,14 @@ public class RedissonClientTest {
 			});
 
 			Awaitility.await()
-				.pollDelay(Duration.ofSeconds(1))
-				.atMost(Duration.ofSeconds(2))
-				.untilAsserted(() -> {
-					RLock lock = redisson.getLock(lockKey);
-					boolean hasLock = lock.tryLock(1, 10, TimeUnit.SECONDS);
-					log.info("lock.isLocked(): {}, hasLock: {}", lock.isLocked(), hasLock);
-					assertThat(hasLock).isTrue();
-				});
+				 .pollDelay(Duration.ofSeconds(1))
+				 .atMost(Duration.ofSeconds(2))
+				 .untilAsserted(() -> {
+					 RLock lock = redisson.getLock(lockKey);
+					 boolean hasLock = lock.tryLock(1, 10, TimeUnit.SECONDS);
+					 log.info("lock.isLocked(): {}, hasLock: {}", lock.isLocked(), hasLock);
+					 assertThat(hasLock).isTrue();
+				 });
 		}
 
 		private void releaseLock(RLock lock) {
@@ -174,9 +174,9 @@ public class RedissonClientTest {
 			task.execute(() -> incrementAndGet(lock, hitCountKey));
 
 			Awaitility.await()
-				.pollDelay(Duration.ofMillis(10))
-				.atMost(Duration.ofMillis(500))
-				.untilAsserted(() -> assertThat(atomicLong.get()).isEqualTo(3));
+				 .pollDelay(Duration.ofMillis(10))
+				 .atMost(Duration.ofMillis(500))
+				 .untilAsserted(() -> assertThat(atomicLong.get()).isEqualTo(3));
 		}
 
 		private long incrementAndGet(RLock lock, String hitCountKey) {
@@ -203,8 +203,8 @@ public class RedissonClientTest {
 			RAtomicLong atomicLong = redisson.getAtomicLong(key);
 
 			IntStream.range(0, 5)
-				.parallel()
-				.forEach(i -> atomicLong.incrementAndGet());
+				 .parallel()
+				 .forEach(i -> atomicLong.incrementAndGet());
 
 			assertThat(atomicLong.get()).isEqualTo(5);
 		}

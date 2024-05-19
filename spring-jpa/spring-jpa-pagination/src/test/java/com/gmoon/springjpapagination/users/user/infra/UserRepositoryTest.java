@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @DataJpaTest(
-	includeFilters = @ComponentScan.Filter(
-		type = FilterType.ASSIGNABLE_TYPE,
-		value = {
-			JpaConfig.class,
-			UserRepositoryAdapter.class
-		}
-	)
+	 includeFilters = @ComponentScan.Filter(
+		  type = FilterType.ASSIGNABLE_TYPE,
+		  value = {
+			   JpaConfig.class,
+			   UserRepositoryAdapter.class
+		  }
+	 )
 )
 class UserRepositoryTest {
 
@@ -35,9 +35,9 @@ class UserRepositoryTest {
 		String keyword = "";
 
 		assertThatCode(() -> repository.findAll(
-			groupId,
-			keyword,
-			new UserContentListVO()
+			 groupId,
+			 keyword,
+			 new UserContentListVO()
 		)).doesNotThrowAnyException();
 	}
 
@@ -47,8 +47,8 @@ class UserRepositoryTest {
 		String keyword = "";
 
 		assertThatCode(() -> repository.countBy(
-			groupId,
-			keyword
+			 groupId,
+			 keyword
 		)).doesNotThrowAnyException();
 	}
 

@@ -33,7 +33,7 @@ class UserLoginLogServiceTest {
 		log.info("다음 페이지 존재 여부: {}", listVO.isHasNextPage());
 		log.info("요청 커서에 대한 결과: {}", listVO.getList());
 		assertThat(listVO)
-			.hasFieldOrPropertyWithValue("cursor", CursorPagination.EMPTY_CURSOR)
-			.hasFieldOrPropertyWithValue("hasNextPage", false);
+			 .hasFieldOrPropertyWithValue("cursor", CursorPagination.EMPTY_CURSOR)
+			 .hasFieldOrPropertyWithValue("hasNextPage", false);
 	}
 }

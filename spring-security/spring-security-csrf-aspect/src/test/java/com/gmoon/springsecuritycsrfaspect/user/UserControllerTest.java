@@ -39,9 +39,9 @@ class UserControllerTest {
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.apply(springSecurity())
-			.alwaysDo(print())
-			.build();
+			 .apply(springSecurity())
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	@Test
@@ -52,14 +52,14 @@ class UserControllerTest {
 
 		// when
 		ResultActions result = mockMvc.perform(post("/login")
-			.accept(MediaType.APPLICATION_FORM_URLENCODED)
-			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-			.param("username", "admin")
-			.param("password", "123"));
+			 .accept(MediaType.APPLICATION_FORM_URLENCODED)
+			 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			 .param("username", "admin")
+			 .param("password", "123"));
 
 		// then
 		result.andExpect(request().sessionAttribute(attributeName, is(notNullValue(HttpSessionCsrfToken.class))))
-			.andExpect(status().isOk());
+			 .andExpect(status().isOk());
 	}
 
 	@Test
@@ -75,12 +75,12 @@ class UserControllerTest {
 		String headerName = token.getHeaderName();
 		String value = token.getValue();
 		ResultActions result = mockMvc.perform(get("/user/delete")
-			.sessionAttr(attributeName, token)
-			.header(headerName, value));
+			 .sessionAttr(attributeName, token)
+			 .header(headerName, value));
 
 		// then
 		result.andExpect(request().sessionAttribute(attributeName, is(notNullValue(HttpSessionCsrfToken.class))))
-			.andExpect(status().isOk());
+			 .andExpect(status().isOk());
 	}
 
 	@Test
@@ -94,10 +94,10 @@ class UserControllerTest {
 		// when
 		String attributeName = repository.getSessionAttributeName();
 		ResultActions result = mockMvc.perform(get("/user/delete")
-			.sessionAttr(attributeName, token));
+			 .sessionAttr(attributeName, token));
 
 		// then
 		result.andExpect(request().sessionAttribute(attributeName, is(notNullValue(HttpSessionCsrfToken.class))))
-			.andExpect(status().is3xxRedirection());
+			 .andExpect(status().is3xxRedirection());
 	}
 }

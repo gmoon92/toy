@@ -39,8 +39,8 @@ public class BookStore extends EntityObject {
 
 	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(
-		name = "book_store_id",
-		nullable = false
+		 name = "book_store_id",
+		 nullable = false
 	)
 	private List<BookStoreBook> storedBooks = new ArrayList<>();
 
@@ -50,11 +50,11 @@ public class BookStore extends EntityObject {
 
 	public void addBook(String bookId, BookQuantity quantity, BookType etc) {
 		BookStoreBook storeBook = BookStoreBook.builder()
-			.bookId(bookId)
-			.quantity(quantity)
-			.type(etc)
-			.status(BookStatus.DISPLAY)
-			.build();
+			 .bookId(bookId)
+			 .quantity(quantity)
+			 .type(etc)
+			 .status(BookStatus.DISPLAY)
+			 .build();
 
 		storedBooks.add(storeBook);
 	}

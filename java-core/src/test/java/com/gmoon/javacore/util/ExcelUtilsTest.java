@@ -22,14 +22,14 @@ class ExcelUtilsTest {
 		String filePath = String.format("%s/%s", storagePath, fileName);
 
 		List<Account> accounts = Arrays.asList(
-			new Account("toy", 10),
-			new Account("gmoon", 20),
-			new Account("kim", 30),
-			new Account("lee", 30)
+			 new Account("toy", 10),
+			 new Account("gmoon", 20),
+			 new Account("kim", 30),
+			 new Account("lee", 30)
 		);
 
 		assertThatCode(() -> ExcelUtils.upload(filePath, accounts, Account.class))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	private String getStoragePath() {

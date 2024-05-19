@@ -1,6 +1,7 @@
 package com.gmoon.junit5.jupiter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,7 @@ class AssumptionsTest {
 	}
 
 	@DisplayName("@BeforeEach 에서 설정된 assume 가정문이 통과되지 않는다면," +
-		"해당 테스트 disabled 처리")
+		 "해당 테스트 disabled 처리")
 	@Test
 	void testAssumeWithBeforeEach() {
 		assertThat(true).isFalse();

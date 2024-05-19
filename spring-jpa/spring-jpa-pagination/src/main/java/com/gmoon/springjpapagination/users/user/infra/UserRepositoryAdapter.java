@@ -27,29 +27,29 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 	@Override
 	public List<User> findAll(String groupId, String keyword, Pageable pageable) {
 		return getUserQuery(groupId, keyword, pageable)
-			.fetch();
+			 .fetch();
 	}
 
 	private JPAQuery<User> getUserQuery(String groupId, String keyword, Pageable pageable) {
 		return pagingQuery(pageable)
-			.select(user)
-			.from(user)
-			.join(user.userGroup, userGroup)
-			.where(
-				userGroup.assignedGroup(groupId),
-				user.likeName(keyword)
-			)
-			.orderBy(user.username.desc());
+			 .select(user)
+			 .from(user)
+			 .join(user.userGroup, userGroup)
+			 .where(
+				  userGroup.assignedGroup(groupId),
+				  user.likeName(keyword)
+			 )
+			 .orderBy(user.username.desc());
 	}
 
 	@Override
 	public long countBy(String groupId, String keyword) {
 		return countQuery(
-			getUserQuery(
-				groupId,
-				keyword,
-				Pageable.unpaged()
-			)
+			 getUserQuery(
+				  groupId,
+				  keyword,
+				  Pageable.unpaged()
+			 )
 		);
 	}
 }

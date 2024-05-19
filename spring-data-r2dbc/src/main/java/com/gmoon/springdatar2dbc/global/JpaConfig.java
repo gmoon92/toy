@@ -15,16 +15,16 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableJpaRepositories(
-	basePackages = {"com.gmoon.*"},
-	excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = ReactRepository.class)
+	 basePackages = {"com.gmoon.*"},
+	 excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = ReactRepository.class)
 )
 public class JpaConfig {
 
 	@Bean
 	public DataSource jdbcDataSource(DataSourceProperties properties) {
 		return properties.initializeDataSourceBuilder()
-			.type(HikariDataSource.class)
-			.build();
+			 .type(HikariDataSource.class)
+			 .build();
 	}
 
 	/**
@@ -33,8 +33,8 @@ public class JpaConfig {
 	 * */
 	@Bean
 	public SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(
-		DataSource jdbcDataSource,
-		SqlInitializationProperties properties
+		 DataSource jdbcDataSource,
+		 SqlInitializationProperties properties
 	) {
 		return new SqlDataSourceScriptDatabaseInitializer(jdbcDataSource, properties);
 	}

@@ -24,23 +24,23 @@ public class AccessLogExcelDownloadRepositoryJooqImpl implements AccessLogExcelD
 	@Override
 	public List<AccessLogExcelDownload> bulkSaveAllAtJooq(List<AccessLog> accessLogs) {
 		InsertValuesStepN<ExAccessLogRecord> insertInto = (InsertValuesStepN<ExAccessLogRecord>)dsl.insertInto(
-			jExAccessLog,
-			jExAccessLog.ID,
-			jExAccessLog.USERNAME,
-			jExAccessLog.IP,
-			jExAccessLog.OS,
-			jExAccessLog.ATTEMPT_DT
+			 jExAccessLog,
+			 jExAccessLog.ID,
+			 jExAccessLog.USERNAME,
+			 jExAccessLog.IP,
+			 jExAccessLog.OS,
+			 jExAccessLog.ATTEMPT_DT
 		);
 
 		List<AccessLogExcelDownload> result = new ArrayList<>(accessLogs.size());
 		for (AccessLog accessLog : accessLogs) {
 			AccessLogExcelDownload accessLogExcelDownload = AccessLogExcelDownload.create(accessLog);
 			insertInto.values(
-				accessLogExcelDownload.getId(),
-				accessLogExcelDownload.getUsername(),
-				accessLogExcelDownload.getIp(),
-				accessLogExcelDownload.getOs(),
-				accessLogExcelDownload.getAttemptDt()
+				 accessLogExcelDownload.getId(),
+				 accessLogExcelDownload.getUsername(),
+				 accessLogExcelDownload.getIp(),
+				 accessLogExcelDownload.getOs(),
+				 accessLogExcelDownload.getAttemptDt()
 			);
 
 			result.add(accessLogExcelDownload);

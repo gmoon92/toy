@@ -5,5 +5,6 @@ import java.time.Duration;
 
 public interface Cache extends Serializable {
 	String getKey();
+
 	Duration getTtl();
 }

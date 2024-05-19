@@ -1,6 +1,7 @@
 package com.gmoon.awaitility.concurrency;
 
 import java.util.concurrent.CountDownLatch;
+
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

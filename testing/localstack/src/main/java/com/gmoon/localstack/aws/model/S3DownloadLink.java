@@ -1,12 +1,15 @@
 package com.gmoon.localstack.aws.model;
 
-import com.gmoon.javacore.util.StringUtils;
-import com.gmoon.localstack.aws.constants.AmazonRegion;
 import java.util.Objects;
-import lombok.Builder;
-import lombok.Getter;
+
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.gmoon.javacore.util.StringUtils;
+import com.gmoon.localstack.aws.constants.AmazonRegion;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class S3DownloadLink {
@@ -15,9 +18,9 @@ public class S3DownloadLink {
 
 	@Builder
 	public S3DownloadLink(String bucketName,
-						  AmazonRegion region,
-						  String userResourceUri,
-						  String fileName
+		 AmazonRegion region,
+		 String userResourceUri,
+		 String fileName
 	) {
 		Objects.requireNonNull(bucketName);
 		Objects.requireNonNull(region);
@@ -25,16 +28,16 @@ public class S3DownloadLink {
 		Objects.requireNonNull(fileName);
 
 		UriComponents components = UriComponentsBuilder
-			.fromUriString(String.format("https://%s.s3.%s.amazonaws.com", bucketName, region.getValue()))
-			.pathSegment(userResourceUri, fileName)
-			.build();
+			 .fromUriString(String.format("https://%s.s3.%s.amazonaws.com", bucketName, region.getValue()))
+			 .pathSegment(userResourceUri, fileName)
+			 .build();
 
 		value = toUriString(components);
 	}
 
 	private String toUriString(UriComponents components) {
 		return getOrigin(components)
-			+ cleanDoubleSlashPath(components.getPath());
+			 + cleanDoubleSlashPath(components.getPath());
 	}
 
 	private String getOrigin(UriComponents components) {

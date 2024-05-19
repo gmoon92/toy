@@ -8,6 +8,7 @@ public interface MovieRepository {
 	Movie save(Movie movie);
 
 	Movie get(String id);
+
 	Optional<Movie> findById(String id);
 
 	List<Movie> findAll();

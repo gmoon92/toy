@@ -36,8 +36,8 @@ public class FavoriteUser implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumns({
-		@JoinColumn(name = "fuser_id", referencedColumnName = "user_id", insertable = false, updatable = false),
-		@JoinColumn(name = "ftype", referencedColumnName = "type", insertable = false, updatable = false)
+		 @JoinColumn(name = "fuser_id", referencedColumnName = "user_id", insertable = false, updatable = false),
+		 @JoinColumn(name = "ftype", referencedColumnName = "type", insertable = false, updatable = false)
 	})
 	private Favorite favorite;
 

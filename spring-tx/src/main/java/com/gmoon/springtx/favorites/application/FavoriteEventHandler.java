@@ -19,8 +19,8 @@ public class FavoriteEventHandler {
 	private final FavoriteService favoriteService;
 
 	@TransactionalEventListener(
-		phase = TransactionPhase.AFTER_COMMIT,
-		fallbackExecution = true
+		 phase = TransactionPhase.AFTER_COMMIT,
+		 fallbackExecution = true
 	)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void delete(DeleteFavoriteEvent deleteFavoriteEvent) {

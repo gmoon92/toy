@@ -23,6 +23,6 @@ public class ResourceVO {
 
 	public static boolean verify(String language) {
 		return Arrays.asList("ko", "en", "ja", "zh_CN", "zh_TW").stream()
-			.anyMatch(str -> str.equals(language));
+			 .anyMatch(str -> str.equals(language));
 	}
 }

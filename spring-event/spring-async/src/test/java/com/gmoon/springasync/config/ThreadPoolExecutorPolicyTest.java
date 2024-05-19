@@ -16,10 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @DisplayName("WorkQue가 full인 상태에서 task를 반환할 수 없거나," +
-	"사용 가능한 스레드 또는 대기열 슬롯이 더 이상 없을 경우 발생할 수 있는 Executor 정책 테스트")
+	 "사용 가능한 스레드 또는 대기열 슬롯이 더 이상 없을 경우 발생할 수 있는 Executor 정책 테스트")
 @Disabled("application.yml 메일 설정 후 테스트 진행 "
-	+ "username: @test.mail.username@"
-	+ "password: @test.mail.password@")
+	 + "username: @test.mail.username@"
+	 + "password: @test.mail.password@")
 public class ThreadPoolExecutorPolicyTest {
 	static final String THREAD_NAME_PREFIX = "thread-gmoon-pool";
 	static final int MIN_CORE_SIZE = 1; // 최소 유지할 Thread 수
@@ -45,7 +45,7 @@ public class ThreadPoolExecutorPolicyTest {
 
 	@Test
 	@DisplayName("AbortPolicy: 기본 거부 정책은 이다. 작업 큐가 full이거나 모든 Thread가 busy인 경우. " +
-		"즉 task를 생성할 수 없을 경우 RejectedExecutionException을 발생한다.")
+		 "즉 task를 생성할 수 없을 경우 RejectedExecutionException을 발생한다.")
 	void abortPolicy() {
 		// given
 		setPolicy(new ThreadPoolExecutor.AbortPolicy());
@@ -108,6 +108,6 @@ public class ThreadPoolExecutorPolicyTest {
 		int currentActiveThreadCount = taskExecutor.getActiveCount();
 		String threadName = Thread.currentThread().getName();
 		System.out.format("poolSize=%s, currentActiveThreadCount=%s [%s]\n", poolSize, currentActiveThreadCount,
-			threadName);
+			 threadName);
 	}
 }

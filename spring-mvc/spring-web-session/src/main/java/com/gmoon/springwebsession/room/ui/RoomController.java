@@ -42,8 +42,8 @@ public class RoomController {
 
 	@PostMapping
 	public RedirectView save(
-		@ModelAttribute Room room,
-		RedirectAttributes attributes
+		 @ModelAttribute Room room,
+		 RedirectAttributes attributes
 	) {
 		Room saved = service.save(room);
 		attributes.addFlashAttribute("room", saved);
@@ -52,13 +52,13 @@ public class RoomController {
 
 	@DeleteMapping("/{name}")
 	public ResponseEntity<Void> delete(
-		@PathVariable String name,
-		SessionStatus sessionStatus
+		 @PathVariable String name,
+		 SessionStatus sessionStatus
 	) {
 		service.delete(name);
 
 		sessionStatus.setComplete();
 		return ResponseEntity.status(HttpStatus.NO_CONTENT)
-			.build();
+			 .build();
 	}
 }

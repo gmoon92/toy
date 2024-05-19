@@ -18,13 +18,13 @@ class AmqpSenderTest {
 	@Test
 	void send() {
 		amqpSender.send(
-			AmqpMessageDestination.SEND_MAIL.value,
-			SendMailVO.builder()
-				.to("gmoon92@gmail.com")
-				.from("system@email.com")
-				.subject("subject")
-				.content("welcome")
-				.build()
+			 AmqpMessageDestination.SEND_MAIL.value,
+			 SendMailVO.builder()
+				  .to("gmoon92@gmail.com")
+				  .from("system@email.com")
+				  .subject("subject")
+				  .content("welcome")
+				  .build()
 		);
 	}
 }

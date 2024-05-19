@@ -13,7 +13,8 @@ import org.springframework.http.HttpMethod;
 
 @SpringBootTest
 class CorsOriginServiceTest {
-	@Autowired CorsOriginService service;
+	@Autowired
+	CorsOriginService service;
 
 	@Test
 	@DisplayName("CORS 필터에서 체크할 origin 정규식을 반환한다.")
@@ -23,7 +24,7 @@ class CorsOriginServiceTest {
 
 		// then
 		assertThat(patterns)
-			.contains("**://localhost:**", "**://localhost");
+			 .contains("**://localhost:**", "**://localhost");
 	}
 
 	@Test
@@ -41,8 +42,8 @@ class CorsOriginServiceTest {
 	void testSave() {
 		// given
 		Origin origin = Origin.builder()
-			.host(RandomStringUtils.randomAlphanumeric(10))
-			.build();
+			 .host(RandomStringUtils.randomAlphanumeric(10))
+			 .build();
 		CorsOrigin corsOrigin = CorsOrigin.create(origin);
 
 		// when
@@ -70,8 +71,8 @@ class CorsOriginServiceTest {
 
 		// then
 		assertThat(methods)
-			.containsOnly(httpName(HttpMethod.GET), httpName(HttpMethod.POST), httpName(HttpMethod.DELETE),
-				httpName(HttpMethod.PUT));
+			 .containsOnly(httpName(HttpMethod.GET), httpName(HttpMethod.POST), httpName(HttpMethod.DELETE),
+				  httpName(HttpMethod.PUT));
 	}
 
 	private String httpName(HttpMethod httpMethod) {

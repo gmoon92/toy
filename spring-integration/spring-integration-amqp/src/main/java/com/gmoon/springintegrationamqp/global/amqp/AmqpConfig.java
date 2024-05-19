@@ -40,13 +40,13 @@ public class AmqpConfig {
 	@Bean
 	public Client client(RabbitProperties properties) throws MalformedURLException, URISyntaxException {
 		return new Client(new ClientParameters()
-			.url(UriComponentsBuilder.newInstance()
-				.scheme("http")
-				.host(properties.getHost())
-				.path("api")
-				.port("1" + properties.getPort())
-				.toUriString())
-			.username(properties.getUsername())
-			.password(properties.getPassword()));
+			 .url(UriComponentsBuilder.newInstance()
+				  .scheme("http")
+				  .host(properties.getHost())
+				  .path("api")
+				  .port("1" + properties.getPort())
+				  .toUriString())
+			 .username(properties.getUsername())
+			 .password(properties.getPassword()));
 	}
 }

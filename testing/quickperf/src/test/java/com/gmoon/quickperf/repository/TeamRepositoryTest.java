@@ -31,13 +31,13 @@ class TeamRepositoryTest extends InitTestDataExecutor {
 	@Test
 	@ExpectSelect(8)
 	@DisplayName("Team을 기준으로 모든 팀원(Member)을 조회할 시 " +
-		"N+1 문제로 8 번의 쿼리가 발생한다." +
-		"  Team         조회 1 " +
-		"+ Company      조회 1 " +
-		"+ newbie Member         조회 1 " +
-		"+ newbie MemberOption   조회 1 " +
-		"+ backend Member        조회 1 " +
-		"+ backend MemberOption  조회 3 ")
+		 "N+1 문제로 8 번의 쿼리가 발생한다." +
+		 "  Team         조회 1 " +
+		 "+ Company      조회 1 " +
+		 "+ newbie Member         조회 1 " +
+		 "+ newbie MemberOption   조회 1 " +
+		 "+ backend Member        조회 1 " +
+		 "+ backend MemberOption  조회 3 ")
 	void testFindAll_N_plush_One() {
 		// given
 		List<Team> teams = repository.findAll();
@@ -60,12 +60,12 @@ class TeamRepositoryTest extends InitTestDataExecutor {
 
 		// when
 		List<Member> members = em.createQuery("select m from Member m " +
-				"join fetch m.team t " +
-				"join fetch t.company c " +
-				"join fetch m.memberOption mo " +
-				"where m.team.id = :teamId")
-			.setParameter("teamId", 2L)
-			.getResultList();
+				  "join fetch m.team t " +
+				  "join fetch t.company c " +
+				  "join fetch m.memberOption mo " +
+				  "where m.team.id = :teamId")
+			 .setParameter("teamId", 2L)
+			 .getResultList();
 
 		// then
 		for (Member member : members) {
@@ -83,10 +83,10 @@ class TeamRepositoryTest extends InitTestDataExecutor {
 
 		// when
 		List<Team> teams = em.createQuery("select t from Team t " +
-				"join fetch t.company c " +
-				"join fetch t.members m " +
-				"join fetch m.memberOption mo ")
-			.getResultList();
+				  "join fetch t.company c " +
+				  "join fetch t.members m " +
+				  "join fetch m.memberOption mo ")
+			 .getResultList();
 
 		// then
 		for (Team team : teams) {

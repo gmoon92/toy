@@ -65,7 +65,7 @@ public class Order implements Serializable {
 
 	@Builder
 	private Order(String no, String address, OrderStatus status, Long version, Long issuedCount,
-		List<OrderLineItem> orderLineItems) {
+		 List<OrderLineItem> orderLineItems) {
 		this.no = no;
 		this.address = address;
 		this.status = status;

@@ -20,14 +20,14 @@ public abstract class BaseRepository {
 
 	protected JPAQuery<?> pagingQuery(Pageable pageable) {
 		return queryFactory.query()
-			.limit(pageable.getPageSize())
-			.offset(pageable.getOffset());
+			 .limit(pageable.getPageSize())
+			 .offset(pageable.getOffset());
 	}
 
 	protected <T> JPAQuery<T> pagination(JPAQuery<T> query, Pageable pageable) {
 		return query
-			.limit(pageable.getPageSize())
-			.offset(pageable.getOffset());
+			 .limit(pageable.getPageSize())
+			 .offset(pageable.getOffset());
 	}
 
 	protected <T> Long countQuery(JPAQuery<T> query) {
@@ -38,7 +38,7 @@ public abstract class BaseRepository {
 
 		NumberOperation<Long> countExpression = getCountExpression(query);
 		return countQuery.select(
-			countExpression
+			 countExpression
 		).fetchFirst();
 	}
 
@@ -54,17 +54,17 @@ public abstract class BaseRepository {
 
 	private <T> NumberOperation<Long> getCountExpression(JPAQuery<T> query) {
 		Expression<?> from = query.getMetadata()
-			.getJoins()
-			.stream()
-			.map(JoinExpression::getTarget)
-			.filter(this::isRootPath)
-			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("Not found from expression."));
+			 .getJoins()
+			 .stream()
+			 .map(JoinExpression::getTarget)
+			 .filter(this::isRootPath)
+			 .findFirst()
+			 .orElseThrow(() -> new IllegalArgumentException("Not found from expression."));
 
 		return Expressions.numberOperation(
-			Long.class,
-			Ops.AggOps.COUNT_ALL_AGG,
-			from
+			 Long.class,
+			 Ops.AggOps.COUNT_ALL_AGG,
+			 from
 		);
 	}
 

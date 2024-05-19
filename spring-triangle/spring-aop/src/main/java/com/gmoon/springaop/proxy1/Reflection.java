@@ -10,7 +10,7 @@ public class Reflection {
 
 	public Character stringCharAt(String str, int idx) throws Exception {
 		Method method = String.class.getMethod("charAt" // method name
-			, int.class // parameter type
+			 , int.class // parameter type
 		);
 		return (Character)method.invoke(str, idx);
 	}

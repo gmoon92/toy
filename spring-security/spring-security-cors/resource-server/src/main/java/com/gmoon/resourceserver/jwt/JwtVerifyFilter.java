@@ -23,6 +23,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+
 import com.gmoon.resourceserver.constants.HttpHeaders;
 import com.gmoon.resourceserver.jwt.exception.JwtVerifyException;
 import com.gmoon.resourceserver.user.User;
@@ -39,7 +40,9 @@ public class JwtVerifyFilter extends BasicAuthenticationFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws
+		 IOException,
+		 ServletException {
 		String token = getToken(request);
 		try {
 			User user = jwtUtils.decode(token);
@@ -61,11 +64,11 @@ public class JwtVerifyFilter extends BasicAuthenticationFilter {
 
 	private String getTokenFromCookie(HttpServletRequest request) {
 		return getCookies(request)
-			.stream()
-			.filter(cookie -> StringUtils.equals(HttpHeaders.AUTHORIZATION, cookie.getName()))
-			.findFirst()
-			.map(this::getCookieValue)
-			.orElse(StringUtils.EMPTY);
+			 .stream()
+			 .filter(cookie -> StringUtils.equals(HttpHeaders.AUTHORIZATION, cookie.getName()))
+			 .findFirst()
+			 .map(this::getCookieValue)
+			 .orElse(StringUtils.EMPTY);
 	}
 
 	private List<Cookie> getCookies(HttpServletRequest request) {

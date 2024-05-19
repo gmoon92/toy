@@ -39,25 +39,26 @@ public class JooqConfig {
 	@PostConstruct
 	public void generateSource() throws Exception {
 		org.jooq.meta.jaxb.Configuration configuration = new org.jooq.meta.jaxb.Configuration()
-			.withJdbc(new Jdbc()
-				.withDriver(dataSourceProperties.getDriverClassName())
-				.withUrl(dataSourceProperties.getUrl())
-				.withUser(dataSourceProperties.getUsername())
-				.withPassword(dataSourceProperties.getPassword()))
-			.withGenerator(new Generator()
-				.withDatabase(new Database()
-					.withSchemaVersionProvider("SELECT 'V1' AS version") // todo make custom schema version provider.
-					.withName(environment.getProperty("jooq.properties.driver-class-name")) // org.jooq.meta.*.*Database
-					// .withIncludes(".*")
-					// .withExcludes("")
-					.withInputSchema(environment.getProperty("jooq.properties.schema"))
-				)
-				.withTarget(
-					new Target()
-						.withDirectory(environment.getProperty("jooq.properties.target-dir"))
-						.withPackageName("com.gmoon.springjooq.global.jooqschema")
-				)
-			);
+			 .withJdbc(new Jdbc()
+				  .withDriver(dataSourceProperties.getDriverClassName())
+				  .withUrl(dataSourceProperties.getUrl())
+				  .withUser(dataSourceProperties.getUsername())
+				  .withPassword(dataSourceProperties.getPassword()))
+			 .withGenerator(new Generator()
+				  .withDatabase(new Database()
+					   .withSchemaVersionProvider("SELECT 'V1' AS version") // todo make custom schema version provider.
+					   .withName(
+							environment.getProperty("jooq.properties.driver-class-name")) // org.jooq.meta.*.*Database
+					   // .withIncludes(".*")
+					   // .withExcludes("")
+					   .withInputSchema(environment.getProperty("jooq.properties.schema"))
+				  )
+				  .withTarget(
+					   new Target()
+							.withDirectory(environment.getProperty("jooq.properties.target-dir"))
+							.withPackageName("com.gmoon.springjooq.global.jooqschema")
+				  )
+			 );
 
 		GenerationTool.generate(configuration);
 	}

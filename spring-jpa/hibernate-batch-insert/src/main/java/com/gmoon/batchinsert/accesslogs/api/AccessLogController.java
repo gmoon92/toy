@@ -36,7 +36,7 @@ public class AccessLogController {
 
 	@GetMapping("/download")
 	public ResponseEntity<Resource> download(
-		@RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate attemptDt) {
+		 @RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate attemptDt) {
 		log.info("accessLog {} download.", attemptDt);
 		String filePath = getLocalStorageFilePath(attemptDt);
 		File excelFile = accessLogService.createExcelFile(filePath, attemptDt);
@@ -44,18 +44,18 @@ public class AccessLogController {
 		// Resource resource = resourceLoader.getResource("classpath:storage/" + excelFile.getName());
 		Resource resource = new FileSystemResource(excelFile);
 		return ResponseEntity.ok()
-			.contentType(MediaType.APPLICATION_OCTET_STREAM)
-			.cacheControl(CacheControl.noCache())
-			.header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
-				.filename(excelFile.getName())
-				.build()
-				.toString())
-			.body(resource);
+			 .contentType(MediaType.APPLICATION_OCTET_STREAM)
+			 .cacheControl(CacheControl.noCache())
+			 .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+				  .filename(excelFile.getName())
+				  .build()
+				  .toString())
+			 .body(resource);
 	}
 
 	private String getLocalStorageFilePath(LocalDate attemptDt) {
 		String fileName = "accesslog_" + attemptDt;
 		return Paths.get(storageProperties.getAbsolutePath(), fileName)
-			.toString();
+			 .toString();
 	}
 }

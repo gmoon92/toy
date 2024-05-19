@@ -30,7 +30,7 @@ class AccessLogControllerTest {
 	@BeforeEach
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.build();
+			 .build();
 	}
 
 	@Disabled("build error.")
@@ -41,13 +41,13 @@ class AccessLogControllerTest {
 
 		// when
 		ResultActions result = mockMvc.perform(get("/accesslog/download")
-			.queryParam("attemptDt", attemptDt));
+			 .queryParam("attemptDt", attemptDt));
 
 		// then
 		result.andExpectAll(status().isOk(),
-			header().exists(HttpHeaders.CONTENT_LENGTH),
-			header().string(HttpHeaders.CONTENT_TYPE, startsWith(MediaType.APPLICATION_OCTET_STREAM_VALUE)),
-			header().string(HttpHeaders.CONTENT_DISPOSITION, containsString("attachment")),
-			header().string(HttpHeaders.CONTENT_DISPOSITION, containsString(".xlsx")));
+			 header().exists(HttpHeaders.CONTENT_LENGTH),
+			 header().string(HttpHeaders.CONTENT_TYPE, startsWith(MediaType.APPLICATION_OCTET_STREAM_VALUE)),
+			 header().string(HttpHeaders.CONTENT_DISPOSITION, containsString("attachment")),
+			 header().string(HttpHeaders.CONTENT_DISPOSITION, containsString(".xlsx")));
 	}
 }

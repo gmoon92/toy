@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class UserRepository {
 	private static final List<User> ALL = new ArrayList<>(Arrays.asList(
-		User.from("gmoon"),
-		User.from("guest").disabled()
+		 User.from("gmoon"),
+		 User.from("guest").disabled()
 	));
 
 	public List<User> findAll() {
@@ -22,9 +22,9 @@ public class UserRepository {
 
 	public User findByName(String username) {
 		return ALL.stream()
-			.filter(user -> user.equals(User.from(username)))
-			.findFirst()
-			.orElseThrow(() -> new RuntimeException(String.format("User(%s) not found... ", username)));
+			 .filter(user -> user.equals(User.from(username)))
+			 .findFirst()
+			 .orElseThrow(() -> new RuntimeException(String.format("User(%s) not found... ", username)));
 	}
 
 	public User save(User user) {

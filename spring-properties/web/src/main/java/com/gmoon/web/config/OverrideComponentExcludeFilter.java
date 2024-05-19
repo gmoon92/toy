@@ -37,10 +37,10 @@ public class OverrideComponentExcludeFilter implements TypeFilter {
 	private Set<String> getExcludeClassNames() {
 		try {
 			return scanPackage().stream()
-				.map(Class::getSuperclass)
-				.map(Class::getName)
-				.peek(name -> log.info("super class name of custom bean: {}", name))
-				.collect(Collectors.toSet());
+				 .map(Class::getSuperclass)
+				 .map(Class::getName)
+				 .peek(name -> log.info("super class name of custom bean: {}", name))
+				 .collect(Collectors.toSet());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -48,17 +48,17 @@ public class OverrideComponentExcludeFilter implements TypeFilter {
 
 	private Set<Class<?>> scanPackage() {
 		Reflections reflections = new Reflections(
-			new ConfigurationBuilder()
-				.forPackage("com.gmoon.custom")
-				.setExpandSuperTypes(false)
+			 new ConfigurationBuilder()
+				  .forPackage("com.gmoon.custom")
+				  .setExpandSuperTypes(false)
 		);
 		return ReflectionUtils.getDeclaredAnnotationClasses(
-			reflections,
-			Controller.class,
-			RestController.class,
-			Service.class,
-			Repository.class,
-			Component.class
+			 reflections,
+			 Controller.class,
+			 RestController.class,
+			 Service.class,
+			 Repository.class,
+			 Component.class
 		);
 	}
 }

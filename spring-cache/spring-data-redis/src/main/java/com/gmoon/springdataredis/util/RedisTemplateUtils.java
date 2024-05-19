@@ -27,7 +27,7 @@ public class RedisTemplateUtils {
 
 	public void save(Cache cache, Serializable value) {
 		template.opsForValue()
-			.set(cache.getKey(), value, cache.getTtl());
+			 .set(cache.getKey(), value, cache.getTtl());
 	}
 
 	public <T extends Serializable> T find(String key) {

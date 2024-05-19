@@ -31,8 +31,8 @@ public class JasyptAutoConfigTest {
 		String encrypted = stringEncryptor.encrypt(decrypted);
 
 		assertThat(stringEncryptor.decrypt(encrypted))
-			.isEqualTo(env.getProperty("enc-message"))
-			.isEqualTo(decrypted)
-			.isEqualTo(encMessage);
+			 .isEqualTo(env.getProperty("enc-message"))
+			 .isEqualTo(decrypted)
+			 .isEqualTo(encMessage);
 	}
 }

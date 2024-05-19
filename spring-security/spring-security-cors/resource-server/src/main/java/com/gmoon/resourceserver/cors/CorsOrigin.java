@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_cors_origin",
-	uniqueConstraints = {@UniqueConstraint(name = "u_schema_host_port", columnNames = {"schema", "host", "port"})})
+	 uniqueConstraints = {@UniqueConstraint(name = "u_schema_host_port", columnNames = {"schema", "host", "port"})})
 @Getter
 @EqualsAndHashCode(of = {"origin"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,9 +31,9 @@ public class CorsOrigin implements Serializable {
 
 	@Embedded
 	@AttributeOverrides({
-		@AttributeOverride(name = "schema", column = @Column(name = "schema")),
-		@AttributeOverride(name = "host", column = @Column(name = "host")),
-		@AttributeOverride(name = "port", column = @Column(name = "port"))
+		 @AttributeOverride(name = "schema", column = @Column(name = "schema")),
+		 @AttributeOverride(name = "host", column = @Column(name = "host")),
+		 @AttributeOverride(name = "port", column = @Column(name = "port"))
 	})
 	private Origin origin;
 

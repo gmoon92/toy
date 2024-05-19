@@ -11,11 +11,11 @@ import com.gmoon.springsecurityjwt.jwt.JwtAuthenticationFilter;
 class UserControllerTest extends BaseSpringBootTest {
 	@Test
 	@DisplayName("로그인 성공 후, 응답 헤더에 JWT 토큰을 포함한다.")
-	void testLogin() throws Exception{
+	void testLogin() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(formLogin()
-			.user("admin")
-			.password("123"));
+			 .user("admin")
+			 .password("123"));
 
 		// then
 		result.andExpect(status().isOk());
@@ -27,8 +27,8 @@ class UserControllerTest extends BaseSpringBootTest {
 	void testLogin_isNotUsedHttpSession() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(formLogin()
-			.user("admin")
-			.password("123"));
+			 .user("admin")
+			 .password("123"));
 
 		// then
 		result.andExpect(status().isOk());
@@ -40,8 +40,8 @@ class UserControllerTest extends BaseSpringBootTest {
 	void testLogin_unauthorized() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(formLogin()
-			.user("admin")
-			.password(RandomStringUtils.randomAlphanumeric(10)));
+			 .user("admin")
+			 .password(RandomStringUtils.randomAlphanumeric(10)));
 
 		// then
 		result.andExpect(status().is4xxClientError());

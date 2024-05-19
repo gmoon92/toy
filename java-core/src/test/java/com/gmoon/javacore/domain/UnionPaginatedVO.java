@@ -24,24 +24,24 @@ public class UnionPaginatedVO extends BasePaginatedVO {
 
 	public Optional<BasePaginatedVO> find(BasePaginatedVO vo) {
 		return ALL.stream()
-			.filter(vo::equals)
-			.findFirst();
+			 .filter(vo::equals)
+			 .findFirst();
 	}
 
 	public Optional<BasePaginatedVO> find(Class<? extends BasePaginatedVO> clazz) {
 		return ALL.stream()
-			.filter(clazz::isInstance)
-			.findFirst();
+			 .filter(clazz::isInstance)
+			 .findFirst();
 	}
 
 	public BasePaginatedVO get(BasePaginatedVO vo) {
 		return find(vo)
-			.orElseThrow(() -> new RuntimeException("not found page object."));
+			 .orElseThrow(() -> new RuntimeException("not found page object."));
 	}
 
 	public BasePaginatedVO get(Class<? extends BasePaginatedVO> clazz) {
 		return find(clazz)
-			.orElseThrow(() -> new RuntimeException("not found page object."));
+			 .orElseThrow(() -> new RuntimeException("not found page object."));
 	}
 
 	private void resizing() {
@@ -82,7 +82,7 @@ public class UnionPaginatedVO extends BasePaginatedVO {
 	@Override
 	public long getTotalCount() {
 		return ALL.stream()
-			.mapToLong(BasePaginatedVO::getTotalCount)
-			.sum();
+			 .mapToLong(BasePaginatedVO::getTotalCount)
+			 .sum();
 	}
 }

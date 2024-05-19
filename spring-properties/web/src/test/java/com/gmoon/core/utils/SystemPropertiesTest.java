@@ -28,6 +28,6 @@ public class SystemPropertiesTest {
 	@Test
 	void decrypt() {
 		assertThat(systemProperties.getEmailPassword())
-			.isEqualTo("123");
+			 .isEqualTo("123");
 	}
 }

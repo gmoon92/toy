@@ -18,17 +18,17 @@ public class ServerRepositoryImpl implements ServerRepositoryQueryDsl {
 	@Override
 	public List<Server> getEnabledServers() {
 		return jpaQueryFactory.select(server)
-			.from(server)
-			.where(server.isEnabled())
-			.fetch();
+			 .from(server)
+			 .where(server.isEnabled())
+			 .fetch();
 	}
 
 	@Override
 	public List<Server> getServers(String serverName) {
 		return jpaQueryFactory.select(server)
-			.from(server)
-			.where(eqServerName(serverName))
-			.fetch();
+			 .from(server)
+			 .where(eqServerName(serverName))
+			 .fetch();
 	}
 
 	private BooleanExpression eqServerName(String serverName) {

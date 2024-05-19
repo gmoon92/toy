@@ -51,13 +51,13 @@ class JpaBookRepositoryTest extends SupportDataJpaTest {
 	@Test
 	void findById() {
 		Book book = repository.findById("book-no0").
-			orElseThrow(EntityNotFoundException::new);
+			 orElseThrow(EntityNotFoundException::new);
 
 		assertThat(book).isNotNull();
 		assertAll(
-			() -> assertThat(book.getId()).isNotBlank(),
-			() -> assertThat(book.getName()).isEqualTo(new BookName("START! DDD")),
-			() -> assertThat(book.getIsbn()).isNotNull(),
-			() -> assertThat(book.getPrice()).isNotNull());
+			 () -> assertThat(book.getId()).isNotBlank(),
+			 () -> assertThat(book.getName()).isEqualTo(new BookName("START! DDD")),
+			 () -> assertThat(book.getIsbn()).isNotNull(),
+			 () -> assertThat(book.getPrice()).isNotNull());
 	}
 }

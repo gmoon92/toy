@@ -24,9 +24,9 @@ public enum RevisionTarget {
 
 	public static RevisionTarget of(Class entityClass) {
 		return Arrays.stream(RevisionTarget.values())
-			.filter(target -> target.getEntityClass().equals(entityClass))
-			.findFirst()
-			.orElse(null);
+			 .filter(target -> target.getEntityClass().equals(entityClass))
+			 .findFirst()
+			 .orElse(null);
 	}
 
 	public Object getCompareVO(Object entity) {

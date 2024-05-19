@@ -14,7 +14,8 @@ import com.gmoon.resourceserver.config.JpaConfig;
 @Import(JpaConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
-	@Autowired UserRepository repository;
+	@Autowired
+	UserRepository repository;
 
 	@Test
 	void testFindByUsername() {
@@ -26,7 +27,7 @@ class UserRepositoryTest {
 
 		// then
 		assertThat(actual)
-			.hasFieldOrPropertyWithValue("username", "admin")
-			.hasFieldOrPropertyWithValue("role", Role.ADMIN);
+			 .hasFieldOrPropertyWithValue("username", "admin")
+			 .hasFieldOrPropertyWithValue("role", Role.ADMIN);
 	}
 }

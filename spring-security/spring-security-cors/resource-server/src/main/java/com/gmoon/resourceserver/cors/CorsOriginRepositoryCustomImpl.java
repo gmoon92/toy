@@ -15,8 +15,8 @@ public class CorsOriginRepositoryCustomImpl implements CorsOriginRepositoryCusto
 	@Override
 	public List<String> getAllHost() {
 		return jpaQueryFactory.select(corsOrigin.origin.host)
-			.from(corsOrigin)
-			.groupBy(corsOrigin.origin.host)
-			.fetch();
+			 .from(corsOrigin)
+			 .groupBy(corsOrigin.origin.host)
+			 .fetch();
 	}
 }

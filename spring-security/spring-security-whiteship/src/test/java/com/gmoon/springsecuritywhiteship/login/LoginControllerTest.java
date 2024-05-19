@@ -59,9 +59,9 @@ class LoginControllerTest {
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.alwaysDo(print())
-			.apply(springSecurity())
-			.build();
+			 .alwaysDo(print())
+			 .apply(springSecurity())
+			 .build();
 	}
 
 	@DisplayName("/login")
@@ -95,7 +95,7 @@ class LoginControllerTest {
 
 			// when
 			ResultActions result = mockMvc.perform(
-				formLogin().userParameter("id").user(username).password(password + "test"));
+				 formLogin().userParameter("id").user(username).password(password + "test"));
 
 			// then
 			result.andExpect(unauthenticated());
@@ -119,7 +119,7 @@ class LoginControllerTest {
 		void accessToUser() throws Exception {
 			// when
 			ResultActions result = mockMvc.perform(get("/").with(user("gmoon") // mock already login user
-				.roles("USER")));
+				 .roles("USER")));
 
 			// then
 			result.andExpect(status().isOk());
@@ -129,7 +129,7 @@ class LoginControllerTest {
 		void accessToAdmin() throws Exception {
 			// when
 			ResultActions result = mockMvc.perform(
-				get("/").with(user("admin") /* mock already login user*/.roles("ADMIN")));
+				 get("/").with(user("admin") /* mock already login user*/.roles("ADMIN")));
 
 			// then
 			result.andExpect(status().isOk());

@@ -29,7 +29,7 @@ class FileUtilsTest {
 	void getResourceFile() {
 		// when then
 		assertThat(FileUtils.getResourceFile(fileNameWithResourceFilePath))
-			.isInstanceOf(File.class);
+			 .isInstanceOf(File.class);
 	}
 
 	@DisplayName("파일 변환")
@@ -47,7 +47,7 @@ class FileUtilsTest {
 
 			// then
 			assertThat(FileUtils.convertInputStreamToFile(is))
-				.isInstanceOf(File.class);
+				 .isInstanceOf(File.class);
 		}
 
 		@DisplayName("File -> InputStream")
@@ -58,7 +58,7 @@ class FileUtilsTest {
 
 			// when then
 			assertThat(FileUtils.convertFileToInputStream(file))
-				.isInstanceOf(InputStream.class);
+				 .isInstanceOf(InputStream.class);
 		}
 
 		@DisplayName("File -> String")
@@ -69,7 +69,7 @@ class FileUtilsTest {
 
 			// when then
 			assertThat(FileUtils.convertFileToString(file))
-				.isInstanceOf(String.class);
+				 .isInstanceOf(String.class);
 		}
 
 		@DisplayName("MultipartFile -> File")
@@ -78,15 +78,15 @@ class FileUtilsTest {
 			// given
 			File file = FileUtils.getResourceFile(fileNameWithResourceFilePath);
 			MockMultipartFile multipartFile = new MockMultipartFile(
-				"file",
-				file.getName(),
-				MediaType.IMAGE_PNG_VALUE,
-				FileUtils.convertFileToInputStream(file)
+				 "file",
+				 file.getName(),
+				 MediaType.IMAGE_PNG_VALUE,
+				 FileUtils.convertFileToInputStream(file)
 			);
 
 			// when then
 			assertThat(FileUtils.convertFileToMultipartFile(multipartFile))
-				.isInstanceOf(File.class);
+				 .isInstanceOf(File.class);
 		}
 	}
 }

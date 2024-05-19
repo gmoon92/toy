@@ -11,6 +11,7 @@ public interface RoomRepository {
 	List<Room> findAll();
 
 	Room save(Room room);
+
 	List<Room> saveAll(List<Room> rooms);
 
 	void delete(Room room);

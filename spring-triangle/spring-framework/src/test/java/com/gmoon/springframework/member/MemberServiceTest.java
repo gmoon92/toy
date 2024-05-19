@@ -27,7 +27,7 @@ class MemberServiceTest {
 
 		// then
 		assertThat(memberService.save(member))
-			.isNotNull()
-			.hasFieldOrPropertyWithValue("status", MemberStatus.ENABLE);
+			 .isNotNull()
+			 .hasFieldOrPropertyWithValue("status", MemberStatus.ENABLE);
 	}
 }

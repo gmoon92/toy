@@ -17,14 +17,16 @@ import lombok.extern.slf4j.Slf4j;
 // @Import(EmbeddedRedisConfig.class)
 @SpringBootTest
 class CacheUserRepositoryTest {
-	@Autowired CacheUserRepository repository;
-	@Autowired CacheManager cacheManager;
+	@Autowired
+	CacheUserRepository repository;
+	@Autowired
+	CacheManager cacheManager;
 
 	@BeforeEach
 	void init() {
 		CacheUser cacheUser = CacheUser.builder()
-			.username("gmoon")
-			.build();
+			 .username("gmoon")
+			 .build();
 
 		repository.save(cacheUser);
 	}
@@ -37,12 +39,12 @@ class CacheUserRepositoryTest {
 		// then
 		log.info("actual: {}", actual);
 		assertThat(actual)
-			.isNotEmpty()
-			.isEqualTo(getCachedUser("gmoon"));
+			 .isNotEmpty()
+			 .isEqualTo(getCachedUser("gmoon"));
 	}
 
 	private Optional<CacheUser> getCachedUser(String username) {
 		return Optional.ofNullable(cacheManager.getCache(CacheUser.KEY))
-			.map(cache -> cache.get(username, CacheUser.class));
+			 .map(cache -> cache.get(username, CacheUser.class));
 	}
 }

@@ -60,7 +60,7 @@ public class BookStoreBook extends AuditedEntityObject<String> {
 
 	public boolean isDisplay() {
 		return BookStatus.DISPLAY == status
-			&& availableSale();
+			 && availableSale();
 	}
 
 	public boolean availableSale() {

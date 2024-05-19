@@ -32,7 +32,7 @@ public class AmqpSender {
 
 	private Message<Serializable> wrrapMessage(Serializable payload) {
 		return MessageBuilder
-			.withPayload(payload)
-			.build();
+			 .withPayload(payload)
+			 .build();
 	}
 }

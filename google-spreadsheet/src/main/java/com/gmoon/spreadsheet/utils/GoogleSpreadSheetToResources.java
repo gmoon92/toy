@@ -10,9 +10,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import com.google.api.services.sheets.v4.model.ValueRange;
+
 import com.gmoon.spreadsheet.config.GoogleSpreadSheetProperties;
 import com.gmoon.spreadsheet.vo.ResourceVO;
-import com.google.api.services.sheets.v4.model.ValueRange;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,13 +52,13 @@ public final class GoogleSpreadSheetToResources {
 
 	private static ResourceVO getDefaultResourceVO(List<ResourceVO> resourceVOList) {
 		return resourceVOList.stream()
-			.filter(vo -> DEFAULT_LANGUAGE.equals(vo.getLanguage()))
-			.findFirst()
-			.orElse(null);
+			 .filter(vo -> DEFAULT_LANGUAGE.equals(vo.getLanguage()))
+			 .findFirst()
+			 .orElse(null);
 	}
 
 	private static void generatePropertiesResource(String sheetName, ResourceVO vo, String targetDirPath) throws
-		Exception {
+		 Exception {
 		if (StringUtils.isBlank(vo.getLanguage()))
 			return;
 
@@ -65,7 +66,7 @@ public final class GoogleSpreadSheetToResources {
 	}
 
 	private static void generatePropertiesResource(String sheetName, ResourceVO vo, String targetDirPath,
-		String targetLanguage) throws Exception {
+		 String targetLanguage) throws Exception {
 		String resourceFilePath = getResourceFilePath(sheetName, targetLanguage, targetDirPath);
 		PropertiesConfiguration config = new PropertiesConfiguration();
 		config.setDelimiterParsingDisabled(true);
@@ -101,10 +102,10 @@ public final class GoogleSpreadSheetToResources {
 
 	private static List<ResourceVO> createResourceVOList() {
 		return getReadSheetHeads()
-			.stream()
-			.filter(ResourceVO::verify)
-			.map(ResourceVO::newInstance)
-			.collect(Collectors.toList());
+			 .stream()
+			 .filter(ResourceVO::verify)
+			 .map(ResourceVO::newInstance)
+			 .collect(Collectors.toList());
 	}
 
 	private static String getCellValue(List<Object> row, String sheetHeadString) {
@@ -113,8 +114,8 @@ public final class GoogleSpreadSheetToResources {
 			cellValue = (String)row.get(indexOfHead(sheetHeadString));
 		} catch (IndexOutOfBoundsException e) {
 			String rowStr = row.stream()
-				.map(String::valueOf)
-				.collect(Collectors.joining("|"));
+				 .map(String::valueOf)
+				 .collect(Collectors.joining("|"));
 			log.error("google sheet value is null : {}, row : {}", sheetHeadString, rowStr);
 		} finally {
 			return StringUtils.defaultString(cellValue);
@@ -131,7 +132,7 @@ public final class GoogleSpreadSheetToResources {
 
 	private static int indexOfHead(String headStr) {
 		return getReadSheetHeads()
-			.indexOf(headStr);
+			 .indexOf(headStr);
 	}
 
 	private static String getResourceFilePath(String sheetName, String language, String targetDirPath) {

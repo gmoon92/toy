@@ -14,13 +14,13 @@ import com.gmoon.springjpapagination.users.user.domain.UserGroupRepository;
 import com.gmoon.springjpapagination.users.user.dto.UserGroupListVO;
 
 @DataJpaTest(
-	includeFilters = @ComponentScan.Filter(
-		type = FilterType.ASSIGNABLE_TYPE,
-		value = {
-			JpaConfig.class,
-			UserGroupRepositoryAdapter.class
-		}
-	)
+	 includeFilters = @ComponentScan.Filter(
+		  type = FilterType.ASSIGNABLE_TYPE,
+		  value = {
+			   JpaConfig.class,
+			   UserGroupRepositoryAdapter.class
+		  }
+	 )
 )
 class UserGroupRepositoryTest {
 
@@ -32,12 +32,12 @@ class UserGroupRepositoryTest {
 		Pageable pageable = new UserGroupListVO();
 
 		assertThatCode(() -> repository.findAll(null, null, pageable))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@Test
 	void countBy() {
 		assertThat(repository.countBy(null, null))
-			.isGreaterThanOrEqualTo(0);
+			 .isGreaterThanOrEqualTo(0);
 	}
 }

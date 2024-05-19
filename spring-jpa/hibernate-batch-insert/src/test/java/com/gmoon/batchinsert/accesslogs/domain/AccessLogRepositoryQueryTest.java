@@ -18,6 +18,6 @@ class AccessLogRepositoryQueryTest {
 	@Test
 	void findAllByUsername() {
 		assertThat(accessLogRepositoryQuery.findAllByUsername("admin"))
-			.isNotEmpty();
+			 .isNotEmpty();
 	}
 }

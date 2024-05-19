@@ -61,13 +61,13 @@ class RedisTemplateUtilsTest {
 
 		// then
 		assertAll(
-			() -> assertThat(redisTemplateUtils.getTTL(cache.getKey()))
-				.isInstanceOf(Long.class)
-				.isEqualTo(ttl),
-			() -> {
-				String actual = redisTemplateUtils.find(cache.getKey());
-				assertThat(actual).isEqualTo(value);
-			}
+			 () -> assertThat(redisTemplateUtils.getTTL(cache.getKey()))
+				  .isInstanceOf(Long.class)
+				  .isEqualTo(ttl),
+			 () -> {
+				 String actual = redisTemplateUtils.find(cache.getKey());
+				 assertThat(actual).isEqualTo(value);
+			 }
 		);
 	}
 
@@ -93,13 +93,13 @@ class RedisTemplateUtilsTest {
 
 		// when then
 		assertThatExceptionOfType(NotFoundDataException.class)
-			.isThrownBy(() -> redisTemplateUtils.getOrElseThrow(key));
+			 .isThrownBy(() -> redisTemplateUtils.getOrElseThrow(key));
 	}
 
 	@Test
 	@Disabled("Embedded Server GETEX command 미지원")
 	@DisplayName("TTL 설정 무효화"
-		+ " 만료되지 않는 key 로 설정 후 조회")
+		 + " 만료되지 않는 key 로 설정 후 조회")
 	void testGetAndChangedByEternalKey() {
 		// given
 		Cache cache = DefaultCache.create("hello", Duration.ofSeconds(10));
@@ -125,7 +125,7 @@ class RedisTemplateUtilsTest {
 
 		// then
 		assertThat(ttl)
-			.isEqualTo(Duration.ofSeconds(redisTemplateUtils.getTTL(cache.getKey())));
+			 .isEqualTo(Duration.ofSeconds(redisTemplateUtils.getTTL(cache.getKey())));
 	}
 
 	@Test
@@ -136,8 +136,8 @@ class RedisTemplateUtilsTest {
 
 		// when then
 		assertAll(
-			() -> assertThat(redisTemplateUtils.delete(cache.getKey())).isTrue(),
-			() -> assertThat(redisTemplateUtils.delete(cache.getKey())).isFalse()
+			 () -> assertThat(redisTemplateUtils.delete(cache.getKey())).isTrue(),
+			 () -> assertThat(redisTemplateUtils.delete(cache.getKey())).isFalse()
 		);
 	}
 
@@ -161,7 +161,7 @@ class RedisTemplateUtilsTest {
 	class RedisTemplateTest {
 		@Nested
 		@DisplayName("Set data type "
-			+ "smembers {key}")
+			 + "smembers {key}")
 		class SetType {
 			final SetOperations<String, Object> operations = template.opsForSet();
 			final String key = "set-type";
@@ -179,13 +179,13 @@ class RedisTemplateUtilsTest {
 
 				// then
 				assertThat(operations.members(key))
-					.contains("redis", "hello");
+					 .contains("redis", "hello");
 			}
 		}
 
 		@Nested
 		@DisplayName("List data type "
-			+ "lrange {key} 0 -1")
+			 + "lrange {key} 0 -1")
 		class ListType {
 			final ListOperations operations = template.opsForList();
 			final String key = "list-type";
@@ -236,14 +236,14 @@ class RedisTemplateUtilsTest {
 
 				// when then
 				assertAll(
-					() -> assertThat(operations.index(key, 0)).isEqualTo("r"),
-					() -> assertThat(operations.index(key, 1)).isEqualTo("e"),
-					() -> assertThat(operations.index(key, 2)).isEqualTo("d"),
-					() -> assertThat(operations.index(key, 3)).isEqualTo("i"),
-					() -> assertThat(operations.index(key, 4)).isEqualTo("s"),
+					 () -> assertThat(operations.index(key, 0)).isEqualTo("r"),
+					 () -> assertThat(operations.index(key, 1)).isEqualTo("e"),
+					 () -> assertThat(operations.index(key, 2)).isEqualTo("d"),
+					 () -> assertThat(operations.index(key, 3)).isEqualTo("i"),
+					 () -> assertThat(operations.index(key, 4)).isEqualTo("s"),
 
-					() -> assertThat(operations.index(key, -1)).isEqualTo("s"),
-					() -> assertThat(operations.index(key, 5)).isNull()
+					 () -> assertThat(operations.index(key, -1)).isEqualTo("s"),
+					 () -> assertThat(operations.index(key, 5)).isNull()
 				);
 			}
 
@@ -267,8 +267,8 @@ class RedisTemplateUtilsTest {
 
 		@Nested
 		@DisplayName("Hash data type "
-			+ "hgetall {key} "
-			+ "hget {key} {filed}")
+			 + "hgetall {key} "
+			 + "hget {key} {filed}")
 		class HashType {
 			final HashOperations operations = template.opsForHash();
 			final String key = "hash-type";
@@ -298,12 +298,12 @@ class RedisTemplateUtilsTest {
 				String groupJsonString2 = (String)operations.get(key, "group2");
 
 				assertAll(
-					() -> assertThat(JacksonUtils.toObject(groupJsonString1, List.class))
-						.hasSize(3)
-						.containsAll(group1),
-					() -> assertThat(JacksonUtils.toObject(groupJsonString2, List.class))
-						.hasSize(1)
-						.containsAll(group2)
+					 () -> assertThat(JacksonUtils.toObject(groupJsonString1, List.class))
+						  .hasSize(3)
+						  .containsAll(group1),
+					 () -> assertThat(JacksonUtils.toObject(groupJsonString2, List.class))
+						  .hasSize(1)
+						  .containsAll(group2)
 				);
 			}
 
@@ -323,8 +323,8 @@ class RedisTemplateUtilsTest {
 
 				// then
 				assertAll(
-					() -> assertThat(operations.hasKey(key, "group1")).isFalse(),
-					() -> assertThat(operations.hasKey(key, "group2")).isFalse()
+					 () -> assertThat(operations.hasKey(key, "group1")).isFalse(),
+					 () -> assertThat(operations.hasKey(key, "group2")).isFalse()
 				);
 			}
 
@@ -345,13 +345,13 @@ class RedisTemplateUtilsTest {
 
 				// then
 				assertThat(entries)
-					.hasSize(2)
-					.contains(entry("group1", group1), entry("group2", group2));
+					 .hasSize(2)
+					 .contains(entry("group1", group1), entry("group2", group2));
 			}
 
 			@Test
 			@DisplayName("전달된 값을 기반으로 해시 키의 키를 누적하는 데 사용, "
-				+ "전달된 값은 double 또는 long만 될 수 있으며 부동 소수점은 허용하지 않는다.")
+				 + "전달된 값은 double 또는 long만 될 수 있으며 부동 소수점은 허용하지 않는다.")
 			void testIncrement() {
 				// given
 				int plus = 2;
@@ -380,13 +380,13 @@ class RedisTemplateUtilsTest {
 
 				// then
 				assertThat(actual)
-					.hasSize(2)
-					.containsExactly(names1, names2);
+					 .hasSize(2)
+					 .containsExactly(names1, names2);
 			}
 
 			@Test
 			@DisplayName("hash key 로 데이터를 한번에 가져온다. "
-				+ "MultiGet 일급 컬렉션")
+				 + "MultiGet 일급 컬렉션")
 			void testMultiGet_with_firstClass() {
 				// given
 				Names names1 = Names.from("gmoon", "lee", "park");
@@ -402,8 +402,8 @@ class RedisTemplateUtilsTest {
 
 				// then
 				assertThat(actual)
-					.hasSize(2)
-					.containsExactly(names1, names2);
+					 .hasSize(2)
+					 .containsExactly(names1, names2);
 			}
 		}
 	}

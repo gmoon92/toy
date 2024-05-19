@@ -3,19 +3,20 @@ package com.gmoon.springjpaspecs.books.bookstore.domain.spec;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import com.gmoon.springjpaspecs.books.bookstore.domain.BookStoreBook;
-import com.gmoon.springjpaspecs.books.bookstore.domain.QBookStoreBook;
-import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.annotations.QueryDelegate;
 import com.querydsl.core.types.Predicate;
+
+import com.gmoon.springjpaspecs.books.bookstore.domain.BookStoreBook;
+import com.gmoon.springjpaspecs.books.bookstore.domain.QBookStoreBook;
+import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 
 public class BookSpecs {
 
 	@QueryDelegate(BookStoreBook.class)
 	public static Predicate isDisplayed(QBookStoreBook bookStoreBook) {
 		return new BooleanBuilder(bookStoreBook.status.eq(BookStatus.DISPLAY))
-			.and(availableSale(bookStoreBook));
+			 .and(availableSale(bookStoreBook));
 	}
 
 	@QueryDelegate(BookStoreBook.class)
@@ -31,7 +32,7 @@ public class BookSpecs {
 	@QueryDelegate(BookStoreBook.class)
 	public static Predicate isDiscount(QBookStoreBook bookStoreBook) {
 		return new BooleanBuilder(isDisplayed(bookStoreBook))
-			.and(isNewBook(bookStoreBook));
+			 .and(isNewBook(bookStoreBook));
 	}
 
 	@QueryDelegate(BookStoreBook.class)

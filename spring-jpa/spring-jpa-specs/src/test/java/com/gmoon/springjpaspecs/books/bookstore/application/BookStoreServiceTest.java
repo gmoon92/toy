@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.querydsl.core.types.Order;
+
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import com.gmoon.springjpaspecs.books.bookstore.dto.BookStoreContentRequest;
 import com.gmoon.springjpaspecs.books.bookstore.dto.BookStoreContentResponse;
 import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
-import com.querydsl.core.types.Order;
 
 @SpringBootTest
 class BookStoreServiceTest {
@@ -24,13 +25,13 @@ class BookStoreServiceTest {
 		search.setName("START! DDD");
 
 		BookStoreContentRequest request = BookStoreContentRequest.builder()
-			.sortTargetType(SortTargetType.NAME)
-			.order(Order.DESC)
-			.search(search)
-			.build();
+			 .sortTargetType(SortTargetType.NAME)
+			 .order(Order.DESC)
+			 .search(search)
+			 .build();
 
 		assertThat(service.findAll(request))
-			.map(BookStoreContentResponse::getBookName)
-			.containsOnly(new BookName("START! DDD"));
+			 .map(BookStoreContentResponse::getBookName)
+			 .containsOnly(new BookName("START! DDD"));
 	}
 }

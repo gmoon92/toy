@@ -35,7 +35,7 @@ public class UserLoginLogListVO extends CursorPagination {
 
 		@QueryProjection
 		public Data(String username, AccessDevice accessDevice, String attemptDateString, Boolean succeed,
-			String cursor) {
+			 String cursor) {
 			this.username = username;
 			this.accessDevice = accessDevice;
 			this.attemptDateString = attemptDateString;

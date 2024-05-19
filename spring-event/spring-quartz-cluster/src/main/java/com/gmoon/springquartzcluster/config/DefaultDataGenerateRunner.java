@@ -47,15 +47,15 @@ public class DefaultDataGenerateRunner implements ApplicationRunner {
 
 	private WebServerSaveForm getWebServerSaveForm(String serverName) {
 		return Optional.ofNullable(serverService.getServer(serverName))
-			.map(WebServerSaveForm::from)
-			.orElseGet(() -> {
-				WebServerSaveForm form = new WebServerSaveForm();
-				form.setName(serverName);
-				form.setPublicHost("gmoon92.github.io");
-				form.setPrivateHost("127.0.0.1");
-				form.setPort1(443);
-				form.setPort2(80);
-				return form;
-			});
+			 .map(WebServerSaveForm::from)
+			 .orElseGet(() -> {
+				 WebServerSaveForm form = new WebServerSaveForm();
+				 form.setName(serverName);
+				 form.setPublicHost("gmoon92.github.io");
+				 form.setPrivateHost("127.0.0.1");
+				 form.setPort1(443);
+				 form.setPort2(80);
+				 return form;
+			 });
 	}
 }

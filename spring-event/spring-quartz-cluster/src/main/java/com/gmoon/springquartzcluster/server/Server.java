@@ -1,10 +1,7 @@
 package com.gmoon.springquartzcluster.server;
 
-import static lombok.AccessLevel.PRIVATE;
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.*;
 
-import com.querydsl.core.annotations.QueryDelegate;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,20 +11,25 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Immutable;
+
+import com.querydsl.core.annotations.QueryDelegate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Immutable;
 
 @Entity
 @Getter
 @Immutable
 @Table(name = "nt_server",
-	indexes = {@Index(name = "idx_type_host", columnList = "name, host, type")},
-	uniqueConstraints = {@UniqueConstraint(name = "u_name_type_host", columnNames = {"name", "type", "host"})})
+	 indexes = {@Index(name = "idx_type_host", columnList = "name, host, type")},
+	 uniqueConstraints = {@UniqueConstraint(name = "u_name_type_host", columnNames = {"name", "type", "host"})})
 @NoArgsConstructor(access = PROTECTED)
 @ToString
 @EqualsAndHashCode(of = {"name", "type", "host"})
@@ -66,7 +68,7 @@ public class Server {
 
 	@Builder(access = PRIVATE)
 	private Server(ServerType type, String name, String publicHost, String privateHost, Integer port1, Integer port2,
-		Integer port3, boolean enabled) {
+		 Integer port3, boolean enabled) {
 		this.type = type;
 		this.name = name;
 		this.publicHost = publicHost;
@@ -79,10 +81,10 @@ public class Server {
 
 	public static Server createWebServer(String name) {
 		return Server.builder()
-			.name(name)
-			.type(ServerType.WEB)
-			.enabled(true)
-			.build();
+			 .name(name)
+			 .type(ServerType.WEB)
+			 .enabled(true)
+			 .build();
 	}
 
 	public void setPublicUrl(String publicHost, int port1) {

@@ -19,7 +19,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	@Override
 	@CSRFTokenGenerator
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) throws IOException, ServletException {
+		 Authentication authentication) throws IOException, ServletException {
 		UserDetails user = (UserDetails)authentication.getPrincipal();
 		String username = user.getUsername();
 		log.info("success login {}...", username);

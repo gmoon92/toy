@@ -18,22 +18,22 @@ public class Fixtures {
 	public static String MOVIE_ID_002 = "movie002";
 
 	@Builder(
-		builderMethodName = "newMovie",
-		setterPrefix = "with",
-		buildMethodName = "create"
+		 builderMethodName = "newMovie",
+		 setterPrefix = "with",
+		 buildMethodName = "create"
 	)
 	public static Movie movie(
-		String name,
-		MovieGenre genre,
-		FilmRatings filmRatings
+		 String name,
+		 MovieGenre genre,
+		 FilmRatings filmRatings
 	) {
 		return Movie.builder()
-			.id(uuid())
-			.name(name)
-			.genre(genre)
-			.filmRatings(filmRatings)
-			.releaseTime(new MovieReleaseTime(LocalDateTime.now()))
-			.build();
+			 .id(uuid())
+			 .name(name)
+			 .genre(genre)
+			 .filmRatings(filmRatings)
+			 .releaseTime(new MovieReleaseTime(LocalDateTime.now()))
+			 .build();
 	}
 
 	public static Director director(String name) {

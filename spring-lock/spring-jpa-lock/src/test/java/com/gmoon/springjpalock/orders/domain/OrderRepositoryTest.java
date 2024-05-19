@@ -26,7 +26,7 @@ class OrderRepositoryTest {
 	@Test
 	void findAll() {
 		assertThatCode(() -> repository.findAll())
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@Test
@@ -40,36 +40,36 @@ class OrderRepositoryTest {
 	}
 
 	@DisplayName("S-Lock"
-		+ "lock in share mode"
-		+ "[QUERY] select * from `tb_order` where `no`='order-no-001' lock in share mode")
+		 + "lock in share mode"
+		 + "[QUERY] select * from `tb_order` where `no`='order-no-001' lock in share mode")
 	@Test
 	@Transactional
 	void readWithSLock() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO))
+			 CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
+			 CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
+			 CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO)),
+			 CompletableFuture.runAsync(() -> repository.findByNoWithSharedLock(Fixtures.ORDER_NO))
 		);
 
 		assertThatCode(allOf::join)
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@DisplayName("X-Lock"
-		+ "for update"
-		+ "[QUERY] select * from `tb_order` where `no`='order-no-001' for update")
+		 + "for update"
+		 + "[QUERY] select * from `tb_order` where `no`='order-no-001' for update")
 	@Test
 	void readWithXLock() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
-			CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO))
+			 CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
+			 CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
+			 CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO)),
+			 CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO))
 		);
 
 		assertThatCode(allOf::join)
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@AfterEach

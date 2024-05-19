@@ -48,7 +48,7 @@ public class CorsConfig {
 	@Bean
 	public CorsConfiguration corsConfiguration() {
 		CorsConfiguration config = new CorsConfiguration()
-			.applyPermitDefaultValues();
+			 .applyPermitDefaultValues();
 		config.setMaxAge(SECONDS_OF_PRE_FLIGHT_MAX_AGE);
 		config.setAllowedMethods(getCorsAllowedMethods());
 		config.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));

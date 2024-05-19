@@ -26,10 +26,10 @@ class CustomEventListenerTest {
 		publisher.raise("event1");
 
 		Awaitility.await()
-			.pollDelay(Duration.ofSeconds(1))
-			.atMost(Duration.ofSeconds(3))
-			.untilAsserted(() -> then(listener)
-				.should(times(1))
-				.onApplicationEvent(any()));
+			 .pollDelay(Duration.ofSeconds(1))
+			 .atMost(Duration.ofSeconds(3))
+			 .untilAsserted(() -> then(listener)
+				  .should(times(1))
+				  .onApplicationEvent(any()));
 	}
 }

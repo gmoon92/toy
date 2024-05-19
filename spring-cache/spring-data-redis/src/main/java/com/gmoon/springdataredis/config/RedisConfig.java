@@ -113,9 +113,9 @@ public class RedisConfig {
 	 * */
 	private LettuceClientConfiguration getClientConfig() {
 		return LettuceClientConfiguration.builder()
-			// master-replica(master-slave) replication strategy config.
-			.readFrom(ReadFrom.REPLICA_PREFERRED)
-			.build();
+			 // master-replica(master-slave) replication strategy config.
+			 .readFrom(ReadFrom.REPLICA_PREFERRED)
+			 .build();
 	}
 
 	@Bean
@@ -137,15 +137,15 @@ public class RedisConfig {
 
 		// cache ttl settings
 		Map<String, RedisCacheConfiguration> cacheExpireConfigs = RedisCacheExpireConfigs.create()
-			.putExpireMinutes(CacheName.USER, 1)
-			.getValues();
+			 .putExpireMinutes(CacheName.USER, 1)
+			 .getValues();
 
 		return RedisCacheManager.builder(connectionFactory)
-			.cacheDefaults(createRedisCacheConfig(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_SECONDS)))
-			.initialCacheNames(allCacheNames) // set default cache config
-			.withInitialCacheConfigurations(cacheExpireConfigs)
-			.transactionAware()
-			.build();
+			 .cacheDefaults(createRedisCacheConfig(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_SECONDS)))
+			 .initialCacheNames(allCacheNames) // set default cache config
+			 .withInitialCacheConfigurations(cacheExpireConfigs)
+			 .transactionAware()
+			 .build();
 	}
 
 	private RedisCacheConfiguration createRedisCacheConfig(Duration expireTtl) {

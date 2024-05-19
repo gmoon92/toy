@@ -30,7 +30,7 @@ class CookieUtilsTest {
 		// then
 		String headerOfCookie = response.getHeader(HttpHeaders.SET_COOKIE);
 		assertThat(headerOfCookie)
-			.contains(name, value);
+			 .contains(name, value);
 		log.info("Set-Cookie: {}", headerOfCookie);
 	}
 
@@ -46,8 +46,9 @@ class CookieUtilsTest {
 
 		// when then
 		assertAll(
-			() -> assertThat(CookieUtils.getCookieValue(request, name)).isEqualTo(value),
-			() -> assertThrows(IllegalArgumentException.class, () -> CookieUtils.getCookieValue(request, UUID.randomUUID().toString()))
+			 () -> assertThat(CookieUtils.getCookieValue(request, name)).isEqualTo(value),
+			 () -> assertThrows(IllegalArgumentException.class,
+				  () -> CookieUtils.getCookieValue(request, UUID.randomUUID().toString()))
 		);
 	}
 
@@ -67,6 +68,6 @@ class CookieUtilsTest {
 
 		// then
 		assertThat(response.getHeader(HttpHeaders.SET_COOKIE))
-			.contains("Max-Age=0");
+			 .contains("Max-Age=0");
 	}
 }

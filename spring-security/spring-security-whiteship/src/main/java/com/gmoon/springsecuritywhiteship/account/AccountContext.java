@@ -3,7 +3,7 @@ package com.gmoon.springsecuritywhiteship.account;
 public class AccountContext {
 
 	private static final ThreadLocal<Account> ACCOUNT_THREAD_LOCAL
-		= new ThreadLocal<>();
+		 = new ThreadLocal<>();
 
 	public static void setAccount(Account account) {
 		ACCOUNT_THREAD_LOCAL.set(account);

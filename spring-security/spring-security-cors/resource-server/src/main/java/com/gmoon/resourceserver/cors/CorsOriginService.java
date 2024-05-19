@@ -41,7 +41,7 @@ public class CorsOriginService {
 	@Transactional
 	public void delete(Long id) {
 		corsOriginRepository.findById(id)
-				.ifPresent(corsOriginRepository::delete);
+			 .ifPresent(corsOriginRepository::delete);
 	}
 
 	@Transactional(readOnly = true)

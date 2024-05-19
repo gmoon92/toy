@@ -19,8 +19,8 @@ class SpaceUserControllerTest extends BaseIntegrationTest {
 		String userId = Fixtures.USER_ID;
 
 		ResultActions perform = mockMvc.perform(MockMvcRequestBuilders.delete("/space/user")
-			.param("spaceId", groupId)
-			.param("userId", userId)
+			 .param("spaceId", groupId)
+			 .param("userId", userId)
 		);
 
 		perform.andExpect(status().isOk());

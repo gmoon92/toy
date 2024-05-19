@@ -75,12 +75,12 @@ public class GoogleSpreadSheetToXmlDataSet {
 		StringBuffer sb = new StringBuffer();
 		try {
 			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-				.append("\n<dataset>");
+				 .append("\n<dataset>");
 			for (TableNode tableNode : getTableNodeList(spreadsheet, ignoreTestData)) {
 				sb.append(String.format("\n<table name=\"%s\">", tableNode.getNameAttribute()))
-					.append(getColumnElementStringBuffer(tableNode))
-					.append(getRowElementStringBuffer(tableNode))
-					.append("\n</table>");
+					 .append(getColumnElementStringBuffer(tableNode))
+					 .append(getRowElementStringBuffer(tableNode))
+					 .append("\n</table>");
 			}
 			sb.append("\n</dataset>");
 			log.trace("generate end...");
@@ -102,8 +102,8 @@ public class GoogleSpreadSheetToXmlDataSet {
 		StringBuffer sb = new StringBuffer();
 		for (TableNode.RowNode rowNode : tableNode.getRowElements()) {
 			sb.append("\n    <row>")
-				.append(getValueElementStringBuffer(rowNode))
-				.append("\n    </row>");
+				 .append(getValueElementStringBuffer(rowNode))
+				 .append("\n    </row>");
 		}
 		return sb;
 	}
@@ -117,7 +117,7 @@ public class GoogleSpreadSheetToXmlDataSet {
 			} else {
 				String columnName = valueNode.getDescription();
 				sb.append(String.format("\n         <value description=\"%s\">%s</value>", columnName,
-					StringEscapeUtils.escapeXml(columnValue)));
+					 StringEscapeUtils.escapeXml(columnValue)));
 			}
 		}
 		return sb;
@@ -134,9 +134,9 @@ public class GoogleSpreadSheetToXmlDataSet {
 			tableNode.setNameAttribute(tableName);
 
 			List<RowData> rowDataList = sheet.getData()
-				.stream()
-				.flatMap(gridData -> gridData.getRowData().stream())
-				.collect(Collectors.toList());
+				 .stream()
+				 .flatMap(gridData -> gridData.getRowData().stream())
+				 .collect(Collectors.toList());
 
 			setColumnElements(tableNode, rowDataList);
 			setRowElements(tableNode, rowDataList, ignoreTestData);
@@ -144,26 +144,26 @@ public class GoogleSpreadSheetToXmlDataSet {
 			result.add(tableNode);
 		}
 		return result.stream()
-			.filter(TableNode::verify)
-			.collect(Collectors.toList());
+			 .filter(TableNode::verify)
+			 .collect(Collectors.toList());
 	}
 
 	private static void setRowElements(TableNode tableNode, List<RowData> rowDataList, boolean ignoreTestData) {
 		rowDataList.stream()
-			.filter(GoogleSpreadSheetToXmlDataSet::isCellDataNotEmpty)
-			.skip(1)
-			.forEach(rowData -> {
-				List<String> columnElements = tableNode.getColumnElements();
-				TableNode.RowNode rowNode = getRowNode(columnElements, rowData.getValues(), ignoreTestData);
-				tableNode.addRowElement(rowNode);
-			});
+			 .filter(GoogleSpreadSheetToXmlDataSet::isCellDataNotEmpty)
+			 .skip(1)
+			 .forEach(rowData -> {
+				 List<String> columnElements = tableNode.getColumnElements();
+				 TableNode.RowNode rowNode = getRowNode(columnElements, rowData.getValues(), ignoreTestData);
+				 tableNode.addRowElement(rowNode);
+			 });
 	}
 
 	private static void setColumnElements(TableNode tableNode, List<RowData> rowDataList) {
 		rowDataList.stream()
-			.filter(GoogleSpreadSheetToXmlDataSet::isCellDataNotEmpty)
-			.findFirst()
-			.ifPresent(rowData -> tableNode.setColumnElements(getColumnElements(rowData.getValues())));
+			 .filter(GoogleSpreadSheetToXmlDataSet::isCellDataNotEmpty)
+			 .findFirst()
+			 .ifPresent(rowData -> tableNode.setColumnElements(getColumnElements(rowData.getValues())));
 	}
 
 	private static boolean isCellDataNotEmpty(RowData rowData) {
@@ -172,13 +172,13 @@ public class GoogleSpreadSheetToXmlDataSet {
 
 	private static List<String> getColumnElements(List<CellData> cellDataList) {
 		return cellDataList.stream()
-			.map(CellData::getFormattedValue)
-			.filter(StringUtils::isNotBlank)
-			.collect(Collectors.toList());
+			 .map(CellData::getFormattedValue)
+			 .filter(StringUtils::isNotBlank)
+			 .collect(Collectors.toList());
 	}
 
 	private static TableNode.RowNode getRowNode(List<String> columnElements, List<CellData> cellDataList,
-		boolean ignoreTestData) {
+		 boolean ignoreTestData) {
 		TableNode.RowNode rowNode = new TableNode.RowNode();
 
 		for (int i = 0; i < columnElements.size(); i++) {

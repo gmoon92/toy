@@ -13,8 +13,8 @@ import com.gmoon.springquartzcluster.config.PropertiesConfig;
 import lombok.RequiredArgsConstructor;
 
 @SpringJUnitConfig(value = {ServiceStatusCheckService.class,
-	CpuStatusCheckExecutor.class, DiskSpaceCheckExecutor.class, JvmMemoryUsageCheckExecutor.class,
-	PropertiesConfig.class})
+	 CpuStatusCheckExecutor.class, DiskSpaceCheckExecutor.class, JvmMemoryUsageCheckExecutor.class,
+	 PropertiesConfig.class})
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 class ServiceStatusCheckServiceTest {

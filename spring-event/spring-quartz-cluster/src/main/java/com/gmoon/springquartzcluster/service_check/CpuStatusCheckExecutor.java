@@ -63,16 +63,16 @@ public class CpuStatusCheckExecutor implements ServiceStatusChecker {
 
 	private long getJVMProcessUsingCpuTime() {
 		return Arrays.stream(OS_BEAN.getClass().getDeclaredMethods())
-			.map(this::getAccessibleMethod)
-			.filter(this::isInvokeMethod)
-			.findFirst()
-			.map(this::getProcessCpuTime)
-			.orElseThrow(NotFoundInvokeMethodException::new);
+			 .map(this::getAccessibleMethod)
+			 .filter(this::isInvokeMethod)
+			 .findFirst()
+			 .map(this::getProcessCpuTime)
+			 .orElseThrow(NotFoundInvokeMethodException::new);
 	}
 
 	private boolean isInvokeMethod(Method method) {
 		return StringUtils.equals(CPU_MEASURE_METHOD_NAME, method.getName())
-			&& Modifier.isPublic(method.getModifiers());
+			 && Modifier.isPublic(method.getModifiers());
 	}
 
 	private Method getAccessibleMethod(Method method) {

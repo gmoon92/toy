@@ -15,8 +15,8 @@ class RequestUtilsTest {
 
 	@Test
 	@DisplayName("클라이언트 IP 주소를 반환한다."
-		+ " X-Forwarded-For Http Header에 담긴 요청된 IP 값 중 "
-		+ " 최초 클라이언트의 IP 주소(가장 왼쪽)를 반환한다.")
+		 + " X-Forwarded-For Http Header에 담긴 요청된 IP 값 중 "
+		 + " 최초 클라이언트의 IP 주소(가장 왼쪽)를 반환한다.")
 	void testGetClientIpAddress() {
 		// given
 		HttpServletRequest request = getHttpServletRequest();

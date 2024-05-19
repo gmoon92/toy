@@ -27,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SpringBootTest
 @Disabled("application.yml 메일 설정 후 테스트 진행 "
-	+ "username: @test.mail.username@"
-	+ "password: @test.mail.password@")
+	 + "username: @test.mail.username@"
+	 + "password: @test.mail.password@")
 class MailServiceTest {
 	static final int MILLISECOND_OF_WAIT = 3_000;
 
@@ -55,8 +55,8 @@ class MailServiceTest {
 
 		// then
 		assertThat(executor)
-			.isNotInstanceOf(SimpleAsyncTaskExecutor.class)
-			.isInstanceOf(ThreadPoolTaskExecutor.class);
+			 .isNotInstanceOf(SimpleAsyncTaskExecutor.class)
+			 .isInstanceOf(ThreadPoolTaskExecutor.class);
 	}
 
 	@Test
@@ -71,7 +71,7 @@ class MailServiceTest {
 		// then
 		while (future.isDone()) {
 			Assumptions.assumingThat(future.isDone(),
-				() -> assertThat(future.get()).isEqualTo(publicUrl));
+				 () -> assertThat(future.get()).isEqualTo(publicUrl));
 			log.info("Alive thread...");
 			Thread.sleep(MILLISECOND_OF_WAIT);
 		}
@@ -89,8 +89,8 @@ class MailServiceTest {
 
 		// then
 		then(asyncUncaughtExceptionHandler)
-			.should(times(1))
-			.handleUncaughtException(any(), any(), any());
+			 .should(times(1))
+			 .handleUncaughtException(any(), any(), any());
 	}
 
 	@Test
@@ -104,9 +104,9 @@ class MailServiceTest {
 
 		// then
 		assertThatThrownBy(future::get)
-			.isInstanceOf(ExecutionException.class);
+			 .isInstanceOf(ExecutionException.class);
 		then(asyncUncaughtExceptionHandler)
-			.should(never())
-			.handleUncaughtException(any(), any(), any());
+			 .should(never())
+			 .handleUncaughtException(any(), any(), any());
 	}
 }

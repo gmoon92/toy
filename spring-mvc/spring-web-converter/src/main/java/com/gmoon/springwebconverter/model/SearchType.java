@@ -22,10 +22,10 @@ public enum SearchType implements StringToEnumBinder {
 	private final String value;
 
 	private static final Map<String, SearchType> ALL = Arrays.stream(values())
-		.collect(collectingAndThen(
-			toMap(SearchType::getValue, Function.identity()),
-			Collections::unmodifiableMap
-		));
+		 .collect(collectingAndThen(
+			  toMap(SearchType::getValue, Function.identity()),
+			  Collections::unmodifiableMap
+		 ));
 
 	public static SearchType from(String value) {
 		return ALL.get(value);

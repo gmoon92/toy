@@ -35,25 +35,25 @@ public class JooqGenerateSourceRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		Configuration configuration = new Configuration()
-			.withJdbc(new Jdbc()
-				.withDriver(dataSourceProperties.getDriverClassName())
-				.withUrl(dataSourceProperties.getUrl())
-				.withUser(dataSourceProperties.getUsername())
-				.withPassword(dataSourceProperties.getPassword()))
-			.withGenerator(new Generator()
-				.withDatabase(new Database()
-					.withSchemaVersionProvider(new FlywaySchemaVersionProvider(dsl, flywayProperties).version())
-					.withName(jooqProperties.getDriverClassName()) // org.jooq.meta.*.*Database
-					.withIncludes(".*")
-					.withExcludes("")
-					.withInputSchema(jooqProperties.getSchema())
-				)
-				.withTarget(
-					new Target()
-						.withDirectory(jooqProperties.getTargetDir())
-						.withPackageName("com.gmoon.batchinsert.global.jmodel")
-				)
-			);
+			 .withJdbc(new Jdbc()
+				  .withDriver(dataSourceProperties.getDriverClassName())
+				  .withUrl(dataSourceProperties.getUrl())
+				  .withUser(dataSourceProperties.getUsername())
+				  .withPassword(dataSourceProperties.getPassword()))
+			 .withGenerator(new Generator()
+				  .withDatabase(new Database()
+					   .withSchemaVersionProvider(new FlywaySchemaVersionProvider(dsl, flywayProperties).version())
+					   .withName(jooqProperties.getDriverClassName()) // org.jooq.meta.*.*Database
+					   .withIncludes(".*")
+					   .withExcludes("")
+					   .withInputSchema(jooqProperties.getSchema())
+				  )
+				  .withTarget(
+					   new Target()
+							.withDirectory(jooqProperties.getTargetDir())
+							.withPackageName("com.gmoon.batchinsert.global.jmodel")
+				  )
+			 );
 		GenerationTool.generate(configuration);
 	}
 
@@ -69,9 +69,9 @@ public class JooqGenerateSourceRunner implements ApplicationRunner {
 
 		public String version() {
 			return dsl
-				.select(max(field("version")).as("max_version"))
-				.from(historyTable)
-				.fetchSingle("max_version", String.class);
+				 .select(max(field("version")).as("max_version"))
+				 .from(historyTable)
+				 .fetchSingle("max_version", String.class);
 		}
 	}
 }

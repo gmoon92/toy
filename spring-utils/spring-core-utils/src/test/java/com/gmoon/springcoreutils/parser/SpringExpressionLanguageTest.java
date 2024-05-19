@@ -68,10 +68,10 @@ class SpringExpressionLanguageTest {
 
 		Expression expression = parser.parseExpression("#primes.?[#this>10]");
 		@SuppressWarnings("unchecked") List<Integer> primesGreaterThanTen
-			= (List<Integer>)expression.getValue(context);
+			 = (List<Integer>)expression.getValue(context);
 
 		assertThat(primesGreaterThanTen)
-			.containsOnly(11, 13, 17);
+			 .containsOnly(11, 13, 17);
 	}
 
 	@Test
@@ -88,14 +88,14 @@ class SpringExpressionLanguageTest {
 	class OperatorsTest {
 
 		@DisplayName("lt (<)"
-			+ "gt (>)"
-			+ "le (<=)"
-			+ "ge (>=)"
-			+ "eq (==)"
-			+ "ne (!=)"
-			+ "div (/)"
-			+ "mod (%)"
-			+ "not (!)")
+			 + "gt (>)"
+			 + "le (<=)"
+			 + "ge (>=)"
+			 + "eq (==)"
+			 + "ne (!=)"
+			 + "div (/)"
+			 + "mod (%)"
+			 + "not (!)")
 		@Test
 		void relationalOperators() {
 			assertThat(getValue("2 == 2", Boolean.class)).isTrue();
@@ -125,8 +125,8 @@ class SpringExpressionLanguageTest {
 		}
 
 		@DisplayName("and (&&)"
-			+ "or (||)"
-			+ "not (!)")
+			 + "or (||)"
+			 + "not (!)")
 		@Test
 		void logicalOperators() {
 			assertThat(getValue("true and false", Boolean.class)).isFalse();
@@ -158,7 +158,7 @@ class SpringExpressionLanguageTest {
 
 			Expression expression = parser.parseExpression("name = 'gmoon'");
 			assertThat(expression.getValue(context, consumer, String.class))
-				.isEqualTo("gmoon");
+				 .isEqualTo("gmoon");
 		}
 
 		@Setter
@@ -180,7 +180,7 @@ class SpringExpressionLanguageTest {
 
 		private <T> T getValue(String expressionString, Class<T> desiredResultType) {
 			return parser.parseExpression(expressionString)
-				.getValue(desiredResultType);
+				 .getValue(desiredResultType);
 		}
 	}
 }

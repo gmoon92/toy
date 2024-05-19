@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 public class PostInsertEvent<T> extends ApplicationEvent
-	implements ResolvableTypeProvider {
+	 implements ResolvableTypeProvider {
 
 	private final ResolvableType entityType;
 
@@ -20,7 +20,7 @@ public class PostInsertEvent<T> extends ApplicationEvent
 	@Override
 	public ResolvableType getResolvableType() {
 		return ResolvableType.forClassWithGenerics(
-			getClass(),
-			entityType);
+			 getClass(),
+			 entityType);
 	}
 }

@@ -16,7 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DynamicRoutingDatabaseSource extends AbstractRoutingDataSource {
 
-	public DynamicRoutingDatabaseSource(DataSourceProperties masterDataSourceProperties, DataSourceProperties slaveDataSourceProperties) {
+	public DynamicRoutingDatabaseSource(DataSourceProperties masterDataSourceProperties,
+		 DataSourceProperties slaveDataSourceProperties) {
 		DataSource masterDataSource = createDataSource(masterDataSourceProperties);
 		DataSource slaveDataSource = createDataSource(slaveDataSourceProperties);
 		Map<Object, Object> dataSources = new HashMap<>();
@@ -30,8 +31,8 @@ public class DynamicRoutingDatabaseSource extends AbstractRoutingDataSource {
 
 	private DataSource createDataSource(DataSourceProperties properties) {
 		return properties.initializeDataSourceBuilder()
-			.type(HikariDataSource.class)
-			.build();
+			 .type(HikariDataSource.class)
+			 .build();
 	}
 
 	@Override

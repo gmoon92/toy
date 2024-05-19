@@ -41,9 +41,9 @@ class ApplyFormRepositoryTest extends BaseRepositoryTest {
 
 		// then
 		assertThat(applyForm)
-			.hasNoNullFieldsOrPropertiesExcept("id")
-			.hasFieldOrPropertyWithValue("title", "title")
-			.hasFieldOrPropertyWithValue("content", "content");
+			 .hasNoNullFieldsOrPropertiesExcept("id")
+			 .hasFieldOrPropertyWithValue("title", "title")
+			 .hasFieldOrPropertyWithValue("content", "content");
 	}
 
 	@Test

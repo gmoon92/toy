@@ -51,7 +51,7 @@ class EnvironmentTest {
 
 		// then
 		assertThat(activeProfiles)
-			.contains(alphaProfileName);
+			 .contains(alphaProfileName);
 	}
 
 	@Test
@@ -64,15 +64,15 @@ class EnvironmentTest {
 		String value = environment.getProperty(key);
 
 		assertThat(value)
-			.isEqualTo("spring-learning-app")
-			.isEqualTo(appAbout);
+			 .isEqualTo("spring-learning-app")
+			 .isEqualTo(appAbout);
 	}
 
 	@Test
 	@DisplayName("프로파일에 Alpha로 설정, alpha로 설정한 AlphaRepository 클래스가 주입되는지")
 	void profile_injection_alpha_bean() {
 		assertThat(baseRepository)
-			.isExactlyInstanceOf(AlphaRepository.class);
+			 .isExactlyInstanceOf(AlphaRepository.class);
 	}
 
 	@TestConfiguration

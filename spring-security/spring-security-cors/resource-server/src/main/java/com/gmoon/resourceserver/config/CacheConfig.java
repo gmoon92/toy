@@ -26,8 +26,8 @@ public class CacheConfig {
 
 	private List<Cache> getCaches() {
 		return Stream.of(CacheName.values())
-			.map(CacheName::getValue)
-			.map(ConcurrentMapCache::new)
-			.collect(Collectors.toList());
+			 .map(CacheName::getValue)
+			 .map(ConcurrentMapCache::new)
+			 .collect(Collectors.toList());
 	}
 }

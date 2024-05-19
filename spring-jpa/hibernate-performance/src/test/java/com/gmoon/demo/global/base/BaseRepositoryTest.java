@@ -10,8 +10,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
-import com.gmoon.demo.global.config.QueryDslConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import com.gmoon.demo.global.config.QueryDslConfig;
 
 @DataJpaTest
 @Import(QueryDslConfig.class)

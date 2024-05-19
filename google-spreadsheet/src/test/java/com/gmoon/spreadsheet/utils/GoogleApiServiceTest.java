@@ -7,16 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
-import com.gmoon.spreadsheet.config.GoogleSpreadSheetProperties;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+
+import com.gmoon.spreadsheet.config.GoogleSpreadSheetProperties;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest(classes = {GoogleSpreadSheetToResources.class
-	, GoogleSpreadSheetToXmlDataSet.class
-	, GoogleSpreadSheetProperties.class})
+	 , GoogleSpreadSheetToXmlDataSet.class
+	 , GoogleSpreadSheetProperties.class})
 @Disabled("테스트를 하려면 credentials.json 을 발급 받아야 한다.")
 class GoogleApiServiceTest {
 
@@ -44,8 +45,8 @@ class GoogleApiServiceTest {
 		log.debug("file name : {}", fileName);
 
 		files.export(fileId, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-			.executeMediaAndDownloadTo(
-				new FileOutputStream(String.format("src/test/resources/google/%s.xlsx", fileName)));
+			 .executeMediaAndDownloadTo(
+				  new FileOutputStream(String.format("src/test/resources/google/%s.xlsx", fileName)));
 
 	}
 }

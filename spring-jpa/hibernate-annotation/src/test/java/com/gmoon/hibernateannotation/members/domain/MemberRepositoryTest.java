@@ -15,7 +15,8 @@ class MemberRepositoryTest {
 
 	@Autowired
 	MemberRepository memberRepository;
-	@Autowired EntityManager entityManager;
+	@Autowired
+	EntityManager entityManager;
 
 	@Test
 	void testDelete() {
@@ -29,7 +30,7 @@ class MemberRepositoryTest {
 
 		// then
 		assertThat(memberRepository.findById(savedMember.getId()))
-			.isEqualTo(Optional.empty());
+			 .isEqualTo(Optional.empty());
 	}
 
 	private void flushAndClear() {

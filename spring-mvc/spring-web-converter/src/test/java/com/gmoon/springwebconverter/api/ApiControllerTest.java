@@ -34,16 +34,16 @@ class ApiControllerTest {
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-			.alwaysDo(print())
-			.build();
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	@ParameterizedTest
 	@EnumSource(SearchType.class)
 	void searchType(SearchType type) throws Exception {
 		ResultActions result = mockMvc.perform(get("/api/searchType")
-			.accept(MediaType.APPLICATION_JSON)
-			.param("searchType", type.getValue())
+			 .accept(MediaType.APPLICATION_JSON)
+			 .param("searchType", type.getValue())
 		);
 
 		result.andExpect(status().isOk());
@@ -54,8 +54,8 @@ class ApiControllerTest {
 	@EnumSource(PaymentType.class)
 	void paymentType(PaymentType type) throws Exception {
 		ResultActions result = mockMvc.perform(get("/api/paymentType")
-			.accept(MediaType.APPLICATION_JSON)
-			.param("paymentType", type.getValue())
+			 .accept(MediaType.APPLICATION_JSON)
+			 .param("paymentType", type.getValue())
 		);
 
 		result.andExpect(status().isOk());
@@ -66,16 +66,16 @@ class ApiControllerTest {
 	@Test
 	void error() throws Exception {
 		ResultActions result = mockMvc.perform(get("/api/searchType")
-			.accept(MediaType.APPLICATION_JSON)
-			.param("searchType", "null")
+			 .accept(MediaType.APPLICATION_JSON)
+			 .param("searchType", "null")
 		);
 
 		result.andExpect(status().isBadRequest());
 		result.andExpect(matcher ->
-			assertThat(matcher.getResolvedException())
-				.isInstanceOf(MethodArgumentTypeMismatchException.class)
-				.hasMessageContaining("ConversionFailedException")
-				.hasMessageContaining("요청한 문자열을 이넘 클래스로 변환할 수 없습니다.")
+			 assertThat(matcher.getResolvedException())
+				  .isInstanceOf(MethodArgumentTypeMismatchException.class)
+				  .hasMessageContaining("ConversionFailedException")
+				  .hasMessageContaining("요청한 문자열을 이넘 클래스로 변환할 수 없습니다.")
 		);
 	}
 
@@ -84,7 +84,7 @@ class ApiControllerTest {
 	@EnumSource(ServerType.class)
 	void serverType(ServerType type) throws Exception {
 		ResultActions result = mockMvc.perform(get("/api/" + type.name())
-			.accept(MediaType.APPLICATION_JSON)
+			 .accept(MediaType.APPLICATION_JSON)
 		);
 
 		result.andExpect(status().isOk());

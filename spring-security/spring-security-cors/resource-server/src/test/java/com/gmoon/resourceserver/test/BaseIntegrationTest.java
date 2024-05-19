@@ -43,8 +43,8 @@ public abstract class BaseIntegrationTest {
 
 	protected void setupMockMvc() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.alwaysDo(print())
-			.apply(springSecurity())
-			.build();
+			 .alwaysDo(print())
+			 .apply(springSecurity())
+			 .build();
 	}
 }

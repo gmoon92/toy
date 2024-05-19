@@ -36,13 +36,13 @@ class CacheUtilTest {
 		String cacheKey = "UUID";
 
 		cacheUtil.put(
-			cacheName,
-			cacheKey,
-			new Member()
+			 cacheName,
+			 cacheKey,
+			 new Member()
 		);
 
 		assertThat(cacheUtil.getValue(cacheName, cacheKey))
-			.isInstanceOf(Member.class);
+			 .isInstanceOf(Member.class);
 	}
 
 	@Test
@@ -50,12 +50,12 @@ class CacheUtilTest {
 		String cacheKey = "UUID";
 
 		assertThatCode(() -> cacheUtil.evict(cacheName, cacheKey))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@Test
 	void evictAll() {
 		assertThatCode(() -> cacheUtil.evictAll(cacheName))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 }

@@ -1,5 +1,8 @@
 package com.gmoon.localstack.aws.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -8,10 +11,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+
 import com.gmoon.localstack.aws.constants.AmazonRegion;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
@@ -26,9 +29,9 @@ public class AwsConfig {
 
 		log.debug("amazon s3. region: {}, access key: {}, secret key: {}", region, accessKey, secretKey);
 		return AmazonS3ClientBuilder.standard()
-			.withRegion(region.getValue())
-			.withCredentials(awsCredentialsProvider(accessKey, secretKey))
-			.build();
+			 .withRegion(region.getValue())
+			 .withCredentials(awsCredentialsProvider(accessKey, secretKey))
+			 .build();
 	}
 
 	private AWSCredentialsProvider awsCredentialsProvider(String awsAccessKey, String awsSecretKey) {
@@ -39,8 +42,8 @@ public class AwsConfig {
 	@Bean
 	public TransferManager transferManager(AmazonS3 amazonS3) {
 		return TransferManagerBuilder
-			.standard()
-			.withS3Client(amazonS3)
-			.build();
+			 .standard()
+			 .withS3Client(amazonS3)
+			 .build();
 	}
 }

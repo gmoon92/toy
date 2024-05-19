@@ -57,10 +57,10 @@ public class AccessLogExcelDownload implements Serializable {
 
 	public static AccessLogExcelDownload create(AccessLog accessLog) {
 		return AccessLogExcelDownload.builder()
-			.username(accessLog.getUsername())
-			.ip(accessLog.getIp())
-			.os(accessLog.getOs().name())
-			.attemptDt(accessLog.getAttemptDt().format(DateTimeFormatter.BASIC_ISO_DATE))
-			.build();
+			 .username(accessLog.getUsername())
+			 .ip(accessLog.getIp())
+			 .os(accessLog.getOs().name())
+			 .attemptDt(accessLog.getAttemptDt().format(DateTimeFormatter.BASIC_ISO_DATE))
+			 .build();
 	}
 }

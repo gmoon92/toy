@@ -16,14 +16,14 @@ class AuthenticationSchemaTest {
 	void testCheckValidSchema(String invalidSchema) {
 		// then
 		assertThatThrownBy(() -> AuthenticationSchema.checkValidSchema(invalidSchema))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("Invalid authentication schema name: %s", invalidSchema);
+			 .isInstanceOf(IllegalArgumentException.class)
+			 .hasMessage("Invalid authentication schema name: %s", invalidSchema);
 	}
 
 	static Stream<Arguments> getSchemaNames() {
 		return Stream.of(
-			Arguments.of(AuthenticationSchema.BASIC.getName().toUpperCase()),
-			Arguments.of(AuthenticationSchema.BEARER.getName().toLowerCase())
+			 Arguments.of(AuthenticationSchema.BASIC.getName().toUpperCase()),
+			 Arguments.of(AuthenticationSchema.BEARER.getName().toLowerCase())
 		);
 	}
 }

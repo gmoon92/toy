@@ -17,8 +17,8 @@ public enum CacheName {
 	USER(Constants.USER);
 
 	private static final Set<String> ALL = Collections.unmodifiableSet(Stream.of(values())
-		.map(CacheName::getValue)
-		.collect(Collectors.toSet()));
+		 .map(CacheName::getValue)
+		 .collect(Collectors.toSet()));
 
 	private final String value;
 

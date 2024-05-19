@@ -24,7 +24,8 @@ public abstract class BaseJpaTestCase {
 	@PersistenceUnit
 	protected EntityManagerFactory factory;
 
-	protected  <T> void executeQuery(Function<EntityManager, T> action, Consumer<PersistenceException> exceptionHandler) {
+	protected <T> void executeQuery(Function<EntityManager, T> action,
+		 Consumer<PersistenceException> exceptionHandler) {
 		EntityManager em = factory.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		try {

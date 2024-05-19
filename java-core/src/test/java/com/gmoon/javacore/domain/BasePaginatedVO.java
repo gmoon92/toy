@@ -45,9 +45,9 @@ public abstract class BasePaginatedVO implements Pageable {
 		}
 
 		return BigDecimal.valueOf(totalCount)
-			.divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
-			.toBigInteger()
-			.intValue();
+			 .divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
+			 .toBigInteger()
+			 .intValue();
 	}
 
 	protected long obtainLastPageSize(long totalCount) {

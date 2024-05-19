@@ -15,8 +15,8 @@ public class CorsHttpMethodRepositoryImpl implements CorsHttpMethodRepositoryCus
 	@Override
 	public List<String> findAllByEnabled() {
 		return jpaQueryFactory.select(corsHttpMethod.id.stringValue())
-			.from(corsHttpMethod)
-			.where(corsHttpMethod.enabled.isTrue())
-			.fetch();
+			 .from(corsHttpMethod)
+			 .where(corsHttpMethod.enabled.isTrue())
+			 .fetch();
 	}
 }

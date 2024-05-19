@@ -17,7 +17,7 @@ class BookQuantityTest {
 
 		assertThat(actual).isEqualTo(new BookQuantity(0));
 		assertThat(actual.hashCode() == new BookQuantity(0).hashCode())
-			.isTrue();
+			 .isTrue();
 	}
 
 	@DisplayName("책 수량은 0개 이상이어야 한다.")
@@ -25,6 +25,6 @@ class BookQuantityTest {
 	@ValueSource(ints = -1)
 	void error1(int quantity) {
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> new BookQuantity(quantity));
+			 .isThrownBy(() -> new BookQuantity(quantity));
 	}
 }

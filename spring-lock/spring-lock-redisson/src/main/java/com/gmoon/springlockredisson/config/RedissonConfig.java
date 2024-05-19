@@ -30,9 +30,9 @@ public class RedissonConfig {
 		Config config = new Config();
 
 		SingleServerConfig singleServerConfig = config.useSingleServer()
-			.setAddress(String.format("redis://%s:%d", host, port))
-			.setTimeout((int)connectTimeout.toMillis())
-			.setUsername(properties.getUsername());
+			 .setAddress(String.format("redis://%s:%d", host, port))
+			 .setTimeout((int)connectTimeout.toMillis())
+			 .setUsername(properties.getUsername());
 
 		String password = properties.getPassword();
 		if (StringUtils.isNotBlank(password)) {

@@ -25,10 +25,10 @@ public class RedissonConfig {
 	private Config getServerConfig(RedisProperties properties) {
 		Config config = new Config();
 		config.useSingleServer()
-			.setPassword(getPassword(properties))
-			.setAddress(properties.getUrl())
-			.setAddress(String.format("redis://%s:%d", properties.getHost(), properties.getPort()))
-			.setTimeout((int)properties.getConnectTimeout().toMillis());
+			 .setPassword(getPassword(properties))
+			 .setAddress(properties.getUrl())
+			 .setAddress(String.format("redis://%s:%d", properties.getHost(), properties.getPort()))
+			 .setTimeout((int)properties.getConnectTimeout().toMillis());
 		return config;
 	}
 

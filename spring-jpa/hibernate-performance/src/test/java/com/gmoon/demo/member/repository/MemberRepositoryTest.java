@@ -90,9 +90,9 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 
 		// then
 		MemberOption memberOption = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON)
-			.getMemberOption();
+			 .getMemberOption();
 		assertThat(memberOption)
-			.hasFieldOrPropertyWithValue("retired", true);
+			 .hasFieldOrPropertyWithValue("retired", true);
 	}
 
 	@Test
@@ -116,7 +116,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 
 		//        리스트 조회
 		Query query = em.createQuery("select m from Member m"
-			+ " inner join fetch m.memberOption");
+			 + " inner join fetch m.memberOption");
 		//                      ^-- JPQL은 글로벌 패치를 고려하지 않고
 		//                      항상 외부 조인을 사용하기 때문에 inner join fetch 명시한다.
 		query.setHint("javax.persistence.fetchgraph", graph);
@@ -157,9 +157,9 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 		EntityManager em = getEntityManager();
 		//        em.createQuery("select m from Member as m", Member.class).getResultList();
 		em.createQuery("select m "
-				+ "from Member as m "
-				+ "inner join fetch m.memberOption mo", Member.class)
-			.getResultList();
+				  + "from Member as m "
+				  + "inner join fetch m.memberOption mo", Member.class)
+			 .getResultList();
 	}
 
 	/**
@@ -191,7 +191,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 
 		Class<Member> domainClass = Member.class;
 		CriteriaBuilder cb = getEntityManager()
-			.getCriteriaBuilder();
+			 .getCriteriaBuilder();
 
 		CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
 
@@ -212,10 +212,10 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 
 		//      select member1 from Member member1 left join fetch member1.memberOption as memberOption
 		getJPAQuery().select(member)
-			.from(member)
-			.leftJoin(member.memberOption, memberOption).fetchJoin()
-			.limit(1)
-			.fetchOne();
+			 .from(member)
+			 .leftJoin(member.memberOption, memberOption).fetchJoin()
+			 .limit(1)
+			 .fetchOne();
 	}
 
 	/***

@@ -29,12 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.exceptionHandling(this::exceptionHandling)
-			.headers(this::headers)
-			.authorizeRequests(this::authorizeRequests)
-			.authenticationProvider(authenticationProvider())
-			.addFilter(new OAuthenticationFilter(authenticationManager(), authenticationFailureHandler()))
-			.formLogin();
+			 .exceptionHandling(this::exceptionHandling)
+			 .headers(this::headers)
+			 .authorizeRequests(this::authorizeRequests)
+			 .authenticationProvider(authenticationProvider())
+			 .addFilter(new OAuthenticationFilter(authenticationManager(), authenticationFailureHandler()))
+			 .formLogin();
 	}
 
 	@Bean
@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		config.frameOptions().sameOrigin();
 	}
 
-	private void authorizeRequests(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+	private void authorizeRequests(
+		 ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
 		registry.anyRequest().authenticated();
 	}
 

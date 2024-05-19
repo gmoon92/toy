@@ -33,13 +33,13 @@ public final class ReflectionUtils {
 
 		static {
 			ConfigurationBuilder config = new ConfigurationBuilder()
-				.forPackage("com.gmoon")
-				//				.filterInputsBy(
-				//					new FilterBuilder()
-				//						.includePackage("com.my.project.include")
-				////						.excludePackage("com.my.project.exclude")
-				//				)
-				.setScanners(Scanners.values());
+				 .forPackage("com.gmoon")
+				 //				.filterInputsBy(
+				 //					new FilterBuilder()
+				 //						.includePackage("com.my.project.include")
+				 ////						.excludePackage("com.my.project.exclude")
+				 //				)
+				 .setScanners(Scanners.values());
 			INSTANCE = new Reflections(config);
 		}
 	}
@@ -57,8 +57,8 @@ public final class ReflectionUtils {
 
 	public static List<Object> getFieldValues(Object object, List<Field> fields) {
 		return fields.stream()
-			.map(field -> getFieldValue(object, field))
-			.collect(toList());
+			 .map(field -> getFieldValue(object, field))
+			 .collect(toList());
 	}
 
 	private static Object getFieldValue(Object object, Field field) {
@@ -75,7 +75,7 @@ public final class ReflectionUtils {
 	}
 
 	public static Set<Class<?>> getDeclaredAnnotationClasses(Reflections reflections,
-		Class<? extends Annotation>... annotations) {
+		 Class<? extends Annotation>... annotations) {
 		Set<Class<?>> classes = new HashSet<>();
 		reflections.get(Scanners.TypesAnnotated.with(annotations));
 		for (Class<? extends Annotation> annotation : annotations) {
@@ -86,14 +86,14 @@ public final class ReflectionUtils {
 	}
 
 	public static List<Field> getDeclaredAnnotationFields(final Class<?> clazz,
-		final Class<? extends Annotation>... annotation) {
+		 final Class<? extends Annotation>... annotation) {
 		return Stream.of(clazz.getDeclaredFields())
-			.filter(field -> existsDeclaredAnnotation(field, annotation))
-			.collect(toList());
+			 .filter(field -> existsDeclaredAnnotation(field, annotation))
+			 .collect(toList());
 	}
 
 	public static List<Field> getDeclaredAnnotationFieldsByUsingRecursive(final Class<?> clazz,
-		final Class<? extends Annotation>... annotation) {
+		 final Class<? extends Annotation>... annotation) {
 		List<Field> fields = getDeclaredAnnotationFields(clazz, annotation);
 		if (CollectionUtils.isEmpty(fields)) {
 			Class<?> superclass = clazz.getSuperclass();
@@ -106,9 +106,9 @@ public final class ReflectionUtils {
 	}
 
 	public static boolean existsDeclaredAnnotation(final Field field,
-		final Class<? extends Annotation>... annotations) {
+		 final Class<? extends Annotation>... annotations) {
 		return Stream.of(annotations)
-			.anyMatch(field::isAnnotationPresent);
+			 .anyMatch(field::isAnnotationPresent);
 	}
 
 	public static Class<?> extractGenericType(Class<?> target, Class<?> findGenericClass, int indexOfGenericType) {
@@ -131,9 +131,9 @@ public final class ReflectionUtils {
 		}
 
 		return Arrays.stream(target.getGenericInterfaces())
-			.filter(type -> ((ParameterizedType)type).getRawType() == findGenericClass)
-			.findFirst()
-			.orElseGet(() -> getGenericClassType(superclass, findGenericClass));
+			 .filter(type -> ((ParameterizedType)type).getRawType() == findGenericClass)
+			 .findFirst()
+			 .orElseGet(() -> getGenericClassType(superclass, findGenericClass));
 	}
 
 	private static boolean existsImplementInterface(Class<?> clazz) {

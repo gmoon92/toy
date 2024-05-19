@@ -34,19 +34,19 @@ class CustomErrorSchedulerHandlerTest {
 
 	@Test
 	@DisplayName("5.0.2 부터 도입된 ScheduledTaskHolder 를 통해 " +
-		"등록된 스케쥴러 테스크를 확인한다.")
+		 "등록된 스케쥴러 테스크를 확인한다.")
 	void getScheduledTasks() {
 		// given
 		Set<ScheduledTask> tasks = scheduledTaskHolder.getScheduledTasks();
 
 		// when
 		ScheduledAnnotationBeanPostProcessor postProcessor = applicationContext.getBean(
-			ScheduledAnnotationBeanPostProcessor.class);
+			 ScheduledAnnotationBeanPostProcessor.class);
 
 		// then
 		assertThat(tasks)
-			.isNotEmpty()
-			.containsAll(postProcessor.getScheduledTasks());
+			 .isNotEmpty()
+			 .containsAll(postProcessor.getScheduledTasks());
 	}
 
 	@Test
@@ -71,14 +71,14 @@ class CustomErrorSchedulerHandlerTest {
 
 	private <T extends Task> T getTask(ScheduledTask scheduledTask) {
 		final Class<T>[] ALLOWED_TASK_TYPES = new Class[] {TriggerTask.class,
-			CronTask.class,
-			FixedDelayTask.class, FixedRateTask.class};
+			 CronTask.class,
+			 FixedDelayTask.class, FixedRateTask.class};
 
 		Task task = scheduledTask.getTask();
 		return Arrays.stream(ALLOWED_TASK_TYPES)
-			.filter(clazz -> clazz == task.getClass())
-			.findFirst()
-			.orElseThrow(() -> new RuntimeException(String.format("Not allowed task type is %s", task.getClass())))
-			.cast(task);
+			 .filter(clazz -> clazz == task.getClass())
+			 .findFirst()
+			 .orElseThrow(() -> new RuntimeException(String.format("Not allowed task type is %s", task.getClass())))
+			 .cast(task);
 	}
 }

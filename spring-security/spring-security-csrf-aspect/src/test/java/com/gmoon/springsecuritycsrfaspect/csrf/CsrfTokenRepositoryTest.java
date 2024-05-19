@@ -35,7 +35,7 @@ class CsrfTokenRepositoryTest {
 		HttpSession session = request.getSession();
 		CsrfToken sessionToken = (CsrfToken)session.getAttribute(csrfTokenRepository.getSessionAttributeName());
 		assertThat(token)
-			.isEqualTo(sessionToken);
+			 .isEqualTo(sessionToken);
 	}
 
 	@Test
@@ -46,6 +46,6 @@ class CsrfTokenRepositoryTest {
 
 		// when then
 		assertThat(sessionToken.getValue())
-			.isEqualTo(MissingCsrfToken.INSTANCE.getValue());
+			 .isEqualTo(MissingCsrfToken.INSTANCE.getValue());
 	}
 }

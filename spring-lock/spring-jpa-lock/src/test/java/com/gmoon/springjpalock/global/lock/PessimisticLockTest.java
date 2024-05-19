@@ -29,44 +29,44 @@ import lombok.extern.slf4j.Slf4j;
 public class PessimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("S-Lock 교착 상태 검증"
-		+ "[QUERY] select * from `tb_order` where `no`='order-no-001' lock in share mode"
-		+ "[QUERY] update `tb_order` set `address`='d9884545-f76a-4bac-b952-44d6bb952358', `issued_count`=0, `status`='WAITING', `version`=2 where `no`='order-no-001' and `version`=1"
-		+ "Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException: Deadlock found when trying to get lock; try restarting transaction..."
-		+ "https://dev.mysql.com/doc/refman/8.0/en/innodb-deadlock-example.html")
+		 + "[QUERY] select * from `tb_order` where `no`='order-no-001' lock in share mode"
+		 + "[QUERY] update `tb_order` set `address`='d9884545-f76a-4bac-b952-44d6bb952358', `issued_count`=0, `status`='WAITING', `version`=2 where `no`='order-no-001' and `version`=1"
+		 + "Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLTransactionRollbackException: Deadlock found when trying to get lock; try restarting transaction..."
+		 + "https://dev.mysql.com/doc/refman/8.0/en/innodb-deadlock-example.html")
 	@Test
 	void sharedLock() {
 		LockModeType sLock = LockModeType.PESSIMISTIC_READ;
 
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			IntStream.range(0, 100)
-				.mapToObj(number -> CompletableFuture.runAsync(() -> saveWithLockMode(sLock)))
-				.toArray(CompletableFuture[]::new)
+			 IntStream.range(0, 100)
+				  .mapToObj(number -> CompletableFuture.runAsync(() -> saveWithLockMode(sLock)))
+				  .toArray(CompletableFuture[]::new)
 		);
 
 		assertThatCode(allOf::join)
-			.isInstanceOf(CompletionException.class)
-			.getCause().isInstanceOf(RollbackException.class)
-			.getCause().isInstanceOf(OptimisticLockException.class)
-			.getCause().isInstanceOf(LockAcquisitionException.class)
-			.getCause().isInstanceOf(MySQLTransactionRollbackException.class);
+			 .isInstanceOf(CompletionException.class)
+			 .getCause().isInstanceOf(RollbackException.class)
+			 .getCause().isInstanceOf(OptimisticLockException.class)
+			 .getCause().isInstanceOf(LockAcquisitionException.class)
+			 .getCause().isInstanceOf(MySQLTransactionRollbackException.class);
 	}
 
 	@DisplayName("X-Lock 교착 상태 검증"
-		+ "[QUERY] select * from `tb_order` order0_ where order0_.`no`='order-no-001' for update"
-		+ "[QUERY] update `tb_order` set `address`='b9f14860-dd72-4a57-ad1d-9aa156a87f1b', `issued_count`=0, `status`='WAITING', `version`=3 where `no`='order-no-001' and `version`=2"
-		+ "[QUERY] commit"
-		+ "[QUERY] select * from `tb_order` order0_ where order0_.`no`='order-no-001' for update"
-		+ "[QUERY] update `tb_order` set `address`='e09d2e17-8993-4906-86d7-88f74044c3a1', `issued_count`=0, `status`='WAITING', `version`=4 where `no`='order-no-001' and `version`=3"
-		+ "[QUERY] commit"
+		 + "[QUERY] select * from `tb_order` order0_ where order0_.`no`='order-no-001' for update"
+		 + "[QUERY] update `tb_order` set `address`='b9f14860-dd72-4a57-ad1d-9aa156a87f1b', `issued_count`=0, `status`='WAITING', `version`=3 where `no`='order-no-001' and `version`=2"
+		 + "[QUERY] commit"
+		 + "[QUERY] select * from `tb_order` order0_ where order0_.`no`='order-no-001' for update"
+		 + "[QUERY] update `tb_order` set `address`='e09d2e17-8993-4906-86d7-88f74044c3a1', `issued_count`=0, `status`='WAITING', `version`=4 where `no`='order-no-001' and `version`=3"
+		 + "[QUERY] commit"
 	)
 	@Test
 	void exclusiveLock() {
 		LockModeType xLock = LockModeType.PESSIMISTIC_WRITE;
 
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			IntStream.range(0, 100)
-				.mapToObj(number -> CompletableFuture.runAsync(() -> saveWithLockMode(xLock)))
-				.toArray(CompletableFuture[]::new)
+			 IntStream.range(0, 100)
+				  .mapToObj(number -> CompletableFuture.runAsync(() -> saveWithLockMode(xLock)))
+				  .toArray(CompletableFuture[]::new)
 		);
 
 		assertThatCode(allOf::join).doesNotThrowAnyException();
@@ -79,22 +79,22 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		LockModeType xLock = LockModeType.PESSIMISTIC_WRITE;
 
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
-			CompletableFuture.runAsync(() -> saveWithLockMode(xLock))
+			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
+			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
+			 CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
+			 CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
+			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock))
 		);
 
 		assertThatThrownBy(allOf::join)
-			.getCause()
-			.isInstanceOfAny(
-				LockAcquisitionException.class,
-				RollbackException.class,
-				OptimisticLockException.class,
-				StaleStateException.class,
-				MySQLTransactionRollbackException.class
-			);
+			 .getCause()
+			 .isInstanceOfAny(
+				  LockAcquisitionException.class,
+				  RollbackException.class,
+				  OptimisticLockException.class,
+				  StaleStateException.class,
+				  MySQLTransactionRollbackException.class
+			 );
 	}
 
 	private void saveWithLockMode(LockModeType lockMode) {

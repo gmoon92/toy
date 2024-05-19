@@ -25,16 +25,16 @@ public final class Fixtures {
 
 	public static OrderLineItem orderLineItem(int quantity, Product product) {
 		return OrderLineItem.builder()
-			.product(product)
-			.quantity(quantity)
-			.build();
+			 .product(product)
+			 .quantity(quantity)
+			 .build();
 	}
 
 	public static Product product(String name, long price) {
 		return new Product(
-			UUID.randomUUID().toString(),
-			name,
-			price
+			 UUID.randomUUID().toString(),
+			 name,
+			 price
 		);
 	}
 }

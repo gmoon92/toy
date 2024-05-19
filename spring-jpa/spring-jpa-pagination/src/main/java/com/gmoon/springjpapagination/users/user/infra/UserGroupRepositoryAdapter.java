@@ -24,23 +24,23 @@ public class UserGroupRepositoryAdapter extends BaseRepository implements UserGr
 	@Override
 	public List<UserGroup> findAll(String groupId, String keyword, Pageable pageable) {
 		return getGroupQuery(groupId, keyword, pageable)
-			.fetch();
+			 .fetch();
 	}
 
 	private JPAQuery<UserGroup> getGroupQuery(String groupId, String keyword, Pageable pageable) {
 		return pagingQuery(pageable)
-			.select(userGroup)
-			.from(userGroup)
-			.where(
-				userGroup.assignedGroup(groupId),
-				userGroup.likeName(keyword)
-			);
+			 .select(userGroup)
+			 .from(userGroup)
+			 .where(
+				  userGroup.assignedGroup(groupId),
+				  userGroup.likeName(keyword)
+			 );
 	}
 
 	@Override
 	public long countBy(String groupId, String keyword) {
 		return countQuery(
-			getGroupQuery(groupId, keyword, Pageable.unpaged())
+			 getGroupQuery(groupId, keyword, Pageable.unpaged())
 		);
 	}
 }

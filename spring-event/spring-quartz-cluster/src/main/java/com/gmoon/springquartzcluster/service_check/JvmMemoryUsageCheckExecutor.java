@@ -27,7 +27,7 @@ public class JvmMemoryUsageCheckExecutor implements ServiceStatusChecker {
 		int thresholdPercentage = properties.getJvmMemoryThresholdPercentage();
 		float usage = getPercent(memory, used);
 		log.info("thresholdPercentage: {}, usage: {}, memory: {}, available: {}", thresholdPercentage, usage, memory,
-			available);
+			 available);
 		if (usage > thresholdPercentage) {
 			throw new JvmMemoryUsageExceedsException();
 		}

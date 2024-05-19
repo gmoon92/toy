@@ -30,9 +30,9 @@ class UserRepositoryTest {
 		String mail = "gmoon92@gmail.com";
 
 		repository.save(User.builder()
-			.email(mail)
-			.encEmail(mail)
-			.build());
+			 .email(mail)
+			 .encEmail(mail)
+			 .build());
 	}
 
 	@Test
@@ -40,11 +40,11 @@ class UserRepositoryTest {
 		String mail = "test@gmail.com";
 
 		repository.save(User.builder()
-			.email(mail)
-			.encEmail(mail)
-			.build());
+			 .email(mail)
+			 .encEmail(mail)
+			 .build());
 
 		assertThat(repository.findAllByEncEmail(mail))
-			.isNotEmpty();
+			 .isNotEmpty();
 	}
 }

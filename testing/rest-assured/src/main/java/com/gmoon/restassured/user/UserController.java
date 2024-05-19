@@ -34,13 +34,13 @@ public class UserController {
 	@PostMapping("/{username}")
 	public ResponseEntity<User> save(@PathVariable String username) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(service.save(username));
+			 .body(service.save(username));
 	}
 
 	@DeleteMapping("/{username}")
 	public ResponseEntity<Void> delete(@PathVariable String username) {
 		service.delete(username);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT)
-			.build();
+			 .build();
 	}
 }

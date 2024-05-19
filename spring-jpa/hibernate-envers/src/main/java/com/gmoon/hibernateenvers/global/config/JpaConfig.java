@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "com.gmoon.**",
-	repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
+	 repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EnableTransactionManagement
 @RequiredArgsConstructor
 public class JpaConfig {

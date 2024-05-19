@@ -24,8 +24,8 @@ class CompanyProductRepositoryTest extends BaseRepositoryTest {
 
 		// when then
 		assertThat(repository.save(companyProduct))
-			.isInstanceOf(CompanyProduct.class)
-			.hasFieldOrPropertyWithValue("name", productType.name())
-			.hasFieldOrPropertyWithValue("type", productType);
+			 .isInstanceOf(CompanyProduct.class)
+			 .hasFieldOrPropertyWithValue("name", productType.name())
+			 .hasFieldOrPropertyWithValue("type", productType);
 	}
 }

@@ -34,8 +34,8 @@ public class ServerService {
 	public WebServerSaveForm saveWebServer(WebServerSaveForm saveForm) {
 		String name = saveForm.getName();
 		Server webServer = Optional.ofNullable(serverRepository.findServerByName(name))
-			.map(saveForm::toEntity)
-			.orElseGet(saveForm::createEnabledWebServer);
+			 .map(saveForm::toEntity)
+			 .orElseGet(saveForm::createEnabledWebServer);
 
 		Server savedServer = serverRepository.save(webServer);
 		return WebServerSaveForm.from(savedServer);

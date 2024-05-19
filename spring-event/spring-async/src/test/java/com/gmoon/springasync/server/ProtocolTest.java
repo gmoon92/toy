@@ -20,13 +20,13 @@ class ProtocolTest {
 
 		// then
 		assertThat(Protocol.of(useSsl))
-			.isEqualTo(expected);
+			 .isEqualTo(expected);
 	}
 
 	static Stream<Arguments> useSslProtocolParams() {
 		return Stream.of(
-			Arguments.of(true, Protocol.HTTPS),
-			Arguments.of(false, Protocol.HTTP)
+			 Arguments.of(true, Protocol.HTTPS),
+			 Arguments.of(false, Protocol.HTTP)
 		);
 	}
 }

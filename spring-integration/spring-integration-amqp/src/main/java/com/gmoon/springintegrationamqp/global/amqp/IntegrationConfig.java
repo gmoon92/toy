@@ -16,9 +16,10 @@ import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.handler.LoggingHandler;
 
+import com.rabbitmq.client.Channel;
+
 import com.gmoon.springintegrationamqp.mail.application.MailService;
 import com.gmoon.springintegrationamqp.mail.model.SaveMailLogVO;
-import com.rabbitmq.client.Channel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +38,11 @@ class IntegrationConfig {
 	public IntegrationFlow inSendMail(ConnectionFactory connectionFactory) {
 		String queueName = AmqpMessageDestination.SEND_MAIL.value;
 		return IntegrationFlows
-			.from(Amqp.inboundAdapter(connectionFactory, queueName))
-			.log(LoggingHandler.Level.DEBUG)
-			.channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
-			.handle(mailService, "send") // @ServiceActivator
-			.get();
+			 .from(Amqp.inboundAdapter(connectionFactory, queueName))
+			 .log(LoggingHandler.Level.DEBUG)
+			 .channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
+			 .handle(mailService, "send") // @ServiceActivator
+			 .get();
 	}
 
 	/**
@@ -50,12 +51,12 @@ class IntegrationConfig {
 	@Bean
 	public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate) {
 		return IntegrationFlows
-			.from(AmqpMessageDestination.SEND_MAIL.value)
-			.handle(
-				Amqp.outboundAdapter(amqpTemplate)
-					.routingKey(AmqpMessageDestination.SAVE_MAIL_LOG.value)
-			)
-			.get();
+			 .from(AmqpMessageDestination.SEND_MAIL.value)
+			 .handle(
+				  Amqp.outboundAdapter(amqpTemplate)
+					   .routingKey(AmqpMessageDestination.SAVE_MAIL_LOG.value)
+			 )
+			 .get();
 	}
 
 	/**
@@ -66,11 +67,11 @@ class IntegrationConfig {
 	public IntegrationFlow inSaveMailLog(ConnectionFactory connectionFactory) {
 		String routingKey = AmqpMessageDestination.SAVE_MAIL_LOG.value;
 		return IntegrationFlows
-			.from(Amqp.inboundAdapter(connectionFactory, routingKey))
-			.log(LoggingHandler.Level.DEBUG)
-			.transform(SaveMailLogVO::of)
-			.handle(mailService, "saveLog")  // @ServiceActivator
-			.get();
+			 .from(Amqp.inboundAdapter(connectionFactory, routingKey))
+			 .log(LoggingHandler.Level.DEBUG)
+			 .transform(SaveMailLogVO::of)
+			 .handle(mailService, "saveLog")  // @ServiceActivator
+			 .get();
 	}
 
 	@Bean

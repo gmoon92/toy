@@ -28,18 +28,18 @@ public class UserRestController {
 	public ResponseEntity<Void> signup(@RequestBody User user) {
 		sendWelcomeMail(user);
 		return ResponseEntity.ok()
-			.build();
+			 .build();
 	}
 
 	private void sendWelcomeMail(User user) {
 		amqpSender.send(
-			AmqpMessageDestination.SEND_MAIL.value,
-			SendMailVO.builder()
-				.to(user.getEmail())
-				.from("system@email.com")
-				.subject("hi " + user.getUsername())
-				.content("welcome")
-				.build()
+			 AmqpMessageDestination.SEND_MAIL.value,
+			 SendMailVO.builder()
+				  .to(user.getEmail())
+				  .from("system@email.com")
+				  .subject("hi " + user.getUsername())
+				  .content("welcome")
+				  .build()
 		);
 	}
 }

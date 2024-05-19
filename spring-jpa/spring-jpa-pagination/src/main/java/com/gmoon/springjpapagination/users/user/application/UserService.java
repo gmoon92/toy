@@ -26,13 +26,13 @@ public class UserService {
 		listVO.setTotalCount(count);
 
 		List<UserContentVO> userContents = repository.findAll(
-				search.getGroupId(),
-				search.getKeyword(),
-				listVO
-			)
-			.stream()
-			.map(UserContentVO::new)
-			.collect(Collectors.toList());
+				  search.getGroupId(),
+				  search.getKeyword(),
+				  listVO
+			 )
+			 .stream()
+			 .map(UserContentVO::new)
+			 .collect(Collectors.toList());
 
 		listVO.setContent(userContents);
 		return listVO;

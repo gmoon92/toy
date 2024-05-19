@@ -31,7 +31,7 @@ class UserControllerTest {
 	@Test
 	void testFindAll() {
 		Mockito.when(service.findAll())
-			.thenReturn(Arrays.asList(User.from("gmoon"), User.from("guest")));
+			 .thenReturn(Arrays.asList(User.from("gmoon"), User.from("guest")));
 
 		//@formatter:off
 		RestAssuredMockMvc
@@ -53,7 +53,7 @@ class UserControllerTest {
 	void testGet() {
 		String username = "gmoon";
 		Mockito.when(service.find(anyString()))
-			.thenReturn(User.from(username));
+			 .thenReturn(User.from(username));
 
 		//@formatter:off
 		RestAssuredMockMvc

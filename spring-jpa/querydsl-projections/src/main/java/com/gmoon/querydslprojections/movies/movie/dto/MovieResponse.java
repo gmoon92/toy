@@ -30,7 +30,7 @@ public class MovieResponse {
 
 	@QueryProjection
 	public MovieResponse(String id, String movieName, MovieGenre genre,
-		FilmRatings filmRatings, String movieDirectorName, MovieReleaseTime movieReleaseTime) {
+		 FilmRatings filmRatings, String movieDirectorName, MovieReleaseTime movieReleaseTime) {
 		this.id = id;
 		this.movieName = movieName;
 		this.genre = genre;

@@ -37,21 +37,21 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public <T extends BaseTrackingEntity> Optional<T> findAuditedEntity(Class<T> entityClass, Object entityId,
-		Long revisionNumber) {
+		 Long revisionNumber) {
 		Object auditedEntity = null;
 		try {
 			auditedEntity = getAuditQuery()
-				.forEntitiesModifiedAtRevision(entityClass, revisionNumber)
-				.add(AuditEntity.id().eq(entityId))
-				.getSingleResult();
+				 .forEntitiesModifiedAtRevision(entityClass, revisionNumber)
+				 .add(AuditEntity.id().eq(entityId))
+				 .getSingleResult();
 		} catch (AuditException | NonUniqueResultException | NoResultException ex) {
 			log.warn(String.format("Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s",
-				revisionNumber, entityClass, entityId), ex);
+				 revisionNumber, entityClass, entityId), ex);
 		} catch (Exception ex) {
 			throw new RuntimeException(
-				String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
-					revisionNumber,
-					entityClass, entityId), ex);
+				 String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
+					  revisionNumber,
+					  entityClass, entityId), ex);
 		} finally {
 			return Optional.ofNullable(entityClass.cast(auditedEntity));
 		}
@@ -60,22 +60,22 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public <T extends BaseTrackingEntity> Optional<T> findAuditedEntity(Class<T> entityClass, Object entityId,
-		Long revisionNumber, RevisionType revisionType) {
+		 Long revisionNumber, RevisionType revisionType) {
 		Object auditedEntity = null;
 		try {
 			auditedEntity = getAuditQuery()
-				.forEntitiesModifiedAtRevision(entityClass, revisionNumber)
-				.add(AuditEntity.id().eq(entityId))
-				.add(AuditEntity.revisionType().eq(revisionType))
-				.getSingleResult();
+				 .forEntitiesModifiedAtRevision(entityClass, revisionNumber)
+				 .add(AuditEntity.id().eq(entityId))
+				 .add(AuditEntity.revisionType().eq(revisionType))
+				 .getSingleResult();
 		} catch (AuditException | NonUniqueResultException | NoResultException ex) {
 			log.warn(String.format("Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s",
-				revisionNumber, entityClass, entityId), ex);
+				 revisionNumber, entityClass, entityId), ex);
 		} catch (Exception ex) {
 			throw new RuntimeException(
-				String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
-					revisionNumber,
-					entityClass, entityId), ex);
+				 String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
+					  revisionNumber,
+					  entityClass, entityId), ex);
 		} finally {
 			return Optional.ofNullable(entityClass.cast(auditedEntity));
 		}
@@ -84,21 +84,21 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public <T extends BaseTrackingEntity> Optional<T> findPreAuditedEntity(Class<T> entityClass, Object entityId,
-		Long revisionNumber) {
+		 Long revisionNumber) {
 		T auditedEntity = null;
 		try {
 			auditedEntity = getAuditReader().find(entityClass, entityId, revisionNumber - 1);
 		} catch (IllegalArgumentException | NotAuditedException | IllegalStateException ex) {
 			String errorMessage = String.format(
-				"Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
-				entityClass,
-				entityId);
+				 "Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
+				 entityClass,
+				 entityId);
 			log.warn(errorMessage, ex);
 		} catch (Exception ex) {
 			String errorMessage = String.format(
-				"Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
-				entityClass,
-				entityId);
+				 "Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
+				 entityClass,
+				 entityId);
 			log.error(errorMessage, ex);
 			throw new RuntimeException(errorMessage, ex);
 		} finally {

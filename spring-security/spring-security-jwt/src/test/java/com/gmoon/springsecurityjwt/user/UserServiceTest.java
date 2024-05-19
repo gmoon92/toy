@@ -15,9 +15,11 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig(UserService.class)
 class UserServiceTest {
-	@Autowired UserService userService;
+	@Autowired
+	UserService userService;
 
-	@MockBean UserRepository userRepository;
+	@MockBean
+	UserRepository userRepository;
 
 	@Test
 	@DisplayName("UserDetails 를 조회한다.")
@@ -27,13 +29,13 @@ class UserServiceTest {
 
 		// when
 		when(userRepository.findByUsername(username))
-			.thenReturn(Optional.of(User.create(username, "", Role.ADMIN)));
+			 .thenReturn(Optional.of(User.create(username, "", Role.ADMIN)));
 
 		// then
 		then(userService.loadUserByUsername(username))
-			.isInstanceOf(UserDetails.class)
-			.isInstanceOf(User.class)
-			.isNotNull();
+			 .isInstanceOf(UserDetails.class)
+			 .isInstanceOf(User.class)
+			 .isNotNull();
 	}
 
 	@Test
@@ -44,10 +46,10 @@ class UserServiceTest {
 
 		// when
 		when(userRepository.findByUsername(username))
-			.thenReturn(Optional.empty());
+			 .thenReturn(Optional.empty());
 
 		// then
 		assertThatExceptionOfType(UsernameNotFoundException.class)
-			.isThrownBy(() -> userService.loadUserByUsername(username));
+			 .isThrownBy(() -> userService.loadUserByUsername(username));
 	}
 }

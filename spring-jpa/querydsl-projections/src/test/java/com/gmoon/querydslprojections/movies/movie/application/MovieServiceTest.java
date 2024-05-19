@@ -32,29 +32,29 @@ class MovieServiceTest {
 		MovieResponse movieResponse = movieService.getMovie(movie.getId());
 
 		assertThat(movieResponse)
-			.hasFieldOrPropertyWithValue("id", movie.getId())
-			.hasFieldOrPropertyWithValue("movieName", movie.getName())
-			.hasFieldOrPropertyWithValue("genre", movie.getGenre())
-			.hasFieldOrPropertyWithValue("filmRatings", movie.getFilmRatings())
-			.hasFieldOrPropertyWithValue("directorName", movie.getDirectorName())
-			.hasFieldOrProperty("castNames")
-			.hasFieldOrProperty("releaseDateTime")
-			.hasNoNullFieldsOrPropertiesExcept()
-			.satisfies(
-				response -> assertThat(response.getCastNames()).isNotEmpty()
-					.containsOnly("Daniel Radcliffe", "Emma Charlotte Duerre Watson", "Rupert Grint")
-			);
+			 .hasFieldOrPropertyWithValue("id", movie.getId())
+			 .hasFieldOrPropertyWithValue("movieName", movie.getName())
+			 .hasFieldOrPropertyWithValue("genre", movie.getGenre())
+			 .hasFieldOrPropertyWithValue("filmRatings", movie.getFilmRatings())
+			 .hasFieldOrPropertyWithValue("directorName", movie.getDirectorName())
+			 .hasFieldOrProperty("castNames")
+			 .hasFieldOrProperty("releaseDateTime")
+			 .hasNoNullFieldsOrPropertiesExcept()
+			 .satisfies(
+				  response -> assertThat(response.getCastNames()).isNotEmpty()
+					   .containsOnly("Daniel Radcliffe", "Emma Charlotte Duerre Watson", "Rupert Grint")
+			 );
 	}
 
 	private Movie newMovie() {
 		return Fixtures.newMovie()
-			.withName("Harry Potter")
-			.withGenre(MovieGenre.FICTION)
-			.withFilmRatings(FilmRatings.G)
-			.create()
-			.chooseDirector(director("Alfonso Cuaron"))
-			.castingActor(actor("Daniel Radcliffe"))
-			.castingActor(actor("Rupert Grint"))
-			.castingActor(actor("Emma Charlotte Duerre Watson"));
+			 .withName("Harry Potter")
+			 .withGenre(MovieGenre.FICTION)
+			 .withFilmRatings(FilmRatings.G)
+			 .create()
+			 .chooseDirector(director("Alfonso Cuaron"))
+			 .castingActor(actor("Daniel Radcliffe"))
+			 .castingActor(actor("Rupert Grint"))
+			 .castingActor(actor("Emma Charlotte Duerre Watson"));
 	}
 }

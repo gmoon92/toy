@@ -43,7 +43,7 @@ class UserControllerTest {
 	public void list() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(get("/user/list")
-			.with(csrf()));
+			 .with(csrf()));
 
 		// then
 		result.andExpect(MockMvcResultMatchers.status().is3xxRedirection());
@@ -63,10 +63,10 @@ class UserControllerTest {
 
 		// when
 		ResultActions result = mockMvc.perform(get("/sample/annotation"))
-			.andDo(print());
+			 .andDo(print());
 
 		// then
 		result.andExpect(content().string(containsString(principal)))
-			.andExpect(status().isOk());
+			 .andExpect(status().isOk());
 	}
 }

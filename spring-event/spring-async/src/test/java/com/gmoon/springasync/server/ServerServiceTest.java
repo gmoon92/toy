@@ -13,8 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Disabled("application.yml 메일 설정 후 테스트 진행 "
-	+ "username: @test.mail.username@"
-	+ "password: @test.mail.password@")
+	 + "username: @test.mail.username@"
+	 + "password: @test.mail.password@")
 class ServerServiceTest {
 	@Autowired
 	ServerService serverService;
@@ -30,6 +30,6 @@ class ServerServiceTest {
 
 		// then
 		assertThat(url)
-			.isEqualTo("http://gmoon92.github.io");
+			 .isEqualTo("http://gmoon92.github.io");
 	}
 }

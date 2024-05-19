@@ -40,7 +40,7 @@ class PropertiesConfigTest {
 			String encrypt = stringEncryptor.encrypt(property);
 
 			assertThat(stringEncryptor.decrypt(encrypt))
-				.isEqualTo(property);
+				 .isEqualTo(property);
 		}
 	}
 

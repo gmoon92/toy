@@ -66,7 +66,7 @@ public final class JacksonUtils {
 	}
 
 	private static <T> T toObject(Function<ObjectMapper, T> reader, boolean allowUnquotedControlChars,
-		boolean allowBackSlashEscapeChars) {
+		 boolean allowBackSlashEscapeChars) {
 		ObjectMapper objectMapper = getObjectMapper(allowUnquotedControlChars, allowBackSlashEscapeChars);
 		return reader.apply(objectMapper);
 	}

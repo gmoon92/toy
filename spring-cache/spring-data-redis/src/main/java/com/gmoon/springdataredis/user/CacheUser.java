@@ -27,7 +27,8 @@ public class CacheUser implements Cache {
 	static final String KEY = CacheName.Constants.USER;
 	static final long MINUTES_OF_TTL = 5;
 
-	@Id private String id;
+	@Id
+	private String id;
 
 	@Indexed
 	@EqualsAndHashCode.Include

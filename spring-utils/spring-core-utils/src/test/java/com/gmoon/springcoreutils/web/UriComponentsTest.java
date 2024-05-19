@@ -29,14 +29,14 @@ class UriComponentsTest {
 
 		// when
 		UriComponents uriComponents = UriComponentsBuilder.fromUriString(uri)
-			.encode(UTF_8)
-			.queryParam("locale", locale)
-			.queryParam("_csrf", token)
-			.build();
+			 .encode(UTF_8)
+			 .queryParam("locale", locale)
+			 .queryParam("_csrf", token)
+			 .build();
 
 		// then
 		assertThat(uriComponents.toString())
-			.contains(uri, token, locale);
+			 .contains(uri, token, locale);
 	}
 
 	/**
@@ -48,13 +48,13 @@ class UriComponentsTest {
 	 * */
 	@Test
 	@DisplayName("UriComponents 는 내부적으로 Query String 을 ?, & 로 파싱한다." +
-		"만약 Query String parameter 값에 또 다른 파라미터 값이 있을 경우 인코딩 하여 보낸다." +
-		"결과적으로 decode 를 두번 해야 복호화가 된다..")
+		 "만약 Query String parameter 값에 또 다른 파라미터 값이 있을 경우 인코딩 하여 보낸다." +
+		 "결과적으로 decode 를 두번 해야 복호화가 된다..")
 	void toUriString() throws Exception {
 		// get
 		String cloudGatewayUrl = "https://gateway.gmoon.com/route?" +
-			"dispflg=0" +
-			"&rout=";
+			 "dispflg=0" +
+			 "&rout=";
 		String routParam = "http://wwwkr1.gmoon.com/login?error=886&locale=ko";
 		String logoutUrl = cloudGatewayUrl + encode(routParam);
 
@@ -77,7 +77,7 @@ class UriComponentsTest {
 
 	private UriComponents getUriComponents(String uri) {
 		return UriComponentsBuilder.fromUriString(uri)
-			.encode(UTF_8)
-			.build();
+			 .encode(UTF_8)
+			 .build();
 	}
 }

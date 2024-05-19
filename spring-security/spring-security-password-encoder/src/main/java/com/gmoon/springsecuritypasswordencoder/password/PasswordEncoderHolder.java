@@ -30,10 +30,10 @@ enum PasswordEncoderHolder {
 	ARGON2("argon2", new Argon2PasswordEncoder()); // 66
 
 	public static final Map<String, PasswordEncoder> ALL = Arrays.stream(values())
-		.collect(collectingAndThen(
-			toMap(PasswordEncoderHolder::getId, PasswordEncoderHolder::getValue),
-			Collections::unmodifiableMap)
-		);
+		 .collect(collectingAndThen(
+			  toMap(PasswordEncoderHolder::getId, PasswordEncoderHolder::getValue),
+			  Collections::unmodifiableMap)
+		 );
 
 	public static final String ID_PREFIX = "{";
 	public static final String ID_SUFFIX = "}";

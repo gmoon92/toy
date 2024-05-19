@@ -7,8 +7,8 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 @Configuration
 @EnableR2dbcRepositories(
-	basePackages = {"com.gmoon.*"},
-	includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = ReactRepository.class)
+	 basePackages = {"com.gmoon.*"},
+	 includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = ReactRepository.class)
 )
 public class R2dbcConfig {
 

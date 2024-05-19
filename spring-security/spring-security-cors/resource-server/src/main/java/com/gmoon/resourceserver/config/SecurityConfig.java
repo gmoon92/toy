@@ -39,25 +39,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.headers(this::headers)
-			.cors(this::customCorsConfiguration)
-			.csrf(AbstractHttpConfigurer::disable)
-			.httpBasic(AbstractHttpConfigurer::disable)
-			.formLogin(AbstractHttpConfigurer::disable)
-			.authorizeRequests(this::authorizeRequests)
-			.sessionManagement(this::httpStateless)
-			.addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtils))
-			.addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtils));
+			 .headers(this::headers)
+			 .cors(this::customCorsConfiguration)
+			 .csrf(AbstractHttpConfigurer::disable)
+			 .httpBasic(AbstractHttpConfigurer::disable)
+			 .formLogin(AbstractHttpConfigurer::disable)
+			 .authorizeRequests(this::authorizeRequests)
+			 .sessionManagement(this::httpStateless)
+			 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtils))
+			 .addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtils));
 	}
 
 	private void headers(HeadersConfigurer<HttpSecurity> config) {
 		config.frameOptions().sameOrigin();
 	}
 
-	private void authorizeRequests(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+	private void authorizeRequests(
+		 ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
 		registry
-			.antMatchers("**/login**").permitAll()
-			.anyRequest().authenticated();
+			 .antMatchers("**/login**").permitAll()
+			 .anyRequest().authenticated();
 	}
 
 	private void httpStateless(SessionManagementConfigurer<HttpSecurity> configurer) {

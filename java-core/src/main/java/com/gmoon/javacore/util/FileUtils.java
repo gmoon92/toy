@@ -73,9 +73,9 @@ public final class FileUtils {
 	private static File createTempFile(String extension) {
 		try {
 			File tempFile = File.createTempFile(
-				UUID.randomUUID().toString(),
-				"." + extension,
-				null
+				 UUID.randomUUID().toString(),
+				 "." + extension,
+				 null
 			);
 
 			tempFile.deleteOnExit();
@@ -91,8 +91,8 @@ public final class FileUtils {
 
 	public static String convertFileToString(File file) {
 		try (
-			InputStream fis = new FileInputStream(file);
-			InputStream dis = new DataInputStream(fis)
+			 InputStream fis = new FileInputStream(file);
+			 InputStream dis = new DataInputStream(fis)
 		) {
 			return toStringFromInputStream(dis);
 		} catch (Exception e) {
@@ -102,8 +102,8 @@ public final class FileUtils {
 
 	private static String toStringFromInputStream(InputStream inputStream) {
 		try (
-			Reader reader = new InputStreamReader(inputStream);
-			BufferedReader br = new BufferedReader(reader)
+			 Reader reader = new InputStreamReader(inputStream);
+			 BufferedReader br = new BufferedReader(reader)
 		) {
 			StringBuilder builder = new StringBuilder();
 

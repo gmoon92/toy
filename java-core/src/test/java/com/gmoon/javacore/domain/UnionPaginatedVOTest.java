@@ -137,10 +137,10 @@ class UnionPaginatedVOTest {
 		userPaginatedVO.setTotalCount(120);
 
 		UnionPaginatedVO union = new UnionPaginatedVO(
-			requestPage,
-			pageSize,
-			teamPaginatedVO,
-			userPaginatedVO
+			 requestPage,
+			 pageSize,
+			 teamPaginatedVO,
+			 userPaginatedVO
 		);
 
 		log.debug("===========Page{}-{}===========", requestPage, teamPaginatedVO.getTotalCount());
@@ -169,11 +169,11 @@ class UnionPaginatedVOTest {
 		vo3.setTotalCount(30);
 
 		UnionPaginatedVO union = new UnionPaginatedVO(
-			1,
-			10,
-			vo1,
-			vo2,
-			vo3
+			 1,
+			 10,
+			 vo1,
+			 vo2,
+			 vo3
 		);
 
 		assertThat(union.get(vo1).getTotalCount()).isEqualTo(10);

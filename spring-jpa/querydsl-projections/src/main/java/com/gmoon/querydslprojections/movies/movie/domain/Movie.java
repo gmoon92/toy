@@ -32,11 +32,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(
-	name = "tb_movie",
-	indexes = {
-		@Index(name = "idx_name", columnList = "name,genre"),
-		@Index(name = "idx_release_time", columnList = "release_year,release_month,release_day,release_hour")
-	}
+	 name = "tb_movie",
+	 indexes = {
+		  @Index(name = "idx_name", columnList = "name,genre"),
+		  @Index(name = "idx_release_time", columnList = "release_year,release_month,release_day,release_hour")
+	 }
 )
 @Entity
 @Builder
@@ -77,11 +77,11 @@ public class Movie implements Serializable {
 
 	@Embedded
 	@AttributeOverrides({
-		@AttributeOverride(name = "value", column = @Column(name = "release_time", nullable = false)),
-		@AttributeOverride(name = "year", column = @Column(name = "release_year", nullable = false)),
-		@AttributeOverride(name = "month", column = @Column(name = "release_month", nullable = false)),
-		@AttributeOverride(name = "dayOfMonth", column = @Column(name = "release_day", nullable = false)),
-		@AttributeOverride(name = "hour", column = @Column(name = "release_hour", nullable = false))
+		 @AttributeOverride(name = "value", column = @Column(name = "release_time", nullable = false)),
+		 @AttributeOverride(name = "year", column = @Column(name = "release_year", nullable = false)),
+		 @AttributeOverride(name = "month", column = @Column(name = "release_month", nullable = false)),
+		 @AttributeOverride(name = "dayOfMonth", column = @Column(name = "release_day", nullable = false)),
+		 @AttributeOverride(name = "hour", column = @Column(name = "release_hour", nullable = false))
 	})
 	private MovieReleaseTime releaseTime;
 

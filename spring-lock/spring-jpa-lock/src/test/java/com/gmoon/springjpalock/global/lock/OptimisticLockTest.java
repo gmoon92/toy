@@ -14,10 +14,11 @@ import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
+
 import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,15 +29,15 @@ public class OptimisticLockTest extends BaseJpaTestCase {
 	@RepeatedTest(5)
 	void excludeLockColumns() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(this::issueReceipt),
-			CompletableFuture.runAsync(this::issueReceipt),
-			CompletableFuture.runAsync(this::issueReceipt),
-			CompletableFuture.runAsync(this::issueReceipt),
-			CompletableFuture.runAsync(this::issueReceipt)
+			 CompletableFuture.runAsync(this::issueReceipt),
+			 CompletableFuture.runAsync(this::issueReceipt),
+			 CompletableFuture.runAsync(this::issueReceipt),
+			 CompletableFuture.runAsync(this::issueReceipt),
+			 CompletableFuture.runAsync(this::issueReceipt)
 		);
 
 		assertThatCode(allOf::join)
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	private void issueReceipt() {
@@ -51,21 +52,21 @@ public class OptimisticLockTest extends BaseJpaTestCase {
 	@RepeatedTest(5)
 	void runRaceConditionByOptimisticLock() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			CompletableFuture.runAsync(this::updateOrderInfos),
-			CompletableFuture.runAsync(this::updateOrderInfos),
-			CompletableFuture.runAsync(this::updateOrderInfos),
-			CompletableFuture.runAsync(this::updateOrderInfos)
+			 CompletableFuture.runAsync(this::updateOrderInfos),
+			 CompletableFuture.runAsync(this::updateOrderInfos),
+			 CompletableFuture.runAsync(this::updateOrderInfos),
+			 CompletableFuture.runAsync(this::updateOrderInfos)
 		);
 
 		assertThatThrownBy(allOf::join)
-			.getCause()
-			.isInstanceOfAny(
-				LockAcquisitionException.class,
-				RollbackException.class,
-				OptimisticLockException.class,
-				StaleStateException.class,
-				MySQLTransactionRollbackException.class
-			);
+			 .getCause()
+			 .isInstanceOfAny(
+				  LockAcquisitionException.class,
+				  RollbackException.class,
+				  OptimisticLockException.class,
+				  StaleStateException.class,
+				  MySQLTransactionRollbackException.class
+			 );
 	}
 
 	private void updateOrderInfos() {

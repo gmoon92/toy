@@ -2,13 +2,14 @@ package com.gmoon.springjpaspecs.books.bookstore.dto;
 
 import java.time.LocalDateTime;
 
+import com.querydsl.core.annotations.QueryProjection;
+
 import com.gmoon.springjpaspecs.books.book.domain.Book;
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookPrice;
 import com.gmoon.springjpaspecs.books.bookstore.domain.BookStoreBook;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
-import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
 

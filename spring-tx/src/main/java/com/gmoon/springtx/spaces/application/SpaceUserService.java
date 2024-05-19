@@ -31,7 +31,7 @@ public class SpaceUserService {
 
 	private SpaceUser getSpaceUser(String spaceId, String userId) {
 		return spaceUserRepository.findBySpaceIdAndUserId(spaceId, userId)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 	}
 
 	private void deleteFavorites(String userId) {

@@ -1,8 +1,7 @@
 package com.gmoon.awaitility.event;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import com.gmoon.awaitility.concurrency.Worker;
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -11,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
@@ -19,6 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import com.gmoon.awaitility.concurrency.Worker;
 
 class EventServiceTest {
 
@@ -44,12 +46,12 @@ class EventServiceTest {
 		void case1() {
 			// then
 			Awaitility.await("lambda 표현식")
-				.pollDelay(Duration.ofSeconds(1)) // 1초 대기
-				.pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
-				.atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
-				// assertion
-				// .until(() -> eventRepository.size() == 1)
-				.until(eventService::count, CoreMatchers.equalTo(1));
+				 .pollDelay(Duration.ofSeconds(1)) // 1초 대기
+				 .pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
+				 .atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
+				 // assertion
+				 // .until(() -> eventRepository.size() == 1)
+				 .until(eventService::count, CoreMatchers.equalTo(1));
 		}
 
 		@DisplayName("AssertJ 단언문 사용")
@@ -57,12 +59,12 @@ class EventServiceTest {
 		void withAssertJ() {
 			// then
 			Awaitility.await("AssertJ 단언문 사용")
-				.pollDelay(Duration.ofSeconds(1)) // 1초 대기
-				.pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
-				.atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
-				.untilAsserted(
-					() -> assertThat(eventService.count()).isNotZero()
-				);
+				 .pollDelay(Duration.ofSeconds(1)) // 1초 대기
+				 .pollInterval(Duration.ofSeconds(1)) // 1초 마다 확인
+				 .atMost(Duration.ofSeconds(5)) // 최대 대기 시간 설정, default 10 초
+				 .untilAsserted(
+					  () -> assertThat(eventService.count()).isNotZero()
+				 );
 		}
 
 		@DisplayName("Timeout 예외")
@@ -70,13 +72,13 @@ class EventServiceTest {
 		void error1() {
 			// then
 			assertThatThrownBy(() ->
-					Awaitility.await("Timeout 예외")
-						.atMost(Duration.ofMillis(200)) // 최대 대기 시간 설정, default 10 초
-//					.timeout(Duration.ofMillis(200))
-						.untilAsserted(() ->
-							Assertions.assertThat(eventService.count())
+				 Awaitility.await("Timeout 예외")
+					  .atMost(Duration.ofMillis(200)) // 최대 대기 시간 설정, default 10 초
+					  //					.timeout(Duration.ofMillis(200))
+					  .untilAsserted(() ->
+						   Assertions.assertThat(eventService.count())
 								.isNotZero()
-						)
+					  )
 			).isInstanceOf(ConditionTimeoutException.class);
 		}
 	}
@@ -99,14 +101,14 @@ class EventServiceTest {
 
 			// create worker
 			workers = IntStream.range(0, threadCount)
-				.mapToObj(i ->
-					new Worker(
-						counter,
-						() -> eventService.save(new Event("gmoon" + i))
-					)
-				)
-				.map(Thread::new)
-				.collect(Collectors.toList());
+				 .mapToObj(i ->
+					  new Worker(
+						   counter,
+						   () -> eventService.save(new Event("gmoon" + i))
+					  )
+				 )
+				 .map(Thread::new)
+				 .collect(Collectors.toList());
 		}
 
 		@DisplayName("Concurrency test")

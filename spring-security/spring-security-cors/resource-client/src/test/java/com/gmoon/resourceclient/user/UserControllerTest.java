@@ -26,22 +26,22 @@ class UserControllerTest {
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.apply(springSecurity())
-			.alwaysDo(print())
-			.build();
+			 .apply(springSecurity())
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	@Test
 	@Disabled("Resource Server 어플리케이션 실행 후 테스트")
-	void testFormLogin() throws Exception{
+	void testFormLogin() throws Exception {
 		// given
 		String username = "admin";
 		String password = "123";
 
 		// when
 		ResultActions result = mockMvc.perform(formLogin()
-			.user(username)
-			.password(password));
+			 .user(username)
+			 .password(password));
 
 		// then
 		result.andExpect(authenticated());

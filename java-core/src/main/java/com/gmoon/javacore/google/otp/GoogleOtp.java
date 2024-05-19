@@ -46,12 +46,12 @@ public class GoogleOtp {
 	 * */
 	public String getImageDataUrl() {
 		QrData data = new QrData.Builder()
-			.label("gmoon-2FA")
-			.secret(secret)
-			.algorithm(algorithm)
-			.digits(digits)
-			.period((int)period.getSeconds())
-			.build();
+			 .label("gmoon-2FA")
+			 .secret(secret)
+			 .algorithm(algorithm)
+			 .digits(digits)
+			 .period((int)period.getSeconds())
+			 .build();
 		return QRCodeImage.getImageDataUrl(data.getUri());
 	}
 

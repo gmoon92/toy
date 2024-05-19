@@ -40,9 +40,9 @@ class WebClientConfigTest {
 			}
 
 			return response.createException()
-				.flatMap(Mono::error)
-				.map(String::valueOf)
-				.flux();
+				 .flatMap(Mono::error)
+				 .map(String::valueOf)
+				 .flux();
 		}).blockFirst();
 
 		return token;
@@ -50,35 +50,35 @@ class WebClientConfigTest {
 
 	private WebClient.RequestBodySpec postLoginSpec(String username, String password) {
 		return defaultWebClient()
-			.method(HttpMethod.POST)
-			.uri(uriBuilder -> uriBuilder
-				.path("/login")
-				.queryParam("username", username)
-				.queryParam("password", password)
-				.build())
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON)
-			.acceptCharset(StandardCharsets.UTF_8);
+			 .method(HttpMethod.POST)
+			 .uri(uriBuilder -> uriBuilder
+				  .path("/login")
+				  .queryParam("username", username)
+				  .queryParam("password", password)
+				  .build())
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON)
+			 .acceptCharset(StandardCharsets.UTF_8);
 	}
 
 	private WebClient defaultWebClient() {
 		HttpClient httpClient = connectionTimeoutClient();
 		return WebClient.builder()
-			.baseUrl("http://localhost:9000")
-			.clientConnector(new ReactorClientHttpConnector(httpClient))
-			.build();
+			 .baseUrl("http://localhost:9000")
+			 .clientConnector(new ReactorClientHttpConnector(httpClient))
+			 .build();
 	}
 
 	private HttpClient connectionTimeoutClient() {
 		final int MAX_OF_RESPONSE_TIMEOUT = 5_000;
 		return HttpClient.create()
-			// response connect timeout config
-			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_OF_RESPONSE_TIMEOUT)
-			.responseTimeout(Duration.ofMillis(MAX_OF_RESPONSE_TIMEOUT))
-			.doOnConnected(conn ->
-				// read / write response timeout config
-				conn.addHandlerLast(new ReadTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
-					.addHandlerLast(new WriteTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
-			);
+			 // response connect timeout config
+			 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_OF_RESPONSE_TIMEOUT)
+			 .responseTimeout(Duration.ofMillis(MAX_OF_RESPONSE_TIMEOUT))
+			 .doOnConnected(conn ->
+				  // read / write response timeout config
+				  conn.addHandlerLast(new ReadTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
+					   .addHandlerLast(new WriteTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
+			 );
 	}
 }

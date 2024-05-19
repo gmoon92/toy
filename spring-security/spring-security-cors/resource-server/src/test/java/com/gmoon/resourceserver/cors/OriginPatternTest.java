@@ -27,8 +27,8 @@ class OriginPatternTest {
 		String patternOfWithoutPort = String.format("**%s", host);
 		String patternOfIncludePort = String.format("**%s:**", host);
 		originCheckedPatterns = Arrays.asList(
-			initPattern(patternOfWithoutPort),
-			initPattern(patternOfIncludePort)
+			 initPattern(patternOfWithoutPort),
+			 initPattern(patternOfIncludePort)
 		);
 	}
 
@@ -45,7 +45,7 @@ class OriginPatternTest {
 
 		if (portList != null) {
 			patternValue += (portList.equals(CorsConfiguration.ALL) ? "(:\\d+)?" :
-				":(" + portList.replace(',', '|') + ")");
+				 ":(" + portList.replace(',', '|') + ")");
 		}
 
 		return Pattern.compile(patternValue);
@@ -75,7 +75,7 @@ class OriginPatternTest {
 
 	private boolean matchPatternFrom(String originToCheck) {
 		return originCheckedPatterns.stream()
-			.anyMatch(pattern -> pattern.matcher(trimTrailingSlash(originToCheck)).matches());
+			 .anyMatch(pattern -> pattern.matcher(trimTrailingSlash(originToCheck)).matches());
 	}
 
 	private String trimTrailingSlash(String origin) {
@@ -84,34 +84,34 @@ class OriginPatternTest {
 
 	static Stream<Arguments> getClientOrigins() {
 		return Stream.of(
-			Arguments.of("http://localhost"),
-			Arguments.of("http://localhost:80"),
-			Arguments.of("http://localhost:8080"),
-			Arguments.of("http://localhost:80/bookmark"),
-			Arguments.of("http://localhost:8080/bookmark"),
+			 Arguments.of("http://localhost"),
+			 Arguments.of("http://localhost:80"),
+			 Arguments.of("http://localhost:8080"),
+			 Arguments.of("http://localhost:80/bookmark"),
+			 Arguments.of("http://localhost:8080/bookmark"),
 
-			Arguments.of("https://localhost"),
-			Arguments.of("https://localhost:433"),
-			Arguments.of("https://localhost:8443"),
-			Arguments.of("https://localhost:433/bookmark"),
-			Arguments.of("https://localhost:8443/bookmark")
+			 Arguments.of("https://localhost"),
+			 Arguments.of("https://localhost:433"),
+			 Arguments.of("https://localhost:8443"),
+			 Arguments.of("https://localhost:433/bookmark"),
+			 Arguments.of("https://localhost:8443/bookmark")
 		);
 	}
 
 	static Stream<Arguments> getInvalidClientOrigins() {
 		return Stream.of(
-			Arguments.of("https://LOCALHOST"),
-			Arguments.of("http://locaIhost"),
-			Arguments.of("http://locaIhost:80"),
-			Arguments.of("http://locaIhost:8080"),
-			Arguments.of("http://locaIhost:80/bookmark"),
-			Arguments.of("http://locaIhost:8080/bookmark"),
+			 Arguments.of("https://LOCALHOST"),
+			 Arguments.of("http://locaIhost"),
+			 Arguments.of("http://locaIhost:80"),
+			 Arguments.of("http://locaIhost:8080"),
+			 Arguments.of("http://locaIhost:80/bookmark"),
+			 Arguments.of("http://locaIhost:8080/bookmark"),
 
-			Arguments.of("https://locaIhost"),
-			Arguments.of("https://locaIhost:433"),
-			Arguments.of("https://locaIhost:8443"),
-			Arguments.of("https://locaIhost:433/bookmark"),
-			Arguments.of("https://locaIhost:8443/bookmark")
+			 Arguments.of("https://locaIhost"),
+			 Arguments.of("https://locaIhost:433"),
+			 Arguments.of("https://locaIhost:8443"),
+			 Arguments.of("https://locaIhost:433/bookmark"),
+			 Arguments.of("https://locaIhost:8443/bookmark")
 		);
 	}
 }

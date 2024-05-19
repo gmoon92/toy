@@ -15,10 +15,10 @@ public class HttpSessionLogging implements HandlerInterceptor {
 
 	@Override
 	public void afterCompletion(
-		HttpServletRequest request,
-		HttpServletResponse response,
-		Object handler,
-		Exception ex
+		 HttpServletRequest request,
+		 HttpServletResponse response,
+		 Object handler,
+		 Exception ex
 	) {
 		loggingForHttpSessionAttributes(request);
 	}

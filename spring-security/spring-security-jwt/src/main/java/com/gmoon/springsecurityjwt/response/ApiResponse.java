@@ -26,8 +26,8 @@ public class ApiResponse<T> {
 
 	public static ApiResponse of(Throwable e, HttpStatus httpStatus) {
 		return ApiResponse.builder()
-			.httpStatus(httpStatus)
-			.message(e.getMessage())
-			.build();
+			 .httpStatus(httpStatus)
+			 .message(e.getMessage())
+			 .build();
 	}
 }

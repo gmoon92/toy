@@ -34,9 +34,9 @@ public class OrderLineItem implements Serializable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(
-		name = "order_no",
-		foreignKey = @ForeignKey(name = "fk_order_to_order_lien_item"),
-		updatable = false
+		 name = "order_no",
+		 foreignKey = @ForeignKey(name = "fk_order_to_order_lien_item"),
+		 updatable = false
 	)
 	private Order order;
 
@@ -46,7 +46,6 @@ public class OrderLineItem implements Serializable {
 	@Column(name = "quantity", nullable = false)
 	@ColumnDefault("0")
 	private long quantity;
-
 
 	@Builder
 	private OrderLineItem(Order order, Product product, long quantity) {

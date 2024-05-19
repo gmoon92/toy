@@ -36,7 +36,7 @@ class UserRepositoryTest extends BaseDataJpaTest {
 
 		// then
 		assertThat(mayAdminUser).isPresent()
-			.hasValueSatisfying(user ->
-				assertThat(user.getRole()).isEqualTo(Role.ADMIN));
+			 .hasValueSatisfying(user ->
+				  assertThat(user.getRole()).isEqualTo(Role.ADMIN));
 	}
 }

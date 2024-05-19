@@ -13,12 +13,14 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import com.gmoon.springsecurityjwt.user.Role;
 import com.gmoon.springsecurityjwt.user.User;
 
 @JsonTest
 class JacksonUtilsTest {
-	@Autowired private JacksonTester<User> json;
+	@Autowired
+	private JacksonTester<User> json;
 
 	@Test
 	void testToString() {
@@ -40,9 +42,9 @@ class JacksonUtilsTest {
 		// when then
 		assertThat(json.write(user)).hasJsonPathStringValue("@.password");
 		assertThat(json.write(user)).extractingJsonPathStringValue("@.username")
-			.isEqualTo("gmoon");
+			 .isEqualTo("gmoon");
 		assertThat(json.write(user)).extractingJsonPathArrayValue("@.authorities")
-			.containsExactly("ADMIN");
+			 .containsExactly("ADMIN");
 	}
 
 	@Test
@@ -61,21 +63,22 @@ class JacksonUtilsTest {
 	void testToObject_TypeReference() {
 		// given
 		List<User> users = Arrays.asList(
-			User.create("gmoon", "123", Role.ADMIN),
-			User.create("user", "123", Role.USER)
+			 User.create("gmoon", "123", Role.ADMIN),
+			 User.create("user", "123", Role.USER)
 		);
 
 		String jsonString = JacksonUtils.toString(users);
 
 		// when
-		List<User> actual = JacksonUtils.toObject(jsonString, new TypeReference<List<User>>() {});
+		List<User> actual = JacksonUtils.toObject(jsonString, new TypeReference<List<User>>() {
+		});
 
 		// then
 		assertThat(actual)
-			.hasSize(2)
-			.containsExactly(
-				User.create("gmoon", "123", Role.ADMIN),
-				User.create("user", "123", Role.USER)
-			);
+			 .hasSize(2)
+			 .containsExactly(
+				  User.create("gmoon", "123", Role.ADMIN),
+				  User.create("user", "123", Role.USER)
+			 );
 	}
 }

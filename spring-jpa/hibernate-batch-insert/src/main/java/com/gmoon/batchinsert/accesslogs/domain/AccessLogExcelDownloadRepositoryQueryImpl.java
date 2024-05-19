@@ -56,19 +56,19 @@ public class AccessLogExcelDownloadRepositoryQueryImpl implements AccessLogExcel
 			QAccessLogExcelDownload qAccessLogExcelDownload = QAccessLogExcelDownload.accessLogExcelDownload;
 			AccessLogExcelDownload data = AccessLogExcelDownload.create(accessLog);
 			JPAInsertClause clause = new JPAInsertClause(em, qAccessLogExcelDownload)
-				.columns(
-					qAccessLogExcelDownload.id,
-					qAccessLogExcelDownload.username,
-					qAccessLogExcelDownload.ip,
-					qAccessLogExcelDownload.os,
-					qAccessLogExcelDownload.attemptDt
-				).values(
-					data.getId(),
-					data.getUsername(),
-					data.getIp(),
-					data.getOs(),
-					data.getAttemptDt()
-				);
+				 .columns(
+					  qAccessLogExcelDownload.id,
+					  qAccessLogExcelDownload.username,
+					  qAccessLogExcelDownload.ip,
+					  qAccessLogExcelDownload.os,
+					  qAccessLogExcelDownload.attemptDt
+				 ).values(
+					  data.getId(),
+					  data.getUsername(),
+					  data.getIp(),
+					  data.getOs(),
+					  data.getAttemptDt()
+				 );
 
 			clause.execute();
 		}

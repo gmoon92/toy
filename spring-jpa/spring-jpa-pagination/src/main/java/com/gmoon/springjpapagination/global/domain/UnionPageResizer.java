@@ -117,7 +117,7 @@ public class UnionPageResizer extends Pageable {
 
 	public boolean isMergedData(Pageable pageable) {
 		return get(pageable.getClass())
-			.isMerged();
+			 .isMerged();
 	}
 
 	public <T extends PaginatedContent<R>, R> List<R> getContent(Class<T> clazz, Function<T, List<R>> contentProvider) {
@@ -131,9 +131,9 @@ public class UnionPageResizer extends Pageable {
 
 	private ResizedPage get(Class<?> clazz) {
 		return resizedPages.stream()
-			.filter(reference -> reference.clazz.equals(clazz))
-			.findFirst()
-			.orElseThrow(() -> new RuntimeException("not found page object."));
+			 .filter(reference -> reference.clazz.equals(clazz))
+			 .findFirst()
+			 .orElseThrow(() -> new RuntimeException("not found page object."));
 	}
 
 	public <T extends Pageable> T getBasePaginatedVO(Class<T> clazz) {
@@ -143,9 +143,9 @@ public class UnionPageResizer extends Pageable {
 
 	public long getTotalCount() {
 		return resizedPages.stream()
-			.map(ResizedPage::getPageable)
-			.mapToLong(Pageable::getTotalCount)
-			.sum();
+			 .map(ResizedPage::getPageable)
+			 .mapToLong(Pageable::getTotalCount)
+			 .sum();
 	}
 
 }

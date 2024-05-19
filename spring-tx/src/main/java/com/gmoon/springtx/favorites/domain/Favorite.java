@@ -33,10 +33,10 @@ public class Favorite implements Serializable {
 	private Id id;
 
 	@OneToMany(
-		mappedBy = "favorite",
-		fetch = FetchType.LAZY,
-		cascade = CascadeType.REMOVE,
-		orphanRemoval = true
+		 mappedBy = "favorite",
+		 fetch = FetchType.LAZY,
+		 cascade = CascadeType.REMOVE,
+		 orphanRemoval = true
 	)
 	private Set<FavoriteUser> favoriteUsers = new HashSet<>();
 

@@ -8,8 +8,8 @@ import com.gmoon.batchinsert.global.prop.StorageProperties;
 
 @Configuration
 @EnableConfigurationProperties({
-	StorageProperties.class,
-	JooqProperties.class
+	 StorageProperties.class,
+	 JooqProperties.class
 })
 public class PropertiesConfig {
 

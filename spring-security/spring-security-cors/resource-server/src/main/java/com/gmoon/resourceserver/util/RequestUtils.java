@@ -25,8 +25,8 @@ public final class RequestUtils {
 	private static final String PATTERN_OF_HOST = "((?<=:\\/\\/).*?(?=:|$))";
 	private static final String PATTERN_OF_PORT = "((?<=:)\\d+|$)";
 	private static final Pattern PATTERN_OF_ORIGIN = Pattern.compile(PATTERN_OF_SCHEMA
-		+ ".*?" + PATTERN_OF_HOST
-		+ ".*?" + PATTERN_OF_PORT);
+		 + ".*?" + PATTERN_OF_HOST
+		 + ".*?" + PATTERN_OF_PORT);
 
 	public static String getClientIpAddress(HttpServletRequest request) {
 		String remoteIpAddress = getRemoteIpAddress(request);

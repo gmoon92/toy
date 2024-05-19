@@ -16,6 +16,6 @@ class Ase256UtilsTest {
 
 		// then
 		assertThat(Ase256Utils.decode(encrypt))
-			.isEqualTo(plainText);
+			 .isEqualTo(plainText);
 	}
 }

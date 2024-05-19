@@ -1,8 +1,9 @@
 package com.gmoon.junit5.async;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import com.gmoon.junit5.async.config.SpringAsyncConfig;
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.concurrent.Executor;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,12 @@ import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.gmoon.junit5.async.config.SpringAsyncConfig;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
-	AsyncServiceTest.SyncTestConfig.class,
-	AsyncService.class
+	 AsyncServiceTest.SyncTestConfig.class,
+	 AsyncService.class
 })
 class AsyncServiceTest {
 
@@ -26,7 +29,7 @@ class AsyncServiceTest {
 	@Test
 	void testAsync() throws Exception {
 		int result = asyncService.handle()
-			.get();
+			 .get();
 
 		assertThat(result).isEqualTo(1);
 	}

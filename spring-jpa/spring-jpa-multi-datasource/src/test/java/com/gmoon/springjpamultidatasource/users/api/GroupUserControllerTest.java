@@ -15,9 +15,9 @@ class GroupUserControllerTest extends AbstractIntegrationTest {
 	@Test
 	void find() throws Exception {
 		ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/group/user")
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON)
-			.param("groupId", Fixtures.GROUP_ID)
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON)
+			 .param("groupId", Fixtures.GROUP_ID)
 		);
 
 		result.andExpect(status().isOk());
@@ -30,8 +30,8 @@ class GroupUserControllerTest extends AbstractIntegrationTest {
 		String userId = Fixtures.USER_ID;
 
 		ResultActions result = mockMvc.perform(MockMvcRequestBuilders.delete("/group/user")
-			.param("groupId", groupId)
-			.param("userId", userId)
+			 .param("groupId", groupId)
+			 .param("userId", userId)
 		);
 
 		result.andExpect(status().isOk());

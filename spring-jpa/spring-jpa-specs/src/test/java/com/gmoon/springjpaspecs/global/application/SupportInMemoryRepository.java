@@ -15,7 +15,7 @@ public abstract class SupportInMemoryRepository<T extends EntityObject, ID exten
 	private final Map<ID, T> CACHE = new HashMap<>();
 
 	public T save(T entity) {
-		CACHE.put((ID) entity.getId(), entity);
+		CACHE.put((ID)entity.getId(), entity);
 		return entity;
 	}
 

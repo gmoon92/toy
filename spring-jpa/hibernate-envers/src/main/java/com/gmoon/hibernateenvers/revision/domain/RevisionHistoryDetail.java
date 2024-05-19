@@ -73,7 +73,7 @@ public class RevisionHistoryDetail extends BaseEntity {
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private RevisionHistoryDetail(RevisionHistory revision, RevisionType revisionType, Serializable entityId,
-		RevisionTarget revisionTarget, RevisionEventStatus revisionEventStatus) {
+		 RevisionTarget revisionTarget, RevisionEventStatus revisionEventStatus) {
 		this.revision = revision;
 		this.entityId = RevisionConverter.serializedObject(entityId);
 		this.revisionTarget = revisionTarget;
@@ -82,14 +82,14 @@ public class RevisionHistoryDetail extends BaseEntity {
 	}
 
 	public static RevisionHistoryDetail newCreate(RevisionHistory revision, RevisionType revisionType,
-		Serializable entityId, RevisionTarget revisionTarget) {
+		 Serializable entityId, RevisionTarget revisionTarget) {
 		return RevisionHistoryDetail.builder()
-			.revision(revision)
-			.revisionType(revisionType)
-			.entityId(entityId)
-			.revisionTarget(revisionTarget)
-			.revisionEventStatus(RevisionEventStatus.WAIT)
-			.build();
+			 .revision(revision)
+			 .revisionType(revisionType)
+			 .entityId(entityId)
+			 .revisionTarget(revisionTarget)
+			 .revisionEventStatus(RevisionEventStatus.WAIT)
+			 .build();
 	}
 
 }

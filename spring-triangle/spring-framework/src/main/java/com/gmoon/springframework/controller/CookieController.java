@@ -22,7 +22,7 @@ public class CookieController {
 
 	@GetMapping("/create/{name}")
 	public String create(Model model, @PathVariable("name") String cookieName,
-		HttpServletResponse httpServletResponse) {
+		 HttpServletResponse httpServletResponse) {
 		log.info("create cookie start...");
 		String cookieValue = "data";
 		Cookie newCookie = new Cookie(cookieName, cookieValue);
@@ -48,11 +48,11 @@ public class CookieController {
 
 	@GetMapping("/req-info/{cookieName}")
 	public String httpServletRequestCookieInfo(Model model, HttpServletRequest httpServletRequest,
-		@PathVariable(value = "cookieName") String name) {
+		 @PathVariable(value = "cookieName") String name) {
 		Cookie cookie = Arrays.stream(httpServletRequest.getCookies())
-			.filter(requestCookie -> requestCookie.getName().equals(name))
-			.findFirst()
-			.orElseGet(() -> new Cookie(name, ""));
+			 .filter(requestCookie -> requestCookie.getName().equals(name))
+			 .findFirst()
+			 .orElseGet(() -> new Cookie(name, ""));
 
 		String value = cookie.getValue();
 		log.info("info cookie name: {}, value: {}", name, value);

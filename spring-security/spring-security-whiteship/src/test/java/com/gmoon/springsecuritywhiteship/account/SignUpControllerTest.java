@@ -31,7 +31,7 @@ class SignUpControllerTest {
 
 		// then
 		result.andExpect(status().isOk())
-			.andExpect(content().string(containsString("_csrf")));
+			 .andExpect(content().string(containsString("_csrf")));
 	}
 
 	@Test
@@ -39,9 +39,9 @@ class SignUpControllerTest {
 	void save_403_error_when_non_csrf_token() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(post(URL_OF_SIGNUP)
-				.param("username", RandomStringUtils.randomAlphanumeric(8))
-				.param("password", RandomStringUtils.randomAlphanumeric(8)))
-			.andDo(print());
+				  .param("username", RandomStringUtils.randomAlphanumeric(8))
+				  .param("password", RandomStringUtils.randomAlphanumeric(8)))
+			 .andDo(print());
 
 		// then
 		result.andExpect(status().is3xxRedirection());
@@ -52,10 +52,10 @@ class SignUpControllerTest {
 	void save() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(post(URL_OF_SIGNUP)
-				.param("username", RandomStringUtils.randomAlphanumeric(8))
-				.param("password", RandomStringUtils.randomAlphanumeric(8))
-				.with(csrf()))
-			.andDo(print());
+				  .param("username", RandomStringUtils.randomAlphanumeric(8))
+				  .param("password", RandomStringUtils.randomAlphanumeric(8))
+				  .with(csrf()))
+			 .andDo(print());
 
 		// then
 		result.andExpect(status().is3xxRedirection());

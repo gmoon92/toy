@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AccessLogRepository extends JpaRepository<AccessLog, String> {
 
 	List<AccessLog> findAllByUsername(String username);
+
 	List<AccessLog> findAllByAttemptDtBetween(LocalDateTime from, LocalDateTime to);
 }

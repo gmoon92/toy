@@ -9,9 +9,9 @@ public class PasswordUtils {
 
 	static {
 		DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(
-			DEFAULT_ENCODE.getId(),
-			PasswordEncoderHolder.ALL,
-			PasswordEncoderHolder.ID_PREFIX, PasswordEncoderHolder.ID_SUFFIX);
+			 DEFAULT_ENCODE.getId(),
+			 PasswordEncoderHolder.ALL,
+			 PasswordEncoderHolder.ID_PREFIX, PasswordEncoderHolder.ID_SUFFIX);
 		delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(DEFAULT_ENCODE.getValue());
 
 		PASSWORD_ENCODER = delegatingPasswordEncoder;

@@ -1,9 +1,9 @@
 package com.gmoon.springjpaspecs.books.book.domain.vo;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -14,7 +14,7 @@ class BookPriceTest {
 	@Test
 	void create() {
 		assertThatCode(() -> new BookPrice(BigDecimal.ZERO))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@ParameterizedTest
@@ -22,6 +22,6 @@ class BookPriceTest {
 	@NullSource
 	void error(BigDecimal price) {
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> new BookPrice(price));
+			 .isThrownBy(() -> new BookPrice(price));
 	}
 }

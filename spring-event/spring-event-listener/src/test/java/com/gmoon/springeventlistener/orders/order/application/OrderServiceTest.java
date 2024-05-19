@@ -31,41 +31,41 @@ class OrderServiceTest {
 	@Test
 	void complete() {
 		Order order = new Order(OrderStatus.ACCEPTED, user())
-			.addOrderItems(
-				orderLineItem(1, product("p1", 16_000)),
-				orderLineItem(1, product("p2", 36_000))
-			);
+			 .addOrderItems(
+				  orderLineItem(1, product("p1", 16_000)),
+				  orderLineItem(1, product("p2", 36_000))
+			 );
 
 		service.complete(order);
 
 		assertAll(
-			() -> assertThat(order.getId()).isNotBlank(),
-			() -> assertThat(order.getStatus()).isEqualTo(OrderStatus.COMPLETED)
+			 () -> assertThat(order.getId()).isNotBlank(),
+			 () -> assertThat(order.getStatus()).isEqualTo(OrderStatus.COMPLETED)
 		);
 		Awaitility.await()
-			.pollDelay(Duration.ofSeconds(1))
-			.atMost(Duration.ofSeconds(3))
-			.untilAsserted(() -> then(listener)
-				.should(times(1))
-				.syncOrderLines(any()));
+			 .pollDelay(Duration.ofSeconds(1))
+			 .atMost(Duration.ofSeconds(3))
+			 .untilAsserted(() -> then(listener)
+				  .should(times(1))
+				  .syncOrderLines(any()));
 	}
 
 	@DisplayName("프로덕션 코드 예외 발생시 리스너는 수행하지 않는다.")
 	@Test
 	void error1() {
 		Order order = new Order(OrderStatus.WAITE, user())
-			.addOrderItems(
-				orderLineItem(1, product("p1", 16_000)),
-				orderLineItem(1, product("p2", 36_000))
-			);
+			 .addOrderItems(
+				  orderLineItem(1, product("p1", 16_000)),
+				  orderLineItem(1, product("p2", 36_000))
+			 );
 
 		assertThatExceptionOfType(IllegalStateException.class)
-			.isThrownBy(() -> service.complete(order));
+			 .isThrownBy(() -> service.complete(order));
 		Awaitility.await()
-			.pollDelay(Duration.ofSeconds(1))
-			.atMost(Duration.ofSeconds(3))
-			.untilAsserted(() -> then(listener)
-				.should(never())
-				.syncOrderLines(any()));
+			 .pollDelay(Duration.ofSeconds(1))
+			 .atMost(Duration.ofSeconds(3))
+			 .untilAsserted(() -> then(listener)
+				  .should(never())
+				  .syncOrderLines(any()));
 	}
 }

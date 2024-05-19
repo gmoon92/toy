@@ -25,13 +25,13 @@ public class GroupUserController {
 	@GetMapping
 	public ResponseEntity<List<GroupUser>> find(String groupId) {
 		return ResponseEntity.ok()
-			.body(groupUserService.getGroupUsers(groupId));
+			 .body(groupUserService.getGroupUsers(groupId));
 	}
 
 	@DeleteMapping
 	public ResponseEntity<Void> delete(String groupId, String userId) {
 		groupUserService.delete(groupId, userId);
 		return ResponseEntity.ok()
-			.build();
+			 .build();
 	}
 }

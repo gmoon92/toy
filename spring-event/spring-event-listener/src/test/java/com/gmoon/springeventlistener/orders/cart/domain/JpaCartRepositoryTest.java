@@ -53,7 +53,7 @@ class JpaCartRepositoryTest extends SupportDataJpaTest {
 		Optional<Cart> cart = repository.findCartByUserIdAndProductNo(userId, productNo);
 
 		assertThatCode(() -> cart.orElseThrow(EntityNotFoundException::new))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@ExpectDelete
@@ -65,6 +65,6 @@ class JpaCartRepositoryTest extends SupportDataJpaTest {
 		repository.deleteAllByUserIdAndProductNo(userId, productNo);
 
 		assertThat(repository.findCartByUserIdAndProductNo(userId, productNo).isPresent())
-			.isFalse();
+			 .isFalse();
 	}
 }

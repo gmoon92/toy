@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class TeamServiceTest {
-	@Autowired TeamService service;
+	@Autowired
+	TeamService service;
 
 	@Test
 	void testGet() {

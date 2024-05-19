@@ -16,13 +16,13 @@ public class RedisUtils {
 		ClassLoader contextClassLoader = thread.getContextClassLoader();
 
 		return RedisCacheConfiguration.defaultCacheConfig(contextClassLoader)
-			.entryTtl(expireTtl)
-			.disableCachingNullValues()
-			.prefixCacheNameWith(CacheKeyPrefix.SEPARATOR)
-			.computePrefixWith(CacheKeyPrefix.simple())
-			.serializeKeysWith(RedisSerializationContext
-				.SerializationPair
-				.fromSerializer(getKeySerializer()));
+			 .entryTtl(expireTtl)
+			 .disableCachingNullValues()
+			 .prefixCacheNameWith(CacheKeyPrefix.SEPARATOR)
+			 .computePrefixWith(CacheKeyPrefix.simple())
+			 .serializeKeysWith(RedisSerializationContext
+				  .SerializationPair
+				  .fromSerializer(getKeySerializer()));
 	}
 
 	public StringRedisSerializer getKeySerializer() {

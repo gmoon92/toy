@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class EncryptedStringType
-	extends AbstractSingleColumnStandardBasicType<String>
-	implements DiscriminatorType<String> {
+	 extends AbstractSingleColumnStandardBasicType<String>
+	 implements DiscriminatorType<String> {
 
 	public EncryptedStringType() {
 		super(VarcharTypeDescriptor.INSTANCE, EncryptedStringTypeDescriptor.INSTANCE);

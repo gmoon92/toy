@@ -53,7 +53,7 @@ class RsaUtilsTest {
 
 		// then
 		assertThat(RsaUtils.decode(keyPair.getPrivateKey(), cipherText))
-			.isEqualTo(plainText);
+			 .isEqualTo(plainText);
 	}
 
 	@Test
@@ -93,7 +93,7 @@ class RsaUtilsTest {
 
 		@Test
 		@DisplayName("SHA-256 알고리즘으로 원본 데이터를 Hashing "
-			+ "이후 개인키로 암호화, Signature 생성")
+			 + "이후 개인키로 암호화, Signature 생성")
 		void testSign() {
 			// given
 			PrivateKey privateKey = keyPair.getPrivateKey();
@@ -105,7 +105,7 @@ class RsaUtilsTest {
 			// then
 			int sha256BitSize = 256;
 			assertThat(Base64Utils.decodeFromString(signature).length)
-				.isEqualTo(sha256BitSize);
+				 .isEqualTo(sha256BitSize);
 		}
 
 		@Test

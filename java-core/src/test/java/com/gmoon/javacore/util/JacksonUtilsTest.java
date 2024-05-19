@@ -21,7 +21,8 @@ import lombok.NoArgsConstructor;
 
 @JsonTest
 class JacksonUtilsTest {
-	@Autowired private JacksonTester<User> json;
+	@Autowired
+	private JacksonTester<User> json;
 
 	@Test
 	void testToString() {
@@ -43,7 +44,7 @@ class JacksonUtilsTest {
 		// when then
 		assertThat(json.write(user)).hasJsonPath("@.enabled");
 		assertThat(json.write(user)).extractingJsonPathStringValue("@.username")
-			.isEqualTo("gmoon");
+			 .isEqualTo("gmoon");
 	}
 
 	@Test
@@ -62,22 +63,23 @@ class JacksonUtilsTest {
 	void testToObject_TypeReference() {
 		// given
 		List<User> users = Arrays.asList(
-			User.create("gmoon"),
-			User.create("anonymous", false)
+			 User.create("gmoon"),
+			 User.create("anonymous", false)
 		);
 
 		String jsonString = JacksonUtils.toString(users);
 
 		// when
-		List<User> actual = JacksonUtils.toObject(jsonString, new TypeReference<List<User>>() {});
+		List<User> actual = JacksonUtils.toObject(jsonString, new TypeReference<List<User>>() {
+		});
 
 		// then
 		assertThat(actual)
-			.hasSize(2)
-			.containsExactly(
-				User.create("gmoon"),
-				User.create("anonymous", false)
-			);
+			 .hasSize(2)
+			 .containsExactly(
+				  User.create("gmoon"),
+				  User.create("anonymous", false)
+			 );
 	}
 
 	@Getter

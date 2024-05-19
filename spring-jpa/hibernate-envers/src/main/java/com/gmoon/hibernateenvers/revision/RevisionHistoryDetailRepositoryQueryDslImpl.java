@@ -13,6 +13,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+
 import com.gmoon.hibernateenvers.revision.domain.QRevisionHistory;
 import com.gmoon.hibernateenvers.revision.domain.QRevisionHistoryDetail;
 import com.gmoon.hibernateenvers.revision.domain.RevisionHistoryDetail;
@@ -20,16 +25,12 @@ import com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 import com.gmoon.hibernateenvers.revision.vo.QRevisionListVO_DataVO;
 import com.gmoon.hibernateenvers.revision.vo.RevisionListVO;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAUpdateClause;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslRepositorySupport
-	implements RevisionHistoryDetailRepositoryQueryDsl {
+	 implements RevisionHistoryDetailRepositoryQueryDsl {
 
 	private final EntityManager entityManager;
 
@@ -43,9 +44,9 @@ public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslReposit
 		QRevisionHistoryDetail qHistoryDetail = QRevisionHistoryDetail.revisionHistoryDetail;
 
 		new JPAUpdateClause(entityManager, qHistoryDetail)
-			.set(qHistoryDetail.revisionEventStatus, eventStatus)
-			.where(qHistoryDetail.id.eq(id))
-			.execute();
+			 .set(qHistoryDetail.revisionEventStatus, eventStatus)
+			 .where(qHistoryDetail.id.eq(id))
+			 .execute();
 	}
 
 	@Override
@@ -55,14 +56,14 @@ public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslReposit
 
 		JPAQuery<RevisionHistoryDetail> query = new JPAQuery(entityManager);
 		query.select(historyDetail)
-			.from(history)
-			.innerJoin(history.details, historyDetail)
-			.where(historyDetail.revision.id.eq(JPAExpressions.select(history.id.max())
-				.from(history)
-				.innerJoin(history.details, historyDetail)
-				.where(historyDetail.entityId.eq(detail.getEntityId())
-					.and(historyDetail.revisionTarget.eq(detail.getRevisionTarget()))
-					.and(historyDetail.revision.id.lt(detail.getRevision().getId())))));
+			 .from(history)
+			 .innerJoin(history.details, historyDetail)
+			 .where(historyDetail.revision.id.eq(JPAExpressions.select(history.id.max())
+				  .from(history)
+				  .innerJoin(history.details, historyDetail)
+				  .where(historyDetail.entityId.eq(detail.getEntityId())
+					   .and(historyDetail.revisionTarget.eq(detail.getRevisionTarget()))
+					   .and(historyDetail.revision.id.lt(detail.getRevision().getId())))));
 		return Optional.ofNullable(query.fetchOne());
 	}
 
@@ -72,10 +73,10 @@ public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslReposit
 
 		JPAQuery<RevisionHistoryDetail> query = new JPAQuery(entityManager);
 		return query.select(historyDetail)
-			.from(historyDetail)
-			.where(historyDetail.revision.id.eq(revisionNumber)
-				.and(historyDetail.revisionTarget.eq(target)))
-			.fetch();
+			 .from(historyDetail)
+			 .where(historyDetail.revision.id.eq(revisionNumber)
+				  .and(historyDetail.revisionTarget.eq(target)))
+			 .fetch();
 	}
 
 	@Override
@@ -87,14 +88,14 @@ public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslReposit
 
 		Pageable pageable = searchVO.getPageable();
 		query.select(new QRevisionListVO_DataVO(history.id, history.createdDt
-				, history.updatedBy, history.updatedByUsername
-				, historyDetail.revisionTarget, historyDetail.entityId
-				, historyDetail.targetMemberName))
-			.from(history)
-			.innerJoin(history.details, historyDetail)
-			.where(historyDetail.revisionEventStatus.eq(RevisionEventStatus.DIRTY_CHECKING)
-				.and(historyDetail.revisionType.eq(RevisionType.MOD))
-				.and(getSearchCondition(searchVO)));
+				  , history.updatedBy, history.updatedByUsername
+				  , historyDetail.revisionTarget, historyDetail.entityId
+				  , historyDetail.targetMemberName))
+			 .from(history)
+			 .innerJoin(history.details, historyDetail)
+			 .where(historyDetail.revisionEventStatus.eq(RevisionEventStatus.DIRTY_CHECKING)
+				  .and(historyDetail.revisionType.eq(RevisionType.MOD))
+				  .and(getSearchCondition(searchVO)));
 
 		List<RevisionListVO.DataVO> list = getQuerydsl().applyPagination(pageable, query).fetch();
 		return new PageImpl(list, pageable, query.fetchCount());

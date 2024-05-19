@@ -16,7 +16,8 @@ import com.gmoon.resourceserver.config.JpaConfig;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(JpaConfig.class)
 class CorsOriginRepositoryTest {
-	@Autowired CorsOriginRepository repository;
+	@Autowired
+	CorsOriginRepository repository;
 
 	@Test
 	void testGetAllHost() {
@@ -25,6 +26,6 @@ class CorsOriginRepositoryTest {
 
 		// then
 		assertThat(hosts)
-			.contains("localhost", "127.0.0.1", "gmoon92.github.io");
+			 .contains("localhost", "127.0.0.1", "gmoon92.github.io");
 	}
 }

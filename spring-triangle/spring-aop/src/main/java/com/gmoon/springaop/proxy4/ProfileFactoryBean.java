@@ -39,8 +39,8 @@ public class ProfileFactoryBean implements FactoryBean<Object> { // 생성할 �
 			profileHandler.setProfile(profile);
 			profileHandler.setPattern(pattern);
 			return Proxy.newProxyInstance(getClass().getClassLoader()
-				, new Class[] {serviceInterface}
-				, profileHandler);
+				 , new Class[] {serviceInterface}
+				 , profileHandler);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

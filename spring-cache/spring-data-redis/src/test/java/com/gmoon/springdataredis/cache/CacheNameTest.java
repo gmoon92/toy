@@ -9,6 +9,6 @@ class CacheNameTest {
 	void testGetAll() {
 		// when then
 		assertThat(CacheName.getAll())
-			.hasSize(CacheName.values().length);
+			 .hasSize(CacheName.values().length);
 	}
 }

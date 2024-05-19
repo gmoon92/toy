@@ -5,11 +5,12 @@ import java.util.Date;
 
 import org.springframework.data.domain.Sort;
 
+import com.querydsl.core.annotations.QueryProjection;
+
 import com.gmoon.hibernateenvers.global.annotation.TODO;
 import com.gmoon.hibernateenvers.global.utils.RevisionConverter;
 import com.gmoon.hibernateenvers.global.vo.BaseSearchVO;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
-import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -65,7 +66,7 @@ public class RevisionListVO {
 
 		@QueryProjection
 		public DataVO(Long rev, Date revDate, String memberId, String memberName, RevisionTarget revisionTarget,
-			byte[] entityId, String targetMemberName) {
+			 byte[] entityId, String targetMemberName) {
 			this.rev = rev;
 			this.revDate = revDate;
 			this.memberId = memberId;

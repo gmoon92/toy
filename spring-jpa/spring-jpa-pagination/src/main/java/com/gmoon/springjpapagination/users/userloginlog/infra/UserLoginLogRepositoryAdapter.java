@@ -44,7 +44,7 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 	@Override
 	public UserLoginLog get(String id) {
 		return repository.findById(id)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 	}
 
 	@Override
@@ -53,15 +53,15 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 		Order cursorOrder = Order.DESC;
 
 		JPAQuery<UserLoginLogListVO.Data> query = factory
-			.select(
-				new QUserLoginLogListVO_Data(userLoginLog.username, userLoginLog.accessDevice,
-					userLoginLog.attemptIp, userLoginLog.succeed,
-					cursor())
-			)
-			.from(userLoginLog)
-			.where(cursorPagination(cursor, cursorOrder))
-			.orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
-			.limit(listVO.getPageSize());
+			 .select(
+				  new QUserLoginLogListVO_Data(userLoginLog.username, userLoginLog.accessDevice,
+					   userLoginLog.attemptIp, userLoginLog.succeed,
+					   cursor())
+			 )
+			 .from(userLoginLog)
+			 .where(cursorPagination(cursor, cursorOrder))
+			 .orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
+			 .limit(listVO.getPageSize());
 
 		List<UserLoginLogListVO.Data> list = query.fetch();
 		listVO.setList(list);
@@ -74,17 +74,17 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 
 	private boolean hasNextPage(String cursor, Order cursorOrder) {
 		return factory.selectOne()
-			.from(userLoginLog)
-			.where(cursorPagination(cursor, cursorOrder))
-			.orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
-			.fetchOne() != null;
+			 .from(userLoginLog)
+			 .where(cursorPagination(cursor, cursorOrder))
+			 .orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
+			 .fetchOne() != null;
 	}
 
 	private String getLastRowCursor(List<UserLoginLogListVO.Data> list) {
 		return list.stream()
-			.map(UserLoginLogListVO.Data::getCursor)
-			.reduce((data, other) -> other)
-			.orElse(CursorPagination.EMPTY_CURSOR);
+			 .map(UserLoginLogListVO.Data::getCursor)
+			 .reduce((data, other) -> other)
+			 .orElse(CursorPagination.EMPTY_CURSOR);
 	}
 
 	private BooleanExpression cursorPagination(String cursor, Order cursorOrder) {

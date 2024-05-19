@@ -17,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @DataJpaTest(
-	includeFilters = @ComponentScan.Filter(
-		type = FilterType.ASSIGNABLE_TYPE,
-		value = {
-			JpaConfig.class,
-			UserLoginLogRepositoryAdapter.class
-		}
-	)
+	 includeFilters = @ComponentScan.Filter(
+		  type = FilterType.ASSIGNABLE_TYPE,
+		  value = {
+			   JpaConfig.class,
+			   UserLoginLogRepositoryAdapter.class
+		  }
+	 )
 )
 class UserLoginLogRepositoryTest {
 

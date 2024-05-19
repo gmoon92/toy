@@ -23,7 +23,7 @@ public class CompanyProduct extends Product {
 	}
 
 	public static CompanyProduct create(ProductType productType, Double price, Currency currency) {
-		return (CompanyProduct) new CompanyProduct(productType)
-			.withPrice(price, currency);
+		return (CompanyProduct)new CompanyProduct(productType)
+			 .withPrice(price, currency);
 	}
 }

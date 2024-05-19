@@ -14,14 +14,14 @@ public final class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 	public static Date min() {
 		LocalDate localDate = LocalDate.of(MIN_YEAR, 1, 1);
 		Instant instant = localDate.atStartOfDay(ZoneId.systemDefault())
-			.toInstant();
+			 .toInstant();
 		return Date.from(instant);
 	}
 
 	public static Date max() {
 		LocalDate localDate = LocalDate.of(MAX_YEAR, 12, 31);
 		Instant instant = localDate.atStartOfDay(ZoneId.systemDefault())
-			.toInstant();
+			 .toInstant();
 		return Date.from(instant);
 	}
 

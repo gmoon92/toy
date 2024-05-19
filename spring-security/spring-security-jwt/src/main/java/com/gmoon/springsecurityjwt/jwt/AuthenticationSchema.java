@@ -24,7 +24,7 @@ public enum AuthenticationSchema {
 	VAPID("vapid");
 
 	private static final Map<String, AuthenticationSchema> MAP = Collections.unmodifiableMap(Stream.of(values())
-		.collect(Collectors.toMap(AuthenticationSchema::getName, Function.identity())));
+		 .collect(Collectors.toMap(AuthenticationSchema::getName, Function.identity())));
 
 	private final String name;
 

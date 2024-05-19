@@ -30,11 +30,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @DataJpaTest(
-	includeFilters = @ComponentScan.Filter(
-		type = FilterType.ASSIGNABLE_TYPE, classes = {
-		JpaConfig.class,
-		MovieRepositoryAdapter.class
-	})
+	 includeFilters = @ComponentScan.Filter(
+		  type = FilterType.ASSIGNABLE_TYPE, classes = {
+		  JpaConfig.class,
+		  MovieRepositoryAdapter.class
+	 })
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class QueryProjectionsTest {
@@ -56,18 +56,18 @@ public class QueryProjectionsTest {
 	@Test
 	void bean() {
 		MovieDTO result = queryFactory
-			.select(
-				Projections.bean(
-					MovieDTO.class,
-					movie.id,
-					// movie.name, // 타깃 객체에 setName 필요.
-					Expressions.as(movie.name, "movieName"),
-					movie.genre
-				)
-			)
-			.from(movie)
-			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
-			.fetchFirst();
+			 .select(
+				  Projections.bean(
+					   MovieDTO.class,
+					   movie.id,
+					   // movie.name, // 타깃 객체에 setName 필요.
+					   Expressions.as(movie.name, "movieName"),
+					   movie.genre
+				  )
+			 )
+			 .from(movie)
+			 .where(movie.id.eq(Fixtures.MOVIE_ID_001))
+			 .fetchFirst();
 
 		assertThat(result.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
 		assertThat(result.getMovieName()).isEqualTo("범죄도시4");
@@ -78,17 +78,17 @@ public class QueryProjectionsTest {
 	@Test
 	void fields() {
 		MovieDTO result = queryFactory
-			.select(
-				Projections.fields(
-					MovieDTO.class,
-					movie.id,
-					Expressions.as(movie.name, "movieName"),
-					movie.genre
-				)
-			)
-			.from(movie)
-			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
-			.fetchFirst();
+			 .select(
+				  Projections.fields(
+					   MovieDTO.class,
+					   movie.id,
+					   Expressions.as(movie.name, "movieName"),
+					   movie.genre
+				  )
+			 )
+			 .from(movie)
+			 .where(movie.id.eq(Fixtures.MOVIE_ID_001))
+			 .fetchFirst();
 
 		assertThat(result.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
 		assertThat(result.getMovieName()).isEqualTo("범죄도시4");
@@ -99,17 +99,17 @@ public class QueryProjectionsTest {
 	@Test
 	void constructor() {
 		MovieDTO result = queryFactory
-			.select(
-				Projections.constructor(
-					MovieDTO.class,
-					movie.id,
-					movie.name,
-					movie.genre
-				)
-			)
-			.from(movie)
-			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
-			.fetchFirst();
+			 .select(
+				  Projections.constructor(
+					   MovieDTO.class,
+					   movie.id,
+					   movie.name,
+					   movie.genre
+				  )
+			 )
+			 .from(movie)
+			 .where(movie.id.eq(Fixtures.MOVIE_ID_001))
+			 .fetchFirst();
 
 		assertThat(result.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
 		assertThat(result.getMovieName()).isEqualTo("범죄도시4");
@@ -119,19 +119,19 @@ public class QueryProjectionsTest {
 	@Test
 	void queryProjectionsAnnotation() {
 		MovieResponse response = queryFactory
-			.select(
-				new QMovieResponse(
-					movie.id,
-					movie.name,
-					movie.genre,
-					movie.filmRatings,
-					movie.director.director.name,
-					movie.releaseTime
-				)
-			)
-			.from(movie)
-			.where(movie.id.eq(Fixtures.MOVIE_ID_001))
-			.fetchFirst();
+			 .select(
+				  new QMovieResponse(
+					   movie.id,
+					   movie.name,
+					   movie.genre,
+					   movie.filmRatings,
+					   movie.director.director.name,
+					   movie.releaseTime
+				  )
+			 )
+			 .from(movie)
+			 .where(movie.id.eq(Fixtures.MOVIE_ID_001))
+			 .fetchFirst();
 
 		assertThat(response.getId()).isEqualTo(Fixtures.MOVIE_ID_001);
 		assertThat(response.getMovieName()).isEqualTo("범죄도시4");

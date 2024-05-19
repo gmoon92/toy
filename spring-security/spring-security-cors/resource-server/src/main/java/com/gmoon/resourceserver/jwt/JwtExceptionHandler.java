@@ -26,18 +26,23 @@ public class JwtExceptionHandler implements AuthenticationEntryPoint, AccessDeni
 	private final MappingJackson2HttpMessageConverter jacksonConverter;
 
 	@Override
-	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws
+		 IOException,
+		 ServletException {
 		log.warn("unauthorized exception.", e);
 		writeJsonResponse(response, e, HttpStatus.UNAUTHORIZED);
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws
+		 IOException,
+		 ServletException {
 		log.warn("authorization exception.", e);
 		writeJsonResponse(response, e, HttpStatus.FORBIDDEN);
 	}
 
-	private void writeJsonResponse(HttpServletResponse response, Throwable e, HttpStatus httpStatus) throws IOException {
+	private void writeJsonResponse(HttpServletResponse response, Throwable e, HttpStatus httpStatus) throws
+		 IOException {
 		response.setStatus(httpStatus.value());
 
 		Map<String, Object> body = new HashMap<>();

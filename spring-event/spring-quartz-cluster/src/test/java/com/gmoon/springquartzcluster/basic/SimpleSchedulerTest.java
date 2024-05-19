@@ -39,7 +39,7 @@ class SimpleSchedulerTest {
 
 	@Test
 	@DisplayName("스케쥴러에 실행될 `Job`은 " +
-		"`JobDataMap`을 통해 필요한 데이터를 접근할 수 있다.")
+		 "`JobDataMap`을 통해 필요한 데이터를 접근할 수 있다.")
 	void jobDataMapOfJobDetail() throws SchedulerException {
 		// given
 		JobDataMap dataMap = new JobDataMap();
@@ -57,8 +57,8 @@ class SimpleSchedulerTest {
 
 	@Test
 	@DisplayName("`Trigger`에 우선 순위(priority, default 5)를 지정할 수 있다." +
-		"만약 스케쥴러가 실행될 수 없을 경우(Thread 자원이 없을 경우), " +
-		"우선 순위 가장 높은 `Job`이 실행된다.")
+		 "만약 스케쥴러가 실행될 수 없을 경우(Thread 자원이 없을 경우), " +
+		 "우선 순위 가장 높은 `Job`이 실행된다.")
 	void priorityOfTrigger() throws SchedulerException {
 		// given
 		JobDataMap dataMap = new JobDataMap();
@@ -73,12 +73,12 @@ class SimpleSchedulerTest {
 	}
 
 	private void addJob(Class<? extends Job> jobClass, String nameOfGroup,
-		JobDataMap dataMap) {
+		 JobDataMap dataMap) {
 		addJob(jobClass, nameOfGroup, dataMap, MIN_OF_PRIORITY);
 	}
 
 	private void addJob(Class<? extends Job> jobClass, String nameOfGroup,
-		JobDataMap dataMap, Integer priority) {
+		 JobDataMap dataMap, Integer priority) {
 		JobKey jobKey = createJobKey(jobClass, nameOfGroup);
 		JobDetail jobDetail = createJobDetail(jobClass, jobKey, dataMap);
 		Trigger trigger = createTrigger(jobKey, priority);
@@ -97,24 +97,24 @@ class SimpleSchedulerTest {
 
 	private JobDetail createJobDetail(Class<? extends Job> jobClass, JobKey jobKey, JobDataMap dataMap) {
 		return JobBuilder.newJob(jobClass)
-			.withIdentity(jobKey)
-			.usingJobData(dataMap)
-			.build();
+			 .withIdentity(jobKey)
+			 .usingJobData(dataMap)
+			 .build();
 	}
 
 	private Trigger createTrigger(JobKey jobKey, Integer priority) {
 		String nameOfTrigger = String.format("trigger_%s", jobKey.getName());
 		return TriggerBuilder.newTrigger()
-			.withIdentity(nameOfTrigger, jobKey.getGroup())
-			.withPriority(priority)
-			.withSchedule(getSchedulerBuilder())
-			.startNow()
-			.build();
+			 .withIdentity(nameOfTrigger, jobKey.getGroup())
+			 .withPriority(priority)
+			 .withSchedule(getSchedulerBuilder())
+			 .startNow()
+			 .build();
 	}
 
 	private SimpleScheduleBuilder getSchedulerBuilder() {
 		return SimpleScheduleBuilder.simpleSchedule()
-			.withIntervalInSeconds(SECONDS_OF_INTERVAL)
-			.repeatForever();
+			 .withIntervalInSeconds(SECONDS_OF_INTERVAL)
+			 .repeatForever();
 	}
 }

@@ -20,6 +20,6 @@ class CollectionUtilsTest {
 
 		// then
 		assertThat(minSize)
-			.isEqualTo(2);
+			 .isEqualTo(2);
 	}
 }

@@ -59,11 +59,11 @@ public class AmqpUtils {
 	private String declarePersistenceQueue(String name) {
 		try {
 			Queue queue = new Queue(
-				name,
-				true,
-				false,
-				false,
-				getQueueArguments()
+				 name,
+				 true,
+				 false,
+				 false,
+				 getQueueArguments()
 			);
 			return amqpAdmin.declareQueue(queue);
 		} catch (Exception e) {

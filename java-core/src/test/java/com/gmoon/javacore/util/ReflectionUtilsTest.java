@@ -35,7 +35,7 @@ class ReflectionUtilsTest {
 	@Test
 	void newInstance() {
 		assertThat(ReflectionUtils.newInstance(ModifierPrivateClass.class))
-			.isNotNull();
+			 .isNotNull();
 	}
 
 	static class ModifierPrivateClass {
@@ -48,14 +48,14 @@ class ReflectionUtilsTest {
 	@Test
 	void getDeclaredAnnotationClasses() {
 		Set<Class<?>> declaredAnnotationClasses = ReflectionUtils.getDeclaredAnnotationClasses(
-			Entity.class,
-			Repository.class
+			 Entity.class,
+			 Repository.class
 		);
 
 		log.info("declared: {}", declaredAnnotationClasses);
 		assertThat(declaredAnnotationClasses)
-			.isInstanceOf(Set.class)
-			.contains(User.class, Favorites.class, UserRepository.class);
+			 .isInstanceOf(Set.class)
+			 .contains(User.class, Favorites.class, UserRepository.class);
 	}
 
 	@DisplayName("지정된 어노테이션이 선언된 필드 목록 조회")
@@ -70,15 +70,15 @@ class ReflectionUtilsTest {
 
 		// then
 		assertThat(ids)
-			.isNotEmpty()
-			.allMatch(
-				field -> Stream.of(annotations)
-					.anyMatch(clazz -> field.getAnnotation(clazz) != null)
-			);
+			 .isNotEmpty()
+			 .allMatch(
+				  field -> Stream.of(annotations)
+					   .anyMatch(clazz -> field.getAnnotation(clazz) != null)
+			 );
 	}
 
 	@DisplayName("현 클래스에 선언된 애노테이션 필드가 없다면" +
-		"재귀 방식으로 상위 클래스 필드 조회")
+		 "재귀 방식으로 상위 클래스 필드 조회")
 	@Test
 	void getDeclaredAnnotationFieldsByUsingRecursive() {
 		// given
@@ -90,9 +90,9 @@ class ReflectionUtilsTest {
 
 		// then
 		assertThat(fields)
-			.isNotEmpty()
-			.map(field -> ReflectionUtils.existsDeclaredAnnotation(field, annotations))
-			.containsExactly(Boolean.TRUE);
+			 .isNotEmpty()
+			 .map(field -> ReflectionUtils.existsDeclaredAnnotation(field, annotations))
+			 .containsExactly(Boolean.TRUE);
 	}
 
 	@DisplayName("지정된 private 필드 값 검증")
@@ -127,19 +127,19 @@ class ReflectionUtilsTest {
 		}
 
 		@DisplayName("제네릭 클래스를 찾을 수 없을 경우 "
-			+ "예외가 발생한다.")
+			 + "예외가 발생한다.")
 		@Test
 		void error1() {
 			assertThatExceptionOfType(NotFoundGenericTypeClassException.class)
-				.isThrownBy(() -> extractGenericType(NonSuperClassAndImplementClass.class, GenericInterface.class, 0));
+				 .isThrownBy(() -> extractGenericType(NonSuperClassAndImplementClass.class, GenericInterface.class, 0));
 		}
 
 		@DisplayName("제네릭 타입 인덱스가 잘못된 경우 "
-			+ "예외가 발생한다.")
+			 + "예외가 발생한다.")
 		@Test
 		void error2() {
 			assertThatExceptionOfType(IndexOutOfBoundsException.class)
-				.isThrownBy(() -> extractGenericType(SuperClass.class, AbstractGeneric.class, 1));
+				 .isThrownBy(() -> extractGenericType(SuperClass.class, AbstractGeneric.class, 1));
 		}
 	}
 
@@ -148,9 +148,9 @@ class ReflectionUtilsTest {
 
 	static Stream<Arguments> extractGenericTypeProvider() {
 		return Stream.of(
-			Arguments.of(SuperClass.class, AbstractGeneric.class, UUID.class),
-			Arguments.of(ImplementClass.class, GenericInterface.class, Integer.class),
-			Arguments.of(EnumClass.class, GenericInterface.class, String.class)
+			 Arguments.of(SuperClass.class, AbstractGeneric.class, UUID.class),
+			 Arguments.of(ImplementClass.class, GenericInterface.class, Integer.class),
+			 Arguments.of(EnumClass.class, GenericInterface.class, String.class)
 		);
 	}
 

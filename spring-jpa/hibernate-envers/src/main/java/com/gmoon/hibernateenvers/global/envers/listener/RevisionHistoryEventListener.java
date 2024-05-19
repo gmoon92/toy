@@ -77,9 +77,9 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 	}
 
 	private RevisionEventStatus getEventStatus(RevisionTarget target, Object auditedEntity,
-		Optional<Object> maybePreAuditedEntity) {
+		 Optional<Object> maybePreAuditedEntity) {
 		if (maybePreAuditedEntity.isPresent()
-			&& isNotChanged(target, auditedEntity, maybePreAuditedEntity.get())) {
+			 && isNotChanged(target, auditedEntity, maybePreAuditedEntity.get())) {
 			return UNCHANGED;
 		} else {
 			return RevisionEventStatus.DIRTY_CHECKING;
@@ -101,9 +101,9 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 			transaction.commit();
 		} catch (Exception ex) {
 			log.warn(
-				String.format("[Error] Update RevisionModifiedEntity id : %s, target : %s, entityId : %s", id,
-					eventStatus),
-				ex);
+				 String.format("[Error] Update RevisionModifiedEntity id : %s, target : %s, entityId : %s", id,
+					  eventStatus),
+				 ex);
 			transaction.rollback();
 		}
 	}

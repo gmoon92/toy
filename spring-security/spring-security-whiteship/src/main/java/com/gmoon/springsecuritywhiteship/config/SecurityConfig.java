@@ -88,7 +88,7 @@ public class SecurityConfig {
 		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
 		// Admin 계정은 User 계정도 볼 수 있다.
 		roleHierarchy.setHierarchy(
-			String.format("%s > %s", AccountRole.ADMIN.getAuthority(), AccountRole.USER.getAuthority()));
+			 String.format("%s > %s", AccountRole.ADMIN.getAuthority(), AccountRole.USER.getAuthority()));
 
 		DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
 		handler.setRoleHierarchy(roleHierarchy);
@@ -99,73 +99,73 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
-			// [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
-			.authorizeRequests(request ->
-				request
-					.mvcMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
-					.mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
-					.mvcMatchers("/user").hasRole(AccountRole.USER.getRole())
-					.antMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
-					.anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
-					//            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
-					.expressionHandler(customExpressionHandler()) // 커스텀 2. expression handler
-			)
+			 // [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
+			 .authorizeRequests(request ->
+				  request
+					   .mvcMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
+					   .mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
+					   .mvcMatchers("/user").hasRole(AccountRole.USER.getRole())
+					   .antMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
+					   .anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
+					   //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
+					   .expressionHandler(customExpressionHandler()) // 커스텀 2. expression handler
+			 )
 
-			// https://www.baeldung.com/spring-security-custom-access-denied-page
-			// ExceptionTranslationFilter
-			.exceptionHandling(this::exceptionHandling)
+			 // https://www.baeldung.com/spring-security-custom-access-denied-page
+			 // ExceptionTranslationFilter
+			 .exceptionHandling(this::exceptionHandling)
 
-			// [2] form login 설정
-			.formLogin(config ->
-				config.loginPage("/login")
-					.usernameParameter("id")
-					.passwordParameter("password")
-					.permitAll()
-			)
+			 // [2] form login 설정
+			 .formLogin(config ->
+				  config.loginPage("/login")
+					   .usernameParameter("id")
+					   .passwordParameter("password")
+					   .permitAll()
+			 )
 
-			// [3] logout
-			.logout(config ->
-					config.logoutUrl("/logout") // logout page config
-						.logoutSuccessUrl("/login") // logout success event after page
-				// .logoutSuccessHandler() // custom logout success handler add
-				// .addLogoutHandler() // custom logout handler add
-				// .deleteCookies() // cookie login auth
-			)
+			 // [3] logout
+			 .logout(config ->
+					   config.logoutUrl("/logout") // logout page config
+							.logoutSuccessUrl("/login") // logout success event after page
+				  // .logoutSuccessHandler() // custom logout success handler add
+				  // .addLogoutHandler() // custom logout handler add
+				  // .deleteCookies() // cookie login auth
+			 )
 
-			// [4] anonymous config
-			// .anonymous(config ->
-			// 	config.principal("anonymousUser")
-			// 		.authorities()
-			// 		.key("anonymousUserKey1")
-			// )
+			 // [4] anonymous config
+			 // .anonymous(config ->
+			 // 	config.principal("anonymousUser")
+			 // 		.authorities()
+			 // 		.key("anonymousUserKey1")
+			 // )
 
-			/**
-			 * @see SessionManagementConfigurer
-			 * */
-			// Session fixation
-			// .sessionManagement(config ->
-			// 	config
-			// 		.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-			// 		.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
-			// 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession)
-			// 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)
-			// 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::none)
-			// 		// .invalidSessionUrl("/login")
-			// 		.maximumSessions(1) // 동시성 제어
-			// 		.maxSessionsPreventsLogin(true)
-			// )
+			 /**
+			  * @see SessionManagementConfigurer
+			  * */
+			 // Session fixation
+			 // .sessionManagement(config ->
+			 // 	config
+			 // 		.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+			 // 		.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
+			 // 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession)
+			 // 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::newSession)
+			 // 		// .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::none)
+			 // 		// .invalidSessionUrl("/login")
+			 // 		.maximumSessions(1) // 동시성 제어
+			 // 		.maxSessionsPreventsLogin(true)
+			 // )
 
-			// remember me config
-			.rememberMe(config ->
-				config
-					// .useSecureCookie(true) // https 적용 후 true 권장
-					.userDetailsService(accountService)
-					.key("remember-me-sample")
-			)
+			 // remember me config
+			 .rememberMe(config ->
+				  config
+					   // .useSecureCookie(true) // https 적용 후 true 권장
+					   .userDetailsService(accountService)
+					   .key("remember-me-sample")
+			 )
 
-			// https://www.baeldung.com/spring-security-basic-authentication
-			.httpBasic(Customizer.withDefaults())
-			.build();
+			 // https://www.baeldung.com/spring-security-basic-authentication
+			 .httpBasic(Customizer.withDefaults())
+			 .build();
 	}
 
 	@Bean
@@ -195,16 +195,16 @@ public class SecurityConfig {
 
 	private void exceptionHandling(ExceptionHandlingConfigurer<HttpSecurity> configurer) {
 		configurer
-			// .accessDeniedPage("/access-denied")
-			.accessDeniedHandler((request, response, accessDeniedException) -> {
-				SecurityContext context = SecurityContextHolder.getContext();
-				Authentication authentication = context.getAuthentication();
-				if (authentication != null) {
-					UserDetails user = (UserDetails)authentication.getPrincipal();
-					String username = user.getUsername();
-					log.info("user : {} dined to access {}", username, request.getRequestURI());
-				}
-				response.sendRedirect("/access-denied");
-			});
+			 // .accessDeniedPage("/access-denied")
+			 .accessDeniedHandler((request, response, accessDeniedException) -> {
+				 SecurityContext context = SecurityContextHolder.getContext();
+				 Authentication authentication = context.getAuthentication();
+				 if (authentication != null) {
+					 UserDetails user = (UserDetails)authentication.getPrincipal();
+					 String username = user.getUsername();
+					 log.info("user : {} dined to access {}", username, request.getRequestURI());
+				 }
+				 response.sendRedirect("/access-denied");
+			 });
 	}
 }

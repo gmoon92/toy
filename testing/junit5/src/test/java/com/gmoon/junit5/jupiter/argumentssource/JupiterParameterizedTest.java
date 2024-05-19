@@ -1,22 +1,16 @@
 package com.gmoon.junit5.jupiter.argumentssource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assumptions.assumingThat;
-import static org.mockito.Mockito.when;
-import com.gmoon.junit5.jupiter.argumentssource.aggregator.MemberAggregator;
-import com.gmoon.junit5.jupiter.argumentssource.annotation.NegativeNumbers;
-import com.gmoon.junit5.jupiter.argumentssource.converter.ToStringArgumentConverter;
-import com.gmoon.junit5.member.Member;
-import com.gmoon.junit5.member.MemberRepository;
-import com.gmoon.junit5.member.MemberService;
-import com.gmoon.junit5.member.Role;
-import com.gmoon.junit5.member.SystemException;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
+import static org.mockito.Mockito.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +32,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.gmoon.junit5.jupiter.argumentssource.aggregator.MemberAggregator;
+import com.gmoon.junit5.jupiter.argumentssource.annotation.NegativeNumbers;
+import com.gmoon.junit5.jupiter.argumentssource.converter.ToStringArgumentConverter;
+import com.gmoon.junit5.member.Member;
+import com.gmoon.junit5.member.MemberRepository;
+import com.gmoon.junit5.member.MemberService;
+import com.gmoon.junit5.member.Role;
+import com.gmoon.junit5.member.SystemException;
+
 /**
  * {@link org.junit.jupiter.params.provider.ArgumentsSource}
  * {@link org.junit.jupiter.params.provider.ArgumentsProvider}
@@ -53,30 +56,30 @@ class JupiterParameterizedTest {
 	@CsvFileSource(resources = "/user.csv", delimiter = '|', numLinesToSkip = 1)
 	void csvFilesSource(String userName, Boolean enabled) {
 		assumingThat(Boolean.TRUE == enabled,
-			() -> assertThat(userName).isEqualTo("gmoon")
+			 () -> assertThat(userName).isEqualTo("gmoon")
 		);
 
 		assumingThat(Boolean.FALSE == enabled,
-			() -> assertThat(userName)
-				.containsAnyOf("guest", "super, moon")
+			 () -> assertThat(userName)
+				  .containsAnyOf("guest", "super, moon")
 		);
 	}
 
 	@DisplayName("사원 CSV 데이터 검증")
 	@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
 	@CsvSource(value = {
-		"gmoon|true",
-		"'super, moon'|false",
-		"guest|false"
+		 "gmoon|true",
+		 "'super, moon'|false",
+		 "guest|false"
 	}, delimiter = '|')
 	void csvSource(String userName, Boolean enabled) {
 		assumingThat(Boolean.TRUE == enabled,
-			() -> assertThat(userName).isEqualTo("gmoon")
+			 () -> assertThat(userName).isEqualTo("gmoon")
 		);
 
 		assumingThat(Boolean.FALSE == enabled,
-			() -> assertThat(userName)
-				.containsAnyOf("guest", "super, moon")
+			 () -> assertThat(userName)
+				  .containsAnyOf("guest", "super, moon")
 		);
 	}
 
@@ -89,7 +92,7 @@ class JupiterParameterizedTest {
 
 		// when then
 		assertThat(Role.ALL.get(value))
-			.isEqualTo(role);
+			 .isEqualTo(role);
 	}
 
 	@DisplayName("Null 인수 테스트")
@@ -151,25 +154,26 @@ class JupiterParameterizedTest {
 
 		@DisplayName("값 인수 테스트")
 		@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
-		@ValueSource(ints = { 1, 2, 3 })
+		@ValueSource(ints = {1, 2, 3})
 		void case1(int actual) {
 			assertThat(actual > 0 && actual < 4).isTrue();
 		}
 
 		@DisplayName("예외 클래스 테스트")
 		@ParameterizedTest(name = "{displayName}[{index}] - {argumentsWithNames}")
-		@ValueSource(classes = { IllegalArgumentException.class, EntityNotFoundException.class, PersistenceException.class })
+		@ValueSource(classes = {IllegalArgumentException.class, EntityNotFoundException.class,
+			 PersistenceException.class})
 		void case2(Class<? extends RuntimeException> exception) {
 			// given
 			Long memberId = 0L;
 
 			// when
 			when(memberRepository.findById(memberId))
-				.thenThrow(exception);
+				 .thenThrow(exception);
 
 			// then
 			assertThatThrownBy(() -> memberService.disable(memberId))
-				.isInstanceOf(SystemException.class);
+				 .isInstanceOf(SystemException.class);
 		}
 	}
 
@@ -198,8 +202,8 @@ class JupiterParameterizedTest {
 
 	static Stream<Arguments> userProvider() {
 		return Stream.of(
-			Arguments.of("gmoon", Role.ADMIN, true),
-			Arguments.of("guest", Role.USER, false)
+			 Arguments.of("gmoon", Role.ADMIN, true),
+			 Arguments.of("guest", Role.USER, false)
 		);
 	}
 
@@ -234,7 +238,7 @@ class JupiterParameterizedTest {
 	@EnumSource(Role.class)
 	void enumSourceWithConvert(@ConvertWith(ToStringArgumentConverter.class) String roleName) {
 		assertThat(Role.valueOf(roleName))
-			.isNotNull();
+			 .isNotNull();
 	}
 
 	@DisplayName("커스텀 음수 어노테이션 테스트")

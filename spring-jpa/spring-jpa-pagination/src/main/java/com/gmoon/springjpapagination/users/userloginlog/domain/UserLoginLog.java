@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "lt_user_login", indexes = {
-	@Index(name = "idx_username", columnList = "username"),
-	@Index(name = "idx_attempt_dt", columnList = "attempt_dt")
+	 @Index(name = "idx_username", columnList = "username"),
+	 @Index(name = "idx_attempt_dt", columnList = "attempt_dt")
 })
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -58,7 +58,7 @@ public class UserLoginLog implements Serializable {
 
 	@Builder
 	private UserLoginLog(String username, AccessDevice accessDevice, String attemptIp,
-		LocalDateTime attemptDt, Boolean succeed) {
+		 LocalDateTime attemptDt, Boolean succeed) {
 		this.id = id;
 		this.username = username;
 		this.accessDevice = accessDevice;

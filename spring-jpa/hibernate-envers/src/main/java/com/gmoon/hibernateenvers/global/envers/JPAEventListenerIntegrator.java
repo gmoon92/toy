@@ -18,8 +18,8 @@ public class JPAEventListenerIntegrator implements Integrator {
 
 	@Override
 	public void integrate(Metadata metadata,
-		SessionFactoryImplementor sessionFactory,
-		SessionFactoryServiceRegistry serviceRegistry) {
+		 SessionFactoryImplementor sessionFactory,
+		 SessionFactoryServiceRegistry serviceRegistry) {
 		final EventListenerRegistry listenerRegistry = serviceRegistry.getService(EventListenerRegistry.class);
 		EntityManager em = sessionFactory.createEntityManager();
 		listenerRegistry.appendListeners(EventType.POST_COMMIT_INSERT, new RevisionHistoryEventListener(em));
@@ -27,7 +27,7 @@ public class JPAEventListenerIntegrator implements Integrator {
 
 	@Override
 	public void disintegrate(SessionFactoryImplementor sessionFactoryImplementor,
-		SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+		 SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
 
 	}
 }

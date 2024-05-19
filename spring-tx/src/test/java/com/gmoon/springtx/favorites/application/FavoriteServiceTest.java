@@ -21,6 +21,6 @@ class FavoriteServiceTest {
 		String userId = Fixtures.USER_ID;
 
 		assertThatThrownBy(() -> service.delete(userId))
-			.isInstanceOf(RuntimeException.class);
+			 .isInstanceOf(RuntimeException.class);
 	}
 }

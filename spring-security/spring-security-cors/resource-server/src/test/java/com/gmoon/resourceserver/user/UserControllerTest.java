@@ -22,16 +22,17 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 class UserControllerTest {
-	@Autowired WebApplicationContext context;
+	@Autowired
+	WebApplicationContext context;
 
 	MockMvc mockMvc;
 
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.apply(springSecurity())
-			.alwaysDo(print())
-			.build();
+			 .apply(springSecurity())
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	@Test
@@ -64,10 +65,10 @@ class UserControllerTest {
 
 	private ResultActions postLogin(String username, String password) throws Exception {
 		return mockMvc.perform(post("/login")
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON)
-			.characterEncoding(StandardCharsets.UTF_8)
-			.param("username", username)
-			.param("password", password));
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON)
+			 .characterEncoding(StandardCharsets.UTF_8)
+			 .param("username", username)
+			 .param("password", password));
 	}
 }

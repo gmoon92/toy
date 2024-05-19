@@ -21,18 +21,18 @@ public class MovieService {
 
 	public MovieResponse getMovie(String id) {
 		Movie movie = movieRepository.findById(id)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 
 		return MovieResponse.builder()
-			.id(movie.getId())
-			.movieName(movie.getName())
-			.genre(movie.getGenre())
-			.filmRatings(movie.getFilmRatings())
-			.directorName(movie.getDirectorName())
-			.releaseDateTime(movie.getReleaseTime().toSeconds())
-			.castNames(movie.getCastMembers().stream()
-				.map(MovieCast::getName)
-				.collect(Collectors.toList()))
-			.build();
+			 .id(movie.getId())
+			 .movieName(movie.getName())
+			 .genre(movie.getGenre())
+			 .filmRatings(movie.getFilmRatings())
+			 .directorName(movie.getDirectorName())
+			 .releaseDateTime(movie.getReleaseTime().toSeconds())
+			 .castNames(movie.getCastMembers().stream()
+				  .map(MovieCast::getName)
+				  .collect(Collectors.toList()))
+			 .build();
 	}
 }

@@ -71,14 +71,14 @@ class UserControllerIntegrationTest {
 	void testGet() {
 		// given
 		RequestSpecification spec = RestAssured.given()
-			.accept(ContentType.JSON)
-			.contentType(ContentType.JSON)
-			.param("username", "gmoon");
+			 .accept(ContentType.JSON)
+			 .contentType(ContentType.JSON)
+			 .param("username", "gmoon");
 
 		// when
 		Response response = RestAssured.given(spec)
-			.when().get("/user")
-			.thenReturn();
+			 .when().get("/user")
+			 .thenReturn();
 
 		// then
 		//@formatter:off

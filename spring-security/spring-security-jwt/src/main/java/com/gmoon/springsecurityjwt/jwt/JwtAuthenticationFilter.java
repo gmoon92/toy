@@ -23,13 +23,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	private final JwtUtil jwtUtil;
 
 	public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
-		JwtUtil jwtUtil) {
+		 JwtUtil jwtUtil) {
 		super(authenticationManager);
 		this.jwtUtil = jwtUtil;
 	}
 
 	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+		 Authentication authentication) throws IOException, ServletException {
 		User user = (User)authentication.getPrincipal();
 
 		String token = jwtUtil.generate(user);
@@ -38,7 +39,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	// todo: login failure logic
 	@Override
-	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+		 AuthenticationException e) throws IOException, ServletException {
 		log.warn("access unauthenticated user.");
 		super.unsuccessfulAuthentication(request, response, e);
 	}

@@ -27,6 +27,6 @@ class AccessLogServiceTest {
 		LocalDate attemptDt = LocalDate.of(2022, 1, 1);
 
 		assertThatCode(() -> service.createExcelFile(filePath, attemptDt))
-				.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 }

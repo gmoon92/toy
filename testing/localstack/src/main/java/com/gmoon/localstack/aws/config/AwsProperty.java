@@ -1,9 +1,11 @@
 package com.gmoon.localstack.aws.config;
 
-import com.gmoon.localstack.aws.constants.AmazonRegion;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
+
+import com.gmoon.localstack.aws.constants.AmazonRegion;
+
+import lombok.RequiredArgsConstructor;
 
 @ConstructorBinding
 @ConfigurationProperties("aws")

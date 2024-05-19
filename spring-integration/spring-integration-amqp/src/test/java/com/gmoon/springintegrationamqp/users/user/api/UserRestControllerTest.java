@@ -28,16 +28,16 @@ class UserRestControllerTest {
 	@Test
 	void signup() throws Exception {
 		User user = User.builder()
-			.email("gmoon0929@gmail.com")
-			.username("gmoon")
-			.password("@password")
-			.role(Role.ADMIN)
-			.build();
+			 .email("gmoon0929@gmail.com")
+			 .username("gmoon")
+			 .password("@password")
+			 .role(Role.ADMIN)
+			 .build();
 
 		ResultActions result = mockMvc.perform(post("/user/signup")
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(JacksonUtils.toString(user))
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON)
+			 .content(JacksonUtils.toString(user))
 		);
 
 		result.andExpect(status().isOk());

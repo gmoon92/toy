@@ -50,9 +50,9 @@ public class EmbeddedRedisConfig {
 		@Bean
 		public LettuceConnectionFactory redisConnectionFactory(RedisConfiguration redisConfig) {
 			LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-				// master-replica(master-slave) replication strategy config.
-				.readFrom(ReadFrom.REPLICA_PREFERRED)
-				.build();
+				 // master-replica(master-slave) replication strategy config.
+				 .readFrom(ReadFrom.REPLICA_PREFERRED)
+				 .build();
 			return new LettuceConnectionFactory(redisConfig, clientConfig);
 		}
 

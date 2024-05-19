@@ -28,8 +28,8 @@ class BookmarkControllerTest extends BaseIntegrationTest {
 	void testGet() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(get("/bookmark/" + bookmarkName)
-			.header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
-			.accept(MediaType.APPLICATION_JSON));
+			 .header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
+			 .accept(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isOk());
@@ -44,8 +44,8 @@ class BookmarkControllerTest extends BaseIntegrationTest {
 
 		// when
 		ResultActions result = mockMvc.perform(post("/bookmark/" + bookmarkName)
-			.header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
-			.accept(MediaType.APPLICATION_JSON));
+			 .header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
+			 .accept(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isCreated());
@@ -57,8 +57,8 @@ class BookmarkControllerTest extends BaseIntegrationTest {
 	void testRemove() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(delete("/bookmark/" + bookmarkName)
-			.header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
-			.accept(MediaType.APPLICATION_JSON));
+			 .header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
+			 .accept(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isNoContent());

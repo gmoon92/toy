@@ -37,19 +37,19 @@ public class EmbeddedRedisConfig implements InitializingBean, DisposableBean {
 
 		if (isArmMac()) {
 			provider.override(OS.MAC_OS_X, Architecture.x86, "redis/redis-server-724-mac-arm64")
-				.override(OS.MAC_OS_X, Architecture.x86_64, "redis/redis-server-724-mac-arm64");
+				 .override(OS.MAC_OS_X, Architecture.x86_64, "redis/redis-server-724-mac-arm64");
 		}
 		return provider;
 	}
 
 	private boolean isArmMac() {
 		return "aarch64".equals(System.getProperty("os.arch"))
-			&& "Mac OS X".equals(System.getProperty("os.name"));
+			 && "Mac OS X".equals(System.getProperty("os.name"));
 	}
 
 	private File getRedisServerFile() throws IOException {
 		return new ClassPathResource("/redis/redis-server-724-mac-arm64")
-			.getFile();
+			 .getFile();
 	}
 
 	@Override

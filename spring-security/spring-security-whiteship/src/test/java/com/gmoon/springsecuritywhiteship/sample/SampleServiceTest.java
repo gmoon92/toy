@@ -34,7 +34,7 @@ class SampleServiceTest {
 	@DisplayName("시큐리티 메서드로 인한 권한 에러 발생")
 	void secured() {
 		assertThrows(AuthenticationCredentialsNotFoundException.class
-			, () -> sampleService.secured());
+			 , () -> sampleService.secured());
 	}
 
 	@Test

@@ -9,7 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class CorsPropertiesTest {
-	@Autowired CorsProperties properties;
+	@Autowired
+	CorsProperties properties;
 
 	@Test
 	@DisplayName("cors.yml 에 정의된 프로퍼티 속성 값을 검증한다.")

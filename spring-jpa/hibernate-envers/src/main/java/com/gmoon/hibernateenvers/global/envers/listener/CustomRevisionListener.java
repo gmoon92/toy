@@ -15,7 +15,7 @@ public class CustomRevisionListener implements EntityTrackingRevisionListener {
 
 	@Override
 	public void entityChanged(Class entityClass, String entityName, Serializable entityId, RevisionType revisionType,
-		Object revisionEntity) {
+		 Object revisionEntity) {
 		log.debug("EntityTrackingRevisionListener entityChanged start...");
 		try {
 			RevisionHistory history = RevisionHistory.class.cast(revisionEntity);

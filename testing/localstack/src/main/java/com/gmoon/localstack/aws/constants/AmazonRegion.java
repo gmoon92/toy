@@ -1,11 +1,12 @@
 package com.gmoon.localstack.aws.constants;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -42,10 +43,10 @@ public enum AmazonRegion {
 	EU_NORTH_1("eu-north-1", "Europe (Stockholm)");
 
 	public static final Map<String, AmazonRegion> ALL = Stream.of(AmazonRegion.values())
-		.collect(collectingAndThen(
-			toMap(AmazonRegion::getValue, Function.identity()),
-			Collections::unmodifiableMap
-		));
+		 .collect(collectingAndThen(
+			  toMap(AmazonRegion::getValue, Function.identity()),
+			  Collections::unmodifiableMap
+		 ));
 
 	private final String value;
 	private final String description;

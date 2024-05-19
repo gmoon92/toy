@@ -28,7 +28,7 @@ public class AccountService implements UserDetailsService {
 		//            .roles(account.getRole())
 		//            .build();
 		return Optional.ofNullable(accountRepository.findByUsername(username))
-			.orElseThrow(() -> new UsernameNotFoundException(username));
+			 .orElseThrow(() -> new UsernameNotFoundException(username));
 	}
 
 	public Account createNew(Account account) {

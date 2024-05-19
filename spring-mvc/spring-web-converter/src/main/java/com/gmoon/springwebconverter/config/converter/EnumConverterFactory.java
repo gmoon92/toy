@@ -35,7 +35,7 @@ public class EnumConverterFactory implements ConverterFactory<String, Enum<?>> {
 
 		static Converter create(Class<? extends Enum<?>> targetClass) {
 			boolean isCustomBinder = stream(targetClass.getInterfaces())
-				.anyMatch(i -> i == StringToEnumBinder.class);
+				 .anyMatch(i -> i == StringToEnumBinder.class);
 			if (isCustomBinder) {
 				return new CustomStringToEnum(targetClass);
 			}
@@ -60,10 +60,10 @@ public class EnumConverterFactory implements ConverterFactory<String, Enum<?>> {
 
 			private CustomStringToEnum(Class<? extends Enum> targetClass) {
 				binder = stream(targetClass.getEnumConstants())
-					.collect(collectingAndThen(
-						toMap(o -> ((StringToEnumBinder)o).getValue(), Function.identity()),
-						Collections::unmodifiableMap
-					));
+					 .collect(collectingAndThen(
+						  toMap(o -> ((StringToEnumBinder)o).getValue(), Function.identity()),
+						  Collections::unmodifiableMap
+					 ));
 			}
 
 			@Override

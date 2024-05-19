@@ -16,7 +16,7 @@ class StringUtilsTest {
 			String name = "gmoon";
 
 			utils.when(() -> StringUtils.isEmpty(name))
-				.thenReturn(true);
+				 .thenReturn(true);
 
 			assertThat(StringUtils.isEmpty("gmoon2")).isFalse();
 			assertThat(StringUtils.isEmpty(name)).isTrue();
@@ -26,6 +26,7 @@ class StringUtilsTest {
 	static final class StringUtils {
 		private StringUtils() {
 		}
+
 		static boolean isEmpty(String str) {
 			return str == null || str.length() == 0;
 		}

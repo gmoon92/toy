@@ -23,15 +23,15 @@ public class PooService {
 	}
 
 	public PooService(PooRepository pooRepository,
-		@Qualifier(value = "moonRepository") PooRepository pooRepository2,
-		PooRepository moonRepository,
-		List<PooRepository> pooRepositorys) {
+		 @Qualifier(value = "moonRepository") PooRepository pooRepository2,
+		 PooRepository moonRepository,
+		 List<PooRepository> pooRepositorys) {
 		System.out.println("PooRepository primary type is " + pooRepository);
 		System.out.println("PooRepository @Qualifier type is " + pooRepository2);
 		System.out.println("PooRepository bean id type is " + moonRepository);
 		pooRepositorys.forEach(System.out::println);
 		this.pooRepository = pooRepositorys.stream().findFirst()
-			.orElse(null);
+			 .orElse(null);
 	}
 
 	//  @Autowired

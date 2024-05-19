@@ -31,7 +31,7 @@ public class Member {
 	private Team team;
 
 	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL,
-		optional = false, fetch = FetchType.LAZY)
+		 optional = false, fetch = FetchType.LAZY)
 	private MemberOption memberOption;
 
 	public static Member create(Team team, String name) {

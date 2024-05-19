@@ -42,8 +42,8 @@ class EnumConverterFactoryTest {
 
 	static Stream<Arguments> enumClassProvider() {
 		return Stream.of(
-			Arguments.of(PaymentType.class, PaymentType.KAKAO_BANK),
-			Arguments.of(SearchType.class, SearchType.USER_NAME)
+			 Arguments.of(PaymentType.class, PaymentType.KAKAO_BANK),
+			 Arguments.of(SearchType.class, SearchType.USER_NAME)
 		);
 	}
 

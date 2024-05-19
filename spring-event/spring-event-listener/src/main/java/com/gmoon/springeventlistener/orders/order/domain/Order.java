@@ -47,9 +47,9 @@ public class Order implements Serializable {
 	private User user;
 
 	@OneToMany(
-		mappedBy = "order",
-		cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-		orphanRemoval = true
+		 mappedBy = "order",
+		 cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+		 orphanRemoval = true
 	)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<OrderLineItem> lines = new ArrayList<>();
@@ -77,20 +77,20 @@ public class Order implements Serializable {
 
 	public long totalPrice() {
 		return lines.stream()
-			.mapToLong(OrderLineItem::getPrice)
-			.sum();
+			 .mapToLong(OrderLineItem::getPrice)
+			 .sum();
 	}
 
 	public String getProductNames() {
 		return lines.stream()
-			.map(OrderLineItem::getProductName)
-			.collect(Collectors.joining());
+			 .map(OrderLineItem::getProductName)
+			 .collect(Collectors.joining());
 	}
 
 	public List<String> getProductNos() {
 		return lines.stream()
-			.map(OrderLineItem::getProduct)
-			.map(Product::getId)
-			.collect(Collectors.toList());
+			 .map(OrderLineItem::getProduct)
+			 .map(Product::getId)
+			 .collect(Collectors.toList());
 	}
 }

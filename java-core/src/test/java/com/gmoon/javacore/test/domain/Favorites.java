@@ -1,9 +1,11 @@
 package com.gmoon.javacore.test.domain;
 
+import java.util.UUID;
+
 import com.gmoon.javacore.persistence.Embeddable;
 import com.gmoon.javacore.persistence.EmbeddedId;
 import com.gmoon.javacore.persistence.Entity;
-import java.util.UUID;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

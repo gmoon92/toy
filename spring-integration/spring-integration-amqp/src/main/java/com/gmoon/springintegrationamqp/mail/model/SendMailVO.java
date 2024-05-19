@@ -35,7 +35,7 @@ public class SendMailVO implements Serializable {
 
 	public Message<SendMailVO> toMessage() {
 		return MessageBuilder
-			.withPayload(this)
-			.build();
+			 .withPayload(this)
+			 .build();
 	}
 }

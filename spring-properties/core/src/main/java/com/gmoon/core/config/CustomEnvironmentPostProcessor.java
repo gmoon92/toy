@@ -31,8 +31,8 @@ public class CustomEnvironmentPostProcessor implements EnvironmentPostProcessor 
 
 	@Override
 	public void postProcessEnvironment(
-		ConfigurableEnvironment environment,
-		SpringApplication application
+		 ConfigurableEnvironment environment,
+		 SpringApplication application
 	) {
 		setDefaultCoreProperties(environment);
 		overridePropertySource(environment, "runtime");
@@ -50,11 +50,11 @@ public class CustomEnvironmentPostProcessor implements EnvironmentPostProcessor 
 	private PropertySource<?> createPropertySource(String relativePropertySourceName) {
 		try {
 			return propertySourceFactory.createPropertySource(
-				relativePropertySourceName,
-				new EncodedResource(
-					new ClassPathResource(relativePropertySourceName + ".properties"),
-					StandardCharsets.UTF_8
-				)
+				 relativePropertySourceName,
+				 new EncodedResource(
+					  new ClassPathResource(relativePropertySourceName + ".properties"),
+					  StandardCharsets.UTF_8
+				 )
 			);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

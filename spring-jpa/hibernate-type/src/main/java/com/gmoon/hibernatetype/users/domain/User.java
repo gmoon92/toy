@@ -13,9 +13,10 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import com.querydsl.core.annotations.QueryProjection;
+
 import com.gmoon.hibernatetype.global.type.ColumnEncryptionConstants;
 import com.gmoon.hibernatetype.global.type.EncryptedStringType;
-import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,12 +43,11 @@ public class User implements Serializable {
 	// select user0_.id as id1_0_, CAST(AES_DECRYPT(UNHEX(user0_.email), 'SECRETKEY') AS CHAR) as email2_0_, user0_.enc_email as enc_emai3_0_
 	// from tb_user user0_ where ()user0_.email=?
 	@ColumnTransformer(
-		read = ColumnEncryptionConstants.DEC_EMAIL,
-		write = ColumnEncryptionConstants.ENC_COLUMN
+		 read = ColumnEncryptionConstants.DEC_EMAIL,
+		 write = ColumnEncryptionConstants.ENC_COLUMN
 	)
 	@Column(length = 200, name = "email")
 	private String email;
-
 
 	// @Type(type = "com.gmoon.hibernatetype.global.type.EncryptStringType")
 	@Type(type = "secure")

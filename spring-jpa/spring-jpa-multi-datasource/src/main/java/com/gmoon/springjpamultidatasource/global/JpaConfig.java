@@ -51,8 +51,8 @@ import com.gmoon.springjpamultidatasource.global.dsr.DynamicRoutingDatabaseSourc
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(
-	basePackages = "com.gmoon.**",
-	repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class
+	 basePackages = "com.gmoon.**",
+	 repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class
 )
 public class JpaConfig {
 
@@ -67,7 +67,7 @@ public class JpaConfig {
 	@DependsOn("routingDataSource")
 	public EntityManagerFactoryBuilderCustomizer entityManagerFactoryBuilderCustomizer(DataSource routingDataSource) {
 		return builder -> builder.dataSource(routingDataSource)
-			.persistenceUnit("default");
+			 .persistenceUnit("default");
 	}
 
 	static class DataSourceConfig {
@@ -76,12 +76,12 @@ public class JpaConfig {
 		@Primary
 		@DependsOn({"masterDataSourceProperties", "slaveDataSourceProperties"})
 		public DataSource routingDataSource(
-			DataSourceProperties masterDataSourceProperties,
-			DataSourceProperties slaveDataSourceProperties
+			 DataSourceProperties masterDataSourceProperties,
+			 DataSourceProperties slaveDataSourceProperties
 		) {
 			return new LazyConnectionDataSourceProxy(new DynamicRoutingDatabaseSource(
-				masterDataSourceProperties,
-				slaveDataSourceProperties
+				 masterDataSourceProperties,
+				 slaveDataSourceProperties
 			));
 		}
 
@@ -120,8 +120,8 @@ public class JpaConfig {
 		 */
 		@Bean
 		public Advisor transactionAdvisor(
-			TransactionManager transactionManager,
-			BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor
+			 TransactionManager transactionManager,
+			 BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor
 		) {
 			TransactionAttributeSource txSource = newTransactionAttributeSource();
 

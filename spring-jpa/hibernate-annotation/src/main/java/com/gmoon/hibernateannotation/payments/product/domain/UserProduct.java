@@ -27,7 +27,7 @@ public class UserProduct extends Product {
 	}
 
 	public static UserProduct create(ProductType productType, Double price, Currency currency) {
-		return (UserProduct) new UserProduct(productType)
-			.withPrice(price, currency);
+		return (UserProduct)new UserProduct(productType)
+			 .withPrice(price, currency);
 	}
 }

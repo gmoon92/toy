@@ -1,9 +1,11 @@
 package com.gmoon.localstack.aws.model;
 
 import java.util.Objects;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class S3RequestVO {

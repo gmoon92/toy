@@ -26,8 +26,8 @@ public class PasswordEncoderTest {
 		log.info("password2: {}", password2);
 
 		assertThat(passwordEncoder.matches(rawPassword, password))
-			.isTrue();
+			 .isTrue();
 		assertThat(passwordEncoder.matches(rawPassword, password2))
-			.isTrue();
+			 .isTrue();
 	}
 }

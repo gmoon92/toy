@@ -18,7 +18,7 @@ public class TeamService {
 	@Transactional
 	public void delete(Long teamId) {
 		Team team = get(teamId)
-			.clearUsers();
+			 .clearUsers();
 
 		repository.delete(team);
 	}

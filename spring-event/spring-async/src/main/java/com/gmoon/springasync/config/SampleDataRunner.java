@@ -20,9 +20,9 @@ public class SampleDataRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) {
 		memberRepository.saveAll(Arrays.asList(
-			// todo: send mail member add.
-			//            Member.createNew("test1@gmail.com"),
-			//            Member.createNew("test2@gmail.com")
+			 // todo: send mail member add.
+			 //            Member.createNew("test1@gmail.com"),
+			 //            Member.createNew("test2@gmail.com")
 		));
 	}
 }

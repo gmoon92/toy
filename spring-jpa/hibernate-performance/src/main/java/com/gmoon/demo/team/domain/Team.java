@@ -48,7 +48,7 @@ public class Team {
 	public void addMembers(Collection<Member> managedMembers) {
 		this.teamMembers.clear();
 		this.teamMembers.addAll(managedMembers.stream()
-			.map(member -> new TeamMember(member, this))
-			.collect(Collectors.toList()));
+			 .map(member -> new TeamMember(member, this))
+			 .collect(Collectors.toList()));
 	}
 }

@@ -1,7 +1,8 @@
 package com.gmoon.springjpaspecs.books.bookstore.dto;
 
-import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
 import com.querydsl.core.types.Order;
+
+import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
 
 import lombok.Builder;
 import lombok.Getter;

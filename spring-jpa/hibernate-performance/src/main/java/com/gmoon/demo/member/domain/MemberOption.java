@@ -34,8 +34,8 @@ public class MemberOption {
 
 	@Embedded
 	@AttributeOverrides({
-		@AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
-		@AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
+		 @AttributeOverride(name = "enabled", column = @Column(name = "member_enabled")),
+		 @AttributeOverride(name = "enabledDt", column = @Column(name = "member_enabled_dt"))
 	})
 	private Enabled enabled;
 

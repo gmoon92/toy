@@ -37,13 +37,15 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 	private static final String ORIGIN_OF_RESOURCE_SERVER = "http://localhost:9000";
 	private static final String COOKIE_NAME_OF_AUTHORIZATION = HttpHeaders.AUTHORIZATION;
 
-	public OAuthenticationFilter(AuthenticationManager authenticationManager, AuthenticationFailureHandler failureHandler) {
+	public OAuthenticationFilter(AuthenticationManager authenticationManager,
+		 AuthenticationFailureHandler failureHandler) {
 		super(authenticationManager);
 		setAuthenticationFailureHandler(failureHandler);
 	}
 
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws
+		 AuthenticationException {
 		if (!HttpMethod.POST.matches(request.getMethod())) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
@@ -86,9 +88,9 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 			}
 
 			return response.createException()
-				.flatMap(Mono::error)
-				.map(String::valueOf)
-				.flux();
+				 .flatMap(Mono::error)
+				 .map(String::valueOf)
+				 .flux();
 		}).blockFirst();
 
 		return new OAuthenticationToken(token);
@@ -96,35 +98,35 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 
 	private WebClient.RequestBodySpec postLogin(String username, String password) {
 		return defaultWebClient()
-			.method(HttpMethod.POST)
-			.uri(uriBuilder -> uriBuilder
-				.path("login")
-				.queryParam("username", username)
-				.queryParam("password", password)
-				.build())
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON)
-			.acceptCharset(StandardCharsets.UTF_8);
+			 .method(HttpMethod.POST)
+			 .uri(uriBuilder -> uriBuilder
+				  .path("login")
+				  .queryParam("username", username)
+				  .queryParam("password", password)
+				  .build())
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON)
+			 .acceptCharset(StandardCharsets.UTF_8);
 	}
 
 	private WebClient defaultWebClient() {
 		HttpClient httpClient = connectionTimeoutClient();
 		return WebClient.builder()
-			.baseUrl(ORIGIN_OF_RESOURCE_SERVER)
-			.clientConnector(new ReactorClientHttpConnector(httpClient))
-			.build();
+			 .baseUrl(ORIGIN_OF_RESOURCE_SERVER)
+			 .clientConnector(new ReactorClientHttpConnector(httpClient))
+			 .build();
 	}
 
 	private HttpClient connectionTimeoutClient() {
 		final int MAX_OF_RESPONSE_TIMEOUT = 5_000;
 		return HttpClient.create()
-			// response connect timeout config
-			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_OF_RESPONSE_TIMEOUT)
-			.responseTimeout(Duration.ofMillis(MAX_OF_RESPONSE_TIMEOUT))
-			.doOnConnected(conn ->
-				// read / write response timeout config
-				conn.addHandlerLast(new ReadTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
-					.addHandlerLast(new WriteTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
-			);
+			 // response connect timeout config
+			 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_OF_RESPONSE_TIMEOUT)
+			 .responseTimeout(Duration.ofMillis(MAX_OF_RESPONSE_TIMEOUT))
+			 .doOnConnected(conn ->
+				  // read / write response timeout config
+				  conn.addHandlerLast(new ReadTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
+					   .addHandlerLast(new WriteTimeoutHandler(MAX_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
+			 );
 	}
 }

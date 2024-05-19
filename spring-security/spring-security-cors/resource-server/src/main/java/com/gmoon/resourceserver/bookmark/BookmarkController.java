@@ -35,13 +35,13 @@ public class BookmarkController {
 	public ResponseEntity<Bookmark> save(@PathVariable String name) {
 		Bookmark bookmark = repository.save(Bookmark.create(name));
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(bookmark);
+			 .body(bookmark);
 	}
 
 	@DeleteMapping("/{name}")
 	public ResponseEntity<Void> remove(@PathVariable String name) {
 		repository.delete(repository.findBookmarkByName(name));
 		return ResponseEntity.status(HttpStatus.NO_CONTENT)
-			.build();
+			 .build();
 	}
 }

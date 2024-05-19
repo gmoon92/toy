@@ -34,16 +34,16 @@ public class OrderListener {
 
 	@Order(50)
 	@TransactionalEventListener(
-		condition = "#event.orderNo != null && !#event.orderNo.isEmpty()",
-		phase = TransactionPhase.AFTER_COMMIT,
-		fallbackExecution = true
+		 condition = "#event.orderNo != null && !#event.orderNo.isEmpty()",
+		 phase = TransactionPhase.AFTER_COMMIT,
+		 fallbackExecution = true
 	)
 	public void removeOrderedCart(CompletedOrderEvent event) {
 		for (String productNo : event.getProductNos()) {
 			String userName = event.getUserName();
 			String userEmail = event.getUserEmail();
 			User user = userRepository.findUserByNameAndEmail(userName, userEmail)
-				.orElseThrow(EntityNotFoundException::new);
+				 .orElseThrow(EntityNotFoundException::new);
 
 			String userId = user.getId();
 			log.info("remove all ordered cart product: {}, user: {}", productNo, userId);

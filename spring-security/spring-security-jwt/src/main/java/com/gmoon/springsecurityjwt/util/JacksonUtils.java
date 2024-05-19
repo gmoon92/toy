@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+
 import com.gmoon.springsecurityjwt.exception.JacksonConverterException;
 
 import lombok.AccessLevel;
@@ -65,7 +66,7 @@ public final class JacksonUtils {
 	}
 
 	private static <T> T toObject(Function<ObjectMapper, T> reader, boolean allowUnquotedControlChars,
-		boolean allowBackSlashEscapeChars) {
+		 boolean allowBackSlashEscapeChars) {
 		ObjectMapper objectMapper = getObjectMapper(allowUnquotedControlChars, allowBackSlashEscapeChars);
 		return reader.apply(objectMapper);
 	}

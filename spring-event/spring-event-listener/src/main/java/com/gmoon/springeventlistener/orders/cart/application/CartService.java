@@ -18,8 +18,8 @@ public class CartService {
 	@Transactional
 	public void remove(String userId, String productNo) {
 		cartRepository.deleteAllByUserIdAndProductNo(
-			new UserId(userId),
-			new ProductNo(productNo)
+			 new UserId(userId),
+			 new ProductNo(productNo)
 		);
 	}
 }

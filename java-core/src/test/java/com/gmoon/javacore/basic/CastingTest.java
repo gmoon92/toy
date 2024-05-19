@@ -43,12 +43,12 @@ public class CastingTest {
 		@Test
 		void error() {
 			assertThatExceptionOfType(ClassCastException.class)
-				.isThrownBy(() -> {
-					Champion champion = new Champion();
+				 .isThrownBy(() -> {
+					 Champion champion = new Champion();
 
-					// 참조 다형성 위배
-					Ahri ahri = (Ahri)champion; // error
-				});
+					 // 참조 다형성 위배
+					 Ahri ahri = (Ahri)champion; // error
+				 });
 		}
 
 		@DisplayName("다운캐스팅시 형변환 에러를 방지하기 위해 instanceof 연산자 사용")
@@ -70,11 +70,11 @@ public class CastingTest {
 	@Test
 	void noCasting() {
 		assertThatExceptionOfType(ClassCastException.class)
-			.isThrownBy(() -> {
-				Champion ahri = new Ahri();
-				// 참조 다형성 위배
-				AurelionSol sol = (AurelionSol)ahri;
-			});
+			 .isThrownBy(() -> {
+				 Champion ahri = new Ahri();
+				 // 참조 다형성 위배
+				 AurelionSol sol = (AurelionSol)ahri;
+			 });
 	}
 
 	static class Champion {

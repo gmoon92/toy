@@ -29,24 +29,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.headers(header -> header.frameOptions().sameOrigin())
-			.csrf(AbstractHttpConfigurer::disable)
-			.cors(AbstractHttpConfigurer::disable)
-			.authorizeRequests(request ->
-				// request.mvcMatchers("**/user/**").hasRole("ADMIN")
-				request
-					.antMatchers("**/user/**").hasRole("ADMIN")
-					.anyRequest()
-					.permitAll()
-			)
-			.exceptionHandling()
-			.accessDeniedHandler(accessDeniedHandler())
-			.and()
-			.formLogin()
-			.loginPage("/login")
-			.defaultSuccessUrl("/user/info")
-			.successHandler(customSuccessHandler())
-			.permitAll();
+			 .headers(header -> header.frameOptions().sameOrigin())
+			 .csrf(AbstractHttpConfigurer::disable)
+			 .cors(AbstractHttpConfigurer::disable)
+			 .authorizeRequests(request ->
+				  // request.mvcMatchers("**/user/**").hasRole("ADMIN")
+				  request
+					   .antMatchers("**/user/**").hasRole("ADMIN")
+					   .anyRequest()
+					   .permitAll()
+			 )
+			 .exceptionHandling()
+			 .accessDeniedHandler(accessDeniedHandler())
+			 .and()
+			 .formLogin()
+			 .loginPage("/login")
+			 .defaultSuccessUrl("/user/info")
+			 .successHandler(customSuccessHandler())
+			 .permitAll();
 	}
 
 	@Bean

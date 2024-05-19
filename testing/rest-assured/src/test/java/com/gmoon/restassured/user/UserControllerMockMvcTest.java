@@ -26,16 +26,16 @@ class UserControllerMockMvcTest {
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.alwaysDo(print())
-			.build();
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	@Test
 	void testFindAll() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(get("/user/list")
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON));
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isOk());
@@ -51,9 +51,9 @@ class UserControllerMockMvcTest {
 
 		// when
 		ResultActions result = mockMvc.perform(get("/user")
-			.param("username", username)
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON));
+			 .param("username", username)
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isOk());
@@ -68,8 +68,8 @@ class UserControllerMockMvcTest {
 
 		// when
 		ResultActions result = mockMvc.perform(post("/user/" + username)
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON));
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isCreated());
@@ -80,8 +80,8 @@ class UserControllerMockMvcTest {
 	void testDelete() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(delete("/user/guest")
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON));
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		result.andExpect(status().isNoContent());

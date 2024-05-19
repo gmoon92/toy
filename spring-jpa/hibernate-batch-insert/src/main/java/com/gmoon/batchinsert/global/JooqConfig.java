@@ -30,7 +30,7 @@ public class JooqConfig {
 	@Bean
 	public DSLContext dsl() {
 		ConnectionProvider connectionProvider = new DataSourceConnectionProvider(
-			new TransactionAwareDataSourceProxy(dataSource));
+			 new TransactionAwareDataSourceProxy(dataSource));
 
 		org.jooq.Configuration configuration = configuration(connectionProvider);
 		return new DefaultDSLContext(configuration);

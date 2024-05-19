@@ -41,9 +41,9 @@ class CommonCodeRepositoryTest {
 		@ExpectInsert
 		void save() {
 			CommonCode newCode = CommonCode.builder()
-				.code("G1")
-				.value("new value")
-				.build();
+				 .code("G1")
+				 .value("new value")
+				 .build();
 
 			repository.saveAndFlush(newCode);
 		}
@@ -55,9 +55,9 @@ class CommonCodeRepositoryTest {
 			String id = "c1";
 
 			CommonCode commonCode = CommonCode.builder()
-				.code(id)
-				.value("change value")
-				.build();
+				 .code(id)
+				 .value("change value")
+				 .build();
 			repository.saveAndFlush(commonCode);
 
 			flushAndClear();

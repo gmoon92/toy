@@ -23,7 +23,8 @@ public class CompletedOrderEvent implements Serializable {
 	private final String userEmail;
 
 	@Builder
-	private CompletedOrderEvent(String orderNo, long orderPrice, String productName, String userName, String userEmail, List<String> productNos) {
+	private CompletedOrderEvent(String orderNo, long orderPrice, String productName, String userName, String userEmail,
+		 List<String> productNos) {
 		this.orderNo = orderNo;
 		this.productNos = productNos;
 		this.orderPrice = orderPrice;
@@ -34,12 +35,12 @@ public class CompletedOrderEvent implements Serializable {
 
 	public static CompletedOrderEvent create(Order order) {
 		return CompletedOrderEvent.builder()
-			.orderNo(order.getId())
-			.productNos(order.getProductNos())
-			.orderPrice(order.totalPrice())
-			.productName(order.getProductNames())
-			.userName(order.getUser().getUserName())
-			.userEmail(order.getUser().getUserEmail())
-			.build();
+			 .orderNo(order.getId())
+			 .productNos(order.getProductNos())
+			 .orderPrice(order.totalPrice())
+			 .productName(order.getProductNames())
+			 .userName(order.getUser().getUserName())
+			 .userEmail(order.getUser().getUserEmail())
+			 .build();
 	}
 }

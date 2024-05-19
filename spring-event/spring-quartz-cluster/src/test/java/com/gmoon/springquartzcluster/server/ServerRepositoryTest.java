@@ -3,11 +3,13 @@ package com.gmoon.springquartzcluster.server;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
-import com.gmoon.springquartzcluster.model.WebServerSaveForm;
-import com.gmoon.springquartzcluster.test.BaseDataJpaTest;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.gmoon.springquartzcluster.model.WebServerSaveForm;
+import com.gmoon.springquartzcluster.test.BaseDataJpaTest;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 class ServerRepositoryTest extends BaseDataJpaTest {
@@ -16,7 +18,7 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 	@Test
 	void testCount() {
 		assertThat(repository.count())
-			.isInstanceOf(Long.class);
+			 .isInstanceOf(Long.class);
 	}
 
 	@DisplayName("활성화된 웹 서버를 생성 조회")
@@ -36,7 +38,7 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 
 		// then
 		assertThat(webServer)
-			.isEqualTo(repository.findServerByName(serverName));
+			 .isEqualTo(repository.findServerByName(serverName));
 	}
 
 	@DisplayName("활성화된 서버 조회")
@@ -44,6 +46,6 @@ class ServerRepositoryTest extends BaseDataJpaTest {
 	void testGetEnabledServers() {
 		// when then
 		assertThatCode(() -> repository.getEnabledServers())
-				.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 }

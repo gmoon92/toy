@@ -40,10 +40,10 @@ class MemberServiceTest {
 		// when
 		memberService.updateMemberOption(requestVO);
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 
 		// then
 		assertThat(member.getMemberOption().isRetired())
-			.isFalse();
+			 .isFalse();
 	}
 }

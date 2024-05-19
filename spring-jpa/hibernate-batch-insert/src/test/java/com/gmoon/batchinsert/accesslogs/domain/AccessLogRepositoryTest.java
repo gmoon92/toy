@@ -30,14 +30,14 @@ class AccessLogRepositoryTest {
 	@Test
 	void saveAll() {
 		repository.saveAll(
-			Arrays.asList(
-				new AccessLog("gmoontest", "220.0.0.0", OperatingSystem.MAC),
-				new AccessLog("gmoontest", "220.0.0.0", OperatingSystem.WINDOW),
-				new AccessLog("gmoontest", "220.0.0.0", OperatingSystem.CHROME)
-			));
+			 Arrays.asList(
+				  new AccessLog("gmoontest", "220.0.0.0", OperatingSystem.MAC),
+				  new AccessLog("gmoontest", "220.0.0.0", OperatingSystem.WINDOW),
+				  new AccessLog("gmoontest", "220.0.0.0", OperatingSystem.CHROME)
+			 ));
 
 		assertThatCode(() -> repository.findAllByUsername("gmoontest"))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@Test

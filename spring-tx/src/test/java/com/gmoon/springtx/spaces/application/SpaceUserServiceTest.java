@@ -31,6 +31,6 @@ class SpaceUserServiceTest {
 		service.delete(groupId, userId);
 
 		assertThat(events.stream(DeleteFavoriteEvent.class).count())
-			.isOne();
+			 .isOne();
 	}
 }

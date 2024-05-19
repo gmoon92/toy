@@ -57,8 +57,8 @@ class CsrfTokenAspectTest {
 
 		// when then
 		then(csrfTokenAspect)
-			.should(times(1))
-			.generator();
+			 .should(times(1))
+			 .generator();
 	}
 
 	@Test
@@ -73,8 +73,8 @@ class CsrfTokenAspectTest {
 
 		// when then
 		then(csrfTokenAspect)
-			.should(never())
-			.generator();
+			 .should(never())
+			 .generator();
 	}
 
 	@Test
@@ -90,7 +90,7 @@ class CsrfTokenAspectTest {
 
 		// then
 		assertThat(testController.get())
-			.isEqualTo("info");
+			 .isEqualTo("info");
 	}
 
 	@Test
@@ -101,8 +101,8 @@ class CsrfTokenAspectTest {
 
 		// when then
 		assertThatThrownBy(() -> testController.get())
-			.isInstanceOf(InvalidCsrfTokenException.class)
-			.hasMessage("http session csrf token is null.");
+			 .isInstanceOf(InvalidCsrfTokenException.class)
+			 .hasMessage("http session csrf token is null.");
 	}
 
 	@Test
@@ -113,8 +113,8 @@ class CsrfTokenAspectTest {
 
 		// when then
 		assertThatThrownBy(() -> testController.get())
-			.isInstanceOf(InvalidCsrfTokenException.class)
-			.hasMessage("request csrf token is null.");
+			 .isInstanceOf(InvalidCsrfTokenException.class)
+			 .hasMessage("request csrf token is null.");
 	}
 
 	@Test
@@ -125,12 +125,12 @@ class CsrfTokenAspectTest {
 
 		// when
 		when(request.getParameter("_csrf"))
-			.thenReturn("invalid token value");
+			 .thenReturn("invalid token value");
 
 		// then
 		assertThatThrownBy(() -> testController.get())
-			.isInstanceOf(InvalidCsrfTokenException.class)
-			.hasMessage("csrf attack is prevented");
+			 .isInstanceOf(InvalidCsrfTokenException.class)
+			 .hasMessage("csrf attack is prevented");
 	}
 
 	@TestConfiguration

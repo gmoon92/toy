@@ -17,6 +17,6 @@ class ServerTest {
 
 		// then
 		assertThat(url)
-			.isEqualTo("https://gmoon92.github.io:443");
+			 .isEqualTo("https://gmoon92.github.io:443");
 	}
 }

@@ -23,7 +23,7 @@ class PasswordUtilsTest {
 		// when
 		String bcryptPassword = "$2a$10$d0QeuUkP.eRZnIXF66LPauq2NI6CYse/tmjml1M9PMsCw66z.TR5q";
 		String prefixEncodedPassword = PasswordEncoderHolder.BCRYPT.getPrefixPasswordId()
-			+ "$2a$10$4hunjhgMVwMU6cNKXKGG/eqWd/FYY/BsVc5h8rFv.d.YRhnw20KBK";
+			 + "$2a$10$4hunjhgMVwMU6cNKXKGG/eqWd/FYY/BsVc5h8rFv.d.YRhnw20KBK";
 
 		// then
 		assertThat(PasswordUtils.matches(rawPassword, bcryptPassword)).isTrue();
@@ -31,7 +31,7 @@ class PasswordUtilsTest {
 	}
 
 	@DisplayName("SHA1 패스워드 검증"
-		+ "패스워드 ID 접두사가 없을 경우 기본 bcrypt 암호화 방식 설정으로 false")
+		 + "패스워드 ID 접두사가 없을 경우 기본 bcrypt 암호화 방식 설정으로 false")
 	@Test
 	void testMatchesWhenSha1() {
 		// given
@@ -42,7 +42,7 @@ class PasswordUtilsTest {
 
 		// then
 		assertThat(PasswordUtils.matches(plainPassword, PasswordEncoderHolder.SHA1.getPrefixPasswordId()
-			+ sha1Password)).isTrue();
+			 + sha1Password)).isTrue();
 		assertThat(PasswordUtils.matches(plainPassword, sha1Password)).isFalse();
 	}
 
@@ -58,8 +58,8 @@ class PasswordUtilsTest {
 	}
 
 	@DisplayName("패스워드 업그레이드가 필요한지 검증"
-		+ "접두사가 없을 경우 -> true"
-		+ "접두사가 있지만 기본 인코더 방식을 따르지 않을 경우 -> true")
+		 + "접두사가 없을 경우 -> true"
+		 + "접두사가 있지만 기본 인코더 방식을 따르지 않을 경우 -> true")
 	@Test
 	void testIsNeedToUpgradeEncoding() {
 		String bcrypt = "$2a$10$d0QeuUkP.eRZnIXF66LPauq2NI6CYse/tmjml1M9PMsCw66z.TR5q";

@@ -13,9 +13,9 @@ public final class Fixtures {
 
 	public static Order newOrder(List<OrderLineItem> orderLineItems) {
 		return Order.builder()
-			.address(UUID.randomUUID().toString())
-			.status(OrderStatus.WAITING)
-			.orderLineItems(orderLineItems)
-			.build();
+			 .address(UUID.randomUUID().toString())
+			 .status(OrderStatus.WAITING)
+			 .orderLineItems(orderLineItems)
+			 .build();
 	}
 }

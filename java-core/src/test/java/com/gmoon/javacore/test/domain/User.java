@@ -1,7 +1,9 @@
 package com.gmoon.javacore.test.domain;
 
-import com.gmoon.javacore.persistence.Entity;
 import java.util.UUID;
+
+import com.gmoon.javacore.persistence.Entity;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

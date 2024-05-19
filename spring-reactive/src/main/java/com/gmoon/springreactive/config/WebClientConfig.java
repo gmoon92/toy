@@ -26,21 +26,23 @@ public class WebClientConfig {
 	public WebClient webClient() {
 		HttpClient httpClient = connectionTimeoutClient();
 		return WebClient.builder()
-			.baseUrl("http://localhost:9000")
-			.clientConnector(new ReactorClientHttpConnector(httpClient))
-			.build();
+			 .baseUrl("http://localhost:9000")
+			 .clientConnector(new ReactorClientHttpConnector(httpClient))
+			 .build();
 	}
 
 	private HttpClient connectionTimeoutClient() {
 		return HttpClient.create()
-			// response connect timeout config
-			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_MILLISECOND_OF_RESPONSE_TIMEOUT)
-			.responseTimeout(Duration.ofMillis(MAX_MILLISECOND_OF_RESPONSE_TIMEOUT))
-			.doOnConnected(conn ->
-				// read / write response timeout config
-				conn.addHandlerLast(new ReadTimeoutHandler(MAX_MILLISECOND_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
-					.addHandlerLast(new WriteTimeoutHandler(MAX_MILLISECOND_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
-			);
+			 // response connect timeout config
+			 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, MAX_MILLISECOND_OF_RESPONSE_TIMEOUT)
+			 .responseTimeout(Duration.ofMillis(MAX_MILLISECOND_OF_RESPONSE_TIMEOUT))
+			 .doOnConnected(conn ->
+				  // read / write response timeout config
+				  conn.addHandlerLast(
+							new ReadTimeoutHandler(MAX_MILLISECOND_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
+					   .addHandlerLast(
+							new WriteTimeoutHandler(MAX_MILLISECOND_OF_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS))
+			 );
 	}
 }
 

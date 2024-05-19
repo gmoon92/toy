@@ -32,21 +32,21 @@ class OrderListenerTest {
 		publisher.publishEvent(event);
 
 		Awaitility.await()
-			.pollDelay(Duration.ofSeconds(1))
-			.atMost(Duration.ofSeconds(3))
-			.untilAsserted(() -> then(listener)
-				.should(times(1))
-				.syncOrderLines(any()));
+			 .pollDelay(Duration.ofSeconds(1))
+			 .atMost(Duration.ofSeconds(3))
+			 .untilAsserted(() -> then(listener)
+				  .should(times(1))
+				  .syncOrderLines(any()));
 	}
 
 	private CompletedOrderEvent completedOrderEvent(String orderNo) {
 		return CompletedOrderEvent.builder()
-			.orderNo(orderNo)
-			.orderPrice(50_000)
-			.productName("Clean Architecture")
-			.userName("gmoon")
-			.userEmail("gmoon0929@gmail.com")
-			.build();
+			 .orderNo(orderNo)
+			 .orderPrice(50_000)
+			 .productName("Clean Architecture")
+			 .userName("gmoon")
+			 .userEmail("gmoon0929@gmail.com")
+			 .build();
 	}
 
 	@DisplayName("주문 번호가 비어 있으면 이벤트 처리를 하지 않는다.")
@@ -58,10 +58,10 @@ class OrderListenerTest {
 		publisher.publishEvent(dto);
 
 		Awaitility.await()
-			.pollDelay(Duration.ofSeconds(1))
-			.atMost(Duration.ofSeconds(3))
-			.untilAsserted(() -> then(listener)
-				.should(never())
-				.syncOrderLines(any()));
+			 .pollDelay(Duration.ofSeconds(1))
+			 .atMost(Duration.ofSeconds(3))
+			 .untilAsserted(() -> then(listener)
+				  .should(never())
+				  .syncOrderLines(any()));
 	}
 }

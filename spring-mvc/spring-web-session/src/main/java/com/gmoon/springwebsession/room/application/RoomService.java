@@ -26,8 +26,8 @@ public class RoomService {
 
 	public List<Room> findAll() {
 		return repository.findAll().stream()
-			.filter(Room::isEnabled)
-			.collect(Collectors.toList());
+			 .filter(Room::isEnabled)
+			 .collect(Collectors.toList());
 	}
 
 	public void delete(String name) {

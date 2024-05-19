@@ -35,6 +35,7 @@ class CorsHttpMethodRepositoryTest extends BaseJpaTest {
 
 		// then
 		assertThat(allowedMethods)
-			.containsOnly(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name(), HttpMethod.PUT.name());
+			 .containsOnly(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name(),
+				  HttpMethod.PUT.name());
 	}
 }

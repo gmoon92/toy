@@ -18,8 +18,10 @@ import com.gmoon.springsecurityjwt.user.User;
 import com.gmoon.springsecurityjwt.user.UserRepository;
 
 class TeamControllerTest extends BaseSpringBootTest {
-	@Autowired UserRepository userRepository;
-	@Autowired JwtUtil jwtUtil;
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	JwtUtil jwtUtil;
 
 	final long WEB_TEAM_ID = 0;
 	final String URL_OF_TEAM = "/team/" + WEB_TEAM_ID;
@@ -53,7 +55,7 @@ class TeamControllerTest extends BaseSpringBootTest {
 
 	@Test
 	@DisplayName("팀 삭제는 어드민 계정만 가능하다. "
-		+ "권한이 없는 계정이 접근할 경우 Forbidden(403) 에러가 발생한다.")
+		 + "권한이 없는 계정이 접근할 경우 Forbidden(403) 에러가 발생한다.")
 	void testDelete_forbidden() throws Exception {
 		// given
 		User user = getUserOrElseThrow("user1");
@@ -68,15 +70,15 @@ class TeamControllerTest extends BaseSpringBootTest {
 
 	private User getUserOrElseThrow(String username) {
 		return userRepository.findByUsername(username)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 	}
 
 	private ResultActions verify(MockHttpServletRequestBuilder builder, User loginUser) throws Exception {
 		String token = jwtUtil.generate(loginUser);
 
 		return mockMvc.perform(builder
-			.header(JwtAuthenticationFilter.HEADER_NAME, token)
-			.accept(MediaType.APPLICATION_JSON)
-			.contentType(MediaType.APPLICATION_JSON));
+			 .header(JwtAuthenticationFilter.HEADER_NAME, token)
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON));
 	}
 }

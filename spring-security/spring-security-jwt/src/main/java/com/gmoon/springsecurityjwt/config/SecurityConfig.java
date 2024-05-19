@@ -41,29 +41,30 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManagerBuilder.class)
-			.build();
+			 .build();
 
 		return http
-			.authenticationManager(authenticationManager)
-			.headers(headers -> headers
-				.frameOptions()
-				.sameOrigin())
-			.csrf().disable()
-			.cors().and()
-			.httpBasic().disable()
-			.formLogin().disable()
-			.exceptionHandling(handling ->
-				handling.accessDeniedHandler(jwtExceptionHandler())
-					.authenticationEntryPoint(jwtExceptionHandler()))
-			.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeRequests(request ->
-				request
-					.antMatchers("/", "**/login**").permitAll()
-					.antMatchers(HttpMethod.DELETE, "**").hasRole(Role.ADMIN.name())
-					.anyRequest().authenticated())
-			.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
-			.addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtil))
-			.build();
+			 .authenticationManager(authenticationManager)
+			 .headers(headers -> headers
+				  .frameOptions()
+				  .sameOrigin())
+			 .csrf().disable()
+			 .cors().and()
+			 .httpBasic().disable()
+			 .formLogin().disable()
+			 .exceptionHandling(handling ->
+				  handling.accessDeniedHandler(jwtExceptionHandler())
+					   .authenticationEntryPoint(jwtExceptionHandler()))
+			 .sessionManagement(
+				  sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			 .authorizeRequests(request ->
+				  request
+					   .antMatchers("/", "**/login**").permitAll()
+					   .antMatchers(HttpMethod.DELETE, "**").hasRole(Role.ADMIN.name())
+					   .anyRequest().authenticated())
+			 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
+			 .addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtil))
+			 .build();
 	}
 
 	@Bean

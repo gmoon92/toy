@@ -14,7 +14,7 @@ public class SharedResourcesTest {
 
 		for (int i = 0; i < 100; i++) {
 			new Thread(count::plus)
-				.start();
+				 .start();
 		}
 
 		assertThat(count.value).isEqualTo(100);

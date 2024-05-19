@@ -24,8 +24,8 @@ public abstract class BaseIntegrationTest {
 	@BeforeEach
 	void setUp(@Autowired WebApplicationContext context) {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.alwaysDo(MockMvcResultHandlers.print())
-			.build();
+			 .alwaysDo(MockMvcResultHandlers.print())
+			 .build();
 	}
 
 	protected void flushAndClear() {

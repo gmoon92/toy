@@ -1,22 +1,13 @@
 package com.gmoon.localstack.test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
-import com.gmoon.javacore.util.FileUtils;
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.File;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -28,13 +19,26 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+
+import com.gmoon.javacore.util.FileUtils;
+
 @Disabled("Testcontainers 로컬 테스트")
 @Testcontainers
 class LocalStackTestContainerTest {
 
 	@Container
 	final LocalStackContainer localstack = new LocalStackContainer(
-		DockerImageName.parse("localstack/localstack:0.14.3")
+		 DockerImageName.parse("localstack/localstack:0.14.3")
 	);
 
 	final AmazonS3 s3Client = createAmazonS3();
@@ -45,27 +49,27 @@ class LocalStackTestContainerTest {
 
 		URI endpoint = localstack.getEndpointOverride(LocalStackContainer.Service.S3);
 		return AmazonS3ClientBuilder.standard()
-			.withCredentials(awsCredentialsProvider(accessKey, secretKey))
-			.withEndpointConfiguration(
-				new AwsClientBuilder.EndpointConfiguration(
-					endpoint.toString(),
-					localstack.getRegion()
-				))
-			.build();
+			 .withCredentials(awsCredentialsProvider(accessKey, secretKey))
+			 .withEndpointConfiguration(
+				  new AwsClientBuilder.EndpointConfiguration(
+					   endpoint.toString(),
+					   localstack.getRegion()
+				  ))
+			 .build();
 	}
 
 	private AWSCredentialsProvider awsCredentialsProvider(String accessKey, String secretKey) {
 		return new AWSStaticCredentialsProvider(
-			new BasicAWSCredentials(accessKey, secretKey)
+			 new BasicAWSCredentials(accessKey, secretKey)
 		);
 	}
 
 	@Bean
 	public TransferManager transferManager(AmazonS3 amazonS3) {
 		return TransferManagerBuilder
-			.standard()
-			.withS3Client(amazonS3)
-			.build();
+			 .standard()
+			 .withS3Client(amazonS3)
+			 .build();
 	}
 
 	@DisplayName("Amazon S3")
@@ -84,12 +88,12 @@ class LocalStackTestContainerTest {
 		void createBucket() {
 			// when
 			List<String> bucketNames = s3Client.listBuckets().stream()
-				.map(Bucket::getName)
-				.collect(Collectors.toList());
+				 .map(Bucket::getName)
+				 .collect(Collectors.toList());
 
 			// then
 			assertThat(bucketNames)
-				.contains(BUCKET_NAME);
+				 .contains(BUCKET_NAME);
 		}
 
 		@DisplayName("S3에 지정된 버킷으로 파일을 업로드한다.")
@@ -104,12 +108,12 @@ class LocalStackTestContainerTest {
 
 			// when
 			S3ObjectInputStream is = s3Client.getObject(BUCKET_NAME, key)
-				.getObjectContent();
+				 .getObjectContent();
 
 			// then
 			File actual = FileUtils.convertInputStreamToFile(is);
 			assertThat(FileUtils.convertFileToString(actual))
-				.contains("github");
+				 .contains("github");
 		}
 	}
 }

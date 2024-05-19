@@ -34,9 +34,9 @@ class PersistenceHandlerTest {
 
 		publisher.publishEvent(new PostInsertEvent<>(cart));
 		Awaitility.await()
-			.pollDelay(Duration.ofSeconds(1))
-			.atMost(Duration.ofSeconds(3))
-			.untilAsserted(() -> assertThat(repository.exists(Example.of(cart)))
-				.isTrue());
+			 .pollDelay(Duration.ofSeconds(1))
+			 .atMost(Duration.ofSeconds(3))
+			 .untilAsserted(() -> assertThat(repository.exists(Example.of(cart)))
+				  .isTrue());
 	}
 }

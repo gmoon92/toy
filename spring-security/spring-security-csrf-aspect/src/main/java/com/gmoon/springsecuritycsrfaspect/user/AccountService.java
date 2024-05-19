@@ -26,14 +26,14 @@ public class AccountService implements UserDetailsService {
 		SecurityProperties.User user = securityProperties.getUser();
 		String password = user.getPassword();
 		String grantedAuthority = user.getRoles().stream()
-			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("user authority is not defined."));
+			 .findFirst()
+			 .orElseThrow(() -> new IllegalArgumentException("user authority is not defined."));
 		log.info("username: {}, password: {}, grantedAuthority: {}", username, password, grantedAuthority);
 		return User.builder()
-			.username(username)
-			.password(passwordEncoder.encode(password))
-			.authorities(String.format("ROLE_%s", grantedAuthority))
-			.build();
+			 .username(username)
+			 .password(passwordEncoder.encode(password))
+			 .authorities(String.format("ROLE_%s", grantedAuthority))
+			 .build();
 	}
 
 	private void checkLoginUsername(String username) {

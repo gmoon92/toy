@@ -198,12 +198,12 @@ class UnionPageResizerTest {
 
 	private UnionPageResizer obtainProvider(int page, int pageSize, long groupTotalCount, int userTotalCount) {
 		return new UnionPageResizer(
-			page,
-			pageSize,
-			Arrays.asList(
-				userGroupListVO(groupTotalCount),
-				userListVO(userTotalCount)
-			)
+			 page,
+			 pageSize,
+			 Arrays.asList(
+				  userGroupListVO(groupTotalCount),
+				  userListVO(userTotalCount)
+			 )
 		);
 	}
 

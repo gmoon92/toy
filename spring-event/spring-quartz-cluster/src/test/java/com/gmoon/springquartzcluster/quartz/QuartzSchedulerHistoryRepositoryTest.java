@@ -29,6 +29,6 @@ class QuartzSchedulerHistoryRepositoryTest extends BaseDataJpaTest {
 
 		// then
 		assertThat(history.getDetails())
-			.isNotEmpty();
+			 .isNotEmpty();
 	}
 }

@@ -29,9 +29,9 @@ public class MovieRepositoryAdapter implements MovieRepository {
 	@Override
 	public Movie get(String id) {
 		return queryFactory
-			.selectFrom(movie)
-			.where(movie.id.eq(id))
-			.fetchFirst();
+			 .selectFrom(movie)
+			 .where(movie.id.eq(id))
+			 .fetchFirst();
 	}
 
 	@Override

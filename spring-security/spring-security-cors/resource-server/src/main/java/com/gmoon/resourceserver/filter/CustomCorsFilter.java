@@ -33,7 +33,8 @@ public class CustomCorsFilter extends CorsFilter {
 	private final CorsOriginService service;
 	private final CorsProperties properties;
 
-	public CustomCorsFilter(CorsConfigurationSource configSource, CorsOriginService service, CorsProperties properties) {
+	public CustomCorsFilter(CorsConfigurationSource configSource, CorsOriginService service,
+		 CorsProperties properties) {
 		super(configSource);
 		this.configSource = configSource;
 		this.service = service;
@@ -41,7 +42,8 @@ public class CustomCorsFilter extends CorsFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		 FilterChain filterChain) throws ServletException, IOException {
 		loggingForClientRequest(request);
 
 		CorsConfiguration config = obtainCorsConfiguration(request);

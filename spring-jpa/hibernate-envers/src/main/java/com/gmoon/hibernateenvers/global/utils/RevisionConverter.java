@@ -64,7 +64,7 @@ public class RevisionConverter {
 	}
 
 	public static <Entity extends BaseTrackingEntity, Convert extends BaseRevisionCompareVO> Convert convertTo(
-		Entity entity, Class<Convert> convertClass) {
+		 Entity entity, Class<Convert> convertClass) {
 		Assert.notNull(entity, "Error with entity parameter null");
 
 		try {

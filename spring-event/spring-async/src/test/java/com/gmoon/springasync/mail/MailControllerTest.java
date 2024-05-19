@@ -10,8 +10,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Disabled("application.yml 메일 설정 후 테스트 진행 "
-	+ "username: @test.mail.username@"
-	+ "password: @test.mail.password@")
+	 + "username: @test.mail.username@"
+	 + "password: @test.mail.password@")
 class MailControllerTest {
 
 	@Autowired

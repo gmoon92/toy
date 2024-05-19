@@ -44,7 +44,7 @@ public class JCacheConfig {
 	public CachingProvider cacheProvider(@Value("${l2.cache-storage}") String cacheStorage) {
 		if (CacheType.EHCACHE.name().equals(cacheStorage)) {
 			return new EhcacheCachingProvider();
-		} else if (CacheType.HAZELCAST.name().equals(cacheStorage)){
+		} else if (CacheType.HAZELCAST.name().equals(cacheStorage)) {
 			// Hazelcast server/client
 			// return new com.hazelcast.cache.HazelcastCachingProvider();
 			// return new com.hazelcast.client.cache.HazelcastClientCachingProvider();
@@ -72,11 +72,11 @@ public class JCacheConfig {
 	public CacheManager createJCacheManager(CachingProvider cachingProvider) {
 		if (cachingProvider instanceof JCachingProvider) { // redisson
 			return new JCacheManager(
-				(Redisson)redissonClient,
-				getClass().getClassLoader(),
-				cachingProvider,
-				cachingProvider.getDefaultProperties(),
-				cachingProvider.getDefaultURI()
+				 (Redisson)redissonClient,
+				 getClass().getClassLoader(),
+				 cachingProvider,
+				 cachingProvider.getDefaultProperties(),
+				 cachingProvider.getDefaultURI()
 			);
 		}
 
@@ -99,9 +99,9 @@ public class JCacheConfig {
 
 	private MutableConfiguration<Long, Object> getJCacheConfig(Duration ttl) {
 		MutableConfiguration<Long, Object> config = new MutableConfiguration<Long, Object>()
-			//            .setTypes(Long.class, Member.class)
-			.setStoreByValue(false)
-			.setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(ttl));
+			 //            .setTypes(Long.class, Member.class)
+			 .setStoreByValue(false)
+			 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(ttl));
 
 		// add listener config
 		config.addCacheEntryListenerConfiguration(createCacheEventLoggerListenerConfig());
@@ -111,10 +111,10 @@ public class JCacheConfig {
 
 	private CacheEntryListenerConfiguration<Long, Object> createCacheEventLoggerListenerConfig() {
 		return new MutableCacheEntryListenerConfiguration<>(
-			FactoryBuilder.factoryOf(CacheEventLoggerListener.class),
-			null,
-			true,
-			false
+			 FactoryBuilder.factoryOf(CacheEventLoggerListener.class),
+			 null,
+			 true,
+			 false
 		);
 	}
 }

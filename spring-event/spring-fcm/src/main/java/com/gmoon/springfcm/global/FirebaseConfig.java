@@ -11,13 +11,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import com.gmoon.springfcm.messaging.FcmClient;
-import com.gmoon.springfcm.messaging.FcmSender;
-import com.gmoon.springfcm.messaging.NoOpFcmSender;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import com.gmoon.springfcm.messaging.FcmClient;
+import com.gmoon.springfcm.messaging.FcmSender;
+import com.gmoon.springfcm.messaging.NoOpFcmSender;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,9 +37,9 @@ public class FirebaseConfig {
 		Resource firebasePrivateKey = resourceLoader.getResource(path);
 		try (InputStream is = firebasePrivateKey.getInputStream()) {
 			FirebaseOptions options = FirebaseOptions.builder()
-				.setCredentials(GoogleCredentials.fromStream(is))
-				// .setProjectId(projectId) // optional
-				.build();
+				 .setCredentials(GoogleCredentials.fromStream(is))
+				 // .setProjectId(projectId) // optional
+				 .build();
 
 			// return FirebaseApp.initializeApp(options, firebaseProperties.projectId); // optional
 			return FirebaseApp.initializeApp(options);

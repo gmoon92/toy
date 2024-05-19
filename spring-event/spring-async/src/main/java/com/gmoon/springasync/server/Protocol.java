@@ -14,7 +14,7 @@ public enum Protocol {
 	HTTP("http");
 
 	private static final Map<Boolean, Protocol> OPERATOR_MAP = Collections.unmodifiableMap(Stream.of(values())
-		.collect(Collectors.toMap(Protocol::isUseSsl, Function.identity())));
+		 .collect(Collectors.toMap(Protocol::isUseSsl, Function.identity())));
 
 	private final String value;
 	private final boolean useSsl;

@@ -3,8 +3,6 @@ package com.gmoon.springjpaspecs.books.bookstore.domain;
 import static com.gmoon.springjpaspecs.books.book.domain.QBook.*;
 import static com.gmoon.springjpaspecs.books.bookstore.domain.QBookStoreBook.*;
 
-import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
-import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -12,6 +10,9 @@ import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
+
+import com.gmoon.springjpaspecs.books.bookstore.model.SortTargetType;
+import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -41,14 +42,14 @@ public class BookStoreOrderSpec implements OrderSpecification {
 		String qDomainPathName = metadata.getName();
 
 		return new PathBuilder<>(
-			entityClass,
-			String.format("%s.%s", qDomainPathName, sortTargetType.getValue())
+			 entityClass,
+			 String.format("%s.%s", qDomainPathName, sortTargetType.getValue())
 		);
 	}
 
 	private EntityPathBase<?> getQDomainPath(SortTargetType type) {
 		if (type == SortTargetType.PRICE
-			|| type == SortTargetType.NAME) {
+			 || type == SortTargetType.NAME) {
 			return book;
 		}
 

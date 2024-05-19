@@ -49,8 +49,8 @@ public final class CollectionUtils {
 		}
 
 		return list.stream()
-			.distinct()
-			.collect(Collectors.toList());
+			 .distinct()
+			 .collect(Collectors.toList());
 	}
 
 	public static int minSize(Collection<?>... collections) {
@@ -59,8 +59,8 @@ public final class CollectionUtils {
 		}
 
 		return Stream.of(collections)
-			.mapToInt(CollectionUtils::size)
-			.min()
-			.orElse(0);
+			 .mapToInt(CollectionUtils::size)
+			 .min()
+			 .orElse(0);
 	}
 }

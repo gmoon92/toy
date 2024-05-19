@@ -26,7 +26,7 @@ public class OrderService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Order ordering(Order param, String menuId) {
 		Menu menu = menuRepository.findById(menuId)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 
 		// 주문 생성
 		List<OrderLineItem> orderLineItems = param.getOrderLineItems();

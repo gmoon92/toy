@@ -38,10 +38,10 @@ public class MailService {
 	public void sendInviteMailFrom(final String publicUrl) {
 		log.info("async send mail...");
 		memberRepository.streamFindAll()
-			.map(Member::getEmail)
-			.filter(StringUtils::isNotBlank)
-			.map(convertInviteMailVO(publicUrl))
-			.forEach(this::sendMail);
+			 .map(Member::getEmail)
+			 .filter(StringUtils::isNotBlank)
+			 .map(convertInviteMailVO(publicUrl))
+			 .forEach(this::sendMail);
 	}
 
 	@Async

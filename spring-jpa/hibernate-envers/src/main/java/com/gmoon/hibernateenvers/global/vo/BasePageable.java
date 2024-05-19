@@ -27,8 +27,8 @@ public abstract class BasePageable {
 
 	public Pageable getPageable() {
 		return PageRequest.of(this.page - 1 // view에서 페이지 번호로 직접 넘겨줌, jpa 시작은 0 부터
-			, this.block // page block limit
-			, this.sort
+			 , this.block // page block limit
+			 , this.sort
 		);
 	}
 

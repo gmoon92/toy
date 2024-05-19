@@ -27,14 +27,14 @@ class RoomControllerTest {
 	@BeforeEach
 	void setUp(WebApplicationContext context) {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.alwaysDo(print())
-			.build();
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	@Test
 	void index() throws Exception {
 		ResultActions result = mockMvc.perform(get("/room")
-			.accept(MediaType.TEXT_HTML));
+			 .accept(MediaType.TEXT_HTML));
 
 		result.andExpect(status().isOk());
 		result.andExpect(model().attributeExists("rooms"));
@@ -46,8 +46,8 @@ class RoomControllerTest {
 		String roomName = "A";
 
 		ResultActions result = mockMvc.perform(get("/room/" + roomName)
-			.accept(MediaType.APPLICATION_FORM_URLENCODED)
-			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			 .accept(MediaType.APPLICATION_FORM_URLENCODED)
+			 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
 		);
 
 		result.andExpect(status().isOk());
@@ -60,9 +60,9 @@ class RoomControllerTest {
 	@Test
 	void save() throws Exception {
 		ResultActions result = mockMvc.perform(post("/room")
-			.sessionAttr("room", Room.create("Z-909", 1000l))
-			.accept(MediaType.APPLICATION_FORM_URLENCODED)
-			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			 .sessionAttr("room", Room.create("Z-909", 1000l))
+			 .accept(MediaType.APPLICATION_FORM_URLENCODED)
+			 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
 		);
 
 		result.andExpect(status().is3xxRedirection());

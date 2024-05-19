@@ -16,6 +16,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+
 import com.gmoon.springsecurityjwt.jwt.exception.InvalidAuthTokenException;
 import com.gmoon.springsecurityjwt.jwt.exception.NotFoundAuthenticationSchemaException;
 import com.gmoon.springsecurityjwt.user.Role;
@@ -32,26 +33,26 @@ public final class JwtUtil {
 	private final JWTVerifier verifier;
 
 	public JwtUtil(@Value("${jwt.secret}") String secret,
-		@Value("${api.version:v1}") String apiVersion) {
+		 @Value("${api.version:v1}") String apiVersion) {
 		this.apiVersion = apiVersion;
 		this.algorithm = Algorithm.HMAC256(secret);
 		this.verifier = JWT.require(algorithm)
-			.withIssuer(apiVersion)
-			.acceptLeeway(SECONDS_OF_TOLERANCE_RANGE)
-			.acceptExpiresAt(Duration.ofDays(DAY_OF_EXPIRATION).getSeconds())
-			.build();
+			 .withIssuer(apiVersion)
+			 .acceptLeeway(SECONDS_OF_TOLERANCE_RANGE)
+			 .acceptExpiresAt(Duration.ofDays(DAY_OF_EXPIRATION).getSeconds())
+			 .build();
 	}
 
 	public String generate(User user) {
 		try {
 			ZonedDateTime today = ZonedDateTime.now();
 			String token = JWT.create()
-				.withIssuer(apiVersion)
-				.withClaim("username", user.getUsername())
-				.withClaim("role", user.getRole().name())
-				.withIssuedAt(Date.from(today.toInstant()))
-				.withExpiresAt(Date.from(today.plusDays(DAY_OF_EXPIRATION).toInstant()))
-				.sign(algorithm);
+				 .withIssuer(apiVersion)
+				 .withClaim("username", user.getUsername())
+				 .withClaim("role", user.getRole().name())
+				 .withIssuedAt(Date.from(today.toInstant()))
+				 .withExpiresAt(Date.from(today.plusDays(DAY_OF_EXPIRATION).toInstant()))
+				 .sign(algorithm);
 			return String.format("%s %s", AuthenticationSchema.BEARER.getName(), token);
 		} catch (JWTCreationException e) {
 			throw new JWTCreationException("Invalid Signing configuration or Couldn't convert Claims.", e);

@@ -4,5 +4,6 @@ import java.util.List;
 
 public interface TeamRepositoryCustom {
 	List<Team> findAll();
+
 	Team getById(Long teamId);
 }

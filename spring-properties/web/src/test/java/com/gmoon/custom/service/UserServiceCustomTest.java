@@ -19,6 +19,6 @@ class UserServiceCustomTest {
 		String username = userService.getUsername();
 
 		assertThat(username)
-			.isEqualTo("web admin");
+			 .isEqualTo("web admin");
 	}
 }

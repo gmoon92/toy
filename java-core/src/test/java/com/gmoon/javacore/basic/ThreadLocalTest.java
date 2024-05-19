@@ -15,8 +15,8 @@ public class ThreadLocalTest {
 		ThreadLocal<List<String>> threadLocal = ThreadLocal.withInitial(ArrayList::new);
 
 		List<String> filedNames = Arrays.stream(Account.class.getDeclaredFields())
-			.map(Field::getName)
-			.collect(Collectors.toList());
+			 .map(Field::getName)
+			 .collect(Collectors.toList());
 
 		threadLocal.set(filedNames);
 		System.out.println(Thread.currentThread().getName() + ", objs: " + threadLocal.get());

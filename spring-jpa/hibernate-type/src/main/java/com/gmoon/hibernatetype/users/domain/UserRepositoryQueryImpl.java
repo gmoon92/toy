@@ -20,16 +20,16 @@ public class UserRepositoryQueryImpl implements UserRepositoryQuery {
 	@Override
 	public List<User> findAllByEncEmail(String email) {
 		return factory.select(
-				Projections.constructor(
-					User.class,
-					user.email,
-					user.encEmail
-				)
-			)
-			.from(user)
-			.where(
-				user.encEmail.eq(email)
-			)
-			.fetch();
+				  Projections.constructor(
+					   User.class,
+					   user.email,
+					   user.encEmail
+				  )
+			 )
+			 .from(user)
+			 .where(
+				  user.encEmail.eq(email)
+			 )
+			 .fetch();
 	}
 }

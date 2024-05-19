@@ -36,7 +36,7 @@ class GenericTest {
 		MemberRepository repository = new MemberRepository();
 		Class<Member> persistentClass = repository.getPersistentClass();
 		assertThat(persistentClass.getTypeName())
-			.isEqualTo(Member.class.getName());
+			 .isEqualTo(Member.class.getName());
 	}
 
 	private void verifyTargetGenericType(ParameterizedType superClassGenericType) throws Exception {
@@ -46,13 +46,13 @@ class GenericTest {
 		Member member = (Member)constructor.newInstance(id);
 
 		assertThat(member)
-			.isEqualTo(new Member(id));
+			 .isEqualTo(new Member(id));
 	}
 
 	private void verifyIdGenericType(ParameterizedType superClassGenericType) {
 		Class<?> idClass = (Class<?>)superClassGenericType.getActualTypeArguments()[GENERIC_ID];
 		assertThat(idClass.getTypeName())
-			.isEqualTo(String.class.getName());
+			 .isEqualTo(String.class.getName());
 	}
 
 	public static class MemberRepository extends JpaRepository<Member, String> {

@@ -11,12 +11,12 @@ import com.gmoon.core.config.TeamConfig;
 @Import({PropertiesConfig.class, TeamConfig.class})
 @Configuration
 @ComponentScan(
-	basePackages = {"com.gmoon"},
-	excludeFilters = {
-		@ComponentScan.Filter(Configuration.class) ,
-		@ComponentScan.Filter(type = FilterType.CUSTOM, classes = OverrideComponentExcludeFilter.class)
+	 basePackages = {"com.gmoon"},
+	 excludeFilters = {
+		  @ComponentScan.Filter(Configuration.class),
+		  @ComponentScan.Filter(type = FilterType.CUSTOM, classes = OverrideComponentExcludeFilter.class)
 
-	}
+	 }
 )
 public class MainConfig {
 }

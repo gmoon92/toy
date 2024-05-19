@@ -31,10 +31,10 @@ class TeamRepositoryTest extends BaseRepositoryTest {
 		teamRepository.deleteAll();
 
 		List<Member> savedMembers = memberRepository.saveAll(
-			Arrays.asList(
-				Member.newInstance("gmoon"),
-				Member.newInstance("anonymousUser1")
-			));
+			 Arrays.asList(
+				  Member.newInstance("gmoon"),
+				  Member.newInstance("anonymousUser1")
+			 ));
 
 		Team web1 = Team.newInstance("web1");
 		web1.addMembers(savedMembers);
@@ -56,8 +56,8 @@ class TeamRepositoryTest extends BaseRepositoryTest {
 
 		// then
 		assertThat(teamRepository.save(web1).getTeamMembers())
-			.hasSize(2)
-			.contains(new TeamMember(anonymousUser2, web1), new TeamMember(gmoon, web1));
+			 .hasSize(2)
+			 .contains(new TeamMember(anonymousUser2, web1), new TeamMember(gmoon, web1));
 	}
 
 	@Test

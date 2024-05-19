@@ -35,8 +35,8 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
 		return context -> {
 			Optional<Date> lastCompletionTime = Optional.ofNullable(context.lastCompletionTime());
 			Instant nextExecutionTime = lastCompletionTime.orElseGet(Date::new)
-				.toInstant()
-				.plusMillis(alarmJobs.getPlusSecondsDelay());
+				 .toInstant()
+				 .plusMillis(alarmJobs.getPlusSecondsDelay());
 			return Date.from(nextExecutionTime);
 		};
 	}

@@ -30,9 +30,9 @@ public abstract class BaseSpringBootTest {
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			.apply(springSecurity())
-			.alwaysDo(print())
-			.build();
+			 .apply(springSecurity())
+			 .alwaysDo(print())
+			 .build();
 	}
 
 	public MockHttpServletRequestBuilder get(String urlTemplate, Object... uriVars) {

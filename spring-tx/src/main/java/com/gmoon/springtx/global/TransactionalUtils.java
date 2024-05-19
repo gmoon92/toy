@@ -16,7 +16,7 @@ public class TransactionalUtils {
 	public static void logging(Signature signature) {
 		TransactionStatus transactionStatus = getTransactionStatus();
 		Object transaction = ((DefaultTransactionStatus)transactionStatus)
-			.getTransaction();
+			 .getTransaction();
 		String txName = TransactionSynchronizationManager.getCurrentTransactionName();
 		log.info("tx-id({}, {}): {}", transaction.hashCode(), signature, txName);
 	}

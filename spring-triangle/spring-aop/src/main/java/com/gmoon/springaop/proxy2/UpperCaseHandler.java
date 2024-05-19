@@ -22,7 +22,7 @@ public class UpperCaseHandler implements InvocationHandler {
 		Object ret = method.invoke(target, args);
 
 		if (ret instanceof String // 메소드 리턴 타입이 String인 경우만 대문자 변경
-			&& method.getName().startsWith("say")) { // 메소드 이름이 say로 시작될 경우만
+			 && method.getName().startsWith("say")) { // 메소드 이름이 say로 시작될 경우만
 			return ((String)ret).toUpperCase(); // 부가기능 제공
 		}
 

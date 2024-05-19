@@ -58,8 +58,8 @@ public abstract class Pageable implements Serializable {
 		}
 
 		return BigDecimal.valueOf(totalCount)
-			.divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
-			.toBigInteger()
-			.intValue();
+			 .divide(BigDecimal.valueOf(pageSize), 0, RoundingMode.UP)
+			 .toBigInteger()
+			 .intValue();
 	}
 }

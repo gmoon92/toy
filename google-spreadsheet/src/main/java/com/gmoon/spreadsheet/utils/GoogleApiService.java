@@ -38,20 +38,20 @@ public final class GoogleApiService {
 	private static final String CREDENTIALS_FILE_PATH = "src/main/resources/google/credentials.json";
 	private static final int CREDENTIALS_LOCAL_SERVER_PORT = 8888;
 	private static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY, DriveScopes.DRIVE,
-		DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA_READONLY);
+		 DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA_READONLY);
 
 	public static Sheets getSheetService() throws IOException, GeneralSecurityException {
 		final NetHttpTransport googleNetHttpTransport = getNetHttpTransport();
 		return new Sheets.Builder(googleNetHttpTransport, JSON_FACTORY, getCredentials(googleNetHttpTransport))
-			.setApplicationName(APPLICATION_NAME)
-			.build();
+			 .setApplicationName(APPLICATION_NAME)
+			 .build();
 	}
 
 	public static Drive getDriveService() throws GeneralSecurityException, IOException {
 		final NetHttpTransport HTTP_TRANSPORT = getNetHttpTransport();
 		return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-			.setApplicationName(APPLICATION_NAME)
-			.build();
+			 .setApplicationName(APPLICATION_NAME)
+			 .build();
 	}
 
 	private static NetHttpTransport getNetHttpTransport() throws GeneralSecurityException, IOException {
@@ -59,38 +59,38 @@ public final class GoogleApiService {
 	}
 
 	public static Spreadsheet getSpreadsheetIncludeGridData(String spreadsheetId) throws
-		IOException,
-		GeneralSecurityException {
+		 IOException,
+		 GeneralSecurityException {
 		return getSheetService().spreadsheets()
-			.get(spreadsheetId)
-			.setPrettyPrint(false)
-			.setIncludeGridData(true)
-			.execute();
+			 .get(spreadsheetId)
+			 .setPrettyPrint(false)
+			 .setIncludeGridData(true)
+			 .execute();
 	}
 
 	public static ValueRange getValueRange(String spreadsheetId, String sheetName, String cellRange) throws
-		IOException,
-		GeneralSecurityException {
+		 IOException,
+		 GeneralSecurityException {
 		final String range = String.format("%s!%s", sheetName, cellRange);
 		return getSheetService().spreadsheets().values()
-			.get(spreadsheetId, range)
-			.execute();
+			 .get(spreadsheetId, range)
+			 .execute();
 	}
 
 	// Build flow and trigger user authorization request.
 	private static Credential getCredentials(final NetHttpTransport googleNetHttpTransport) throws IOException {
 		GoogleClientSecrets clientSecrets = getClientSecrets();
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(googleNetHttpTransport, JSON_FACTORY,
-			clientSecrets, SCOPES)
-			.setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-			.setAccessType("offline")
-			.build();
+			 clientSecrets, SCOPES)
+			 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+			 .setAccessType("offline")
+			 .build();
 
 		LocalServerReceiver receiver = new LocalServerReceiver.Builder()
-			.setPort(CREDENTIALS_LOCAL_SERVER_PORT)
-			.build();
+			 .setPort(CREDENTIALS_LOCAL_SERVER_PORT)
+			 .build();
 		return new AuthorizationCodeInstalledApp(flow, receiver)
-			.authorize("user");
+			 .authorize("user");
 	}
 
 	// Load client secrets.

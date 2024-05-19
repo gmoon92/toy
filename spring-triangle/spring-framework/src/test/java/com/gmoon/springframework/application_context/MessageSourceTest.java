@@ -38,8 +38,8 @@ public class MessageSourceTest {
 
 		// then
 		assertAll(() -> assertThat(messageSource).isExactlyInstanceOf(ResourceBundleMessageSource.class),
-			() -> assertThat(language)
-				.isEqualTo("안녕 gmoon"));
+			 () -> assertThat(language)
+				  .isEqualTo("안녕 gmoon"));
 	}
 
 	@TestConfiguration

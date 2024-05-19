@@ -58,10 +58,10 @@ public abstract class Product implements Serializable {
 
 	protected Product withPrice(Double price, Currency currency) {
 		this.price = Price.builder()
-			.product(this)
-			.price(price)
-			.currency(currency)
-			.build();
+			 .product(this)
+			 .price(price)
+			 .currency(currency)
+			 .build();
 		return this;
 	}
 }

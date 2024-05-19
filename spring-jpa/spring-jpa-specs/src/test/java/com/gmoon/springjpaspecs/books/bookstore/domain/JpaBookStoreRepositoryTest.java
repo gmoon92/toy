@@ -14,6 +14,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.querydsl.core.types.Order;
+
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
@@ -22,7 +24,6 @@ import com.gmoon.springjpaspecs.global.domain.SupportDataJpaTest;
 import com.gmoon.springjpaspecs.global.specs.conditional.Specification;
 import com.gmoon.springjpaspecs.global.specs.conditional.Specs;
 import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
-import com.querydsl.core.types.Order;
 
 class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 
@@ -33,9 +34,9 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 	void create() {
 		BookStore bookStore = new BookStore("gmoon-store1");
 		bookStore.addBook(
-			"book-no0",
-			new BookQuantity(10),
-			BookType.ETC
+			 "book-no0",
+			 new BookQuantity(10),
+			 BookType.ETC
 		);
 
 		BookStore savedBookStore = repository.save(bookStore);
@@ -49,7 +50,7 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 		String id = "book-store-1";
 
 		BookStore bookStore = repository.findById(id)
-			.orElseThrow(EntityNotFoundException::new);
+			 .orElseThrow(EntityNotFoundException::new);
 
 		assertThat(bookStore.getName()).isEqualTo("gmoons");
 	}
@@ -60,7 +61,7 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 		OrderSpecification orderSpec = BookStoreOrderSpec.create(Order.ASC, sortTargetType);
 
 		assertThatCode(() -> repository.findAll(orderSpec))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -70,19 +71,19 @@ class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 		List<BookStore> all = repository.findAll();
 
 		Specification<BookStoreBook> isDisPlayed = Specs.<BookStoreBook>create()
-			.and(
-				BookStoreBook::isDisplay,
-				BookStoreBook::availableSale
-			);
+			 .and(
+				  BookStoreBook::isDisplay,
+				  BookStoreBook::availableSale
+			 );
 
 		List<BookStoreBook> actual = all.stream()
-			.flatMap(bookStore -> bookStore.getStoredBooks().stream())
-			.filter(isDisPlayed::isSatisfiedBy)
-			.collect(Collectors.toList());
+			 .flatMap(bookStore -> bookStore.getStoredBooks().stream())
+			 .filter(isDisPlayed::isSatisfiedBy)
+			 .collect(Collectors.toList());
 
 		assertThat(actual)
-			.map(BookStoreBook::getStatus)
-			.containsOnly(BookStatus.DISPLAY);
+			 .map(BookStoreBook::getStatus)
+			 .containsOnly(BookStatus.DISPLAY);
 	}
 
 	@AfterEach

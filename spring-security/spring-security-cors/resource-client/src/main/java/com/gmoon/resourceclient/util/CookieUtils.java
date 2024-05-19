@@ -59,10 +59,10 @@ public class CookieUtils {
 
 	public Cookie get(HttpServletRequest request, String name) {
 		return getCookies(request)
-			.stream()
-			.filter(cookie -> StringUtils.equals(name, cookie.getName()))
-			.findFirst()
-			.orElseThrow(IllegalArgumentException::new);
+			 .stream()
+			 .filter(cookie -> StringUtils.equals(name, cookie.getName()))
+			 .findFirst()
+			 .orElseThrow(IllegalArgumentException::new);
 	}
 
 	private List<Cookie> getCookies(HttpServletRequest request) {

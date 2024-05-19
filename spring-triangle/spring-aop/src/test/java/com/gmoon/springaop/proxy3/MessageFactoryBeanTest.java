@@ -33,8 +33,8 @@ class MessageFactoryBeanTest {
 
 		// then
 		assertThat(message)
-			.isInstanceOf(Message.class)
-			.hasFieldOrPropertyWithValue("text", "Factory Bean"); // factory bean이 생성해주는 object
+			 .isInstanceOf(Message.class)
+			 .hasFieldOrPropertyWithValue("text", "Factory Bean"); // factory bean이 생성해주는 object
 	}
 
 	/**
@@ -52,6 +52,6 @@ class MessageFactoryBeanTest {
 
 		// then
 		assertThat(factory)
-			.isInstanceOf(MessageFactoryBean.class); // <- bean
+			 .isInstanceOf(MessageFactoryBean.class); // <- bean
 	}
 }

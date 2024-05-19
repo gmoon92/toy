@@ -21,7 +21,7 @@ public class DefaultCache implements Cache {
 	private DefaultCache(String key, Duration ttl) {
 		Assert.notNull(key, "cache key is null.");
 		this.key = String.format("%s:%s", CACHE_KEY_STORAGE, key);
-		this.ttl  = ttl;
+		this.ttl = ttl;
 	}
 
 	public static DefaultCache create(String key) {

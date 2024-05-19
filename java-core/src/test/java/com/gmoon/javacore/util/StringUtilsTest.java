@@ -1,6 +1,6 @@
 package com.gmoon.javacore.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class StringUtilsTest {
 		String random = StringUtils.randomAlphabetic(length);
 
 		assertThat(random)
-			.hasSize(length)
-			.isNotEqualTo(StringUtils.randomAlphabetic(length));
+			 .hasSize(length)
+			 .isNotEqualTo(StringUtils.randomAlphabetic(length));
 	}
 }

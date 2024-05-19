@@ -16,9 +16,9 @@ public enum Level {
 
 	public static Level valueOf(int value) {
 		return Arrays.stream(Level.values())
-			.filter(level -> level.equalsValueOf(value))
-			.findFirst()
-			.orElseThrow(() -> new AssertionError(String.format("Unknown value: %d", value)));
+			 .filter(level -> level.equalsValueOf(value))
+			 .findFirst()
+			 .orElseThrow(() -> new AssertionError(String.format("Unknown value: %d", value)));
 	}
 
 	private boolean equalsValueOf(int value) {

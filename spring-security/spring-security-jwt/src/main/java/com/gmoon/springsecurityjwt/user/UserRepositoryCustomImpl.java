@@ -14,10 +14,10 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 	public Optional<User> findAdminUser() {
 		QUser user = QUser.user;
 		User admin = jpaQueryFactory.select(user)
-			.from(user)
-			.where(user.role.eq(Role.ADMIN))
-			.limit(1)
-			.fetchOne();
+			 .from(user)
+			 .where(user.role.eq(Role.ADMIN))
+			 .limit(1)
+			 .fetchOne();
 		return Optional.ofNullable(admin);
 	}
 }

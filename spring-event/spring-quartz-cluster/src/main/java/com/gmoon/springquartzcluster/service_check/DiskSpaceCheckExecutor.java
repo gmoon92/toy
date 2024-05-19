@@ -30,7 +30,7 @@ public class DiskSpaceCheckExecutor implements ServiceStatusChecker {
 		int thresholdPercentage = properties.getDiskThresholdPercentage();
 		float usage = getPercent(total, used);
 		log.info("thresholdPercentage: {}, usage: {}, path: {}, total: {}, available: {}", thresholdPercentage, usage,
-			dir.getAbsolutePath(), total, available);
+			 dir.getAbsolutePath(), total, available);
 		if (usage > thresholdPercentage) {
 			throw new DiskUsageExceedsException();
 		}

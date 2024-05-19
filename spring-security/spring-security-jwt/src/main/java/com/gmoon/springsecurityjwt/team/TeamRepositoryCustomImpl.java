@@ -17,16 +17,16 @@ public class TeamRepositoryCustomImpl implements TeamRepositoryCustom {
 	@Override
 	public List<Team> findAll() {
 		return jpaQueryFactory.select(team)
-			.from(team)
-			.leftJoin(team.users, teamUser).fetchJoin()
-			.leftJoin(teamUser.user, user).fetchJoin()
-			.fetch();
+			 .from(team)
+			 .leftJoin(team.users, teamUser).fetchJoin()
+			 .leftJoin(teamUser.user, user).fetchJoin()
+			 .fetch();
 	}
 
 	@Override
 	public Team getById(Long teamId) {
 		return jpaQueryFactory.select(QTeam.create(team.id, team.name))
-			.from(team)
-			.fetchOne();
+			 .from(team)
+			 .fetchOne();
 	}
 }

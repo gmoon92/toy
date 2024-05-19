@@ -19,7 +19,7 @@ public class QRCodeImage {
 	public static byte[] create(String contents) {
 		BitMatrix bitMatrix = newBitMatrix(contents);
 		return createImageOutputStream(bitMatrix)
-			.toByteArray();
+			 .toByteArray();
 	}
 
 	public static String getImageDataUrl(String contents) {

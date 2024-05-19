@@ -14,6 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+
 import com.gmoon.springsecurityjwt.jwt.exception.JwtVerifyException;
 import com.gmoon.springsecurityjwt.user.User;
 
@@ -29,7 +30,9 @@ public class JwtVerifyFilter extends BasicAuthenticationFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws
+		 IOException,
+		 ServletException {
 		String token = request.getHeader(JwtAuthenticationFilter.HEADER_NAME);
 		try {
 			User user = jwtUtil.decode(token);

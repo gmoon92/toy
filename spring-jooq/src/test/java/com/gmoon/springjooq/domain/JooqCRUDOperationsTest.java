@@ -54,10 +54,10 @@ class JooqCRUDOperationsTest {
 	@Test
 	void update() {
 		dsl.update(jAccessLog)
-			.set(jAccessLog.USERNAME, "test")
-			.set(jAccessLog.OS, OperatingSystem.LINUX.name())
-			.where(jAccessLog.ID.eq("none"))
-			.execute();
+			 .set(jAccessLog.USERNAME, "test")
+			 .set(jAccessLog.OS, OperatingSystem.LINUX.name())
+			 .where(jAccessLog.ID.eq("none"))
+			 .execute();
 	}
 
 	@Nested
@@ -86,8 +86,8 @@ class JooqCRUDOperationsTest {
 			@Test
 			void fetch() {
 				Result<Record> fetch = dsl.select()
-					.from(jAccessLog)
-					.fetch();
+					 .from(jAccessLog)
+					 .fetch();
 
 				List<String> values1 = fetch.getValues(jAccessLog.OS);
 				List<OperatingSystem> values2 = fetch.getValues(3, OperatingSystem.class);
@@ -123,24 +123,24 @@ class JooqCRUDOperationsTest {
 			@Test
 			void fetchInto() {
 				List<AccessLog> accessLogs = dsl.select(jAccessLog.ID)
-					.from(jAccessLog)
-					.where(
-						jAccessLog.ID.isNotNull(),
-						jAccessLog.OS.eq(OperatingSystem.WINDOW.name())
-							.and(jAccessLog.IP.isNotNull())
-					)
-					.groupBy(jAccessLog.ID)
-					.having(DSL.count().gt(0))
-					.limit(2)
-					.offset(0)
-					.fetchInto(AccessLog.class);
+					 .from(jAccessLog)
+					 .where(
+						  jAccessLog.ID.isNotNull(),
+						  jAccessLog.OS.eq(OperatingSystem.WINDOW.name())
+							   .and(jAccessLog.IP.isNotNull())
+					 )
+					 .groupBy(jAccessLog.ID)
+					 .having(DSL.count().gt(0))
+					 .limit(2)
+					 .offset(0)
+					 .fetchInto(AccessLog.class);
 
 				assertThat(accessLogs).isNotEmpty()
-					.allMatch(row ->
-						StringUtils.isNotBlank(row.getId())
-							&& StringUtils.isBlank(row.getIp())
-							&& StringUtils.isBlank(row.getUsername())
-							&& row.getOs() == null);
+					 .allMatch(row ->
+						  StringUtils.isNotBlank(row.getId())
+							   && StringUtils.isBlank(row.getIp())
+							   && StringUtils.isBlank(row.getUsername())
+							   && row.getOs() == null);
 			}
 		}
 
@@ -156,10 +156,10 @@ class JooqCRUDOperationsTest {
 			@Test
 			void fetchOne() {
 				String result = dsl.select(jAccessLog.OS)// 컬럼을 지정하자.
-					.from(jAccessLog)
-					.where(jAccessLog.OS.isNull())
-					.limit(1) // fetch one 반드시 지정
-					.fetchOne(jAccessLog.OS);
+					 .from(jAccessLog)
+					 .where(jAccessLog.OS.isNull())
+					 .limit(1) // fetch one 반드시 지정
+					 .fetchOne(jAccessLog.OS);
 
 				assertThat(result).isNull();
 			}
@@ -177,10 +177,10 @@ class JooqCRUDOperationsTest {
 			@Test
 			void fetchOne2() {
 				String result = dsl.select()
-					.from(jAccessLog)
-					.where(jAccessLog.OS.isNull())
-					.limit(1) // fetch one 반드시 지정
-					.fetchOne(jAccessLog.OS);
+					 .from(jAccessLog)
+					 .where(jAccessLog.OS.isNull())
+					 .limit(1) // fetch one 반드시 지정
+					 .fetchOne(jAccessLog.OS);
 
 				assertThat(result).isNull();
 			}
@@ -194,7 +194,7 @@ class JooqCRUDOperationsTest {
 	@Test
 	void delete() {
 		dsl.delete(jAccessLog)
-			.where(jAccessLog.ID.eq("alr000001"))
-			.execute();
+			 .where(jAccessLog.ID.eq("alr000001"))
+			 .execute();
 	}
 }

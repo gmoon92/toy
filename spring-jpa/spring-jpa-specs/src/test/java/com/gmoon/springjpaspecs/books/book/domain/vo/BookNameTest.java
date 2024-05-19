@@ -14,7 +14,7 @@ class BookNameTest {
 	@Test
 	void create() {
 		assertThatCode(() -> new BookName("gmoon"))
-			.doesNotThrowAnyException();
+			 .doesNotThrowAnyException();
 	}
 
 	@DisplayName("이름은 비어있을 수 없다.")
@@ -22,6 +22,6 @@ class BookNameTest {
 	@NullAndEmptySource
 	void error(String name) {
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> new BookName(name));
+			 .isThrownBy(() -> new BookName(name));
 	}
 }

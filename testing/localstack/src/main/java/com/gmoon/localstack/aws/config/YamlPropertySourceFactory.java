@@ -1,6 +1,7 @@
 package com.gmoon.localstack.aws.config;
 
 import java.util.Properties;
+
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -15,8 +16,8 @@ public class YamlPropertySourceFactory implements PropertySourceFactory {
 		Resource resource = encodedResource.getResource();
 
 		return new PropertiesPropertySource(
-			resource.getFilename(),
-			getProperties(resource)
+			 resource.getFilename(),
+			 getProperties(resource)
 		);
 	}
 

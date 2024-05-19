@@ -19,7 +19,6 @@ class AccessLogExcelDownloadRepositoryTest {
 	@Autowired
 	private AccessLogExcelDownloadRepository repository;
 
-
 	@BeforeAll
 	static void beforeAll(@Autowired AccessLogRepository accessLogRepository) {
 		accessLogs = accessLogRepository.findAll();
@@ -29,8 +28,8 @@ class AccessLogExcelDownloadRepositoryTest {
 	@Test
 	void saveAll() {
 		List<AccessLogExcelDownload> registered = accessLogs.stream()
-			.map(AccessLogExcelDownload::create)
-			.collect(Collectors.toList());
+			 .map(AccessLogExcelDownload::create)
+			 .collect(Collectors.toList());
 
 		repository.saveAll(registered);
 	}
@@ -49,9 +48,9 @@ class AccessLogExcelDownloadRepositoryTest {
 
 	@Disabled
 	@DisplayName("JPA not supported insert query"
-		+ "https://github.com/querydsl/querydsl/issues/3027"
-		+ "https://github.com/querydsl/querydsl/issues/2663"
-		+ "https://github.com/querydsl/querydsl/issues/2724")
+		 + "https://github.com/querydsl/querydsl/issues/3027"
+		 + "https://github.com/querydsl/querydsl/issues/2663"
+		 + "https://github.com/querydsl/querydsl/issues/2724")
 	@Test
 	void bulkSaveAllAtQueryDsl() {
 		repository.bulkSaveAllAtQueryDsl(accessLogs);

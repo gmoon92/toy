@@ -18,17 +18,17 @@ import lombok.extern.slf4j.Slf4j;
 public class InMemoryRoomRepository implements RoomRepository {
 
 	private static final Map<String, Room> CACHES = Stream.of(
-		Room.create("A", 1_000l),
-		Room.create("B", 2_000l),
-		Room.create("C", 2_000l),
-		Room.create("D", 2_000l),
-		Room.create("E", 2_000l),
-		Room.create("F", 2_000l),
-		Room.create("G", 2_000l),
-		Room.create("H", 2_000l)
+		 Room.create("A", 1_000l),
+		 Room.create("B", 2_000l),
+		 Room.create("C", 2_000l),
+		 Room.create("D", 2_000l),
+		 Room.create("E", 2_000l),
+		 Room.create("F", 2_000l),
+		 Room.create("G", 2_000l),
+		 Room.create("H", 2_000l)
 	).collect(collectingAndThen(
-		toMap(Room::getName, Function.identity()),
-		HashMap::new));
+		 toMap(Room::getName, Function.identity()),
+		 HashMap::new));
 
 	@Override
 	public boolean exists(String name) {

@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TransactionAspect {
 
 	@Pointcut("@annotation(org.springframework.transaction.annotation.Transactional) "
-		+ "&& execution(* com.gmoon..*(..))")
+		 + "&& execution(* com.gmoon..*(..))")
 	public void pcdTransactional() {
 	}
 

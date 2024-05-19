@@ -32,8 +32,8 @@ class DecryptEnvironmentInitializerTest {
 		log.info("property: {}", property);
 
 		assertThat(property)
-			.isEqualTo(emailPassword)
-			.isEqualTo(systemProperties.getEmailPassword())
-			.isEqualTo("123");
+			 .isEqualTo(emailPassword)
+			 .isEqualTo(systemProperties.getEmailPassword())
+			 .isEqualTo("123");
 	}
 }
