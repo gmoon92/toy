@@ -186,7 +186,7 @@ class UnionPageResizerTest {
 
 		private <T extends Pageable> T resizedPage(int page, int groupTotalCount, Class<T> clazz) {
 			UnionPageResizer resizer = obtainProvider(page, pageSize, groupTotalCount, userTotalCount);
-			T listVO = resizer.getBasePaginatedVO(clazz);
+			T listVO = resizer.getPagination(clazz);
 			log.debug("===========Page{}-{}===========", page, groupTotalCount);
 			log.debug("{}", listVO.getClass().getSimpleName());
 			log.debug("adjusted page           : {}", listVO.getPage());

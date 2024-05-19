@@ -1,7 +1,6 @@
 package com.gmoon.springjpapagination.global.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,13 +52,14 @@ public class UnionPageResizer extends Pageable {
 		this.pageSize = unionPageable.getPageSize();
 
 		long prevTotalCount = 0;
-
 		for (CreatePagination createPagination : createPaginations) {
 			Pageable pageable = createPagination.newPagination();
 			ResizedPage resizedPage = obtainResizedPage(pageable, prevTotalCount);
 			prevTotalCount += resizedPage.getTotalCount();
 			resizedPages.add(resizedPage);
 		}
+
+		unionPageable.setTotalCount(getTotalCount());
 	}
 
 	public UnionPageResizer(int requestPage, int pageSize, List<Pageable> pageableList) {
@@ -134,15 +134,6 @@ public class UnionPageResizer extends Pageable {
 			 .isMerged();
 	}
 
-	public <T extends PaginatedContent<R>, R> List<R> getContent(Class<T> clazz, Function<T, List<R>> contentProvider) {
-		T BasePaginatedVO = getBasePaginatedVO(clazz);
-		if (isMergedData(BasePaginatedVO)) {
-			return contentProvider.apply(BasePaginatedVO);
-		}
-
-		return new ArrayList<>();
-	}
-
 	private ResizedPage get(Class<?> clazz) {
 		return resizedPages.stream()
 			 .filter(reference -> reference.clazz.equals(clazz))
@@ -150,9 +141,20 @@ public class UnionPageResizer extends Pageable {
 			 .orElseThrow(() -> new RuntimeException("not found page object."));
 	}
 
-	public <T extends Pageable> T getBasePaginatedVO(Class<T> clazz) {
+	public <T extends Pageable> T getPagination(Class<T> clazz) {
 		Pageable pageable = get(clazz).getPageable();
 		return clazz.cast(pageable);
+	}
+
+	public <DATA, T extends PaginatedContent<DATA>> T applyContent(Class<T> clazz, Function<T, DATA> contentProvider) {
+		ResizedPage resizedPage = get(clazz);
+		T paginatedContent = clazz.cast(resizedPage.getPageable());
+		if (resizedPage.isMerged()) {
+			DATA content = contentProvider.apply(paginatedContent);
+			paginatedContent.setContent(content);
+		}
+
+		return paginatedContent;
 	}
 
 	public long getTotalCount() {
