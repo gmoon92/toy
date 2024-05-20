@@ -45,11 +45,13 @@ public class UserService {
 			 )
 		);
 
-		setContent(listVO, resizer, search);
+		setContent(listVO, resizer);
 		return listVO;
 	}
 
-	private void setContent(UserContentListVO listVO, UnionPageResizer resizer, UserContentListVO.Search search) {
+	private void setContent(UserContentListVO listVO, UnionPageResizer resizer) {
+		UserContentListVO.Search search = listVO.getSearch();
+
 		List<UserContentVO> groups = resizer.applyContent(
 				  UserGroupListVO.class,
 				  pageable ->
