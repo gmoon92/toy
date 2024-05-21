@@ -8,4 +8,6 @@
 - pns
 - async merged
 - jpa union pagination
-- generic
+- java-core
+  - generic
+  - variance
