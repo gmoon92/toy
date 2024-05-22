@@ -53,7 +53,7 @@ public class JDBCRepository {
 
 ## TransactionInterceptor
 
-Spring 트랜잭은은 AOP 를 활용하여 트랜잭션 생명 주기를 관리한다.
+Spring 트랜잭션은 AOP 를 활용하여 트랜잭션 생명 주기를 관리한다.
 
 - org.springframework.transaction.interceptor.TransactionInterceptor
 - 기본(getConnection(), setAutoCommit(false), commit())방식으로 접근.
