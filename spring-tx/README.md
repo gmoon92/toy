@@ -127,6 +127,31 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
     - 프록시 객체가 생성되고 실제 클라이언트의 요청은 프록시를 통해 TransactionInterceptor를 사용해 트랜잭션의 생명 주기를 관리한다.
     - 타깃 메서드를 호출하고 커밋/롤백을 수행한다.
 
+## 트랜잭션 전파
+
+트랜잭션을 수행할 때 커넥션 단위로 수행하기 때문에 커넥션 객체를 넘겨서 수행해야 한다.
+
+하지만 이를 매번 넘겨주기가 어렵기도 하고 귀찮기도 하다. 이를 넘겨서 수행하지 않고, 여러 트랜잭션 관련 메서드의 호출을 하나의 트랜잭션에 묶이도록 하는 것을 "트랜잭션 전파"라고 한다.
+
+```java
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gmoon.springtx.spaces.domain.SpaceUserRepository;
+
+@Service
+@Transactional(readOnly = true)
+public class SpaceUserService {
+
+	private final SpaceUserRepository spaceUserRepository;
+	
+}
+``` 
+
+Spring 프레임워크에서는 "트랜잭션 전파" 라는 논리적인 개념을 @Transactional 어노테이션을 통해 여러 쿼리 관련 코드들을 하나의 트랜잭션으로 처리하게 된다. 
+
+이 개념을 "논리적 트랜잭션"이라 하고, Spring 에서 트랜잭션에 대한 개념을 크게 "물리적 트랜잭션"과 "논리적 트랜잭션"으로 구분한다.
+
 ## 물리적 트랜잭션 vs 논리적 트랜잭션
 
 - 물리적 트랜잭션: 실제 JDBC 트랜잭션
