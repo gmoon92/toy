@@ -19,8 +19,4 @@
     <module>spring-web-converter</module>
     <module>spring-web-session</module>
   </modules>
-
-  <properties>
-    <java.version>1.8</java.version>
-  </properties>
 </project>

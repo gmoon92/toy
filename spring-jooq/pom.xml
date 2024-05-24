@@ -13,9 +13,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-jooq</name>
     <description>spring-jooq</description>
+
     <properties>
-        <java.version>1.8</java.version>
-        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <jdbc.driver-class-name>com.mysql.cj.jdbc.Driver</jdbc.driver-class-name>
         <jdbc.dialect>com.mysql.cj.jdbc.Driver</jdbc.dialect>
         <jdbc.schema>jooq</jdbc.schema>
@@ -23,6 +22,7 @@
         <jdbc.username>root</jdbc.username>
         <jdbc.password>111111</jdbc.password>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

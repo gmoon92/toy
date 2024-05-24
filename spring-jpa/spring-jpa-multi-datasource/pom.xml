@@ -13,9 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-jpa-multi-datasource</name>
     <description>spring-jpa-multi-datasource</description>
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

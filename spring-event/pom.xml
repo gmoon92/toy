@@ -22,8 +22,4 @@
         <module>spring-event-listener</module>
         <module>spring-fcm</module>
     </modules>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>

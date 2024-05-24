@@ -20,6 +20,11 @@
         <module>resource-server</module>
     </modules>
 
+    <properties>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,13 +62,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-collections4.version>4.4</commons-collections4.version>
-    </properties>
 
     <build>
         <plugins>

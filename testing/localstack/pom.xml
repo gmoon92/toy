@@ -13,12 +13,13 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>localstack</name>
     <description>localstack</description>
+
     <properties>
-        <java.version>1.8</java.version>
         <aws-java-sdk-s3.version>1.12.295</aws-java-sdk-s3.version>
         <localstack-utils.version>0.2.21</localstack-utils.version>
         <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

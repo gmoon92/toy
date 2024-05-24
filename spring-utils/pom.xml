@@ -19,8 +19,4 @@
 		<module>spring-core-utils</module>
 		<module>spring-logging</module>
 	</modules>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 </project>

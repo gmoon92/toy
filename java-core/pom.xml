@@ -7,15 +7,15 @@
         <groupId>com.gmoon</groupId>
         <artifactId>toy</artifactId>
         <version>1.0-SNAPSHOT</version>
-	</parent>
+    </parent>
 
     <groupId>com.gmoon</groupId>
     <artifactId>java-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>java-core</name>
     <description>java-core</description>
+
     <properties>
-        <java.version>1.8</java.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <poi.version>4.1.1</poi.version>

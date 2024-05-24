@@ -15,7 +15,6 @@
     <name>spring-data-redis</name>
     <description>spring-data-redis</description>
     <properties>
-        <java.version>1.8</java.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <jackson-databind.version>2.13.1</jackson-databind.version>
     </properties>

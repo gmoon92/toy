@@ -13,9 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>querydsl-projections</name>
     <description>querydsl-projections</description>
-    <properties>
-        <querydsl.version>5.0.0</querydsl.version>
-    </properties>
 
     <dependencies>
         <dependency>

@@ -8,15 +8,17 @@
         <version>2.7.14</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.gmoon</groupId>
 	<artifactId>spring-event-listener</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-event-listener</name>
 	<description>spring-event-listener</description>
+
 	<properties>
-		<java.version>1.8</java.version>
 		<quick-perf.version>1.1.0</quick-perf.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

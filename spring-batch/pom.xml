@@ -13,8 +13,6 @@
     <name>spring-batch</name>
     <description>spring-batch</description>
     <properties>
-        <java.version>1.8</java.version>
-        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <h2.version>2.1.214</h2.version>
     </properties>
     <dependencies>

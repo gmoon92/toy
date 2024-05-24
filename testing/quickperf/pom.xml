@@ -8,15 +8,17 @@
         <artifactId>testing</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>com.gmoon</groupId>
     <artifactId>quickperf</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>quickperf</name>
     <description>quickperf</description>
+
     <properties>
-        <java.version>1.8</java.version>
         <quick-perf.version>1.1.0</quick-perf.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

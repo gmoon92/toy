@@ -13,11 +13,12 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>rest-assured</name>
     <description>rest-assured</description>
+
     <properties>
-        <java.version>1.8</java.version>
         <rest-assured.version>5.0.1</rest-assured.version>
         <spring-mock-mvc.version>5.0.1</spring-mock-mvc.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

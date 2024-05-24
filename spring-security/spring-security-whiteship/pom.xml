@@ -16,7 +16,6 @@
     <description>Spring Security Toy Project</description>
 
     <properties>
-        <java.version>1.8</java.version>
         <junit-vintage-engine.version>5.7.0</junit-vintage-engine.version>
     </properties>
 

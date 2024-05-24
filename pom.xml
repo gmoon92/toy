@@ -17,6 +17,13 @@
     <packaging>pom</packaging>
     <name>toy</name>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>17</java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
+        <spring-boot.version>2.7.14</spring-boot.version>
+    </properties>
+
     <modules>
         <module>google-spreadsheet</module>
         <module>java-core</module>
@@ -37,8 +44,4 @@
         <module>spring-utils</module>
         <module>testing</module>
     </modules>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>

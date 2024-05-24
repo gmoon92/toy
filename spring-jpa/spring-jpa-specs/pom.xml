@@ -13,10 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-jpa-specs</name>
     <description>spring-jpa-specs</description>
-    <properties>
-        <java.version>1.8</java.version>
-        <querydsl-core.version>5.0.0</querydsl-core.version>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

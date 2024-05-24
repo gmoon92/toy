@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import sun.security.jca.JCAUtil;
+// import sun.security.jca.JCAUtil;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -113,7 +113,8 @@ public final class RsaUtils {
 		private static KeyPair generateKeyPair() {
 			try {
 				KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM);
-				generator.initialize(KEY_SIZE, JCAUtil.getSecureRandom());
+				// generator.initialize(KEY_SIZE, JCAUtil.getSecureRandom());
+				generator.initialize(KEY_SIZE);
 				return generator.generateKeyPair();
 			} catch (Exception e) {
 				throw new RuntimeException(e);

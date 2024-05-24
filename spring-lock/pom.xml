@@ -19,8 +19,4 @@
         <module>spring-lock-redisson</module>
         <module>spring-jpa-lock</module>
     </modules>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 </project>

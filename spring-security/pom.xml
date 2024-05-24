@@ -23,8 +23,4 @@
         <module>spring-security-password-encoder</module>
         <module>spring-security-whiteship</module>
     </modules>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>

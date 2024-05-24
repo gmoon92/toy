@@ -7,14 +7,13 @@
 		<artifactId>spring-mvc</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
+
 	<groupId>com.gmoon</groupId>
 	<artifactId>spring-web-converter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-web-converter</name>
 	<description>spring-web-converter</description>
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
