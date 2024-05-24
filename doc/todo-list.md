@@ -11,3 +11,5 @@
 - java-core
   - generic
   - variance
+- testing
+  - jacoco
