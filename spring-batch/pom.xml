@@ -13,7 +13,7 @@
     <name>spring-batch</name>
     <description>spring-batch</description>
     <properties>
-        <h2.version>2.1.214</h2.version>
+        <h2.version>2.2.220</h2.version>
     </properties>
     <dependencies>
         <dependency>
