@@ -16,10 +16,12 @@
     <description>hibernate-performance</description>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
+            <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>
@@ -89,6 +91,7 @@
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
             <version>${querydsl-core.version}</version>
+            <classifier>jakarta</classifier>
         </dependency>
     </dependencies>
 
@@ -130,6 +133,7 @@
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-apt</artifactId>
                         <version>${querydsl-core.version}</version>
+                        <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>
             </plugin>

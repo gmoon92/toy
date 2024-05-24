@@ -8,11 +8,13 @@
         <artifactId>spring-event</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>com.gmoon</groupId>
     <artifactId>spring-async</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-async</name>
     <description>spring-async</description>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
