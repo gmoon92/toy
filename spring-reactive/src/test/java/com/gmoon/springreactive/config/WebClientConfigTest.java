@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -32,7 +33,7 @@ class WebClientConfigTest {
 		WebClient.RequestBodySpec bodySpec = postLoginSpec(username, password);
 
 		String token = bodySpec.exchangeToFlux(response -> {
-			HttpStatus httpStatus = response.statusCode();
+			HttpStatusCode httpStatus = response.statusCode();
 			if (HttpStatus.OK.equals(httpStatus)) {
 				ClientResponse.Headers headers = response.headers();
 				List<String> tokens = headers.header(HttpHeaders.AUTHORIZATION);
