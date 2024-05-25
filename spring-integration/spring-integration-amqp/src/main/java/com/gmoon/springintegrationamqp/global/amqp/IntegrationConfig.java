@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.handler.LoggingHandler;
 
@@ -37,7 +36,7 @@ class IntegrationConfig {
 	@Bean
 	public IntegrationFlow inSendMail(ConnectionFactory connectionFactory) {
 		String queueName = AmqpMessageDestination.SEND_MAIL.value;
-		return IntegrationFlows
+		return IntegrationFlow
 			 .from(Amqp.inboundAdapter(connectionFactory, queueName))
 			 .log(LoggingHandler.Level.DEBUG)
 			 .channel(MessageChannels.direct(queueName)) // channing 순서도 중요.
@@ -50,7 +49,7 @@ class IntegrationConfig {
 	 */
 	@Bean
 	public IntegrationFlow outSendMail(AmqpTemplate amqpTemplate) {
-		return IntegrationFlows
+		return IntegrationFlow
 			 .from(AmqpMessageDestination.SEND_MAIL.value)
 			 .handle(
 				  Amqp.outboundAdapter(amqpTemplate)
@@ -66,7 +65,7 @@ class IntegrationConfig {
 	@Bean
 	public IntegrationFlow inSaveMailLog(ConnectionFactory connectionFactory) {
 		String routingKey = AmqpMessageDestination.SAVE_MAIL_LOG.value;
-		return IntegrationFlows
+		return IntegrationFlow
 			 .from(Amqp.inboundAdapter(connectionFactory, routingKey))
 			 .log(LoggingHandler.Level.DEBUG)
 			 .transform(SaveMailLogVO::of)
