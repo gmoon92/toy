@@ -1,6 +1,5 @@
 package com.gmoon.springjooq.global;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.jooq.ConnectionProvider;
@@ -20,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -44,6 +44,7 @@ public class JooqConfig {
 				  .withUrl(dataSourceProperties.getUrl())
 				  .withUser(dataSourceProperties.getUsername())
 				  .withPassword(dataSourceProperties.getPassword()))
+
 			 .withGenerator(new Generator()
 				  .withDatabase(new Database()
 					   .withSchemaVersionProvider("SELECT 'V1' AS version") // todo make custom schema version provider.

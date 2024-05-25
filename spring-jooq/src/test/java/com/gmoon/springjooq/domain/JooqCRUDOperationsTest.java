@@ -17,8 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springjooq.accesslog.domain.AccessLog;
 import com.gmoon.springjooq.accesslog.domain.vo.OperatingSystem;
+import com.gmoon.springjooq.global.jooqschema.enums.TbAccessLogOs;
 import com.gmoon.springjooq.global.jooqschema.tables.TbAccessLog;
-import com.gmoon.springjooq.global.jooqschema.tables.records.TbAccessLogRecord;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,12 +37,22 @@ class JooqCRUDOperationsTest {
 	 */
 	@Test
 	void create() {
-		TbAccessLogRecord record = dsl.newRecord(jAccessLog);
-		record.setId("alr000001");
-		record.setUsername("guest");
-		record.setIp("254.0.0.0");
-		record.setOs(OperatingSystem.MAC.name());
-		record.store();
+		dsl.insertInto(jAccessLog)
+			 .set(jAccessLog.ID, "alr000001")
+			 .set(jAccessLog.USERNAME, "guest")
+			 .set(jAccessLog.IP, "254.0.0.0")
+			 .set(jAccessLog.OS, TbAccessLogOs.MAC)
+			 .execute();
+
+		// Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement
+		// "insert into ""PUBLIC"".""TB_ACCESS_LOG"" (""ID"", ""USERNAME"", ""IP"", ""OS"") values (?, ?, ?, ?) [*]returning ""PUBLIC"".""TB_ACCESS_LOG"".""ID""";
+		// SQL statement:
+		// TbAccessLogRecord record = dsl.newRecord(jAccessLog);
+		// record.setId("alr000001");
+		// record.setUsername("guest");
+		// record.setIp("254.0.0.0");
+		// record.setOs(TbAccessLogOs.MAC);
+		// record.store();
 	}
 
 	/***
@@ -55,7 +65,7 @@ class JooqCRUDOperationsTest {
 	void update() {
 		dsl.update(jAccessLog)
 			 .set(jAccessLog.USERNAME, "test")
-			 .set(jAccessLog.OS, OperatingSystem.LINUX.name())
+			 .set(jAccessLog.OS, TbAccessLogOs.LINUX)
 			 .where(jAccessLog.ID.eq("none"))
 			 .execute();
 	}
@@ -89,22 +99,25 @@ class JooqCRUDOperationsTest {
 					 .from(jAccessLog)
 					 .fetch();
 
-				List<String> values1 = fetch.getValues(jAccessLog.OS);
-				List<OperatingSystem> values2 = fetch.getValues(3, OperatingSystem.class);
+				List<TbAccessLogOs> values1 = fetch.getValues(jAccessLog.OS);
+				List<OperatingSystem> values2 = fetch.getValues(4, OperatingSystem.class);
 				List<OperatingSystem> values3 = fetch.getValues(jAccessLog.OS, OperatingSystem.class);
+				log.info("values1: {}", values1);
+				log.info("values2: {}", values2);
+				log.info("values3: {}", values3);
 				assertThat(values1).isNotEmpty();
 				assertThat(values2).isEqualTo(values3);
 
 				fetch.forEach(accessLog -> {
 					String username = accessLog.get(jAccessLog.USERNAME);
 					String ip = accessLog.get(jAccessLog.IP);
-					String os = accessLog.get(jAccessLog.OS);
+					TbAccessLogOs os = accessLog.get(jAccessLog.OS);
 					OperatingSystem osEnum = accessLog.get(jAccessLog.OS, OperatingSystem.class);
 					LocalDateTime attemptDt = accessLog.get(jAccessLog.ATTEMPT_DT);
 
 					assertThat(username).isNotBlank();
 					assertThat(ip).isNotBlank();
-					assertThat(os).isNotBlank();
+					assertThat(os).isNotNull();
 					assertThat(osEnum).isNotNull();
 					assertThat(attemptDt).isNotNull();
 				});
@@ -126,7 +139,7 @@ class JooqCRUDOperationsTest {
 					 .from(jAccessLog)
 					 .where(
 						  jAccessLog.ID.isNotNull(),
-						  jAccessLog.OS.eq(OperatingSystem.WINDOW.name())
+						  jAccessLog.OS.eq(TbAccessLogOs.WINDOW)
 							   .and(jAccessLog.IP.isNotNull())
 					 )
 					 .groupBy(jAccessLog.ID)
@@ -155,7 +168,7 @@ class JooqCRUDOperationsTest {
 			 */
 			@Test
 			void fetchOne() {
-				String result = dsl.select(jAccessLog.OS)// 컬럼을 지정하자.
+				TbAccessLogOs result = dsl.select(jAccessLog.OS)// 컬럼을 지정하자.
 					 .from(jAccessLog)
 					 .where(jAccessLog.OS.isNull())
 					 .limit(1) // fetch one 반드시 지정
@@ -176,7 +189,7 @@ class JooqCRUDOperationsTest {
 			 */
 			@Test
 			void fetchOne2() {
-				String result = dsl.select()
+				TbAccessLogOs result = dsl.select()
 					 .from(jAccessLog)
 					 .where(jAccessLog.OS.isNull())
 					 .limit(1) // fetch one 반드시 지정
