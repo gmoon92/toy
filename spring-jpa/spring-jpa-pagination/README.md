@@ -4,7 +4,7 @@
 
 - Spring boot 2.6.4
 - QueryDsl 5.0.0
-- MySql 8.0.20
+- MySql 8.0.28
 
 ## TOC
 
