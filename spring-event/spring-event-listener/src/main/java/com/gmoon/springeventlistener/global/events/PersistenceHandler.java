@@ -1,12 +1,11 @@
 package com.gmoon.springeventlistener.global.events;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Component

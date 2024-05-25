@@ -1,10 +1,9 @@
 package com.gmoon.springasync.config;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

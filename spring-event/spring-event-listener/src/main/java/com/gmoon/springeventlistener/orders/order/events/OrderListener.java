@@ -1,7 +1,5 @@
 package com.gmoon.springeventlistener.orders.order.events;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -14,6 +12,7 @@ import com.gmoon.springeventlistener.orders.cart.application.CartService;
 import com.gmoon.springeventlistener.users.user.domain.JpaUserRepository;
 import com.gmoon.springeventlistener.users.user.domain.User;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,10 +1,9 @@
 package com.gmoon.springquartzcluster.quartz.job_store.id;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import com.gmoon.springquartzcluster.quartz.job_store.constants.QuartzColumnLength;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

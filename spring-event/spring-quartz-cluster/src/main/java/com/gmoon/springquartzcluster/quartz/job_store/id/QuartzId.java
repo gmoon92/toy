@@ -2,11 +2,10 @@ package com.gmoon.springquartzcluster.quartz.job_store.id;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-
 import com.gmoon.springquartzcluster.quartz.job_store.constants.QuartzColumnLength;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

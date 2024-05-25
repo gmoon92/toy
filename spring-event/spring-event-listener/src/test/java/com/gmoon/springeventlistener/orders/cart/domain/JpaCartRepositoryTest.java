@@ -6,8 +6,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.Test;
 import org.quickperf.sql.annotation.ExpectDelete;
 import org.quickperf.sql.annotation.ExpectInsert;
@@ -17,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gmoon.springeventlistener.global.SupportDataJpaTest;
 import com.gmoon.springeventlistener.orders.cart.domain.vo.ProductNo;
 import com.gmoon.springeventlistener.orders.cart.domain.vo.UserId;
+
+import jakarta.persistence.EntityNotFoundException;
 
 class JpaCartRepositoryTest extends SupportDataJpaTest {
 

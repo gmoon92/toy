@@ -2,9 +2,8 @@ package com.gmoon.springeventlistener.orders.cart.domain.vo;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

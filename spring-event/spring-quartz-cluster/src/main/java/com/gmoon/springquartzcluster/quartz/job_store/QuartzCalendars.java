@@ -1,15 +1,14 @@
 package com.gmoon.springquartzcluster.quartz.job_store;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-
 import com.gmoon.springquartzcluster.quartz.job_store.constants.QuartzColumnLength;
 import com.gmoon.springquartzcluster.quartz.job_store.id.QuartzId;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

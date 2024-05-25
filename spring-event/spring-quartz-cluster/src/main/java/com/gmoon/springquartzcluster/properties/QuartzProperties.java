@@ -1,19 +1,24 @@
 package com.gmoon.springquartzcluster.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@ConstructorBinding
-@RequiredArgsConstructor
 @ConfigurationProperties(prefix = "service-check")
 public class QuartzProperties {
 	private final JvmMemoryUsage jvmMemoryUsage;
 	private final DiskUsage diskSpace;
 	private final CpuUsage cpuUsage;
+
+	@ConstructorBinding
+	public QuartzProperties(JvmMemoryUsage jvmMemoryUsage, DiskUsage diskSpace, CpuUsage cpuUsage) {
+		this.jvmMemoryUsage = jvmMemoryUsage;
+		this.diskSpace = diskSpace;
+		this.cpuUsage = cpuUsage;
+	}
 
 	@RequiredArgsConstructor
 	private static class CpuUsage {

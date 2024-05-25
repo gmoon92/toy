@@ -1,9 +1,8 @@
 package com.gmoon.springasync.server;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
