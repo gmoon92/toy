@@ -1,0 +1,16 @@
+# jpa logging
+spring:
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+
+# logging
+logging:
+  level:
+    "[org.springframework.security]": DEBUG
+    "[org.hibernate.type.descriptor.sql]": TRACE

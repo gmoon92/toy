@@ -1,8 +1,5 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,6 +10,8 @@ import org.springframework.security.web.csrf.CsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -4,16 +4,17 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -24,29 +25,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableWebSecurity(debug = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			 .headers(header -> header.frameOptions().sameOrigin())
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http
+			 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 			 .csrf(AbstractHttpConfigurer::disable)
 			 .cors(AbstractHttpConfigurer::disable)
-			 .authorizeRequests(request ->
+			 .authorizeHttpRequests(request ->
 				  // request.mvcMatchers("**/user/**").hasRole("ADMIN")
 				  request
-					   .antMatchers("**/user/**").hasRole("ADMIN")
+					   .requestMatchers("**/user/**").hasRole("ADMIN")
 					   .anyRequest()
 					   .permitAll()
+
 			 )
-			 .exceptionHandling()
-			 .accessDeniedHandler(accessDeniedHandler())
-			 .and()
-			 .formLogin()
-			 .loginPage("/login")
-			 .defaultSuccessUrl("/user/info")
-			 .successHandler(customSuccessHandler())
-			 .permitAll();
+			 .exceptionHandling(configurer ->
+				  configurer.accessDeniedHandler(accessDeniedHandler())
+			 )
+			 .formLogin(formLogin ->
+				  formLogin.loginPage("/login")
+					   .defaultSuccessUrl("/user/info")
+					   .successHandler(customSuccessHandler())
+			 )
+			 .build();
 	}
 
 	@Bean
@@ -70,9 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		};
 	}
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 
 	@Bean

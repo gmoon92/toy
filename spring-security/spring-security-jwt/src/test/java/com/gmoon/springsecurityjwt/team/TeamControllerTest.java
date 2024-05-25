@@ -2,8 +2,6 @@ package com.gmoon.springsecurityjwt.team;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +15,18 @@ import com.gmoon.springsecurityjwt.jwt.JwtUtil;
 import com.gmoon.springsecurityjwt.user.User;
 import com.gmoon.springsecurityjwt.user.UserRepository;
 
-class TeamControllerTest extends BaseSpringBootTest {
-	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	JwtUtil jwtUtil;
+import jakarta.persistence.EntityNotFoundException;
 
-	final long WEB_TEAM_ID = 0;
-	final String URL_OF_TEAM = "/team/" + WEB_TEAM_ID;
+class TeamControllerTest extends BaseSpringBootTest {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private JwtUtil jwtUtil;
+
+	private final long WEB_TEAM_ID = 0;
+	private final String URL_OF_TEAM = "/team/" + WEB_TEAM_ID;
 
 	@Test
 	@DisplayName("팀을 조회한다.")

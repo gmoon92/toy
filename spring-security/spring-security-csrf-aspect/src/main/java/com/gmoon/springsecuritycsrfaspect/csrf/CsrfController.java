@@ -1,8 +1,5 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.vo.CsrfTokenResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

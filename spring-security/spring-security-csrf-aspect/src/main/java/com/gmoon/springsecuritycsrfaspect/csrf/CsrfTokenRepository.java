@@ -1,11 +1,10 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.HttpSessionCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 
 public class CsrfTokenRepository {

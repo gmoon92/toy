@@ -3,8 +3,6 @@ package com.gmoon.springsecuritycsrfaspect.csrf;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.BDDMockito.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +24,7 @@ import com.gmoon.springsecuritycsrfaspect.csrf.annotation.CSRF;
 import com.gmoon.springsecuritycsrfaspect.csrf.annotation.CSRFTokenGenerator;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

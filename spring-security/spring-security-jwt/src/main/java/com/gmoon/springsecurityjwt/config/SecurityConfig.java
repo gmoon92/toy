@@ -1,15 +1,18 @@
 package com.gmoon.springsecurityjwt.config;
 
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,10 +29,11 @@ import com.gmoon.springsecurityjwt.util.SecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 
-@Configurable
+@Configuration
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 	private final MappingJackson2HttpMessageConverter converter;
 	private final JwtUtil jwtUtil;
 
@@ -46,21 +50,21 @@ public class SecurityConfig {
 		return http
 			 .authenticationManager(authenticationManager)
 			 .headers(headers -> headers
-				  .frameOptions()
-				  .sameOrigin())
-			 .csrf().disable()
-			 .cors().and()
-			 .httpBasic().disable()
-			 .formLogin().disable()
+				  .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+			 )
+			 .csrf(AbstractHttpConfigurer::disable)
+			 .cors(Customizer.withDefaults())
+			 .httpBasic(AbstractHttpConfigurer::disable)
+			 .formLogin(AbstractHttpConfigurer::disable)
 			 .exceptionHandling(handling ->
 				  handling.accessDeniedHandler(jwtExceptionHandler())
 					   .authenticationEntryPoint(jwtExceptionHandler()))
 			 .sessionManagement(
 				  sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			 .authorizeRequests(request ->
-				  request
-					   .antMatchers("/", "**/login**").permitAll()
-					   .antMatchers(HttpMethod.DELETE, "**").hasRole(Role.ADMIN.name())
+			 .authorizeHttpRequests(authorization ->
+				  authorization
+					   .requestMatchers("/", "**/login**").permitAll()
+					   .requestMatchers(HttpMethod.DELETE, "**").hasRole(Role.ADMIN.name())
 					   .anyRequest().authenticated())
 			 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
 			 .addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtil))

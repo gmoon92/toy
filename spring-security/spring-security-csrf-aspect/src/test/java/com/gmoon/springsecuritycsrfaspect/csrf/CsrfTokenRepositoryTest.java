@@ -2,9 +2,6 @@ package com.gmoon.springsecuritycsrfaspect.csrf;
 
 import static org.assertj.core.api.Assertions.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +10,9 @@ import org.springframework.security.web.csrf.CsrfToken;
 
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @SpringBootTest
 class CsrfTokenRepositoryTest {

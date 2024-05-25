@@ -41,7 +41,6 @@ public class SampleService {
 	@Secured("ROLE_ADMIN")
 	public void secured() {
 		log.info("secured...");
-
 	}
 
 	@Async

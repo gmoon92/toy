@@ -2,22 +2,23 @@ package com.gmoon.springsecuritywhiteship.config;
 
 import java.util.Arrays;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
@@ -35,6 +36,7 @@ import org.springframework.security.web.access.expression.WebExpressionVoter;
 import com.gmoon.springsecuritywhiteship.account.AccountRole;
 import com.gmoon.springsecuritywhiteship.account.AccountService;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,10 +45,11 @@ import lombok.extern.slf4j.Slf4j;
  * @see WebSecurityConfigurerAdapter
  * @link {https://spring.io/guides/topicals/spring-security-architecture}
  * </pre>
- * */
+ */
 @Slf4j
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(proxyTargetClass = true, securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -59,8 +62,7 @@ public class SecurityConfig {
 	}
 
 	/**
-	 * @implNote
-	 * <pre>
+	 * @implNote <pre>
 	 * 히어러키
 	 * 커스텀 1. AccessDecisionManager
 	 * 복잡.....
@@ -69,7 +71,7 @@ public class SecurityConfig {
 	 * 커스텀2 expressionHandler 정의
 	 * 히어러키는 voter 핸들러를 통해 설정이 가능함으로 expressionHandler 를 커스텀
 	 * </pre>
-	 * */
+	 */
 	public AccessDecisionManager customAccessDecisionManager() {
 		// handler 생성
 		SecurityExpressionHandler<FilterInvocation> handler = customExpressionHandler();
@@ -83,6 +85,11 @@ public class SecurityConfig {
 		return new AffirmativeBased(Arrays.asList(webExpressionVoter));
 	}
 
+	/**
+	 * @link https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html#_the_authorizationmanager
+	 * @see SecurityConfig#roleHierarchy
+	 * @see SecurityConfig#methodSecurityExpressionHandler(RoleHierarchy)
+	 */
 	private SecurityExpressionHandler<FilterInvocation> customExpressionHandler() {
 		// 히어러키 설정은 expressionHandler를 통해서만 설정 가능
 		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
@@ -95,20 +102,36 @@ public class SecurityConfig {
 		return handler;
 	}
 
+	@Bean
+	public RoleHierarchy roleHierarchy() {
+		return RoleHierarchyImpl.withDefaultRolePrefix()
+			 .role(AccountRole.ADMIN.getRole()).implies(AccountRole.USER.getRole())
+			 .build();
+	}
+
+	@Bean
+	static MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+		DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+		expressionHandler.setRoleHierarchy(roleHierarchy);
+		return expressionHandler;
+	}
+
 	// Role Hierarchy
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
+			 .authenticationManager(authenticationManager())
 			 // [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
-			 .authorizeRequests(request ->
-				  request
-					   .mvcMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
-					   .mvcMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
-					   .mvcMatchers("/user").hasRole(AccountRole.USER.getRole())
-					   .antMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
-					   .anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
-					   //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
-					   .expressionHandler(customExpressionHandler()) // 커스텀 2. expression handler
+			 .authorizeHttpRequests(request ->
+					   request
+							.requestMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
+							.requestMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
+							.requestMatchers("/user").hasRole(AccountRole.USER.getRole())
+							.requestMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
+							.anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
+				  //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
+				  // .expressionHandler(customExpressionHandler()) // 커스텀 2. expression handler
+				  // .anyRequest().access(customExpressionHandler())
 			 )
 
 			 // https://www.baeldung.com/spring-security-custom-access-denied-page
@@ -179,12 +202,11 @@ public class SecurityConfig {
 	}
 
 	/**
-	 * @implNote
-	 * <pre>
+	 * @implNote <pre>
 	 * @link {https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html#servlet-authentication-unpwd-storage}
 	 * @link {https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html#publish-authentication-manager-bean}
 	 * </pre>
-	 * */
+	 */
 	@Bean
 	public AuthenticationManager authenticationManager() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

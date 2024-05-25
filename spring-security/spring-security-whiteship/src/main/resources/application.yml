@@ -1,0 +1,22 @@
+spring:
+  security:
+    user:
+      name: admin
+      password: 123
+      roles: ADMIN
+
+#  datasource:
+#    hikari:
+      #      jdbc-url: jdbc:h2:tcp://localhost:9092/~/testdb
+#      jdbc-url: jdbc:h2:mem:testdb
+#      driver-class-name: org.h2.Driver
+#      username: sa
+#      password:
+  jpa:
+#    WARN 16127 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+#    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    open-in-view: false
+    hibernate:
+#      dialect: org.hibernate.dialect.H2Dialect
+      ddl-auto: create-drop

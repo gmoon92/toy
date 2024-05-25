@@ -1,13 +1,13 @@
 package com.gmoon.springsecuritycsrfaspect.config;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.gmoon.springsecuritycsrfaspect.csrf.CsrfTokenAspect;
 import com.gmoon.springsecuritycsrfaspect.csrf.CsrfTokenRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass = true)

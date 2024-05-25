@@ -7,8 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +22,8 @@ import org.springframework.web.context.WebApplicationContext;
 import com.gmoon.springsecuritycsrfaspect.csrf.CsrfTokenRepository;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.HttpSessionCsrfToken;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @SpringBootTest
 class UserControllerTest {

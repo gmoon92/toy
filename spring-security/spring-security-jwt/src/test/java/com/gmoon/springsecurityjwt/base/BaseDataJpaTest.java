@@ -1,8 +1,5 @@
 package com.gmoon.springsecurityjwt.base;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.quickperf.junit5.QuickPerfTestExtension;
 import org.quickperf.spring.sql.QuickPerfSqlConfig;
@@ -11,6 +8,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
 import com.gmoon.springsecurityjwt.config.JpaConfig;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @DataJpaTest
 @ExtendWith(QuickPerfTestExtension.class)
