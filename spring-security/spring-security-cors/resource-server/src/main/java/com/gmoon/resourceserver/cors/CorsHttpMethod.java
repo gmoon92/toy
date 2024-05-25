@@ -2,15 +2,12 @@ package com.gmoon.resourceserver.cors;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.springframework.http.HttpMethod;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,14 +18,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CorsHttpMethod implements Serializable {
 	@Id
-	@Enumerated(EnumType.STRING)
 	@Column(name = "id", length = 50)
-	private HttpMethod id;
+	private String httpMethod;
 
 	private boolean enabled;
 
-	private CorsHttpMethod(HttpMethod id, boolean enabled) {
-		this.id = id;
+	private CorsHttpMethod(HttpMethod httpMethod, boolean enabled) {
+		this.httpMethod = httpMethod.name();
 		this.enabled = enabled;
 	}
 

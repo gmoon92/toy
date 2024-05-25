@@ -22,13 +22,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 class UserControllerTest {
-	@Autowired
-	WebApplicationContext context;
 
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 
 	@BeforeEach
-	void setUp() {
+	void setUp(@Autowired WebApplicationContext context) {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
 			 .apply(springSecurity())
 			 .alwaysDo(print())
@@ -36,7 +34,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void testLogin() throws Exception {
+	void login() throws Exception {
 		// given
 		String username = "admin";
 		String password = "123";
@@ -51,7 +49,7 @@ class UserControllerTest {
 
 	@Test
 	@DisplayName("사용자 인증 실패")
-	void testLogin_fail() throws Exception {
+	void loginFail() throws Exception {
 		// given
 		String username = "admin";
 		String password = UUID.randomUUID().toString();

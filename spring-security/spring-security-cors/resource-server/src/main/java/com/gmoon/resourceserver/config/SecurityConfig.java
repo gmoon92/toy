@@ -2,63 +2,69 @@ package com.gmoon.resourceserver.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.gmoon.resourceserver.jwt.JwtAuthenticationFilter;
 import com.gmoon.resourceserver.jwt.JwtExceptionHandler;
 import com.gmoon.resourceserver.jwt.JwtUtils;
 import com.gmoon.resourceserver.jwt.JwtVerifyFilter;
+import com.gmoon.resourceserver.user.UserService;
 import com.gmoon.resourceserver.util.SecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 
+@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 	private final CorsConfigurationSource corsConfigurationSource;
 	private final MappingJackson2HttpMessageConverter converter;
 	private final JwtUtils jwtUtils;
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			 .headers(this::headers)
+	@Bean
+	public AuthenticationManager authenticationManager(UserService userService) {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setPasswordEncoder(passwordEncoder());
+		provider.setUserDetailsService(userService);
+		return new ProviderManager(provider);
+	}
+
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws
+		 Exception {
+		return http
+			 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 			 .cors(this::customCorsConfiguration)
 			 .csrf(AbstractHttpConfigurer::disable)
 			 .httpBasic(AbstractHttpConfigurer::disable)
 			 .formLogin(AbstractHttpConfigurer::disable)
-			 .authorizeRequests(this::authorizeRequests)
+			 .authorizeHttpRequests(request -> request
+				  .requestMatchers("**/login**").permitAll()
+				  .anyRequest().authenticated())
 			 .sessionManagement(this::httpStateless)
-			 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtils))
-			 .addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtils));
-	}
-
-	private void headers(HeadersConfigurer<HttpSecurity> config) {
-		config.frameOptions().sameOrigin();
-	}
-
-	private void authorizeRequests(
-		 ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
-		registry
-			 .antMatchers("**/login**").permitAll()
-			 .anyRequest().authenticated();
+			 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtils))
+			 .addFilter(new JwtVerifyFilter(jwtExceptionHandler(), jwtUtils))
+			 .build();
 	}
 
 	private void httpStateless(SessionManagementConfigurer<HttpSecurity> configurer) {

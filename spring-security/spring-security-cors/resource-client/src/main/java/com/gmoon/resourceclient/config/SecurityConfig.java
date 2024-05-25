@@ -2,12 +2,12 @@ package com.gmoon.resourceclient.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import com.gmoon.resourceclient.security.OAuthenticationFilter;
@@ -25,16 +26,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
+public class SecurityConfig {
+
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http
 			 .exceptionHandling(this::exceptionHandling)
-			 .headers(this::headers)
-			 .authorizeRequests(this::authorizeRequests)
+			 .headers(config -> config.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+			 .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
 			 .authenticationProvider(authenticationProvider())
 			 .addFilter(new OAuthenticationFilter(authenticationManager(), authenticationFailureHandler()))
-			 .formLogin();
+			 .formLogin(Customizer.withDefaults())
+			 .build();
+	}
+
+	private AuthenticationManager authenticationManager() {
+		return authentication -> authentication;
 	}
 
 	@Bean
@@ -54,15 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			log.error(String.format("%s denied to access (%s) %s.", username, method, url), accessDeniedException);
 			response.sendRedirect("/login");
 		});
-	}
-
-	private void headers(HeadersConfigurer<HttpSecurity> config) {
-		config.frameOptions().sameOrigin();
-	}
-
-	private void authorizeRequests(
-		 ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
-		registry.anyRequest().authenticated();
 	}
 
 	private AuthenticationFailureHandler authenticationFailureHandler() {

@@ -18,7 +18,7 @@ public class CorsOriginService {
 	private final CorsHttpMethodRepository corsHttpMethodRepository;
 
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheName.Constants.CORS_CONFIG, key = "#root.methodName")
+	@Cacheable(value = CacheName.Constants.ALLOWED_ORIGIN_PATTERN, key = "#root.methodName")
 	public List<String> getAllowedOriginPatterns() {
 		List<String> hosts = corsOriginRepository.getAllHost();
 		return getAllowedOriginPatterns(hosts);
@@ -45,7 +45,7 @@ public class CorsOriginService {
 	}
 
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheName.Constants.CORS_CONFIG, key = "#root.methodName")
+	@Cacheable(value = CacheName.Constants.ALLOWED_HTTP_METHODS, key = "#root.methodName")
 	public List<String> getAllowedHttpMethods() {
 		return corsHttpMethodRepository.findAllByEnabled();
 	}

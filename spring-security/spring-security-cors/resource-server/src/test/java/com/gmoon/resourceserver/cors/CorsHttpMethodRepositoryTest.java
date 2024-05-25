@@ -31,11 +31,18 @@ class CorsHttpMethodRepositoryTest extends BaseJpaTest {
 	@DisplayName("활성화된 HTTP Method 조회")
 	void testFindAllByEnabled() {
 		// when
-		List<String> allowedMethods = repository.findAllByEnabled();
+		List<HttpMethod> allowedMethods = repository.findAllByEnabled()
+			 .stream()
+			 .map(HttpMethod::valueOf)
+			 .toList();
 
 		// then
 		assertThat(allowedMethods)
-			 .containsOnly(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name(),
-				  HttpMethod.PUT.name());
+			 .containsOnly(
+				  HttpMethod.GET,
+				  HttpMethod.POST,
+				  HttpMethod.DELETE,
+				  HttpMethod.PUT
+			 );
 	}
 }

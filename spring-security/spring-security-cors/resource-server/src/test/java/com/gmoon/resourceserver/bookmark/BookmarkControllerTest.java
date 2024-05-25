@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.gmoon.resourceserver.test.BaseIntegrationTest;
 
 class BookmarkControllerTest extends BaseIntegrationTest {
-	String bookmarkName;
+	private String bookmarkName;
 
 	@BeforeEach
 	void setUp() {

@@ -7,12 +7,14 @@ import lombok.experimental.UtilityClass;
 @Getter
 @RequiredArgsConstructor
 public enum CacheName {
-	CORS_CONFIG(Constants.CORS_CONFIG);
+	ALLOWED_HTTP_METHODS(Constants.ALLOWED_HTTP_METHODS),
+	ALLOWED_ORIGIN_PATTERN(Constants.ALLOWED_ORIGIN_PATTERN);
 
 	private final String value;
 
 	@UtilityClass
 	public class Constants {
-		public final String CORS_CONFIG = "CORS_CONFIG";
+		public static final String ALLOWED_HTTP_METHODS = "ALLOWED_HTTP_METHODS";
+		public static final String ALLOWED_ORIGIN_PATTERN = "ALLOWED_ORIGIN_PATTERN";
 	}
 }

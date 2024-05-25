@@ -2,13 +2,13 @@ package com.gmoon.resourceserver.util;
 
 import static org.assertj.core.api.Assertions.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.gmoon.resourceserver.constants.HttpHeaders;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 class RequestUtilsTest {
 	final String CLIENT_ORIGIN = "https://gmoon.github.io:443";

@@ -5,13 +5,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +27,8 @@ import com.gmoon.resourceclient.util.CookieUtils;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -37,8 +37,10 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 	private static final String ORIGIN_OF_RESOURCE_SERVER = "http://localhost:9000";
 	private static final String COOKIE_NAME_OF_AUTHORIZATION = HttpHeaders.AUTHORIZATION;
 
-	public OAuthenticationFilter(AuthenticationManager authenticationManager,
-		 AuthenticationFailureHandler failureHandler) {
+	public OAuthenticationFilter(
+		 AuthenticationManager authenticationManager,
+		 AuthenticationFailureHandler failureHandler
+	) {
 		super(authenticationManager);
 		setAuthenticationFailureHandler(failureHandler);
 	}
@@ -56,7 +58,7 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 		try {
 			OAuthenticationToken authRequest = getAuthToken(username, password);
 			CookieUtils.addHeaderCookie(response, COOKIE_NAME_OF_AUTHORIZATION, authRequest.getToken());
-			return getAuthenticationManager().authenticate(authRequest);
+			return authRequest;
 		} catch (WebClientResponseException e) {
 			CookieUtils.delete(request, COOKIE_NAME_OF_AUTHORIZATION, response);
 			throw new OAuthLoginException(e);
@@ -80,7 +82,7 @@ public class OAuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 		WebClient.RequestBodySpec bodySpec = postLogin(username, password);
 
 		String token = bodySpec.exchangeToFlux(response -> {
-			HttpStatus httpStatus = response.statusCode();
+			HttpStatusCode httpStatus = response.statusCode();
 			if (HttpStatus.OK.equals(httpStatus)) {
 				ClientResponse.Headers headers = response.headers();
 				List<String> tokens = headers.header(HttpHeaders.AUTHORIZATION);

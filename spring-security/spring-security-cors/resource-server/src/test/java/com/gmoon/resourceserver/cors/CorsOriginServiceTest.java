@@ -71,11 +71,11 @@ class CorsOriginServiceTest {
 
 		// then
 		assertThat(methods)
-			 .containsOnly(httpName(HttpMethod.GET), httpName(HttpMethod.POST), httpName(HttpMethod.DELETE),
-				  httpName(HttpMethod.PUT));
-	}
-
-	private String httpName(HttpMethod httpMethod) {
-		return httpMethod.name();
+			 .containsOnly(
+				  HttpMethod.GET.name(),
+				  HttpMethod.POST.name(),
+				  HttpMethod.DELETE.name(),
+				  HttpMethod.PUT.name()
+			 );
 	}
 }
