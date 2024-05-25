@@ -3,6 +3,7 @@ package com.gmoon.quickperf.service;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,8 @@ import com.gmoon.quickperf.domain.Member;
 import com.gmoon.quickperf.domain.Team;
 import com.gmoon.quickperf.test.InitTestDataExecutor;
 
+@Disabled("24.05.26 기준으로 spring boot 3 호환성 문제 발생으로 테스트 검증 제외"
+	 + "참고 링크 https://github.com/quick-perf/quickperf/issues/196")
 @SpringBootTest
 @ExtendWith(QuickPerfTestExtension.class)
 class TeamServiceTest extends InitTestDataExecutor {

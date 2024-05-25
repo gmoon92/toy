@@ -8,10 +8,12 @@ spring:
     properties:
       hibernate:
         show-sql: true
-        format_sql: true
-        use_sql_comments: true
+        format_sql: false
+        use_sql_comments: false
         ddl-auto: create-drop
 
 logging:
   level:
     "[org.hibernate.type.descriptor.sql]": trace
+    "[org.quickperf.*]": INFO
+

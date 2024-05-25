@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +37,9 @@ import com.gmoon.junit5.member.MemberRepository;
 import com.gmoon.junit5.member.MemberService;
 import com.gmoon.junit5.member.Role;
 import com.gmoon.junit5.member.SystemException;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceException;
 
 /**
  * {@link org.junit.jupiter.params.provider.ArgumentsSource}

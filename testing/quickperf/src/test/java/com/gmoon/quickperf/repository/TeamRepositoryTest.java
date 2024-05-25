@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +18,8 @@ import com.gmoon.quickperf.domain.Member;
 import com.gmoon.quickperf.domain.MemberOption;
 import com.gmoon.quickperf.domain.Team;
 import com.gmoon.quickperf.test.InitTestDataExecutor;
+
+import jakarta.persistence.EntityManager;
 
 @DataJpaTest
 @ExtendWith(QuickPerfTestExtension.class)

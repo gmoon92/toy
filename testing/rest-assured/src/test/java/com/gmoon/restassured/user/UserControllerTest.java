@@ -21,7 +21,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 class UserControllerTest {
 
 	@MockBean
-	UserService service;
+	private UserService service;
 
 	@BeforeAll
 	static void beforeAll(@Autowired MockMvc mockMvc) {

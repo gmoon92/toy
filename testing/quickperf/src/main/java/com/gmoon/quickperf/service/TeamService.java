@@ -9,6 +9,7 @@ import com.gmoon.quickperf.domain.Member;
 import com.gmoon.quickperf.domain.Team;
 import com.gmoon.quickperf.repository.TeamRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,7 +24,8 @@ public class TeamService {
 
 	@Transactional
 	public void moveAllMemberToAssignedNewTeam(List<Member> members, Long newTeamId) {
-		Team newTeam = repository.getById(newTeamId);
+		Team newTeam = repository.findById(newTeamId)
+			 .orElseThrow(EntityNotFoundException::new);
 
 		removeOriginTeam(members);
 		newAssignedTeam(members, newTeam);

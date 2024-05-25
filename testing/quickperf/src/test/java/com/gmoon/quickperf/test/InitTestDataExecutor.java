@@ -1,7 +1,5 @@
 package com.gmoon.quickperf.test;
 
-import javax.persistence.EntityManager;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,6 +7,7 @@ import com.gmoon.quickperf.domain.Company;
 import com.gmoon.quickperf.domain.Member;
 import com.gmoon.quickperf.domain.Team;
 
+import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
