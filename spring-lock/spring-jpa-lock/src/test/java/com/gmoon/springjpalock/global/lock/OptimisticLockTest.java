@@ -4,15 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import javax.persistence.LockModeType;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.RollbackException;
+import java.util.stream.IntStream;
 
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 
@@ -20,20 +17,21 @@ import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.RollbackException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class OptimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("@OptimisticLock 특정 컬럼을 데이터 충돌 검사에서 제외한다.")
-	@RepeatedTest(5)
+	@Test
 	void excludeLockColumns() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			 CompletableFuture.runAsync(this::issueReceipt),
-			 CompletableFuture.runAsync(this::issueReceipt),
-			 CompletableFuture.runAsync(this::issueReceipt),
-			 CompletableFuture.runAsync(this::issueReceipt),
-			 CompletableFuture.runAsync(this::issueReceipt)
+			 IntStream.range(0, 100)
+				  .mapToObj(number -> CompletableFuture.runAsync(this::issueReceipt))
+				  .toArray(CompletableFuture[]::new)
 		);
 
 		assertThatCode(allOf::join)
@@ -49,17 +47,16 @@ public class OptimisticLockTest extends BaseJpaTestCase {
 	}
 
 	@DisplayName("데이터 충돌 발생되면 OptimisticLockException 예외가 발생한다.")
-	@RepeatedTest(5)
+	@Test
 	void runRaceConditionByOptimisticLock() {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
-			 CompletableFuture.runAsync(this::updateOrderInfos),
-			 CompletableFuture.runAsync(this::updateOrderInfos),
-			 CompletableFuture.runAsync(this::updateOrderInfos),
-			 CompletableFuture.runAsync(this::updateOrderInfos)
+			 IntStream.range(0, 100)
+				  .mapToObj(number -> CompletableFuture.runAsync(this::updateOrderInfos))
+				  .toArray(CompletableFuture[]::new)
 		);
 
 		assertThatThrownBy(allOf::join)
-			 .getCause()
+			 .cause()
 			 .isInstanceOfAny(
 				  LockAcquisitionException.class,
 				  RollbackException.class,

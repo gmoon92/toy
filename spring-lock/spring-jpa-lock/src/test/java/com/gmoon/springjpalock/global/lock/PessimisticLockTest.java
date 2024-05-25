@@ -7,10 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.IntStream;
 
-import javax.persistence.LockModeType;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.RollbackException;
-
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.Disabled;
@@ -23,6 +19,9 @@ import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.RollbackException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,10 +44,10 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 
 		assertThatCode(allOf::join)
 			 .isInstanceOf(CompletionException.class)
-			 .getCause().isInstanceOf(RollbackException.class)
-			 .getCause().isInstanceOf(OptimisticLockException.class)
-			 .getCause().isInstanceOf(LockAcquisitionException.class)
-			 .getCause().isInstanceOf(MySQLTransactionRollbackException.class);
+			 .cause().isInstanceOf(RollbackException.class)
+			 .cause().isInstanceOf(OptimisticLockException.class)
+			 .cause().isInstanceOf(LockAcquisitionException.class)
+			 .cause().isInstanceOf(MySQLTransactionRollbackException.class);
 	}
 
 	@DisplayName("X-Lock 교착 상태 검증"
@@ -87,7 +86,7 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		);
 
 		assertThatThrownBy(allOf::join)
-			 .getCause()
+			 .cause()
 			 .isInstanceOfAny(
 				  LockAcquisitionException.class,
 				  RollbackException.class,

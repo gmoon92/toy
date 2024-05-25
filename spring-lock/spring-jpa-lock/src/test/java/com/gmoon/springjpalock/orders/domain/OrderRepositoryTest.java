@@ -5,12 +5,15 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
+import org.hibernate.PessimisticLockException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 
 import com.gmoon.springjpalock.global.Fixtures;
 
@@ -69,7 +72,9 @@ class OrderRepositoryTest {
 		);
 
 		assertThatCode(allOf::join)
-			 .doesNotThrowAnyException();
+			 .cause()
+			 .cause().isInstanceOf(PessimisticLockException.class)
+			 .cause().isInstanceOf(MySQLTransactionRollbackException.class);
 	}
 
 	@AfterEach

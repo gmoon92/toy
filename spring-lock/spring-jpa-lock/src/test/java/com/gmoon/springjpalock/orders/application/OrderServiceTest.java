@@ -43,9 +43,9 @@ class OrderServiceTest {
 		);
 
 		assertThatCode(allOf::join)
-			 .getCause()
-			 .getCause().isInstanceOf(LockAcquisitionException.class)
-			 .getCause().isInstanceOf(MySQLTransactionRollbackException.class);
+			 .cause()
+			 .cause().isInstanceOf(LockAcquisitionException.class)
+			 .cause().isInstanceOf(MySQLTransactionRollbackException.class);
 	}
 
 	private void ordering() {

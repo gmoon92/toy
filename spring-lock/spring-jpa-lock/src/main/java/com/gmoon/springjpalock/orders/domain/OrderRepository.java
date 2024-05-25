@@ -2,14 +2,14 @@ package com.gmoon.springjpalock.orders.domain;
 
 import java.util.Optional;
 
-import javax.persistence.LockModeType;
-import javax.persistence.QueryHint;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 
 public interface OrderRepository extends JpaRepository<Order, String> {
 

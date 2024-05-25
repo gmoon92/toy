@@ -2,9 +2,6 @@ package com.gmoon.springjpalock.global.lock;
 
 import static org.assertj.core.api.Assertions.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 
 public class LockModeTest extends BaseJpaTestCase {
 

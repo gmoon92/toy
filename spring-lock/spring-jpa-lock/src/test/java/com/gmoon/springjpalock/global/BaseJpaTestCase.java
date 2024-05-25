@@ -3,17 +3,16 @@ package com.gmoon.springjpalock.global;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceException;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.RollbackException;
-
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.RollbackException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

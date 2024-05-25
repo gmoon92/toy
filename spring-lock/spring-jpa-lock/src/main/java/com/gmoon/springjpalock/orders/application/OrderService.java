@@ -2,8 +2,6 @@ package com.gmoon.springjpalock.orders.application;
 
 import java.util.List;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +12,7 @@ import com.gmoon.springjpalock.orders.domain.Order;
 import com.gmoon.springjpalock.orders.domain.OrderLineItem;
 import com.gmoon.springjpalock.orders.domain.OrderRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
