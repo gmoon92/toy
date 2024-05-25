@@ -42,7 +42,7 @@ public class JCacheConfig {
 
 	@Bean
 	public CachingProvider cacheProvider(@Value("${l2.cache-storage}") String cacheStorage) {
-		if (CacheType.EHCACHE.name().equals(cacheStorage)) {
+		if (CacheType.SIMPLE.name().equals(cacheStorage)) {
 			return new EhcacheCachingProvider();
 		} else if (CacheType.HAZELCAST.name().equals(cacheStorage)) {
 			// Hazelcast server/client
