@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RedisConfig {
 	private static final int DEFAULT_CACHE_EXPIRE_SECONDS = 30;
-	private static final String REDIS_SERVER_TYPE_CONFIG_PROPERTY = "spring.redis.server-type";
+	private static final String REDIS_SERVER_TYPE_CONFIG_PROPERTY = "spring.data.redis.server-type";
 
 	private final RedisProperties redisProperties;
 

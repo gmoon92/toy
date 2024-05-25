@@ -1,33 +1,34 @@
 spring:
-  redis:
-#    jedis, lettuce
-    client-type: lettuce
-    client-name: gmoon-redis-client
-    connect-timeout: 10
-    host: localhost
-    port: 6379
+  data:
+    redis:
+  #    jedis, lettuce
+      client-type: lettuce
+      client-name: gmoon-redis-client
+      connect-timeout: 10
+      host: localhost
+      port: 6379
 
-#    jedis:
-#      pool:
-#        enabled: true
+  #    jedis:
+  #      pool:
+  #        enabled: true
 
-    # STANDALONE, SENTINEL, ELASTI_CACHE
-    server-type: STANDALONE
+      # STANDALONE, SENTINEL, ELASTI_CACHE
+      server-type: STANDALONE
 
-    # Redis Cluster
-    cluster:
-      nodes:
-        - 127.0.0.1:6380
-        - 127.0.0.1:6381
-      max-redirects: 3
+      # Redis Cluster
+      cluster:
+        nodes:
+          - 127.0.0.1:6380
+          - 127.0.0.1:6381
+        max-redirects: 3
 
-    # Redis Sentinel
-    sentinel:
-      master: gmoon-master
-      nodes:
-        - 127.0.0.1:26379 # default port
-        - 127.0.0.1:26380
-        - 127.0.0.1:26381
+      # Redis Sentinel
+      sentinel:
+        master: gmoon-master
+        nodes:
+          - 127.0.0.1:26379 # default port
+          - 127.0.0.1:26380
+          - 127.0.0.1:26381
 
   # JPA persistence
   jpa:
