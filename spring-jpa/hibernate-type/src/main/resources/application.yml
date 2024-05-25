@@ -7,7 +7,7 @@ spring:
   jpa:
     open-in-view: false
     show-sql: &show-sql true
-    database-platform: org.hibernate.dialect.MariaDB10Dialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: update
       properties:

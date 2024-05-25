@@ -10,7 +10,7 @@ spring:
     hibernate:
 #      ddl-auto: update
       ddl-auto: create-drop
-      dialect: org.hibernate.dialect.MySQL55Dialect
+      dialect: org.hibernate.dialect.MySQLDialect
       show-sql: *show-sql
       format_sql: *show-sql
       use_sql_comments: *show-sql

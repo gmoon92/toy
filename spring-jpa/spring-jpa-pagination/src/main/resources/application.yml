@@ -9,7 +9,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: &show-sql true
     generate-ddl: false
     hibernate:

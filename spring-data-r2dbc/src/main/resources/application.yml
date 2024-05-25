@@ -13,7 +13,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.MariaDB10Dialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
     show-sql: true
     generate-ddl: true
     hibernate:

@@ -35,7 +35,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     open-in-view: false
-    database-platform: &dialect org.hibernate.dialect.MySQL8Dialect
+    database-platform: &dialect org.hibernate.dialect.MySQLDialect
     show-sql: &showsql false
     hibernate:
       ddl-auto: validate
