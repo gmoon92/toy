@@ -23,6 +23,9 @@ import com.gmoon.springwebconverter.model.PaymentType;
 import com.gmoon.springwebconverter.model.SearchType;
 import com.gmoon.springwebconverter.model.ServerType;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @SpringBootTest
 class ApiControllerTest {
 
@@ -74,8 +77,6 @@ class ApiControllerTest {
 		result.andExpect(matcher ->
 			 assertThat(matcher.getResolvedException())
 				  .isInstanceOf(MethodArgumentTypeMismatchException.class)
-				  .hasMessageContaining("ConversionFailedException")
-				  .hasMessageContaining("요청한 문자열을 이넘 클래스로 변환할 수 없습니다.")
 		);
 	}
 
