@@ -2,8 +2,6 @@ package com.gmoon.demo.member.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +11,7 @@ import com.gmoon.demo.member.domain.Member;
 import com.gmoon.demo.member.domain.MemberRepository;
 import com.gmoon.demo.member.model.MemberOptionUpdateRequestVO;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @SpringBootTest

@@ -11,15 +11,14 @@ spring:
     open-in-view: false
     show-sql: &show-sql true
     generate-ddl: false
-    hibernate:
-      ddl-auto: none
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.H2Dialect
-          show-sql: *show-sql
-          format_sql: *show-sql
-          use_sql_comments: *show-sql
-          "[jdbc.time_zone]": UTC
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show-sql: *show-sql
+        format_sql: *show-sql
+        use_sql_comments: *show-sql
+        "[jdbc.time_zone]": UTC
+        "[hbm2ddl.auto]": none
 
   # Sql
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization

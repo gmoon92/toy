@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.RevisionType;
 import org.springframework.data.domain.Page;
@@ -26,6 +24,7 @@ import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 import com.gmoon.hibernateenvers.revision.vo.QRevisionListVO_DataVO;
 import com.gmoon.hibernateenvers.revision.vo.RevisionListVO;
 
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

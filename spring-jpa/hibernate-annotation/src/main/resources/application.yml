@@ -1,21 +1,23 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/toy_hibernate_annotation?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/hibernate-annotation?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
     username: root
-    password: root
+    password: 111111
+
   jpa:
+    #    defer-datasource-initialization: true
     show-sql: &show-sql true
-#    defer-datasource-initialization: true
-    hibernate:
-#      ddl-auto: update
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.MySQLDialect
-      show-sql: *show-sql
-      format_sql: *show-sql
-      use_sql_comments: *show-sql
-      jdbc:
-        time_zone: UTC
+    generate-ddl: true
+    properties:
+      hibernate:
+        #        dialect: org.hibernate.dialect.MySQLDialect
+        "[jdbc.time_zone]": UTC
+        "[hbm2ddl.auto]": create-drop
+        show-sql: *show-sql
+        format_sql: *show-sql
+        use_sql_comments: *show-sql
+
 #  sql:
 #    init:
 #      mode: always

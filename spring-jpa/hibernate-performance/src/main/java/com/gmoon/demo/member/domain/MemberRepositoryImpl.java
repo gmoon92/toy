@@ -66,9 +66,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
 	private Expression<Long> notExistsTeamMember(QMemberOption memberOption) {
 		QTeamMember teamMember = QTeamMember.teamMember;
-		return JPAExpressions.select(teamMember.id.memberId)
+		return JPAExpressions
+			 .select(teamMember.id.memberId)
 			 .from(teamMember)
-			 .where(teamMember.id.memberId.eq(memberOption.memberId))
-			 .fetchAll();
+			 .where(teamMember.id.memberId.eq(memberOption.memberId));
 	}
 }

@@ -1,8 +1,5 @@
 package com.gmoon.demo.global.base;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.AfterEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +10,9 @@ import org.springframework.test.context.TestConstructor;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.gmoon.demo.global.config.QueryDslConfig;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @DataJpaTest
 @Import(QueryDslConfig.class)

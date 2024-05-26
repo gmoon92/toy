@@ -2,24 +2,23 @@ package com.gmoon.hibernateannotation.payments.product.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
-
 import org.hibernate.annotations.GenericGenerator;
 
 import com.gmoon.hibernateannotation.payments.price.domain.Currency;
 import com.gmoon.hibernateannotation.payments.price.domain.Price;
 import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,7 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 구현 전략
+@Inheritance(strategy = InheritanceType.JOINED) // 상속 구현 전략
 @DiscriminatorColumn(name = "discriminator_type")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

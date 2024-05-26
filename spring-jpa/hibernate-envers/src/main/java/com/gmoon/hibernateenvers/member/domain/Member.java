@@ -1,15 +1,16 @@
 package com.gmoon.hibernateenvers.member.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.io.Serial;
 
 import org.hibernate.envers.Audited;
 
 import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +26,9 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTrackingEntity {
 
+	@Serial
+	private static final long serialVersionUID = 2239812311178022258L;
+	
 	@Id
 	@GeneratedValue
 	private Long id;

@@ -1,23 +1,22 @@
 spring:
   datasource:
     hikari:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/hibernate-envers?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
-      username: root
-      password: 111111
-
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:testdb
+      username: sa
+      password:
   jpa:
     show-sql: true
-    generate-ddl: true
+
     properties:
       "[org.hibernate.envers.audit_table_suffix]": _h
       hibernate:
         "[hbm2ddl.auto]": create-drop
+        #        dialect: org.hibernate.dialect.H2Dialect
         show_sql: true
-        #        format_sql: true
+        format_sql: true
         use_sql_comments: true
         audit_table_suffix: _h
-
 logging:
   level:
     "[com.gmoon]": trace

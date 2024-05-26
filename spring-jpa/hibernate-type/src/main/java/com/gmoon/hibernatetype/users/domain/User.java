@@ -2,22 +2,20 @@ package com.gmoon.hibernatetype.users.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import com.querydsl.core.annotations.QueryProjection;
 
 import com.gmoon.hibernatetype.global.type.ColumnEncryptionConstants;
 import com.gmoon.hibernatetype.global.type.EncryptedStringType;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,7 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@TypeDef(name = "secure", typeClass = EncryptedStringType.class)
+// @Convert(attributeName = "secure", converter = EncryptedStringType.class)
 @Entity
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -50,7 +48,7 @@ public class User implements Serializable {
 	private String email;
 
 	// @Type(type = "com.gmoon.hibernatetype.global.type.EncryptStringType")
-	@Type(type = "secure")
+	@Type(EncryptedStringType.class)
 	@Column(length = 200, name = "enc_email")
 	private String encEmail;
 

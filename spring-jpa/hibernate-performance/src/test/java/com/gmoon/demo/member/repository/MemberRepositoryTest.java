@@ -6,14 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +18,13 @@ import com.gmoon.demo.member.domain.MemberRepository;
 import com.gmoon.demo.member.domain.QMember;
 import com.gmoon.demo.member.domain.QMemberOption;
 
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -110,7 +109,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 
 		//        단일건 조회
 		Map<String, Object> hints = new HashMap<>();
-		hints.put("javax.persistence.fetchgraph", graph);
+		hints.put("jakarta.persistence.fetchgraph", graph);
 		long primaryKey = 1L;
 		Member member = em.find(Member.class, primaryKey, hints);
 
@@ -119,7 +118,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 			 + " inner join fetch m.memberOption");
 		//                      ^-- JPQL은 글로벌 패치를 고려하지 않고
 		//                      항상 외부 조인을 사용하기 때문에 inner join fetch 명시한다.
-		query.setHint("javax.persistence.fetchgraph", graph);
+		query.setHint("jakarta.persistence.fetchgraph", graph);
 		List<Member> list = query.getResultList();
 	}
 
@@ -131,7 +130,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 		graph.addAttributeNodes("memberOption");
 
 		Map<String, Object> hints = new HashMap<>();
-		hints.put("javax.persistence.fetchgraph", graph);
+		hints.put("jakarta.persistence.fetchgraph", graph);
 		Member member = em.find(Member.class, 1L, hints);
 	}
 
@@ -193,14 +192,17 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 		CriteriaBuilder cb = getEntityManager()
 			 .getCriteriaBuilder();
 
-		CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+		CriteriaQuery<MemberDTO> query = cb.createQuery(MemberDTO.class);
 
 		Root<Member> root = query.from(domainClass);
-		Selection<Long> id = root.get("id");
-		Selection<String> name = root.get("name");
+		Selection<Long> id = root.get("id").as(Long.class).alias("id");
+		Selection<String> name = root.get("name").as(String.class).alias("name");
 
-		query.select(cb.construct(Object[].class, id, name));
+		query.select(cb.construct(MemberDTO.class, id, name));
 		em.createQuery(query).getResultList();
+	}
+
+	public record MemberDTO(Long id, String name) {
 	}
 
 	@Test
@@ -235,7 +237,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 	 * @see Member
 	 * @see MemberRepository
 	 * @see org.springframework.data.jpa.repository.EntityGraph
-	 * @see javax.persistence.NamedEntityGraph
+	 * @see jakarta.persistence.NamedEntityGraph
 	 */
 	@Test
 	@DisplayName("@EntityGraph - 식별 관계 주 테이블(Member) OneToOne 양방향 관계")
@@ -264,7 +266,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 	@DisplayName("대상 테이블 OneToOne 저장")
 	void testSaveMemberOption() {
 		// given
-		Member member = memberRepository.getOne(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON);
+		Member member = memberRepository.getReferenceById(TEST_MEMBER_ID_FOR_ACCOUNT_OF_GMOON);
 
 		// when
 		member.enabled();

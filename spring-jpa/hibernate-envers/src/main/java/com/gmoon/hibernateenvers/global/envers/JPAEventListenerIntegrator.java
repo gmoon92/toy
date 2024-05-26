@@ -1,7 +1,5 @@
 package com.gmoon.hibernateenvers.global.envers;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -11,6 +9,7 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
 
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

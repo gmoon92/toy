@@ -7,14 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.gmoon.hibernateenvers.member.domain.Member;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @SpringBootTest
 class MemberRepositoryTest {
-
-	@Autowired
-	private MemberRepository memberRepository;
 
 	@BeforeAll
 	static void beforeAll(@Autowired MemberRepository memberRepository) {

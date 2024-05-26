@@ -19,10 +19,9 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MariaDB106Dialect
-    show-sql: &showSql true
     hibernate:
       ddl-auto: create-drop
-      show-sql: *showSql
+      show-sql: &showSql true
       format_sql: *showSql
       use_sql_comments: *showSql
       globally_quoted_identifiers: true

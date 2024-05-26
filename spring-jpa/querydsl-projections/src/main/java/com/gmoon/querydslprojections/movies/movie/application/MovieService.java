@@ -2,8 +2,6 @@ package com.gmoon.querydslprojections.movies.movie.application;
 
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 
 import com.gmoon.querydslprojections.movies.movie.domain.Movie;
@@ -11,6 +9,7 @@ import com.gmoon.querydslprojections.movies.movie.domain.MovieCast;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieRepository;
 import com.gmoon.querydslprojections.movies.movie.dto.MovieResponse;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -19,6 +19,7 @@ public class UserRepositoryQueryImpl implements UserRepositoryQuery {
 
 	@Override
 	public List<User> findAllByEncEmail(String email) {
+
 		return factory.select(
 				  Projections.constructor(
 					   User.class,

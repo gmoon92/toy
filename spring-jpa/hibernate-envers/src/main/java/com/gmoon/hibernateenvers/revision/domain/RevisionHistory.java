@@ -1,19 +1,8 @@
 package com.gmoon.hibernateenvers.revision.domain;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
@@ -24,6 +13,15 @@ import com.gmoon.hibernateenvers.global.domain.BaseEntity;
 import com.gmoon.hibernateenvers.global.envers.listener.CustomRevisionListener;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -62,7 +60,7 @@ public class RevisionHistory extends BaseEntity {
 	@OneToMany(mappedBy = "revision", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	private Set<RevisionHistoryDetail> details = new HashSet<>();
 
-	public void trace(Class entityClass, Serializable entityId, RevisionType revisionType) {
+	public void changeEntity(Class entityClass, Object entityId, RevisionType revisionType) {
 		details.add(RevisionHistoryDetail.newCreate(this, revisionType, entityId, RevisionTarget.of(entityClass)));
 	}
 }

@@ -3,8 +3,6 @@
  */
 package com.gmoon.batchinsert.global.jmodel;
 
-import javax.annotation.Generated;
-
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -16,6 +14,8 @@ import com.gmoon.batchinsert.global.jmodel.tables.TbAccessLog;
 import com.gmoon.batchinsert.global.jmodel.tables.records.ExAccessLogRecord;
 import com.gmoon.batchinsert.global.jmodel.tables.records.FlywaySchemaHistoryRecord;
 import com.gmoon.batchinsert.global.jmodel.tables.records.TbAccessLogRecord;
+
+import jakarta.annotation.Generated;
 
 /**
  * A class modelling foreign key relationships and constraints of tables in

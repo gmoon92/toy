@@ -11,6 +11,9 @@ import org.springframework.test.annotation.Rollback;
 
 import com.gmoon.hibernatetype.global.JpaConfig;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Import(JpaConfig.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -39,11 +42,13 @@ class UserRepositoryTest {
 	void findAllByEncEmail() {
 		String mail = "test@gmail.com";
 
-		repository.save(User.builder()
+		User merged = repository.save(User.builder()
 			 .email(mail)
 			 .encEmail(mail)
 			 .build());
 
+		log.info("enc: {}", merged.getEncEmail());
+		log.info("enc: {}", merged.getEncEmail());
 		assertThat(repository.findAllByEncEmail(mail))
 			 .isNotEmpty();
 	}

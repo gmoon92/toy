@@ -2,7 +2,6 @@ package com.gmoon.springjpamultidatasource.global;
 
 import java.lang.reflect.AnnotatedElement;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.aop.Advisor;
@@ -38,6 +37,8 @@ import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import com.gmoon.springjpamultidatasource.global.dsr.DynamicRoutingDatabaseSource;
+
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * @see OpenEntityManagerInViewInterceptor

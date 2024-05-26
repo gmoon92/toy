@@ -1,17 +1,20 @@
 package com.gmoon.batchinsert.global.prop;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "service.storage")
-@RequiredArgsConstructor
 @Getter
 public class StorageProperties {
 
 	private final String absolutePath;
 	private final String path;
+
+	@ConstructorBinding
+	public StorageProperties(String absolutePath, String path) {
+		this.absolutePath = absolutePath;
+		this.path = path;
+	}
 }

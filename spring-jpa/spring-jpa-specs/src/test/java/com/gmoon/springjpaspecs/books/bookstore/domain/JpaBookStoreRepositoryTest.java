@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +22,8 @@ import com.gmoon.springjpaspecs.global.domain.SupportDataJpaTest;
 import com.gmoon.springjpaspecs.global.specs.conditional.Specification;
 import com.gmoon.springjpaspecs.global.specs.conditional.Specs;
 import com.gmoon.springjpaspecs.global.specs.orderby.OrderSpecification;
+
+import jakarta.persistence.EntityNotFoundException;
 
 class JpaBookStoreRepositoryTest extends SupportDataJpaTest {
 

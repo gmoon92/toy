@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
 import com.gmoon.springjpaspecs.global.domain.SupportDataJpaTest;
+
+import jakarta.persistence.EntityNotFoundException;
 
 class JpaBookRepositoryTest extends SupportDataJpaTest {
 

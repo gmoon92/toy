@@ -3,11 +3,10 @@ package com.gmoon.springjpaspecs.books.book.domain.vo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import com.gmoon.springjpaspecs.global.domain.ValueObject;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

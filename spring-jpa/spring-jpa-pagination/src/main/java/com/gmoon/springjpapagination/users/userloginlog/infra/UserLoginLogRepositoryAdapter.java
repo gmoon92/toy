@@ -4,8 +4,6 @@ import static com.gmoon.springjpapagination.users.userloginlog.domain.QUserLogin
 
 import java.util.List;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +20,7 @@ import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLogRepos
 import com.gmoon.springjpapagination.users.userloginlog.dto.QUserLoginLogListVO_Data;
 import com.gmoon.springjpapagination.users.userloginlog.dto.UserLoginLogListVO;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Repository

@@ -1,9 +1,5 @@
 package com.gmoon.hibernateenvers.global.config;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -15,6 +11,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

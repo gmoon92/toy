@@ -10,17 +10,14 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: &show-sql true
     generate-ddl: false
-    hibernate:
-      ddl-auto: none
-      show-sql: *show-sql
-      properties:
-        hibernate:
-          show-sql: *show-sql
-          format_sql: *show-sql
-          use_sql_comments: *show-sql
-          "[jdbc.time_zone]": UTC
+    properties:
+      hibernate:
+        ddl-auto: none
+        show-sql: &show-sql true
+        format_sql: *show-sql
+        use_sql_comments: *show-sql
+        "[jdbc.time_zone]": UTC
 
   # Sql
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization

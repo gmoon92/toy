@@ -4,19 +4,20 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import jakarta.persistence.EntityManager;
 
 @DataJpaTest
 class MemberRepositoryTest {
 
 	@Autowired
-	MemberRepository memberRepository;
+	private MemberRepository memberRepository;
+
 	@Autowired
-	EntityManager entityManager;
+	private EntityManager entityManager;
 
 	@Test
 	void testDelete() {

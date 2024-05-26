@@ -11,10 +11,12 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true
     generate-ddl: true
-    hibernate:
-      ddl-auto: create
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create
+        show-sql: true
+
 
   sql:
     init:

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
@@ -28,7 +27,7 @@ public class RevisionConverter {
 	 * @author moong
 	 */
 	@TODO
-	public static byte[] serializedObject(Serializable entityId) {
+	public static byte[] serializedObject(Object entityId) {
 		byte[] bytes = null;
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(bos)) {
 			out.writeObject(entityId);

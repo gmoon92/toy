@@ -1,7 +1,5 @@
 package com.gmoon.hibernateenvers.global.envers.listener;
 
-import java.io.Serializable;
-
 import org.hibernate.envers.EntityTrackingRevisionListener;
 import org.hibernate.envers.RevisionType;
 
@@ -14,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomRevisionListener implements EntityTrackingRevisionListener {
 
 	@Override
-	public void entityChanged(Class entityClass, String entityName, Serializable entityId, RevisionType revisionType,
+	public void entityChanged(Class entityClass, String entityName, Object entityId, RevisionType revisionType,
 		 Object revisionEntity) {
 		log.debug("EntityTrackingRevisionListener entityChanged start...");
 		try {
 			RevisionHistory history = RevisionHistory.class.cast(revisionEntity);
-			history.trace(entityClass, entityId, revisionType);
+			history.changeEntity(entityClass, entityId, revisionType);
 		} catch (Exception ex) {
 			throw new RuntimeException("Dose not trace revision...", ex);
 		}

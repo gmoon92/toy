@@ -1,21 +1,8 @@
 package com.gmoon.hibernateenvers.revision.domain;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.ConstraintMode;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.internal.entities.RevisionTypeType;
 
 import com.gmoon.hibernateenvers.global.annotation.TODO;
 import com.gmoon.hibernateenvers.global.domain.BaseEntity;
@@ -24,6 +11,18 @@ import com.gmoon.hibernateenvers.member.domain.Member;
 import com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -57,6 +56,7 @@ public class RevisionHistoryDetail extends BaseEntity {
 	private RevisionTarget revisionTarget;
 
 	@Enumerated(EnumType.STRING)
+	@Type(RevisionTypeType.class)
 	@Column(name = "revision_type", updatable = false, nullable = false)
 	private RevisionType revisionType;
 
@@ -72,7 +72,7 @@ public class RevisionHistoryDetail extends BaseEntity {
 	private String targetMemberName;
 
 	@Builder(access = AccessLevel.PRIVATE)
-	private RevisionHistoryDetail(RevisionHistory revision, RevisionType revisionType, Serializable entityId,
+	private RevisionHistoryDetail(RevisionHistory revision, RevisionType revisionType, Object entityId,
 		 RevisionTarget revisionTarget, RevisionEventStatus revisionEventStatus) {
 		this.revision = revision;
 		this.entityId = RevisionConverter.serializedObject(entityId);
@@ -82,7 +82,7 @@ public class RevisionHistoryDetail extends BaseEntity {
 	}
 
 	public static RevisionHistoryDetail newCreate(RevisionHistory revision, RevisionType revisionType,
-		 Serializable entityId, RevisionTarget revisionTarget) {
+		 Object entityId, RevisionTarget revisionTarget) {
 		return RevisionHistoryDetail.builder()
 			 .revision(revision)
 			 .revisionType(revisionType)

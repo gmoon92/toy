@@ -1,8 +1,7 @@
 package com.gmoon.querydslprojections.movies.users.user.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

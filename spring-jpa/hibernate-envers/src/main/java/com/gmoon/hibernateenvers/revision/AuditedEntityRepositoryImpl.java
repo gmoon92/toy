@@ -2,10 +2,6 @@ package com.gmoon.hibernateenvers.revision;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
@@ -17,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

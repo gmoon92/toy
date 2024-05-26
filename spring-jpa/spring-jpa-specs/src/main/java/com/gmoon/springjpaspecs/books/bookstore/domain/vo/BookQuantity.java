@@ -2,13 +2,12 @@ package com.gmoon.springjpaspecs.books.bookstore.domain.vo;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import org.hibernate.annotations.ColumnDefault;
 
 import com.gmoon.springjpaspecs.global.domain.ValueObject;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

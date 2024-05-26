@@ -4,9 +4,6 @@ import static com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus.*;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.hibernate.event.spi.PostCommitInsertEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.persister.entity.EntityPersister;
@@ -20,15 +17,15 @@ import com.gmoon.hibernateenvers.revision.domain.RevisionHistoryDetail;
 import com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RevisionHistoryEventListener implements PostCommitInsertEventListener {
 
 	private final EntityManager entityManager;
-
 	private AuditedEntityRepository auditedEntityRepository;
-
 	private RevisionHistoryDetailRepositoryQueryDsl historyDetailRepositoryQueryDsl;
 
 	public RevisionHistoryEventListener(EntityManager entityManager) {
@@ -43,7 +40,7 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 		Object entity = event.getEntity();
 
 		if (entity instanceof RevisionHistoryDetail) {
-			RevisionHistoryDetail detail = RevisionHistoryDetail.class.cast(entity);
+			RevisionHistoryDetail detail = (RevisionHistoryDetail)entity;
 			Object auditedEntity = getAuditedEntity(detail).get();
 
 			RevisionEventStatus eventStatus = ERROR;
@@ -109,7 +106,7 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 	}
 
 	@Override
-	public boolean requiresPostCommitHanding(EntityPersister entityPersister) {
+	public boolean requiresPostCommitHandling(EntityPersister entityPersister) {
 		return true;
 	}
 

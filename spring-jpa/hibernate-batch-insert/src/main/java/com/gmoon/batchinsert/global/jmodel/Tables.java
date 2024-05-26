@@ -3,11 +3,11 @@
  */
 package com.gmoon.batchinsert.global.jmodel;
 
-import javax.annotation.Generated;
-
 import com.gmoon.batchinsert.global.jmodel.tables.ExAccessLog;
 import com.gmoon.batchinsert.global.jmodel.tables.FlywaySchemaHistory;
 import com.gmoon.batchinsert.global.jmodel.tables.TbAccessLog;
+
+import jakarta.annotation.Generated;
 
 /**
  * Convenience access to all tables in batchinsert.

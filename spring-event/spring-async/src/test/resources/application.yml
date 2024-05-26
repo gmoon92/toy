@@ -14,8 +14,6 @@ spring:
     username: sa
     password:
   jpa:
-    hibernate:
-      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
@@ -23,4 +21,4 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
-        hbm2ddl_auto: create-drop
+        "[hbm2ddl.auto]": create-drop

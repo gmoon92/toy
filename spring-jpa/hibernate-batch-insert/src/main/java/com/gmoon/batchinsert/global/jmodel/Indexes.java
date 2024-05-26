@@ -3,14 +3,14 @@
  */
 package com.gmoon.batchinsert.global.jmodel;
 
-import javax.annotation.Generated;
-
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
 import com.gmoon.batchinsert.global.jmodel.tables.FlywaySchemaHistory;
+
+import jakarta.annotation.Generated;
 
 /**
  * A class modelling indexes of tables in batchinsert.

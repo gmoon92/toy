@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.nio.charset.StandardCharsets;
 
-import javax.persistence.EntityManager;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.gmoon.hibernatesequencegenerator.constants.ColumnLength;
+
+import jakarta.persistence.EntityManager;
 
 @DataJpaTest
 class CompanyRepositoryTest {

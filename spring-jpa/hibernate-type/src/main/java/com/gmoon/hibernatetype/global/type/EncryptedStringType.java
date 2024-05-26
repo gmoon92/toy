@@ -1,35 +1,100 @@
 package com.gmoon.hibernatetype.global.type;
 
-import org.hibernate.dialect.Dialect;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
-import org.hibernate.type.DiscriminatorType;
-import org.hibernate.type.descriptor.sql.VarcharTypeDescriptor;
+import java.io.Serial;
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Objects;
+
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.usertype.UserType;
+
+import com.gmoon.hibernatetype.global.crypt.CryptoUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EncryptedStringType
-	 extends AbstractSingleColumnStandardBasicType<String>
-	 implements DiscriminatorType<String> {
+public class EncryptedStringType implements UserType<String>, Serializable {
 
-	public EncryptedStringType() {
-		super(VarcharTypeDescriptor.INSTANCE, EncryptedStringTypeDescriptor.INSTANCE);
+	@Serial
+	private static final long serialVersionUID = -6430302304058598208L;
+
+	@Override
+	public int getSqlType() {
+		return Types.VARCHAR;
 	}
 
 	@Override
-	public String stringToObject(String xml) throws Exception {
-		log.info("xml: {}", xml);
-		return fromString(xml);
+	public Class<String> returnedClass() {
+		return String.class;
 	}
 
 	@Override
-	public String objectToSQLString(String value, Dialect dialect) throws Exception {
-		log.info("toSqlString: {}", value);
-		return toString(value);
+	public boolean equals(String x, String y) {
+		return Objects.equals(x, y);
 	}
 
 	@Override
-	public String getName() {
-		return "encryptedString";
+	public int hashCode(String x) {
+		return x.hashCode();
+	}
+
+	@Override
+	public String nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws
+		 SQLException {
+		String value = rs.getString(position);
+		if (Objects.isNull(value)) {
+			return null;
+		}
+
+		return decrypt(value);
+	}
+
+	private String decrypt(String value) {
+		try {
+			return CryptoUtils.decrypt(value, ColumnEncryptionConstants.KEY_SPEC);
+		} catch (Exception e) {
+			return value;
+		}
+	}
+
+	@Override
+	public void nullSafeSet(PreparedStatement preparedStatement, String value, int index,
+		 SharedSessionContractImplementor session) throws SQLException {
+		if (value == null) {
+			preparedStatement.setNull(index, getSqlType());
+		} else {
+			preparedStatement.setString(index, encrypt(value));
+		}
+	}
+
+	private String encrypt(String value) {
+		try {
+			return CryptoUtils.encrypt(value, ColumnEncryptionConstants.KEY_SPEC);
+		} catch (Exception e) {
+			return value;
+		}
+	}
+
+	@Override
+	public String deepCopy(String value) {
+		return value;
+	}
+
+	@Override
+	public boolean isMutable() {
+		return false;
+	}
+
+	@Override
+	public Serializable disassemble(String value) {
+		return value;
+	}
+
+	@Override
+	public String assemble(Serializable cached, Object owner) {
+		return (String)cached;
 	}
 }
