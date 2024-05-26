@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.gmoon.javacore.util.StringUtils;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -54,7 +55,7 @@ class UserControllerTest {
 	void currentUser_annotation_injection_principal_should_set_null_when_anonymous() throws Exception {
 		// given
 		SecurityContext context = SecurityContextHolder.getContext();
-		String principal = RandomStringUtils.randomAlphanumeric(4);
+		String principal = StringUtils.randomAlphabetic(4);
 		String credentials = "123";
 
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, credentials);

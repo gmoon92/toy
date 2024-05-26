@@ -31,6 +31,5 @@
     <properties>
         <hibernate.version>6.5.2.Final</hibernate.version>
         <querydsl-core.version>5.0.0</querydsl-core.version>
-        <commons-lang3.version>3.9</commons-lang3.version>
     </properties>
 </project>

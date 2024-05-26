@@ -19,8 +19,6 @@
 		<google-api-services-sheets.version>v4-rev493-${google-api-client.version}</google-api-services-sheets.version>
 		<google-api-services-drive.version>v3-rev110-1.23.0</google-api-services-drive.version>
 		<junit-platform-engine.version>1.4.0</junit-platform-engine.version>
-		<commons-lang3.version>3.11</commons-lang3.version>
-		<commons-configuration.version>1.10</commons-configuration.version>
 	</properties>
 
 	<dependencies>
@@ -53,17 +51,17 @@
 			<optional>true</optional>
 		</dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency>
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<version>${commons-configuration.version}</version>
-		</dependency>
+            <version>1.10</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.gmoon</groupId>
+            <artifactId>java-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.api-client</groupId>

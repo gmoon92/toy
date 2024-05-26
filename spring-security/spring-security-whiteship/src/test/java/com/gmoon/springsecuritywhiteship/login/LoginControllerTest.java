@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,6 +27,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springsecuritywhiteship.account.Account;
 import com.gmoon.springsecuritywhiteship.account.AccountRepository;
 import com.gmoon.springsecuritywhiteship.account.AccountService;
@@ -71,7 +71,7 @@ class LoginControllerTest {
 		@Test
 		void success() throws Exception {
 			// given
-			String username = RandomStringUtils.randomAlphanumeric(4);
+			String username = StringUtils.randomAlphabetic(4);
 			String password = "123";
 			PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 			Account account = Account.newUser(username, passwordEncoder.encode(password));
@@ -87,7 +87,7 @@ class LoginControllerTest {
 		@Test
 		void error() throws Exception {
 			// given
-			String username = RandomStringUtils.randomAlphanumeric(4);
+			String username = StringUtils.randomAlphabetic(4);
 			String password = "123";
 			PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 			Account account = Account.newUser(username, passwordEncoder.encode(password));

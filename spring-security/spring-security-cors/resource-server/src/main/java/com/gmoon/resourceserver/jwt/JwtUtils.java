@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +16,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.resourceserver.jwt.exception.InvalidAuthTokenException;
 import com.gmoon.resourceserver.jwt.exception.NotFoundAuthenticationSchemaException;
 import com.gmoon.resourceserver.user.Role;

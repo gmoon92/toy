@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.gmoon.javacore.util.BooleanUtils;
 import com.gmoon.springdataredis.cache.Cache;
 import com.gmoon.springdataredis.exception.NotFoundDataException;
 

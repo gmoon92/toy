@@ -4,10 +4,10 @@ import static com.gmoon.springquartzcluster.server.QServer.*;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import com.gmoon.javacore.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 

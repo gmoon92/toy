@@ -2,11 +2,11 @@ package com.gmoon.springasync.mail;
 
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 import com.gmoon.javacore.util.FileUtils;
+import com.gmoon.javacore.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 

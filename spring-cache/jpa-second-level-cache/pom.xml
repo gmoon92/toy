@@ -79,10 +79,6 @@
         </dependency>
         <!-- cache end -->
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
         <!-- persistence start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -117,6 +113,11 @@
             <artifactId>quick-perf-springboot2-sql-starter</artifactId>
             <version>${quick-perf.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.gmoon</groupId>
+            <artifactId>java-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

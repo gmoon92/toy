@@ -1,9 +1,9 @@
 package com.gmoon.springsecurityjwt.user;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
+import org.thymeleaf.util.StringUtils;
 
 import com.gmoon.springsecurityjwt.base.BaseSpringBootTest;
 import com.gmoon.springsecurityjwt.jwt.JwtAuthenticationFilter;
@@ -41,7 +41,7 @@ class UserControllerTest extends BaseSpringBootTest {
 		// when
 		ResultActions result = mockMvc.perform(formLogin()
 			 .user("admin")
-			 .password(RandomStringUtils.randomAlphanumeric(10)));
+			 .password(StringUtils.randomAlphanumeric(10)));
 
 		// then
 		result.andExpect(status().is4xxClientError());

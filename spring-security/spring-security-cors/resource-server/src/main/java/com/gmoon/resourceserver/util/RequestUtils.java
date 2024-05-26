@@ -3,8 +3,7 @@ package com.gmoon.resourceserver.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.resourceserver.constants.HttpHeaders;
 
 import jakarta.servlet.http.HttpServletRequest;

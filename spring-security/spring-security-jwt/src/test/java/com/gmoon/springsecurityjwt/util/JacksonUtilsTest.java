@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.json.JacksonTester;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springsecurityjwt.user.Role;
 import com.gmoon.springsecurityjwt.user.User;
 
@@ -37,7 +37,7 @@ class JacksonUtilsTest {
 	@Test
 	void testToString_jacksonTester() throws IOException {
 		// given
-		User user = User.create("gmoon", RandomStringUtils.randomAlphanumeric(10), Role.ADMIN);
+		User user = User.create("gmoon", StringUtils.randomAlphabetic(10), Role.ADMIN);
 
 		// when then
 		assertThat(json.write(user)).hasJsonPathStringValue("@.password");

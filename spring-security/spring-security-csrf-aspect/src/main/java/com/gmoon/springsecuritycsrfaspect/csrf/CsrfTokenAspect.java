@@ -1,12 +1,12 @@
 package com.gmoon.springsecuritycsrfaspect.csrf;
 
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.security.web.csrf.CsrfToken;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.BaseCsrfToken;
 import com.gmoon.springsecuritycsrfaspect.csrf.token.MissingCsrfToken;
 

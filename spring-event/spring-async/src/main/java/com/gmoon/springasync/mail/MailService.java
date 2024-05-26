@@ -3,7 +3,6 @@ package com.gmoon.springasync.mail;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +10,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springasync.member.Member;
 import com.gmoon.springasync.member.MemberRepository;
 

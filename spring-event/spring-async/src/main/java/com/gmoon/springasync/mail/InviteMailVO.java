@@ -2,7 +2,7 @@ package com.gmoon.springasync.mail;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang3.StringUtils;
+import com.gmoon.javacore.util.StringUtils;
 
 import lombok.Getter;
 

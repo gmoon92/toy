@@ -2,7 +2,6 @@ package com.gmoon.springsecuritywhiteship.sample;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springsecuritywhiteship.account.Account;
 import com.gmoon.springsecuritywhiteship.account.AccountService;
 
@@ -40,7 +40,7 @@ class SampleServiceTest {
 	@Test
 	@DisplayName("어드민 계정이 로그인되어 있다면 접근 가능")
 	void secured_when_admin_login() {
-		String username = RandomStringUtils.randomAlphanumeric(5);
+		String username = StringUtils.randomAlphabetic(5);
 		String credentials = "123";
 		Account account = Account.newAdmin(username, credentials);
 		accountService.createNew(account);

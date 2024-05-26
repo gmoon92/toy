@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +16,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import com.gmoon.javacore.util.ArrayUtils;
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.resourceserver.constants.HttpHeaders;
 import com.gmoon.resourceserver.jwt.exception.JwtVerifyException;
 import com.gmoon.resourceserver.user.User;

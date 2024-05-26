@@ -4,7 +4,6 @@ import static com.gmoon.springjpapagination.users.userloginlog.domain.QUserLogin
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Order;
@@ -14,6 +13,7 @@ import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springjpapagination.global.domain.CursorPagination;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLog;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLogRepository;

@@ -8,9 +8,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springquartzcluster.exception.CpuUsageExceedsException;
 import com.gmoon.springquartzcluster.exception.NotFoundInvokeMethodException;
 import com.gmoon.springquartzcluster.exception.ReflectionException;

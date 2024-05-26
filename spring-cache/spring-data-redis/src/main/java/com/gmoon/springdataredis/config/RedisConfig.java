@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.CacheManager;
@@ -26,6 +25,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springdataredis.cache.CacheName;
 import com.gmoon.springdataredis.util.RedisUtils;
 
@@ -39,8 +39,9 @@ import lombok.extern.slf4j.Slf4j;
  * {@link org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration}
  * {@link org.springframework.boot.autoconfigure.data.redis.LettuceConnectionConfiguration}
  * {@link org.springframework.boot.autoconfigure.data.redis.JedisConnectionConfiguration}
+ *
  * @see RedisTemplate#afterPropertiesSet()
- * **/
+ **/
 @Slf4j
 @Configuration
 @EnableCaching
@@ -103,14 +104,14 @@ public class RedisConfig {
 	 * ************************************************************************************************
 	 * MASTER / UPSTREAM						Read master node only
 	 * MASTER_PREFERRED / UPSTREAM_PREFERRED	Read the master node first.
-	 * 											If the master node is unavailable, read the slave node
+	 * If the master node is unavailable, read the slave node
 	 * REPLICA / @Deprecated SLAVE				Read from node only
 	 * REPLICA_PREFERRED / SLAVE_PREFERRED		Read the slave node first.
-	 * 											If the slave node is unavailable, read the master node
+	 * If the slave node is unavailable, read the master node
 	 * NEAREST									Read from nearest node
 	 * ANY										Read from any node
 	 * ANY_REPLICA								Read from any slave node
-	 * */
+	 */
 	private LettuceClientConfiguration getClientConfig() {
 		return LettuceClientConfiguration.builder()
 			 // master-replica(master-slave) replication strategy config.

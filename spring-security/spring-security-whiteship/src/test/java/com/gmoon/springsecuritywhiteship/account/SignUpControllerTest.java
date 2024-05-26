@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import com.gmoon.javacore.util.StringUtils;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,8 +40,8 @@ class SignUpControllerTest {
 	void save_403_error_when_non_csrf_token() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(post(URL_OF_SIGNUP)
-				  .param("username", RandomStringUtils.randomAlphanumeric(8))
-				  .param("password", RandomStringUtils.randomAlphanumeric(8)))
+				  .param("username", StringUtils.randomAlphabetic(8))
+				  .param("password", StringUtils.randomAlphabetic(8)))
 			 .andDo(print());
 
 		// then
@@ -52,8 +53,8 @@ class SignUpControllerTest {
 	void save() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(post(URL_OF_SIGNUP)
-				  .param("username", RandomStringUtils.randomAlphanumeric(8))
-				  .param("password", RandomStringUtils.randomAlphanumeric(8))
+				  .param("username", StringUtils.randomAlphabetic(8))
+				  .param("password", StringUtils.randomAlphabetic(8))
 				  .with(csrf()))
 			 .andDo(print());
 

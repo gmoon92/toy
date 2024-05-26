@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +16,8 @@ import com.google.api.services.sheets.v4.model.Color;
 import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
+
+import com.gmoon.javacore.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -117,7 +117,7 @@ public class GoogleSpreadSheetToXmlDataSet {
 			} else {
 				String columnName = valueNode.getDescription();
 				sb.append(String.format("\n         <value description=\"%s\">%s</value>", columnName,
-					 StringEscapeUtils.escapeXml(columnValue)));
+					 StringUtils.escapeXml11(columnValue)));
 			}
 		}
 		return sb;

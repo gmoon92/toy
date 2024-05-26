@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.resourceserver.cors.CorsOriginService;
 import com.gmoon.resourceserver.properties.CorsProperties;
 import com.gmoon.resourceserver.util.RequestUtils;

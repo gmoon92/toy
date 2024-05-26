@@ -1,12 +1,14 @@
 package com.gmoon.javacore.util;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtils {
+	public static String EMPTY = "";
 
 	public static String randomAlphabetic(int length) {
 		return RandomStringUtils.randomAlphabetic(length);
@@ -135,5 +137,21 @@ public final class StringUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static String trimToEmpty(String str) {
+		return org.apache.commons.lang3.StringUtils.trimToEmpty(str);
+	}
+
+	public static String removeStart(String str, String remove) {
+		return org.apache.commons.lang3.StringUtils.removeStart(str, remove);
+	}
+
+	public static String escapeXml11(String input) {
+		return StringEscapeUtils.escapeXml11(input);
+	}
+
+	public static String escapeXml10(String input) {
+		return StringEscapeUtils.escapeXml10(input);
 	}
 }
