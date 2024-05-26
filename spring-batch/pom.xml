@@ -12,9 +12,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-batch</name>
     <description>spring-batch</description>
-    <properties>
-        <h2.version>2.1.214</h2.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -33,8 +33,12 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     show-sql: true
+    generate-ddl: true
     properties:
       hibernate:
+        globally_quoted_identifiers: true
+        #        auto_quote_keyword: true
+        "[hbm2ddl.auto]": create-drop
         show_sql: true
         # format_sql: true
         use_sql_comments: true
@@ -52,3 +56,7 @@ spring:
 #            "[provider]": *jcache-provider
             # fail, create-warn(default), create
             "[missing_cache_strategy]": create
+
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": trace

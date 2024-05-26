@@ -20,8 +20,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <spring-boot.version>3.3.0</spring-boot.version>
+
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
+        <h2.version>2.2.224</h2.version>
+        <hibernate.version>6.5.2.Final</hibernate.version>
+        <querydsl-core.version>5.0.0</querydsl-core.version>
     </properties>
 
     <modules>
