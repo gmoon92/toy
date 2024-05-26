@@ -50,6 +50,12 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.70</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.gmoon</groupId>
+            <artifactId>java-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -24,11 +24,10 @@ enum PasswordEncoderHolder {
 	MD4("MD4", new Md4PasswordEncoder()), // 32
 	MD5("MD5", new MessageDigestPasswordEncoder("MD5")), // 32
 	NOOP("noop", NoOpPasswordEncoder.getInstance()),
-	PBKDF2("pbkdf2", new Pbkdf2PasswordEncoder("secret", 32, 32,
-		 Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256)), // 32
+	PBKDF2("pbkdf2", Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8()), // 96
 	SHA1("SHA-1", new MessageDigestPasswordEncoder("SHA-1")), // 40
 	SHA256("SHA-256", new MessageDigestPasswordEncoder("SHA-256")), // 64
-	ARGON2("argon2", Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8()); // 66
+	ARGON2("argon2", Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8());
 
 	public static final Map<String, PasswordEncoder> ALL = Arrays.stream(values())
 		 .collect(collectingAndThen(
@@ -45,5 +44,9 @@ enum PasswordEncoderHolder {
 
 	public String getPrefixPasswordId() {
 		return String.format(ID_FORMAT, id);
+	}
+
+	public String encode(String plainText) {
+		return value.encode(plainText);
 	}
 }
