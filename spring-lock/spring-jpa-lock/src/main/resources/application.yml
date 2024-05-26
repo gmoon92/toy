@@ -4,23 +4,26 @@ spring:
     url: jdbc:mysql://localhost:3306/springlock?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999&characterEncoding=UTF-8
     username: root
     password: 111111
+
   test:
     database:
       replace: none
+
   jpa:
-    show-sql: &show-sql true
+    open-in-view: false
     database-platform: org.hibernate.dialect.MariaDBDialect
-    hibernate:
-      ddl-auto: create
-#      ddl-auto: create-drop
+    defer-datasource-initialization: true
+    show-sql: &show-sql true
     properties:
-      ['javax.persistence.query.timeout']: 1000
+      "[javax.persistence.query.timeout]": 1000
       hibernate:
+        "[hbm2ddl.auto]": create
+        #      "[hbm2ddl.auto]": create-drop
+        globally_quoted_identifiers: true
         show_sql: *show-sql
         #        use_sql_comments: *show-sql
         #        format_sql: true
-        globally_quoted_identifiers: true
-    defer-datasource-initialization: true
+
   sql:
     init:
       mode: always

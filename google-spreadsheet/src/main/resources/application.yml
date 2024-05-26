@@ -19,5 +19,4 @@ google:
 
 logging:
   level:
-    com:
-      gmoon: trace
+    "[com.gmoon]": trace

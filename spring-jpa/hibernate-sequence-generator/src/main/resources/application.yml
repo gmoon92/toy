@@ -4,9 +4,11 @@ logging:
 
 spring:
   jpa:
+    open-in-view: false
+    generate-ddl: true
     properties:
       hibernate:
+        "[hbm2ddl.auto]": create-drop
         show-sql: true
         format_sql: true
         use_sql_comments: true
-        ddl-auto: create-drop

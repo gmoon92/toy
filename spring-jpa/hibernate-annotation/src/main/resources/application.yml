@@ -7,8 +7,9 @@ spring:
 
   jpa:
     #    defer-datasource-initialization: true
-    show-sql: &show-sql true
+    open-in-view: false
     generate-ddl: true
+    show-sql: &show-sql true
     properties:
       hibernate:
         #        dialect: org.hibernate.dialect.MySQLDialect

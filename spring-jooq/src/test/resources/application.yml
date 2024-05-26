@@ -8,4 +8,4 @@ spring:
 
 logging:
   level:
-    org.jooq: debug
+    "[org.jooq]": debug

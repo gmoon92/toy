@@ -25,10 +25,13 @@ spring:
   ### JPA
   datasource:
     driver-class-name: org.h2.Driver
-    jdbc-url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb
     username: sa
     password:
+
   jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
     show-sql: true
     properties:
       hibernate:
@@ -49,4 +52,3 @@ spring:
 #            "[provider]": *jcache-provider
             # fail, create-warn(default), create
             "[missing_cache_strategy]": create
-    defer-datasource-initialization: true

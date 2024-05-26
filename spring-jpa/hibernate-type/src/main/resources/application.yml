@@ -8,16 +8,17 @@ spring:
   jpa:
     open-in-view: false
     show-sql: &show-sql true
-    database-platform: org.hibernate.dialect.MariaDBDialect
+    #    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: create-drop
+        "[hbm2ddl.auto]": create-drop
         "[id.new_generator_mappings]": false
+        "[jdbc.time_zone]": UTC
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         show-sql: *show-sql
         format_sql: *show-sql
         use_sql_comments: *show-sql
-        "[jdbc.time_zone]": UTC
 
   sql:
     init:

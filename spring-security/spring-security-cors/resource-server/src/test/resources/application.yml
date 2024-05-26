@@ -10,25 +10,24 @@ server:
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    jdbc-url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb
     username: root
     password: root
 
   jpa:
     open-in-view: false
     defer-datasource-initialization: true
-    hibernate:
-      ddl-auto: create-drop
     show-sql: &show-sql true
+    generate-ddl: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        #        dialect: org.hibernate.dialect.H2Dialect
+        "[hbm2ddl.auto]": create-drop
+        globally_quoted_identifiers: true
+        "[jdbc.time_zone]": UTC
         show-sql: *show-sql
 #        format_sql: *show-sql
 #        use_sql_comments: *show-sql
-        globally_quoted_identifiers: true
-        jdbc:
-          time_zone: UTC
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
   sql:

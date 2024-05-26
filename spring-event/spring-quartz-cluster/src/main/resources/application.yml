@@ -6,23 +6,22 @@ spring:
     password: root
     hikari:
       pool-name: gmoon-pool
+
   jpa:
-    hibernate:
-      ddl-auto: update
+    open-in-view: false
 #      autoconfigure.orm.jpa.HibernateJpaConfiguration default naming strategy
 #      naming:
 #        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     show-sql: &show-sql true
     properties:
       hibernate:
+        "[hbm2ddl.auto]": update
         "[id.new_generator_mappings]": false
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         show-sql: *show-sql
         format_sql: *show-sql
         use_sql_comments: *show-sql
-        jdbc:
-          time_zone: UTC
-    open-in-view: false
+        "[jdbc.time_zone]": UTC
 
   quartz:
     job-store-type: jdbc

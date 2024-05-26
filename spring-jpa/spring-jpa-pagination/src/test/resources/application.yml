@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    jdbc-url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb
     username: root
     password: root
 
@@ -14,11 +14,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+        "[hbm2ddl.auto]": none
+        "[jdbc.time_zone]": UTC
         show-sql: *show-sql
         format_sql: *show-sql
         use_sql_comments: *show-sql
-        "[jdbc.time_zone]": UTC
-        "[hbm2ddl.auto]": none
 
   # Sql
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization

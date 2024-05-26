@@ -1,5 +1,5 @@
-#database-url: mariadb://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true
-database-url: mariadb://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+#database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true
+database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
 spring:
   data:
 #    "[r2dbc.repositories.enabled]": false
@@ -16,12 +16,13 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     show-sql: true
     generate-ddl: true
-    hibernate:
-#      ddl-auto: create-drop
-      ddl-auto: update
-      show_sql: true
-#      format_sql: true
-      use_sql_comments: true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": update
+        #      "[hbm2ddl.auto]": create-drop
+        show_sql: true
+        #      format_sql: true
+        use_sql_comments: true
 
   sql:
     init:

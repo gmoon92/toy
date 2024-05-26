@@ -33,14 +33,14 @@ spring:
     password: *password
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     open-in-view: false
     database-platform: &dialect org.hibernate.dialect.MySQLDialect
     show-sql: &showsql false
-    hibernate:
-      ddl-auto: validate
     properties:
       hibernate:
+        "[hbm2ddl.auto]": validate
         dialect: *dialect
         #        format_sql: *showsql
         format_sql: false
@@ -52,4 +52,4 @@ spring:
 
 logging:
   level:
-    org.jooq: debug
+    "[org.jooq]": debug

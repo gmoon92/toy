@@ -18,18 +18,23 @@ spring:
   jpa:
     defer-datasource-initialization: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.MariaDB106Dialect
-    hibernate:
-      ddl-auto: create-drop
-      show-sql: &showSql true
-      format_sql: *showSql
-      use_sql_comments: *showSql
-      globally_quoted_identifiers: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create-drop
+        show-sql: &showSql true
+        format_sql: *showSql
+        use_sql_comments: *showSql
+        globally_quoted_identifiers: true
+
 
   sql:
     init:
       mode: always
       continue-on-error: false
+      encoding: UTF-8
+      platform: mysql
 
   test:
     database:

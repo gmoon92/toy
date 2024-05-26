@@ -15,20 +15,18 @@ spring:
     password: root
 
   jpa:
-    hibernate:
-      ddl-auto: update
+    open-in-view: false
+    defer-datasource-initialization: true
     show-sql: &show-sql true
     properties:
       hibernate:
+        "[hbm2ddl.auto]": update
         dialect: org.hibernate.dialect.MySQLDialect
         show-sql: *show-sql
         format_sql: *show-sql
         use_sql_comments: *show-sql
         globally_quoted_identifiers: true
-        jdbc:
-          time_zone: UTC
-    open-in-view: false
-    defer-datasource-initialization: true
+        "[jdbc.time_zone]": UTC
 
 # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
   sql:

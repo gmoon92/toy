@@ -10,24 +10,18 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
-
+    generate-ddl: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        "[hbm2ddl.auto]": create-drop
+        #        dialect: org.hibernate.dialect.H2Dialect
         show_sql: true
 #        format_sql: true
         format_sql: false
         use_sql_comments: true
-    hibernate:
-      ddl-auto: create-drop
 
 logging:
-  level:
-    com:
-      gmoon: trace
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
   config: src/main/resources/log4j2.xml
+  level:
+    "[com.gmoon]": trace
+    "[org.hibernate.type.descriptor.sql]": trace
