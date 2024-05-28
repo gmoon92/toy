@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQuery;
 
+import com.gmoon.springjpapagination.global.domain.BasePageable;
 import com.gmoon.springjpapagination.global.domain.BaseRepository;
-import com.gmoon.springjpapagination.global.domain.Pageable;
 import com.gmoon.springjpapagination.users.user.domain.UserGroup;
 import com.gmoon.springjpapagination.users.user.domain.UserGroupRepository;
 
@@ -22,12 +22,12 @@ public class UserGroupRepositoryAdapter extends BaseRepository implements UserGr
 	private final JpaUserGroupRepository repository;
 
 	@Override
-	public List<UserGroup> findAll(String groupId, String keyword, Pageable pageable) {
+	public List<UserGroup> findAll(String groupId, String keyword, BasePageable pageable) {
 		return getGroupQuery(groupId, keyword, pageable)
 			 .fetch();
 	}
 
-	private JPAQuery<UserGroup> getGroupQuery(String groupId, String keyword, Pageable pageable) {
+	private JPAQuery<UserGroup> getGroupQuery(String groupId, String keyword, BasePageable pageable) {
 		return pagingQuery(pageable)
 			 .select(userGroup)
 			 .from(userGroup)
@@ -40,7 +40,7 @@ public class UserGroupRepositoryAdapter extends BaseRepository implements UserGr
 	@Override
 	public long countBy(String groupId, String keyword) {
 		return countQuery(
-			 getGroupQuery(groupId, keyword, Pageable.unpaged())
+			 getGroupQuery(groupId, keyword, BasePageable.unpaged())
 		);
 	}
 }

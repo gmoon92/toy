@@ -11,11 +11,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Pageable implements Serializable {
+public abstract class BasePageable implements Serializable {
 
 	private static final long serialVersionUID = -2648676657463697561L;
 
-	private static final Pageable UNPAGED = new UnpagedPageable();
+	private static final BasePageable UNPAGED = new UnpagedPageable();
 
 	public static final int DEFAULT_PAGE = 1;
 	public static final int DEFAULT_PAGE_SIZE = 15;
@@ -27,25 +27,25 @@ public abstract class Pageable implements Serializable {
 	private Integer page = 1;
 	private long offset = 0;
 
-	public Pageable initialize() {
+	public BasePageable initialize() {
 		this.page = DEFAULT_PAGE;
 		this.pageSize = UNPAGED_PAGE_SIZE;
 		this.offset = DEFAULT_OFFSET;
 		return this;
 	}
 
-	public Pageable initialize(long page, long pageSize, long firstRecordIndex) {
+	public BasePageable initialize(long page, long pageSize, long firstRecordIndex) {
 		this.page = Math.max(NumberUtils.toInt(page), DEFAULT_PAGE);
 		this.pageSize = Math.max(NumberUtils.toInt(pageSize), UNPAGED_PAGE_SIZE);
 		this.offset = Math.max(NumberUtils.toInt(firstRecordIndex), DEFAULT_OFFSET);
 		return this;
 	}
 
-	public static Pageable unpaged() {
+	public static BasePageable unpaged() {
 		return UNPAGED;
 	}
 
-	private static class UnpagedPageable extends Pageable {
+	private static class UnpagedPageable extends BasePageable {
 	}
 
 	public int getTotalPages() {

@@ -3,6 +3,7 @@ package com.gmoon.springjpapagination.global.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -13,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class UnionPageResizer extends Pageable {
+public class UnionPageResizer extends BasePageable {
 
 	private static final long serialVersionUID = 7721966097602701397L;
 
@@ -30,15 +31,15 @@ public class UnionPageResizer extends Pageable {
 
 		@EqualsAndHashCode.Include
 		private final Class<?> clazz;
-		private final Pageable pageable;
+		private final BasePageable pageable;
 		private final boolean merged;
 
-		private static ResizedPage unmerge(Pageable pageable) {
-			Pageable initialized = pageable.initialize();
+		private static ResizedPage unmerge(BasePageable pageable) {
+			BasePageable initialized = pageable.initialize();
 			return new ResizedPage(pageable.getClass(), initialized, false);
 		}
 
-		private static ResizedPage merge(Pageable pageable) {
+		private static ResizedPage merge(BasePageable pageable) {
 			return new ResizedPage(pageable.getClass(), pageable, true);
 		}
 
@@ -47,13 +48,13 @@ public class UnionPageResizer extends Pageable {
 		}
 	}
 
-	public UnionPageResizer(Pageable unionPageable, List<CreatePagination> createPaginations) {
+	public UnionPageResizer(BasePageable unionPageable, List<CreatePagination> createPaginations) {
 		this.page = unionPageable.getPage();
 		this.pageSize = unionPageable.getPageSize();
 
 		long prevTotalCount = 0;
 		for (CreatePagination createPagination : createPaginations) {
-			Pageable pageable = createPagination.newPagination();
+			BasePageable pageable = createPagination.newPagination();
 			ResizedPage resizedPage = obtainResizedPage(pageable, prevTotalCount);
 			prevTotalCount += resizedPage.getTotalCount();
 			resizedPages.add(resizedPage);
@@ -62,19 +63,19 @@ public class UnionPageResizer extends Pageable {
 		unionPageable.setTotalCount(getTotalCount());
 	}
 
-	public UnionPageResizer(int requestPage, int pageSize, List<Pageable> pageableList) {
+	public UnionPageResizer(int requestPage, int pageSize, List<BasePageable> pageableList) {
 		this.page = requestPage;
 		this.pageSize = pageSize;
 
 		long prevTotalCount = 0;
-		for (Pageable pageable : pageableList) {
+		for (BasePageable pageable : pageableList) {
 			ResizedPage resizedPage = obtainResizedPage(pageable, prevTotalCount);
 			prevTotalCount += resizedPage.getTotalCount();
 			resizedPages.add(resizedPage);
 		}
 	}
 
-	private ResizedPage obtainResizedPage(Pageable pageable, long prevTotalCount) {
+	private ResizedPage obtainResizedPage(BasePageable pageable, long prevTotalCount) {
 		final int dataPresent = 1;
 		final int resizingStartPage = getTotalPage(prevTotalCount + dataPresent, pageSize);
 		final int totalPageWithPrevPages = getTotalPageWithPrev(pageable, prevTotalCount);
@@ -87,11 +88,11 @@ public class UnionPageResizer extends Pageable {
 		return ResizedPage.unmerge(pageable);
 	}
 
-	private int getTotalPageWithPrev(Pageable pageable, long prevTotalCount) {
+	private int getTotalPageWithPrev(BasePageable pageable, long prevTotalCount) {
 		return pageable.getTotalPage(pageable.getTotalCount() + prevTotalCount, pageSize);
 	}
 
-	private ResizedPage resizingPage(Pageable pageable, final long resizingStartPage, long prevTotalCount) {
+	private ResizedPage resizingPage(BasePageable pageable, final long resizingStartPage, long prevTotalCount) {
 		final long prevLastPageSize = getLastPageSize(prevTotalCount);
 
 		long zeroBasedPage = Math.max(page - resizingStartPage, 0);
@@ -129,7 +130,7 @@ public class UnionPageResizer extends Pageable {
 		return lastPageSize;
 	}
 
-	public boolean isMergedData(Pageable pageable) {
+	public boolean isMergedData(BasePageable pageable) {
 		return get(pageable.getClass())
 			 .isMerged();
 	}
@@ -141,26 +142,26 @@ public class UnionPageResizer extends Pageable {
 			 .orElseThrow(() -> new RuntimeException("not found page object."));
 	}
 
-	public <T extends Pageable> T getPagination(Class<T> clazz) {
-		Pageable pageable = get(clazz).getPageable();
+	public <T extends BasePageable> T getPagination(Class<T> clazz) {
+		BasePageable pageable = get(clazz).getPageable();
 		return clazz.cast(pageable);
 	}
 
-	public <DATA, T extends PaginatedContent<DATA>> T applyContent(Class<T> clazz, Function<T, DATA> contentProvider) {
+	public <DATA, T extends PaginatedContent<DATA>> Optional<DATA> applyContent(Class<T> clazz,
+		 Function<T, DATA> contentProvider) {
 		ResizedPage resizedPage = get(clazz);
-		T paginatedContent = clazz.cast(resizedPage.getPageable());
 		if (resizedPage.isMerged()) {
-			DATA content = contentProvider.apply(paginatedContent);
-			paginatedContent.setContent(content);
+			T paginatedContent = clazz.cast(resizedPage.getPageable());
+			return Optional.of(contentProvider.apply(paginatedContent));
 		}
 
-		return paginatedContent;
+		return Optional.empty();
 	}
 
 	public long getTotalCount() {
 		return resizedPages.stream()
 			 .map(ResizedPage::getPageable)
-			 .mapToLong(Pageable::getTotalCount)
+			 .mapToLong(BasePageable::getTotalCount)
 			 .sum();
 	}
 

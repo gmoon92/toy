@@ -18,13 +18,13 @@ public abstract class BaseRepository {
 	@Autowired
 	protected JPAQueryFactory queryFactory;
 
-	protected JPAQuery<?> pagingQuery(Pageable pageable) {
+	protected JPAQuery<?> pagingQuery(BasePageable pageable) {
 		return queryFactory.query()
 			 .limit(pageable.getPageSize())
 			 .offset(pageable.getOffset());
 	}
 
-	protected <T> JPAQuery<T> pagination(JPAQuery<T> query, Pageable pageable) {
+	protected <T> JPAQuery<T> pagination(JPAQuery<T> query, BasePageable pageable) {
 		return query
 			 .limit(pageable.getPageSize())
 			 .offset(pageable.getOffset());

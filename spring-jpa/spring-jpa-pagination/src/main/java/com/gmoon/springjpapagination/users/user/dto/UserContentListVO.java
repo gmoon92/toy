@@ -1,5 +1,6 @@
 package com.gmoon.springjpapagination.users.user.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import lombok.ToString;
 @ToString
 public class UserContentListVO extends PaginatedContent<List<UserContentVO>> {
 
+	@Serial
 	private static final long serialVersionUID = -6252002883733589738L;
 
 	private static final int DEFAULT_PAGE_SIZE = 10;

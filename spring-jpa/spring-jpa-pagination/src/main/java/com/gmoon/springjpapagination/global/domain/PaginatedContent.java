@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class PaginatedContent<T> extends Pageable {
+public abstract class PaginatedContent<T> extends BasePageable {
 
 	private static final long serialVersionUID = 4042588564593515879L;
 

@@ -1,6 +1,7 @@
 package com.gmoon.springjpapagination.users.user.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.gmoon.springjpapagination.users.user.domain.User;
 import com.gmoon.springjpapagination.users.user.domain.UserGroup;
@@ -31,6 +32,10 @@ public class UserContentVO implements Serializable {
 		this.type = Type.USER_GROUP;
 		this.id = userGroup.getId();
 		this.name = userGroup.getName();
+	}
+
+	public UserContentVO(List<UserGroup> userGroups) {
+
 	}
 
 	public enum Type {

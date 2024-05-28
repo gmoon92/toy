@@ -11,28 +11,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class UnionPagination implements CreatePagination {
 
-	private static final BiFunction<Class<? extends Pageable>, Supplier<Long>, Pageable> PROVIDER;
+	private static final BiFunction<Class<? extends BasePageable>, Supplier<Long>, BasePageable> PROVIDER;
 
 	static {
 		PROVIDER = (clazz, executeCountQuery) -> {
-			Pageable paginatedContent = ReflectionUtils.newInstance(clazz);
+			BasePageable paginatedContent = ReflectionUtils.newInstance(clazz);
 			paginatedContent.setTotalCount(executeCountQuery.get());
 			return paginatedContent;
 		};
 	}
 
-	private final Class<? extends Pageable> pageableClass;
+	private final Class<? extends BasePageable> pageableClass;
 	private final Supplier<Long> executeCountQuery;
 
 	public static UnionPagination create(
-		 Class<? extends Pageable> pageableClass,
+		 Class<? extends BasePageable> pageableClass,
 		 Supplier<Long> executeCountQuery
 	) {
 		return new UnionPagination(pageableClass, executeCountQuery);
 	}
 
 	@Override
-	public Pageable newPagination() {
+	public BasePageable newPagination() {
 		return PROVIDER.apply(pageableClass, executeCountQuery);
 	}
 }

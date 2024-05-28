@@ -27,8 +27,8 @@ class UserRestControllerTest {
 	}
 
 	@Test
-	void findAll() throws Exception {
-		ResultActions result = mockMvc.perform(get("/api/users")
+	void userContent() throws Exception {
+		ResultActions result = mockMvc.perform(get("/api/users/content")
 			 .accept(MediaType.APPLICATION_JSON)
 			 .contentType(MediaType.APPLICATION_JSON)
 			 .param("page", "1")
@@ -37,5 +37,25 @@ class UserRestControllerTest {
 
 		result.andExpect(status().isOk());
 		result.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+	}
+
+	@Test
+	void findAll() throws Exception {
+		ResultActions result = mockMvc.perform(get("/api/users")
+			 .accept(MediaType.APPLICATION_JSON)
+			 .contentType(MediaType.APPLICATION_JSON)
+			 .param("groupId", "ug000")
+			 .param("page", "1")
+			 .param("size", "10")
+		);
+
+		result.andExpect(status().isOk());
+		result.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+		result.andExpect(jsonPath("$.content").hasJsonPath());
+		result.andExpect(jsonPath("$.page").hasJsonPath());
+		result.andExpect(jsonPath("$.['page']['size']").exists());
+		result.andExpect(jsonPath("$.['page']['number']").exists());
+		result.andExpect(jsonPath("$.['page']['totalElements']").exists());
+		result.andExpect(jsonPath("$.['page']['totalPages']").exists());
 	}
 }

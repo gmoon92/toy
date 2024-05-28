@@ -5,12 +5,15 @@ import static com.gmoon.springjpapagination.users.user.domain.QUserGroup.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 
+import com.gmoon.springjpapagination.global.domain.BasePageable;
 import com.gmoon.springjpapagination.global.domain.BaseRepository;
-import com.gmoon.springjpapagination.global.domain.Pageable;
 import com.gmoon.springjpapagination.users.user.domain.User;
 import com.gmoon.springjpapagination.users.user.domain.UserRepository;
 
@@ -20,17 +23,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryAdapter extends BaseRepository implements UserRepository {
+public class UserRepositoryAdapter
+	 extends BaseRepository
+	 implements UserRepository {
 
 	private final JpaUserRepository repository;
 
 	@Override
-	public List<User> findAll(String groupId, String keyword, Pageable pageable) {
+	public Page<User> findAll(Predicate predicate, Pageable pageable) {
+		return repository.findAll(predicate, pageable);
+	}
+
+	@Override
+	public List<User> findAll(String groupId, String keyword, BasePageable pageable) {
 		return getUserQuery(groupId, keyword, pageable)
 			 .fetch();
 	}
 
-	private JPAQuery<User> getUserQuery(String groupId, String keyword, Pageable pageable) {
+	private JPAQuery<User> getUserQuery(String groupId, String keyword, BasePageable pageable) {
 		return pagingQuery(pageable)
 			 .select(user)
 			 .from(user)
@@ -48,7 +58,7 @@ public class UserRepositoryAdapter extends BaseRepository implements UserReposit
 			 getUserQuery(
 				  groupId,
 				  keyword,
-				  Pageable.unpaged()
+				  BasePageable.unpaged()
 			 )
 		);
 	}
