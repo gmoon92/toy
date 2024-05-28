@@ -82,7 +82,7 @@ public class UserController {
 
 @PageableDefault 어노테이션을 사용해서 Pageable 기본 값 설정을 할 수 있다.
 
-## Pageable config example
+### Pageable config example
 
 ```java
 
