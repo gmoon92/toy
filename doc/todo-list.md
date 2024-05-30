@@ -13,3 +13,6 @@
   - variance
 - testing
   - jacoco
+- docs
+  - sql index
+  - b-tree
