@@ -25,6 +25,8 @@ MySQL에서 페이지(Page)는 InnoDB 스토리지 엔진이 데이터를 저장
 - System Pages: 시스템 메타데이터를 저장한다.
     - 시스템 메타데이터: 데이터 딕셔너리 정보, 공간(테이블스페이스) 정보 등
 
+### Page 와 Buffer pool
+
 페이지는 디스크 I/O 효율성을 높이기 위해 설계됐다.
 
 - 버퍼 풀(Buffer Pool)
@@ -34,10 +36,10 @@ MySQL에서 페이지(Page)는 InnoDB 스토리지 엔진이 데이터를 저장
     - 데이터가 추가되거나 삭제될 때 페이지는 분할(split)되거나 병합(merge)될 수 있다.
     - 이는 B-트리 구조를 유지하고 성능을 최적화하기 위해 필요하다.
 
-핵심은 한번의 디스크 I/O 로 많은 페이지를 읽는것이 중요하며, 버퍼 풀의 메모리 캐싱을 활용하여 성능을 최적화할 수 있다. 그래서 페이지에 저장되는 개별 데이터의 크기를 최대한 작게 하여, 1개의 페이지에 많은
-데이터들을 저장할 수 있도록 하는 것이 상당히 중요하다.
-
 DB 성능 개선 혹은 쿼리 튜닝은 디스크 I/O 자체를 줄이는 것이 핵심인 경우가 많다.
+
+한번의 디스크 I/O 로 많은 페이지를 읽는것이 중요하며, 버퍼 풀의 메모리 캐싱을 활용하여 최적화할 수 있다. 그래서 페이지에 저장되는 개별 데이터의 크기를 최대한 작게 하여, 1개의 페이지에 많은 데이터들을
+저장할 수 있도록 하는 것이 상당히 중요하다.
 
 ## B+tree
 
@@ -99,7 +101,7 @@ MySQL InnoDB는 시퀀셜 접근과 메모리 효율성을 고려하여, B-tree 
     - MySQL 5.6: `10`
     - MySQL 5.7.4: `200`
 
-여기선 자세히 다루진 않겠지만, 옵티마이저 튜닝을 통해 디비 성능을 개선할 수도 있다.
+여기선 자세히 다루진 않겠지만, 옵티마이저 튜닝을 통해 디비 성능을 개선할 수 있다.
 
 ### 인덱스 컬럼 선정 기준
 
@@ -112,8 +114,8 @@ MySQL InnoDB는 시퀀셜 접근과 메모리 효율성을 고려하여, B-tree 
     - 기본적으로 인덱스를 구성하면 데이터가 정렬되어 저장된다.
     - 따라서 인덱스를 잘 활용하면 높은 성능을 기대할 수 있다.
     - 이외에도 인덱스를 추가할 때 정렬 인덱스를 구성할 수 있다.
-    - CREATE INDEX 인덱스이름 ON 테이블이름 (필드이름 DESC)
-      CREATE INDEX 인덱스이름 ON 테이블이름 (필드이름 ASC)
+        - `CREATE INDEX 인덱스이름 ON 테이블이름 (필드이름 DESC)`
+        - `CREATE INDEX 인덱스이름 ON 테이블이름 (필드이름 ASC)`
 
 ### 검색 조건에 맞는 복합 인덱스 구성
 
@@ -181,14 +183,14 @@ LIMIT 15 -- no offset
     - Join vs 스칼라 서브 쿼리 → 두 방식 성능 검증 필요.
 4. 부정문보다는 긍정문 사용
     - 옵티마이저가 쿼리를 실행하기 전 긍정문으로 변경하고 쿼리 실행.
-    - 특히 not in 절은 성능에 취약
-5. like 문자열 검색 조건 확인 ‘test%’
-    - table full scan or index full scan 이 되지 않도록 like 문자열 검색 조건 확인.
-    - `where username like '%gmoon%` -> table full scan or index full scan
+   - 특히 `NOT IN` 절은 성능에 취약
+5. LIKE 문자열 검색 조건 확인 ‘test%’
+    - `table full scan` or `index full scan` 이 되지 않도록 like 문자열 검색 조건 확인.
+        - ex) `WHERE username LIKE '%gmoon%` -> table full scan or index full scan
 6. 커버링 인덱스 적용
-7. no-offset
+7. `no-offset`
     - [자세한 내용은 커서 페이지 네이션 내용을 참고하자](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-pagination/doc/cursor-pagination.md)
-8. loose index scan 고려
+8. `loose index scan` 고려
     - 검색 조건과 테이블의 데이터 양에 따라 의도했던 인덱스를 타지 않는 경우 발생.
     - table full scan 보다 index full scan 이 성능이 더 빠르므로 강제적으로 인덱스 컬럼의 범위를 지정하여 index 를 타도록하는 기법
     - 올바른 튜닝 방식은 아니다. 차선책으로 고려해볼만 하다.
