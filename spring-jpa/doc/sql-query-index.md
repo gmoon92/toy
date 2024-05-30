@@ -85,7 +85,7 @@ MySQL InnoDB는 시퀀셜 접근과 메모리 효율성을 고려하여, B-tree 
         - order by
         - limit
 
-![rule-based-optimization.png](../img/rule-based-optimization.png)
+![rule-based-optimization.png](imges/rule-based-optimization.png)
 
 ### Index dive
 
@@ -187,6 +187,7 @@ LIMIT 15 -- no offset
     - `where username like '%gmoon%` -> table full scan or index full scan
 6. 커버링 인덱스 적용
 7. no-offset
+    - [자세한 내용은 커서 페이지 네이션 내용을 참고하자](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-pagination/doc/cursor-pagination.md)
 8. loose index scan 고려
     - 검색 조건과 테이블의 데이터 양에 따라 의도했던 인덱스를 타지 않는 경우 발생.
     - table full scan 보다 index full scan 이 성능이 더 빠르므로 강제적으로 인덱스 컬럼의 범위를 지정하여 index 를 타도록하는 기법
