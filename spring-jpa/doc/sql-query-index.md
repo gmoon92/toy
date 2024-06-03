@@ -220,10 +220,8 @@ LIMIT 15 -- no offset
         4. `COUNT(*)`가 사용되어선 안 됨
         5. 부분 키(`subkey`)의 카디널리티(고유 값의 개수)가 전체 인덱스의 카디널리티보다 100배 작은 경우
 9. 인덱스 최적화
-    - 인덱스 재구성
-        - `OPTIMIZE TABLE table_name;`
-    - 테이블 통계 업데이트
-        - `ANALYZE TABLE table_name;`
+    - 인덱스 재구성: `OPTIMIZE TABLE table_name;`
+    - 테이블 통계 업데이트: `ANALYZE TABLE table_name;`
 
 ## 마무리
 
