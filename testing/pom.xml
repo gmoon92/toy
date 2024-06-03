@@ -18,6 +18,7 @@
     <modules>
         <module>awaitility</module>
         <module>embedded-redis</module>
+        <module>jacoco</module>
         <module>junit5</module>
         <module>localstack</module>
         <module>mockito</module>
