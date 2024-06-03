@@ -18,8 +18,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@Table(name = "tb_book")
 @Entity
+@Table(name = "tb_book")
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Book extends EntityObject<String> {

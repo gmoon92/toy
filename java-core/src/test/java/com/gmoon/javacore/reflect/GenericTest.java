@@ -69,10 +69,10 @@ class GenericTest {
 		}
 	}
 
-	@Getter
-	@ToString
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@Getter
 	@EqualsAndHashCode(of = "id")
+	@ToString
 	public static class Member {
 		private String id;
 

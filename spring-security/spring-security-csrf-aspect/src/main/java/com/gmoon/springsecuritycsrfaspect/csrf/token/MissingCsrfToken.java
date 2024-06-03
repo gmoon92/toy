@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@Getter
-@ToString
-@EqualsAndHashCode(of = "value")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@EqualsAndHashCode(of = "value")
+@ToString
 public final class MissingCsrfToken extends BaseCsrfToken {
 	public static final MissingCsrfToken INSTANCE;
 	private static final String BLANK_TOKEN_VALUE = "_blank";

@@ -10,10 +10,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
-@ToString
 @MappedSuperclass
+@Getter
 @EqualsAndHashCode
+@ToString
 public abstract class QuartzId implements Serializable {
 	@Column(name = "SCHED_NAME", length = QuartzColumnLength.SCHEDULER_NAME)
 	protected String schedulerName;

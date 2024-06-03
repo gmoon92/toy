@@ -21,11 +21,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@Table(name = "tb_user", uniqueConstraints = {@UniqueConstraint(name = "u_username", columnNames = "username")})
 @Entity
+@Table(
+	 name = "tb_user",
+	 uniqueConstraints = {
+		  @UniqueConstraint(name = "u_username", columnNames = "username")
+	 }
+)
 @Getter
-@ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(of = "username")
+@ToString(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
 	private static final long serialVersionUID = -8809792987207423144L;
 

@@ -19,10 +19,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_FIRED_TRIGGERS")
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class QuartzFiredTriggers {
 	@EmbeddedId
 	private Id id;
@@ -63,8 +63,8 @@ public class QuartzFiredTriggers {
 	private String useRequestsRecovery;
 
 	@Embeddable
-	@ToString(callSuper = true)
 	@EqualsAndHashCode(callSuper = true)
+	@ToString(callSuper = true)
 	protected static class Id extends QuartzId {
 
 		@Column(name = "ENTRY_ID", length = QuartzColumnLength.ENTRY_ID)

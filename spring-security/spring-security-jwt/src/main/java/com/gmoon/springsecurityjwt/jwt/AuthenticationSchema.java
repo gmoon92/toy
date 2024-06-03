@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum AuthenticationSchema {
 	BASIC("Basic"),
 	BEARER("Bearer"),

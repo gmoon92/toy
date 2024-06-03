@@ -17,8 +17,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "tb_movie_cast")
 @Entity
+@Table(name = "tb_movie_cast")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = "id")

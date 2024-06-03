@@ -20,10 +20,10 @@ import lombok.ToString;
 @Audited
 @Entity
 @Table(name = "member")
-@Getter
-@ToString
-@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = {"id"})
+@ToString
 public class Member extends BaseTrackingEntity {
 
 	@Serial

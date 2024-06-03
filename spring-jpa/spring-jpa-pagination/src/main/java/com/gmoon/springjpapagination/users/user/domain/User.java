@@ -17,8 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Table(name = "tb_user")
 @Entity
+@Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode

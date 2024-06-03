@@ -7,8 +7,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
+@ToString
 public class UserVO {
 	private long id;
 	private String name;

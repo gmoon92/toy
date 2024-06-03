@@ -24,8 +24,8 @@ import lombok.ToString;
 @Table(name = "tb_favorite")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(of = "id")
 @EqualsAndHashCode(of = "id")
+@ToString(of = "id")
 public class Favorite implements Serializable {
 
 	@EmbeddedId

@@ -23,8 +23,8 @@ import lombok.ToString;
 @Table(name = "tb_favorite_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(of = "id")
 @EqualsAndHashCode(of = "id")
+@ToString(of = "id")
 public class FavoriteUser implements Serializable {
 
 	@Id

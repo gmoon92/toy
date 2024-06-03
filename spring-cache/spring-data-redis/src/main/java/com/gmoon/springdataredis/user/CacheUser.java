@@ -18,11 +18,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
-@ToString
 @RedisHash(value = CacheUser.KEY)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class CacheUser implements Cache {
 	static final String KEY = CacheName.Constants.USER;
 	static final long MINUTES_OF_TTL = 5;

@@ -12,7 +12,7 @@
     <groupId>com.gmoon</groupId>
     <artifactId>testing</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>spring-testing</name>
+    <name>testing</name>
     <packaging>pom</packaging>
 
     <modules>

@@ -11,9 +11,9 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @NoArgsConstructor
+@Getter
 public class Company {
 
 	@Id

@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "tb_actor")
 @Entity
+@Table(name = "tb_actor")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = "id")

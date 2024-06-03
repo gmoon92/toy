@@ -90,8 +90,8 @@ public final class RsaUtils {
 		return KeyPairHolder.getPublicKeyFromPrivateKey(privateKey);
 	}
 
-	@Getter
 	@RequiredArgsConstructor
+	@Getter
 	static class KeyPairHolder {
 		private static final KeyPairHolder NO_OP = new KeyPairHolder(null, null);
 		private final PrivateKey privateKey;

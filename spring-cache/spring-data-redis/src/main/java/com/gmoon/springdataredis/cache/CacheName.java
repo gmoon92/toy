@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum CacheName {
 	CONFIG(Constants.CONFIG),
 	COMMON(Constants.COMMON),

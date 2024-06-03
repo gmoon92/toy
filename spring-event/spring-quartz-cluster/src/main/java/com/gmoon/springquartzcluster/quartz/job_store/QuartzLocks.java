@@ -16,10 +16,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_LOCKS")
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class QuartzLocks {
 	@EmbeddedId
 	private Id id;

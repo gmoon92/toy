@@ -21,10 +21,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@Getter
 @EqualsAndHashCode
+@ToString
 public class Account implements UserDetails {
 
 	@Id

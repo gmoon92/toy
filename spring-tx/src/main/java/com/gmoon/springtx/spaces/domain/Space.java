@@ -20,8 +20,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "tb_space")
 @Getter
-@ToString(of = "id")
 @EqualsAndHashCode(of = "id")
+@ToString(of = "id")
 public class Space implements Serializable {
 
 	@Id

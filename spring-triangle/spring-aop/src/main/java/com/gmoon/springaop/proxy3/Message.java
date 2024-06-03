@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 /**
  * 팩토리 빈의 동작원리를 확인하기 위한 오브젝트
  * */
-@Getter
 @RequiredArgsConstructor
+@Getter
 public class Message {
 	public final String text;
 

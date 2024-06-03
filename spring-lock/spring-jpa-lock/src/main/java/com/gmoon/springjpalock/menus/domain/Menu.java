@@ -13,11 +13,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "tb_menu")
 @Entity
+@Table(name = "tb_menu")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
 @Getter
+@EqualsAndHashCode(of = "id")
 public class Menu {
 
 	@Id

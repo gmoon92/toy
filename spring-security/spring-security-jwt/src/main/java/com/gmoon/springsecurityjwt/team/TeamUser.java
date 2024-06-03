@@ -17,11 +17,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "tb_team_user")
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
 public class TeamUser implements Serializable {
 	private static final long serialVersionUID = -273473458581806379L;
 
@@ -48,8 +48,8 @@ public class TeamUser implements Serializable {
 	}
 
 	@Embeddable
-	@EqualsAndHashCode
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@EqualsAndHashCode
 	static class Id implements Serializable {
 		private static final long serialVersionUID = -6697347285557271747L;
 

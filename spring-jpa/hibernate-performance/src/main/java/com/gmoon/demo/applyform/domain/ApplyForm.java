@@ -17,12 +17,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Table
 @Entity
+@Table
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = "id")
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApplyForm {
 
 	@EmbeddedId
@@ -69,8 +69,8 @@ public class ApplyForm {
 	}
 
 	@Embeddable
-	@EqualsAndHashCode
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@EqualsAndHashCode
 	static class Id extends EntityId {
 
 		private static final long serialVersionUID = -4188030215536759764L;

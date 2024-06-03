@@ -11,8 +11,8 @@ import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 @EqualsAndHashCode
+@ToString
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 7484348880855187871L;

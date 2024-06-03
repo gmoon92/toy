@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @org.springframework.data.relational.core.mapping.Table(name = "tb_team")
-@Table(name = "tb_team")
 @Entity
+@Table(name = "tb_team")
 @NoArgsConstructor
 @Getter
-@ToString
 @EqualsAndHashCode
+@ToString
 public class Team implements Serializable {
 
 	@Id

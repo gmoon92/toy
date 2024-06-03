@@ -14,11 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
 @Entity
-@ToString(exclude = "members")
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = "members")
 public class Team {
 
 	@Id

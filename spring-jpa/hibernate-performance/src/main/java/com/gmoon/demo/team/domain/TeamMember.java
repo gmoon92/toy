@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = "id")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class TeamMember {
 
 	@EmbeddedId
@@ -44,9 +44,9 @@ public class TeamMember {
 	}
 
 	@Embeddable
-	@ToString
-	@EqualsAndHashCode
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@EqualsAndHashCode
+	@ToString
 	public static class Id implements Serializable {
 
 		@Column(name = "member_id", nullable = false)

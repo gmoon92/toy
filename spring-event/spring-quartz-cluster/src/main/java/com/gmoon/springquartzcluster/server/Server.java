@@ -23,13 +23,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
-@Getter
 @Immutable
+@Entity
 @Table(name = "nt_server",
 	 indexes = {@Index(name = "idx_type_host", columnList = "name, host, type")},
 	 uniqueConstraints = {@UniqueConstraint(name = "u_name_type_host", columnNames = {"name", "type", "host"})})
 @NoArgsConstructor(access = PROTECTED)
+@Getter
 @ToString
 @EqualsAndHashCode(of = {"name", "type", "host"})
 public class Server {

@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@ToString
 @EqualsAndHashCode
+@ToString
 public class CompletedOrderEvent implements Serializable {
 
 	private final String orderNo;

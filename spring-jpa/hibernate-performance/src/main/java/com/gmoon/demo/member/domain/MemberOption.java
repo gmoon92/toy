@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Getter
-@ToString(exclude = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @EqualsAndHashCode(exclude = {"memberId", "member"})
+@ToString(exclude = "member")
 public class MemberOption {
 
 	@Id

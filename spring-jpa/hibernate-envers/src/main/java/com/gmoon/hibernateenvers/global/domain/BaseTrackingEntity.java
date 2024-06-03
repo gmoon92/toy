@@ -13,9 +13,9 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 
-@Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public abstract class BaseTrackingEntity extends BaseEntity {
 
 	@CreatedBy

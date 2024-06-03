@@ -146,8 +146,8 @@ import lombok.ToString;
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 @EqualsAndHashCode(of = "id")
+@ToString
 public class User implements Serializable {
 
 	@Id

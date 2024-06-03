@@ -8,10 +8,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
 @Embeddable
-@ToString(callSuper = true)
+@Getter
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class QuartzTriggerId extends QuartzId {
 	@Column(name = "TRIGGER_NAME", length = QuartzColumnLength.TRIGGER_NAME)
 	private String triggerName;

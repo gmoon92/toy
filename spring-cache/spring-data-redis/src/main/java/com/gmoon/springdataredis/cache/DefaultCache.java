@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@ToString
 @EqualsAndHashCode(of = "key")
+@ToString
 public class DefaultCache implements Cache {
 	private static final String CACHE_KEY_STORAGE = "CACHE_KEY_STORAGE";
 	private static final Duration TTL_OF_DEFAULT = Duration.ofHours(1);

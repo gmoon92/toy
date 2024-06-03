@@ -216,10 +216,10 @@ public class GoogleSpreadSheetToXmlDataSet {
 		return false;
 	}
 
+	@NoArgsConstructor
 	@Getter
 	@Setter
 	@ToString
-	@NoArgsConstructor
 	private static class TableNode {
 
 		private String nameAttribute;
@@ -237,10 +237,10 @@ public class GoogleSpreadSheetToXmlDataSet {
 				this.getRowElements().add(rowNode);
 		}
 
+		@NoArgsConstructor(access = AccessLevel.PRIVATE)
 		@Getter
 		@Setter
 		@ToString
-		@NoArgsConstructor(access = AccessLevel.PRIVATE)
 		private static class RowNode {
 
 			private boolean defaultData;
@@ -256,10 +256,10 @@ public class GoogleSpreadSheetToXmlDataSet {
 				this.getValueElements().add(valueNode);
 			}
 
+			@NoArgsConstructor(access = AccessLevel.PRIVATE)
 			@Getter
 			@Setter
 			@ToString
-			@NoArgsConstructor(access = AccessLevel.PRIVATE)
 			private static class ValueNode {
 
 				private String description;

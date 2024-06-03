@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Setter
 @Getter
-@ToString
+@Setter
 @EqualsAndHashCode(exclude = "id")
+@ToString
 public class MemberCompareVO implements BaseRevisionCompareVO {
 
 	private String name;

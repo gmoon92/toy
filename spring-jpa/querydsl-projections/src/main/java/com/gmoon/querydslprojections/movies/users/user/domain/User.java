@@ -16,8 +16,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "tb_user")
 @Entity
+@Table(name = "tb_user")
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

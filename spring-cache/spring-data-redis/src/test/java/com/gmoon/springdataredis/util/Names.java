@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@ToString
 @EqualsAndHashCode
+@ToString
 class Names implements Serializable {
 
 	private List<String> value;

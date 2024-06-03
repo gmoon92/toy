@@ -21,10 +21,10 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity
-@Getter
 @Table(name = "tb_user")
-@ToString(onlyExplicitlyIncluded = true)
+@Getter
 @EqualsAndHashCode(of = "username")
+@ToString(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
 	@Id
 	@GeneratedValue

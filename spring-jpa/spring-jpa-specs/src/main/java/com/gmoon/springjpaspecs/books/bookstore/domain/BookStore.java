@@ -22,8 +22,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "tb_bookstor")
 @Entity
+@Table(name = "tb_bookstor")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class BookStore extends EntityObject {

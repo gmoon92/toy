@@ -32,10 +32,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "rev_history_detail")
-@Getter
-@ToString(exclude = {"id", "entityId", "revisionTarget", "revisionType", "revisionEventStatus"})
-@EqualsAndHashCode(of = {"revision", "entityId", "revisionTarget"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = {"revision", "entityId", "revisionTarget"})
+@ToString(exclude = {"id", "entityId", "revisionTarget", "revisionType", "revisionEventStatus"})
 public class RevisionHistoryDetail extends BaseEntity {
 
 	@Id

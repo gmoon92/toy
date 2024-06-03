@@ -5,8 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum AccountRole implements GrantedAuthority {
 	ADMIN("ADMIN", "ROLE_ADMIN"),
 	USER("USER", "ROLE_USER");

@@ -7,8 +7,8 @@ import java.util.TreeMap;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 public class ResourceVO {
 
 	private String language;

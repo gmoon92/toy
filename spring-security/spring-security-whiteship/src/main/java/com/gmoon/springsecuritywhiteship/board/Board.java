@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Board {
 
 	@Id

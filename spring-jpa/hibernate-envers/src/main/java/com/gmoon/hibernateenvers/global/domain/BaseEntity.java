@@ -6,8 +6,8 @@ import java.io.Serializable;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 
-@Getter
 @MappedSuperclass
+@Getter
 public abstract class BaseEntity implements Serializable {
 
 	@Serial

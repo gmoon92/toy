@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Embeddable
-@Getter
-@ToString
-@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Origin implements Serializable {
 	@Column(name = "schema")
 	private String schema;

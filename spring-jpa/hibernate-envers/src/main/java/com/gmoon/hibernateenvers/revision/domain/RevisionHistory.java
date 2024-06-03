@@ -31,10 +31,10 @@ import lombok.ToString;
 @Entity
 @Table(name = "rev_history")
 @RevisionEntity(CustomRevisionListener.class)
-@Getter
-@ToString(exclude = {"details"})
-@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = {"id"})
+@ToString(exclude = {"details"})
 public class RevisionHistory extends BaseEntity {
 
 	@Id

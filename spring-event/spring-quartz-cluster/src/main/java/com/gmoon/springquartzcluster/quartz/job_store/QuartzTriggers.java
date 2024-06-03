@@ -20,10 +20,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_TRIGGERS")
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class QuartzTriggers {
 	@EmbeddedId
 	private QuartzTriggerId id;

@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseSearchVO extends BasePageable {
 
 	public BaseSearchVO(Sort sort) {

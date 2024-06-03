@@ -19,10 +19,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_BLOB_TRIGGERS")
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class QuartzBlobTriggers {
 	@EmbeddedId
 	private QuartzTriggerId id;

@@ -5,8 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum Role implements GrantedAuthority {
 	RESOURCE_SERVER("ROLE_RESOURCE_SERVER");
 

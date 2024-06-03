@@ -23,10 +23,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NamedEntityGraph(name = "Member.withMemberOption"
 	 , attributeNodes = {@NamedAttributeNode(value = "memberOption")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @EqualsAndHashCode(of = "id")
 public class Member {
 

@@ -30,6 +30,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Table(
 	 name = "tb_movie",
 	 indexes = {
@@ -37,7 +38,6 @@ import lombok.NoArgsConstructor;
 		  @Index(name = "idx_release_time", columnList = "release_year,release_month,release_day,release_hour")
 	 }
 )
-@Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

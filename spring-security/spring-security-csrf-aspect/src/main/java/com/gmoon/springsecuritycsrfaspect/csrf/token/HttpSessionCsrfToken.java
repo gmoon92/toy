@@ -8,10 +8,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@Getter
-@ToString
-@EqualsAndHashCode(of = "value")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@EqualsAndHashCode(of = "value")
+@ToString
 public final class HttpSessionCsrfToken extends BaseCsrfToken {
 	private final String value;
 

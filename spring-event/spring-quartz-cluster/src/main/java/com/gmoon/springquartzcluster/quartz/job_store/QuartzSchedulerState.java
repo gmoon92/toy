@@ -16,10 +16,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_SCHEDULER_STATE")
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class QuartzSchedulerState {
 	@EmbeddedId
 	private Id id;
@@ -31,8 +31,8 @@ public class QuartzSchedulerState {
 	private Long checkinInterval;
 
 	@Embeddable
-	@ToString(callSuper = true)
 	@EqualsAndHashCode(callSuper = true)
+	@ToString(callSuper = true)
 	protected static class Id extends QuartzId {
 
 		@Column(name = "INSTANCE_NAME", length = QuartzColumnLength.INSTANCE_NAME)

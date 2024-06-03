@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "ex_access_log")
 @Entity
+@Table(name = "ex_access_log")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode

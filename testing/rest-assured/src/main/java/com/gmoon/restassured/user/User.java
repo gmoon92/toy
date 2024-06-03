@@ -6,10 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
-@ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class User {
 	@EqualsAndHashCode.Include
 	private String name;

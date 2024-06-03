@@ -5,8 +5,8 @@ import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum Level {
 	BASIC(1),
 	SILVER(2),

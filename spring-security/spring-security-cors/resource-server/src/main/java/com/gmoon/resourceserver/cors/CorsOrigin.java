@@ -20,9 +20,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_cors_origin",
 	 uniqueConstraints = {@UniqueConstraint(name = "u_schema_host_port", columnNames = {"schema", "host", "port"})})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = {"origin"})
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CorsOrigin implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

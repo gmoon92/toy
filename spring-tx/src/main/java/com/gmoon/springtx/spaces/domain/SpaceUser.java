@@ -19,8 +19,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "tb_space_user")
 @Getter
-@ToString(of = "id")
 @EqualsAndHashCode(of = "id")
+@ToString(of = "id")
 public class SpaceUser implements Serializable {
 
 	@Id

@@ -21,13 +21,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Table(name = "tb_team", uniqueConstraints = {@UniqueConstraint(name = "u_name", columnNames = {"name"})})
-@Entity
-@Getter
 @JsonIgnoreProperties({"users"})
-@ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode(of = "name")
+@Entity
+@Table(
+	 name = "tb_team",
+	 uniqueConstraints = {
+		  @UniqueConstraint(name = "u_name", columnNames = {"name"})
+	 }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "name")
+@ToString(onlyExplicitlyIncluded = true)
 public class Team implements Serializable {
 	private static final long serialVersionUID = 722253006387150023L;
 

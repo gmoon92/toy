@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 public class UserLoginLogListVO extends CursorPagination {
 	private String cursor;
 	private boolean hasNextPage;
 
 	private List<Data> list;
 
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@Getter
 	@ToString
-	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Data {
 		private String username;
 		private AccessDevice accessDevice;

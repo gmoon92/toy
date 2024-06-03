@@ -12,10 +12,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "tb_access_control_allow_method")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class CorsHttpMethod implements Serializable {
 	@Id
 	@Column(name = "id", length = 50)

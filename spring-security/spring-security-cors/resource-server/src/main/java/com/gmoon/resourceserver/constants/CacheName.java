@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum CacheName {
 	ALLOWED_HTTP_METHODS(Constants.ALLOWED_HTTP_METHODS),
 	ALLOWED_ORIGIN_PATTERN(Constants.ALLOWED_ORIGIN_PATTERN);

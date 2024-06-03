@@ -14,11 +14,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "tb_user")
-@EqualsAndHashCode(of = "username")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "username")
 public class User implements Serializable {
 	@Id
 	@GeneratedValue

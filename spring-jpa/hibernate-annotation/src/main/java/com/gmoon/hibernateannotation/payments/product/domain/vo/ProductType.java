@@ -3,8 +3,8 @@ package com.gmoon.hibernateannotation.payments.product.domain.vo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor
+@Getter
 public enum ProductType {
 	ENTERPRISE(Integer.MAX_VALUE),
 	STANDARD(10),

@@ -8,8 +8,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
 public class ApiResponse<T> {
 	private final HttpStatus httpStatus;
 	private final String code;

@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Room {
 
 	@EqualsAndHashCode.Include

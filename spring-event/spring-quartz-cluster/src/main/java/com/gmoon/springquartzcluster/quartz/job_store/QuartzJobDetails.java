@@ -20,10 +20,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_JOB_DETAILS")
-@Getter
-@ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class QuartzJobDetails {
 	@EmbeddedId
 	private Id id;
@@ -55,8 +55,8 @@ public class QuartzJobDetails {
 	private byte[] jobData;
 
 	@Embeddable
-	@ToString(callSuper = true)
 	@EqualsAndHashCode(callSuper = true)
+	@ToString(callSuper = true)
 	protected static class Id extends QuartzId {
 
 		@Column(name = "JOB_NAME", length = QuartzColumnLength.JOB_NAME)
