@@ -1,10 +1,10 @@
-- spring-integration
+- ~~spring-integration~~
 - spring-reactive
 - spring-batch
 - spring-security-jwk
-- rabbitmq
-- redis
-  - transaction
+- ~~rabbitmq~~
+- ~~redis~~
+  - ~~transaction~~
 - pns
 - async merged
 - jpa union pagination
@@ -14,5 +14,5 @@
 - testing
   - jacoco
 - docs
-  - sql index
-  - b-tree
+  - ~~sql index~~
+  - ~~b-tree~~
