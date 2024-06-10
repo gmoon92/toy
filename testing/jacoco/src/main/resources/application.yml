@@ -1,1 +1,9 @@
-spring.application.name=jacoco
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    generate-ddl: true
+
+logging:
+  level:
+    "[org.springframework.security]": trace
