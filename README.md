@@ -11,7 +11,7 @@
     - [jpa-second-level-cache](https://github.com/gmoon92/toy/blob/master/spring-cache/jpa-second-level-cache/README.md)
     - [spring-data-redis](https://github.com/gmoon92/toy/blob/master/spring-cache/spring-data-redis/README.md)
 - [spring-integration](https://github.com/gmoon92/toy/tree/master/spring-integration)
-  - [spring-integration-amqp](https://github.com/gmoon92/toy/tree/master/spring-integration/spring-integration-amqp)
+    - [spring-integration-amqp](https://github.com/gmoon92/toy/tree/master/spring-integration/spring-integration-amqp)
 - spring-event
     - [spring-async](https://github.com/gmoon92/toy/blob/master/spring-event/spring-async/README.md)
     - [spring-event-listener](https://github.com/gmoon92/toy/blob/master/spring-event/spring-event-listener/README.md)
@@ -55,6 +55,7 @@
 - testing
     - [awaitility](https://github.com/gmoon92/toy/blob/master/testing/awaitility/README.md)
     - [embedded-redis](https://github.com/gmoon92/toy/blob/master/testing/embedded-redis/README.md#1-embedded-redis-for-kstyrc)
+    - [jacoco](https://github.com/gmoon92/toy/blob/master/testing/jacoco/README.md)
     - [junit5](https://github.com/gmoon92/toy/blob/master/testing/junit5/src/test/java/com/gmoon/junit5/Junit5ApplicationTests.java)
     - [localstack](https://github.com/gmoon92/toy/blob/master/testing/localstack/README.md)
     - [mockito](https://github.com/gmoon92/toy/blob/master/testing/mockito/README.md)
