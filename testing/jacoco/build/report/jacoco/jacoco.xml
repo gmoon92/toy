@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN"
+        "report.dtd">
+<report name="jacoco">
+    <sessioninfo id="gmoonui-MacBookPro.local-83547674" start="1718098287400" dump="1718098291365"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-1d552649" start="1718098333382" dump="1718098337032"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-2ca20156" start="1718098349449" dump="1718098353004"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-3950cedf" start="1718098392183" dump="1718098395760"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-36accb62" start="1718098611824" dump="1718098615746"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-1c8e80cb" start="1718098639075" dump="1718098642766"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-10d13e61" start="1718098648192" dump="1718098651728"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-2bf2c0c8" start="1718098668739" dump="1718098672538"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-9bc4515c" start="1718098858678" dump="1718098862422"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-ea164937" start="1718098983107" dump="1718098987033"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-43831671" start="1718099252804" dump="1718099256948"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-e19f941c" start="1718099314477" dump="1718099318187"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-e4aa852a" start="1718099326681" dump="1718099330341"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-2f5e1721" start="1718099437649" dump="1718099441441"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-edfb423c" start="1718099493239" dump="1718099496860"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-4255c763" start="1718099532040" dump="1718099535687"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-cea061a8" start="1718099557328" dump="1718099561590"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-35995821" start="1718099571920" dump="1718099575621"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-f6096951" start="1718099612222" dump="1718099615942"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-9ded2bbd" start="1718099626598" dump="1718099630309"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-55b4611e" start="1718099654288" dump="1718099658198"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-445323e5" start="1718099676755" dump="1718099682885"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-52ee633b" start="1718099743394" dump="1718099749637"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-57184ea8" start="1718099794216" dump="1718099800313"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-5e53ec45" start="1718099865400" dump="1718099871745"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-6f072c0a" start="1718099888567" dump="1718099897429"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-f525e8ae" start="1718099955427" dump="1718099964460"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-96863498" start="1718100033094" dump="1718100042020"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-cde25589" start="1718100056161" dump="1718100065124"/>
+    <sessioninfo id="gmoonui-MacBookPro.local-7ad1bfe7" start="1718106943388" dump="1718106952656"/>
+    <package name="com/gmoon/jacoco/users/api">
+        <class name="com/gmoon/jacoco/users/api/UserRestController" sourcefilename="UserRestController.java">
+            <method name="updatePassword"
+                    desc="(Ljava/lang/String;Ljava/lang/String;)Lorg/springframework/http/ResponseEntity;" line="25">
+                <counter type="INSTRUCTION" missed="5" covered="16"/>
+                <counter type="BRANCH" missed="1" covered="1"/>
+                <counter type="LINE" missed="1" covered="5"/>
+                <counter type="COMPLEXITY" missed="1" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="&lt;init&gt;" desc="(Lcom/gmoon/jacoco/users/application/UserService;)V" line="18">
+                <counter type="INSTRUCTION" missed="0" covered="6"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="&lt;clinit&gt;" desc="()V" line="15">
+                <counter type="INSTRUCTION" missed="0" covered="4"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="5" covered="26"/>
+            <counter type="BRANCH" missed="1" covered="1"/>
+            <counter type="LINE" missed="1" covered="7"/>
+            <counter type="COMPLEXITY" missed="1" covered="3"/>
+            <counter type="METHOD" missed="0" covered="3"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <sourcefile name="UserRestController.java">
+            <line nr="15" mi="0" ci="4" mb="0" cb="0"/>
+            <line nr="18" mi="0" ci="6" mb="0" cb="0"/>
+            <line nr="25" mi="0" ci="4" mb="1" cb="1"/>
+            <line nr="26" mi="5" ci="0" mb="0" cb="0"/>
+            <line nr="29" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="30" mi="0" ci="6" mb="0" cb="0"/>
+            <line nr="31" mi="0" ci="2" mb="0" cb="0"/>
+            <line nr="32" mi="0" ci="1" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="5" covered="26"/>
+            <counter type="BRANCH" missed="1" covered="1"/>
+            <counter type="LINE" missed="1" covered="7"/>
+            <counter type="COMPLEXITY" missed="1" covered="3"/>
+            <counter type="METHOD" missed="0" covered="3"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </sourcefile>
+        <counter type="INSTRUCTION" missed="5" covered="26"/>
+        <counter type="BRANCH" missed="1" covered="1"/>
+        <counter type="LINE" missed="1" covered="7"/>
+        <counter type="COMPLEXITY" missed="1" covered="3"/>
+        <counter type="METHOD" missed="0" covered="3"/>
+        <counter type="CLASS" missed="0" covered="1"/>
+    </package>
+    <package name="com/gmoon/jacoco/users/infra">
+        <class name="com/gmoon/jacoco/users/infra/JpaUserRepository" sourcefilename="JpaUserRepository.java"/>
+        <class name="com/gmoon/jacoco/users/infra/UserRepositoryAdapter" sourcefilename="UserRepositoryAdapter.java">
+            <method name="get" desc="(Ljava/lang/String;)Lcom/gmoon/jacoco/users/domain/User;" line="20">
+                <counter type="INSTRUCTION" missed="0" covered="6"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="findByUsername" desc="(Ljava/lang/String;)Ljava/util/Optional;" line="25">
+                <counter type="INSTRUCTION" missed="5" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="&lt;init&gt;" desc="(Lcom/gmoon/jacoco/users/infra/JpaUserRepository;)V" line="13">
+                <counter type="INSTRUCTION" missed="0" covered="6"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="5" covered="12"/>
+            <counter type="LINE" missed="1" covered="2"/>
+            <counter type="COMPLEXITY" missed="1" covered="2"/>
+            <counter type="METHOD" missed="1" covered="2"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <sourcefile name="JpaUserRepository.java"/>
+        <sourcefile name="UserRepositoryAdapter.java">
+            <line nr="13" mi="0" ci="6" mb="0" cb="0"/>
+            <line nr="20" mi="0" ci="6" mb="0" cb="0"/>
+            <line nr="25" mi="5" ci="0" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="5" covered="12"/>
+            <counter type="LINE" missed="1" covered="2"/>
+            <counter type="COMPLEXITY" missed="1" covered="2"/>
+            <counter type="METHOD" missed="1" covered="2"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </sourcefile>
+        <counter type="INSTRUCTION" missed="5" covered="12"/>
+        <counter type="LINE" missed="1" covered="2"/>
+        <counter type="COMPLEXITY" missed="1" covered="2"/>
+        <counter type="METHOD" missed="1" covered="2"/>
+        <counter type="CLASS" missed="0" covered="1"/>
+    </package>
+    <package name="com/gmoon/jacoco/users/application">
+        <class name="com/gmoon/jacoco/users/application/UserService" sourcefilename="UserService.java">
+            <method name="updatePassword" desc="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" line="27">
+                <counter type="INSTRUCTION" missed="5" covered="24"/>
+                <counter type="BRANCH" missed="1" covered="1"/>
+                <counter type="LINE" missed="1" covered="6"/>
+                <counter type="COMPLEXITY" missed="1" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="notifyPasswordChanged" desc="(Lcom/gmoon/jacoco/users/domain/User;)V" line="39">
+                <counter type="INSTRUCTION" missed="0" covered="7"/>
+                <counter type="BRANCH" missed="1" covered="1"/>
+                <counter type="LINE" missed="0" covered="3"/>
+                <counter type="COMPLEXITY" missed="1" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="sendMailChangePasswordAlarm" desc="(Lcom/gmoon/jacoco/users/domain/User;)V" line="45">
+                <counter type="INSTRUCTION" missed="0" covered="6"/>
+                <counter type="LINE" missed="0" covered="2"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="loadUserByUsername"
+                    desc="(Ljava/lang/String;)Lorg/springframework/security/core/userdetails/UserDetails;" line="50">
+                <counter type="INSTRUCTION" missed="9" covered="0"/>
+                <counter type="LINE" missed="2" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="&lt;init&gt;"
+                    desc="(Lcom/gmoon/jacoco/users/domain/UserRepository;Lorg/springframework/security/crypto/password/PasswordEncoder;)V"
+                    line="18">
+                <counter type="INSTRUCTION" missed="0" covered="9"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="lambda$loadUserByUsername$0"
+                    desc="(Ljava/lang/String;)Lorg/springframework/security/core/userdetails/UsernameNotFoundException;"
+                    line="51">
+                <counter type="INSTRUCTION" missed="5" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="&lt;clinit&gt;" desc="()V" line="16">
+                <counter type="INSTRUCTION" missed="0" covered="4"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="19" covered="50"/>
+            <counter type="BRANCH" missed="2" covered="2"/>
+            <counter type="LINE" missed="3" covered="13"/>
+            <counter type="COMPLEXITY" missed="4" covered="5"/>
+            <counter type="METHOD" missed="2" covered="5"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <sourcefile name="UserService.java">
+            <line nr="16" mi="0" ci="4" mb="0" cb="0"/>
+            <line nr="18" mi="0" ci="9" mb="0" cb="0"/>
+            <line nr="27" mi="0" ci="5" mb="0" cb="0"/>
+            <line nr="28" mi="0" ci="7" mb="1" cb="1"/>
+            <line nr="29" mi="5" ci="0" mb="0" cb="0"/>
+            <line nr="32" mi="0" ci="5" mb="0" cb="0"/>
+            <line nr="33" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="35" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="36" mi="0" ci="1" mb="0" cb="0"/>
+            <line nr="39" mi="0" ci="3" mb="1" cb="1"/>
+            <line nr="40" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="42" mi="0" ci="1" mb="0" cb="0"/>
+            <line nr="45" mi="0" ci="5" mb="0" cb="0"/>
+            <line nr="46" mi="0" ci="1" mb="0" cb="0"/>
+            <line nr="50" mi="7" ci="0" mb="0" cb="0"/>
+            <line nr="51" mi="7" ci="0" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="19" covered="50"/>
+            <counter type="BRANCH" missed="2" covered="2"/>
+            <counter type="LINE" missed="3" covered="13"/>
+            <counter type="COMPLEXITY" missed="4" covered="5"/>
+            <counter type="METHOD" missed="2" covered="5"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </sourcefile>
+        <counter type="INSTRUCTION" missed="19" covered="50"/>
+        <counter type="BRANCH" missed="2" covered="2"/>
+        <counter type="LINE" missed="3" covered="13"/>
+        <counter type="COMPLEXITY" missed="4" covered="5"/>
+        <counter type="METHOD" missed="2" covered="5"/>
+        <counter type="CLASS" missed="0" covered="1"/>
+    </package>
+    <package name="com/gmoon/jacoco/users/domain">
+        <class name="com/gmoon/jacoco/users/domain/User" sourcefilename="User.java">
+            <method name="&lt;init&gt;"
+                    desc="(Ljava/lang/String;Lcom/gmoon/jacoco/users/domain/Role;Ljava/lang/String;Ljava/lang/String;ZLcom/gmoon/jacoco/users/domain/UserOption;)V"
+                    line="59">
+                <counter type="INSTRUCTION" missed="0" covered="21"/>
+                <counter type="LINE" missed="0" covered="8"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="updatePassword" desc="(Ljava/lang/String;)V" line="69">
+                <counter type="INSTRUCTION" missed="0" covered="4"/>
+                <counter type="LINE" missed="0" covered="2"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="allowReceivingMail" desc="()Z" line="73">
+                <counter type="INSTRUCTION" missed="0" covered="4"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getAuthorities" desc="()Ljava/util/Collection;" line="78">
+                <counter type="INSTRUCTION" missed="4" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="isAccountNonExpired" desc="()Z" line="83">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="isAccountNonLocked" desc="()Z" line="88">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="isCredentialsNonExpired" desc="()Z" line="93">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="builder" desc="()Lcom/gmoon/jacoco/users/domain/User$UserBuilder;" line="58">
+                <counter type="INSTRUCTION" missed="0" covered="4"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="&lt;init&gt;" desc="()V" line="27">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getId" desc="()Ljava/lang/String;" line="36">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getRole" desc="()Lcom/gmoon/jacoco/users/domain/Role;" line="40">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getUsername" desc="()Ljava/lang/String;" line="43">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getPassword" desc="()Ljava/lang/String;" line="46">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="isEnabled" desc="()Z" line="49">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getUserOption" desc="()Lcom/gmoon/jacoco/users/domain/UserOption;" line="56">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="equals" desc="(Ljava/lang/Object;)Z" line="29">
+                <counter type="INSTRUCTION" missed="38" covered="0"/>
+                <counter type="BRANCH" missed="12" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="7" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="canEqual" desc="(Ljava/lang/Object;)Z" line="29">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="hashCode" desc="()I" line="29">
+                <counter type="INSTRUCTION" missed="20" covered="0"/>
+                <counter type="BRANCH" missed="2" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="2" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="toString" desc="()Ljava/lang/String;" line="30">
+                <counter type="INSTRUCTION" missed="0" covered="14"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="74" covered="68"/>
+            <counter type="BRANCH" missed="14" covered="0"/>
+            <counter type="LINE" missed="5" covered="20"/>
+            <counter type="COMPLEXITY" missed="14" covered="12"/>
+            <counter type="METHOD" missed="7" covered="12"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <class name="com/gmoon/jacoco/users/domain/UserRepository" sourcefilename="UserRepository.java"/>
+        <class name="com/gmoon/jacoco/users/domain/UserOption" sourcefilename="UserOption.java">
+            <method name="&lt;init&gt;" desc="()V" line="19">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="getUserId" desc="()Ljava/lang/String;" line="27">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="getUser" desc="()Lcom/gmoon/jacoco/users/domain/User;" line="31">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="isAllowsReceivingMail" desc="()Z" line="34">
+                <counter type="INSTRUCTION" missed="0" covered="3"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="equals" desc="(Ljava/lang/Object;)Z" line="21">
+                <counter type="INSTRUCTION" missed="38" covered="0"/>
+                <counter type="BRANCH" missed="12" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="7" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="canEqual" desc="(Ljava/lang/Object;)Z" line="21">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="hashCode" desc="()I" line="21">
+                <counter type="INSTRUCTION" missed="20" covered="0"/>
+                <counter type="BRANCH" missed="2" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="2" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <method name="toString" desc="()Ljava/lang/String;" line="22">
+                <counter type="INSTRUCTION" missed="8" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <counter type="INSTRUCTION" missed="75" covered="6"/>
+            <counter type="BRANCH" missed="14" covered="0"/>
+            <counter type="LINE" missed="4" covered="2"/>
+            <counter type="COMPLEXITY" missed="13" covered="2"/>
+            <counter type="METHOD" missed="6" covered="2"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <class name="com/gmoon/jacoco/users/domain/Role" sourcefilename="Role.java">
+            <method name="getAuthority" desc="()Ljava/lang/String;" line="17">
+                <counter type="INSTRUCTION" missed="0" covered="4"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="&lt;init&gt;" desc="(Ljava/lang/String;ILjava/lang/String;)V" line="7">
+                <counter type="INSTRUCTION" missed="0" covered="8"/>
+                <counter type="LINE" missed="0" covered="1"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <method name="&lt;clinit&gt;" desc="()V" line="7">
+                <counter type="INSTRUCTION" missed="0" covered="17"/>
+                <counter type="LINE" missed="0" covered="3"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="0" covered="29"/>
+            <counter type="LINE" missed="0" covered="4"/>
+            <counter type="COMPLEXITY" missed="0" covered="3"/>
+            <counter type="METHOD" missed="0" covered="3"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <class name="com/gmoon/jacoco/users/domain/Role$Constants" sourcefilename="Role.java">
+            <method name="&lt;init&gt;" desc="()V" line="20">
+                <counter type="INSTRUCTION" missed="3" covered="0"/>
+                <counter type="LINE" missed="1" covered="0"/>
+                <counter type="COMPLEXITY" missed="1" covered="0"/>
+                <counter type="METHOD" missed="1" covered="0"/>
+            </method>
+            <counter type="INSTRUCTION" missed="3" covered="0"/>
+            <counter type="LINE" missed="1" covered="0"/>
+            <counter type="COMPLEXITY" missed="1" covered="0"/>
+            <counter type="METHOD" missed="1" covered="0"/>
+            <counter type="CLASS" missed="1" covered="0"/>
+        </class>
+        <sourcefile name="User.java">
+            <line nr="27" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="29" mi="61" ci="0" mb="14" cb="0"/>
+            <line nr="30" mi="0" ci="14" mb="0" cb="0"/>
+            <line nr="36" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="40" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="43" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="46" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="49" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="56" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="58" mi="0" ci="4" mb="0" cb="0"/>
+            <line nr="59" mi="0" ci="2" mb="0" cb="0"/>
+            <line nr="60" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="61" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="62" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="63" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="64" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="65" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="66" mi="0" ci="1" mb="0" cb="0"/>
+            <line nr="69" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="70" mi="0" ci="1" mb="0" cb="0"/>
+            <line nr="73" mi="0" ci="4" mb="0" cb="0"/>
+            <line nr="78" mi="4" ci="0" mb="0" cb="0"/>
+            <line nr="83" mi="3" ci="0" mb="0" cb="0"/>
+            <line nr="88" mi="3" ci="0" mb="0" cb="0"/>
+            <line nr="93" mi="3" ci="0" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="74" covered="68"/>
+            <counter type="BRANCH" missed="14" covered="0"/>
+            <counter type="LINE" missed="5" covered="20"/>
+            <counter type="COMPLEXITY" missed="14" covered="12"/>
+            <counter type="METHOD" missed="7" covered="12"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </sourcefile>
+        <sourcefile name="UserOption.java">
+            <line nr="19" mi="0" ci="3" mb="0" cb="0"/>
+            <line nr="21" mi="61" ci="0" mb="14" cb="0"/>
+            <line nr="22" mi="8" ci="0" mb="0" cb="0"/>
+            <line nr="27" mi="3" ci="0" mb="0" cb="0"/>
+            <line nr="31" mi="3" ci="0" mb="0" cb="0"/>
+            <line nr="34" mi="0" ci="3" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="75" covered="6"/>
+            <counter type="BRANCH" missed="14" covered="0"/>
+            <counter type="LINE" missed="4" covered="2"/>
+            <counter type="COMPLEXITY" missed="13" covered="2"/>
+            <counter type="METHOD" missed="6" covered="2"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </sourcefile>
+        <sourcefile name="Role.java">
+            <line nr="7" mi="0" ci="11" mb="0" cb="0"/>
+            <line nr="10" mi="0" ci="7" mb="0" cb="0"/>
+            <line nr="11" mi="0" ci="7" mb="0" cb="0"/>
+            <line nr="17" mi="0" ci="4" mb="0" cb="0"/>
+            <line nr="20" mi="3" ci="0" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="3" covered="29"/>
+            <counter type="LINE" missed="1" covered="4"/>
+            <counter type="COMPLEXITY" missed="1" covered="3"/>
+            <counter type="METHOD" missed="1" covered="3"/>
+            <counter type="CLASS" missed="1" covered="1"/>
+        </sourcefile>
+        <sourcefile name="UserRepository.java"/>
+        <counter type="INSTRUCTION" missed="152" covered="103"/>
+        <counter type="BRANCH" missed="28" covered="0"/>
+        <counter type="LINE" missed="10" covered="26"/>
+        <counter type="COMPLEXITY" missed="28" covered="17"/>
+        <counter type="METHOD" missed="14" covered="17"/>
+        <counter type="CLASS" missed="1" covered="3"/>
+    </package>
+    <counter type="INSTRUCTION" missed="181" covered="191"/>
+    <counter type="BRANCH" missed="31" covered="3"/>
+    <counter type="LINE" missed="15" covered="48"/>
+    <counter type="COMPLEXITY" missed="34" covered="27"/>
+    <counter type="METHOD" missed="17" covered="27"/>
+    <counter type="CLASS" missed="1" covered="6"/>
+</report>
