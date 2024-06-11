@@ -3,8 +3,7 @@ package com.gmoon.jacoco.users.domain;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.id.uuid.UuidGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,7 +12,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -33,8 +31,7 @@ import lombok.ToString;
 public class User implements UserDetails {
 
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", type = UuidGenerator.class)
+	@UuidGenerator
 	@Column(name = "id", length = 50)
 	private String id;
 
