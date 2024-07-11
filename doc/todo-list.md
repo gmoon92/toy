@@ -2,6 +2,7 @@
 - spring-reactive
 - spring-batch
 - spring-security-jwk
+- hibernate-search
 - ~~rabbitmq~~
 - ~~redis~~
   - ~~transaction~~
