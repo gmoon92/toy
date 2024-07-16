@@ -9,7 +9,7 @@ services:
 
   # https://mariadb.com/kb/en/how-to-quickly-insert-data-into-mariadb/
   mariadb:
-    image: mariadb:10.3
+    image: mariadb:11.2.4-jammy
     environment:
       - TZ=UTC
       - MYSQL_USER=root
