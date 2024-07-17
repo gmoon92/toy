@@ -17,7 +17,7 @@
 
 ## IntelliJ Formatter Settings
 
-![intellij-code-style-settings](./img/intellij-code-style-settings.png)
+![intellij-code-style-settings](../doc/img/intellij-code-style-settings.png)
 
 1. `Editor` > `Code Style` > `Java`
 2. `Schema` 항목 톱니바퀴 아이콘 클릭
@@ -30,7 +30,7 @@
 
 `Editor` > `General` > `Ensure every saved file ends with a line break`
 
-![intellij-code-style_editor_line_break.png](./img/intellij-code-style_editor_line_break.png)
+![intellij-code-style_editor_line_break.png](../doc/img/intellij-code-style_editor_line_break.png)
 
 ## Actions on Save
 
@@ -38,7 +38,7 @@
 
 `Tools` > `Actions on Save` > `Reformat code`, `Optimize imports` 활성화
 
-![intellij-code-style_actions_on_save.png](./img/intellij-code-style_actions_on_save.png)
+![intellij-code-style_actions_on_save.png](../doc/img/intellij-code-style_actions_on_save.png)
 
 ## Checkstyle Settings
 
@@ -46,7 +46,7 @@
 
 `CheckStyle-IDEA` 플러그인 설치
 
-![1_plugin-install](./img/check-style-1_plugin-install.png)
+![1_plugin-install](../doc/img/check-style-1_plugin-install.png)
 
 > **`8.24 이상`** 설치
 
@@ -54,7 +54,7 @@
 
 IntelliJ `CheckStyle` 플러그인 설정
 
-![2_intellij-settings](./img/check-style-2_intellij-settings.png)
+![2_intellij-settings](../doc/img/check-style-2_intellij-settings.png)
 
 - `Checkstyle versions` : 8.24 이상 선택.
 - `Scan Scope` : **`Only Java sources (including tests)`** 선택
@@ -64,7 +64,7 @@ IntelliJ `CheckStyle` 플러그인 설정
     - `Use a local Checkstyle file` > `Browse`
     - **`checkstyle-rules.xml`** 파일 적용
 
-![3_intellij-settings](./img/check-style-3_intellij-settings.png)
+![3_intellij-settings](../doc/img/check-style-3_intellij-settings.png)
 
 - `Active` 체크
 
@@ -72,24 +72,24 @@ IntelliJ `CheckStyle` 플러그인 설정
 
 CheckStyle 확인 방법
 
-![4_intellij-settings](./img/check-style-4_intellij-settings.png)
+![4_intellij-settings](../doc/img/check-style-4_intellij-settings.png)
 
 ## Eclipse Code Formatter Plugin Disabled
 
 기존 설치된 `Adapter for Eclipse Code Formatter` 플러그인 제거 또는 Disabled
 
-![eclipse-code-formatter-plugin-remove](./img/eclipse-code-formatter-plugin-remove.png)
+![eclipse-code-formatter-plugin-remove](../doc/img/eclipse-code-formatter-plugin-remove.png)
 
 ## Project Reformat Code
 
 프로젝트 또는 파일 코드 컨벤션 적용 방법
 
-![reformat-code1](./img/reformat-code1.png)
+![reformat-code1](../doc/img/reformat-code1.png)
 
 1. 적용할 모듈 또는 파일 선택
 2. `Reformat Code` 클릭
 
-![reformat-code2](./img/reformat-code2.png)
+![reformat-code2](../doc/img/reformat-code2.png)
 
 1. `Optimize imports` 체크
 2. `Cleanup code` 체크
