@@ -12,6 +12,7 @@ spring:
     properties:
       "[org.hibernate.envers.audit_table_suffix]": _h
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         "[hbm2ddl.auto]": create-drop
         show_sql: true
         #        format_sql: true

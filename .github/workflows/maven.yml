@@ -38,15 +38,17 @@ jobs:
           - 5672:5672
 
     # https://github.com/marketplace
+    # https://github.com/marketplace/actions/start-mariadb
     steps:
       - name: Set up mariadb
-        uses: getong/mariadb-action@v1.1
+        uses: getong/mariadb-action@v1.11
         with:
           host port: 3306 # Optional, default value is 3306. The port of host
           container port: 3306 # Optional, default value is 3306. The port of container
           character set server: 'utf8mb4' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
           collation server: 'utf8mb4_unicode_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-          mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+          mariadb version: '11.2.4' # Optional, default value is "latest". The version of the MariaDB
+          #          mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
           #          mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
           mysql root password: 111111 # Required if "mysql user" is empty, default is empty. The root superuser password
       #          mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
