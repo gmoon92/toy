@@ -22,4 +22,7 @@ spring:
       data-locations: classpath*:data.sql
       continue-on-error: false
 
-"[logging.level.MySQL]": DEBUG
+logging:
+  level:
+    "[MySQL]": DEBUG
+    "[com.gmoon]": DEBUG
