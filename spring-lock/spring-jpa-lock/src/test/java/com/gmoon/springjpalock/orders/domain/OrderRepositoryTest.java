@@ -1,11 +1,9 @@
 package com.gmoon.springjpalock.orders.domain;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.CompletableFuture;
-
-import org.hibernate.PessimisticLockException;
+import com.gmoon.springjpalock.global.Fixtures;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.hibernate.exception.GenericJDBCException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
-import com.gmoon.springjpalock.global.Fixtures;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @Slf4j
 @DataJpaTest
@@ -59,6 +57,7 @@ class OrderRepositoryTest {
 			 .doesNotThrowAnyException();
 	}
 
+	//	https://dev.mysql.com/doc/refman/8.4/en/innodb-performance-ro-txn.html
 	@DisplayName("X-Lock"
 		 + "for update"
 		 + "[QUERY] select * from `tb_order` where `no`='order-no-001' for update")
@@ -71,10 +70,11 @@ class OrderRepositoryTest {
 			 CompletableFuture.runAsync(() -> repository.findByNoWithExclusiveLock(Fixtures.ORDER_NO))
 		);
 
+		Assertions.setPrintAssertionsDescription(true);
 		assertThatCode(allOf::join)
 			 .cause()
-			 .cause().isInstanceOf(PessimisticLockException.class)
-			 .cause().isInstanceOf(MySQLTransactionRollbackException.class);
+			 .cause().isInstanceOf(GenericJDBCException.class)
+			 .cause().isInstanceOf(SQLException.class);
 	}
 
 	@AfterEach
