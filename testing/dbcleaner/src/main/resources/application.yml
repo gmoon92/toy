@@ -12,13 +12,13 @@ spring:
     show-sql: &show-sql true
     properties:
       hibernate:
-        "[hbm2ddl.auto]": update
+        "[hbm2ddl.auto]": create
 
   sql:
     init:
       mode: always
       encoding: UTF-8
-      data-locations: classpath*:db/data.sql
+      data-locations: classpath*:data.sql
       continue-on-error: false
 
 "[logging.level.MySQL]": debug
