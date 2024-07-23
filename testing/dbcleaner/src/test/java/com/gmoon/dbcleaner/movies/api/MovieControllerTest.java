@@ -1,5 +1,8 @@
 package com.gmoon.dbcleaner.movies.api;
 
+import com.gmoon.dbcleaner.movies.dto.CouponRequestVO;
+import com.gmoon.javacore.util.JacksonUtils;
+import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,5 +42,38 @@ class MovieControllerTest {
 		);
 
 		result.andExpect(status().isOk());
+	}
+
+	@Test
+	void issueCoupon() throws Exception {
+		CouponRequestVO requestVO = new CouponRequestVO();
+		requestVO.setOfficeId(1L);
+		requestVO.setMovieId(1L);
+
+		ResultActions result = mockMvc.perform(
+			 MockMvcRequestBuilders.post("/movie/coupon")
+				  .contentType(MediaType.APPLICATION_JSON)
+				  .accept(MediaType.APPLICATION_JSON)
+				  .content(JacksonUtils.toString(requestVO))
+		);
+
+		result.andExpect(status().isOk());
+	}
+
+	@Test
+	void error() throws Exception {
+		CouponRequestVO requestVO = new CouponRequestVO();
+		requestVO.setOfficeId(1L);
+		requestVO.setMovieId(1L);
+
+		ResultActions result = mockMvc.perform(
+			 MockMvcRequestBuilders.post("/movie/error")
+				  .contentType(MediaType.APPLICATION_JSON)
+				  .accept(MediaType.APPLICATION_JSON)
+				  .content(JacksonUtils.toString(requestVO))
+		);
+
+		result.andExpect(status().is5xxServerError());
+		result.andExpect(response -> assertTrue(response.getResolvedException() instanceof LazyInitializationException));
 	}
 }
