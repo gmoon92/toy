@@ -102,6 +102,11 @@
             <artifactId>javase</artifactId>
             <version>${zxing.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>dev.samstevens.totp</groupId>
