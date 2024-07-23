@@ -47,4 +47,8 @@ public class Movie implements Serializable {
 		 inverseJoinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id")
 	)
 	private Set<Ticket> tickets = new HashSet<>();
+
+	public void addTicket(Ticket ticket) {
+		tickets.add(ticket);
+	}
 }

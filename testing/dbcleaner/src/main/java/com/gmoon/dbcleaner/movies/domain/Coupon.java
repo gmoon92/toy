@@ -34,4 +34,8 @@ public class Coupon implements Serializable {
 
 	@Column(name = "used", nullable = false)
 	private boolean used;
+
+	public void using() {
+		used = true;
+	}
 }

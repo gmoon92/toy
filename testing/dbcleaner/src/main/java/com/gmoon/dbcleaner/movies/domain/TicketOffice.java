@@ -1,5 +1,6 @@
 package com.gmoon.dbcleaner.movies.domain;
 
+import com.gmoon.dbcleaner.movies.domain.vo.TicketType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,4 +27,8 @@ public class TicketOffice implements Serializable {
 
 	@OneToMany(mappedBy = "ticketOffice")
 	private Set<Movie> movies = new HashSet<>();
+
+	public Ticket createTicket(TicketType ticketType, int sellingPrice) {
+		return new Ticket(this, ticketType, new BigDecimal(sellingPrice));
+	}
 }

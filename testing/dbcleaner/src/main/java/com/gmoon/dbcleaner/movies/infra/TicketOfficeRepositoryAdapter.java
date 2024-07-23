@@ -1,5 +1,6 @@
 package com.gmoon.dbcleaner.movies.infra;
 
+import com.gmoon.dbcleaner.movies.domain.Movie;
 import com.gmoon.dbcleaner.movies.domain.TicketOffice;
 import com.gmoon.dbcleaner.movies.domain.TicketOfficeRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,10 @@ public class TicketOfficeRepositoryAdapter implements TicketOfficeRepository {
 	@Override
 	public Page<TicketOffice> findAllByMovieId(Long movieId, Pageable pageable) {
 		return repository.findAllByMovieIdAndPage(movieId, pageable);
+	}
+
+	@Override
+	public Optional<Movie> findMovie(Long id, Long movieId) {
+		return repository.findByIdAndMovieId(id, movieId);
 	}
 }

@@ -13,4 +13,6 @@ public interface TicketOfficeRepository {
 	List<TicketOffice> findAll();
 
 	Page<TicketOffice> findAllByMovieId(Long movieId, Pageable pageable);
+
+	Optional<Movie> findMovie(Long id, Long movieId);
 }
