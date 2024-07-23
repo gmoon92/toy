@@ -13,3 +13,13 @@ INSERT INTO tb_movie_ticket (movie_id, ticket_id) VALUES (1, 3);
 INSERT INTO tb_movie_ticket (movie_id, ticket_id) VALUES (1, 4);
 INSERT INTO tb_movie_ticket (movie_id, ticket_id) VALUES (1, 5);
 INSERT INTO tb_movie_ticket (movie_id, ticket_id) VALUES (2, 6);
+INSERT INTO tb_coupon (id, movie_id, used)
+VALUES (1, 1, false);
+INSERT INTO tb_coupon (id, movie_id, used)
+VALUES (2, 1, false);
+INSERT INTO tb_coupon (id, movie_id, used)
+VALUES (3, 1, false);
+INSERT INTO tb_coupon (id, movie_id, used)
+VALUES (4, 1, false);
+INSERT INTO tb_coupon (id, movie_id, used)
+VALUES (5, 1, false);

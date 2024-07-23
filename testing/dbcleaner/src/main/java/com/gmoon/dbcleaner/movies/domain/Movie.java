@@ -1,6 +1,7 @@
 package com.gmoon.dbcleaner.movies.domain;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,7 +33,7 @@ public class Movie implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-
+	@Column(name = "title", length = 30)
 	private String title;
 
 	@ManyToOne(optional = false)
