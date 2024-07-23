@@ -9,6 +9,7 @@ spring:
 
   jpa:
     open-in-view: false
+    database-platform: org.hibernate.dialect.MySQLDialect
 #      autoconfigure.orm.jpa.HibernateJpaConfiguration default naming strategy
 #      naming:
 #        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy

@@ -9,10 +9,11 @@ spring:
   jpa:
     show-sql: true
     generate-ddl: true
+    database-platform: org.hibernate.dialect.MySQLDialect
     properties:
       "[org.hibernate.envers.audit_table_suffix]": _h
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+#        dialect: org.hibernate.dialect.MySQLDialect
         "[hbm2ddl.auto]": create-drop
         show_sql: true
         #        format_sql: true

@@ -11,7 +11,8 @@ spring:
 
   jpa:
     open-in-view: false
-    database-platform: org.hibernate.dialect.MariaDBDialect
+#    database-platform: org.hibernate.dialect.MariaDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
     show-sql: &show-sql true
     properties:
