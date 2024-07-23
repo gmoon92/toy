@@ -3,6 +3,7 @@ package com.gmoon.dbcleaner.global;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.context.annotation.DependsOn;
@@ -36,8 +37,8 @@ public class DataCleaner {
 	private static Set<String> tableNames;
 	private final DataSource dataSource;
 
-	private String schema = "dbcleaner";
-	private String backupSchema = schema + "_testback";
+	@Value("${service.db-schema}")
+	private String schema;
 
 	@PostConstruct
 	public void init() {
@@ -48,6 +49,8 @@ public class DataCleaner {
 	}
 
 	private void createBackupSchema(Set<String> tableNames) {
+		String backupSchema = getBackupSchema();
+
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
 		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", backupSchema));
 		for (String tableName : tableNames) {
@@ -60,7 +63,12 @@ public class DataCleaner {
 		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
 	}
 
+	private String getBackupSchema() {
+		return schema + "_testback";
+	}
+
 	private String obtainBackupTableName(String tableName) {
+		String backupSchema = getBackupSchema();
 		return backupSchema + "." + tableName;
 	}
 
