@@ -3,26 +3,37 @@ package com.gmoon.dbcleaner.global;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
+import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * <pre>
+ * 빈 순서 정의
+ * @DependsOn(value = {"dataSourceScriptDatabaseInitializer", "entityManagerFactory"})
+ * </pre>
+ *
  * @link https://discourse.hibernate.org/t/get-table-name-in-hibernate-6-2/8601
+ * @see SqlDataSourceScriptDatabaseInitializer
+ * @see JpaBaseConfiguration
  */
 @Slf4j
+@DependsOn(value = { "dataSourceScriptDatabaseInitializer", "entityManagerFactory" })
 @Component
 @RequiredArgsConstructor
 public class DataCleaner {
 
 	private static Set<String> tableNames;
-
 	private final DataSource dataSource;
 
 	private String schema = "dbcleaner";
@@ -30,18 +41,23 @@ public class DataCleaner {
 
 	@PostConstruct
 	public void init() {
+		log.info("===========Initializing data cleaner===============");
 		tableNames = getTableNames();
 		createBackupSchema(tableNames);
+		log.info("===========Initializing data cleaner===============");
 	}
 
 	private void createBackupSchema(Set<String> tableNames) {
+		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
 		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", backupSchema));
 		for (String tableName : tableNames) {
 			String originTable = obtainOriginTableName(tableName);
 			String backupTable = obtainBackupTableName(tableName);
+			log.info("Copy table {} to {}", originTable, backupTable);
 			executeQuery(String.format("DROP TABLE IF EXISTS %s", backupTable));
 			executeQuery(String.format("CREATE TABLE %s AS SELECT * FROM %s", backupTable, originTable));
 		}
+		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
 	}
 
 	private String obtainBackupTableName(String tableName) {
@@ -54,8 +70,9 @@ public class DataCleaner {
 
 	private void executeQuery(String queryString) {
 		try (Connection connection = dataSource.getConnection()) {
-			connection.prepareCall(queryString).executeUpdate();
-		} catch (Exception e) {
+			int result = connection.prepareCall(queryString).executeUpdate();
+			log.debug("[{}] Executing query: {}", result, queryString);
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
