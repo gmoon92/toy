@@ -1,4 +1,4 @@
-package com.gmoon.dbcleaner.global;
+package com.gmoon.dbcleaner.global.persistence;
 
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

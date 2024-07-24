@@ -1,4 +1,4 @@
-package com.gmoon.dbcleaner.global;
+package com.gmoon.dbcleaner.global.persistence;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.gmoon.dbcleaner.global;
+package com.gmoon.dbcleaner.global.persistence;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

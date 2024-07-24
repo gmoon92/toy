@@ -9,10 +9,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 
@@ -30,10 +33,18 @@ public class Coupon implements Serializable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "movie_id", referencedColumnName = "id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Movie movie;
 
 	@Column(name = "used", nullable = false)
 	private boolean used;
+
+	@Builder
+	public Coupon(Long id, Movie movie, boolean used) {
+		this.id = id;
+		this.movie = movie;
+		this.used = used;
+	}
 
 	public void using() {
 		used = true;
