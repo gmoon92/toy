@@ -7,15 +7,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -38,17 +40,28 @@ public class Movie implements Serializable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "ticket_office_id", referencedColumnName = "id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TicketOffice ticketOffice;
 
-	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-	@JoinTable(
-		 name = "tb_movie_ticket",
-		 joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
-		 inverseJoinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id")
-	)
-	private Set<Ticket> tickets = new HashSet<>();
+	//	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+//	@JoinTable(
+//		 name = "tb_movie_ticket",
+//		 joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
+//		 inverseJoinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id")
+//	)
+//	private Set<Ticket> tickets = new HashSet<>();
+	@OneToMany(mappedBy = "movie", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+	private Set<MovieTicket> tickets = new HashSet<>();
+
+	@Builder
+	public Movie(Long id, String title, TicketOffice ticketOffice, Set<MovieTicket> tickets) {
+		this.id = id;
+		this.title = title;
+		this.ticketOffice = ticketOffice;
+		this.tickets = tickets;
+	}
 
 	public void addTicket(Ticket ticket) {
-		tickets.add(ticket);
+		tickets.add(new MovieTicket(this, ticket));
 	}
 }
