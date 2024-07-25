@@ -17,7 +17,7 @@
 
     <modules>
         <module>awaitility</module>
-        <module>dbcleaner</module>
+        <module>dbrecovery</module>
         <module>embedded-redis</module>
         <module>jacoco</module>
         <module>junit5</module>
