@@ -1,4 +1,4 @@
-package com.gmoon.dbrecovery.global.persistence;
+package com.gmoon.dbrecovery.global.recovery;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import java.util.Set;
 @DependsOn(value = { "dataSourceScriptDatabaseInitializer", "entityManagerFactory" })
 @Component
 @RequiredArgsConstructor
-public class DataCleaner {
+public class DataRecoveryHelper {
 
 	private static Set<String> tableNames;
 	private final DataSource dataSource;

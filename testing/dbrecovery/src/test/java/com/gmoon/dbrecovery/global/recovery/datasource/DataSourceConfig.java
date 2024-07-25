@@ -1,9 +1,6 @@
-package com.gmoon.dbrecovery.global.persistence;
+package com.gmoon.dbrecovery.global.recovery.datasource;
 
-import com.gmoon.dbrecovery.global.persistence.datasource.DataSourceProxy;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +8,8 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
-@Slf4j
 @Configuration
-@RequiredArgsConstructor
-public class DataRecoveryConfig {
+public class DataSourceConfig {
 
 	// todo proxy jdbc driver crud query detected.
 	@Bean

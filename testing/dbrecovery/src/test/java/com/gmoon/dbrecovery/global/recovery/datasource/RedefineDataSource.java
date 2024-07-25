@@ -1,4 +1,4 @@
-package com.gmoon.dbrecovery.global.persistence.datasource;
+package com.gmoon.dbrecovery.global.recovery.datasource;
 
 import java.sql.Connection;
 import java.sql.SQLException;

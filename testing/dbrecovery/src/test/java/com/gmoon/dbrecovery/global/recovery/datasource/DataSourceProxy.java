@@ -1,4 +1,4 @@
-package com.gmoon.dbrecovery.global.persistence.datasource;
+package com.gmoon.dbrecovery.global.recovery.datasource;
 
 import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
