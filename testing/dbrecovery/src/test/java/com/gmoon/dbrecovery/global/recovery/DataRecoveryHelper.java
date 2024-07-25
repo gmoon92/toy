@@ -42,10 +42,10 @@ public class DataRecoveryHelper {
 
 	@PostConstruct
 	public void init() {
-		log.info("===========Initializing data cleaner===============");
+		log.debug("===========Initializing data cleaner===============");
 		tableNames = getTableNames();
 		createBackupSchema(tableNames);
-		log.info("===========Initializing data cleaner===============");
+		log.debug("===========Initializing data cleaner===============");
 	}
 
 	private void createBackupSchema(Set<String> tableNames) {
@@ -98,7 +98,7 @@ public class DataRecoveryHelper {
 			Set<String> tableNames = new HashSet<>();
 			while (resultSet.next()) {
 				String tableName = resultSet.getString("TABLE_NAME");
-				log.trace("table name: {}", tableName);
+				log.debug("table name: {}", tableName);
 				tableNames.add(tableName);
 			}
 
