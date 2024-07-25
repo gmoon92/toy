@@ -56,7 +56,7 @@ public class DataRecoveryHelper {
 		for (String tableName : tableNames) {
 			String originTable = obtainOriginTableName(tableName);
 			String backupTable = obtainBackupTableName(tableName);
-			log.info("Copy table {} to {}", originTable, backupTable);
+			log.debug("Copy table {} to {}", originTable, backupTable);
 			executeQuery(String.format("DROP TABLE IF EXISTS %s", backupTable));
 			executeQuery(String.format("CREATE TABLE %s AS SELECT * FROM %s", backupTable, originTable));
 		}
