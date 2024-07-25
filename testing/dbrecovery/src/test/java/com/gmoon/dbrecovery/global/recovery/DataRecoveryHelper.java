@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class DataRecoveryHelper {
 	}
 
 	private void executeQuery(String queryString) {
-		try (Connection connection = obtainConnection();
+		try (Connection connection = dataSource.getConnection();
 			 CallableStatement callableStatement = connection.prepareCall(queryString)) {
 
 			log.debug("[START] execute query: {}", queryString);
@@ -69,26 +68,12 @@ public class DataRecoveryHelper {
 		}
 	}
 
-	private Connection obtainConnection() throws SQLException {
-		Connection connection = DataSourceProxy.connectionThreadLocal.get();
-		log.debug("[START] obtainConnection: {}", connection);
-		if (connection == null || connection.isClosed()) {
-			log.debug("[START] opss!!!!!: {}", connection);
-			Connection reconnection = dataSource.getConnection();
-			DataSourceProxy.connectionThreadLocal.set(reconnection);
-			return reconnection;
-		}
-		return connection;
-	}
-
 	public void recovery() {
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
 		Set<String> tableNames = obtainRecoveryTables();
 		for (String tableName : tableNames) {
-			executeQuery("SET autocommit=0");
 			truncateTable(tableName);
 			recoveryTable(tableName);
-			executeQuery("SET autocommit=1");
 		}
 		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
 	}
