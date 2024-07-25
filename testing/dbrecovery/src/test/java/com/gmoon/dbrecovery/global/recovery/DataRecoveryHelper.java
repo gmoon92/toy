@@ -1,22 +1,26 @@
 package com.gmoon.dbrecovery.global.recovery;
 
-import jakarta.annotation.PostConstruct;
+import com.gmoon.dbrecovery.global.recovery.datasource.DataSourceProxy;
+import com.gmoon.dbrecovery.global.recovery.vo.TableMetaData;
+import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.delete.Delete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <pre>
@@ -29,42 +33,19 @@ import java.util.Set;
  * @see JpaBaseConfiguration
  */
 @Slf4j
-@DependsOn(value = { "dataSourceScriptDatabaseInitializer", "entityManagerFactory" })
+//@DependsOn(value = { "dataSourceScriptDatabaseInitializer", "entityManagerFactory" })
 @Component
 @RequiredArgsConstructor
 public class DataRecoveryHelper {
 
-	private static Set<String> tableNames;
 	private final DataSource dataSource;
+	private final RecoveryDatabaseInitialization recoveryDatabase;
 
 	@Value("${service.db-schema}")
 	private String schema;
 
-	@PostConstruct
-	public void init() {
-		log.debug("===========Initializing data cleaner===============");
-		tableNames = getTableNames();
-		createBackupSchema(tableNames);
-		log.debug("===========Initializing data cleaner===============");
-	}
-
-	private void createBackupSchema(Set<String> tableNames) {
-		String backupSchema = getBackupSchema();
-
-		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
-		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", backupSchema));
-		for (String tableName : tableNames) {
-			String originTable = obtainOriginTableName(tableName);
-			String backupTable = obtainBackupTableName(tableName);
-			log.debug("Copy table {} to {}", originTable, backupTable);
-			executeQuery(String.format("DROP TABLE IF EXISTS %s", backupTable));
-			executeQuery(String.format("CREATE TABLE %s AS SELECT * FROM %s", backupTable, originTable));
-		}
-		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
-	}
-
 	private String getBackupSchema() {
-		return schema + "_testback";
+		return schema + "_test";
 	}
 
 	private String obtainBackupTableName(String tableName) {
@@ -77,58 +58,85 @@ public class DataRecoveryHelper {
 	}
 
 	private void executeQuery(String queryString) {
-		try (Connection connection = dataSource.getConnection()) {
-			int result = connection.prepareCall(queryString).executeUpdate();
-			log.debug("[{}] Executing query: {}", result, queryString);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+		try (Connection connection = obtainConnection();
+			 CallableStatement callableStatement = connection.prepareCall(queryString)) {
 
-	private Set<String> getTableNames() {
-		try (Connection connection = dataSource.getConnection()) {
-			DatabaseMetaData databaseMetaData = connection.getMetaData();
-			ResultSet resultSet = databaseMetaData.getTables(
-				 connection.getCatalog(),
-				 null,
-				 "%",
-				 new String[]{ "TABLE" }
-			);
-
-			Set<String> tableNames = new HashSet<>();
-			while (resultSet.next()) {
-				String tableName = resultSet.getString("TABLE_NAME");
-				log.debug("table name: {}", tableName);
-				tableNames.add(tableName);
-			}
-
-			return Collections.unmodifiableSet(tableNames);
+			log.debug("[START] execute query: {}", queryString);
+			int result = callableStatement.executeUpdate();
+			log.debug("[END]   execute query({}): {}", result, queryString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	private Connection obtainConnection() throws SQLException {
+		Connection connection = DataSourceProxy.connectionThreadLocal.get();
+		log.debug("[START] obtainConnection: {}", connection);
+		if (connection == null || connection.isClosed()) {
+			log.debug("[START] opss!!!!!: {}", connection);
+			Connection reconnection = dataSource.getConnection();
+			DataSourceProxy.connectionThreadLocal.set(reconnection);
+			return reconnection;
+		}
+		return connection;
+	}
+
 	public void recovery() {
-		// todo cache UPDATE, INSERT, DELETE tables.
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
+		Set<String> tableNames = obtainRecoveryTables();
 		for (String tableName : tableNames) {
+			executeQuery("SET autocommit=0");
 			truncateTable(tableName);
 			recoveryTable(tableName);
-			// todo backup transfer date
+			executeQuery("SET autocommit=1");
 		}
 		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
 	}
 
+	private Set<String> obtainRecoveryTables() {
+		Set<String> rollbackTables = new HashSet<>();
+		Map<Class<? extends Statement>, Set<String>> modifiedTables = DataSourceProxy.modifiedTables;
+		Set<String> result = modifiedTables.values()
+			 .stream()
+			 .flatMap(Collection::stream)
+			 .collect(Collectors.toSet());
+
+		Set<String> deleteTables = modifiedTables.get(Delete.class);
+		// todo refactoring Inject into delete table after db initialization.
+		if (CollectionUtils.isNotEmpty(deleteTables)) {
+			Set<String> deleteTablesRecursively = getDeleteTablesRecursively(deleteTables);
+			rollbackTables.addAll(deleteTablesRecursively);
+		}
+
+		rollbackTables.addAll(result);
+		return rollbackTables;
+	}
+
+	public Set<String> getDeleteTablesRecursively(Set<String> deleteTables) {
+		Set<String> result = new HashSet<>();
+
+		TableMetaData metadata = recoveryDatabase.getMetadata();
+		for (String tableName : deleteTables) {
+			Set<String> caseCadeTables = metadata.getDeleteTableNames(tableName);
+			result.addAll(getDeleteTablesRecursively(caseCadeTables));
+		}
+
+		result.addAll(deleteTables);
+		return result;
+	}
+
 	private void truncateTable(String tableName) {
 		String originTable = obtainOriginTableName(tableName);
-		log.debug("TRUNCATE {}", originTable);
+		log.debug("[TRUNCATE] START {}", originTable);
 		executeQuery("TRUNCATE TABLE " + originTable);
+		log.debug("[TRUNCATE] DONE {}", originTable);
 	}
 
 	private void recoveryTable(String tableName) {
 		String originTable = obtainOriginTableName(tableName);
 		String backupTable = obtainBackupTableName(tableName);
-		log.debug("RECOVERY {}", originTable);
+		log.debug("[RECOVERY] START {}", originTable);
 		executeQuery(String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
+		log.debug("[RECOVERY] DONE  {}", originTable);
 	}
 }

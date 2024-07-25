@@ -56,6 +56,15 @@ public class TableMetaData {
 		return value.get(table);
 	}
 
+	public Set<String> getDeleteTableNames(String tableName) {
+		return value.get(Table.builder()
+				  .tableName(tableName)
+				  .build())
+			 .stream()
+			 .map(CaseCadeDeleteTable::getTableName)
+			 .collect(Collectors.toSet());
+	}
+
 	public int getTotalCount() {
 		return value.size();
 	}

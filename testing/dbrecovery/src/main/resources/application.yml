@@ -1,13 +1,21 @@
 service:
   db-schema: dbrecovery
+  dbrecovery:
+    schema: ${service.db-schema}
+    backup-schema: ${service.dbrecovery.schema}_back
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    #    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
     username: root
     password: 111111
+    hikari:
+      pool-name: gmoon-pool
+      maximum-pool-size: 200
+      idle-timeout: 20000
+      keepalive-time: 20000
 
   jpa:
     open-in-view: false
