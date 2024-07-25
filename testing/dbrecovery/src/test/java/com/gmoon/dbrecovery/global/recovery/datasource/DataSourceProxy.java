@@ -24,10 +24,23 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class DataSourceProxy implements DataSource, RedefineDataSource {
 
-	public static final Map<Class<? extends Statement>, Set<String>> MODIFIED_TABLES = new HashMap<>();
+	public static ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
+	public static final Map<Class<? extends Statement>, Set<String>> modifiedTables = new HashMap<>();
 
 	@Delegate(excludes = RedefineDataSource.class)
 	private final DataSource dataSource;
+
+	@Override
+	public Connection getConnection() throws SQLException {
+		Connection connection = dataSource.getConnection();
+		return new ConnectionProxy(connection);
+	}
+
+	@Override
+	public Connection getConnection(String username, String password) throws SQLException {
+		Connection connection = dataSource.getConnection(username, password);
+		return new ConnectionProxy(connection);
+	}
 
 	@RequiredArgsConstructor
 	static class ConnectionProxy implements Connection, RedefineConnection {
@@ -73,6 +86,7 @@ public class DataSourceProxy implements DataSource, RedefineDataSource {
 
 		private void detectModifiedTables(String sql) {
 			try {
+				connectionThreadLocal.set(this);
 				Statement statement = CCJSqlParserUtil.parse(sql);
 				if (statement instanceof Insert
 					 || statement instanceof Update
@@ -81,7 +95,7 @@ public class DataSourceProxy implements DataSource, RedefineDataSource {
 					// todo check table on cacecade delete option
 					Table table = getDectedTable(statement);
 					String tableName = table.getName();
-					storeDetectedTable(statement, tableName);
+					storeDetectedTable(statement.getClass(), tableName);
 					log.info("[DETECTED]   {}", table.getName(), sql);
 				} else {
 					log.info("[UNDETECTED] {}", sql);
@@ -91,14 +105,13 @@ public class DataSourceProxy implements DataSource, RedefineDataSource {
 			}
 		}
 
-		private void storeDetectedTable(Statement statement, String tableName) {
-			Class<? extends Statement> key = statement.getClass();
-			Set<String> tables = MODIFIED_TABLES.get(key);
+		private void storeDetectedTable(Class<? extends Statement> key, String tableName) {
+			Set<String> tables = modifiedTables.get(key);
 			if (CollectionUtils.isEmpty(tables)) {
 				tables = new HashSet<>();
 			}
 			tables.add(tableName);
-			MODIFIED_TABLES.put(key, tables);
+			modifiedTables.put(key, tables);
 		}
 
 		private Table getDectedTable(Statement statement) {
@@ -112,17 +125,5 @@ public class DataSourceProxy implements DataSource, RedefineDataSource {
 			throw new IllegalArgumentException("Not detected statement.");
 		}
 
-	}
-
-	@Override
-	public Connection getConnection() throws SQLException {
-		Connection connection = dataSource.getConnection();
-		return new ConnectionProxy(connection);
-	}
-
-	@Override
-	public Connection getConnection(String username, String password) throws SQLException {
-		Connection connection = dataSource.getConnection(username, password);
-		return new ConnectionProxy(connection);
 	}
 }
