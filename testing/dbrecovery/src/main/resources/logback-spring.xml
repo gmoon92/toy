@@ -14,7 +14,8 @@
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
-    <logger name="com.gmoon.springquartzcluster" level="INFO"/>
+    <logger name="com.gmoon" level="DEBUG"/>
+    <logger name="MySQL" level="DEBUG"/>
 
     <root level="error">
         <appender-ref ref="CONSOLE"/>
