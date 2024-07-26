@@ -159,8 +159,14 @@ Caused by: java.sql.SQLException: Connection is closed
 
 굳이 테스트 코드에서 사용한 커넥션을 유지할 필요는 없잖아.
 
+- Spring Transactional 은 rdmbs 트랜잭션은 ThreadLocal 을 통해 쓰레드 단위로 관리한다.
+  - r2dbc 는 논외
+- @Test 코드에서 선언된 @Transactional 에 대해 롤백 처리를 해야 하는데,
+- @AfterEach 에서 수행하는 데이터 복구할 테이블과 해당 테이블의 레코드 롤백 시점 자체가 데이터 경합을 발생시켜 데드락 발생.
 - 그렇다고 해서 테스트 코드에서 선언된 @Transactional 은 강제로 롤백 처리가 되어야 할텐데...
-- 맞아. @Transactional test 코드엔 롤백 마크가 선언되어 테스트 코드가 종료되면 자동 롤백처리 되는데,
+- 맞아. @Transactional 선언된 테스트 코드는 Spring JpaTransactionManager 에서 트랜잭션을 관리하게 된다.
+  - 데이터에 대해 변경사항이 있다면, ThreadLocal 로 반환된 트랜잭션에 롤백 여부 마크를 선언.
+  - 테스트 종료 시점에 자동 롤백 처리 되는 구조.
 - @AfterEach 이후 테스트 코드에서 할당 받은 Connection 을 롤백해야 하는데 롤백을 할 수 없으니, 에러가 발생.
 
 ```java
@@ -269,4 +275,12 @@ Hibernate: delete to1_0 from tb_ticket_office to1_0
 
 ```
 
-응 성공.
+### 참고하면 좋은 글
+
+- [baeldung - java socket connection read timeout](https://www.baeldung.com/java-socket-connection-read-timeout)
+- [@DependsOnDatabaseInitialization](https://docs.openrewrite.org/recipes/java/spring/boot2/databasecomponentandbeaninitializationordering)
+- [netmarble tech - 게임 서버 시스템을 위한 JDBC와 Timeout 이해하기
+  ](https://netmarble.engineering/jdbc-timeout-for-game-server/)
+- [woowahan - 응? 이게 왜 롤백되는거지?](https://techblog.woowahan.com/2606/)
+- [Spring Batch에서 Chunk 작업이 길어지는 경우 주의할 점
+  ](https://jaehun2841.github.io/2020/08/08/2020-08-08-spring-batch-db-connection-issue/#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0)
