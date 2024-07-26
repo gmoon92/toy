@@ -1,6 +1,8 @@
 package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.datasource.DataSourceProxy;
+import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
+import com.gmoon.javacore.util.BooleanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -15,6 +17,12 @@ public class DataRecoveryExtension implements AfterEachCallback {
 
 	@Override
 	public void afterEach(ExtensionContext extensionContext) throws Exception {
+		RecoveryDatabaseProperties recoveryDatabaseProperties = obtainBean(extensionContext, RecoveryDatabaseProperties.class);
+		if (!BooleanUtils.toBoolean(recoveryDatabaseProperties.enable)) {
+			return;
+		}
+
+
 		forceTestCodeTransactionRollback();
 
 		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);

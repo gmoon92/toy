@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.CallableStatement;
@@ -20,7 +19,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class DataRecoveryHelper {
 
@@ -32,9 +30,8 @@ public class DataRecoveryHelper {
 		try (Connection connection = dataSource.getConnection();
 			 CallableStatement callableStatement = connection.prepareCall(queryString)) {
 
-			log.debug("[START] execute query: {}", queryString);
 			int result = callableStatement.executeUpdate();
-			log.debug("[END]   execute query({}): {}", result, queryString);
+			log.debug("[EXECUTE][{}]: {}", result, queryString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -70,16 +67,14 @@ public class DataRecoveryHelper {
 
 	private void truncateTable(String tableName) {
 		String originTable = properties.schema + "." + tableName;
-		log.debug("[TRUNCATE] START {}", originTable);
 		executeQuery("TRUNCATE TABLE " + originTable);
-		log.debug("[TRUNCATE] DONE {}", originTable);
+		log.debug("[TRUNCATE] {}", originTable);
 	}
 
 	private void recoveryTable(String tableName) {
 		String originTable = properties.schema + "." + tableName;
 		String backupTable = properties.recoverySchema + "." + tableName;
-		log.debug("[RECOVERY] START {}", originTable);
 		executeQuery(String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
-		log.debug("[RECOVERY] DONE  {}", originTable);
+		log.debug("[RECOVERY] {}", originTable);
 	}
 }

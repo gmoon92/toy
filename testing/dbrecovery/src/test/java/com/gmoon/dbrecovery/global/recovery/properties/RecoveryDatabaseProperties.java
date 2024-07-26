@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ToString
 public class RecoveryDatabaseProperties {
 
+	public final Boolean enable;
 	public final String schema;
 	public final String recoverySchema;
 }

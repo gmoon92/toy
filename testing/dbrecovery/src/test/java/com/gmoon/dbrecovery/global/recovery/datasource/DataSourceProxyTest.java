@@ -1,6 +1,5 @@
 package com.gmoon.dbrecovery.global.recovery.datasource;
 
-import com.gmoon.dbrecovery.global.recovery.DataRecovery;
 import com.gmoon.dbrecovery.global.test.Fixtures;
 import com.gmoon.dbrecovery.movies.domain.Coupon;
 import com.gmoon.dbrecovery.movies.domain.Movie;
@@ -30,7 +29,6 @@ import static com.gmoon.dbrecovery.movies.domain.QTicketOffice.ticketOffice;
 
 @Slf4j
 @SpringBootTest
-@DataRecovery
 class DataSourceProxyTest {
 
 	@Autowired

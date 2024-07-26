@@ -1,6 +1,7 @@
 service:
   db-schema: dbrecovery
   dbrecovery:
+    enable: true
     schema: ${service.db-schema}
     recovery-schema: ${service.dbrecovery.schema}_recovery
 
@@ -27,8 +28,3 @@ spring:
       encoding: UTF-8
       data-locations: classpath*:data.sql
       continue-on-error: false
-
-logging:
-  level:
-    "[MySQL]": DEBUG
-    "[com.gmoon]": DEBUG

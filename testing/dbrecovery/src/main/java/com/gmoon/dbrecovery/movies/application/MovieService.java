@@ -3,6 +3,7 @@ package com.gmoon.dbrecovery.movies.application;
 import com.gmoon.dbrecovery.movies.domain.Coupon;
 import com.gmoon.dbrecovery.movies.domain.CouponRepository;
 import com.gmoon.dbrecovery.movies.domain.Movie;
+import com.gmoon.dbrecovery.movies.domain.MovieRepository;
 import com.gmoon.dbrecovery.movies.domain.Ticket;
 import com.gmoon.dbrecovery.movies.domain.TicketOffice;
 import com.gmoon.dbrecovery.movies.domain.TicketOfficeRepository;
@@ -23,6 +24,7 @@ public class MovieService {
 
 	private final TicketOfficeRepository ticketOfficeRepository;
 	private final CouponRepository couponRepository;
+	private final MovieRepository movieRepository;
 
 	@Transactional(readOnly = true)
 	public Page<TicketOffice> getTickerOffices(Long movieId, Pageable pageable) {
@@ -55,5 +57,10 @@ public class MovieService {
 		movie.addTicket(ticket);
 
 		coupon.using();
+	}
+
+	@Transactional
+	public void removeMovie(Long movieId) {
+		movieRepository.remove(movieId);
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,5 +54,12 @@ public class MovieController {
 		// throw LazyInitializationException
 		movie.getTickets().size();
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@DeleteMapping
+	@ResponseBody
+	public HttpEntity<Void> delete(Long movieId) {
+		movieService.removeMovie(movieId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

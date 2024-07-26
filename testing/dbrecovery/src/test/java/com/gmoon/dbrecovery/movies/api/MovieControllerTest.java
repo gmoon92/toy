@@ -1,5 +1,6 @@
 package com.gmoon.dbrecovery.movies.api;
 
+import com.gmoon.dbrecovery.global.recovery.DataRecovery;
 import com.gmoon.dbrecovery.movies.dto.CouponRequestVO;
 import com.gmoon.javacore.util.JacksonUtils;
 import org.hibernate.LazyInitializationException;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@DataRecovery
 class MovieControllerTest {
 
 	private MockMvc mockMvc;
@@ -75,5 +78,18 @@ class MovieControllerTest {
 
 		result.andExpect(status().is5xxServerError());
 		result.andExpect(response -> assertTrue(response.getResolvedException() instanceof LazyInitializationException));
+	}
+
+	@Test
+	@Transactional
+	void delete() throws Exception {
+		ResultActions result = mockMvc.perform(
+			 MockMvcRequestBuilders.delete("/movie")
+				  .contentType(MediaType.APPLICATION_JSON)
+				  .accept(MediaType.APPLICATION_JSON)
+				  .param("movieId", "1")
+		);
+
+		result.andExpect(status().isNoContent());
 	}
 }

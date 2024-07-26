@@ -10,7 +10,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -32,7 +31,6 @@ import java.util.List;
 @Slf4j
 // @DependsOn(value = {"dataSourceScriptDatabaseInitializer", "entityManagerFactory"})
 @DependsOnDatabaseInitialization
-@Component
 @RequiredArgsConstructor
 public class RecoveryDatabaseInitialization implements InitializingBean {
 
@@ -100,9 +98,8 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 		try (Connection connection = dataSource.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(queryString)) {
 
-			log.debug("[START] execute query: {}", queryString);
 			int result = statement.executeUpdate();
-			log.debug("[END]   execute query {}: {}", result, queryString);
+			log.debug("[EXECUTE][{}]: {}", result, queryString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
