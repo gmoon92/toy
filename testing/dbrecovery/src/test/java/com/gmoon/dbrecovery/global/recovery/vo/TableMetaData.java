@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toMap;
 @ToString
 public class TableMetaData {
 
-	private final Map<Table, Set<CaseCadeDeleteTable>> value;
+	private final Map<Table, Set<String>> value;
 
 	private TableMetaData(final List<Table> tables) {
 		value = tables.stream()
@@ -30,7 +30,7 @@ public class TableMetaData {
 							Function.identity(),
 							table -> obtainDeleteTables(tables, table),
 							(existing, replacement) -> {
-								Set<CaseCadeDeleteTable> merged = new HashSet<>(existing);
+								Set<String> merged = new HashSet<>(existing);
 								merged.addAll(replacement);
 								return Collections.unmodifiableSet(merged);
 							},
@@ -45,10 +45,10 @@ public class TableMetaData {
 		return new TableMetaData(tables);
 	}
 
-	private Set<CaseCadeDeleteTable> obtainDeleteTables(List<Table> tables, Table target) {
+	private Set<String> obtainDeleteTables(List<Table> tables, Table target) {
 		return getDeleteTablesRecursively(tables, target)
 			 .stream()
-			 .map(CaseCadeDeleteTable::new)
+			 .map(Table::getTableName)
 			 .collect(Collectors.toSet());
 	}
 
@@ -68,10 +68,7 @@ public class TableMetaData {
 
 	public Set<String> getDeleteTables(String tableName) {
 		return value.get(Table.builder()
-				  .tableName(tableName)
-				  .build())
-			 .stream()
-			 .map(CaseCadeDeleteTable::getTableName)
-			 .collect(Collectors.toSet());
+			 .tableName(tableName)
+			 .build());
 	}
 }
