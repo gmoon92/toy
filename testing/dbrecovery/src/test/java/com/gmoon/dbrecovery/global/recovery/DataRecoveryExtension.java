@@ -19,7 +19,8 @@ public class DataRecoveryExtension implements AfterEachCallback {
 
 		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);
 		dataRecoveryHelper.recovery();
-		DataSourceProxy.modifiedTables.clear();
+		DataSourceProxy.connectionThreadLocal.remove();
+		DataSourceProxy.detectedStatementThreadLocal.remove();
 	}
 
 	private void forceTestCodeTransactionRollback() throws SQLException {

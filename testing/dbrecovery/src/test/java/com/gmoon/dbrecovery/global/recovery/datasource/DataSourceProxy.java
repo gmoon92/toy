@@ -24,8 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class DataSourceProxy implements DataSource, RedefineDataSource {
 
-	public static ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
-	public static final Map<Class<? extends Statement>, Set<String>> modifiedTables = new ConcurrentHashMap<>();
+	public static final ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
+	public static final ThreadLocal<Map<Class<? extends Statement>, Set<String>>> detectedStatementThreadLocal = ThreadLocal.withInitial(ConcurrentHashMap::new);
 
 	@Delegate(excludes = RedefineDataSource.class)
 	private final DataSource dataSource;
@@ -106,6 +106,7 @@ public class DataSourceProxy implements DataSource, RedefineDataSource {
 		}
 
 		private void storeDetectedTable(Class<? extends Statement> key, String tableName) {
+			Map<Class<? extends Statement>, Set<String>> modifiedTables = detectedStatementThreadLocal.get();
 			Set<String> tables = modifiedTables.get(key);
 			if (CollectionUtils.isEmpty(tables)) {
 				tables = new HashSet<>();

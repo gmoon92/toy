@@ -69,7 +69,6 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 
 		try (Connection connection = dataSource.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(queryString)) {
-			log.debug("[Start] table metadata info.");
 			statement.setString(1, properties.schema);
 			statement.execute();
 
@@ -90,9 +89,7 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 					 .onDelete(onDelete)
 					 .build();
 				tables.add(table);
-				log.debug("{}", table);
 			}
-			log.debug("[END]   table metadata info.");
 			return TableMetaData.initialize(tables);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

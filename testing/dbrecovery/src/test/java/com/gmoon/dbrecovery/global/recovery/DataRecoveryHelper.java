@@ -3,7 +3,6 @@ package com.gmoon.dbrecovery.global.recovery;
 import com.gmoon.dbrecovery.global.recovery.datasource.DataSourceProxy;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import com.gmoon.dbrecovery.global.recovery.vo.TableMetaData;
-import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.Statement;
@@ -16,6 +15,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,35 +51,21 @@ public class DataRecoveryHelper {
 	}
 
 	private Set<String> obtainRecoveryTables() {
-		Set<String> recoveryTables = new HashSet<>();
-		Map<Class<? extends Statement>, Set<String>> modifiedTables = DataSourceProxy.modifiedTables;
-		Set<String> result = modifiedTables.values()
+		Map<Class<? extends Statement>, Set<String>> modifiedTables = DataSourceProxy.detectedStatementThreadLocal.get();
+		Set<String> recoveryTables = modifiedTables.values()
 			 .stream()
 			 .flatMap(Collection::stream)
 			 .collect(Collectors.toSet());
 
-		Set<String> deleteTables = modifiedTables.get(Delete.class);
-		// todo refactoring Inject into delete table after db initialization.
-		if (CollectionUtils.isNotEmpty(deleteTables)) {
-			Set<String> deleteTablesRecursively = getDeleteTablesRecursively(deleteTables);
-			recoveryTables.addAll(deleteTablesRecursively);
-		}
-
-		recoveryTables.addAll(result);
-		return recoveryTables;
-	}
-
-	public Set<String> getDeleteTablesRecursively(Set<String> deleteTables) {
-		Set<String> result = new HashSet<>();
-
 		TableMetaData metadata = recoveryDatabase.getMetadata();
-		for (String tableName : deleteTables) {
-			Set<String> caseCadeTables = metadata.getDeleteTableNames(tableName);
-			result.addAll(getDeleteTablesRecursively(caseCadeTables));
-		}
-
-		result.addAll(deleteTables);
-		return result;
+		Set<String> onDeleteTables = Optional.ofNullable(modifiedTables.get(Delete.class))
+			 .orElseGet(HashSet::new)
+			 .stream()
+			 .map(metadata::getDeleteTables)
+			 .flatMap(Collection::stream)
+			 .collect(Collectors.toSet());
+		recoveryTables.addAll(onDeleteTables);
+		return recoveryTables;
 	}
 
 	private void truncateTable(String tableName) {

@@ -46,26 +46,32 @@ public class TableMetaData {
 	}
 
 	private Set<CaseCadeDeleteTable> obtainDeleteTables(List<Table> tables, Table target) {
-		return tables.stream()
-			 .filter(table -> table.isReferenceTableOnDelete(target))
+		return getDeleteTablesRecursively(tables, target)
+			 .stream()
 			 .map(CaseCadeDeleteTable::new)
 			 .collect(Collectors.toSet());
 	}
 
-	public Set<CaseCadeDeleteTable> getDeleteTables(Table table) {
-		return value.get(table);
+	private Set<Table> getDeleteTablesRecursively(List<Table> tables, Table target) {
+		Set<Table> result = new HashSet<>();
+		Set<Table> deleteTables = tables.stream()
+			 .filter(table -> table.isReferenceTableOnDelete(target))
+			 .collect(Collectors.toSet());
+
+		for (Table table : deleteTables) {
+			result.addAll(getDeleteTablesRecursively(tables, table));
+		}
+
+		result.addAll(deleteTables);
+		return result;
 	}
 
-	public Set<String> getDeleteTableNames(String tableName) {
+	public Set<String> getDeleteTables(String tableName) {
 		return value.get(Table.builder()
 				  .tableName(tableName)
 				  .build())
 			 .stream()
 			 .map(CaseCadeDeleteTable::getTableName)
 			 .collect(Collectors.toSet());
-	}
-
-	public int getTotalCount() {
-		return value.size();
 	}
 }
