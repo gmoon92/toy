@@ -1,15 +1,13 @@
 package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.datasource.DataSourceProxy;
+import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import com.gmoon.dbrecovery.global.recovery.vo.TableMetaData;
 import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
-import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -21,40 +19,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * <pre>
- * 빈 순서 정의
- * @DependsOn(value = {"dataSourceScriptDatabaseInitializer", "entityManagerFactory"})
- * </pre>
- *
- * @link https://discourse.hibernate.org/t/get-table-name-in-hibernate-6-2/8601
- * @see SqlDataSourceScriptDatabaseInitializer
- * @see JpaBaseConfiguration
- */
 @Slf4j
-//@DependsOn(value = { "dataSourceScriptDatabaseInitializer", "entityManagerFactory" })
 @Component
 @RequiredArgsConstructor
 public class DataRecoveryHelper {
 
-	private final DataSource dataSource;
 	private final RecoveryDatabaseInitialization recoveryDatabase;
-
-	@Value("${service.db-schema}")
-	private String schema;
-
-	private String getBackupSchema() {
-		return schema + "_test";
-	}
-
-	private String obtainBackupTableName(String tableName) {
-		String backupSchema = getBackupSchema();
-		return backupSchema + "." + tableName;
-	}
-
-	private String obtainOriginTableName(String tableName) {
-		return schema + "." + tableName;
-	}
+	private final RecoveryDatabaseProperties properties;
+	private final DataSource dataSource;
 
 	private void executeQuery(String queryString) {
 		try (Connection connection = dataSource.getConnection();
@@ -79,7 +51,7 @@ public class DataRecoveryHelper {
 	}
 
 	private Set<String> obtainRecoveryTables() {
-		Set<String> rollbackTables = new HashSet<>();
+		Set<String> recoveryTables = new HashSet<>();
 		Map<Class<? extends Statement>, Set<String>> modifiedTables = DataSourceProxy.modifiedTables;
 		Set<String> result = modifiedTables.values()
 			 .stream()
@@ -90,11 +62,11 @@ public class DataRecoveryHelper {
 		// todo refactoring Inject into delete table after db initialization.
 		if (CollectionUtils.isNotEmpty(deleteTables)) {
 			Set<String> deleteTablesRecursively = getDeleteTablesRecursively(deleteTables);
-			rollbackTables.addAll(deleteTablesRecursively);
+			recoveryTables.addAll(deleteTablesRecursively);
 		}
 
-		rollbackTables.addAll(result);
-		return rollbackTables;
+		recoveryTables.addAll(result);
+		return recoveryTables;
 	}
 
 	public Set<String> getDeleteTablesRecursively(Set<String> deleteTables) {
@@ -111,15 +83,15 @@ public class DataRecoveryHelper {
 	}
 
 	private void truncateTable(String tableName) {
-		String originTable = obtainOriginTableName(tableName);
+		String originTable = properties.schema + "." + tableName;
 		log.debug("[TRUNCATE] START {}", originTable);
 		executeQuery("TRUNCATE TABLE " + originTable);
 		log.debug("[TRUNCATE] DONE {}", originTable);
 	}
 
 	private void recoveryTable(String tableName) {
-		String originTable = obtainOriginTableName(tableName);
-		String backupTable = obtainBackupTableName(tableName);
+		String originTable = properties.schema + "." + tableName;
+		String backupTable = properties.recoverySchema + "." + tableName;
 		log.debug("[RECOVERY] START {}", originTable);
 		executeQuery(String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
 		log.debug("[RECOVERY] DONE  {}", originTable);

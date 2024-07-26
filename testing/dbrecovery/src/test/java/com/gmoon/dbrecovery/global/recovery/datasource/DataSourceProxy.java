@@ -15,17 +15,17 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RequiredArgsConstructor
 public class DataSourceProxy implements DataSource, RedefineDataSource {
 
 	public static ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
-	public static final Map<Class<? extends Statement>, Set<String>> modifiedTables = new HashMap<>();
+	public static final Map<Class<? extends Statement>, Set<String>> modifiedTables = new ConcurrentHashMap<>();
 
 	@Delegate(excludes = RedefineDataSource.class)
 	private final DataSource dataSource;
