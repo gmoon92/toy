@@ -59,6 +59,9 @@ public class TableMetaData {
 			 .collect(Collectors.toSet());
 
 		for (Table table : deleteTables) {
+			if (target.equals(table)) {
+				continue;
+			}
 			result.addAll(getDeleteTablesRecursively(tables, table));
 		}
 
