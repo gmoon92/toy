@@ -13,9 +13,9 @@ public class Table {
 
 	@EqualsAndHashCode.Include
 	private final String name;
-	private final String primaryKeyName;
+	private final String keyName;
 
 	public static Table from(TableMetadata metadata) {
-		return new Table(metadata.getTableName(), metadata.getTablePKColumnName());
+		return new Table(metadata.getTableName(), metadata.getTableKeyName());
 	}
 }

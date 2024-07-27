@@ -30,17 +30,17 @@ class RecoveryTableTest {
 	@Test
 	void test() {
 		List<TableMetadata> metadata = List.of(
-			 TableMetadata.builder().tableName("tb_ticket_office").tablePKColumnName("id").onDelete(0).build(),
-			 TableMetadata.builder().tableName("tb_ticket").tablePKColumnName("ticket_office_id").referenceTableName("tb_ticket_office").referenceTablePKColumnName("id").onDelete(1).build(),
-			 TableMetadata.builder().tableName("tb_ticket").tablePKColumnName("id").onDelete(0).build(),
-			 TableMetadata.builder().tableName("tb_movie_ticket").tablePKColumnName("ticket_id").onDelete(0).build(),
-			 TableMetadata.builder().tableName("tb_movie_ticket").tablePKColumnName("movie_id").referenceTableName("tb_movie").referenceTablePKColumnName("id").onDelete(1).build(),
-			 TableMetadata.builder().tableName("tb_movie_ticket").tablePKColumnName("ticket_id").referenceTableName("tb_ticket").referenceTablePKColumnName("id").onDelete(1).build(),
-			 TableMetadata.builder().tableName("tb_movie_ticket").tablePKColumnName("movie_id").onDelete(0).build(),
-			 TableMetadata.builder().tableName("tb_movie").tablePKColumnName("ticket_office_id").referenceTableName("tb_ticket_office").referenceTablePKColumnName("id").onDelete(1).build(),
-			 TableMetadata.builder().tableName("tb_movie").tablePKColumnName("id").onDelete(0).build(),
-			 TableMetadata.builder().tableName("tb_coupon").tablePKColumnName("movie_id").referenceTableName("tb_movie").referenceTablePKColumnName("id").onDelete(1).build(),
-			 TableMetadata.builder().tableName("tb_coupon").tablePKColumnName("id").onDelete(0).build()
+			 TableMetadata.builder().tableName("tb_ticket_office").tableKeyName("id").onDelete(0).build(),
+			 TableMetadata.builder().tableName("tb_ticket").tableKeyName("ticket_office_id").referenceTableName("tb_ticket_office").referenceColumnName("id").onDelete(1).build(),
+			 TableMetadata.builder().tableName("tb_ticket").tableKeyName("id").onDelete(0).build(),
+			 TableMetadata.builder().tableName("tb_movie_ticket").tableKeyName("ticket_id").onDelete(0).build(),
+			 TableMetadata.builder().tableName("tb_movie_ticket").tableKeyName("movie_id").referenceTableName("tb_movie").referenceColumnName("id").onDelete(1).build(),
+			 TableMetadata.builder().tableName("tb_movie_ticket").tableKeyName("ticket_id").referenceTableName("tb_ticket").referenceColumnName("id").onDelete(1).build(),
+			 TableMetadata.builder().tableName("tb_movie_ticket").tableKeyName("movie_id").onDelete(0).build(),
+			 TableMetadata.builder().tableName("tb_movie").tableKeyName("ticket_office_id").referenceTableName("tb_ticket_office").referenceColumnName("id").onDelete(1).build(),
+			 TableMetadata.builder().tableName("tb_movie").tableKeyName("id").onDelete(0).build(),
+			 TableMetadata.builder().tableName("tb_coupon").tableKeyName("movie_id").referenceTableName("tb_movie").referenceColumnName("id").onDelete(1).build(),
+			 TableMetadata.builder().tableName("tb_coupon").tableKeyName("id").onDelete(0).build()
 		);
 
 		RecoveryTable recoveryTable = RecoveryTable.initialize(metadata);

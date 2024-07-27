@@ -53,9 +53,9 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 	private RecoveryTable obtainRecoveryTable() {
 		String queryString =
 			 "SELECT kcu.TABLE_NAME             AS table_name, " +
-				  "  kcu.COLUMN_NAME            AS table_pk_column_name, " +
+				  "  kcu.COLUMN_NAME            AS table_key_column_name, " +
 				  "  kcu.REFERENCED_TABLE_NAME  AS ref_table_name, " +
-				  "  kcu.REFERENCED_COLUMN_NAME AS ref_table_pk_column_name, " +
+				  "  kcu.REFERENCED_COLUMN_NAME AS ref_column_name, " +
 				  "  CASE WHEN rc.DELETE_RULE = 'CASCADE' " +
 				  "      THEN 1 " +
 				  "      ELSE 0 " +
@@ -74,18 +74,12 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 			ResultSet resultSet = statement.getResultSet();
 			List<TableMetadata> metadata = new ArrayList<>();
 			while (resultSet.next()) {
-				String tableName = resultSet.getString("table_name");
-				String tablePkColumnName = resultSet.getString("table_pk_column_name");
-				String refTableName = resultSet.getString("ref_table_name");
-				String refTablePkColumnName = resultSet.getString("ref_table_pk_column_name");
-				int onDelete = resultSet.getInt("on_delete");
-
 				metadata.add(TableMetadata.builder()
-					 .tableName(tableName)
-					 .tablePKColumnName(tablePkColumnName)
-					 .referenceTableName(refTableName)
-					 .referenceTablePKColumnName(refTablePkColumnName)
-					 .onDelete(onDelete)
+					 .tableName(resultSet.getString("table_name"))
+					 .tableKeyName(resultSet.getString("table_key_column_name"))
+					 .referenceTableName(resultSet.getString("ref_table_name"))
+					 .referenceColumnName(resultSet.getString("ref_column_name"))
+					 .onDelete(resultSet.getInt("on_delete"))
 					 .build());
 			}
 			return RecoveryTable.initialize(metadata);

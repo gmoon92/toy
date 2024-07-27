@@ -11,17 +11,17 @@ import lombok.ToString;
 public class TableMetadata {
 
 	private final String tableName;
-	private final String tablePKColumnName;
+	private final String tableKeyName;
 	private final String referenceTableName;
-	private final String referenceTablePKColumnName;
+	private final String referenceColumnName;
 	private final boolean constraintOnDelete;
 
 	@Builder
-	private TableMetadata(String tableName, String tablePKColumnName, String referenceTableName, String referenceTablePKColumnName, int onDelete) {
+	private TableMetadata(String tableName, String tableKeyName, String referenceTableName, String referenceColumnName, int onDelete) {
 		this.tableName = tableName;
-		this.tablePKColumnName = tablePKColumnName;
+		this.tableKeyName = tableKeyName;
 		this.referenceTableName = referenceTableName;
-		this.referenceTablePKColumnName = referenceTablePKColumnName;
+		this.referenceColumnName = referenceColumnName;
 		this.constraintOnDelete = BooleanUtils.toBoolean(onDelete);
 	}
 
