@@ -1,8 +1,8 @@
 package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
-import com.gmoon.dbrecovery.global.recovery.vo.Table;
-import com.gmoon.dbrecovery.global.recovery.vo.TableMetaData;
+import com.gmoon.dbrecovery.global.recovery.vo.RecoveryTable;
+import com.gmoon.dbrecovery.global.recovery.vo.TableMetadata;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,18 +38,18 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 	private final RecoveryDatabaseProperties properties;
 
 	@Getter
-	private TableMetaData metadata;
+	private RecoveryTable recoveryTable;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		String recoverySchema = properties.getRecoverySchema();
-		log.debug("===========Initializing recovery {} database===============", recoverySchema);
-		metadata = obtainTableMetaData();
-		createRecoverySchema(metadata);
-		log.debug("===========Initializing recovery {} database===============", recoverySchema);
+		String backupSchema = properties.getBackupSchema();
+		log.debug("===========Initializing recovery {} database===============", backupSchema);
+		recoveryTable = obtainRecoveryTable();
+		createRecoverySchema(recoveryTable);
+		log.debug("===========Initializing recovery {} database===============", backupSchema);
 	}
 
-	private TableMetaData obtainTableMetaData() {
+	private RecoveryTable obtainRecoveryTable() {
 		String queryString =
 			 "SELECT kcu.TABLE_NAME             AS table_name, " +
 				  "  kcu.COLUMN_NAME            AS table_pk_column_name, " +
@@ -71,7 +71,7 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 			statement.execute();
 
 			ResultSet resultSet = statement.getResultSet();
-			List<Table> tables = new ArrayList<>();
+			List<TableMetadata> metadata = new ArrayList<>();
 			while (resultSet.next()) {
 				String tableName = resultSet.getString("table_name");
 				String tablePkColumnName = resultSet.getString("table_pk_column_name");
@@ -79,16 +79,15 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 				String refTablePkColumnName = resultSet.getString("ref_table_pk_column_name");
 				int onDelete = resultSet.getInt("on_delete");
 
-				Table table = Table.builder()
+				metadata.add(TableMetadata.builder()
 					 .tableName(tableName)
 					 .tablePKColumnName(tablePkColumnName)
 					 .referenceTableName(refTableName)
 					 .referenceTablePKColumnName(refTablePkColumnName)
 					 .onDelete(onDelete)
-					 .build();
-				tables.add(table);
+					 .build());
 			}
-			return TableMetaData.initialize(tables);
+			return RecoveryTable.initialize(metadata);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -105,13 +104,13 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 		}
 	}
 
-	private void createRecoverySchema(TableMetaData metadata) {
+	private void createRecoverySchema(RecoveryTable recoveryTable) {
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
-		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getRecoverySchema()));
-		for (Table table : metadata.getValue().keySet()) {
-			String tableName = table.getTableName();
+		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getBackupSchema()));
+		for (TableMetadata metadata : recoveryTable.getAll()) {
+			String tableName = metadata.getTableName();
 			String sourceTable = properties.getSchema() + "." + tableName;
-			String targetTable = properties.getRecoverySchema() + "." + tableName;
+			String targetTable = properties.getBackupSchema() + "." + tableName;
 			executeQuery(String.format("DROP TABLE IF EXISTS %s", targetTable));
 			executeQuery(String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
 			log.debug("Copy table {} to {}", sourceTable, targetTable);

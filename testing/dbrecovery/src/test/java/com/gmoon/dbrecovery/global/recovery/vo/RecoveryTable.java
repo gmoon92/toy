@@ -18,17 +18,17 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 @Getter
 @ToString
-public class TableMetaData {
+public class RecoveryTable {
 
-	private final Map<Table, Set<String>> value;
+	private final Map<TableMetadata, Set<String>> values;
 
-	private TableMetaData(final List<Table> tables) {
-		value = tables.stream()
+	private RecoveryTable(final List<TableMetadata> metadata) {
+		values = metadata.stream()
 			 .collect(
 				  Collectors.collectingAndThen(
 					   toMap(
 							Function.identity(),
-							table -> obtainDeleteTables(tables, table),
+							tableMetadata -> obtainDeleteTables(metadata, tableMetadata),
 							(existing, replacement) -> {
 								Set<String> merged = new HashSet<>(existing);
 								merged.addAll(replacement);
@@ -41,37 +41,31 @@ public class TableMetaData {
 			 );
 	}
 
-	public static TableMetaData initialize(List<Table> tables) {
-		return new TableMetaData(tables);
+	public static RecoveryTable initialize(List<TableMetadata> metadata) {
+		return new RecoveryTable(metadata);
 	}
 
-	private Set<String> obtainDeleteTables(List<Table> tables, Table target) {
-		return getDeleteTablesRecursively(tables, target)
+	private Set<String> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
+		return getReferenceTableAllOnDelete(metadata, target)
 			 .stream()
-			 .map(Table::getTableName)
+			 .map(TableMetadata::getTableName)
 			 .collect(Collectors.toSet());
 	}
 
-	private Set<Table> getDeleteTablesRecursively(List<Table> tables, Table target) {
-		Set<Table> result = new HashSet<>();
-		Set<Table> deleteTables = tables.stream()
-			 .filter(table -> table.isReferenceTableOnDelete(target))
+	private Set<TableMetadata> getReferenceTableAllOnDelete(List<TableMetadata> metadata, TableMetadata target) {
+		return metadata.stream()
+			 .filter(info -> info.isReferenceTableOnDelete(target))
+			 .flatMap(reference -> getReferenceTableAllOnDelete(metadata, reference).stream())
 			 .collect(Collectors.toSet());
-
-		for (Table table : deleteTables) {
-			if (target.equals(table)) {
-				continue;
-			}
-			result.addAll(getDeleteTablesRecursively(tables, table));
-		}
-
-		result.addAll(deleteTables);
-		return result;
 	}
 
 	public Set<String> getDeleteTables(String tableName) {
-		return value.get(Table.builder()
+		return values.get(TableMetadata.builder()
 			 .tableName(tableName)
 			 .build());
+	}
+
+	public Set<TableMetadata> getAll() {
+		return values.keySet();
 	}
 }

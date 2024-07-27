@@ -2,7 +2,7 @@ package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.datasource.DataSourceProxy;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
-import com.gmoon.dbrecovery.global.recovery.vo.TableMetaData;
+import com.gmoon.dbrecovery.global.recovery.vo.RecoveryTable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.Statement;
@@ -54,11 +54,11 @@ public class DataRecoveryHelper {
 			 .flatMap(Collection::stream)
 			 .collect(Collectors.toSet());
 
-		TableMetaData metadata = recoveryDatabase.getMetadata();
+		RecoveryTable recoveryTable = recoveryDatabase.getRecoveryTable();
 		Set<String> onDeleteTables = Optional.ofNullable(modifiedTables.get(Delete.class))
 			 .orElseGet(HashSet::new)
 			 .stream()
-			 .map(metadata::getDeleteTables)
+			 .map(recoveryTable::getDeleteTables)
 			 .flatMap(Collection::stream)
 			 .collect(Collectors.toSet());
 		recoveryTables.addAll(onDeleteTables);
@@ -73,7 +73,7 @@ public class DataRecoveryHelper {
 
 	private void recoveryTable(String tableName) {
 		String originTable = properties.getSchema() + "." + tableName;
-		String backupTable = properties.getRecoverySchema() + "." + tableName;
+		String backupTable = properties.getBackupSchema() + "." + tableName;
 		executeQuery(String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
 		log.debug("[RECOVERY] {}", originTable);
 	}

@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode(of = "tableName")
 @ToString
-public class Table {
+public class TableMetadata {
 
 	private final String tableName;
 	private final String tablePKColumnName;
@@ -19,7 +19,7 @@ public class Table {
 	private final boolean constraintOnDelete;
 
 	@Builder
-	private Table(String tableName, String tablePKColumnName, String referenceTableName, String referenceTablePKColumnName, int onDelete) {
+	private TableMetadata(String tableName, String tablePKColumnName, String referenceTableName, String referenceTablePKColumnName, int onDelete) {
 		this.tableName = tableName;
 		this.tablePKColumnName = tablePKColumnName;
 		this.referenceTableName = referenceTableName;
@@ -27,9 +27,11 @@ public class Table {
 		this.constraintOnDelete = BooleanUtils.toBoolean(onDelete);
 	}
 
-	public boolean isReferenceTableOnDelete(Table target) {
+	public boolean isReferenceTableOnDelete(TableMetadata target) {
+		boolean infinityRecursively = this.equals(target);
 		return enableCaseCadeOnDeleteOption()
-			 && StringUtils.equals(referenceTableName, target.getTableName());
+			 && StringUtils.equals(referenceTableName, target.getTableName())
+			 && !infinityRecursively;
 	}
 
 	public boolean enableCaseCadeOnDeleteOption() {
