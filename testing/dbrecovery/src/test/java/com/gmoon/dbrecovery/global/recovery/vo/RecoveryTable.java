@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -20,15 +19,15 @@ import static java.util.stream.Collectors.toMap;
 @ToString
 public class RecoveryTable {
 
-	private final Map<TableMetadata, Set<String>> values;
+	private final Map<Table, Set<String>> values;
 
-	private RecoveryTable(final List<TableMetadata> metadata) {
-		values = metadata.stream()
+	private RecoveryTable(final List<TableMetadata> all) {
+		values = all.stream()
 			 .collect(
 				  Collectors.collectingAndThen(
 					   toMap(
-							Function.identity(),
-							tableMetadata -> obtainDeleteTables(metadata, tableMetadata),
+							Table::from,
+							metadata -> obtainDeleteTables(all, metadata),
 							(existing, replacement) -> {
 								Set<String> merged = new HashSet<>(existing);
 								merged.addAll(replacement);
@@ -64,12 +63,12 @@ public class RecoveryTable {
 	}
 
 	public Set<String> getDeleteTables(String tableName) {
-		return values.get(TableMetadata.builder()
-			 .tableName(tableName)
+		return values.get(Table.builder()
+			 .name(tableName)
 			 .build());
 	}
 
-	public Set<TableMetadata> getAll() {
+	public Set<Table> getAll() {
 		return values.keySet();
 	}
 }

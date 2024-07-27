@@ -2,6 +2,7 @@ package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import com.gmoon.dbrecovery.global.recovery.vo.RecoveryTable;
+import com.gmoon.dbrecovery.global.recovery.vo.Table;
 import com.gmoon.dbrecovery.global.recovery.vo.TableMetadata;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -107,8 +108,8 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 	private void createRecoverySchema(RecoveryTable recoveryTable) {
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
 		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getBackupSchema()));
-		for (TableMetadata metadata : recoveryTable.getAll()) {
-			String tableName = metadata.getTableName();
+		for (Table table : recoveryTable.getAll()) {
+			String tableName = table.getName();
 			String sourceTable = properties.getSchema() + "." + tableName;
 			String targetTable = properties.getBackupSchema() + "." + tableName;
 			executeQuery(String.format("DROP TABLE IF EXISTS %s", targetTable));

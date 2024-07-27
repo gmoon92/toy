@@ -3,12 +3,10 @@ package com.gmoon.dbrecovery.global.recovery.vo;
 import com.gmoon.javacore.util.BooleanUtils;
 import com.gmoon.javacore.util.StringUtils;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@EqualsAndHashCode(of = "tableName")
 @ToString
 public class TableMetadata {
 
