@@ -66,14 +66,14 @@ public class DataRecoveryHelper {
 	}
 
 	private void truncateTable(String tableName) {
-		String originTable = properties.schema + "." + tableName;
+		String originTable = properties.getSchema() + "." + tableName;
 		executeQuery("TRUNCATE TABLE " + originTable);
 		log.debug("[TRUNCATE] {}", originTable);
 	}
 
 	private void recoveryTable(String tableName) {
-		String originTable = properties.schema + "." + tableName;
-		String backupTable = properties.recoverySchema + "." + tableName;
+		String originTable = properties.getSchema() + "." + tableName;
+		String backupTable = properties.getRecoverySchema() + "." + tableName;
 		executeQuery(String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
 		log.debug("[RECOVERY] {}", originTable);
 	}

@@ -42,7 +42,7 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		String recoverySchema = properties.recoverySchema;
+		String recoverySchema = properties.getRecoverySchema();
 		log.debug("===========Initializing recovery {} database===============", recoverySchema);
 		metadata = obtainTableMetaData();
 		createRecoverySchema(metadata);
@@ -67,7 +67,7 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 
 		try (Connection connection = dataSource.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(queryString)) {
-			statement.setString(1, properties.schema);
+			statement.setString(1, properties.getSchema());
 			statement.execute();
 
 			ResultSet resultSet = statement.getResultSet();
@@ -107,11 +107,11 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 
 	private void createRecoverySchema(TableMetaData metadata) {
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
-		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", properties.recoverySchema));
+		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getRecoverySchema()));
 		for (Table table : metadata.getValue().keySet()) {
 			String tableName = table.getTableName();
-			String sourceTable = properties.schema + "." + tableName;
-			String targetTable = properties.recoverySchema + "." + tableName;
+			String sourceTable = properties.getSchema() + "." + tableName;
+			String targetTable = properties.getRecoverySchema() + "." + tableName;
 			executeQuery(String.format("DROP TABLE IF EXISTS %s", targetTable));
 			executeQuery(String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
 			log.debug("Copy table {} to {}", sourceTable, targetTable);

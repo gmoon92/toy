@@ -18,7 +18,7 @@ public class DataRecoveryExtension implements AfterEachCallback {
 	@Override
 	public void afterEach(ExtensionContext extensionContext) throws Exception {
 		RecoveryDatabaseProperties recoveryDatabaseProperties = obtainBean(extensionContext, RecoveryDatabaseProperties.class);
-		if (!BooleanUtils.toBoolean(recoveryDatabaseProperties.enable)) {
+		if (!BooleanUtils.toBoolean(recoveryDatabaseProperties.isEnabled())) {
 			return;
 		}
 
