@@ -54,8 +54,12 @@ public class RecoveryTable {
 
 	private Set<TableMetadata> getReferenceTableAllOnDelete(List<TableMetadata> metadata, TableMetadata target) {
 		return metadata.stream()
-			 .filter(info -> info.isReferenceTableOnDelete(target))
-			 .flatMap(reference -> getReferenceTableAllOnDelete(metadata, reference).stream())
+			 .filter(table -> table.isReferenceTableOnDelete(target))
+			 .flatMap(table -> {
+				 Set<TableMetadata> nestedTables = getReferenceTableAllOnDelete(metadata, table);
+				 nestedTables.add(table);
+				 return nestedTables.stream();
+			 })
 			 .collect(Collectors.toSet());
 	}
 
