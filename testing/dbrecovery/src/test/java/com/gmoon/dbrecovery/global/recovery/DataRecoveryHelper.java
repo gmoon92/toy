@@ -38,6 +38,7 @@ public class DataRecoveryHelper {
 	}
 
 	public void recovery() {
+		log.debug("Start data recovery.");
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
 		Set<String> tableNames = obtainRecoveryTables();
 		for (String tableName : tableNames) {
@@ -45,6 +46,7 @@ public class DataRecoveryHelper {
 			recoveryTable(tableName);
 		}
 		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
+		log.debug("Data recovery successful.");
 	}
 
 	private Set<String> obtainRecoveryTables() {
