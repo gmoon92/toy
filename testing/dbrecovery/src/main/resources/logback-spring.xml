@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="5 seconds">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <property name="CONSOLE_LOG_PATTERN"
-              value="%clr(%d{HH:mm:ss}){faint} %highlight(%-5p) [%thread] %clr(%-40logger{20}){blue} \(%line\) %m%n"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{HH:mm:ss}){faint} %highlight(%-5p) [%thread] %clr(%-40logger{20}){blue} \(%line\) %m%n"/>
 
     <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
 
@@ -15,6 +14,7 @@
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
     <logger name="com.gmoon" level="DEBUG"/>
+    <logger name="p6spy" level="info"/>
     <logger name="MySQL" level="OFF"/>
 
     <root level="error">

@@ -7,9 +7,12 @@ service:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-    #    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    #https://p6spy.readthedocs.io/en/latest/install.html
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+#    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
     username: root
     password: 111111
 

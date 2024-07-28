@@ -53,3 +53,6 @@
 - https://martinfowler.com/articles/nonDeterminism.html
 - https://www.marcobehler.com/guides/spring-transaction-management-transactional-in-depth
 - https://bytebuddy.net
+- p6spy
+  - https://github.com/gavlyukovskiy/spring-boot-data-source-decorator
+  - https://github.com/p6spy/p6spy
