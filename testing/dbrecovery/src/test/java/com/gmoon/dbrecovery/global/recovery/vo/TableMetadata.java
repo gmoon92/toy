@@ -36,4 +36,9 @@ public class TableMetadata {
 		return constraintOnDelete
 			 && StringUtils.isNotBlank(referenceTableName);
 	}
+
+	public boolean equalsToTable(TableMetadata target) {
+		return !enableCaseCadeOnDeleteOption()
+			 && tableName.equals(target.tableName);
+	}
 }

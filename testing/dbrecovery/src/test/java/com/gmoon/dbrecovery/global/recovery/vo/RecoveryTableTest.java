@@ -12,7 +12,7 @@ class RecoveryTableTest {
 
 	/**
 	 * +----------------+--------------------+----------------+------------------------+---------+
-	 * |table_name      |table_pk_column_name|ref_table_name  |ref_table_pk_column_name|on_delete|
+	 * |table_name      |table_key_column_name|ref_table_name  |ref_column_name		   |on_delete|
 	 * +----------------+--------------------+----------------+------------------------+---------+
 	 * |tb_ticket_office|id                  |null            |null                    |0        |
 	 * |tb_ticket       |ticket_office_id    |tb_ticket_office|id                      |1        |
@@ -45,7 +45,7 @@ class RecoveryTableTest {
 
 		RecoveryTable recoveryTable = RecoveryTable.initialize(metadata);
 
-		assertThat(recoveryTable.getAll().size()).isEqualTo(5);
+		assertThat(recoveryTable.getTableAll().size()).isEqualTo(5);
 		assertThat(recoveryTable.getDeleteTables("tb_ticket_office")).containsOnly("tb_ticket", "tb_movie", "tb_movie_ticket", "tb_coupon");
 		assertThat(recoveryTable.getDeleteTables("tb_ticket")).containsOnly("tb_movie_ticket");
 		assertThat(recoveryTable.getDeleteTables("tb_movie")).containsOnly("tb_movie_ticket", "tb_coupon");

@@ -13,7 +13,7 @@ public class RecoveryDatabaseProperties {
 
 	public final Boolean enable;
 	public final String schema;
-	public final String backupSchema;
+	public final String recoverySchema;
 
 	public boolean isEnabled() {
 		return BooleanUtils.toBoolean(enable);
@@ -24,6 +24,6 @@ public class RecoveryDatabaseProperties {
 	}
 
 	public String getBackupSchema() {
-		return backupSchema;
+		return recoverySchema;
 	}
 }

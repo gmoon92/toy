@@ -1,6 +1,5 @@
 package com.gmoon.dbrecovery.global.recovery.vo;
 
-import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,21 +14,41 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
 
 @Slf4j
-@Getter
 @ToString
 public class RecoveryTable {
 
-	private final Map<Table, Set<String>> values;
+	private final Map<String, Set<TableKey>> tables;
+	private final Map<String, Set<DependentTable>> dependentTables;
 
-	private RecoveryTable(final List<TableMetadata> all) {
-		values = all.stream()
+	public RecoveryTable(List<TableMetadata> all) {
+		tables = all.stream()
 			 .collect(
 				  Collectors.collectingAndThen(
 					   toMap(
-							Table::from,
+							TableMetadata::getTableName,
+							metadata -> all.stream()
+								 .filter(metadata::equalsToTable)
+								 .map(TableKey::from)
+								 .collect(Collectors.toSet()),
+							(existing, replacement) -> {
+								Set<TableKey> merged = new HashSet<>(existing);
+								merged.addAll(replacement);
+								return Collections.unmodifiableSet(merged);
+							},
+							HashMap::new
+					   ),
+					   Collections::unmodifiableMap
+				  )
+			 );
+
+		dependentTables = all.stream()
+			 .collect(
+				  Collectors.collectingAndThen(
+					   toMap(
+							TableMetadata::getTableName,
 							metadata -> obtainDeleteTables(all, metadata),
 							(existing, replacement) -> {
-								Set<String> merged = new HashSet<>(existing);
+								Set<DependentTable> merged = new HashSet<>(existing);
 								merged.addAll(replacement);
 								return Collections.unmodifiableSet(merged);
 							},
@@ -40,14 +59,14 @@ public class RecoveryTable {
 			 );
 	}
 
-	public static RecoveryTable initialize(List<TableMetadata> metadata) {
-		return new RecoveryTable(metadata);
+	public static RecoveryTable initialize(List<TableMetadata> all) {
+		return new RecoveryTable(all);
 	}
 
-	private Set<String> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
+	private Set<DependentTable> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
 		return getReferenceTableAllOnDelete(metadata, target)
 			 .stream()
-			 .map(TableMetadata::getTableName)
+			 .map(DependentTable::from)
 			 .collect(Collectors.toSet());
 	}
 
@@ -63,12 +82,13 @@ public class RecoveryTable {
 	}
 
 	public Set<String> getDeleteTables(String tableName) {
-		return values.get(Table.builder()
-			 .name(tableName)
-			 .build());
+		Set<DependentTable> result = dependentTables.getOrDefault(tableName, new HashSet<>());
+		return result.stream()
+			 .map(DependentTable::getTableName)
+			 .collect(Collectors.toSet());
 	}
 
-	public Set<Table> getAll() {
-		return values.keySet();
+	public Set<String> getTableAll() {
+		return tables.keySet();
 	}
 }
