@@ -3,6 +3,7 @@ package com.gmoon.dbrecovery.global.recovery;
 import com.gmoon.dbrecovery.global.recovery.datasource.SqlParser;
 import com.gmoon.dbrecovery.global.recovery.datasource.SqlStatementCallStack;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
+import com.gmoon.dbrecovery.global.recovery.strategy.RecoveryStrategy;
 import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +27,16 @@ public class DataRecoveryHelper {
 	private final RecoveryDatabaseProperties properties;
 
 	public void recovery(SqlStatementCallStack sqlStatementCallStack) {
+		RecoveryStrategy strategy = properties.getStrategy();
+		strategy.recovery();
+		recoveryOfTableStrategy(sqlStatementCallStack);
+	}
+
+	private void recoveryOfTableStrategy(SqlStatementCallStack sqlStatementCallStack) {
 		Set<String> tableNames = obtainRecoveryTables(sqlStatementCallStack);
 		if (CollectionUtils.isNotEmpty(tableNames)) {
 			try (Connection connection = dataSource.getConnection()) {
-				log.debug("Start data recovery.");
+				log.trace("Start data recovery.");
 				executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 0");
 
 				for (String tableName : tableNames) {
@@ -37,7 +44,7 @@ public class DataRecoveryHelper {
 					recoveryTable(connection, tableName);
 				}
 				executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 1");
-				log.debug("Data recovery successful.");
+				log.trace("Data recovery successful.");
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -48,7 +55,7 @@ public class DataRecoveryHelper {
 		try (PreparedStatement statement = connection.prepareStatement(queryString)) {
 
 			int result = statement.executeUpdate();
-			log.debug("[EXECUTE][{}]: {}", result, queryString);
+			log.trace("[EXECUTE][{}]: {}", result, queryString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -75,13 +82,13 @@ public class DataRecoveryHelper {
 	private void truncateTable(Connection connection, String tableName) {
 		String originTable = properties.getSchema() + "." + tableName;
 		executeQuery(connection, "TRUNCATE TABLE " + originTable);
-		log.debug("[TRUNCATE] {}", originTable);
+		log.trace("[TRUNCATE] {}", originTable);
 	}
 
 	private void recoveryTable(Connection connection, String tableName) {
 		String originTable = properties.getSchema() + "." + tableName;
 		String backupTable = properties.getRecoverySchema() + "." + tableName;
 		executeQuery(connection, String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
-		log.debug("[RECOVERY] {}", originTable);
+		log.trace("[RECOVERY] {}", originTable);
 	}
 }

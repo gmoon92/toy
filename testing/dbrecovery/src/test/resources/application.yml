@@ -3,8 +3,8 @@ service:
   dbrecovery:
     enable: true
     schema: @db.name@
-    stragy:
     recovery-schema: @dbrecovery.db.name@
+    strategy: TABLE
 
 spring:
   datasource:
