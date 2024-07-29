@@ -16,9 +16,25 @@ import java.sql.SQLException;
 @Slf4j
 public class LoggingEventListenerProxy extends LoggingEventListener {
 
+	public static final ThreadLocal<DmlStatementCallStack> dmlStatementStack = ThreadLocal.withInitial(() ->
+		 new DmlStatementCallStack(
+			  DmlStatement.INSERT,
+			  DmlStatement.UPDATE,
+			  DmlStatement.DELETE
+		 ));
+
 	@Override
 	protected void logElapsed(Loggable loggable, long timeElapsedNanos, Category category, SQLException e) {
-		// todo detected dml sql statement
+		detectDMLStatement(loggable, category);
 		super.logElapsed(loggable, timeElapsedNanos, category, e);
+	}
+
+	private void detectDMLStatement(Loggable loggable, Category category) {
+		if (Category.STATEMENT.equals(category)) {
+			DmlStatementCallStack callStack = dmlStatementStack.get();
+
+			String sqlWithValues = loggable.getSqlWithValues();
+			callStack.push(sqlWithValues);
+		}
 	}
 }

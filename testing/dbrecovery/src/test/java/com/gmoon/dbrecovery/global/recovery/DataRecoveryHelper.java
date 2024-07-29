@@ -1,22 +1,18 @@
 package com.gmoon.dbrecovery.global.recovery;
 
-import com.gmoon.dbrecovery.global.recovery.datasource.DataSourceProxy;
+import com.gmoon.dbrecovery.global.recovery.datasource.DmlStatementCallStack;
+import com.gmoon.dbrecovery.global.recovery.datasource.SqlParser;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
-import com.gmoon.dbrecovery.global.recovery.vo.RecoveryTable;
+import com.gmoon.javacore.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.delete.Delete;
 
 import javax.sql.DataSource;
-import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.util.Collection;
+import java.sql.PreparedStatement;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Stack;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,19 +24,20 @@ public class DataRecoveryHelper {
 
 	private void executeQuery(String queryString) {
 		try (Connection connection = dataSource.getConnection();
-			 CallableStatement callableStatement = connection.prepareCall(queryString)) {
+			 PreparedStatement statement = connection.prepareStatement(queryString)) {
 
-			int result = callableStatement.executeUpdate();
+			int result = statement.executeUpdate();
 			log.debug("[EXECUTE][{}]: {}", result, queryString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void recovery() {
+	public void recovery(DmlStatementCallStack dmlStatementCallStack) {
 		log.debug("Start data recovery.");
 		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
-		Set<String> tableNames = obtainRecoveryTables();
+
+		Set<String> tableNames = obtainRecoveryTables(dmlStatementCallStack);
 		for (String tableName : tableNames) {
 			truncateTable(tableName);
 			recoveryTable(tableName);
@@ -49,21 +46,18 @@ public class DataRecoveryHelper {
 		log.debug("Data recovery successful.");
 	}
 
-	private Set<String> obtainRecoveryTables() {
-		Map<Class<? extends Statement>, Set<String>> modifiedTables = DataSourceProxy.detectedStatementThreadLocal.get();
-		Set<String> recoveryTables = modifiedTables.values()
-			 .stream()
-			 .flatMap(Collection::stream)
-			 .collect(Collectors.toSet());
+	private Set<String> obtainRecoveryTables(DmlStatementCallStack dmlStatementCallStack) {
+		Stack<String> callStack = dmlStatementCallStack.getValue();
 
-		RecoveryTable recoveryTable = recoveryDatabase.getRecoveryTable();
-		Set<String> onDeleteTables = Optional.ofNullable(modifiedTables.get(Delete.class))
-			 .orElseGet(HashSet::new)
-			 .stream()
-			 .map(recoveryTable::getDeleteTables)
-			 .flatMap(Collection::stream)
-			 .collect(Collectors.toSet());
-		recoveryTables.addAll(onDeleteTables);
+		Set<String> recoveryTables = new HashSet<>();
+		while (!callStack.empty()) {
+			String sql = callStack.pop();
+			String tableName = SqlParser.getTableName(sql);
+			// todo on deleted case cade tables
+			if (StringUtils.isNotBlank(tableName)) {
+				recoveryTables.add(tableName);
+			}
+		}
 		return recoveryTables;
 	}
 

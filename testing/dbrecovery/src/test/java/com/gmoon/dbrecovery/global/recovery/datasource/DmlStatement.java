@@ -1,0 +1,26 @@
+package com.gmoon.dbrecovery.global.recovery.datasource;
+
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.update.Update;
+
+public enum DmlStatement {
+
+	INSERT, SELECT, UPDATE, DELETE;
+
+	public static DmlStatement from(Statement statement) {
+		if (statement instanceof Insert) {
+			return INSERT;
+		} else if (statement instanceof Select) {
+			return SELECT;
+		} else if (statement instanceof Update) {
+			return UPDATE;
+		} else if (statement instanceof Delete) {
+			return DELETE;
+		}
+
+		throw new IllegalArgumentException("Unknown statement type: " + statement.getClass().getName());
+	}
+}
