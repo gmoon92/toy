@@ -15,13 +15,13 @@ import java.util.Stack;
 
 @Slf4j
 @ToString
-public class DmlStatementCallStack {
+public class SqlStatementCallStack {
 
 	@Getter
 	private final Stack<String> value = new Stack<>();
 	private final EnumSet<DmlStatement> include;
 
-	public DmlStatementCallStack(DmlStatement... include) {
+	public SqlStatementCallStack(DmlStatement... include) {
 		this.include = EnumSet.copyOf(List.of(include));
 	}
 

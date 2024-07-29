@@ -1,7 +1,7 @@
 package com.gmoon.dbrecovery.global.recovery;
 
-import com.gmoon.dbrecovery.global.recovery.datasource.DmlStatementCallStack;
 import com.gmoon.dbrecovery.global.recovery.datasource.LoggingEventListenerProxy;
+import com.gmoon.dbrecovery.global.recovery.datasource.SqlStatementCallStack;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -61,7 +61,7 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 	private void recovery(ExtensionContext extensionContext) {
 		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);
 
-		DmlStatementCallStack callStack = LoggingEventListenerProxy.dmlStatementStack.get();
+		SqlStatementCallStack callStack = LoggingEventListenerProxy.dmlStatementStack.get();
 		dataRecoveryHelper.recovery(callStack);
 		clearCallStack();
 	}

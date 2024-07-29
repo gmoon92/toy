@@ -12,7 +12,7 @@ class LoggingEventListenerProxyTest {
 	void test() {
 		assertThat(getCallStack().getValue()).isEmpty();
 
-		DmlStatementCallStack callStack = getCallStack();
+		SqlStatementCallStack callStack = getCallStack();
 		callStack.push("select * from tb_ticket");
 		assertThat(getCallStack().getValue()).isEmpty();
 
@@ -23,8 +23,8 @@ class LoggingEventListenerProxyTest {
 		assertThat(getCallStack().getValue()).isEmpty();
 	}
 
-	private DmlStatementCallStack getCallStack() {
-		ThreadLocal<DmlStatementCallStack> threadLocal = LoggingEventListenerProxy.dmlStatementStack;
+	private SqlStatementCallStack getCallStack() {
+		ThreadLocal<SqlStatementCallStack> threadLocal = LoggingEventListenerProxy.dmlStatementStack;
 		return threadLocal.get();
 	}
 

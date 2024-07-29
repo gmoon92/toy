@@ -16,8 +16,8 @@ import java.sql.SQLException;
 @Slf4j
 public class LoggingEventListenerProxy extends LoggingEventListener {
 
-	public static final ThreadLocal<DmlStatementCallStack> dmlStatementStack = ThreadLocal.withInitial(() ->
-		 new DmlStatementCallStack(
+	public static final ThreadLocal<SqlStatementCallStack> dmlStatementStack = ThreadLocal.withInitial(() ->
+		 new SqlStatementCallStack(
 			  DmlStatement.INSERT,
 			  DmlStatement.UPDATE,
 			  DmlStatement.DELETE
@@ -31,7 +31,7 @@ public class LoggingEventListenerProxy extends LoggingEventListener {
 
 	private void detectDMLStatement(Loggable loggable, Category category) {
 		if (Category.STATEMENT.equals(category)) {
-			DmlStatementCallStack callStack = dmlStatementStack.get();
+			SqlStatementCallStack callStack = dmlStatementStack.get();
 
 			String sqlWithValues = loggable.getSqlWithValues();
 			callStack.push(sqlWithValues);

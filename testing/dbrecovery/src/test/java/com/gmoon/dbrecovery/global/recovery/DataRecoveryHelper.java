@@ -1,8 +1,9 @@
 package com.gmoon.dbrecovery.global.recovery;
 
-import com.gmoon.dbrecovery.global.recovery.datasource.DmlStatementCallStack;
 import com.gmoon.dbrecovery.global.recovery.datasource.SqlParser;
+import com.gmoon.dbrecovery.global.recovery.datasource.SqlStatementCallStack;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
+import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.schema.Table;
@@ -20,9 +21,9 @@ import java.util.Stack;
 @RequiredArgsConstructor
 public class DataRecoveryHelper {
 
+	private final DataSource dataSource;
 	private final RecoveryTable recoveryTable;
 	private final RecoveryDatabaseProperties properties;
-	private final DataSource dataSource;
 
 	private void executeQuery(String queryString) {
 		try (Connection connection = dataSource.getConnection();
@@ -35,22 +36,24 @@ public class DataRecoveryHelper {
 		}
 	}
 
-	public void recovery(DmlStatementCallStack dmlStatementCallStack) {
-		log.debug("Start data recovery.");
-		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
+	public void recovery(SqlStatementCallStack sqlStatementCallStack) {
+		Set<String> tableNames = obtainRecoveryTables(sqlStatementCallStack);
+		if (CollectionUtils.isNotEmpty(tableNames)) {
+			log.debug("Start data recovery.");
+			executeQuery("SET FOREIGN_KEY_CHECKS = 0");
 
-		Set<String> tableNames = obtainRecoveryTables(dmlStatementCallStack);
-		for (String tableName : tableNames) {
-			truncateTable(tableName);
-			recoveryTable(tableName);
+			for (String tableName : tableNames) {
+				truncateTable(tableName);
+				recoveryTable(tableName);
+			}
+			executeQuery("SET FOREIGN_KEY_CHECKS = 1");
+			log.debug("Data recovery successful.");
 		}
-		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
-		log.debug("Data recovery successful.");
 	}
 
-	private Set<String> obtainRecoveryTables(DmlStatementCallStack dmlStatementCallStack) {
+	private Set<String> obtainRecoveryTables(SqlStatementCallStack sqlStatementCallStack) {
 		Set<String> result = new HashSet<>();
-		Stack<String> callStack = dmlStatementCallStack.getValue();
+		Stack<String> callStack = sqlStatementCallStack.getValue();
 		while (!callStack.empty()) {
 			String sql = callStack.pop();
 

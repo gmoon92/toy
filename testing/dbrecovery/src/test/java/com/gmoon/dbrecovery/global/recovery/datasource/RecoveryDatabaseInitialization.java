@@ -1,5 +1,6 @@
-package com.gmoon.dbrecovery.global.recovery;
+package com.gmoon.dbrecovery.global.recovery.datasource;
 
+import com.gmoon.dbrecovery.global.recovery.RecoveryTable;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,8 @@ import java.sql.PreparedStatement;
 @RequiredArgsConstructor
 public class RecoveryDatabaseInitialization implements InitializingBean {
 
-	private final RecoveryTable recoveryTable;
 	private final DataSource dataSource;
+	private final RecoveryTable recoveryTable;
 	private final RecoveryDatabaseProperties properties;
 
 	@Override

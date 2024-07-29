@@ -33,6 +33,7 @@ public class RecoveryTable implements InitializingBean {
 
 	private final DataSource dataSource;
 	private final RecoveryDatabaseProperties properties;
+
 	private Map<String, Set<TableKey>> tables;
 	private Map<String, Set<DependentTable>> dependentTables;
 

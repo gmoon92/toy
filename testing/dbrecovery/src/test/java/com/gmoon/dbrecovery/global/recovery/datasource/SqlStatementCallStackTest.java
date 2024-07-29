@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
-class DmlStatementCallStackTest {
+class SqlStatementCallStackTest {
 
 	/**
 	 * 일부 DDL 미지원

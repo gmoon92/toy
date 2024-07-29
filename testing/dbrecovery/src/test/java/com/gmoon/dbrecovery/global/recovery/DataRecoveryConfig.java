@@ -1,5 +1,6 @@
 package com.gmoon.dbrecovery.global.recovery;
 
+import com.gmoon.dbrecovery.global.recovery.datasource.RecoveryDatabaseInitialization;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,16 +20,20 @@ public class DataRecoveryConfig {
 	}
 
 	@Bean
-	public DataRecoveryHelper dataRecoveryHelper(RecoveryTable recoveryTable, RecoveryDatabaseProperties properties, DataSource dataSource) {
-		return new DataRecoveryHelper(recoveryTable, properties, dataSource);
+	public DataRecoveryHelper dataRecoveryHelper(
+		 DataSource dataSource,
+		 RecoveryTable recoveryTable,
+		 RecoveryDatabaseProperties properties
+	) {
+		return new DataRecoveryHelper(dataSource, recoveryTable, properties);
 	}
 
 	@Bean
 	public RecoveryDatabaseInitialization recoveryDatabaseInitialization(
-		 RecoveryTable recoveryTable,
 		 DataSource dataSource,
+		 RecoveryTable recoveryTable,
 		 RecoveryDatabaseProperties properties
 	) {
-		return new RecoveryDatabaseInitialization(recoveryTable, dataSource, properties);
+		return new RecoveryDatabaseInitialization(dataSource, recoveryTable, properties);
 	}
 }
