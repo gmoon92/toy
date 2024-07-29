@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class DataRecoveryConfig {
 
-	private final RecoveryDatabaseProperties properties;
 	@Bean
 	public RecoveryTable recoveryTable(DataSource dataSource, RecoveryDatabaseProperties properties) {
 		return new RecoveryTable(dataSource, properties);
