@@ -6,9 +6,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Getter
 @ToString
-public class TableMetadata {
+public class TableMetadata implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 8909731597869722097L;
 
 	private final String tableName;
 	private final String tableKeyName;

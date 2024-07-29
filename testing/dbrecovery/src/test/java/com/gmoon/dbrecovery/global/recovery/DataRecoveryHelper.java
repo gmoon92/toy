@@ -3,9 +3,11 @@ package com.gmoon.dbrecovery.global.recovery;
 import com.gmoon.dbrecovery.global.recovery.datasource.DmlStatementCallStack;
 import com.gmoon.dbrecovery.global.recovery.datasource.SqlParser;
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
-import com.gmoon.javacore.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.delete.Delete;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -18,7 +20,7 @@ import java.util.Stack;
 @RequiredArgsConstructor
 public class DataRecoveryHelper {
 
-	private final RecoveryDatabaseInitialization recoveryDatabase;
+	private final RecoveryTable recoveryTable;
 	private final RecoveryDatabaseProperties properties;
 	private final DataSource dataSource;
 
@@ -47,18 +49,21 @@ public class DataRecoveryHelper {
 	}
 
 	private Set<String> obtainRecoveryTables(DmlStatementCallStack dmlStatementCallStack) {
+		Set<String> result = new HashSet<>();
 		Stack<String> callStack = dmlStatementCallStack.getValue();
-
-		Set<String> recoveryTables = new HashSet<>();
 		while (!callStack.empty()) {
 			String sql = callStack.pop();
-			String tableName = SqlParser.getTableName(sql);
-			// todo on deleted case cade tables
-			if (StringUtils.isNotBlank(tableName)) {
-				recoveryTables.add(tableName);
+
+			Statement statement = SqlParser.getStatement(sql);
+			Table table = SqlParser.getTable(statement);
+			String tableName = table.getName();
+			result.add(tableName);
+			if (statement instanceof Delete) {
+				Set<String> deleteTables = recoveryTable.getDeleteTables(tableName);
+				result.addAll(deleteTables);
 			}
 		}
-		return recoveryTables;
+		return result;
 	}
 
 	private void truncateTable(String tableName) {

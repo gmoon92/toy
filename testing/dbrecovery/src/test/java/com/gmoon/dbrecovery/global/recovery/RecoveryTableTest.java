@@ -1,5 +1,6 @@
-package com.gmoon.dbrecovery.global.recovery.vo;
+package com.gmoon.dbrecovery.global.recovery;
 
+import com.gmoon.dbrecovery.global.recovery.vo.TableMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +44,8 @@ class RecoveryTableTest {
 			 TableMetadata.builder().tableName("tb_coupon").tableKeyName("id").onDelete(0).build()
 		);
 
-		RecoveryTable recoveryTable = RecoveryTable.initialize(metadata);
+		RecoveryTable recoveryTable = new RecoveryTable(null, null);
+		recoveryTable.initialize(metadata);
 
 		assertThat(recoveryTable.getTableAll().size()).isEqualTo(5);
 		assertThat(recoveryTable.getDeleteTables("tb_ticket_office")).containsOnly("tb_ticket", "tb_movie", "tb_movie_ticket", "tb_coupon");
