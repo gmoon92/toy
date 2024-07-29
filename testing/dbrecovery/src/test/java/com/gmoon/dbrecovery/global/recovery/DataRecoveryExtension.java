@@ -2,7 +2,6 @@ package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.datasource.LoggingEventListenerProxy;
 import com.gmoon.dbrecovery.global.recovery.datasource.SqlStatementCallStack;
-import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -14,13 +13,14 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 @Slf4j
 public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallback {
+
 	@Override
 	public void beforeEach(ExtensionContext extensionContext) throws Exception {
-		clearCallStack();
+		clearSqlCallStack();
 	}
 
-	private void clearCallStack() {
-		LoggingEventListenerProxy.dmlStatementStack.remove();
+	private void clearSqlCallStack() {
+		LoggingEventListenerProxy.sqlCallStack.clear();
 	}
 
 
@@ -34,13 +34,7 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 	 * https://stackoverflow.com/questions/18771296/spring-transactions-transactionsynchronizationmanager-isactualtransactionactive
 	 */
 	private void registerRecoveryData(ExtensionContext extensionContext) {
-		RecoveryDatabaseProperties properties = obtainBean(extensionContext, RecoveryDatabaseProperties.class);
-		if (!properties.isEnabled()) {
-			return;
-		}
-
 		boolean activeTransaction = TransactionSynchronizationManager.isSynchronizationActive();
-		log.info("activeTransaction: {}", activeTransaction);
 		if (!activeTransaction) {
 			recovery(extensionContext);
 			return;
@@ -50,7 +44,6 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 			 new TransactionSynchronization() {
 				 @Override
 				 public void afterCompletion(int status) {
-					 log.info("status: {}", status);
 					 TransactionSynchronization.super.afterCompletion(status);
 					 recovery(extensionContext);
 				 }
@@ -61,9 +54,9 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 	private void recovery(ExtensionContext extensionContext) {
 		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);
 
-		SqlStatementCallStack callStack = LoggingEventListenerProxy.dmlStatementStack.get();
+		SqlStatementCallStack callStack = LoggingEventListenerProxy.sqlCallStack;
 		dataRecoveryHelper.recovery(callStack);
-		clearCallStack();
+		clearSqlCallStack();
 	}
 
 	private <T> T obtainBean(ExtensionContext context, Class<T> clazz) {

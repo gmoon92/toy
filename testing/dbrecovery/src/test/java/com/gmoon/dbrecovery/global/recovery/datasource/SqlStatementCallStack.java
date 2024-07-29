@@ -4,10 +4,6 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.update.Update;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -19,31 +15,25 @@ public class SqlStatementCallStack {
 
 	@Getter
 	private final Stack<String> value = new Stack<>();
-	private final EnumSet<DmlStatement> include;
+	private final EnumSet<DmlStatement> includes;
 
-	public SqlStatementCallStack(DmlStatement... include) {
-		this.include = EnumSet.copyOf(List.of(include));
+	public SqlStatementCallStack(DmlStatement... includes) {
+		this.includes = EnumSet.copyOf(List.of(includes));
 	}
 
 	public void push(String sql) {
-		if (isDmlStatement(sql)) {
+		if (isAllowedSqlStatement(sql)) {
 			value.push(sql);
 		}
 	}
 
-	private boolean isDmlStatement(String sql) {
+	private boolean isAllowedSqlStatement(String sql) {
 		Statement statement = SqlParser.getStatement(sql);
-		if (statement == null) {
-			return false;
-		}
+		return includes.contains(DmlStatement.from(statement));
+	}
 
-		boolean isDmlStatement = statement instanceof Insert
-			 || statement instanceof Select
-			 || statement instanceof Update
-			 || statement instanceof Delete;
-		if (isDmlStatement) {
-			return include.contains(DmlStatement.from(statement));
-		}
-		return false;
+
+	public void clear() {
+		value.clear();
 	}
 }

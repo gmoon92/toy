@@ -25,29 +25,32 @@ public class DataRecoveryHelper {
 	private final RecoveryTable recoveryTable;
 	private final RecoveryDatabaseProperties properties;
 
-	private void executeQuery(String queryString) {
-		try (Connection connection = dataSource.getConnection();
-			 PreparedStatement statement = connection.prepareStatement(queryString)) {
+	public void recovery(SqlStatementCallStack sqlStatementCallStack) {
+		Set<String> tableNames = obtainRecoveryTables(sqlStatementCallStack);
+		if (CollectionUtils.isNotEmpty(tableNames)) {
+			try (Connection connection = dataSource.getConnection()) {
+				log.debug("Start data recovery.");
+				executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 0");
+
+				for (String tableName : tableNames) {
+					truncateTable(connection, tableName);
+					recoveryTable(connection, tableName);
+				}
+				executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 1");
+				log.debug("Data recovery successful.");
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private void executeQuery(Connection connection, String queryString) {
+		try (PreparedStatement statement = connection.prepareStatement(queryString)) {
 
 			int result = statement.executeUpdate();
 			log.debug("[EXECUTE][{}]: {}", result, queryString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	public void recovery(SqlStatementCallStack sqlStatementCallStack) {
-		Set<String> tableNames = obtainRecoveryTables(sqlStatementCallStack);
-		if (CollectionUtils.isNotEmpty(tableNames)) {
-			log.debug("Start data recovery.");
-			executeQuery("SET FOREIGN_KEY_CHECKS = 0");
-
-			for (String tableName : tableNames) {
-				truncateTable(tableName);
-				recoveryTable(tableName);
-			}
-			executeQuery("SET FOREIGN_KEY_CHECKS = 1");
-			log.debug("Data recovery successful.");
 		}
 	}
 
@@ -69,16 +72,16 @@ public class DataRecoveryHelper {
 		return result;
 	}
 
-	private void truncateTable(String tableName) {
+	private void truncateTable(Connection connection, String tableName) {
 		String originTable = properties.getSchema() + "." + tableName;
-		executeQuery("TRUNCATE TABLE " + originTable);
+		executeQuery(connection, "TRUNCATE TABLE " + originTable);
 		log.debug("[TRUNCATE] {}", originTable);
 	}
 
-	private void recoveryTable(String tableName) {
+	private void recoveryTable(Connection connection, String tableName) {
 		String originTable = properties.getSchema() + "." + tableName;
-		String backupTable = properties.getBackupSchema() + "." + tableName;
-		executeQuery(String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
+		String backupTable = properties.getRecoverySchema() + "." + tableName;
+		executeQuery(connection, String.format("INSERT INTO %s SELECT * FROM %s", originTable, backupTable));
 		log.debug("[RECOVERY] {}", originTable);
 	}
 }

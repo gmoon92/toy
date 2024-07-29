@@ -8,10 +8,9 @@ service:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: @jdbc.url@
-    #    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-    #    url: jdbc:mysql://localhost:3306/${service.db-schema}?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    #https://p6spy.readthedocs.io/en/latest/install.html
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://@db.address@/@db.name@?@jdbc.option@
     username: @jdbc.username@
     password: @jdbc.password@
 
@@ -19,7 +18,7 @@ spring:
     open-in-view: false
     defer-datasource-initialization: true
     database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: &show-sql true
+    show-sql: &show-sql false
     properties:
       hibernate:
         "[hbm2ddl.auto]": create

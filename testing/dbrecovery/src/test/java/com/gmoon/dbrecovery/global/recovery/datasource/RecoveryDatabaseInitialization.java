@@ -12,6 +12,7 @@ import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitializat
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  * <pre>
@@ -24,7 +25,6 @@ import java.sql.PreparedStatement;
  * @see JpaBaseConfiguration
  */
 @Slf4j
-// @DependsOn(value = {"dataSourceScriptDatabaseInitializer", "entityManagerFactory"})
 @DependsOnDatabaseInitialization
 @RequiredArgsConstructor
 public class RecoveryDatabaseInitialization implements InitializingBean {
@@ -35,31 +35,54 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		String backupSchema = properties.getBackupSchema();
-		log.debug("===========Initializing recovery {} database===============", backupSchema);
+		if (existsRecoverySchema()) {
+			return;
+		}
+
+		String backupSchema = properties.getRecoverySchema();
+		log.trace("===========Initializing recovery {} database===============", backupSchema);
 		createRecoverySchema();
-		log.debug("===========Initializing recovery {} database===============", backupSchema);
+		log.trace("===========Initializing recovery {} database===============", backupSchema);
+	}
+
+	private boolean existsRecoverySchema() {
+		String sql = "SELECT SCHEMA_NAME "
+			 + "FROM INFORMATION_SCHEMA.SCHEMATA "
+			 + "WHERE SCHEMA_NAME = ? ";
+
+		try (Connection connection = dataSource.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setString(1, properties.getRecoverySchema());
+			statement.execute();
+
+			ResultSet resultSet = statement.getResultSet();
+			return resultSet.next();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void createRecoverySchema() {
-		executeQuery("SET FOREIGN_KEY_CHECKS = 0");
-		executeQuery(String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getBackupSchema()));
-		for (String tableName : recoveryTable.getTableAll()) {
-			String sourceTable = properties.getSchema() + "." + tableName;
-			String targetTable = properties.getBackupSchema() + "." + tableName;
-			executeQuery(String.format("DROP TABLE IF EXISTS %s", targetTable));
-			executeQuery(String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
-			log.debug("Copy table {} to {}", sourceTable, targetTable);
+		try (Connection connection = dataSource.getConnection()) {
+			executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 0");
+			executeQuery(connection, String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getRecoverySchema()));
+			for (String tableName : recoveryTable.getTableAll()) {
+				String sourceTable = properties.getSchema() + "." + tableName;
+				String targetTable = properties.getRecoverySchema() + "." + tableName;
+				executeQuery(connection, String.format("DROP TABLE IF EXISTS %s", targetTable));
+				executeQuery(connection, String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
+				log.trace("Copy table {} to {}", sourceTable, targetTable);
+			}
+			executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 1");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		executeQuery("SET FOREIGN_KEY_CHECKS = 1");
 	}
 
-	private void executeQuery(String queryString) {
-		try (Connection connection = dataSource.getConnection();
-			 PreparedStatement statement = connection.prepareStatement(queryString)) {
-
+	private void executeQuery(Connection connection, String sql) {
+		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			int result = statement.executeUpdate();
-			log.debug("[EXECUTE][{}]: {}", result, queryString);
+			log.trace("[EXECUTE][{}]: {}", result, sql);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

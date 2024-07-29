@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.parser.ParseException;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
@@ -25,7 +24,7 @@ public final class SqlParser {
 		try {
 			CCJSqlParser parser = CCJSqlParserUtil.newParser(sql);
 			return parser.Statement();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			log.trace("unable to parse sql: {}", sql, e);
 			return null;
 		}

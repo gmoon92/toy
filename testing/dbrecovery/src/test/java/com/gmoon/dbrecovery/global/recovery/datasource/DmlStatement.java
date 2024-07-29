@@ -8,9 +8,13 @@ import net.sf.jsqlparser.statement.update.Update;
 
 public enum DmlStatement {
 
-	INSERT, SELECT, UPDATE, DELETE;
+	INSERT, SELECT, UPDATE, DELETE, UNKNOWN;
 
 	public static DmlStatement from(Statement statement) {
+		if (statement == null) {
+			return UNKNOWN;
+		}
+
 		if (statement instanceof Insert) {
 			return INSERT;
 		} else if (statement instanceof Select) {
@@ -19,8 +23,8 @@ public enum DmlStatement {
 			return UPDATE;
 		} else if (statement instanceof Delete) {
 			return DELETE;
+		} else {
+			return UNKNOWN;
 		}
-
-		throw new IllegalArgumentException("Unknown statement type: " + statement.getClass().getName());
 	}
 }

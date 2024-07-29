@@ -4,13 +4,15 @@ import com.gmoon.dbrecovery.global.recovery.datasource.RecoveryDatabaseInitializ
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
 @Configuration
-@ConditionalOnProperty(name = "service.dbrecovery.enable", matchIfMissing = false)
+@EnableConfigurationProperties(RecoveryDatabaseProperties.class)
+@ConditionalOnProperty(value = "service.dbrecovery.enable", havingValue = "true")
 @RequiredArgsConstructor
 public class DataRecoveryConfig {
 

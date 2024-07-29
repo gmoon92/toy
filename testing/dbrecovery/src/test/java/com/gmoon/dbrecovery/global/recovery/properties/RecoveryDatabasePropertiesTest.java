@@ -18,6 +18,6 @@ class RecoveryDatabasePropertiesTest {
 	void test() {
 		log.info("properties: {}", properties);
 		assertThat(properties.getSchema()).isNotBlank();
-		assertThat(properties.getBackupSchema()).isNotBlank();
+		assertThat(properties.getRecoverySchema()).isNotBlank();
 	}
 }

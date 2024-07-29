@@ -24,11 +24,10 @@ class LoggingEventListenerProxyTest {
 	}
 
 	private SqlStatementCallStack getCallStack() {
-		ThreadLocal<SqlStatementCallStack> threadLocal = LoggingEventListenerProxy.dmlStatementStack;
-		return threadLocal.get();
+		return LoggingEventListenerProxy.sqlCallStack;
 	}
 
 	private void clear() {
-		LoggingEventListenerProxy.dmlStatementStack.remove();
+		LoggingEventListenerProxy.sqlCallStack.clear();
 	}
 }
