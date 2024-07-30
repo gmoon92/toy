@@ -47,17 +47,24 @@ public class RecoveryTable implements InitializingBean {
 		String queryString =
 			 "SELECT kcu.TABLE_NAME             AS table_name, " +
 				  "  kcu.COLUMN_NAME            AS table_key_column_name, " +
+				  "  cd.DATA_TYPE               AS table_key_column_type, " +
 				  "  kcu.REFERENCED_TABLE_NAME  AS ref_table_name, " +
 				  "  kcu.REFERENCED_COLUMN_NAME AS ref_column_name, " +
-				  "  CASE WHEN rc.DELETE_RULE = 'CASCADE' " +
-				  "      THEN 1 " +
+				  "  rcd.DATA_TYPE              AS ref_column_type, " +
+				  "  CASE " +
+				  "      WHEN rc.DELETE_RULE = 'CASCADE' THEN 1 " +
 				  "      ELSE 0 " +
-				  "      END AS on_delete " +
+				  "      END                    AS on_delete " +
 				  "FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu " +
-				  "         LEFT JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc " +
-				  "              ON kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME " +
-				  "                  AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA " +
-				  "WHERE kcu.TABLE_SCHEMA = ? ";
+				  "         INNER JOIN INFORMATION_SCHEMA.COLUMNS cd ON kcu.TABLE_SCHEMA = cd.TABLE_SCHEMA " +
+				  "                                          AND kcu.TABLE_NAME = cd.TABLE_NAME  " +
+				  "                                          AND kcu.COLUMN_NAME = cd.COLUMN_NAME " +
+				  "         LEFT JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME  " +
+				  "                                          AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA " +
+				  "         LEFT JOIN INFORMATION_SCHEMA.COLUMNS rcd ON kcu.TABLE_SCHEMA = rcd.TABLE_SCHEMA  " +
+				  "                                          AND kcu.REFERENCED_TABLE_NAME = rcd.TABLE_NAME  " +
+				  "                                          AND kcu.REFERENCED_COLUMN_NAME = rcd.COLUMN_NAME " +
+				  "WHERE kcu.TABLE_SCHEMA = ?";
 
 		try (Connection connection = dataSource.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(queryString)) {
@@ -70,8 +77,10 @@ public class RecoveryTable implements InitializingBean {
 				metadata.add(TableMetadata.builder()
 					 .tableName(resultSet.getString("table_name"))
 					 .tableKeyName(resultSet.getString("table_key_column_name"))
+					 .tableKeyType(resultSet.getString("table_key_column_type"))
 					 .referenceTableName(resultSet.getString("ref_table_name"))
 					 .referenceColumnName(resultSet.getString("ref_column_name"))
+					 .referenceColumnType(resultSet.getString("ref_column_type"))
 					 .onDelete(resultSet.getInt("on_delete"))
 					 .build());
 			}

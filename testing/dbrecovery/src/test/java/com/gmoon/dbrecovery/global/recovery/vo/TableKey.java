@@ -10,11 +10,13 @@ import lombok.ToString;
 public class TableKey {
 
 	private final String tableName;
-	private final String value;
+	private final String keyType;
+	private final String keyValue;
 
 	private TableKey(TableMetadata metadata) {
 		tableName = metadata.getTableName();
-		value = metadata.getTableKeyName();
+		keyValue = metadata.getTableKeyName();
+		keyType = metadata.getTableKeyType();
 	}
 
 	public static TableKey from(TableMetadata metadata) {

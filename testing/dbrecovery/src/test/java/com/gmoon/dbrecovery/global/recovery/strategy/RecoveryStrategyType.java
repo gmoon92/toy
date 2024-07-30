@@ -1,7 +1,6 @@
 package com.gmoon.dbrecovery.global.recovery.strategy;
 
-public interface RecoveryStrategy {
+public enum RecoveryStrategyType {
 
-	void recovery();
-
+	SCHEMA, TABLE, RECORD
 }
