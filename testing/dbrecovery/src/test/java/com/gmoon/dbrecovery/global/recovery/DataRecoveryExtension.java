@@ -3,11 +3,15 @@ package com.gmoon.dbrecovery.global.recovery;
 import com.gmoon.dbrecovery.global.recovery.datasource.LoggingEventListenerProxy;
 import com.gmoon.dbrecovery.global.recovery.datasource.SqlStatementCallStack;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.test.context.TestContextAnnotationUtils;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -16,7 +20,17 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 
 	@Override
 	public void beforeEach(ExtensionContext extensionContext) throws Exception {
+		checkDeclaredTransactionalAnnotation(extensionContext);
 		clearSqlCallStack();
+	}
+
+	private static void checkDeclaredTransactionalAnnotation(ExtensionContext extensionContext) {
+		if (TestContextAnnotationUtils.hasAnnotation(extensionContext.getRequiredTestClass(), Transactional.class) ||
+			 TestContextAnnotationUtils.hasAnnotation(extensionContext.getRequiredTestClass(), jakarta.transaction.Transactional.class) ||
+			 AnnotatedElementUtils.hasAnnotation(extensionContext.getRequiredTestMethod(), Transactional.class) ||
+			 AnnotatedElementUtils.hasAnnotation(extensionContext.getRequiredTestMethod(), jakarta.transaction.Transactional.class)) {
+			Assertions.fail("Declared @Transactional or @jakarta.transaction.Transactional annotation.");
+		}
 	}
 
 	private void clearSqlCallStack() {
