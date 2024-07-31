@@ -38,10 +38,10 @@ public class TableMetadata implements Serializable {
 	}
 
 	public boolean isReferenceTableOnDelete(TableMetadata target) {
-		boolean infinityRecursively = this.equals(target);
+		String targetTableName = target.getTableName();
 		return enableCaseCadeOnDeleteOption()
-			 && StringUtils.equals(referenceTableName, target.getTableName())
-			 && !infinityRecursively;
+			 && StringUtils.equals(referenceTableName, targetTableName)
+			 && !StringUtils.equals(tableName, targetTableName);
 	}
 
 	public boolean enableCaseCadeOnDeleteOption() {
