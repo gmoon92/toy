@@ -34,29 +34,8 @@ public class Table implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if (existsRecoverySchema()) {
-			return;
-		}
-
 		List<TableMetadata> tableMetadata = getTableMetadata();
 		initialize(tableMetadata);
-	}
-
-	private boolean existsRecoverySchema() {
-		String sql = "SELECT SCHEMA_NAME "
-			 + "FROM INFORMATION_SCHEMA.SCHEMATA "
-			 + "WHERE SCHEMA_NAME = ? ";
-
-		try (Connection connection = dataSource.getConnection();
-			 PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, properties.getRecoverySchema());
-			statement.execute();
-
-			ResultSet resultSet = statement.getResultSet();
-			return resultSet.next();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private List<TableMetadata> getTableMetadata() {
