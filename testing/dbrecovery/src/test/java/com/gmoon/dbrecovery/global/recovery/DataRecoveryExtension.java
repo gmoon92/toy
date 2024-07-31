@@ -24,13 +24,23 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 		clearSqlCallStack();
 	}
 
-	private static void checkDeclaredTransactionalAnnotation(ExtensionContext extensionContext) {
-		if (TestContextAnnotationUtils.hasAnnotation(extensionContext.getRequiredTestClass(), Transactional.class) ||
-			 TestContextAnnotationUtils.hasAnnotation(extensionContext.getRequiredTestClass(), jakarta.transaction.Transactional.class) ||
+	private void checkDeclaredTransactionalAnnotation(ExtensionContext extensionContext) {
+		if (declaredTransactionalOnTestClass(extensionContext.getRequiredTestClass()) ||
 			 AnnotatedElementUtils.hasAnnotation(extensionContext.getRequiredTestMethod(), Transactional.class) ||
 			 AnnotatedElementUtils.hasAnnotation(extensionContext.getRequiredTestMethod(), jakarta.transaction.Transactional.class)) {
 			Assertions.fail("Declared @Transactional or @jakarta.transaction.Transactional annotation.");
 		}
+	}
+
+	private boolean declaredTransactionalOnTestClass(Class<?> requiredTestClass) {
+		boolean declared = TestContextAnnotationUtils.hasAnnotation(requiredTestClass, Transactional.class) ||
+			 TestContextAnnotationUtils.hasAnnotation(requiredTestClass, jakarta.transaction.Transactional.class);
+
+		Class<?> superclass = requiredTestClass.getSuperclass();
+		if (superclass != null) {
+			declaredTransactionalOnTestClass(superclass);
+		}
+		return declared;
 	}
 
 	private void clearSqlCallStack() {
