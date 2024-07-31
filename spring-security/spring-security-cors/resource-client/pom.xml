@@ -8,7 +8,7 @@
         <artifactId>spring-security-cors</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.gmoon</groupId>
+    <groupId>com.gmoon.spring-security-cors</groupId>
     <artifactId>resource-client</artifactId>
     <name>resource-client</name>
     <description>resource-client</description>

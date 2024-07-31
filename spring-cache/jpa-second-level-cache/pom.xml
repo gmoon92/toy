@@ -8,11 +8,13 @@
         <version>1.0-SNAPSHOT</version>
         <artifactId>spring-cache</artifactId>
     </parent>
+
     <groupId>com.gmoon</groupId>
     <artifactId>jpa-second-level-cache</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>jpa-second-level-cache</name>
     <description>jpa-second-level-cache</description>
+
     <properties>
         <quick-perf.version>1.1.0</quick-perf.version>
     </properties>

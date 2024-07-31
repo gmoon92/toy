@@ -7,11 +7,13 @@
         <artifactId>toy</artifactId>
         <version>1.0-SNAPSHOT</version>
 	</parent>
+
     <groupId>com.gmoon</groupId>
     <artifactId>spring-batch</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-batch</name>
     <description>spring-batch</description>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

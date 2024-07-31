@@ -8,7 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.gmoon</groupId>
+    <groupId>com.gmoon.spring-properties</groupId>
     <artifactId>web</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>web</name>
@@ -30,7 +30,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gmoon</groupId>
+            <groupId>com.gmoon.spring-properties</groupId>
             <artifactId>core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>

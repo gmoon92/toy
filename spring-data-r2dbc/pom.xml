@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-data-r2dbc</name>
 	<description>spring-data-r2dbc</description>
+
 	<dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

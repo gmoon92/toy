@@ -14,6 +14,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-data-redis</name>
     <description>spring-data-redis</description>
+
     <properties>
         <jackson-databind.version>2.13.1</jackson-databind.version>
     </properties>
