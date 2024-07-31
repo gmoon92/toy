@@ -52,6 +52,7 @@
 - https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/
 - https://martinfowler.com/articles/nonDeterminism.html
 - https://www.marcobehler.com/guides/spring-transaction-management-transactional-in-depth
+- https://martinfowler.com/articles/nonDeterminism.html
 - https://bytebuddy.net
 - p6spy
   - https://github.com/gavlyukovskiy/spring-boot-data-source-decorator
