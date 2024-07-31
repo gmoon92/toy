@@ -1,4 +1,4 @@
-package com.gmoon.dbrecovery.datasource;
+package com.gmoon.dbrecovery.datasource.event;
 
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
@@ -6,7 +6,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 
-public enum DmlStatement {
+enum DmlStatement {
 
 	INSERT, SELECT, UPDATE, DELETE, UNKNOWN;
 

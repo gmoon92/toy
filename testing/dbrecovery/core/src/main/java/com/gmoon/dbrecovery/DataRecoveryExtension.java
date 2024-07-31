@@ -1,7 +1,7 @@
 package com.gmoon.dbrecovery;
 
-import com.gmoon.dbrecovery.datasource.LoggingEventListenerProxy;
-import com.gmoon.dbrecovery.datasource.SqlStatementCallStack;
+import com.gmoon.dbrecovery.datasource.event.LoggingEventListenerProxy;
+import com.gmoon.dbrecovery.datasource.event.SqlStatementCallStack;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.AfterEachCallback;
