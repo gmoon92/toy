@@ -35,5 +35,3 @@ out/
 ### report ###
 **/build/report/**
 
-### jooq ###
-**/jmodel/**
