@@ -3,10 +3,10 @@ package com.gmoon.dbrecovery;
 import com.gmoon.dbrecovery.datasource.RecoveryDatabaseProperties;
 import com.gmoon.dbrecovery.datasource.SqlParser;
 import com.gmoon.dbrecovery.datasource.SqlStatementCallStack;
+import com.gmoon.dbrecovery.datasource.Table;
 import com.gmoon.javacore.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 
@@ -23,7 +23,7 @@ import java.util.Stack;
 public class DataRecoveryHelper {
 
 	private final DataSource dataSource;
-	private final RecoveryTable recoveryTable;
+	private final Table recoveryTable;
 	private final RecoveryDatabaseProperties properties;
 
 	public void recovery(SqlStatementCallStack callStack) {
@@ -39,7 +39,7 @@ public class DataRecoveryHelper {
 			log.trace("stack sql: {}", sql);
 
 			Statement statement = SqlParser.getStatement(sql);
-			Table table = SqlParser.getTable(statement);
+			net.sf.jsqlparser.schema.Table table = SqlParser.getTable(statement);
 			String tableName = table.getName();
 			result.add(tableName);
 			if (statement instanceof Delete) {

@@ -2,6 +2,7 @@ package com.gmoon.dbrecovery;
 
 import com.gmoon.dbrecovery.datasource.RecoveryDatabaseInitialization;
 import com.gmoon.dbrecovery.datasource.RecoveryDatabaseProperties;
+import com.gmoon.dbrecovery.datasource.Table;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,14 +14,14 @@ import javax.sql.DataSource;
 public class DataRecoveryConfig {
 
 	@Bean
-	public RecoveryTable recoveryTable(DataSource dataSource, RecoveryDatabaseProperties properties) {
-		return new RecoveryTable(dataSource, properties);
+	public Table recoveryTable(DataSource dataSource, RecoveryDatabaseProperties properties) {
+		return new Table(dataSource, properties);
 	}
 
 	@Bean
 	public DataRecoveryHelper dataRecoveryHelper(
 		 DataSource dataSource,
-		 RecoveryTable recoveryTable,
+		 Table recoveryTable,
 		 RecoveryDatabaseProperties properties
 	) {
 		return new DataRecoveryHelper(dataSource, recoveryTable, properties);
@@ -29,7 +30,7 @@ public class DataRecoveryConfig {
 	@Bean
 	public RecoveryDatabaseInitialization recoveryDatabaseInitialization(
 		 DataSource dataSource,
-		 RecoveryTable recoveryTable,
+		 Table recoveryTable,
 		 RecoveryDatabaseProperties properties
 	) {
 		return new RecoveryDatabaseInitialization(dataSource, recoveryTable, properties);

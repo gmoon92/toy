@@ -1,6 +1,5 @@
 package com.gmoon.dbrecovery.datasource;
 
-import com.gmoon.dbrecovery.RecoveryTable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -29,7 +28,7 @@ import java.sql.ResultSet;
 public class RecoveryDatabaseInitialization implements InitializingBean {
 
 	private final DataSource dataSource;
-	private final RecoveryTable recoveryTable;
+	private final Table recoveryTable;
 	private final RecoveryDatabaseProperties properties;
 
 	@Override

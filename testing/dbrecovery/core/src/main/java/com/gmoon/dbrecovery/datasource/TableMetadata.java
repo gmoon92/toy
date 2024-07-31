@@ -1,4 +1,4 @@
-package com.gmoon.dbrecovery.vo;
+package com.gmoon.dbrecovery.datasource;
 
 import com.gmoon.javacore.util.BooleanUtils;
 import com.gmoon.javacore.util.StringUtils;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @Getter
 @ToString
-public class TableMetadata implements Serializable {
+class TableMetadata implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 8909731597869722097L;

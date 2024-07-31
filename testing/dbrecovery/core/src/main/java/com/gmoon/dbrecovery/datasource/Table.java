@@ -1,8 +1,5 @@
-package com.gmoon.dbrecovery;
+package com.gmoon.dbrecovery.datasource;
 
-import com.gmoon.dbrecovery.datasource.RecoveryDatabaseProperties;
-import com.gmoon.dbrecovery.vo.Table;
-import com.gmoon.dbrecovery.vo.TableMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +25,38 @@ import static java.util.stream.Collectors.toMap;
 @Component
 @RequiredArgsConstructor
 @ToString
-public class RecoveryTable implements InitializingBean {
+public class Table implements InitializingBean {
 
 	private final DataSource dataSource;
 	private final RecoveryDatabaseProperties properties;
 
-	private Map<String, Set<Table>> tables;
+	private Map<String, Set<String>> tables;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		if (existsRecoverySchema()) {
+			return;
+		}
+
 		List<TableMetadata> tableMetadata = getTableMetadata();
 		initialize(tableMetadata);
+	}
+
+	private boolean existsRecoverySchema() {
+		String sql = "SELECT SCHEMA_NAME "
+			 + "FROM INFORMATION_SCHEMA.SCHEMATA "
+			 + "WHERE SCHEMA_NAME = ? ";
+
+		try (Connection connection = dataSource.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setString(1, properties.getRecoverySchema());
+			statement.execute();
+
+			ResultSet resultSet = statement.getResultSet();
+			return resultSet.next();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private List<TableMetadata> getTableMetadata() {
@@ -91,7 +109,7 @@ public class RecoveryTable implements InitializingBean {
 							TableMetadata::getTableName,
 							metadata -> obtainDeleteTables(all, metadata),
 							(existing, replacement) -> {
-								Set<Table> merged = new HashSet<>(existing);
+								Set<String> merged = new HashSet<>(existing);
 								merged.addAll(replacement);
 								return Collections.unmodifiableSet(merged);
 							},
@@ -103,10 +121,10 @@ public class RecoveryTable implements InitializingBean {
 	}
 
 
-	private Set<Table> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
+	private Set<String> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
 		return getReferenceTableAllOnDelete(metadata, target)
 			 .stream()
-			 .map(Table::new)
+			 .map(TableMetadata::getTableName)
 			 .collect(Collectors.toSet());
 	}
 
@@ -122,10 +140,7 @@ public class RecoveryTable implements InitializingBean {
 	}
 
 	public Set<String> getDeleteTables(String tableName) {
-		Set<Table> result = tables.getOrDefault(tableName, new HashSet<>());
-		return result.stream()
-			 .map(Table::getTableName)
-			 .collect(Collectors.toSet());
+		return tables.getOrDefault(tableName, new HashSet<>());
 	}
 
 	public Set<String> getTableAll() {
