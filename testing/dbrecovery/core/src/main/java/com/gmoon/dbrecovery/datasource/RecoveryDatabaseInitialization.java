@@ -1,5 +1,6 @@
 package com.gmoon.dbrecovery.datasource;
 
+import com.gmoon.javacore.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -70,10 +71,20 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 				executeQuery(connection, String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
 				log.trace("Copy table {} to {}", sourceTable, targetTable);
 			}
+
+			createRecoverySysTable(connection);
 			executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 1");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void createRecoverySysTable(Connection connection) {
+		String sql = String.format( "CREATE TABLE %s.sys_recover_status (" +
+			 "    status     VARCHAR(10) DEFAULT 'WAIT', " +
+			 "    created_at DATETIME    DEFAULT NOW() " +
+			 ")", properties.getRecoverySchema());
+		executeQuery(connection, sql);
 	}
 
 	private void executeQuery(Connection connection, String sql) {

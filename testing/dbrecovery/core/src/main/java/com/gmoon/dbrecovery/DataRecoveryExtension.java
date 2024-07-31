@@ -22,6 +22,9 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 	@Override
 	public void beforeEach(ExtensionContext extensionContext) throws Exception {
 		checkDeclaredTransactionalAnnotation(extensionContext);
+
+		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);
+		dataRecoveryHelper.recoveryBrokenTable();
 		clearSqlCallStack();
 	}
 
