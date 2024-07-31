@@ -6,7 +6,6 @@
         <groupId>com.gmoon</groupId>
         <artifactId>dbrecovery</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.gmoon.dbrecovery</groupId>
