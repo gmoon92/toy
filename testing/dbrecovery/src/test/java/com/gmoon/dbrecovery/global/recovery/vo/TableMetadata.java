@@ -18,39 +18,26 @@ public class TableMetadata implements Serializable {
 
 	private final String tableName;
 	private final String tableKeyName;
-	private final String tableKeyType;
 	private final String referenceTableName;
 	private final String referenceColumnName;
-	private final String referenceColumnType;
 	private final boolean constraintOnDelete;
 
 	@Builder
-	private TableMetadata(String tableName, String tableKeyName, String tableKeyType,
-						  String referenceTableName, String referenceColumnName, String referenceColumnType,
-						  int onDelete) {
+	private TableMetadata(String tableName, String tableKeyName,
+						  String referenceTableName, String referenceColumnName,
+						  int onDelete
+	) {
 		this.tableName = tableName;
 		this.tableKeyName = tableKeyName;
-		this.tableKeyType = tableKeyType;
 		this.referenceTableName = referenceTableName;
 		this.referenceColumnName = referenceColumnName;
-		this.referenceColumnType = referenceColumnType;
 		this.constraintOnDelete = BooleanUtils.toBoolean(onDelete);
 	}
 
 	public boolean isReferenceTableOnDelete(TableMetadata target) {
-		String targetTableName = target.getTableName();
-		return enableCaseCadeOnDeleteOption()
-			 && StringUtils.equals(referenceTableName, targetTableName)
-			 && !StringUtils.equals(tableName, targetTableName);
-	}
-
-	public boolean enableCaseCadeOnDeleteOption() {
 		return constraintOnDelete
-			 && StringUtils.isNotBlank(referenceTableName);
-	}
-
-	public boolean equalsToTable(TableMetadata target) {
-		return !enableCaseCadeOnDeleteOption()
-			 && tableName.equals(target.tableName);
+			 && StringUtils.isNotBlank(referenceTableName)
+			 && StringUtils.equals(referenceTableName, target.getTableName())
+			 && !this.equals(target);
 	}
 }

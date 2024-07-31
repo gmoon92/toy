@@ -1,6 +1,5 @@
 package com.gmoon.dbrecovery.global.recovery.properties;
 
-import com.gmoon.dbrecovery.global.recovery.strategy.RecoveryStrategyType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -15,5 +14,4 @@ public class RecoveryDatabaseProperties {
 
 	private final String schema;
 	private final String recoverySchema;
-	private final RecoveryStrategyType strategy;
 }

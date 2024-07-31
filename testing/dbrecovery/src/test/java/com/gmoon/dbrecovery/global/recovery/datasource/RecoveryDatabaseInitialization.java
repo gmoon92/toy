@@ -65,11 +65,10 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 	private void createRecoverySchema() {
 		try (Connection connection = dataSource.getConnection()) {
 			executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 0");
-			executeQuery(connection, String.format("CREATE DATABASE IF NOT EXISTS %s", properties.getRecoverySchema()));
+			executeQuery(connection, String.format("CREATE DATABASE %s", properties.getRecoverySchema()));
 			for (String tableName : recoveryTable.getTableAll()) {
 				String sourceTable = properties.getSchema() + "." + tableName;
 				String targetTable = properties.getRecoverySchema() + "." + tableName;
-				executeQuery(connection, String.format("DROP TABLE IF EXISTS %s", targetTable));
 				executeQuery(connection, String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
 				log.trace("Copy table {} to {}", sourceTable, targetTable);
 			}

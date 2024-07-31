@@ -1,8 +1,7 @@
 package com.gmoon.dbrecovery.global.recovery;
 
 import com.gmoon.dbrecovery.global.recovery.properties.RecoveryDatabaseProperties;
-import com.gmoon.dbrecovery.global.recovery.vo.DependentTable;
-import com.gmoon.dbrecovery.global.recovery.vo.TableKey;
+import com.gmoon.dbrecovery.global.recovery.vo.Table;
 import com.gmoon.dbrecovery.global.recovery.vo.TableMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -34,8 +33,7 @@ public class RecoveryTable implements InitializingBean {
 	private final DataSource dataSource;
 	private final RecoveryDatabaseProperties properties;
 
-	private Map<String, Set<TableKey>> tables;
-	private Map<String, Set<DependentTable>> dependentTables;
+	private Map<String, Set<Table>> tables;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -47,24 +45,21 @@ public class RecoveryTable implements InitializingBean {
 		String queryString =
 			 "SELECT kcu.TABLE_NAME             AS table_name, " +
 				  "  kcu.COLUMN_NAME            AS table_key_column_name, " +
-				  "  cd.DATA_TYPE               AS table_key_column_type, " +
 				  "  kcu.REFERENCED_TABLE_NAME  AS ref_table_name, " +
 				  "  kcu.REFERENCED_COLUMN_NAME AS ref_column_name, " +
-				  "  rcd.DATA_TYPE              AS ref_column_type, " +
 				  "  CASE " +
 				  "      WHEN rc.DELETE_RULE = 'CASCADE' THEN 1 " +
 				  "      ELSE 0 " +
 				  "      END                    AS on_delete " +
 				  "FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu " +
-				  "         INNER JOIN INFORMATION_SCHEMA.COLUMNS cd ON kcu.TABLE_SCHEMA = cd.TABLE_SCHEMA " +
-				  "                                          AND kcu.TABLE_NAME = cd.TABLE_NAME  " +
-				  "                                          AND kcu.COLUMN_NAME = cd.COLUMN_NAME " +
 				  "         LEFT JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME  " +
 				  "                                          AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA " +
-				  "         LEFT JOIN INFORMATION_SCHEMA.COLUMNS rcd ON kcu.TABLE_SCHEMA = rcd.TABLE_SCHEMA  " +
-				  "                                          AND kcu.REFERENCED_TABLE_NAME = rcd.TABLE_NAME  " +
-				  "                                          AND kcu.REFERENCED_COLUMN_NAME = rcd.COLUMN_NAME " +
-				  "WHERE kcu.TABLE_SCHEMA = ?";
+				  "WHERE kcu.TABLE_SCHEMA = ?" +
+				  "GROUP BY kcu.TABLE_NAME, " +
+				  "         kcu.COLUMN_NAME, " +
+				  "         kcu.REFERENCED_TABLE_NAME, " +
+				  "         kcu.REFERENCED_COLUMN_NAME, " +
+				  "         rc.DELETE_RULE";
 
 		try (Connection connection = dataSource.getConnection();
 			 PreparedStatement statement = connection.prepareStatement(queryString)) {
@@ -77,10 +72,8 @@ public class RecoveryTable implements InitializingBean {
 				metadata.add(TableMetadata.builder()
 					 .tableName(resultSet.getString("table_name"))
 					 .tableKeyName(resultSet.getString("table_key_column_name"))
-					 .tableKeyType(resultSet.getString("table_key_column_type"))
 					 .referenceTableName(resultSet.getString("ref_table_name"))
 					 .referenceColumnName(resultSet.getString("ref_column_name"))
-					 .referenceColumnType(resultSet.getString("ref_column_type"))
 					 .onDelete(resultSet.getInt("on_delete"))
 					 .build());
 			}
@@ -96,29 +89,9 @@ public class RecoveryTable implements InitializingBean {
 				  Collectors.collectingAndThen(
 					   toMap(
 							TableMetadata::getTableName,
-							metadata -> all.stream()
-								 .filter(metadata::equalsToTable)
-								 .map(TableKey::from)
-								 .collect(Collectors.toSet()),
-							(existing, replacement) -> {
-								Set<TableKey> merged = new HashSet<>(existing);
-								merged.addAll(replacement);
-								return Collections.unmodifiableSet(merged);
-							},
-							HashMap::new
-					   ),
-					   Collections::unmodifiableMap
-				  )
-			 );
-
-		dependentTables = all.stream()
-			 .collect(
-				  Collectors.collectingAndThen(
-					   toMap(
-							TableMetadata::getTableName,
 							metadata -> obtainDeleteTables(all, metadata),
 							(existing, replacement) -> {
-								Set<DependentTable> merged = new HashSet<>(existing);
+								Set<Table> merged = new HashSet<>(existing);
 								merged.addAll(replacement);
 								return Collections.unmodifiableSet(merged);
 							},
@@ -130,10 +103,10 @@ public class RecoveryTable implements InitializingBean {
 	}
 
 
-	private Set<DependentTable> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
+	private Set<Table> obtainDeleteTables(List<TableMetadata> metadata, TableMetadata target) {
 		return getReferenceTableAllOnDelete(metadata, target)
 			 .stream()
-			 .map(DependentTable::from)
+			 .map(Table::new)
 			 .collect(Collectors.toSet());
 	}
 
@@ -149,9 +122,9 @@ public class RecoveryTable implements InitializingBean {
 	}
 
 	public Set<String> getDeleteTables(String tableName) {
-		Set<DependentTable> result = dependentTables.getOrDefault(tableName, new HashSet<>());
+		Set<Table> result = tables.getOrDefault(tableName, new HashSet<>());
 		return result.stream()
-			 .map(DependentTable::getTableName)
+			 .map(Table::getTableName)
 			 .collect(Collectors.toSet());
 	}
 

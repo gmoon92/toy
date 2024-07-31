@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.util.StopWatch;
 
 @Slf4j
 public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallback {
@@ -35,12 +36,15 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 	private boolean declaredTransactionalOnTestClass(Class<?> requiredTestClass) {
 		boolean declared = TestContextAnnotationUtils.hasAnnotation(requiredTestClass, Transactional.class) ||
 			 TestContextAnnotationUtils.hasAnnotation(requiredTestClass, jakarta.transaction.Transactional.class);
+		if (declared) {
+			return true;
+		}
 
 		Class<?> superclass = requiredTestClass.getSuperclass();
 		if (superclass != null) {
-			declaredTransactionalOnTestClass(superclass);
+			return declaredTransactionalOnTestClass(superclass);
 		}
-		return declared;
+		return false;
 	}
 
 	private void clearSqlCallStack() {
@@ -59,28 +63,31 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 	 */
 	private void registerRecoveryData(ExtensionContext extensionContext) {
 		boolean activeTransaction = TransactionSynchronizationManager.isSynchronizationActive();
-		if (!activeTransaction) {
-			recovery(extensionContext);
+		if (activeTransaction) {
+			TransactionSynchronizationManager.registerSynchronization(
+				 new TransactionSynchronization() {
+					 @Override
+					 public void afterCompletion(int status) {
+						 TransactionSynchronization.super.afterCompletion(status);
+						 recovery(extensionContext);
+					 }
+				 }
+			);
 			return;
 		}
 
-		TransactionSynchronizationManager.registerSynchronization(
-			 new TransactionSynchronization() {
-				 @Override
-				 public void afterCompletion(int status) {
-					 TransactionSynchronization.super.afterCompletion(status);
-					 recovery(extensionContext);
-				 }
-			 }
-		);
+		recovery(extensionContext);
 	}
 
 	private void recovery(ExtensionContext extensionContext) {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);
 
 		SqlStatementCallStack callStack = LoggingEventListenerProxy.sqlCallStack;
 		dataRecoveryHelper.recovery(callStack);
-		clearSqlCallStack();
+		stopWatch.stop();
+		log.warn("total recovery time ms: " + stopWatch.getTotalTimeMillis());
 	}
 
 	private <T> T obtainBean(ExtensionContext context, Class<T> clazz) {

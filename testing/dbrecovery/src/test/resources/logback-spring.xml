@@ -14,8 +14,10 @@
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
     <logger name="com.gmoon" level="DEBUG"/>
-    <logger name="p6spy" level="DEBUG"/>
+    <logger name="p6spy" level="OFF"/>
     <logger name="MySQL" level="OFF"/>
+    <logger name="com.gmoon.dbrecovery.global.recovery" level="WARN"/>
+
 
     <root level="WARN">
         <appender-ref ref="CONSOLE"/>

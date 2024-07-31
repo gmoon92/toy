@@ -3,7 +3,6 @@ package com.gmoon.dbrecovery.global.recovery.datasource;
 import com.p6spy.engine.common.Loggable;
 import com.p6spy.engine.logging.Category;
 import com.p6spy.engine.logging.LoggingEventListener;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 
@@ -13,7 +12,6 @@ import java.sql.SQLException;
  * @see com.p6spy.engine.logging.P6LogFactory
  * @see com.p6spy.engine.logging.LoggingEventListener
  */
-@Slf4j
 public class LoggingEventListenerProxy extends LoggingEventListener {
 
 	public static final SqlStatementCallStack sqlCallStack = new SqlStatementCallStack(
