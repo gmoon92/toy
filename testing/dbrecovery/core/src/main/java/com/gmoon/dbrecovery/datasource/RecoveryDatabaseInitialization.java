@@ -1,6 +1,5 @@
 package com.gmoon.dbrecovery.datasource;
 
-import com.gmoon.javacore.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -29,7 +28,7 @@ import java.sql.ResultSet;
 public class RecoveryDatabaseInitialization implements InitializingBean {
 
 	private final DataSource dataSource;
-	private final Table recoveryTable;
+	private final Table table;
 	private final RecoveryDatabaseProperties properties;
 
 	@Override
@@ -65,7 +64,7 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 		try (Connection connection = dataSource.getConnection()) {
 			executeQuery(connection, "SET FOREIGN_KEY_CHECKS = 0");
 			executeQuery(connection, String.format("CREATE DATABASE %s", properties.getRecoverySchema()));
-			for (String tableName : recoveryTable.getTableAll()) {
+			for (String tableName : table.getTableAll()) {
 				String sourceTable = properties.getSchema() + "." + tableName;
 				String targetTable = properties.getRecoverySchema() + "." + tableName;
 				executeQuery(connection, String.format("CREATE TABLE %s AS SELECT * FROM %s", targetTable, sourceTable));
@@ -80,10 +79,10 @@ public class RecoveryDatabaseInitialization implements InitializingBean {
 	}
 
 	private void createRecoverySysTable(Connection connection) {
-		String sql = String.format( "CREATE TABLE %s.sys_recover_status (" +
+		String sql = String.format("CREATE TABLE %s (" +
 			 "    status     VARCHAR(10) DEFAULT 'WAIT', " +
 			 "    created_at DATETIME    DEFAULT NOW() " +
-			 ")", properties.getRecoverySchema());
+			 ")", table.getRecoverySystemTableName());
 		executeQuery(connection, sql);
 	}
 

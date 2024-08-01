@@ -24,7 +24,7 @@ public class DataRecoveryExtension implements BeforeEachCallback, AfterEachCallb
 		checkDeclaredTransactionalAnnotation(extensionContext);
 
 		DataRecoveryHelper dataRecoveryHelper = obtainBean(extensionContext, DataRecoveryHelper.class);
-		dataRecoveryHelper.recoveryBrokenTable();
+		dataRecoveryHelper.ready();
 		clearSqlCallStack();
 	}
 

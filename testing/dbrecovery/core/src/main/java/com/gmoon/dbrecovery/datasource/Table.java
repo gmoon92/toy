@@ -27,6 +27,8 @@ import static java.util.stream.Collectors.toMap;
 @ToString
 public class Table implements InitializingBean {
 
+	private static final String SYSTEM_TABLE_NAME = "sys_recover_table";
+
 	private final DataSource dataSource;
 	private final RecoveryDatabaseProperties properties;
 
@@ -124,5 +126,9 @@ public class Table implements InitializingBean {
 
 	public Set<String> getTableAll() {
 		return tables.keySet();
+	}
+
+	public String getRecoverySystemTableName() {
+		return properties.getRecoverySchema() + "." + SYSTEM_TABLE_NAME;
 	}
 }

@@ -27,20 +27,21 @@ public class DataRecoveryHelper {
 	private final Table table;
 	private final RecoveryDatabaseProperties properties;
 
-	public void recoveryBrokenTable() {
+	public void ready() {
 		try (Connection connection = dataSource.getConnection()) {
 			if (existsBrokenRecord(connection)) {
 				recovery(table.getTableAll());
 				return;
 			}
-			wait(connection);
+
+			executeUpdate(connection, String.format("INSERT INTO %s (status) value ('WAIT');", table.getRecoverySystemTableName()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	private boolean existsBrokenRecord(Connection connection) {
-		String sql = String.format("SELECT 1 FROM %s.sys_recover_status LIMIT 1 ", properties.getRecoverySchema());
+		String sql = String.format("SELECT 1 FROM %s LIMIT 1 ", table.getRecoverySystemTableName());
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.execute();
 
@@ -49,11 +50,6 @@ public class DataRecoveryHelper {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public void wait(Connection connection) {
-		String sql = String.format("INSERT INTO %s.sys_recover_status (status) value ('WAIT');", properties.getRecoverySchema());
-		executeUpdate(connection, sql);
 	}
 
 	public void recovery(SqlStatementCallStack callStack) {
@@ -81,8 +77,8 @@ public class DataRecoveryHelper {
 	}
 
 	private void recovery(Collection<String> tableNames) {
-		if (CollectionUtils.isNotEmpty(tableNames)) {
-			try (Connection connection = dataSource.getConnection()) {
+		try (Connection connection = dataSource.getConnection()) {
+			if (CollectionUtils.isNotEmpty(tableNames)) {
 				log.trace("Start data recovery.");
 				executeUpdate(connection, "SET FOREIGN_KEY_CHECKS = 0");
 				executeUpdate(connection, "SET AUTOCOMMIT = 0");
@@ -92,14 +88,15 @@ public class DataRecoveryHelper {
 					recoveryTable(connection, tableName);
 				}
 
-				executeUpdate(connection, String.format("DELETE FROM %s.sys_recover_status", properties.getRecoverySchema()));
 				executeUpdate(connection, "SET FOREIGN_KEY_CHECKS = 1");
 				executeUpdate(connection, "COMMIT");
 				executeUpdate(connection, "SET AUTOCOMMIT = 1");
 				log.trace("Data recovery successful.");
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
 			}
+
+			executeUpdate(connection, String.format("DELETE FROM %s", table.getRecoverySystemTableName()));
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
