@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.gmoon</groupId>
+        <artifactId>testing</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.gmoon</groupId>
+    <artifactId>dbrestore</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>dbrestore</name>
+    <description>dbrestore</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>test</module>
+        <module>web</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <sql-maven-plugin.version>3.0.0</sql-maven-plugin.version>
+        <p6spy.version>3.8.2</p6spy.version>
+        <jsqlparser.version>5.0</jsqlparser.version>
+    </properties>
+</project>
