@@ -22,7 +22,7 @@ import java.util.Stack;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DataRestorationHelper {
+public class DatabaseRestoreHelper {
 
 	private final DataSource dataSource;
 	private final ReferenceTable referenceTable;

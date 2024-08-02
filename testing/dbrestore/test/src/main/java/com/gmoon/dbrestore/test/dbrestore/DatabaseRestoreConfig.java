@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableConfigurationProperties(DatabaseRestoreProperties.class)
 @RequiredArgsConstructor
-public class DatabaseRestorationConfig {
+public class DatabaseRestoreConfig {
 
 	@Bean
 	public ReferenceTable referenceTable(
@@ -24,12 +24,12 @@ public class DatabaseRestorationConfig {
 	}
 
 	@Bean
-	public DataRestorationHelper databaseRestorationHelper(
+	public DatabaseRestoreHelper databaseRestorationHelper(
 		 DataSource dataSource,
 		 ReferenceTable referenceTable,
 		 DatabaseRestoreProperties properties
 	) {
-		return new DataRestorationHelper(dataSource, referenceTable, properties);
+		return new DatabaseRestoreHelper(dataSource, referenceTable, properties);
 	}
 
 	@Bean

@@ -15,35 +15,40 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StopWatch;
 
+import java.lang.reflect.Method;
+
 @Slf4j
-public class DatabaseRestoreExtension implements BeforeEachCallback, AfterEachCallback {
+public class DatabaseRestoreJunitExtension implements BeforeEachCallback, AfterEachCallback {
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
-		checkDeclaredTransactionalAnnotation(context);
+		validateNoTransactionalAnnotation(context);
 
-		DataRestorationHelper helper = obtainBean(context, DataRestorationHelper.class);
+		DatabaseRestoreHelper helper = obtainBean(context, DatabaseRestoreHelper.class);
 		helper.snapshot(LoggingEventListenerProxy.sqlCallStack);
 	}
 
-	private void checkDeclaredTransactionalAnnotation(ExtensionContext context) {
-		if (declaredTransactionalOnTestClass(context.getRequiredTestClass()) ||
-			 AnnotatedElementUtils.hasAnnotation(context.getRequiredTestMethod(), Transactional.class) ||
-			 AnnotatedElementUtils.hasAnnotation(context.getRequiredTestMethod(), jakarta.transaction.Transactional.class)) {
+	private void validateNoTransactionalAnnotation(ExtensionContext context) {
+		if (hasTransactionAnnotation(context)) {
 			Assertions.fail("Declared @Transactional or @jakarta.transaction.Transactional annotation.");
 		}
 	}
 
-	private boolean declaredTransactionalOnTestClass(Class<?> requiredTestClass) {
-		boolean declared = TestContextAnnotationUtils.hasAnnotation(requiredTestClass, Transactional.class) ||
-			 TestContextAnnotationUtils.hasAnnotation(requiredTestClass, jakarta.transaction.Transactional.class);
-		if (declared) {
+	private boolean hasTransactionAnnotation(ExtensionContext context) {
+		Method testMethod = context.getRequiredTestMethod();
+		if (AnnotatedElementUtils.hasAnnotation(testMethod, Transactional.class) ||
+			 AnnotatedElementUtils.hasAnnotation(testMethod, jakarta.transaction.Transactional.class)) {
 			return true;
 		}
 
-		Class<?> superclass = requiredTestClass.getSuperclass();
-		if (superclass != null) {
-			return declaredTransactionalOnTestClass(superclass);
+
+		Class<?> testClass = context.getRequiredTestClass();
+		while (testClass != null) {
+			if (TestContextAnnotationUtils.hasAnnotation(testClass, Transactional.class) ||
+				 TestContextAnnotationUtils.hasAnnotation(testClass, jakarta.transaction.Transactional.class)) {
+				return true;
+			}
+			testClass = testClass.getSuperclass();
 		}
 		return false;
 	}
@@ -70,7 +75,7 @@ public class DatabaseRestoreExtension implements BeforeEachCallback, AfterEachCa
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		DataRestorationHelper helper = obtainBean(context, DataRestorationHelper.class);
+		DatabaseRestoreHelper helper = obtainBean(context, DatabaseRestoreHelper.class);
 		helper.restore(LoggingEventListenerProxy.sqlCallStack);
 
 		stopWatch.stop();
