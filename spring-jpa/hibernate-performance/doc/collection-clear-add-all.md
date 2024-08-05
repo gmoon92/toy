@@ -9,7 +9,7 @@
 `insertable = false, updatable = false` 추가
 
 ```text
-Caused by: org.hibernate.MappingException: Repeated column in mapping for entity: com.gmoon.demo.team.domain.TeamMember column: member_id (should be mapped with insert="false" update="false")
+Caused by: org.hibernate.MappingException: Repeated column in mapping for entity: com.gmoon.hibernateperformance.team.domain.TeamMember column: member_id (should be mapped with insert="false" update="false")
 	at org.hibernate.mapping.PersistentClass.checkColumnDuplication(PersistentClass.java:862)
 	at org.hibernate.mapping.PersistentClass.checkPropertyColumnDuplication(PersistentClass.java:880)
 	at org.hibernate.mapping.PersistentClass.checkColumnDuplication(PersistentClass.java:902)
@@ -50,12 +50,29 @@ javax.persistence.EntityExistsException: A different object with the same identi
 Embedded 객체에 ID 값이 없는 도메인일 경우 발생
 
 ```java
-Caused by: org.hibernate.TransientPropertyValueException: Not-null property references a transient value - transient instance must be saved before current operation : com.gmoon.demo.team.domain.TeamMember.member -> com.gmoon.demo.member.domain.Member
-	at org.hibernate.action.internal.UnresolvedEntityInsertActions.checkNoUnresolvedActionsAfterOperation(UnresolvedEntityInsertActions.java:122)
-	at org.hibernate.engine.spi.ActionQueue.checkNoUnresolvedActionsAfterOperation(ActionQueue.java:436)
-	at org.hibernate.internal.SessionImpl.checkNoUnresolvedActionsAfterOperation(SessionImpl.java:587)
-	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:730)
-	... 92 more
+Caused by:org.hibernate.TransientPropertyValueException:Not-null
+property references
+a transient value -
+transient instance must
+be saved
+before current
+operation :com.gmoon.hibernateperformance.team.domain.TeamMember.member ->com.gmoon.hibernateperformance.member.domain.Member
+at org.hibernate.action.internal.UnresolvedEntityInsertActions.
+
+checkNoUnresolvedActionsAfterOperation(UnresolvedEntityInsertActions.java:122)
+
+at org.hibernate.engine.spi.ActionQueue.
+
+checkNoUnresolvedActionsAfterOperation(ActionQueue.java:436)
+
+at org.hibernate.internal.SessionImpl.
+
+checkNoUnresolvedActionsAfterOperation(SessionImpl.java:587)
+
+at org.hibernate.internal.SessionImpl.
+
+firePersist(SessionImpl.java:730)
+	...92more
 ```
 
 ### NULL not allowed for column
@@ -63,7 +80,7 @@ Caused by: org.hibernate.TransientPropertyValueException: Not-null property refe
 
 ```java
 Caused by: org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: NULL not allowed for column "TEAM_ID"; SQL statement:
-/* insert com.gmoon.demo.team.domain.TeamMember */ insert into team_member (member_id, team_id) values (?, ?) [23502-200]
+/* insert com.gmoon.hibernateperformance.team.domain.TeamMember */ insert into team_member (member_id, team_id) values (?, ?) [23502-200]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:459)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
 	at org.h2.message.DbException.get(DbException.java:205)
@@ -108,7 +125,7 @@ class TeamRepositoryTest {
 @Transactional 추가로 해결
 
 ```text
-org.springframework.dao.InvalidDataAccessApiUsageException: detached entity passed to persist: com.gmoon.demo.member.domain.Member; nested exception is org.hibernate.PersistentObjectException: detached entity passed to persist: com.gmoon.demo.member.domain.Member
+org.springframework.dao.InvalidDataAccessApiUsageException: detached entity passed to persist: com.gmoon.hibernateperformance.member.domain.Member; nested exception is org.hibernate.PersistentObjectException: detached entity passed to persist: com.gmoon.hibernateperformance.member.domain.Member
 ```
 
 - https://delf-lee.github.io/post/detached-entity-passed-to-persist-error/

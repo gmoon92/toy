@@ -19,7 +19,7 @@
             <AppenderRef ref="Console"/>
         </Logger>
 
-        <Logger name="com.gmoon.demo.repository" level="trace" additivity="false">
+        <Logger name="com.gmoon.hibernateperformance.repository" level="trace" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
 
