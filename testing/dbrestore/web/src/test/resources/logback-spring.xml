@@ -13,13 +13,15 @@
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
-    <logger name="MySQL" level="WARN"/>
-    <logger name="p6spy" level="TRACE"/>
+    <logger name="MySQL" level="OFF"/>
+    <logger name="p6spy" level="DEBUG"/>
 
-    <logger name="com.gmoon" level="WARN"/>
+    <logger name="com.gmoon" level="DEBUG"/>
     <logger name="com.gmoon.dbrestore.test" level="TRACE"/>
+    <logger name="com.gmoon.dbrestore.test.dbrestore.datasource.SqlParser" level="WARN"/>
 
     <root level="WARN">
+
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.stream.IntStream;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,19 +35,13 @@ public class LogService {
 	public void issueCoupon(IssueCoupon issueCoupon) {
 		log.info("issue coupon: {}", issueCoupon);
 
-		// async test db restore
-		processingVerySlow();
-
 		Long couponId = issueCoupon.getCouponId();
 		Coupon coupon = couponRepository.get(couponId);
-		couponLogRepository.save(CouponLog.from(coupon));
-	}
 
-	private void processingVerySlow() {
-		try {
-			Thread.sleep(10_000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		// Asynchronous testing of very long processes.
+		IntStream.range(0, 1000)
+			 .peek(i -> log.info("coupon #{} issued", i))
+			 .mapToObj(i -> CouponLog.from(coupon))
+			 .forEach(couponLogRepository::save);
 	}
 }
