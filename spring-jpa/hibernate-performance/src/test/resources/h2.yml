@@ -1,0 +1,27 @@
+##### spring hikariCP datasource config
+spring:
+  datasource:
+    hikari:
+#      jdbc-url: jdbc:h2:tcp://localhost:9092/~/testdb
+      jdbc-url: jdbc:h2:mem:testdb
+      driver-class-name: org.h2.Driver
+      username: sa
+      password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create-drop
+        #        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+#        format_sql: true
+        format_sql: false
+        use_sql_comments: true
+
+logging:
+  config: src/main/resources/log4j2.xml
+  level:
+    "[com.gmoon]": trace
+    "[org.hibernate.type.descriptor.sql]": trace

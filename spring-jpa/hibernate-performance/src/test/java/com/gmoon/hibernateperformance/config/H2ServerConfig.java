@@ -1,10 +1,11 @@
-package com.gmoon.hibernateperformance.global.config;
+package com.gmoon.hibernateperformance.config;
 
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
 import org.h2.tools.Server;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ConditionalOnProperty(value = "service.datasource.platform", havingValue = "h2")
 @Configuration
 public class H2ServerConfig {
 

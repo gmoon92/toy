@@ -3,20 +3,22 @@ package com.gmoon.hibernateperformance.global.base;
 import org.junit.jupiter.api.AfterEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestConstructor;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import com.gmoon.hibernateperformance.global.config.QueryDslConfig;
+import com.gmoon.hibernateperformance.global.config.JpaConfig;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @DataJpaTest
-@Import(QueryDslConfig.class)
+@Import(JpaConfig.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class BaseRepositoryTest {
 
 	protected static Logger log = LoggerFactory.getLogger(BaseRepositoryTest.class);
