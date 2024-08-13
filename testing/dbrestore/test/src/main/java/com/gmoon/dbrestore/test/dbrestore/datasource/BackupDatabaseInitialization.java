@@ -53,8 +53,9 @@ public class BackupDatabaseInitialization implements InitializingBean {
 			statement.setString(1, properties.getBackupSchema());
 			statement.execute();
 
-			ResultSet resultSet = statement.getResultSet();
-			return resultSet.next();
+			try (ResultSet resultSet = statement.getResultSet()) {
+				return resultSet.next();
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

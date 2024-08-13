@@ -65,19 +65,20 @@ public class ReferenceTable implements InitializingBean {
 			statement.setString(1, properties.getSchema());
 			statement.execute();
 
-			ResultSet resultSet = statement.getResultSet();
-			List<TableMetadata> metadata = new ArrayList<>();
-			while (resultSet.next()) {
-				metadata.add(TableMetadata.builder()
-					 .tableName(resultSet.getString("table_name"))
-					 .tableKeyName(resultSet.getString("table_key_column_name"))
-					 .referenceTableName(resultSet.getString("ref_table_name"))
-					 .referenceColumnName(resultSet.getString("ref_column_name"))
-					 .onDelete(resultSet.getInt("on_delete"))
-					 .build());
+			try (ResultSet resultSet = statement.getResultSet()) {
+				List<TableMetadata> metadata = new ArrayList<>();
+				while (resultSet.next()) {
+					metadata.add(TableMetadata.builder()
+						 .tableName(resultSet.getString("table_name"))
+						 .tableKeyName(resultSet.getString("table_key_column_name"))
+						 .referenceTableName(resultSet.getString("ref_table_name"))
+						 .referenceColumnName(resultSet.getString("ref_column_name"))
+						 .onDelete(resultSet.getInt("on_delete"))
+						 .build());
+				}
+				return metadata;
 			}
-			return metadata;
-		} catch (Exception e) {
+        } catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

@@ -48,10 +48,10 @@ public class DatabaseRestoreHelper {
 		String sql = String.format("SELECT 1 FROM %s LIMIT 1 ", referenceTable.getSystemTableName());
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.execute();
-
-			ResultSet resultSet = statement.getResultSet();
-			return resultSet.next();
-		} catch (Exception e) {
+			try (ResultSet resultSet = statement.getResultSet()) {
+				return resultSet.next();
+			}
+        } catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
