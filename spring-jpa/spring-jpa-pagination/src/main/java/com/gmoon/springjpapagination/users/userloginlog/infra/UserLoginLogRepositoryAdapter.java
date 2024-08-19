@@ -116,8 +116,7 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 				 .orAllOf(
 					  userLoginLog.attemptDt.eq(attemptDt),
 					  userLoginLog.id.lt(id)
-				 )
-				 .and(userLoginLog.succeed.isTrue());
+				 );
 		}
 
 		throw new RuntimeException("must be specify the order of cursor data.");
