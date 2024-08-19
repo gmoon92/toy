@@ -1,12 +1,7 @@
 package com.gmoon.dbrestore.test.dbrestore.datasource;
 
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
+import static java.util.stream.Collectors.toMap;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,8 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toMap;
+import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -41,7 +40,7 @@ public class ReferenceTable implements InitializingBean {
 	}
 
 	private List<TableMetadata> getTableMetadata() {
-		String sql =
+		String sql = String.format(
 			 "SELECT kcu.TABLE_NAME             AS table_name, " +
 				  "  kcu.COLUMN_NAME            AS table_key_column_name, " +
 				  "  kcu.REFERENCED_TABLE_NAME  AS ref_table_name, " +
@@ -51,34 +50,34 @@ public class ReferenceTable implements InitializingBean {
 				  "      ELSE 0 " +
 				  "      END                    AS on_delete " +
 				  "FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu " +
-				  "         LEFT JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME  " +
+				  "         LEFT JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME  "
+				  +
 				  "                                          AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA " +
-				  "WHERE kcu.TABLE_SCHEMA = ?" +
+				  "WHERE kcu.TABLE_SCHEMA = '%s' " +
 				  "GROUP BY kcu.TABLE_NAME, " +
 				  "         kcu.COLUMN_NAME, " +
 				  "         kcu.REFERENCED_TABLE_NAME, " +
 				  "         kcu.REFERENCED_COLUMN_NAME, " +
-				  "         rc.DELETE_RULE";
+				  "         rc.DELETE_RULE", properties.getSchema()
+		);
 
-		try (Connection connection = dataSource.getConnection();
-			 PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, properties.getSchema());
-			statement.execute();
-
-			try (ResultSet resultSet = statement.getResultSet()) {
-				List<TableMetadata> metadata = new ArrayList<>();
-				while (resultSet.next()) {
-					metadata.add(TableMetadata.builder()
-						 .tableName(resultSet.getString("table_name"))
-						 .tableKeyName(resultSet.getString("table_key_column_name"))
-						 .referenceTableName(resultSet.getString("ref_table_name"))
-						 .referenceColumnName(resultSet.getString("ref_column_name"))
-						 .onDelete(resultSet.getInt("on_delete"))
-						 .build());
-				}
-				return metadata;
+		try (
+			 Connection connection = dataSource.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(sql);
+			 ResultSet resultSet = statement.executeQuery()
+		) {
+			List<TableMetadata> metadata = new ArrayList<>();
+			while (resultSet.next()) {
+				metadata.add(TableMetadata.builder()
+					 .tableName(resultSet.getString("table_name"))
+					 .tableKeyName(resultSet.getString("table_key_column_name"))
+					 .referenceTableName(resultSet.getString("ref_table_name"))
+					 .referenceColumnName(resultSet.getString("ref_column_name"))
+					 .onDelete(resultSet.getInt("on_delete"))
+					 .build());
 			}
-        } catch (Exception e) {
+			return metadata;
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

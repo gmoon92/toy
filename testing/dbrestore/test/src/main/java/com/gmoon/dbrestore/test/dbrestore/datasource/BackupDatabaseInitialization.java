@@ -44,18 +44,16 @@ public class BackupDatabaseInitialization implements InitializingBean {
 	}
 
 	private boolean existsBackupSchema() {
-		String sql = "SELECT SCHEMA_NAME "
+		String sql = String.format("SELECT SCHEMA_NAME "
 			 + "FROM INFORMATION_SCHEMA.SCHEMATA "
-			 + "WHERE SCHEMA_NAME = ? ";
+			 + "WHERE SCHEMA_NAME = '%s' ", properties.getBackupSchema());
 
-		try (Connection connection = dataSource.getConnection();
-			 PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, properties.getBackupSchema());
-			statement.execute();
-
-			try (ResultSet resultSet = statement.getResultSet()) {
-				return resultSet.next();
-			}
+		try (
+			 Connection connection = dataSource.getConnection();
+			 PreparedStatement statement = connection.prepareStatement(sql);
+			 ResultSet resultSet = statement.executeQuery()
+		) {
+			return resultSet.next();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

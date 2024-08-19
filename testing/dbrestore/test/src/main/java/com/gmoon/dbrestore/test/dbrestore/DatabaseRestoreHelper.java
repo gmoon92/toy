@@ -5,13 +5,6 @@ import com.gmoon.dbrestore.test.dbrestore.datasource.ReferenceTable;
 import com.gmoon.dbrestore.test.dbrestore.datasource.SqlParser;
 import com.gmoon.dbrestore.test.dbrestore.datasource.event.SqlStatementCallStack;
 import com.gmoon.javacore.util.CollectionUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.delete.Delete;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +12,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.delete.Delete;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,23 +34,24 @@ public class DatabaseRestoreHelper {
 				restore(allTables);
 			}
 
-			executeUpdate(connection, String.format("INSERT INTO %s (status) value ('WAIT');", referenceTable.getSystemTableName()));
+			executeUpdate(
+				 connection,
+				 String.format("INSERT INTO %s (status) value ('WAIT');", referenceTable.getSystemTableName()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
 			sqlCallStack.clear();
 		}
-
 	}
 
 	private boolean isBrokenTablePresent(Connection connection) {
 		String sql = String.format("SELECT 1 FROM %s LIMIT 1 ", referenceTable.getSystemTableName());
-		try (PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.execute();
-			try (ResultSet resultSet = statement.getResultSet()) {
-				return resultSet.next();
-			}
-        } catch (Exception e) {
+		try (
+			 PreparedStatement statement = connection.prepareStatement(sql);
+			 ResultSet resultSet = statement.executeQuery()
+		) {
+			return resultSet.next();
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
