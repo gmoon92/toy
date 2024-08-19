@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-public class ByteBuddyTest {
+class ByteBuddyTest {
 
 	@Test
 	void intercept() {
