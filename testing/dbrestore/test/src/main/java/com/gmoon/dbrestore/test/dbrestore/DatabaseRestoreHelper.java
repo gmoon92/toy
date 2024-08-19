@@ -8,6 +8,7 @@ import com.gmoon.javacore.util.CollectionUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
+import org.springframework.dao.DataAccessResourceFailureException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,8 +39,8 @@ public class DatabaseRestoreHelper {
 			executeUpdate(
 				 connection,
 				 String.format("INSERT INTO %s (status) value ('WAIT');", referenceTable.getSystemTableName()));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (SQLException e) {
+			throw new DataAccessResourceFailureException("Snapshot failed.", e);
 		} finally {
 			sqlCallStack.clear();
 		}
@@ -52,7 +54,7 @@ public class DatabaseRestoreHelper {
 		) {
 			return resultSet.next();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new DataAccessResourceFailureException("Broken table existence SQL statement is invalid.", e);
 		}
 	}
 
@@ -100,8 +102,8 @@ public class DatabaseRestoreHelper {
 			}
 
 			executeUpdate(connection, String.format("DELETE FROM %s", referenceTable.getSystemTableName()));
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+		} catch (Exception e) {
+			throw new DataAccessResourceFailureException("The restore SQL statement is invalid.", e);
 		}
 	}
 
@@ -122,7 +124,7 @@ public class DatabaseRestoreHelper {
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.executeUpdate();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new DataAccessResourceFailureException("The SQL statement is invalid.", e);
 		}
 	}
 }

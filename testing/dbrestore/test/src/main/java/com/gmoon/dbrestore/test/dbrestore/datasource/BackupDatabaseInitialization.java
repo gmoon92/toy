@@ -1,5 +1,6 @@
 package com.gmoon.dbrestore.test.dbrestore.datasource;
 
+import java.sql.SQLException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,11 +12,14 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.UncategorizedDataAccessException;
 
 /**
  * <pre>
- * DB 초기화 이후 빈 주입을 위해, @DependsOnDatabaseInitialization 사용
- * @DependsOn 는 type safe 하지 않음.
+ * DB 초기화 이후 빈 주입을 위해, <coe>@DependsOnDatabaseInitialization</coe> 사용
+ * <code>@DependsOn</code> 는 type safe 하지 않음.
  * </pre>
  *
  * @link https://discourse.hibernate.org/t/get-table-name-in-hibernate-6-2/8601
@@ -32,7 +36,7 @@ public class BackupDatabaseInitialization implements InitializingBean {
 	private final DatabaseRestoreProperties properties;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		if (existsBackupSchema()) {
 			return;
 		}
@@ -54,8 +58,8 @@ public class BackupDatabaseInitialization implements InitializingBean {
 			 ResultSet resultSet = statement.executeQuery()
 		) {
 			return resultSet.next();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (SQLException e) {
+			throw new DataAccessResourceFailureException("The existence of a backup schema is unknown.", e);
 		}
 	}
 
@@ -72,8 +76,8 @@ public class BackupDatabaseInitialization implements InitializingBean {
 
 			createSystemTable(connection);
 			executeUpdate(connection, "SET FOREIGN_KEY_CHECKS = 1");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (SQLException e) {
+			throw new DataAccessResourceFailureException("Backup schema cannot be created.", e);
 		}
 	}
 
@@ -89,8 +93,8 @@ public class BackupDatabaseInitialization implements InitializingBean {
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			int result = statement.executeUpdate();
 			log.trace("[EXECUTE][{}]: {}", result, sql);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (SQLException e) {
+			throw new DataAccessResourceFailureException("The SQL statement is invalid.", e);
 		}
 	}
 }
