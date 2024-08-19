@@ -1,5 +1,6 @@
 package com.gmoon.hibernateperformance.global.base;
 
+import com.gmoon.hibernateperformance.global.config.QueryDslConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,13 +11,11 @@ import org.springframework.test.context.TestConstructor;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import com.gmoon.hibernateperformance.global.config.JpaConfig;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @DataJpaTest
-@Import(JpaConfig.class)
+@Import(QueryDslConfig.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class BaseRepositoryTest {
