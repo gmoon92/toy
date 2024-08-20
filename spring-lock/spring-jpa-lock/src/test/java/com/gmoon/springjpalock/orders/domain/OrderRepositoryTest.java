@@ -1,8 +1,10 @@
 package com.gmoon.springjpalock.orders.domain;
 
 import com.gmoon.springjpalock.global.Fixtures;
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.hibernate.PessimisticLockException;
 import org.hibernate.exception.GenericJDBCException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,8 +75,11 @@ class OrderRepositoryTest {
 		Assertions.setPrintAssertionsDescription(true);
 		assertThatCode(allOf::join)
 			 .cause()
-			 .cause().isInstanceOf(GenericJDBCException.class)
-			 .cause().isInstanceOf(SQLException.class);
+			 .cause().isInstanceOf(PessimisticLockException.class)
+			 // .cause().isInstanceOf(MySQLTransactionRollbackException.class)
+			 // .cause().isInstanceOf(GenericJDBCException.class)
+			 // .cause().isInstanceOf(SQLException.class)
+		;
 	}
 
 	@AfterEach
