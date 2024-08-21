@@ -1,21 +1,22 @@
 package com.gmoon.resourceserver.cors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import com.gmoon.javacore.util.StringUtils;
 import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.gmoon.javacore.util.StringUtils;
-
+@Transactional
 @SpringBootTest
 class CorsOriginServiceTest {
+
 	@Autowired
-	CorsOriginService service;
+	private CorsOriginService service;
 
 	@Test
 	@DisplayName("CORS 필터에서 체크할 origin 정규식을 반환한다.")
