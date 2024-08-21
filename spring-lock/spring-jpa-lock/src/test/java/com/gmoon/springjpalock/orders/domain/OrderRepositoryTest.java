@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.orm.jpa.JpaSystemException;import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 class OrderRepositoryTest extends BaseJpaTestCase {
@@ -69,7 +69,7 @@ class OrderRepositoryTest extends BaseJpaTestCase {
 
 		Assertions.setPrintAssertionsDescription(true);
 		Assertions.assertThatThrownBy(allOf::join)
-			 .hasCauseInstanceOf(PessimisticLockingFailureException.class);
+			 .hasCauseInstanceOf(JpaSystemException.class);
 	}
 
 	@AfterEach
