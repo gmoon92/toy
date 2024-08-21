@@ -45,3 +45,12 @@ services:
     volumes:
       - "${TMPDIR-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+  ## https://hub.docker.com/r/hazelcast/hazelcast/tags
+  ## https://docs.hazelcast.com/hazelcast/5.2/getting-started/get-started-docker
+  ## http://localhost:38080/mancenter
+  hazelcast-manager:
+#    image: hazelcast/management-center:3.9.4
+    image: hazelcast/hazelcast:latest-jdk17
+    ports:
+      - "38080:8080"

@@ -1,7 +1,0 @@
-services:
-  rabbitmq:
-    container_name: gmoon-spring-integration-amqp
-    image: rabbitmq:management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
