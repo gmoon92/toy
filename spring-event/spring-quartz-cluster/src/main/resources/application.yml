@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/quartz?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
     username: root
-    password: root
+    password: 111111
     hikari:
       pool-name: gmoon-pool
 

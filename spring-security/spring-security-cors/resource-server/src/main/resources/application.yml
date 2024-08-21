@@ -10,9 +10,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cors?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/cors?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
     username: root
-    password: root
+    password: 111111
 
   jpa:
     open-in-view: false
