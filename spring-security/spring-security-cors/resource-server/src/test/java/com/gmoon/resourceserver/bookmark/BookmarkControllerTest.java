@@ -1,34 +1,28 @@
 package com.gmoon.resourceserver.bookmark;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.gmoon.resourceserver.test.BaseIntegrationTest;
 import java.time.LocalDateTime;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.gmoon.resourceserver.test.BaseIntegrationTest;
-
 class BookmarkControllerTest extends BaseIntegrationTest {
-	private String bookmarkName;
-
-	@BeforeEach
-	void setUp() {
-		bookmarkName = "gmoon92.github.io";
-		setupMockMvc();
-	}
+	private final String bookmarkName = "gmoon92.github.io";
 
 	@Test
 	@DisplayName("지정된 이름으로 북마크를 찾는다")
 	void testGet() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(get("/bookmark/" + bookmarkName)
-			 .header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
+			 .header(HttpHeaders.AUTHORIZATION, jwt)
 			 .accept(MediaType.APPLICATION_JSON));
 
 		// then
@@ -44,7 +38,7 @@ class BookmarkControllerTest extends BaseIntegrationTest {
 
 		// when
 		ResultActions result = mockMvc.perform(post("/bookmark/" + bookmarkName)
-			 .header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
+			 .header(HttpHeaders.AUTHORIZATION, jwt)
 			 .accept(MediaType.APPLICATION_JSON));
 
 		// then
@@ -57,7 +51,7 @@ class BookmarkControllerTest extends BaseIntegrationTest {
 	void testRemove() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(delete("/bookmark/" + bookmarkName)
-			 .header(HttpHeaders.AUTHORIZATION, TOKEN_OF_ADMIN)
+			 .header(HttpHeaders.AUTHORIZATION, jwt)
 			 .accept(MediaType.APPLICATION_JSON));
 
 		// then

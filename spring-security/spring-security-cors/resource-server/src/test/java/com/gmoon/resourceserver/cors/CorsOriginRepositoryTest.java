@@ -24,8 +24,6 @@ class CorsOriginRepositoryTest {
 	void getAllHost() {
 		List<String> hosts = repository.getAllHost();
 
-		log.error("hosts: {}", hosts);
-		log.info("hosts: {}", hosts);
 		assertThat(hosts).contains("localhost", "127.0.0.1", "gmoon92.github.io");
 	}
 }
