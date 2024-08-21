@@ -1,11 +1,7 @@
 package com.gmoon.hibernateperformance.applyform;
 
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.transaction.annotation.Transactional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.gmoon.hibernateperformance.applyform.domain.ApplyForm;
 import com.gmoon.hibernateperformance.applyform.domain.ApplyFormRepository;
@@ -14,80 +10,61 @@ import com.gmoon.hibernateperformance.member.domain.Member;
 import com.gmoon.hibernateperformance.member.domain.MemberRepository;
 import com.gmoon.hibernateperformance.team.domain.Team;
 import com.gmoon.hibernateperformance.team.domain.TeamRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @RequiredArgsConstructor
 class ApplyFormRepositoryTest extends BaseRepositoryTest {
 
-	final ApplyFormRepository applyFormRepository;
-	final MemberRepository memberRepository;
-	final TeamRepository teamRepository;
+	private final ApplyFormRepository applyFormRepository;
+	private final MemberRepository memberRepository;
+	private final TeamRepository teamRepository;
 
-	Member member;
-	Team team;
+	private Member member;
+	private Team team;
 
-	@Test
-	@DisplayName("저장 테스트")
-	void save() {
-		// given
-		team = teamRepository.save(Team.newInstance("web1"));
-		member = memberRepository.save(Member.newInstance("gmoon"));
+	@BeforeEach
+	void setUp() {
+		team = teamRepository.saveAndFlush(Team.newInstance("web1"));
+		member = memberRepository.saveAndFlush(Member.newInstance("gmoon"));
 
-		// when
 		ApplyForm newApplyForm = ApplyForm.newInstance(member, team);
 		newApplyForm.fillOut("title", "content");
-		ApplyForm applyForm = applyFormRepository.save(newApplyForm);
 
-		// then
+		ApplyForm applyForm = applyFormRepository.saveAndFlush(newApplyForm);
 		assertThat(applyForm)
 			 .hasNoNullFieldsOrPropertiesExcept("id")
 			 .hasFieldOrPropertyWithValue("title", "title")
 			 .hasFieldOrPropertyWithValue("content", "content");
+
+		flushAndClear();
 	}
 
-	@Test
-	@Transactional
 	@DisplayName("업데이트 테스트")
-	void update() {
-		// given
-		save();
-
-		// when
+	@Test
+	void updateApplyForm() {
 		ApplyForm applyForm = applyFormRepository.findByMemberAndTeam(member, team);
 
-		// then
 		applyForm.fillOut("title1", "content");
+
+		assertThatCode(this::flushAndClear).doesNotThrowAnyException();
 	}
 
-	@Test
 	@DisplayName("양방향 설정, CaseCade remove delete query 발생하는지")
-	void delete_when_member_delete_after_apply_form_delete() {
-		// given
-		save();
-
-		// when
-		flushAndClear();
-
-		// then
+	@Test
+	void deleteMember() {
 		memberRepository.delete(member);
+
+		assertThatCode(this::flushAndClear).doesNotThrowAnyException();
 	}
 
-	@Test
 	@DisplayName("양방향 설정, CaseCade remove delete query 발생하는지")
-	void delete_when_team_delete_after_apply_form_delete() {
-		// given
-		save();
-
-		// when
-		flushAndClear();
-
-		// then
+	@Test
+	void deleteTeam() {
 		teamRepository.delete(team);
-	}
 
-	@AfterEach
-	void tearDown() {
-		flushAndClear();
+		assertThatCode(this::flushAndClear).doesNotThrowAnyException();
 	}
 }

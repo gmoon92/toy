@@ -1,27 +1,26 @@
 package com.gmoon.hibernateperformance.member.application;
 
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gmoon.hibernateperformance.member.domain.Member;
 import com.gmoon.hibernateperformance.member.domain.MemberRepository;
 import com.gmoon.hibernateperformance.member.model.MemberOptionUpdateRequestVO;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestConstructor;
 
 @SpringBootTest
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 class MemberServiceTest {
 
-	final MemberService memberService;
-	final MemberRepository memberRepository;
-	Long memberId;
+	private final MemberService memberService;
+	private final MemberRepository memberRepository;
+
+	private Long memberId;
 
 	@BeforeEach
 	void setUp() {

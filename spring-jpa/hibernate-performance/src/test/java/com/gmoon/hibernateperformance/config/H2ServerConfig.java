@@ -1,18 +1,14 @@
 package com.gmoon.hibernateperformance.config;
 
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
+import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.Server;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.zaxxer.hikari.HikariDataSource;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ConditionalOnProperty(value = "service.datasource.platform", havingValue = "h2")
@@ -36,5 +32,4 @@ public class H2ServerConfig {
 		h2TcpServer();
 		return new HikariDataSource();
 	}
-
 }

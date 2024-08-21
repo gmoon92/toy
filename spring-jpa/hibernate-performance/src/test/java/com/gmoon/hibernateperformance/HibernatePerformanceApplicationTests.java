@@ -9,5 +9,4 @@ class HibernatePerformanceApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

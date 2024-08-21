@@ -3,7 +3,6 @@ package com.gmoon.hibernateperformance.applyform.domain;
 import com.gmoon.hibernateperformance.global.base.EntityId;
 import com.gmoon.hibernateperformance.member.domain.Member;
 import com.gmoon.hibernateperformance.team.domain.Team;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
@@ -70,7 +69,7 @@ public class ApplyForm {
 
 	@Embeddable
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
-	@EqualsAndHashCode
+	@EqualsAndHashCode(callSuper = false)
 	static class Id extends EntityId {
 
 		private static final long serialVersionUID = -4188030215536759764L;
