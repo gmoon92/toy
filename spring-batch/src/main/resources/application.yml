@@ -17,4 +17,4 @@ spring:
     init:
       mode: always
 
-"[logging.level.MySQL]": debug
+"[logging.level.MySQL]": OFF

@@ -17,9 +17,9 @@ spring:
     properties:
       hibernate:
         "[hbm2ddl.auto]": create-drop
-        show-sql: *show-sql
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
         globally_quoted_identifiers: true
 
   sql:
@@ -33,3 +33,4 @@ spring:
     database:
       replace: none
 
+"[logging.level.MySQL]": OFF

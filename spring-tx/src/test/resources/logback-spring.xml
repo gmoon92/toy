@@ -21,7 +21,7 @@
 
     <logger name="org.hibernate.type.descriptor.sql" level="OFF" />
 <!--    <logger name="org.springframework.transaction.support.TransactionSynchronizationUtils" level="DEBUG" />-->
-    <logger name="MySQL" level="DEBUG" />
+    <logger name="MySQL" level="OFF" />
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

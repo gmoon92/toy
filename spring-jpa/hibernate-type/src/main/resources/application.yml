@@ -18,9 +18,9 @@ spring:
         "[id.new_generator_mappings]": false
         "[jdbc.time_zone]": UTC
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-        show-sql: *show-sql
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
 
   sql:
     init:
@@ -30,3 +30,4 @@ spring:
 logging:
   level:
     "[org.hibernate.type.descriptor.sql]": trace
+    "[MySQL]": OFF

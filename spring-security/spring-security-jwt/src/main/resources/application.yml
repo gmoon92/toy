@@ -15,9 +15,9 @@ spring:
         #        dialect: org.hibernate.dialect.H2Dialect
         "[hbm2ddl.auto]": create-drop
         "[jdbc.time_zone]": UTC
-        show-sql: *show-sql
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
 
 logging:
   level:

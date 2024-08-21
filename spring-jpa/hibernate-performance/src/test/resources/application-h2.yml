@@ -9,7 +9,7 @@ spring:
       password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
+    show-sql: &show-sql true
     generate-ddl: true
     properties:
       hibernate:

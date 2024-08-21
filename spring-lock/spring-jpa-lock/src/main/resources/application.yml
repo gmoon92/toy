@@ -21,7 +21,7 @@ spring:
 #        "[hbm2ddl.auto]": create-drop
         #      "[hbm2ddl.auto]": create-drop
 #        globally_quoted_identifiers: true
-        show_sql: *show-sql
+#        show_sql: *show-sql
         #        use_sql_comments: *show-sql
         #        format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect

@@ -32,7 +32,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     open-in-view: false
-    show-sql: true
+    show-sql: &show-sql true
     generate-ddl: true
     properties:
       hibernate:
@@ -59,4 +59,4 @@ spring:
 
 logging:
   level:
-    "[org.hibernate.type.descriptor.sql]": trace
+    "[org.hibernate.type.descriptor.sql]": OFF

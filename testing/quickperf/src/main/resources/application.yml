@@ -6,17 +6,17 @@ spring:
 
   jpa:
     open-in-view: false
-    show-sql: true
+    show-sql: &show-sql true
     generate-ddl: true
     properties:
       hibernate:
         "[hbm2ddl.auto]": create-drop
-        show-sql: true
-        format_sql: false
-        use_sql_comments: false
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
 
 logging:
   level:
+    "[org.quickperf]": INFO
     "[org.hibernate.type.descriptor.sql]": trace
-    "[org.quickperf.*]": INFO
 

@@ -1,5 +1,5 @@
-#database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true
-database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+#database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true
 spring:
   data:
 #    "[r2dbc.repositories.enabled]": false
@@ -14,15 +14,15 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MariaDBDialect
-    show-sql: true
+    show-sql: &show-sql true
     generate-ddl: true
     properties:
       hibernate:
         "[hbm2ddl.auto]": update
         #      "[hbm2ddl.auto]": create-drop
-        show_sql: true
-        #      format_sql: true
-        use_sql_comments: true
+#        show_sql: true
+#        format_sql: true
+#        use_sql_comments: true
 
   sql:
     init:
@@ -40,7 +40,8 @@ spring:
 logging:
   level:
     "[org.mariadb.r2dbc]": WARN
-    "[org.springframework.transaction]": TRACE
-    "[org.springframework.r2dbc]": WARN
-    "[org.springframework.r2dbc.core]": DEBUG
-    "[org.springframework.data.r2dbc]": TRACE
+#    "[org.springframework.transaction]": TRACE
+#    "[org.springframework.r2dbc]": WARN
+#    "[org.springframework.r2dbc.core]": DEBUG
+#    "[org.springframework.data.r2dbc]": TRACE
+    "[MySQL]": OFF

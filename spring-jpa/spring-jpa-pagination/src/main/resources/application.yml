@@ -11,13 +11,14 @@ spring:
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQLDialect
     generate-ddl: false
+    show-sql: &show-sql true
     properties:
       hibernate:
         "[hbm2ddl.auto]": none
-        show-sql: &show-sql true
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
         "[jdbc.time_zone]": UTC
+#        show-sql: &show-sql true
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
 
   # Sql
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
@@ -33,6 +34,6 @@ spring:
 
 logging:
   level:
-    "[MySQL]": trace
+    "[MYSQL]": OFF
     "[org.hibernate.SQL]": trace
     "[org.hibernate.type.descriptor.sql]": trace

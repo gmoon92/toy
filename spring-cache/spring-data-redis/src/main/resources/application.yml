@@ -40,9 +40,9 @@ spring:
         "[hbm2ddl.auto]": update
         globally_quoted_identifiers: true
         #          dialect: org.hibernate.dialect.H2Dialect
-        show-sql: *show-sql
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
         "[jdbc.time_zone]": UTC
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization

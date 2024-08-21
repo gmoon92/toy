@@ -23,9 +23,9 @@ spring:
       hibernate:
         "[hbm2ddl.auto]": update
 #        dialect: org.hibernate.dialect.MySQLDialect
-        show-sql: *show-sql
-        format_sql: *show-sql
-        use_sql_comments: *show-sql
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        use_sql_comments: *show-sql
         globally_quoted_identifiers: true
         "[jdbc.time_zone]": UTC
 
