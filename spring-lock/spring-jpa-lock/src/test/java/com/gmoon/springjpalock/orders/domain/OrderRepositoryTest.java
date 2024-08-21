@@ -2,6 +2,7 @@ package com.gmoon.springjpalock.orders.domain;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -11,13 +12,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@DataJpaTest
-class OrderRepositoryTest {
+class OrderRepositoryTest extends BaseJpaTestCase {
 
 	@Autowired
 	private OrderRepository repository;
