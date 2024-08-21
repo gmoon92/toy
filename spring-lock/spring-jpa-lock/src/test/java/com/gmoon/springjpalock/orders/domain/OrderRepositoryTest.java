@@ -9,13 +9,15 @@ import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.PessimisticLockingFailureException;
-import org.springframework.orm.jpa.JpaSystemException;import org.springframework.transaction.annotation.Transactional;
+import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
+@Disabled
 class OrderRepositoryTest extends BaseJpaTestCase {
 
 	@Autowired

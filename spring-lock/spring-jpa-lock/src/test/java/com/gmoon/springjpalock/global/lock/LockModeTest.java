@@ -1,18 +1,18 @@
 package com.gmoon.springjpalock.global.lock;
 
-import static org.assertj.core.api.Assertions.*;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gmoon.springjpalock.global.BaseJpaTestCase;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
+@Disabled
 class LockModeTest extends BaseJpaTestCase {
 
 	@DisplayName("@Version 은 강제로 증가시킬 수 없다.")

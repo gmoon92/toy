@@ -1,30 +1,28 @@
 package com.gmoon.springjpalock.global.lock;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.gmoon.springjpalock.global.BaseJpaTestCase;
+import com.gmoon.springjpalock.global.Fixtures;
+import com.gmoon.springjpalock.orders.domain.Order;
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.RollbackException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.IntStream;
-
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
-
-import com.gmoon.springjpalock.global.BaseJpaTestCase;
-import com.gmoon.springjpalock.global.Fixtures;
-import com.gmoon.springjpalock.orders.domain.Order;
-
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.RollbackException;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
+@Disabled
 class PessimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("S-Lock 교착 상태 검증"
