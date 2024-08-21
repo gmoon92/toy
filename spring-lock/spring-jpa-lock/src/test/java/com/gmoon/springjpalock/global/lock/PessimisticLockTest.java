@@ -25,7 +25,7 @@ import jakarta.persistence.RollbackException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PessimisticLockTest extends BaseJpaTestCase {
+class PessimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("S-Lock 교착 상태 검증"
 		 + "[QUERY] select * from `tb_order` where `no`='order-no-001' lock in share mode"
@@ -71,7 +71,6 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		assertThatCode(allOf::join).doesNotThrowAnyException();
 	}
 
-	@Disabled
 	@DisplayName("X-Lock 트랜잭션이 종료되기 전엔 S-Lock을 획득할 수 없다.")
 	@Test
 	void exclusiveLockWithSLock() {
@@ -80,6 +79,8 @@ public class PessimisticLockTest extends BaseJpaTestCase {
 		CompletableFuture<Void> allOf = CompletableFuture.allOf(
 			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
 			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
+			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock)),
+			 CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
 			 CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
 			 CompletableFuture.runAsync(() -> saveWithLockMode(LockModeType.PESSIMISTIC_READ)),
 			 CompletableFuture.runAsync(() -> saveWithLockMode(xLock))

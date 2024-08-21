@@ -13,7 +13,7 @@ import com.gmoon.springjpalock.orders.domain.Order;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 
-public class LockModeTest extends BaseJpaTestCase {
+class LockModeTest extends BaseJpaTestCase {
 
 	@DisplayName("@Version 은 강제로 증가시킬 수 없다.")
 	@Test

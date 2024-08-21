@@ -23,7 +23,7 @@ import jakarta.persistence.RollbackException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class OptimisticLockTest extends BaseJpaTestCase {
+class OptimisticLockTest extends BaseJpaTestCase {
 
 	@DisplayName("@OptimisticLock 특정 컬럼을 데이터 충돌 검사에서 제외한다.")
 	@Test
