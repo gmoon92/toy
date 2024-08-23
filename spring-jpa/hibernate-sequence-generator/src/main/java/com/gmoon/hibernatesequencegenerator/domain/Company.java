@@ -1,11 +1,11 @@
 package com.gmoon.hibernatesequencegenerator.domain;
 
+import org.hibernate.annotations.UuidGenerator;
+
 import com.gmoon.hibernatesequencegenerator.constants.ColumnLength;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Company {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	@Column(length = ColumnLength.SYSTEM_UUID)
 	private String id;
 

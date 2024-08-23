@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UuidGenerator;
 
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -12,8 +13,6 @@ import com.gmoon.hibernatetype.global.type.EncryptedStringType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -33,7 +32,7 @@ import lombok.ToString;
 public class User implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	@Column(length = 50)
 	private String id;
 

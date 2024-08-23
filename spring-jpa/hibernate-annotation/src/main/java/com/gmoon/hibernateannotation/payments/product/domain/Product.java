@@ -2,6 +2,8 @@ package com.gmoon.hibernateannotation.payments.product.domain;
 
 import java.io.Serializable;
 
+import org.hibernate.annotations.UuidGenerator;
+
 import com.gmoon.hibernateannotation.payments.price.domain.Currency;
 import com.gmoon.hibernateannotation.payments.price.domain.Price;
 import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
@@ -12,8 +14,6 @@ import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -34,7 +34,7 @@ import lombok.ToString;
 public abstract class Product implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	@EqualsAndHashCode.Include
 	private String id;
 

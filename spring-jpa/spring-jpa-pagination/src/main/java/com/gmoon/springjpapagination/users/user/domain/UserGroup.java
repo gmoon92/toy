@@ -2,10 +2,10 @@ package com.gmoon.springjpapagination.users.user.domain;
 
 import java.io.Serializable;
 
+import org.hibernate.annotations.UuidGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,7 +27,7 @@ public class UserGroup implements Serializable {
 	private static final long serialVersionUID = 6473490199061694565L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	@Column(name = "id", length = 50)
 	@EqualsAndHashCode.Include
 	private String id;

@@ -3,6 +3,8 @@ package com.gmoon.springjpaspecs.books.bookstore.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.UuidGenerator;
+
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
@@ -11,8 +13,6 @@ import com.gmoon.springjpaspecs.global.domain.EntityObject;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class BookStore extends EntityObject {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	private String id;
 
 	@Column(name = "name", nullable = false)

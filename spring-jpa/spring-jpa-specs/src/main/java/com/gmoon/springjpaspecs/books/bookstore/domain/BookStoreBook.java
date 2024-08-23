@@ -1,5 +1,7 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain;
 
+import org.hibernate.annotations.UuidGenerator;
+
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookQuantity;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookStatus;
 import com.gmoon.springjpaspecs.books.bookstore.domain.vo.BookType;
@@ -10,8 +12,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class BookStoreBook extends AuditedEntityObject<String> {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	private String id;
 
 	@Column(name = "book_id", nullable = false)

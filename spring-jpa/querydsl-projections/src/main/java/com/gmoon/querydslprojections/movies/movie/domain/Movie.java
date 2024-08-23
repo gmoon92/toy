@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.UuidGenerator;
+
 import com.gmoon.querydslprojections.movies.users.user.domain.Actor;
 import com.gmoon.querydslprojections.movies.users.user.domain.Director;
 
@@ -15,8 +17,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
@@ -45,7 +45,7 @@ import lombok.NoArgsConstructor;
 public class Movie implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator
 	@Column(name = "id", length = 50)
 	private String id;
 
