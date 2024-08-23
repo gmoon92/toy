@@ -77,8 +77,8 @@ public class ExcelUtils {
 		} catch (Exception ex) {
 			throw new RuntimeException("Excel download error because: ", ex);
 		} finally {
-			if (wb instanceof SXSSFWorkbook) {
-				((SXSSFWorkbook)wb).dispose();
+			if (wb instanceof SXSSFWorkbook sxssfWorkbook) {
+				sxssfWorkbook.dispose();
 			}
 
 			try {

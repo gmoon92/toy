@@ -10,8 +10,8 @@ public class ToStringArgumentConverter extends SimpleArgumentConverter {
 	@Override
 	protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
 		assertEquals(String.class, targetType, "Can only convert to String");
-		if (source instanceof Enum<?>) {
-			return ((Enum<?>)source).name();
+		if (source instanceof Enum<?> enumValue) {
+			return enumValue.name();
 		}
 		return String.valueOf(source);
 	}

@@ -39,8 +39,7 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 		log.debug("onPostInsert start...");
 		Object entity = event.getEntity();
 
-		if (entity instanceof RevisionHistoryDetail) {
-			RevisionHistoryDetail detail = (RevisionHistoryDetail)entity;
+		if (entity instanceof RevisionHistoryDetail detail) {
 			Object auditedEntity = getAuditedEntity(detail).get();
 
 			RevisionEventStatus eventStatus = ERROR;

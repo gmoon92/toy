@@ -2,37 +2,32 @@ package com.gmoon.springaop.proxy2;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 class SimpleProxyTest {
-	private String name;
-
-	@BeforeEach
-	void init() {
-		name = "Moon";
-	}
 
 	@Test
 	void simpleProxyTest() {
 		Hello proxy = new HelloTarget();
-		assertThat(proxy.sayHello(name)).isEqualTo("Hello Moon");
-		assertThat(proxy.sayMyName(name)).isEqualTo("My name Moon");
+		assertThat(proxy.sayHello("Moon")).isEqualTo("Hello Moon");
+		assertThat(proxy.sayMyName("Moon")).isEqualTo("My name Moon");
 	}
 
 	@Test
 	@DisplayName("데코레이션 기법으로 부가 기능 적용")
 	void simpleAspectProxyTest() {
 		Hello proxy = new HelloAspect(new HelloTarget());
-		assertThat(proxy.sayHello(name)).isEqualTo("HELLO MOON");
-		assertThat(proxy.sayMyName(name)).isEqualTo("MY NAME MOON");
+		assertThat(proxy.sayHello("Moon")).isEqualTo("HELLO MOON");
+		assertThat(proxy.sayMyName("Moon")).isEqualTo("MY NAME MOON");
 	}
 
-	@Test
 	@DisplayName("Reflection InvocationHandler를 활용한 부가 기능 적용")
+	@Test
 	void invocationHandler() {
 		/***
 		 * params
@@ -41,10 +36,37 @@ class SimpleProxyTest {
 		 * 3) invocationHandler 구현체 : 부가기능 구현체
 		 */
 		SimpleProxy simpleProxy = new SimpleProxy(Hello.class, new UpperCaseHandler(new HelloTarget()));
-
 		Hello proxy = (Hello)simpleProxy.getTarget();
-		assertThat(proxy.sayHello(name)).isEqualTo("HELLO MOON");
-		assertThat(proxy.sayMyName(name)).isEqualTo("MY NAME MOON");
+
+		assertThat(proxy.sayHello("Moon")).isEqualTo("HELLO MOON");
+		assertThat(proxy.sayMyName("Moon")).isEqualTo("MY NAME MOON");
+		assertThatCode(() -> proxy.setValue("Moon")).doesNotThrowAnyException();
+		assertThatCode(proxy::getValue).doesNotThrowAnyException();
+
+	}
+
+	@DisplayName("Proxy 자기 호출 부가 기능 불가")
+	@Test
+	void selfInvocation() {
+		SimpleProxy simpleProxy = new SimpleProxy(Hello.class, new UpperCaseHandler(new HelloTarget()));
+		Hello proxy = (Hello)simpleProxy.getTarget();
+
+		// self invoke
+		Hello self = proxy.channing();
+		assertThat(self.sayHello("Moon")).isEqualTo("Hello Moon");
+		assertThat(self.sayMyName("Moon")).isEqualTo("My name Moon");
+	}
+
+	interface Hello {
+		String sayHello(String str);
+
+		String sayMyName(String str);
+
+		String getValue();
+
+		void setValue(String str);
+
+		Hello channing();
 	}
 
 	@RequiredArgsConstructor
@@ -61,10 +83,30 @@ class SimpleProxyTest {
 		public String sayMyName(String str) {
 			return hello.sayMyName(str).toUpperCase();
 		}
+
+		@Override
+		public String getValue() {
+			return hello.getValue();
+		}
+
+		@Override
+		public void setValue(String str) {
+			hello.setValue(str);
+		}
+
+		@Override
+		public Hello channing() {
+			return hello.channing();
+		}
 	}
 
 	//타겟 클래스
+	@Getter
+	@Setter
 	class HelloTarget implements Hello {
+
+		private String value;
+
 		@Override
 		public String sayHello(String str) {
 			return "Hello " + str;
@@ -74,12 +116,11 @@ class SimpleProxyTest {
 		public String sayMyName(String str) {
 			return "My name " + str;
 		}
-	}
 
-	interface Hello {
-		String sayHello(String str);
-
-		String sayMyName(String str);
+		@Override
+		public Hello channing() {
+			return this;
+		}
 	}
 
 }

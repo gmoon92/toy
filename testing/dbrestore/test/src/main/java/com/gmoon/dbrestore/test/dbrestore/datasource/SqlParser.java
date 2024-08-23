@@ -1,8 +1,5 @@
 package com.gmoon.dbrestore.test.dbrestore.datasource;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
@@ -10,6 +7,10 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.update.Update;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -31,12 +32,12 @@ public final class SqlParser {
 	}
 
 	public static Table getTable(Statement statement) {
-		if (statement instanceof Delete) {
-			return ( (Delete) statement ).getTable();
-		} else if (statement instanceof Update) {
-			return ( (Update) statement ).getTable();
-		} else if (statement instanceof Insert) {
-			return ( (Insert) statement ).getTable();
+		if (statement instanceof Delete delete) {
+			return delete.getTable();
+		} else if (statement instanceof Update update) {
+			return update.getTable();
+		} else if (statement instanceof Insert insert) {
+			return insert.getTable();
 		}
 		throw new IllegalArgumentException("Unsupported sql statement.");
 	}
