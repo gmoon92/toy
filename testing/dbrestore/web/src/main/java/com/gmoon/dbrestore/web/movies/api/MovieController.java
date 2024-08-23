@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,13 +26,11 @@ public class MovieController {
 	private final MovieService movieService;
 
 	@GetMapping("/ticketoffices")
-	@ResponseBody
 	public HttpEntity<PagedModel<TicketOffice>> findTicketOffices(Long movieId, Pageable pageable) {
 		return ResponseEntity.ok(new PagedModel<>(movieService.getTickerOffices(movieId, pageable)));
 	}
 
 	@PostMapping("/coupon")
-	@ResponseBody
 	public HttpEntity<String> issueCoupon(@RequestBody CouponRequestVO requestVO) {
 		Long officeId = requestVO.getOfficeId();
 		Long movieId = requestVO.getMovieId();
@@ -43,7 +40,6 @@ public class MovieController {
 	}
 
 	@PostMapping("/error")
-	@ResponseBody
 	public HttpEntity<String> error(@RequestBody CouponRequestVO requestVO) {
 		Long officeId = requestVO.getOfficeId();
 		Long movieId = requestVO.getMovieId();
@@ -57,7 +53,6 @@ public class MovieController {
 	}
 
 	@DeleteMapping
-	@ResponseBody
 	public HttpEntity<Void> delete(Long movieId) {
 		movieService.removeMovie(movieId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
