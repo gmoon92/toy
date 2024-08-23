@@ -1,10 +1,9 @@
 package com.gmoon.dbrestore.test.dbrestore.datasource;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class ReferenceTableTest {
 
@@ -48,7 +47,7 @@ class ReferenceTableTest {
 		ReferenceTable referenceTable = new ReferenceTable(null, null);
 		referenceTable.initialize(metadata);
 
-		assertThat(referenceTable.getAllTables().size()).isEqualTo(5);
+		assertThat(referenceTable.getAllTables()).hasSize(5);
 		assertThat(referenceTable.getDeleteTables("tb_ticket_office")).containsOnly("tb_ticket", "tb_movie", "tb_movie_ticket", "tb_coupon");
 		assertThat(referenceTable.getDeleteTables("tb_ticket")).containsOnly("tb_movie_ticket");
 		assertThat(referenceTable.getDeleteTables("tb_movie")).containsOnly("tb_movie_ticket", "tb_coupon");
