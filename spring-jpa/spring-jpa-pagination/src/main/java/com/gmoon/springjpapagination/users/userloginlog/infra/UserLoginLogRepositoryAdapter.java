@@ -5,17 +5,16 @@ import static com.gmoon.springjpapagination.users.userloginlog.domain.QUserLogin
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.gmoon.javacore.util.CollectionUtils;
-import com.querydsl.core.types.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Order;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.gmoon.javacore.util.CollectionUtils;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLog;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLogRepository;
 import com.gmoon.springjpapagination.users.userloginlog.dto.QUserLoginLogListVO_Data;
@@ -23,6 +22,7 @@ import com.gmoon.springjpapagination.users.userloginlog.dto.UserLoginLogListVO;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Repository
@@ -101,8 +101,8 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 			return null;
 		}
 
-		String id = cursor.getId();
-		LocalDateTime attemptDt = cursor.getAttemptDt();
+		String id = cursor.id();
+		LocalDateTime attemptDt = cursor.attemptDt();
 		if (Order.ASC == cursorOrder) {
 			return userLoginLog.attemptDt.gt(attemptDt)
 				 .orAllOf(
@@ -122,8 +122,10 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 		throw new RuntimeException("must be specify the order of cursor data.");
 	}
 
-	// note: 아래 방식으로 사용 X, 결과가 달라짐.
-	@Deprecated
+	/**
+	 * @implNote 아래 방식으로 사용 X, 결과가 달라짐.
+	 * */
+	@Deprecated(since = "2", forRemoval = true)
 	private StringExpression cursor() {
 		return Expressions.stringTemplate("CONCAT({0}, LPAD({1}, 50, '0'))", userLoginLog.attemptDt, userLoginLog.id);
 	}

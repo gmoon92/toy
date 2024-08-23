@@ -3,7 +3,6 @@ package com.gmoon.hibernatetype.users.domain;
 import java.io.Serializable;
 
 import org.hibernate.annotations.ColumnTransformer;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.querydsl.core.annotations.QueryProjection;
@@ -14,6 +13,7 @@ import com.gmoon.hibernatetype.global.type.EncryptedStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -33,8 +33,7 @@ import lombok.ToString;
 public class User implements Serializable {
 
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(length = 50)
 	private String id;
 

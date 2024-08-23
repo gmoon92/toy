@@ -3,7 +3,6 @@ package com.gmoon.springeventlistener.orders.order.domain;
 import java.io.Serializable;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
 
 import com.gmoon.springeventlistener.orders.order.domain.vo.Product;
 
@@ -12,6 +11,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -26,8 +26,7 @@ import lombok.NoArgsConstructor;
 public class OrderLineItem implements Serializable {
 
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(length = 50)
 	private String id;
 

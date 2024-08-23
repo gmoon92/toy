@@ -1,5 +1,6 @@
 package com.gmoon.springjpapagination.users.userloginlog.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import com.gmoon.springjpapagination.users.userloginlog.domain.AccessDevice;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -25,12 +25,8 @@ public class UserLoginLogListVO extends CursorPagination {
 
 	private List<Data> list;
 
-	@RequiredArgsConstructor
 	@Getter
-	@ToString
-	public static class Cursor {
-		private final String id;
-		private final LocalDateTime attemptDt;
+	public record Cursor(String id, LocalDateTime attemptDt) implements Serializable {
 	}
 
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,7 +41,8 @@ public class UserLoginLogListVO extends CursorPagination {
 		private boolean succeed;
 
 		@QueryProjection
-		public Data(String id, String username, AccessDevice accessDevice, LocalDateTime attemptDt, String attemptIp, boolean succeed) {
+		public Data(String id, String username, AccessDevice accessDevice, LocalDateTime attemptDt, String attemptIp,
+			 boolean succeed) {
 			this.id = id;
 			this.username = username;
 			this.accessDevice = accessDevice;

@@ -2,11 +2,10 @@ package com.gmoon.querydslprojections.movies.users.user.domain;
 
 import java.io.Serializable;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -25,8 +24,7 @@ import lombok.NoArgsConstructor;
 public abstract class User implements Serializable {
 
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "id", length = 50)
 	protected String id;
 
