@@ -11,6 +11,7 @@ spring:
       hibernate:
 #        show_sql: *show-sql
 #        format_sql: *show-sql
+#        highlight_sql: *show-sql
 #        use_sql_comments: *show-sql
         globally_quoted_identifiers: true
     defer-datasource-initialization: true

@@ -23,13 +23,13 @@ import lombok.ToString;
 public class UserOption implements Serializable {
 
 	@Id
-	@Column(name = "user_id")
+	@Column
 	private String userId;
 
 	@OneToOne(optional = false)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-	@Column(name = "allows_receiving_mail")
+	@Column
 	private boolean allowsReceivingMail;
 }

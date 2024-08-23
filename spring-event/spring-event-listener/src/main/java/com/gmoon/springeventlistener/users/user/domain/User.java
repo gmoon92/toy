@@ -18,12 +18,12 @@ public class User implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
-	@Column(name = "name", length = 10, nullable = false)
+	@Column(length = 10, nullable = false)
 	private String name;
 
-	@Column(name = "email", length = 20, nullable = false)
+	@Column(length = 20, nullable = false)
 	private String email;
 }

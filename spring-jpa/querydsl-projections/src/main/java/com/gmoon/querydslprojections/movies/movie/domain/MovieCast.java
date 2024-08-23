@@ -10,6 +10,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -27,10 +28,12 @@ public class MovieCast implements Serializable {
 	@EmbeddedId
 	private Id id = new Id();
 
+	@MapsId("movieId")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "movie_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
 	private Movie movie;
 
+	@MapsId("actorId")
 	@OneToOne(optional = false)
 	@JoinColumn(name = "actor_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
 	private Actor actor;
@@ -52,10 +55,10 @@ public class MovieCast implements Serializable {
 	@EqualsAndHashCode
 	static class Id implements Serializable {
 
-		@Column(name = "movie_id", length = 50, nullable = false)
+		@Column(length = 50, nullable = false)
 		private String movieId;
 
-		@Column(name = "actor_id", length = 50, nullable = false)
+		@Column(length = 50, nullable = false)
 		private String actorId;
 
 		protected Id(Movie movie, Actor actor) {

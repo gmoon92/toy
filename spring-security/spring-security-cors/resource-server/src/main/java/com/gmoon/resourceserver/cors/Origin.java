@@ -17,13 +17,13 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class Origin implements Serializable {
-	@Column(name = "schema")
+	@Column
 	private String schema;
 
-	@Column(name = "host")
+	@Column
 	private String host;
 
-	@Column(name = "port")
+	@Column
 	private Integer port;
 
 	@Builder

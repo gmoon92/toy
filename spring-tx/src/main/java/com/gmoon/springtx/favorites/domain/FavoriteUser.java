@@ -28,7 +28,7 @@ public class FavoriteUser implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,6 +38,6 @@ public class FavoriteUser implements Serializable {
 	})
 	private Favorite favorite;
 
-	@Column(name = "user_id", length = 50)
+	@Column(length = 50)
 	private String userId;
 }

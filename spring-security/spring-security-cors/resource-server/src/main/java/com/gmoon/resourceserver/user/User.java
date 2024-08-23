@@ -41,19 +41,19 @@ public class User implements UserDetails {
 
 	@ToString.Include
 	@ColumnDefault("1")
-	@Column(name = "enabled", nullable = false)
+	@Column(nullable = false)
 	private boolean enabled;
 
 	@ColumnDefault("1")
-	@Column(name = "account_non_expired", nullable = false)
+	@Column(nullable = false)
 	private boolean accountNonExpired;
 
 	@ColumnDefault("1")
-	@Column(name = "account_non_locked", nullable = false)
+	@Column(nullable = false)
 	private boolean accountNonLocked;
 
 	@ColumnDefault("1")
-	@Column(name = "credentials_non_expired", nullable = false)
+	@Column(nullable = false)
 	private boolean credentialsNonExpired;
 
 	@Override

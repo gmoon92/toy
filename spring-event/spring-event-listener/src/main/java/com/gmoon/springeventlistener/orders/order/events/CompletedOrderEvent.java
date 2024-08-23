@@ -35,12 +35,12 @@ public class CompletedOrderEvent implements Serializable {
 
 	public static CompletedOrderEvent create(Order order) {
 		return CompletedOrderEvent.builder()
-			 .orderNo(order.getId())
+			 .orderNo(order.getNo())
 			 .productNos(order.getProductNos())
 			 .orderPrice(order.totalPrice())
 			 .productName(order.getProductNames())
-			 .userName(order.getUser().getUserName())
-			 .userEmail(order.getUser().getUserEmail())
+			 .userName(order.getUser().getName())
+			 .userEmail(order.getUser().getEmail())
 			 .build();
 	}
 }

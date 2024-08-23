@@ -18,10 +18,10 @@ import lombok.Getter;
 public abstract class AuditedEntityObject<ID extends Serializable> extends EntityObject<ID> {
 
 	@CreatedDate
-	@Column(name = "created_date")
+	@Column
 	private LocalDateTime createdDate;
 
 	@LastModifiedDate
-	@Column(name = "modified_date")
+	@Column
 	private LocalDateTime modifiedDate;
 }

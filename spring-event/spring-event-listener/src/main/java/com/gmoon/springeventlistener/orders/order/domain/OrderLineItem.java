@@ -7,6 +7,8 @@ import org.hibernate.annotations.UuidGenerator;
 
 import com.gmoon.springeventlistener.orders.order.domain.vo.Product;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -38,9 +40,14 @@ public class OrderLineItem implements Serializable {
 	private Order order;
 
 	@Embedded
+	@AttributeOverrides({
+		 @AttributeOverride(name = "no", column = @Column(name = "product_no", length = 50, nullable = false)),
+		 @AttributeOverride(name = "name", column = @Column(name = "product_name", length = 50, nullable = false)),
+		 @AttributeOverride(name = "price", column = @Column(name = "product_price", nullable = false))
+	})
 	private Product product;
 
-	@Column(name = "quantity", nullable = false)
+	@Column(nullable = false)
 	@ColumnDefault("0")
 	private long quantity;
 

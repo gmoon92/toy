@@ -49,10 +49,10 @@ public class TeamMember {
 	@ToString
 	public static class Id implements Serializable {
 
-		@Column(name = "member_id", nullable = false)
+		@Column(nullable = false)
 		private Long memberId;
 
-		@Column(name = "team_id", nullable = false)
+		@Column(nullable = false)
 		private Long teamId;
 
 		Id(Member member, Team team) {

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CorsHttpMethod implements Serializable {
 	@Id
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String httpMethod;
 
 	private boolean enabled;

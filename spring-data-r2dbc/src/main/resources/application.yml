@@ -1,5 +1,5 @@
-#database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true
+#database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true
+database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
 spring:
   data:
 #    "[r2dbc.repositories.enabled]": false

@@ -19,7 +19,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.gmoon.querydslprojections.global.Fixtures;
 import com.gmoon.querydslprojections.global.JpaConfig;
-import com.gmoon.querydslprojections.movies.movie.domain.FilmRatings;
+import com.gmoon.querydslprojections.movies.movie.domain.FilmRating;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieGenre;
 import com.gmoon.querydslprojections.movies.movie.dto.MovieResponse;
 import com.gmoon.querydslprojections.movies.movie.dto.QMovieResponse;
@@ -124,7 +124,7 @@ public class QueryProjectionsTest {
 					   movie.id,
 					   movie.name,
 					   movie.genre,
-					   movie.filmRatings,
+					   movie.filmRating,
 					   movie.director.director.name,
 					   movie.releaseTime
 				  )
@@ -146,7 +146,7 @@ public class QueryProjectionsTest {
 		private String id;
 		private String movieName;
 		private MovieGenre genre;
-		private FilmRatings filmRatings;
+		private FilmRating filmRating;
 		private String directorName;
 		private List<String> castNames;
 		private Long releaseDateTime;

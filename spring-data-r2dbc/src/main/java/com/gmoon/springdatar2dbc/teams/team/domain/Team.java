@@ -26,10 +26,10 @@ public class Team implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
-	@Column(name = "name", length = 10)
+	@Column(length = 10)
 	private String name;
 
 	@ManyToOne

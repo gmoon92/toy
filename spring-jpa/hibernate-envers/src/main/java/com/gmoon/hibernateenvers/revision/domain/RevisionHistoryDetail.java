@@ -28,14 +28,12 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "rev_history_detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = {"revision", "entityId", "revisionTarget"})
-@ToString(exclude = {"id", "entityId", "revisionTarget", "revisionType", "revisionEventStatus"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class RevisionHistoryDetail extends BaseEntity {
 
 	@Id
@@ -44,51 +42,54 @@ public class RevisionHistoryDetail extends BaseEntity {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "revision_number")
+	@EqualsAndHashCode.Include
 	private RevisionHistory revision;
 
 	@TODO("복합키 고려해보기... toString")
-	@Column(name = "entity_id", updatable = false, nullable = false)
+	@Column(updatable = false, nullable = false)
 	@Lob
+	@EqualsAndHashCode.Include
 	private byte[] entityId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "target", updatable = false)
-	private RevisionTarget revisionTarget;
+	@Column(updatable = false)
+	@EqualsAndHashCode.Include
+	private RevisionTarget target;
 
 	@Enumerated(EnumType.STRING)
 	@Type(RevisionTypeType.class)
-	@Column(name = "revision_type", updatable = false, nullable = false)
-	private RevisionType revisionType;
+	@Column(updatable = false, nullable = false)
+	private RevisionType type;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "event_status", nullable = false)
-	private RevisionEventStatus revisionEventStatus;
+	@Column(nullable = false)
+	private RevisionEventStatus status;
 
 	@ManyToOne
 	@JoinColumn(name = "target_member_id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
 	private Member targetMember;
 
-	@Column(name = "target_member_name")
+	@Column
 	private String targetMemberName;
 
 	@Builder(access = AccessLevel.PRIVATE)
-	private RevisionHistoryDetail(RevisionHistory revision, RevisionType revisionType, Object entityId,
-		 RevisionTarget revisionTarget, RevisionEventStatus revisionEventStatus) {
+	private RevisionHistoryDetail(RevisionHistory revision, RevisionType type, Object entityId,
+		 RevisionTarget target, RevisionEventStatus status) {
 		this.revision = revision;
 		this.entityId = RevisionConverter.serializedObject(entityId);
-		this.revisionTarget = revisionTarget;
-		this.revisionType = revisionType;
-		this.revisionEventStatus = revisionEventStatus;
+		this.target = target;
+		this.type = type;
+		this.status = status;
 	}
 
 	public static RevisionHistoryDetail newCreate(RevisionHistory revision, RevisionType revisionType,
 		 Object entityId, RevisionTarget revisionTarget) {
 		return RevisionHistoryDetail.builder()
 			 .revision(revision)
-			 .revisionType(revisionType)
+			 .type(revisionType)
 			 .entityId(entityId)
-			 .revisionTarget(revisionTarget)
-			 .revisionEventStatus(RevisionEventStatus.WAIT)
+			 .target(revisionTarget)
+			 .status(RevisionEventStatus.WAIT)
 			 .build();
 	}
 

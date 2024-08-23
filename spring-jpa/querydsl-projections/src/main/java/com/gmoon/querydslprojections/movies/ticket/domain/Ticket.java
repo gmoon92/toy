@@ -29,7 +29,7 @@ public class Ticket implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
 	// @ManyToMany(fetch = FetchType.LAZY)

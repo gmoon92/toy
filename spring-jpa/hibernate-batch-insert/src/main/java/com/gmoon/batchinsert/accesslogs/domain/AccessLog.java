@@ -36,18 +36,18 @@ public class AccessLog implements Serializable {
 	@Column(name = "id", length = 50)
 	private String id;
 
-	@Column(name = "username", length = 50)
+	@Column(length = 50)
 	private String username;
 
-	@Column(name = "ip", length = 100)
+	@Column(length = 100)
 	private String ip;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "os", length = 30)
+	@Column(length = 30)
 	private OperatingSystem os;
 
 	@CreatedDate
-	@Column(name = "attempt_dt", updatable = false)
+	@Column(updatable = false)
 	private LocalDateTime attemptDt;
 
 	protected AccessLog(String username, String ip, OperatingSystem os) {

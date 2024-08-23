@@ -13,11 +13,11 @@ class MemberRepositoryTest {
 	@BeforeAll
 	static void beforeAll(@Autowired MemberRepository memberRepository) {
 		Member member = Member.createNew("gmoon", "password");
-		memberRepository.save(member);
+		memberRepository.saveAndFlush(member);
 	}
 
 	@Test
-	void revisionDataTest() {
+	void test() {
 
 	}
 }

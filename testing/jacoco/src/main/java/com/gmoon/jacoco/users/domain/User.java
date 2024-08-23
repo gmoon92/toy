@@ -32,20 +32,20 @@ public class User implements UserDetails {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "role", length = 10, nullable = false)
+	@Column(length = 10, nullable = false)
 	private Role role;
 
-	@Column(name = "username")
+	@Column
 	private String username;
 
-	@Column(name = "password")
+	@Column
 	private String password;
 
-	@Column(name = "enabled")
+	@Column
 	private boolean enabled;
 
 	@OneToOne(

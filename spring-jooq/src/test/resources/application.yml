@@ -1,11 +1,7 @@
 spring:
   profiles:
-    active: local
-    include: persistence
-  jpa:
-    open-in-view: false
-    defer-datasource-initialization: true
+    active: mysql
 
 logging:
   level:
-    "[org.jooq]": debug
+    "[org.jooq]": WARN

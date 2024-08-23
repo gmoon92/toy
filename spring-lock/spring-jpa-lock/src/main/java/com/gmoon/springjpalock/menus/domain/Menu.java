@@ -24,13 +24,13 @@ public class Menu {
 	@Column(length = 50)
 	private String id;
 
-	@Column(name = "name", nullable = false)
+	@Column(nullable = false)
 	private String name;
 
-	@Column(name = "quantity", nullable = false)
+	@Column(nullable = false)
 	private Long quantity;
 
-	@Column(name = "price", nullable = false)
+	@Column(nullable = false)
 	private Long price;
 
 	@Builder

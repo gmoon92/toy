@@ -13,6 +13,7 @@ spring:
         "[hbm2ddl.auto]": create-drop
 #        show-sql: *show-sql
 #        format_sql: *show-sql
+#        highlight_sql: *show-sql
 #        use_sql_comments: *show-sql
 
 logging:

@@ -13,6 +13,8 @@ import org.hibernate.annotations.UuidGenerator;
 import com.gmoon.springeventlistener.orders.order.domain.vo.Product;
 import com.gmoon.springeventlistener.orders.order.domain.vo.User;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -32,15 +34,20 @@ public class Order implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "order_no", length = 50)
-	private String id;
+	@Column(length = 50)
+	private String no;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "status", length = 10, nullable = false)
+	@Column(length = 10, nullable = false)
 	@ColumnDefault("'WAITE'")
 	private OrderStatus status;
 
 	@Embedded
+	@AttributeOverrides({
+		 @AttributeOverride(name = "id", column = @Column(name = "user_id", length = 50, nullable = false)),
+		 @AttributeOverride(name = "name", column = @Column(name = "user_name", nullable = false)),
+		 @AttributeOverride(name = "email", column = @Column(name = "user_email", nullable = false))
+	})
 	private User user;
 
 	@OneToMany(
@@ -87,7 +94,7 @@ public class Order implements Serializable {
 	public List<String> getProductNos() {
 		return lines.stream()
 			 .map(OrderLineItem::getProduct)
-			 .map(Product::getId)
+			 .map(Product::getNo)
 			 .collect(Collectors.toList());
 	}
 }

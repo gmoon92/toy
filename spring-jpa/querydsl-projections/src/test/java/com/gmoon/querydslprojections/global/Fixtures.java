@@ -3,7 +3,7 @@ package com.gmoon.querydslprojections.global;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.gmoon.querydslprojections.movies.movie.domain.FilmRatings;
+import com.gmoon.querydslprojections.movies.movie.domain.FilmRating;
 import com.gmoon.querydslprojections.movies.movie.domain.Movie;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieGenre;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieReleaseTime;
@@ -25,13 +25,13 @@ public class Fixtures {
 	public static Movie movie(
 		 String name,
 		 MovieGenre genre,
-		 FilmRatings filmRatings
+		 FilmRating filmRating
 	) {
 		return Movie.builder()
 			 .id(uuid())
 			 .name(name)
 			 .genre(genre)
-			 .filmRatings(filmRatings)
+			 .filmRating(filmRating)
 			 .releaseTime(new MovieReleaseTime(LocalDateTime.now()))
 			 .build();
 	}

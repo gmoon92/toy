@@ -33,6 +33,6 @@ CREATE TABLE tb_cors_origin
 
 CREATE TABLE tb_access_control_allow_method
 (
-    id      varchar(50)   NOT NULL PRIMARY KEY,
-    enabled bit DEFAULT 1 NOT NULL
+    http_method varchar(50)   NOT NULL PRIMARY KEY,
+    enabled     bit DEFAULT 1 NOT NULL
 );

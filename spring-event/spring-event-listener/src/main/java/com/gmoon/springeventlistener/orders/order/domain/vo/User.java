@@ -2,7 +2,6 @@ package com.gmoon.springeventlistener.orders.order.domain.vo;
 
 import java.io.Serializable;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -15,18 +14,15 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class User implements Serializable {
 
-	@Column(name = "user_id", length = 50, nullable = false)
-	private String userId;
+	private String id;
 
-	@Column(name = "user_name", nullable = false)
-	private String userName;
+	private String name;
 
-	@Column(name = "user_email", nullable = false)
-	private String userEmail;
+	private String email;
 
-	public User(String userId, String userName, String userEmail) {
-		this.userId = userId;
-		this.userName = userName;
-		this.userEmail = userEmail;
+	public User(String id, String name, String userEmail) {
+		this.id = id;
+		this.name = name;
+		this.email = userEmail;
 	}
 }

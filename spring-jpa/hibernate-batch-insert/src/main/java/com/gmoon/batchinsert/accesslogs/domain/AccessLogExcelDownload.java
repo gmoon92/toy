@@ -30,19 +30,19 @@ import lombok.ToString;
 public class AccessLogExcelDownload implements Serializable {
 
 	@Id
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
-	@Column(name = "username", length = 50)
+	@Column(length = 50)
 	private String username;
 
-	@Column(name = "ip", length = 100)
+	@Column(length = 100)
 	private String ip;
 
-	@Column(name = "os", length = 30)
+	@Column(length = 30)
 	private String os;
 
-	@Column(name = "attempt_dt", length = 50)
+	@Column(length = 50)
 	private String attemptDt;
 
 	@Builder

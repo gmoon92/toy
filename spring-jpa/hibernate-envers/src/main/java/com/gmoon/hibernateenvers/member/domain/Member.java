@@ -28,15 +28,15 @@ public class Member extends BaseTrackingEntity {
 
 	@Serial
 	private static final long serialVersionUID = 2239812311178022258L;
-	
+
 	@Id
 	@GeneratedValue
 	private Long id;
 
-	@Column(name = "username", length = 50, unique = true, updatable = false)
+	@Column(length = 50, unique = true, updatable = false)
 	private String username;
 
-	@Column(name = "password", length = 50)
+	@Column(length = 50)
 	private String password;
 
 	public static Member createNew(String username, String password) {

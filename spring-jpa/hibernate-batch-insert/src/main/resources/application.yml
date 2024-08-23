@@ -37,13 +37,14 @@ spring:
   jpa:
     open-in-view: false
     database-platform: &dialect org.hibernate.dialect.MySQLDialect
-    show-sql: &showsql false
+    show-sql: &showsql true
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
-        "[hbm2ddl.auto]": validate
         dialect: *dialect
-        #        format_sql: *showsql
-        format_sql: false
+#        "[hbm2ddl.auto]": validate
+#        format_sql: *showsql
 
         # batch
         order_inserts: true
@@ -52,5 +53,5 @@ spring:
 
 logging:
   level:
-    "[org.jooq]": debug
-    "[MYSQL]": OFF
+    "[org.jooq]": WARN
+    "[MySQL]": OFF

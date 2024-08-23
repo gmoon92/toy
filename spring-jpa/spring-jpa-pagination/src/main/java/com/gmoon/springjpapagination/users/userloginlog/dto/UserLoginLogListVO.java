@@ -25,7 +25,6 @@ public class UserLoginLogListVO extends CursorPagination {
 
 	private List<Data> list;
 
-	@Getter
 	public record Cursor(String id, LocalDateTime attemptDt) implements Serializable {
 	}
 

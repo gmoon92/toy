@@ -10,6 +10,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -29,11 +30,13 @@ public class TeamUser implements Serializable {
 	private Id id;
 
 	@ToString.Exclude
+	@MapsId("teamId")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "team_id", insertable = false, updatable = false)
 	private Team team;
 
 	@ToString.Exclude
+	@MapsId("userId")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
@@ -53,10 +56,10 @@ public class TeamUser implements Serializable {
 	static class Id implements Serializable {
 		private static final long serialVersionUID = -6697347285557271747L;
 
-		@Column(name = "team_id", nullable = false)
+		@Column(nullable = false)
 		private Long teamId;
 
-		@Column(name = "user_id", nullable = false)
+		@Column(nullable = false)
 		private Long userId;
 
 		Id(Long teamId, Long userId) {

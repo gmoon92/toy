@@ -1,4 +1,4 @@
-package com.gmoon.hibernateannotation.payments;
+package com.gmoon.hibernateannotation.payments.product.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,15 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmoon.hibernateannotation.base.BaseRepositoryTest;
 import com.gmoon.hibernateannotation.payments.price.domain.Currency;
-import com.gmoon.hibernateannotation.payments.product.domain.CompanyProduct;
-import com.gmoon.hibernateannotation.payments.product.domain.ProductRepository;
-import com.gmoon.hibernateannotation.payments.product.domain.UserProduct;
 import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
 
 class ProductRepositoryTest extends BaseRepositoryTest {
 
 	@Autowired
-	ProductRepository productRepository;
+	private ProductRepository repository;
 
 	@BeforeAll
 	static void beforeAll(@Autowired ProductRepository productRepository) {
@@ -32,7 +29,7 @@ class ProductRepositoryTest extends BaseRepositoryTest {
 		ProductType type = ProductType.ENTERPRISE;
 
 		// when then
-		assertThat(productRepository.findFirstCompanyProductByType(type)).isInstanceOf(CompanyProduct.class);
-		assertThat(productRepository.findFirstUserProductByType(type)).isInstanceOf(UserProduct.class);
+		assertThat(repository.findFirstCompanyProductByType(type)).isInstanceOf(CompanyProduct.class);
+		assertThat(repository.findFirstUserProductByType(type)).isInstanceOf(UserProduct.class);
 	}
 }

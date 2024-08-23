@@ -7,6 +7,7 @@ import org.hibernate.annotations.UuidGenerator;
 import com.gmoon.springeventlistener.orders.cart.domain.vo.ProductNo;
 import com.gmoon.springeventlistener.orders.cart.domain.vo.UserId;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -26,9 +27,11 @@ public class Cart implements Serializable {
 	private String id;
 
 	@Embedded
+	@AttributeOverride(name = "value", column = @Column(name = "user_id", length = 50, nullable = false))
 	private UserId userId;
 
 	@Embedded
+	@AttributeOverride(name = "value", column = @Column(name = "product_no", length = 50, nullable = false))
 	private ProductNo productNo;
 
 	public Cart(UserId userId, ProductNo productNo) {

@@ -24,13 +24,13 @@ public class User implements Serializable {
 	@GeneratedValue
 	private Long id;
 
-	@Column(name = "username", nullable = false, length = 50)
+	@Column(nullable = false, length = 50)
 	private String username;
 
-	@Column(name = "email", length = 500)
+	@Column(length = 500)
 	private String email;
 
 	@ColumnDefault("0")
-	@Column(name = "enabled", nullable = false)
+	@Column(nullable = false)
 	private boolean enabled;
 }

@@ -25,9 +25,9 @@ public abstract class User implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	protected String id;
 
-	@Column(name = "name", length = 50, nullable = false)
+	@Column(length = 50, nullable = false)
 	protected String name;
 }

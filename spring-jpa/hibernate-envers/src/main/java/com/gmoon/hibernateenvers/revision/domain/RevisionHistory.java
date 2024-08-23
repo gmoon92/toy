@@ -33,13 +33,14 @@ import lombok.ToString;
 @RevisionEntity(CustomRevisionListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(exclude = {"details"})
 public class RevisionHistory extends BaseEntity {
 
 	@Id
 	@GeneratedValue
 	@RevisionNumber
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	@RevisionTimestamp

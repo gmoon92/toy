@@ -39,7 +39,7 @@ class OrderServiceTest {
 		service.complete(order);
 
 		assertAll(
-			 () -> assertThat(order.getId()).isNotBlank(),
+			 () -> assertThat(order.getNo()).isNotBlank(),
 			 () -> assertThat(order.getStatus()).isEqualTo(OrderStatus.COMPLETED)
 		);
 		Awaitility.await()

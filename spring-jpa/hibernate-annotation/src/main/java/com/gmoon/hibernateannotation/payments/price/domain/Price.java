@@ -28,20 +28,20 @@ public class Price implements Serializable {
 
 	@EqualsAndHashCode.Include
 	@Id
-	@Column(name = "id")
+	@Column
 	private String productId;
 
 	@ToString.Exclude
 	@MapsId
 	@OneToOne(optional = false)
-	@JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(insertable = false, updatable = false)
 	private Product product;
 
 	@Column(name = "price")
 	private Double price;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "currency")
+	@Column
 	private Currency currency;
 
 	@Builder

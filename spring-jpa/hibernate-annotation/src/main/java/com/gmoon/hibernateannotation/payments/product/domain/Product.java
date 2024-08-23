@@ -35,14 +35,15 @@ public abstract class Product implements Serializable {
 
 	@Id
 	@UuidGenerator
+	@Column(length = 50)
 	@EqualsAndHashCode.Include
 	private String id;
 
-	@Column(name = "name")
+	@Column
 	private String name;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "type")
+	@Column
 	private ProductType type;
 
 	@OneToOne(mappedBy = "product", optional = false, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,5 +1,7 @@
 package com.gmoon.hibernateenvers.global.config;
 
+import java.util.Objects;
+
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -12,7 +14,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,6 @@ public class JpaConfig {
 		SessionFactoryImpl sessionFactory = entityManagerFactory.unwrap(SessionFactoryImpl.class);
 		EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
 
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		RevisionHistoryEventListener revisionHistoryEventListener = new RevisionHistoryEventListener(entityManager);
-		registry.appendListeners(EventType.POST_COMMIT_INSERT, revisionHistoryEventListener);
+		Objects.requireNonNull(registry).appendListeners(EventType.POST_COMMIT_INSERT, new RevisionHistoryEventListener());
 	}
 }

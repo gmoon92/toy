@@ -2,40 +2,22 @@ package com.gmoon.hibernateannotation.members.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import jakarta.persistence.EntityManager;
+import com.gmoon.hibernateannotation.base.BaseRepositoryTest;
 
-@DataJpaTest
-class MemberRepositoryTest {
+class MemberRepositoryTest extends BaseRepositoryTest {
 
 	@Autowired
-	private MemberRepository memberRepository;
-
-	@Autowired
-	private EntityManager entityManager;
+	private MemberRepository repository;
 
 	@Test
-	void testDelete() {
-		// given
-		Member newbie = new Member();
-		Member savedMember = memberRepository.save(newbie);
+	void test() {
+		Member savedMember = repository.saveAndFlush(new Member());
 
-		// when
-		memberRepository.delete(savedMember);
-		flushAndClear();
+		repository.delete(savedMember);
 
-		// then
-		assertThat(memberRepository.findById(savedMember.getId()))
-			 .isEqualTo(Optional.empty());
-	}
-
-	private void flushAndClear() {
-		entityManager.flush();
-		entityManager.clear();
+		assertThat(repository.findById(savedMember.getId())).isNotPresent();
 	}
 }

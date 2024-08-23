@@ -28,11 +28,11 @@ public class User implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	@EqualsAndHashCode.Include
 	private String id;
 
-	@Column(name = "username", length = 20)
+	@Column(length = 20)
 	private String username;
 
 	@ManyToOne

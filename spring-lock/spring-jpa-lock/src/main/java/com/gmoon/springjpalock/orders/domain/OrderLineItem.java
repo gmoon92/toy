@@ -34,7 +34,7 @@ public class OrderLineItem implements Serializable {
 	@JoinColumn(name = "menu_id", referencedColumnName = "id")
 	private Menu menu;
 
-	@Column(name = "quantity", nullable = false)
+	@Column(nullable = false)
 	private long quantity;
 
 	@Builder

@@ -1,5 +1,10 @@
 package com.gmoon.dbrestore.web.movies.domain;
 
+import java.io.Serializable;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,10 +19,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_coupon")
@@ -36,7 +37,7 @@ public class Coupon implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Movie movie;
 
-	@Column(name = "used", nullable = false)
+	@Column(nullable = false)
 	private boolean used;
 
 	@Builder

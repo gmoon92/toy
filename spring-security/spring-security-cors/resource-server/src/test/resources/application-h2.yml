@@ -27,6 +27,7 @@ spring:
         "[jdbc.time_zone]": UTC
 #        show-sql: *show-sql
 #        format_sql: *show-sql
+#        highlight_sql: *show-sql
 #        use_sql_comments: *show-sql
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization

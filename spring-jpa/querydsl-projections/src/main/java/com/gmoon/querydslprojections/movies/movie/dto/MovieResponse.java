@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.querydsl.core.annotations.QueryProjection;
 
-import com.gmoon.querydslprojections.movies.movie.domain.FilmRatings;
+import com.gmoon.querydslprojections.movies.movie.domain.FilmRating;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieGenre;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieReleaseTime;
 
@@ -23,18 +23,18 @@ public class MovieResponse {
 	private String id;
 	private String movieName;
 	private MovieGenre genre;
-	private FilmRatings filmRatings;
+	private FilmRating filmRating;
 	private String directorName;
 	private List<String> castNames;
 	private Long releaseDateTime;
 
 	@QueryProjection
 	public MovieResponse(String id, String movieName, MovieGenre genre,
-		 FilmRatings filmRatings, String movieDirectorName, MovieReleaseTime movieReleaseTime) {
+		 FilmRating filmRating, String movieDirectorName, MovieReleaseTime movieReleaseTime) {
 		this.id = id;
 		this.movieName = movieName;
 		this.genre = genre;
-		this.filmRatings = filmRatings;
+		this.filmRating = filmRating;
 		this.directorName = movieDirectorName;
 		this.releaseDateTime = movieReleaseTime.toSeconds();
 	}

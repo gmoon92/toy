@@ -11,7 +11,7 @@ import jakarta.persistence.InheritanceType;
 @DiscriminatorValue("CUSTOM")
 public class MemberCustom extends Member {
 
-	@Column(name = "access_account_fail_count")
+	@Column
 	private String accessAccountFailCount;
 
 }

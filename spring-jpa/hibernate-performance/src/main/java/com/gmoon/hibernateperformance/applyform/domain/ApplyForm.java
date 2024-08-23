@@ -3,12 +3,14 @@ package com.gmoon.hibernateperformance.applyform.domain;
 import com.gmoon.hibernateperformance.global.base.EntityId;
 import com.gmoon.hibernateperformance.member.domain.Member;
 import com.gmoon.hibernateperformance.team.domain.Team;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -28,11 +30,13 @@ public class ApplyForm {
 	private Id id = new Id();
 
 	@ToString.Exclude
+	@MapsId("memberId")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_id", insertable = false, updatable = false)
 	private Member member;
 
 	@ToString.Exclude
+	@MapsId("teamId")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "team_id", insertable = false, updatable = false)
 	private Team team;
@@ -74,15 +78,15 @@ public class ApplyForm {
 
 		private static final long serialVersionUID = -4188030215536759764L;
 
-		@Column(name = "member_id")
-		private Long member;
+		@Column
+		private Long memberId;
 
-		@Column(name = "team_id")
-		private Long team;
+		@Column
+		private Long teamId;
 
-		Id(Member member, Team team) {
-			this.member = member.getId();
-			this.team = team.getId();
+		Id(Member memberId, Team teamId) {
+			this.memberId = memberId.getId();
+			this.teamId = teamId.getId();
 		}
 	}
 

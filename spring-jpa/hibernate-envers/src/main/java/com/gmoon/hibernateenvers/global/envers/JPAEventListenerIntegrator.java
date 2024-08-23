@@ -9,24 +9,23 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 import com.gmoon.hibernateenvers.global.envers.listener.RevisionHistoryEventListener;
 
-import jakarta.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class JPAEventListenerIntegrator implements Integrator {
 
 	@Override
-	public void integrate(Metadata metadata,
+	public void integrate(
+		 Metadata metadata,
 		 SessionFactoryImplementor sessionFactory,
-		 SessionFactoryServiceRegistry serviceRegistry) {
+		 SessionFactoryServiceRegistry serviceRegistry
+	) {
 		final EventListenerRegistry listenerRegistry = serviceRegistry.getService(EventListenerRegistry.class);
-		EntityManager em = sessionFactory.createEntityManager();
-		listenerRegistry.appendListeners(EventType.POST_COMMIT_INSERT, new RevisionHistoryEventListener(em));
+		// EntityManager em = sessionFactory.createEntityManager();
+		listenerRegistry.appendListeners(EventType.POST_COMMIT_INSERT, new RevisionHistoryEventListener());
 	}
 
 	@Override
-	public void disintegrate(SessionFactoryImplementor sessionFactoryImplementor,
-		 SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
-
+	public void disintegrate(
+		 SessionFactoryImplementor sessionFactoryImplementor,
+		 SessionFactoryServiceRegistry sessionFactoryServiceRegistry
+	) {
 	}
 }

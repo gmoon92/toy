@@ -23,13 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 
-	private final EntityManager em;
+	private final EntityManager entityManager;
 
-	protected AuditReader getAuditReader() {
-		return AuditReaderFactory.get(em);
+	private AuditReader getAuditReader() {
+		return AuditReaderFactory.get(entityManager);
 	}
 
-	protected AuditQueryCreator getAuditQuery() {
+	private AuditQueryCreator getAuditQuery() {
 		return getAuditReader().createQuery();
 	}
 

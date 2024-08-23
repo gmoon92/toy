@@ -25,10 +25,10 @@ public class Member implements Serializable {
 	@GeneratedValue
 	private Long id;
 
-	@Column(name = "email", unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
 	private String email;
 
-	@Column(name = "password", nullable = false)
+	@Column(nullable = false)
 	private String password;
 
 	private Member(String email, String password) {

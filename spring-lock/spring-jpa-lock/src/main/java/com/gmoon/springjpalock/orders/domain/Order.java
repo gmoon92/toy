@@ -40,11 +40,11 @@ public class Order implements Serializable {
 	@Column(length = 50)
 	private String no;
 
-	@Column(name = "address", length = 50)
+	@Column(length = 50)
 	private String address;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status", length = 50)
+	@Column(length = 50)
 	private OrderStatus status;
 
 	@Version
@@ -53,7 +53,7 @@ public class Order implements Serializable {
 
 	@ColumnDefault("0")
 	@OptimisticLock(excluded = true)
-	@Column(name = "issued_count")
+	@Column
 	private Long issuedCount;
 
 	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

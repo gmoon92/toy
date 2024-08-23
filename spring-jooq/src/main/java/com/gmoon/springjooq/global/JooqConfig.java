@@ -3,6 +3,7 @@ package com.gmoon.springjooq.global;
 import javax.sql.DataSource;
 
 import org.jooq.ConnectionProvider;
+import org.jooq.SQLDialect;
 import org.jooq.codegen.GenerationTool;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
@@ -13,7 +14,7 @@ import org.jooq.meta.jaxb.Generator;
 import org.jooq.meta.jaxb.Jdbc;
 import org.jooq.meta.jaxb.Target;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.jooq.JooqExceptionTranslator;
+import org.springframework.boot.autoconfigure.jooq.ExceptionTranslatorExecuteListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -60,7 +61,6 @@ public class JooqConfig {
 							.withPackageName("com.gmoon.springjooq.global.jooqschema")
 				  )
 			 );
-
 		GenerationTool.generate(configuration);
 	}
 
@@ -76,9 +76,11 @@ public class JooqConfig {
 	}
 
 	private org.jooq.Configuration configuration(ConnectionProvider connectionProvider) {
-		DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
-		jooqConfiguration.set(connectionProvider);
-		jooqConfiguration.set(new DefaultExecuteListenerProvider(new JooqExceptionTranslator()));
-		return jooqConfiguration;
+		DefaultConfiguration config = new DefaultConfiguration();
+		config.setConnectionProvider(connectionProvider);
+		config.setExecuteListenerProvider(
+			 new DefaultExecuteListenerProvider(ExceptionTranslatorExecuteListener.DEFAULT));
+		config.setSQLDialect(SQLDialect.valueOf(environment.getProperty("jooq.properties.direct")));
+		return config;
 	}
 }

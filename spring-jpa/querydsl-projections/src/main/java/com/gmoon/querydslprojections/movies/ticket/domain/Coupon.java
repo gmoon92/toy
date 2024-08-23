@@ -23,7 +23,7 @@ public class Coupon implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
 	private LocalDateTime expireDt;

@@ -46,10 +46,10 @@ public class Movie implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	private String id;
 
-	@Column(name = "name", length = 100, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String name;
 
 	@OneToOne(mappedBy = "movie", optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -61,15 +61,15 @@ public class Movie implements Serializable {
 
 	@Builder.Default
 	@Enumerated(EnumType.STRING)
-	@Column(name = "genre", length = 50, nullable = false)
+	@Column(length = 50, nullable = false)
 	private MovieGenre genre = MovieGenre.ACTION;
 
 	@Builder.Default
 	@Enumerated(EnumType.STRING)
-	@Column(name = "film_rating", length = 50, nullable = false)
-	private FilmRatings filmRatings = FilmRatings.G;
+	@Column(length = 50, nullable = false)
+	private FilmRating filmRating = FilmRating.G;
 
-	@Column(name = "running_minutes")
+	@Column
 	private long runningMinutes;
 
 	@Embedded

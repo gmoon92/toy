@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum FilmRatings {
+public enum FilmRating {
 	G("General Audience"),
 	PG("Parental Guidance suggested"),
 	PG_13("Parents strongly cautioned"),

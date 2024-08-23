@@ -1,6 +1,13 @@
 package com.gmoon.dbrestore.web.movies.domain;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.gmoon.dbrestore.web.movies.domain.vo.TicketType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,11 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "tb_ticket")
@@ -39,10 +41,10 @@ public class Ticket implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TicketOffice ticketOffice;
 
-	@Column(name = "selling_price", nullable = false)
+	@Column(nullable = false)
 	private BigDecimal sellingPrice;
 
-	@Column(name = "type", length = 50, nullable = false)
+	@Column(length = 50, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private TicketType type;
 

@@ -29,18 +29,18 @@ public class BookStoreBook extends AuditedEntityObject<String> {
 	@UuidGenerator
 	private String id;
 
-	@Column(name = "book_id", nullable = false)
+	@Column(nullable = false)
 	private String bookId;
 
-	@Column(name = "book_name")
+	@Column
 	private String bookName;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "type", nullable = false)
+	@Column(nullable = false)
 	private BookType type;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false)
+	@Column(nullable = false)
 	private BookStatus status;
 
 	@Embedded

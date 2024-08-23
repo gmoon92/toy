@@ -26,7 +26,7 @@ public class MovieService {
 			 .id(movie.getId())
 			 .movieName(movie.getName())
 			 .genre(movie.getGenre())
-			 .filmRatings(movie.getFilmRatings())
+			 .filmRating(movie.getFilmRating())
 			 .directorName(movie.getDirectorName())
 			 .releaseDateTime(movie.getReleaseTime().toSeconds())
 			 .castNames(movie.getCastMembers().stream()

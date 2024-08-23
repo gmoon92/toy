@@ -19,13 +19,13 @@ public class Product implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "product_no", length = 50)
+	@Column(length = 50)
 	private String no;
 
-	@Column(name = "name", nullable = false)
+	@Column(nullable = false)
 	private String name;
 
-	@Column(name = "price", nullable = false)
 	@ColumnDefault("0")
+	@Column(nullable = false)
 	private long price;
 }

@@ -2,9 +2,6 @@ package com.gmoon.springeventlistener.orders.order.domain.vo;
 
 import java.io.Serializable;
 
-import org.hibernate.annotations.ColumnDefault;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -17,18 +14,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class Product implements Serializable {
 
-	@Column(name = "product_no", length = 50, nullable = false)
-	private String id;
-
-	@Column(name = "product_name", length = 50, nullable = false)
+	private String no;
 	private String name;
-
-	@Column(name = "product_price", nullable = false)
-	@ColumnDefault("0")
 	private long price;
 
-	public Product(String id, String name, long price) {
-		this.id = id;
+	public Product(String no, String name, long price) {
+		this.no = no;
 		this.name = name;
 		this.price = price;
 	}

@@ -1,42 +1,45 @@
 package com.gmoon.hibernateperformance.member.repository;
 
-import static com.gmoon.hibernateperformance.member.domain.QMember.member;
-import static com.gmoon.hibernateperformance.member.domain.QMemberOption.memberOption;
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static com.gmoon.hibernateperformance.member.domain.QMember.*;
+import static com.gmoon.hibernateperformance.member.domain.QMemberOption.*;
+import static java.util.Arrays.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.gmoon.hibernateperformance.global.base.BaseRepositoryTest;
 import com.gmoon.hibernateperformance.member.domain.Member;
 import com.gmoon.hibernateperformance.member.domain.MemberOption;
 import com.gmoon.hibernateperformance.member.domain.MemberRepository;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Selection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 
 @RequiredArgsConstructor
 class MemberRepositoryTest extends BaseRepositoryTest {
 
-	private final MemberRepository memberRepository;
+	private final MemberRepository repository;
 
 	@BeforeEach
 	void setUp() {
 		log.debug("Database data setup start...");
-		memberRepository.deleteAllInBatch();
-		memberRepository.saveAllAndFlush(
+		repository.deleteAllInBatch();
+		repository.saveAllAndFlush(
 			 asList(
 				  Member.newInstance("kim"),
 				  Member.newInstance("lee"),
@@ -83,7 +86,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 	@DisplayName("연관 관계 맵핑 설정 - @OneToOne(optional = false)")
 	@Test
 	void oneToOneLazy() {
-		Member member = memberRepository.findByName("gmoon");
+		Member member = repository.findByName("gmoon");
 		member.enabled();
 
 		assertThat(member.getMemberOption())
@@ -93,14 +96,14 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 	@Test
 	@DisplayName("@Query fetch join")
 	void fetchJoinQueryAnnotation() {
-		assertThatCode(memberRepository::findAllOfJpqlQuery)
+		assertThatCode(repository::findAllOfJpqlQuery)
 			 .doesNotThrowAnyException();
 	}
 
 	@DisplayName("findAll n+1")
 	@Test
 	void nPlusOneWhenSpringDataJpaFindAll() {
-		assertThatCode(memberRepository::findAll)
+		assertThatCode(repository::findAll)
 			 .doesNotThrowAnyException();
 	}
 
@@ -129,17 +132,17 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 	@DisplayName("대상 테이블 OneToOne 저장")
 	@Test
 	void saveMemberOption() {
-		Member member = memberRepository.findByName("gmoon");
+		Member member = repository.findByName("gmoon");
 		member.enabled();
 
-		assertThatCode(() -> memberRepository.save(member))
+		assertThatCode(() -> repository.save(member))
 			 .doesNotThrowAnyException();
 	}
 
 	@DisplayName("update where sub-query")
 	@Test
 	void bulkUpdateRetireMembers() {
-		assertThatCode(memberRepository::bulkUpdateRetireMembers)
+		assertThatCode(repository::bulkUpdateRetireMembers)
 			 .doesNotThrowAnyException();
 	}
 
@@ -183,7 +186,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 		@DisplayName("SpringDataJPA - @EntityGraph")
 		@Test
 		void springDataJpa() {
-			assertThatCode(memberRepository::findAllOfEntityGraph)
+			assertThatCode(repository::findAllOfEntityGraph)
 				 .doesNotThrowAnyException();
 		}
 	}
@@ -275,7 +278,7 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 		@DisplayName("@EntityGraph - 식별 관계 주 테이블(Member) OneToOne 양방향 관계")
 		@Test
 		void whenEntityGraph() {
-			assertThatCode(() -> memberRepository.findByName("gmoon"))
+			assertThatCode(() -> repository.findByName("gmoon"))
 				 .doesNotThrowAnyException();
 		}
 	}
@@ -285,13 +288,13 @@ class MemberRepositoryTest extends BaseRepositoryTest {
 
 		@Test
 		void queryDsl() {
-			assertThatCode(memberRepository::findAllOfQueryDsl)
+			assertThatCode(repository::findAllOfQueryDsl)
 				 .doesNotThrowAnyException();
 		}
 
 		@Test
 		void queryDslWithProjection() {
-			assertThatCode(memberRepository::findAllOfQueryDslWithProjection)
+			assertThatCode(repository::findAllOfQueryDslWithProjection)
 				 .doesNotThrowAnyException();
 		}
 	}

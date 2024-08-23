@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.gmoon.querydslprojections.global.Fixtures;
-import com.gmoon.querydslprojections.movies.movie.domain.FilmRatings;
+import com.gmoon.querydslprojections.movies.movie.domain.FilmRating;
 import com.gmoon.querydslprojections.movies.movie.domain.InMemoryMovieRepository;
 import com.gmoon.querydslprojections.movies.movie.domain.Movie;
 import com.gmoon.querydslprojections.movies.movie.domain.MovieGenre;
@@ -35,7 +35,7 @@ class MovieServiceTest {
 			 .hasFieldOrPropertyWithValue("id", movie.getId())
 			 .hasFieldOrPropertyWithValue("movieName", movie.getName())
 			 .hasFieldOrPropertyWithValue("genre", movie.getGenre())
-			 .hasFieldOrPropertyWithValue("filmRatings", movie.getFilmRatings())
+			 .hasFieldOrPropertyWithValue("filmRating", movie.getFilmRating())
 			 .hasFieldOrPropertyWithValue("directorName", movie.getDirectorName())
 			 .hasFieldOrProperty("castNames")
 			 .hasFieldOrProperty("releaseDateTime")
@@ -50,7 +50,7 @@ class MovieServiceTest {
 		return Fixtures.newMovie()
 			 .withName("Harry Potter")
 			 .withGenre(MovieGenre.FICTION)
-			 .withFilmRatings(FilmRatings.G)
+			 .withFilmRating(FilmRating.G)
 			 .create()
 			 .chooseDirector(director("Alfonso Cuaron"))
 			 .castingActor(actor("Daniel Radcliffe"))

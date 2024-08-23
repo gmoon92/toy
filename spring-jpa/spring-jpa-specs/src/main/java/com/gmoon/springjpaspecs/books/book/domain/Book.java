@@ -25,11 +25,11 @@ import lombok.Getter;
 public class Book extends EntityObject<String> {
 
 	@Id
-	@Column(name = "id")
+	@Column
 	private String id;
 
 	@EqualsAndHashCode.Include
-	@Column(name = "isbn", nullable = false, length = 16)
+	@Column(nullable = false, length = 16)
 	private String isbn;
 
 	@Embedded
@@ -38,7 +38,7 @@ public class Book extends EntityObject<String> {
 	@Embedded
 	private BookPrice price;
 
-	@Column(name = "publication_date")
+	@Column
 	private LocalDateTime publicationDate;
 
 	protected Book() {

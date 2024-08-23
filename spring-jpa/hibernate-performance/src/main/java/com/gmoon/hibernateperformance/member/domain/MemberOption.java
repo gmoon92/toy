@@ -23,7 +23,7 @@ import lombok.ToString;
 public class MemberOption {
 
 	@Id
-	@Column(name = "member_id")
+	@Column
 	private Long memberId;
 
 	@MapsId
@@ -38,7 +38,7 @@ public class MemberOption {
 	})
 	private Enabled enabled;
 
-	@Column(name = "retired")
+	@Column
 	private boolean retired;
 
 	static MemberOption defaultOption(Member member) {

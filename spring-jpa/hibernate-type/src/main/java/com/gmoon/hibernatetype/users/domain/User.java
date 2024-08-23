@@ -42,12 +42,12 @@ public class User implements Serializable {
 		 read = ColumnEncryptionConstants.DEC_EMAIL,
 		 write = ColumnEncryptionConstants.ENC_COLUMN
 	)
-	@Column(length = 200, name = "email")
+	@Column(length = 200)
 	private String email;
 
 	// @Type(type = "com.gmoon.hibernatetype.global.type.EncryptStringType")
 	@Type(EncryptedStringType.class)
-	@Column(length = 200, name = "enc_email")
+	@Column(length = 200)
 	private String encEmail;
 
 	@Builder

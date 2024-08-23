@@ -1,6 +1,8 @@
 package com.gmoon.hibernateenvers.revision;
 
-import java.util.Date;
+import static com.gmoon.hibernateenvers.revision.domain.QRevisionHistory.*;
+import static com.gmoon.hibernateenvers.revision.domain.QRevisionHistoryDetail.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +17,6 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 
-import com.gmoon.hibernateenvers.revision.domain.QRevisionHistory;
-import com.gmoon.hibernateenvers.revision.domain.QRevisionHistoryDetail;
 import com.gmoon.hibernateenvers.revision.domain.RevisionHistoryDetail;
 import com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
@@ -40,60 +40,50 @@ public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslReposit
 
 	@Override
 	public void updateEventStatus(Long id, RevisionEventStatus eventStatus) {
-		QRevisionHistoryDetail qHistoryDetail = QRevisionHistoryDetail.revisionHistoryDetail;
-
-		new JPAUpdateClause(entityManager, qHistoryDetail)
-			 .set(qHistoryDetail.revisionEventStatus, eventStatus)
-			 .where(qHistoryDetail.id.eq(id))
+		new JPAUpdateClause(entityManager, revisionHistoryDetail)
+			 .set(revisionHistoryDetail.status, eventStatus)
+			 .where(revisionHistoryDetail.id.eq(id))
 			 .execute();
 	}
 
 	@Override
 	public Optional<RevisionHistoryDetail> findPreRevisionHistoryDetail(RevisionHistoryDetail detail) {
-		QRevisionHistory history = QRevisionHistory.revisionHistory;
-		QRevisionHistoryDetail historyDetail = QRevisionHistoryDetail.revisionHistoryDetail;
-
-		JPAQuery<RevisionHistoryDetail> query = new JPAQuery(entityManager);
-		query.select(historyDetail)
-			 .from(history)
-			 .innerJoin(history.details, historyDetail)
-			 .where(historyDetail.revision.id.eq(JPAExpressions.select(history.id.max())
-				  .from(history)
-				  .innerJoin(history.details, historyDetail)
-				  .where(historyDetail.entityId.eq(detail.getEntityId())
-					   .and(historyDetail.revisionTarget.eq(detail.getRevisionTarget()))
-					   .and(historyDetail.revision.id.lt(detail.getRevision().getId())))));
+		JPAQuery<RevisionHistoryDetail> query = new JPAQuery<>(entityManager);
+		query.select(revisionHistoryDetail)
+			 .from(revisionHistory)
+			 .innerJoin(revisionHistory.details, revisionHistoryDetail)
+			 .where(revisionHistoryDetail.revision.id.eq(JPAExpressions.select(revisionHistory.id.max())
+				  .from(revisionHistory)
+				  .innerJoin(revisionHistory.details, revisionHistoryDetail)
+				  .where(revisionHistoryDetail.entityId.eq(detail.getEntityId())
+					   .and(revisionHistoryDetail.target.eq(detail.getTarget()))
+					   .and(revisionHistoryDetail.revision.id.lt(detail.getRevision().getId())))));
 		return Optional.ofNullable(query.fetchOne());
 	}
 
 	@Override
 	public List<RevisionHistoryDetail> findAllByRevisionAndTarget(Long revisionNumber, RevisionTarget target) {
-		QRevisionHistoryDetail historyDetail = QRevisionHistoryDetail.revisionHistoryDetail;
-
 		JPAQuery<RevisionHistoryDetail> query = new JPAQuery(entityManager);
-		return query.select(historyDetail)
-			 .from(historyDetail)
-			 .where(historyDetail.revision.id.eq(revisionNumber)
-				  .and(historyDetail.revisionTarget.eq(target)))
+		return query.select(revisionHistoryDetail)
+			 .from(revisionHistoryDetail)
+			 .where(revisionHistoryDetail.revision.id.eq(revisionNumber)
+				  .and(revisionHistoryDetail.target.eq(target)))
 			 .fetch();
 	}
 
 	@Override
 	public Page<RevisionListVO.DataVO> findAllBySearchVO(RevisionListVO.SearchVO searchVO) {
-		QRevisionHistory history = QRevisionHistory.revisionHistory;
-		QRevisionHistoryDetail historyDetail = QRevisionHistoryDetail.revisionHistoryDetail;
-
-		JPAQuery<RevisionListVO.DataVO> query = new JPAQuery(entityManager);
+		JPAQuery<RevisionListVO.DataVO> query = new JPAQuery<>(entityManager);
 
 		Pageable pageable = searchVO.getPageable();
-		query.select(new QRevisionListVO_DataVO(history.id, history.createdDt
-				  , history.updatedBy, history.updatedByUsername
-				  , historyDetail.revisionTarget, historyDetail.entityId
-				  , historyDetail.targetMemberName))
-			 .from(history)
-			 .innerJoin(history.details, historyDetail)
-			 .where(historyDetail.revisionEventStatus.eq(RevisionEventStatus.DIRTY_CHECKING)
-				  .and(historyDetail.revisionType.eq(RevisionType.MOD))
+		query.select(new QRevisionListVO_DataVO(revisionHistory.id, revisionHistory.createdDt
+				  , revisionHistory.updatedBy, revisionHistory.updatedByUsername
+				  , revisionHistoryDetail.target, revisionHistoryDetail.entityId
+				  , revisionHistoryDetail.targetMemberName))
+			 .from(revisionHistory)
+			 .innerJoin(revisionHistory.details, revisionHistoryDetail)
+			 .where(revisionHistoryDetail.status.eq(RevisionEventStatus.DIRTY_CHECKING)
+				  .and(revisionHistoryDetail.type.eq(RevisionType.MOD))
 				  .and(getSearchCondition(searchVO)));
 
 		List<RevisionListVO.DataVO> list = getQuerydsl().applyPagination(pageable, query).fetch();
@@ -102,29 +92,20 @@ public class RevisionHistoryDetailRepositoryQueryDslImpl extends QuerydslReposit
 
 	private BooleanBuilder getSearchCondition(RevisionListVO.SearchVO search) {
 		BooleanBuilder builder = new BooleanBuilder();
-
-		QRevisionHistory history = QRevisionHistory.revisionHistory;
-		QRevisionHistoryDetail historyDetail = QRevisionHistoryDetail.revisionHistoryDetail;
-
-		Date startDt = search.getStartDt();
-		Date endDt = search.getEndDt();
-
-		if (startDt != null)
-			builder.and(history.createdDt.goe(startDt));
-
-		if (endDt != null)
-			builder.and(history.createdDt.loe(endDt));
-
-		String searchKeyword = StringUtils.defaultString(search.getSearchKeyword());
-		RevisionListVO.SearchVO.SearchType keywordCondition = search.getSearchType();
-		switch (keywordCondition) {
-			case MEMBER_NAME:
-				builder.and(history.updatedByUsername.contains(searchKeyword));
-				break;
-			case TARGET_MEMBER_NAME:
-				builder.and(historyDetail.targetMemberName.contains(searchKeyword));
-				break;
+		if (search.getStartDt() != null) {
+			builder.and(revisionHistory.createdDt.goe(search.getStartDt()));
 		}
-		return builder;
+
+		if (search.getEndDt() != null) {
+			builder.and(revisionHistory.createdDt.loe(search.getEndDt()));
+		}
+
+		String keyword = StringUtils.defaultString(search.getSearchKeyword());
+		RevisionListVO.SearchVO.SearchType searchType = search.getSearchType();
+		return switch (searchType) {
+			case MEMBER_NAME -> builder.and(revisionHistory.updatedByUsername.contains(keyword));
+			case TARGET_MEMBER_NAME -> builder.and(revisionHistoryDetail.targetMemberName.contains(keyword));
+			default -> builder;
+		};
 	}
 }

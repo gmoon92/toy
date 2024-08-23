@@ -24,5 +24,6 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
 #        show_sql: *show-sql
 #        format_sql: *show-sql
+#        highlight_sql: *show-sql
 #        use_sql_comments: *show-sql
         "[hbm2ddl.auto]": create-drop

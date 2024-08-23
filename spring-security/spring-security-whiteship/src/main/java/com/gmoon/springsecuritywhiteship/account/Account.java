@@ -40,19 +40,19 @@ public class Account implements UserDetails {
 	private AccountRole role;
 
 	@ColumnDefault("1")
-	@Column(name = "enabled", nullable = false)
+	@Column(nullable = false)
 	private boolean enabled;
 
 	@ColumnDefault("0")
-	@Column(name = "credentials_expired", nullable = false)
+	@Column(nullable = false)
 	private boolean credentialsExpired;
 
 	@ColumnDefault("0")
-	@Column(name = "account_locked", nullable = false)
+	@Column(nullable = false)
 	private boolean accountLocked;
 
 	@ColumnDefault("0")
-	@Column(name = "account_expired", nullable = false)
+	@Column(nullable = false)
 	private boolean accountExpired;
 
 	Account(String username, String password, AccountRole accountRole) {

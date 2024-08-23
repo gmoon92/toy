@@ -10,5 +10,3 @@ INSERT INTO Price(id, currency, price) VALUES (0, 'WON', 20000);
 INSERT INTO Price(id, currency, price) VALUES (1, 'WON', 10000);
 INSERT INTO Price(id, currency, price) VALUES (2, 'WON', 5000);
 INSERT INTO Price(id, currency, price) VALUES (3, 'WON', 0);
-
-

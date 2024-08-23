@@ -31,7 +31,7 @@ public class BookStore extends EntityObject {
 	@UuidGenerator
 	private String id;
 
-	@Column(name = "name", nullable = false)
+	@Column(nullable = false)
 	private String name;
 
 	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

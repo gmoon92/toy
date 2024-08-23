@@ -1,5 +1,10 @@
 package com.gmoon.dbrestore.web.movies.domain;
 
+import java.io.Serializable;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
@@ -15,10 +20,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_movie_ticket")
@@ -55,10 +56,10 @@ public class MovieTicket implements Serializable {
 	@EqualsAndHashCode
 	static class Id implements Serializable {
 
-		@Column(name = "movie_id")
+		@Column
 		private Long movieId;
 
-		@Column(name = "ticket_id")
+		@Column
 		private Long ticketId;
 
 		public Id(Movie movie, Ticket ticket) {

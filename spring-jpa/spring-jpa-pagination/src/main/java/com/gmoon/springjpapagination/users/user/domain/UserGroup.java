@@ -28,11 +28,11 @@ public class UserGroup implements Serializable {
 
 	@Id
 	@UuidGenerator
-	@Column(name = "id", length = 50)
+	@Column(length = 50)
 	@EqualsAndHashCode.Include
 	private String id;
 
-	@Column(name = "name", length = 50)
+	@Column(length = 50)
 	private String name;
 
 	@ManyToOne

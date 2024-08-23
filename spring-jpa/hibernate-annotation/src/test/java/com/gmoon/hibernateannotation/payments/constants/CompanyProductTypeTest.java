@@ -9,7 +9,7 @@ import com.gmoon.hibernateannotation.payments.product.domain.vo.ProductType;
 class CompanyProductTypeTest {
 
 	@Test
-	void testIsUpgradeAndDownGrade() {
+	void upgradeAndDownGrade() {
 		// given
 		ProductType productType = ProductType.BUSINESS;
 

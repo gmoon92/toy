@@ -32,7 +32,7 @@ public class GroupUser implements Serializable {
 	@ToString.Include
 	private String id;
 
-	@Column(name = "user_id", length = 50, nullable = false, updatable = false)
+	@Column(length = 50, nullable = false, updatable = false)
 	private String userId;
 
 	@ManyToOne(optional = false)

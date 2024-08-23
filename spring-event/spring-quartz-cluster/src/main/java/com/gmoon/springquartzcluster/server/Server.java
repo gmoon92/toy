@@ -45,7 +45,7 @@ public class Server {
 	@Column(nullable = false)
 	private String name;
 
-	@Column(name = "host", nullable = false)
+	@Column(nullable = false)
 	private String publicHost;
 
 	@Column(nullable = false)

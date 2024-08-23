@@ -13,11 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 class AccessLogRepositoryQueryTest {
 
 	@Autowired
-	private AccessLogRepositoryQuery accessLogRepositoryQuery;
+	private AccessLogRepositoryQuery repository;
 
 	@Test
 	void findAllByUsername() {
-		assertThat(accessLogRepositoryQuery.findAllByUsername("admin"))
+		assertThat(repository.findAllByUsername("admin"))
 			 .isNotEmpty();
 	}
 }

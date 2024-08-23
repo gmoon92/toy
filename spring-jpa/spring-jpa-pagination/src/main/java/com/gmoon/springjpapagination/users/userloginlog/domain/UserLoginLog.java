@@ -47,7 +47,7 @@ public class UserLoginLog implements Serializable {
 	private String attemptIp;
 
 	@CreatedDate
-	@Column(name = "attempt_dt", updatable = false)
+	@Column(updatable = false)
 	private LocalDateTime attemptDt;
 
 	@ColumnDefault("0")
