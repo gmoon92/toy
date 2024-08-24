@@ -1,7 +1,5 @@
 package com.gmoon.springjpaspecs.books.bookstore.dto;
 
-import java.time.LocalDateTime;
-
 import com.querydsl.core.annotations.QueryProjection;
 
 import com.gmoon.springjpaspecs.books.book.domain.Book;
@@ -22,7 +20,7 @@ public class BookStoreContentResponse {
 	private final BookName bookName;
 	private final BookPrice bookPrice;
 	private final BookQuantity bookQuantity;
-	private final LocalDateTime createdDateTime;
+	private final long createdDateTime;
 
 	@QueryProjection
 	public BookStoreContentResponse(Book book, BookStoreBook bookStoreBook) {
@@ -32,6 +30,6 @@ public class BookStoreContentResponse {
 		this.bookName = book.getName();
 		this.bookPrice = book.getPrice();
 		this.bookQuantity = bookStoreBook.getQuantity();
-		this.createdDateTime = bookStoreBook.getCreatedDate();
+		this.createdDateTime = bookStoreBook.getCreatedAt().toEpochMilli();
 	}
 }

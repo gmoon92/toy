@@ -1,7 +1,7 @@
 package com.gmoon.springjpapagination.users.userloginlog.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import com.querydsl.core.annotations.QueryProjection;
@@ -25,7 +25,7 @@ public class UserLoginLogListVO extends CursorPagination {
 
 	private List<Data> list;
 
-	public record Cursor(String id, LocalDateTime attemptDt) implements Serializable {
+	public record Cursor(String id, Instant attemptAt) implements Serializable {
 	}
 
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,17 +35,17 @@ public class UserLoginLogListVO extends CursorPagination {
 		private String id;
 		private String username;
 		private AccessDevice accessDevice;
-		private LocalDateTime attemptDt;
+		private long attemptTime;
 		private String attemptIp;
 		private boolean succeed;
 
 		@QueryProjection
-		public Data(String id, String username, AccessDevice accessDevice, LocalDateTime attemptDt, String attemptIp,
+		public Data(String id, String username, AccessDevice accessDevice, Instant attemptAt, String attemptIp,
 			 boolean succeed) {
 			this.id = id;
 			this.username = username;
 			this.accessDevice = accessDevice;
-			this.attemptDt = attemptDt;
+			this.attemptTime = attemptAt.toEpochMilli();
 			this.attemptIp = attemptIp;
 			this.succeed = succeed;
 		}

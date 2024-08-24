@@ -11,7 +11,7 @@ import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
-import org.springframework.boot.autoconfigure.jooq.JooqExceptionTranslator;
+import org.springframework.boot.autoconfigure.jooq.ExceptionTranslatorExecuteListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -41,11 +41,12 @@ public class JooqConfig {
 		Settings settings = new Settings();
 		settings.setStatementType(StatementType.STATIC_STATEMENT);
 
-		DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
-		jooqConfiguration.set(connectionProvider);
-		jooqConfiguration.setSQLDialect(SQLDialect.MARIADB);
-		jooqConfiguration.setSettings(settings);
-		jooqConfiguration.set(new DefaultExecuteListenerProvider(new JooqExceptionTranslator()));
-		return jooqConfiguration;
+		DefaultConfiguration config = new DefaultConfiguration();
+		config.setConnectionProvider(connectionProvider);
+		config.setSQLDialect(SQLDialect.MARIADB);
+		config.setSettings(settings);
+		config.setExecuteListenerProvider(
+			 new DefaultExecuteListenerProvider(ExceptionTranslatorExecuteListener.DEFAULT));
+		return config;
 	}
 }

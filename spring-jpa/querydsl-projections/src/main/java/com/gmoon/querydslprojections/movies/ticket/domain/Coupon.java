@@ -1,7 +1,7 @@
 package com.gmoon.querydslprojections.movies.ticket.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -24,5 +24,5 @@ public class Coupon implements Serializable {
 	@Column(length = 50)
 	private String id;
 
-	private LocalDateTime expireDt;
+	private Instant expireAt;
 }

@@ -3,7 +3,9 @@ package com.gmoon.batchinsert.accesslogs.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -41,10 +43,11 @@ class AccessLogRepositoryTest {
 	}
 
 	@Test
-	void findAllByAttemptDtBetween() {
-		LocalDate from = LocalDate.of(2022, 1, 1);
-		LocalDate to = LocalDate.now();
+	void findAllByAttemptAtBetween() {
+		LocalDateTime from = LocalDate.of(2022, 1, 1).atStartOfDay();
+		LocalDateTime to = LocalDate.now().atTime(LocalTime.MAX);
+		ZoneOffset utc = ZoneOffset.UTC;
 
-		repository.findAllByAttemptDtBetween(from.atStartOfDay(), to.atTime(LocalTime.MAX));
+		repository.findAllByAttemptAtBetween(from.toInstant(utc), to.toInstant(utc));
 	}
 }

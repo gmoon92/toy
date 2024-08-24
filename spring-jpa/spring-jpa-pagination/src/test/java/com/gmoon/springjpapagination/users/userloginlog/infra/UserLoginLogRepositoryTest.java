@@ -12,6 +12,9 @@ import com.gmoon.springjpapagination.global.config.JpaConfig;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLogRepository;
 import com.gmoon.springjpapagination.users.userloginlog.dto.UserLoginLogListVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @DataJpaTest(
 	 includeFilters = @ComponentScan.Filter(
 		  type = FilterType.ASSIGNABLE_TYPE,
@@ -34,6 +37,7 @@ class UserLoginLogRepositoryTest {
 		do {
 			listVO = repository.getUserLoginLogListVO(listVO);
 			totalSize += listVO.getList().size();
+			log.info("listVO: {}", totalSize);
 		} while (listVO.isHasNextPage());
 
 		assertThat(totalSize)

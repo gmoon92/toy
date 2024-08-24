@@ -1,6 +1,6 @@
 package com.gmoon.springframework.member;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class MemberService {
 	}
 
 	public Member save(Member member) {
-		member.setCreatedDt(LocalDateTime.now());
+		member.setCreatedAt(Instant.now());
 		member.setStatus(MemberStatus.ENABLE);
 		return memberRepository.save(member);
 	}

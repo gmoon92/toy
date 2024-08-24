@@ -1,7 +1,7 @@
 package com.gmoon.springjooq.accesslog.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -44,7 +44,7 @@ public class AccessLog implements Serializable {
 
 	@CreatedDate
 	@Column(updatable = false)
-	private LocalDateTime attemptDt;
+	private Instant attemptAt;
 
 	protected AccessLog(String username, String ip, OperatingSystem os) {
 		this.username = username;

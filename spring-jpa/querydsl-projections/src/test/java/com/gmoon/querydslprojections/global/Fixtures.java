@@ -1,6 +1,6 @@
 package com.gmoon.querydslprojections.global;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import com.gmoon.querydslprojections.movies.movie.domain.FilmRating;
@@ -32,7 +32,7 @@ public class Fixtures {
 			 .name(name)
 			 .genre(genre)
 			 .filmRating(filmRating)
-			 .releaseTime(new MovieReleaseTime(LocalDateTime.now()))
+			 .releaseTime(new MovieReleaseTime(Instant.now()))
 			 .build();
 	}
 

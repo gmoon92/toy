@@ -8,6 +8,6 @@ CREATE TABLE tb_access_log (
                            username varchar(50) NOT NULL,
                            ip varchar(100) NOT NULL,
                            os varchar(30) NOT NULL,
-                           attempt_dt datetime NOT NULL,
+                           attempt_at datetime NOT NULL,
                            PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

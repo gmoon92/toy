@@ -1,7 +1,7 @@
 package com.gmoon.springjpapagination.users.userloginlog.domain;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UuidGenerator;
@@ -46,19 +46,19 @@ public class UserLoginLog implements Serializable {
 
 	@CreatedDate
 	@Column(updatable = false)
-	private LocalDateTime attemptDt;
+	private Instant attemptAt;
 
 	@ColumnDefault("0")
 	private Boolean succeed;
 
 	@Builder
 	private UserLoginLog(String username, AccessDevice accessDevice, String attemptIp,
-		 LocalDateTime attemptDt, Boolean succeed) {
+		 Instant attemptAt, Boolean succeed) {
 		this.id = id;
 		this.username = username;
 		this.accessDevice = accessDevice;
 		this.attemptIp = attemptIp;
-		this.attemptDt = attemptDt;
+		this.attemptAt = attemptAt;
 		this.succeed = succeed;
 	}
 }

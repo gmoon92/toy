@@ -2,7 +2,7 @@ package com.gmoon.springjpaspecs.books.book.domain;
 
 import static com.gmoon.javacore.util.StringUtils.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import com.gmoon.springjpaspecs.books.book.domain.vo.BookName;
@@ -39,7 +39,7 @@ public class Book extends EntityObject<String> {
 	private BookPrice price;
 
 	@Column
-	private LocalDateTime publicationDate;
+	private Instant publicationAt;
 
 	protected Book() {
 		id = UUID.randomUUID().toString();
@@ -47,10 +47,10 @@ public class Book extends EntityObject<String> {
 	}
 
 	@Builder
-	private Book(BookName name, BookPrice price, LocalDateTime publicationDate) {
+	private Book(BookName name, BookPrice price, Instant publicationAt) {
 		this();
 		this.name = name;
 		this.price = price;
-		this.publicationDate = publicationDate;
+		this.publicationAt = publicationAt;
 	}
 }

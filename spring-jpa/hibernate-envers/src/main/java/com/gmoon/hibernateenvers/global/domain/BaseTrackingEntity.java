@@ -1,6 +1,6 @@
 package com.gmoon.hibernateenvers.global.domain;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,12 +23,12 @@ public abstract class BaseTrackingEntity extends BaseEntity {
 	private String createdBy;
 
 	@CreatedDate
-	private LocalDateTime createdDt;
+	private Instant createdAt;
 
 	@LastModifiedBy
 	private String modifiedBy;
 
 	@LastModifiedDate
-	private LocalDateTime modifiedDt;
+	private Instant modifiedAt;
 }
 

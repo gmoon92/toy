@@ -9,7 +9,7 @@ public enum SortTargetType {
 
 	NAME("name"),
 	PRICE("price"),
-	DATE("createdDate");
+	DATE("createdAt");
 
 	private final String value;
 }

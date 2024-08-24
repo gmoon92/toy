@@ -1,6 +1,6 @@
 package com.gmoon.springtx.global.event;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEvent;
@@ -12,12 +12,12 @@ public class DeleteFavoriteEvent extends ApplicationEvent {
 
 	private String eventId;
 	private String userId;
-	private LocalDateTime issuedDt;
+	private Instant issuedAt;
 
 	public DeleteFavoriteEvent(Object source, String userId) {
 		super(source);
 		this.eventId = UUID.randomUUID().toString();
 		this.userId = userId;
-		this.issuedDt = LocalDateTime.now();
+		this.issuedAt = Instant.now();
 	}
 }

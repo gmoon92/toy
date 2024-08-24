@@ -1,6 +1,9 @@
 package com.gmoon.batchinsert.accesslogs.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -51,11 +54,13 @@ public class AccessLogExcelDownload implements Serializable {
 	}
 
 	public static AccessLogExcelDownload create(AccessLog accessLog) {
+		Instant attemptAt = accessLog.getAttemptAt();
 		return AccessLogExcelDownload.builder()
 			 .username(accessLog.getUsername())
 			 .ip(accessLog.getIp())
 			 .os(accessLog.getOs().name())
-			 .attemptDt(accessLog.getAttemptDt().format(DateTimeFormatter.BASIC_ISO_DATE))
+			 .attemptDt(
+				  LocalDateTime.ofInstant(attemptAt, ZoneId.systemDefault()).format(DateTimeFormatter.BASIC_ISO_DATE))
 			 .build();
 	}
 }

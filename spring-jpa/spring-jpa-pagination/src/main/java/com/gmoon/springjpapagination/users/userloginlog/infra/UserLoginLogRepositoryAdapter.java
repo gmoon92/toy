@@ -2,7 +2,7 @@ package com.gmoon.springjpapagination.users.userloginlog.infra;
 
 import static com.gmoon.springjpapagination.users.userloginlog.domain.QUserLoginLog.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -58,11 +58,11 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 				  new QUserLoginLogListVO_Data(
 					   userLoginLog.id,
 					   userLoginLog.username, userLoginLog.accessDevice,
-					   userLoginLog.attemptDt, userLoginLog.attemptIp, userLoginLog.succeed)
+					   userLoginLog.attemptAt, userLoginLog.attemptIp, userLoginLog.succeed)
 			 )
 			 .from(userLoginLog)
 			 .where(cursorPagination(cursor, cursorOrder))
-			 .orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
+			 .orderBy(userLoginLog.attemptAt.desc(), userLoginLog.id.desc())
 			 .limit(listVO.getPageSize());
 
 		List<UserLoginLogListVO.Data> list = query.fetch();
@@ -79,7 +79,7 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 		return factory.selectOne()
 			 .from(userLoginLog)
 			 .where(cursorPagination(cursor, cursorOrder))
-			 .orderBy(userLoginLog.attemptDt.desc(), userLoginLog.id.desc())
+			 .orderBy(userLoginLog.attemptAt.desc(), userLoginLog.id.desc())
 			 .fetchOne() != null;
 	}
 
@@ -91,7 +91,7 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 		UserLoginLogListVO.Data lastData = list.get(list.size() - 1);
 		return new UserLoginLogListVO.Cursor(
 			 lastData.getId(),
-			 lastData.getAttemptDt()
+			 Instant.ofEpochMilli(lastData.getAttemptTime())
 		);
 	}
 
@@ -102,19 +102,19 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 		}
 
 		String id = cursor.id();
-		LocalDateTime attemptDt = cursor.attemptDt();
+		Instant attemptAt = cursor.attemptAt();
 		if (Order.ASC == cursorOrder) {
-			return userLoginLog.attemptDt.gt(attemptDt)
+			return userLoginLog.attemptAt.gt(attemptAt)
 				 .orAllOf(
-					  userLoginLog.attemptDt.eq(attemptDt),
+					  userLoginLog.attemptAt.eq(attemptAt),
 					  userLoginLog.id.gt(id)
 				 );
 		}
 
 		if (Order.DESC == cursorOrder) {
-			return userLoginLog.attemptDt.lt(attemptDt)
+			return userLoginLog.attemptAt.lt(attemptAt)
 				 .orAllOf(
-					  userLoginLog.attemptDt.eq(attemptDt),
+					  userLoginLog.attemptAt.eq(attemptAt),
 					  userLoginLog.id.lt(id)
 				 );
 		}
@@ -127,6 +127,6 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 	 * */
 	@Deprecated(since = "2", forRemoval = true)
 	private StringExpression cursor() {
-		return Expressions.stringTemplate("CONCAT({0}, LPAD({1}, 50, '0'))", userLoginLog.attemptDt, userLoginLog.id);
+		return Expressions.stringTemplate("CONCAT({0}, LPAD({1}, 50, '0'))", userLoginLog.attemptAt, userLoginLog.id);
 	}
 }

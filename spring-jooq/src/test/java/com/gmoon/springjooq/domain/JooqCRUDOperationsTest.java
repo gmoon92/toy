@@ -113,7 +113,7 @@ class JooqCRUDOperationsTest {
 					String ip = accessLog.get(jAccessLog.IP);
 					TbAccessLogOs os = accessLog.get(jAccessLog.OS);
 					OperatingSystem osEnum = accessLog.get(jAccessLog.OS, OperatingSystem.class);
-					LocalDateTime attemptDt = accessLog.get(jAccessLog.ATTEMPT_DT);
+					LocalDateTime attemptDt = accessLog.get(jAccessLog.ATTEMPT_AT);
 
 					assertThat(username).isNotBlank();
 					assertThat(ip).isNotBlank();

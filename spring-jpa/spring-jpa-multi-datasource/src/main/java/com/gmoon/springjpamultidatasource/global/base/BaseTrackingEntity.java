@@ -1,7 +1,7 @@
 package com.gmoon.springjpamultidatasource.global.base;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,9 +19,9 @@ public abstract class BaseTrackingEntity implements Serializable {
 
 	@CreatedDate
 	@Column
-	private LocalDateTime createdDate;
+	private Instant createdAt;
 
 	@LastModifiedDate
 	@Column
-	private LocalDateTime modifiedDate;
+	private Instant modifiedAt;
 }

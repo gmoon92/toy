@@ -1,6 +1,6 @@
 package com.gmoon.hibernateperformance.member.domain;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -16,19 +16,19 @@ public class Enabled {
 
 	@EqualsAndHashCode.Include
 	private boolean enabled;
-	private LocalDateTime enabledDt;
+	private Instant enabledAt;
 
 	public static Enabled enabled() {
 		Enabled accountOption = new Enabled();
 		accountOption.enabled = true;
-		accountOption.enabledDt = LocalDateTime.now();
+		accountOption.enabledAt = Instant.now();
 		return accountOption;
 	}
 
 	public static Enabled disabled() {
 		Enabled accountOption = new Enabled();
 		accountOption.enabled = false;
-		accountOption.enabledDt = null;
+		accountOption.enabledAt = null;
 		return accountOption;
 	}
 }

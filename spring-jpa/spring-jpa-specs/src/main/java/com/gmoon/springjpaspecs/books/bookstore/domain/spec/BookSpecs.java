@@ -1,7 +1,7 @@
 package com.gmoon.springjpaspecs.books.bookstore.domain.spec;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.Duration;
+import java.time.Instant;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.annotations.QueryDelegate;
@@ -37,7 +37,7 @@ public class BookSpecs {
 
 	@QueryDelegate(BookStoreBook.class)
 	public static Predicate isNewBook(QBookStoreBook bookStoreBook) {
-		LocalDateTime now = LocalDateTime.now();
-		return bookStoreBook.createdDate.after(now.plus(-1, ChronoUnit.WEEKS));
+		Instant now = Instant.now();
+		return bookStoreBook.createdAt.after(now.plus(Duration.ofDays(-7)));
 	}
 }

@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +44,9 @@ public class AccessLogService {
 	private List<AccessLogExcelDownload> getAccessLogExcelDownloads(LocalDate attemptDt) {
 		LocalDateTime from = attemptDt.atStartOfDay();
 		LocalDateTime to = attemptDt.plusYears(1).atTime(LocalTime.MAX);
-		List<AccessLog> accessLogs = accessLogRepository.findAllByAttemptDtBetween(from, to);
+		ZoneOffset utc = ZoneOffset.UTC;
+		List<AccessLog> accessLogs = accessLogRepository.findAllByAttemptAtBetween(from.toInstant(utc),
+			 to.toInstant(utc));
 		return accessLogExcelDownloadRepository.bulkSaveAllAtJooq(accessLogs);
 	}
 }

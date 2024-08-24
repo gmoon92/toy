@@ -6,12 +6,12 @@ CREATE TABLE lt_user_login
     username      varchar(50),
     access_device varchar(50)  DEFAULT 'WEB',
     attempt_ip    varchar(50),
-    attempt_dt    timestamp,
+    attempt_at timestamp,
     succeed       boolean      DEFAULT 0
 );
 
 CREATE INDEX idx_username ON lt_user_login(username);
-CREATE INDEX idx_attempt_dt ON lt_user_login(attempt_dt);
+CREATE INDEX idx_attempt_at ON lt_user_login (attempt_at);
 
 
 DROP TABLE IF EXISTS tb_user_group;

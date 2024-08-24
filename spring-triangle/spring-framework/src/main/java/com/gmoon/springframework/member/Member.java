@@ -1,6 +1,6 @@
 package com.gmoon.springframework.member;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,6 @@ import lombok.Setter;
 public class Member {
 
 	private String name;
-	private LocalDateTime createdDt;
+	private Instant createdAt;
 	private MemberStatus status;
 }

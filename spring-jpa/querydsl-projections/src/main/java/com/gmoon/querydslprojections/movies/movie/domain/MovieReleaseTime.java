@@ -1,6 +1,7 @@
 package com.gmoon.querydslprojections.movies.movie.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MovieReleaseTime implements Serializable {
 
-	private LocalDateTime value;
+	private Instant value;
 
 	private int year;
 
@@ -24,15 +25,17 @@ public class MovieReleaseTime implements Serializable {
 
 	private int hour;
 
-	public MovieReleaseTime(LocalDateTime value) {
+	public MovieReleaseTime(Instant value) {
 		this.value = value;
-		this.year = value.getYear();
-		this.month = value.getMonthValue();
-		this.dayOfMonth = value.getDayOfMonth();
-		this.hour = value.getHour();
+
+		LocalDateTime ldt = LocalDateTime.ofInstant(value, ZoneOffset.UTC);
+		this.year = ldt.getYear();
+		this.month = ldt.getMonthValue();
+		this.dayOfMonth = ldt.getDayOfMonth();
+		this.hour = ldt.getHour();
 	}
 
 	public long toSeconds() {
-		return value.toEpochSecond(ZoneOffset.UTC);
+		return value.getEpochSecond();
 	}
 }
