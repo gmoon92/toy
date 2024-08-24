@@ -4,24 +4,15 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 
-import com.gmoon.springjpapagination.global.config.JpaConfig;
 import com.gmoon.springjpapagination.global.domain.BasePageable;
+import com.gmoon.springjpapagination.global.domain.RepositoryTest;
 import com.gmoon.springjpapagination.users.user.domain.UserGroupRepository;
 import com.gmoon.springjpapagination.users.user.dto.UserGroupListVO;
 
-@DataJpaTest(
-	 includeFilters = @ComponentScan.Filter(
-		  type = FilterType.ASSIGNABLE_TYPE,
-		  value = {
-			   JpaConfig.class,
-			   UserGroupRepositoryAdapter.class
-		  }
-	 )
-)
+@Import(UserGroupRepositoryAdapter.class)
+@RepositoryTest
 class UserGroupRepositoryTest {
 
 	@Autowired

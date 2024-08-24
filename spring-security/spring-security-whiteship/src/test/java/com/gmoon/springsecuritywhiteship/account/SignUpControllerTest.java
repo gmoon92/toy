@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.gmoon.javacore.util.StringUtils;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(printOnlyOnFailure = false)
 class SignUpControllerTest {
 	private static final String URL_OF_SIGNUP = "/signup";
 

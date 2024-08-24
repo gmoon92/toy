@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQuery;
 
+import com.gmoon.springjpapagination.global.domain.AbstractJpaRepository;
 import com.gmoon.springjpapagination.global.domain.BasePageable;
-import com.gmoon.springjpapagination.global.domain.BaseRepository;
 import com.gmoon.springjpapagination.users.user.domain.UserGroup;
 import com.gmoon.springjpapagination.users.user.domain.UserGroupRepository;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class UserGroupRepositoryAdapter extends BaseRepository implements UserGroupRepository {
+public class UserGroupRepositoryAdapter extends AbstractJpaRepository implements UserGroupRepository {
 
 	private final JpaUserGroupRepository repository;
 

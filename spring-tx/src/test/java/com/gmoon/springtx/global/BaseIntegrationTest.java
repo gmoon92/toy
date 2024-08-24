@@ -1,32 +1,22 @@
 package com.gmoon.springtx.global;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(printOnlyOnFailure = false)
 public abstract class BaseIntegrationTest {
 
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	@Autowired
 	protected MockMvc mockMvc;
-
-	@BeforeEach
-	void setUp(@Autowired WebApplicationContext context) {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			 .alwaysDo(MockMvcResultHandlers.print())
-			 .build();
-	}
 
 	protected void flushAndClear() {
 		entityManager.flush();

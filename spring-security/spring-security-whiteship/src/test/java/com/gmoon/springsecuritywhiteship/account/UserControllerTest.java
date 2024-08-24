@@ -23,14 +23,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.gmoon.javacore.util.StringUtils;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(printOnlyOnFailure = false)
 class UserControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-
-	@Autowired
-	private AccountRepository accountRepository;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -38,10 +35,10 @@ class UserControllerTest {
 	@Autowired
 	private AccountService accountService;
 
-	@Test
-	@DisplayName("Security Chain이랑 같은 환경에서 도는건지")
 	@WithMockUser
-	public void list() throws Exception {
+	@DisplayName("Security Chain이랑 같은 환경에서 도는건지")
+	@Test
+	void list() throws Exception {
 		// when
 		ResultActions result = mockMvc.perform(get("/user/list")
 			 .with(csrf()));

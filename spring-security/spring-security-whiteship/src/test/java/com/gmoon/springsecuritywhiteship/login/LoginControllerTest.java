@@ -5,16 +5,14 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -24,8 +22,6 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.springsecuritywhiteship.account.Account;
@@ -38,10 +34,10 @@ import com.gmoon.springsecuritywhiteship.sample.SampleService;
 
 @Import(SecurityConfig.class)
 @WebMvcTest(value = UserController.class)
+@AutoConfigureMockMvc(printOnlyOnFailure = false)
 class LoginControllerTest {
 
 	@Autowired
-	private WebApplicationContext context;
 	private MockMvc mockMvc;
 
 	@MockBean
@@ -55,14 +51,6 @@ class LoginControllerTest {
 
 	@MockBean
 	private BoardRepository boardRepository;
-
-	@BeforeEach
-	void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			 .alwaysDo(print())
-			 .apply(springSecurity())
-			 .build();
-	}
 
 	@DisplayName("/login")
 	@Nested

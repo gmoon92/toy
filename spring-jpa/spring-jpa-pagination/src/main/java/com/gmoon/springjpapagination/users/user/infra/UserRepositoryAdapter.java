@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 
+import com.gmoon.springjpapagination.global.domain.AbstractJpaRepository;
 import com.gmoon.springjpapagination.global.domain.BasePageable;
-import com.gmoon.springjpapagination.global.domain.BaseRepository;
 import com.gmoon.springjpapagination.users.user.domain.User;
 import com.gmoon.springjpapagination.users.user.domain.UserRepository;
 
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryAdapter
-	 extends BaseRepository
+	 extends AbstractJpaRepository
 	 implements UserRepository {
 
 	private final JpaUserRepository repository;

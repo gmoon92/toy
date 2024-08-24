@@ -36,5 +36,6 @@ spring:
 
 logging:
   level:
-    "[org.hibernate.SQL]": off
-    "[org.hibernate.type.descriptor.sql]": off
+    "[org.hibernate.SQL]": OFF
+    "[org.hibernate.type.descriptor.sql]": OFF
+    "[MySQL]": OFF

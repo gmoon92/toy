@@ -26,6 +26,7 @@ import com.gmoon.springjpapagination.users.user.dto.UserListVO;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -33,7 +34,6 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final UserGroupRepository userGroupRepository;
 
-	@Transactional(readOnly = true)
 	public UserContentListVO getUserContentListVO(UserContentListVO listVO) {
 		UserContentListVO.Search search = listVO.getSearch();
 
@@ -55,7 +55,6 @@ public class UserService {
 		return listVO;
 	}
 
-	@Transactional(readOnly = true)
 	public Page<User> findAll(String groupId, String keyword, Pageable pageable) {
 		Predicate predicate = user.userGroup.id.eq(groupId)
 			 .and(user.likeName(keyword));

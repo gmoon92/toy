@@ -12,9 +12,9 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.gmoon.javacore.util.CollectionUtils;
+import com.gmoon.springjpapagination.global.domain.AbstractJpaRepository;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLog;
 import com.gmoon.springjpapagination.users.userloginlog.domain.UserLoginLogRepository;
 import com.gmoon.springjpapagination.users.userloginlog.dto.QUserLoginLogListVO_Data;
@@ -27,10 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
+public class UserLoginLogRepositoryAdapter extends AbstractJpaRepository implements UserLoginLogRepository {
 
 	private final JpaUserLoginLogRepository repository;
-	private final JPAQueryFactory factory;
 
 	@Override
 	public UserLoginLog save(UserLoginLog userLoginLog) {
@@ -53,7 +52,7 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 		UserLoginLogListVO.Cursor cursor = listVO.getCursor();
 		Order cursorOrder = Order.DESC;
 
-		JPAQuery<UserLoginLogListVO.Data> query = factory
+		JPAQuery<UserLoginLogListVO.Data> query = queryFactory
 			 .select(
 				  new QUserLoginLogListVO_Data(
 					   userLoginLog.id,
@@ -76,7 +75,7 @@ public class UserLoginLogRepositoryAdapter implements UserLoginLogRepository {
 
 	private boolean hasNextPage(UserLoginLogListVO.Cursor cursor, Order cursorOrder) {
 		log.info("last row cursor: {}", cursor);
-		return factory.selectOne()
+		return queryFactory.selectOne()
 			 .from(userLoginLog)
 			 .where(cursorPagination(cursor, cursorOrder))
 			 .orderBy(userLoginLog.attemptAt.desc(), userLoginLog.id.desc())

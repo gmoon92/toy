@@ -1,37 +1,27 @@
 package com.gmoon.resourceserver.user;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
+@AutoConfigureMockMvc(printOnlyOnFailure = false)
 class UserControllerTest {
 
+	@Autowired
 	private MockMvc mockMvc;
-
-	@BeforeEach
-	void setUp(@Autowired WebApplicationContext context) {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			 .apply(springSecurity())
-			 .alwaysDo(print())
-			 .build();
-	}
 
 	@Test
 	void login() throws Exception {

@@ -1,10 +1,7 @@
 package com.gmoon.springsecurityjwt.base;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers;
@@ -15,25 +12,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.HeaderResultMatchers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @Transactional
+@AutoConfigureMockMvc(printOnlyOnFailure = false)
 public abstract class BaseSpringBootTest {
+
 	@Autowired
-	WebApplicationContext context;
-
 	protected MockMvc mockMvc;
-
-	@BeforeEach
-	void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context)
-			 .apply(springSecurity())
-			 .alwaysDo(print())
-			 .build();
-	}
 
 	public MockHttpServletRequestBuilder get(String urlTemplate, Object... uriVars) {
 		return MockMvcRequestBuilders.get(urlTemplate, uriVars);

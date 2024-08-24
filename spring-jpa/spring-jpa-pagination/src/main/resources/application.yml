@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/spring-jpa-pagination?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    url: jdbc:mysql://localhost:3306/springjpapagination?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
     username: root
     password: 111111
 
@@ -10,13 +10,15 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQLDialect
-    generate-ddl: false
+    generate-ddl: true
     show-sql: &show-sql true
+    hibernate:
+      ddl-auto: create-drop
     properties:
       hibernate:
-        "[hbm2ddl.auto]": none
+        #        "[hbm2ddl.auto]": update
         "[jdbc.time_zone]": UTC
-#        show-sql: &show-sql true
+  #        show-sql: &show-sql true
 #        format_sql: *show-sql
 #        highlight_sql: *show-sql
 #        use_sql_comments: *show-sql
@@ -29,12 +31,11 @@ spring:
       continue-on-error: false
       encoding: UTF-8
       platform: mysql
-
 #      schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
-#      data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
+      data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
 
 logging:
   level:
-    "[MYSQL]": OFF
-    "[org.hibernate.SQL]": trace
-    "[org.hibernate.type.descriptor.sql]": trace
+    "[org.hibernate.SQL]": TRACE
+    "[org.hibernate.type.descriptor.sql]": TRACE
+    "[MySQL]": OFF

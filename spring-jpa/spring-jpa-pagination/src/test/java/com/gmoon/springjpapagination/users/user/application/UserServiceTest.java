@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gmoon.springjpapagination.users.user.dto.UserContentListVO;
 import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
@@ -12,6 +13,7 @@ import com.gmoon.springjpapagination.users.user.dto.UserContentVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @SpringBootTest
 class UserServiceTest {
 
