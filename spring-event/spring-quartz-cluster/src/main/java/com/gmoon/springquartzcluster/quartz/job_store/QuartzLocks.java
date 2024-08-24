@@ -12,20 +12,18 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_LOCKS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class QuartzLocks {
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@Embeddable
-	@ToString(callSuper = true)
 	@EqualsAndHashCode(callSuper = true)
 	protected static class Id extends QuartzId {
 

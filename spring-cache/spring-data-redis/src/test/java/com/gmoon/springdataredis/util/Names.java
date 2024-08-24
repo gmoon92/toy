@@ -4,13 +4,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@EqualsAndHashCode
-@ToString
 class Names implements Serializable {
 
 	private List<String> value;

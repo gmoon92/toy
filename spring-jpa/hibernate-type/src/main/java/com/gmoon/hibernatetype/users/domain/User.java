@@ -17,18 +17,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 // @Convert(attributeName = "secure", converter = EncryptedStringType.class)
 @Entity
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
 public class User implements Serializable {
 
 	@Id

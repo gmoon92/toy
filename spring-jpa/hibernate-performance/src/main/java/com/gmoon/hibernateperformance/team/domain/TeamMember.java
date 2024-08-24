@@ -15,16 +15,15 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class TeamMember {
 
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id = new Id();
 
 	@MapsId("memberId")
@@ -46,7 +45,6 @@ public class TeamMember {
 	@Embeddable
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@EqualsAndHashCode
-	@ToString
 	public static class Id implements Serializable {
 
 		@Column(nullable = false)

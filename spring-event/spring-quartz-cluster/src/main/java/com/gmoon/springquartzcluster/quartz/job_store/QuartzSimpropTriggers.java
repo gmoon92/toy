@@ -21,10 +21,11 @@ import lombok.ToString;
 @Table(name = "QUARTZ_CRON_TRIGGERS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class QuartzSimpropTriggers {
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private QuartzTriggerId id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

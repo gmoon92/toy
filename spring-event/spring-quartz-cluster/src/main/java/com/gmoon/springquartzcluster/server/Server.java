@@ -21,7 +21,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Immutable
 @Entity
@@ -30,8 +29,7 @@ import lombok.ToString;
 	 uniqueConstraints = {@UniqueConstraint(name = "u_name_type_host", columnNames = {"name", "type", "host"})})
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@ToString
-@EqualsAndHashCode(of = {"name", "type", "host"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Server {
 	@Id
 	@GeneratedValue
@@ -39,13 +37,16 @@ public class Server {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@EqualsAndHashCode.Include
 	private ServerType type;
 
 	@ColumnDefault("'server_gmoon'")
 	@Column(nullable = false)
+	@EqualsAndHashCode.Include
 	private String name;
 
 	@Column(nullable = false)
+	@EqualsAndHashCode.Include
 	private String publicHost;
 
 	@Column(nullable = false)

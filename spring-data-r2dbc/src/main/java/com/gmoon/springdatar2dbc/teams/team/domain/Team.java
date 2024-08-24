@@ -10,18 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @org.springframework.data.relational.core.mapping.Table(name = "tb_team")
 @Entity
 @Table(name = "tb_team")
 @NoArgsConstructor
 @Getter
-@EqualsAndHashCode
-@ToString
 public class Team implements Serializable {
 
 	@Id

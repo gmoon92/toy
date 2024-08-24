@@ -3,10 +3,8 @@ package com.gmoon.awaitility.event;
 import java.util.UUID;
 
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
 public class Event {
 
 	private final UUID id;

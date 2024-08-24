@@ -21,10 +21,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_movie_director")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MovieDirector implements Serializable {
 
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id = new Id();
 
 	@MapsId("movieId")

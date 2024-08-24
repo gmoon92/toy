@@ -18,10 +18,10 @@ import lombok.ToString;
 @Table(name = "QUARTZ_SCHEDULER_STATE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class QuartzSchedulerState {
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@Column(name = "LAST_CHECKIN_TIME", length = QuartzColumnLength.LAST_CHECKIN_TIME)
@@ -31,11 +31,12 @@ public class QuartzSchedulerState {
 	private Long checkinInterval;
 
 	@Embeddable
-	@EqualsAndHashCode(callSuper = true)
+	@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 	@ToString(callSuper = true)
 	protected static class Id extends QuartzId {
 
 		@Column(name = "INSTANCE_NAME", length = QuartzColumnLength.INSTANCE_NAME)
+		@EqualsAndHashCode.Include
 		private String instanceName;
 	}
 }

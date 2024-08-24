@@ -7,15 +7,14 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "enabled")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Enabled {
 
+	@EqualsAndHashCode.Include
 	private boolean enabled;
 	private LocalDateTime enabledDt;
 

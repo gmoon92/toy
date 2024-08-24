@@ -6,15 +6,14 @@ import org.springframework.util.Assert;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@EqualsAndHashCode(of = "key")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DefaultCache implements Cache {
 	private static final String CACHE_KEY_STORAGE = "CACHE_KEY_STORAGE";
 	private static final Duration TTL_OF_DEFAULT = Duration.ofHours(1);
 
+	@EqualsAndHashCode.Include
 	private final String key;
 	private final Duration ttl;
 

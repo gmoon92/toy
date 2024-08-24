@@ -16,13 +16,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @RedisHash(value = CacheUser.KEY)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public class CacheUser implements Cache {
 	static final String KEY = CacheName.Constants.USER;
 	static final long MINUTES_OF_TTL = 5;

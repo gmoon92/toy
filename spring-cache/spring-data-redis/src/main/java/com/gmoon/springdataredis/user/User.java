@@ -18,13 +18,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "username")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Serializable {
 	@Id
 	@GeneratedValue
 	private Long id;
 
-	@Column(nullable = false, length = 50)
+	@Column(length = 50, nullable = false, unique = true)
+	@EqualsAndHashCode.Include
 	private String username;
 
 	@Column(length = 500)

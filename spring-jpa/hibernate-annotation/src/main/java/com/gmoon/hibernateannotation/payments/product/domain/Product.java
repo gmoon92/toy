@@ -22,7 +22,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // 상속 구현 전략
@@ -30,7 +29,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public abstract class Product implements Serializable {
 
 	@Id

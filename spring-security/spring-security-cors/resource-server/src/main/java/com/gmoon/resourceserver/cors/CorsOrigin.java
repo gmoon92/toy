@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 	 uniqueConstraints = {@UniqueConstraint(name = "u_schema_host_port", columnNames = {"schema", "host", "port"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = {"origin"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CorsOrigin implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,7 @@ public class CorsOrigin implements Serializable {
 		 @AttributeOverride(name = "host", column = @Column(name = "host")),
 		 @AttributeOverride(name = "port", column = @Column(name = "port"))
 	})
+	@EqualsAndHashCode.Include
 	private Origin origin;
 
 	public static CorsOrigin create(Origin origin) {

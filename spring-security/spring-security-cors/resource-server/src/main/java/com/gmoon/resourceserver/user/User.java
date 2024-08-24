@@ -23,14 +23,13 @@ import lombok.ToString;
 @Entity
 @Table(name = "tb_user")
 @Getter
-@EqualsAndHashCode(of = "username")
-@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
 	@Id
 	@GeneratedValue
 	private Long id;
 
-	@ToString.Include
+	@EqualsAndHashCode.Include
 	private String username;
 
 	private String password;

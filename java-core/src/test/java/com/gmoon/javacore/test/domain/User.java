@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class User extends BaseUser {
 
 	private String name;

@@ -31,7 +31,7 @@ import lombok.ToString;
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 public class Team implements Serializable {
 	private static final long serialVersionUID = 722253006387150023L;
@@ -42,6 +42,7 @@ public class Team implements Serializable {
 
 	@ToString.Include
 	@Column(nullable = false)
+	@EqualsAndHashCode.Include
 	private String name;
 
 	@OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -18,17 +18,16 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tb_favorite")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Favorite implements Serializable {
 
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@OneToMany(
@@ -46,14 +45,15 @@ public class Favorite implements Serializable {
 	@Embeddable
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@Getter
-	@EqualsAndHashCode
+	@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 	protected static class Id implements Serializable {
 
 		@Column(name = "user_id", length = 50, nullable = false, updatable = false)
+		@EqualsAndHashCode.Include
 		private String userId;
 
 		@Enumerated(EnumType.STRING)
-		@Column(name = "type", length = 50, nullable = false, updatable = false)
+		@Column(length = 50, nullable = false, updatable = false)
 		private FavoriteType type;
 
 		Id(String userId, FavoriteType type) {

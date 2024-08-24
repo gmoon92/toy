@@ -23,7 +23,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public class Price implements Serializable {
 
 	@EqualsAndHashCode.Include

@@ -15,18 +15,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "ex_access_log")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode
-@ToString
 public class AccessLogExcelDownload implements Serializable {
 
 	@Id

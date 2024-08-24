@@ -16,19 +16,18 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tb_favorite_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class FavoriteUser implements Serializable {
 
 	@Id
 	@UuidGenerator
 	@Column(length = 50)
+	@EqualsAndHashCode.Include
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

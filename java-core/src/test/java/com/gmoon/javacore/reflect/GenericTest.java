@@ -13,7 +13,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -71,9 +70,9 @@ class GenericTest {
 
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@Getter
-	@EqualsAndHashCode(of = "id")
-	@ToString
+	@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 	public static class Member {
+		@EqualsAndHashCode.Include
 		private String id;
 
 		public Member(String id) {

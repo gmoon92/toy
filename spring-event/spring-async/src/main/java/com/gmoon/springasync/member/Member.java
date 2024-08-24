@@ -10,19 +10,18 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Member implements Serializable {
 	private static final long serialVersionUID = 455845596925771520L;
 	private static final String INIT_PASSWORD = "111111";
 
 	@Id
 	@GeneratedValue
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	@Column(unique = true, nullable = false)

@@ -1,6 +1,6 @@
 package com.gmoon.dbrestore.test.dbrestore.datasource;
 
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,17 +13,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.sql.DataSource;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ToString
 public class ReferenceTable implements InitializingBean {
 
 	private static final String SYSTEM_TABLE_NAME = "sys_restore_table";

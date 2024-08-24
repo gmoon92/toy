@@ -24,7 +24,7 @@ public class UnionPageResizer extends BasePageable {
 
 	@RequiredArgsConstructor
 	@Getter
-	@EqualsAndHashCode
+	@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 	private static class ResizedPage implements Serializable {
 
 		private static final long serialVersionUID = -2996504992546648328L;

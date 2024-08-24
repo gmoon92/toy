@@ -16,12 +16,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_menu")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Menu {
 
 	@Id
 	@UuidGenerator
 	@Column(length = 50)
+	@EqualsAndHashCode.Include
 	private String id;
 
 	@Column(nullable = false)

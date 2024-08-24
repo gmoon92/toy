@@ -8,16 +8,15 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString(exclude = "member")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MemberOption {
 
 	@Id
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	@MapsId

@@ -4,17 +4,16 @@ import static com.gmoon.javacore.util.NumberUtils.*;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ZeroBasedPage {
 
 	private static final ZeroBasedPage ZERO = new ZeroBasedPage(0);
 
+	@EqualsAndHashCode.Include
 	private final int value;
 
 	private <T extends Number> ZeroBasedPage(T page) {

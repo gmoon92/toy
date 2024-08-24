@@ -19,18 +19,17 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tb_movie_ticket")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString(of = "id", exclude = { "movie", "ticket" })
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MovieTicket implements Serializable {
 
 	@EmbeddedId
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@MapsId("movieId")

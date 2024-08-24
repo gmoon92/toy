@@ -1,10 +1,8 @@
 package com.gmoon.springasync.server;
 
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @EqualsAndHashCode
-@ToString
 public class Server {
 	private static final String GITHUB_BLOG_DOMAIN = "gmoon92.github.io";
 

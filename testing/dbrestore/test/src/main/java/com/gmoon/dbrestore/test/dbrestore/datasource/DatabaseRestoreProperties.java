@@ -1,15 +1,14 @@
 package com.gmoon.dbrestore.test.dbrestore.datasource;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "service.dbrestore")
 //@ConstructorBinding
 @RequiredArgsConstructor
 @Getter
-@ToString
 public class DatabaseRestoreProperties {
 
 	private final String schema;

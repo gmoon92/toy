@@ -26,15 +26,13 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "rev_history")
 @RevisionEntity(CustomRevisionListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-@ToString(exclude = {"details"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RevisionHistory extends BaseEntity {
 
 	@Id

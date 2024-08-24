@@ -10,9 +10,11 @@ import lombok.ToString;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@EqualsAndHashCode(of = "value")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public final class HttpSessionCsrfToken extends BaseCsrfToken {
+
+	@EqualsAndHashCode.Include
 	private final String value;
 
 	public static HttpSessionCsrfToken generate() {

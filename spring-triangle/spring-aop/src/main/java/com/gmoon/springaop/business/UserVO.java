@@ -1,14 +1,10 @@
 package com.gmoon.springaop.business;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 public class UserVO {
 	private long id;
 	private String name;

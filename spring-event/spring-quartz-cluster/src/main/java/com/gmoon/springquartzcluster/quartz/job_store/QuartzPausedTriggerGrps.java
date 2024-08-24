@@ -12,21 +12,19 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_PAUSED_TRIGGER_GRPS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class QuartzPausedTriggerGrps {
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@Embeddable
 	@EqualsAndHashCode(callSuper = true)
-	@ToString(callSuper = true)
 	protected static class Id extends QuartzId {
 
 		@Column(name = "TRIGGER_GROUP", length = QuartzColumnLength.TRIGGER_GROUP)

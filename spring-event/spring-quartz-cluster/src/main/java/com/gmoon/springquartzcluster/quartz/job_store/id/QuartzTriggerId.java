@@ -6,12 +6,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Embeddable
 @Getter
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class QuartzTriggerId extends QuartzId {
 	@Column(name = "TRIGGER_NAME", length = QuartzColumnLength.TRIGGER_NAME)
 	private String triggerName;

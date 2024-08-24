@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_actor")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class Actor extends User {
 
 	public Actor(String id, String name) {

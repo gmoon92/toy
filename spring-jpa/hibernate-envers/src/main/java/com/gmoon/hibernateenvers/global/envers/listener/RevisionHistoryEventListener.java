@@ -2,18 +2,19 @@ package com.gmoon.hibernateenvers.global.envers.listener;
 
 import static com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus.*;
 
-import java.util.Optional;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.PostCommitInsertEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
+import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
 import com.gmoon.hibernateenvers.global.utils.RevisionConverter;
+import com.gmoon.hibernateenvers.revision.AuditedEntityRepository;
 import com.gmoon.hibernateenvers.revision.AuditedEntityRepositoryImpl;
 import com.gmoon.hibernateenvers.revision.RevisionHistoryDetailRepositoryQueryDsl;
 import com.gmoon.hibernateenvers.revision.RevisionHistoryDetailRepositoryQueryDslImpl;
+import com.gmoon.hibernateenvers.revision.domain.RevisionHistory;
 import com.gmoon.hibernateenvers.revision.domain.RevisionHistoryDetail;
 import com.gmoon.hibernateenvers.revision.enums.RevisionEventStatus;
 import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
@@ -24,10 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RevisionHistoryEventListener implements PostCommitInsertEventListener {
-
-	private static RevisionHistoryDetailRepositoryQueryDsl getRevisionHistoryDetailRepositoryQueryDsl(EntityManager entityManager) {
-		return new RevisionHistoryDetailRepositoryQueryDslImpl(entityManager);
-	}
 
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
@@ -41,7 +38,9 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 					SessionFactoryImplementor factory = sessionImplementor.getFactory();
 					EntityManager entityManager = factory.createEntityManager();
 
-					Object auditedEntity = getAuditedEntity(entityManager, detail).get();
+					RevisionHistory revision = detail.getRevision();
+					Long revisionNumber = revision.getId();
+					Object auditedEntity = getAuditedEntity(entityManager, detail, revisionNumber);
 					updateStatus(entityManager, detail, auditedEntity);
 				}
 			});
@@ -50,61 +49,50 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 	}
 
 	private void updateStatus(EntityManager entityManager, RevisionHistoryDetail detail, Object auditedEntity) {
-		RevisionEventStatus eventStatus = ERROR;
 		try {
-			Optional<Object> maybePreAuditedEntity = getPreAuditedEntity(entityManager, detail);
-			eventStatus = getEventStatus(detail.getTarget(), auditedEntity, maybePreAuditedEntity);
+			RevisionHistory revision = detail.getRevision();
+			Long preRevisionNumber = revision.getId() - 1;
+			Object preAuditedEntity = getAuditedEntity(entityManager, detail, preRevisionNumber);
+
+			RevisionEventStatus eventStatus = getEventStatus(detail.getTarget(), auditedEntity, preAuditedEntity);
+			updateEventStatus(entityManager, detail, eventStatus);
 		} catch (Exception ex) {
 			log.warn("Unexpected exception...", ex);
-		} finally {
-			updateEventStatus(entityManager, detail, eventStatus);
+			updateEventStatus(entityManager, detail, ERROR);
 		}
 	}
 
-	private Optional<Object> getAuditedEntity(EntityManager entityManager, RevisionHistoryDetail detail) {
+	private Object getAuditedEntity(
+		 EntityManager entityManager,
+		 RevisionHistoryDetail detail,
+		 Long revisionNumber
+	) {
 		RevisionTarget target = detail.getTarget();
 
-		Long revisionNumber = detail.getRevision().getId();
-		Class entityClass = target.getEntityClass();
-
+		@SuppressWarnings({"all", "unchecked", "rawtypes"})
+		Class<? extends BaseTrackingEntity> entityClass = target.getEntityClass();
 		Object entityId = RevisionConverter.deSerializedObject(detail.getEntityId());
-		return getAuditedEntityRepository(entityManager)
-			 .findAuditedEntity(entityClass, entityId, revisionNumber);
-	}
-
-	private Optional<Object> getPreAuditedEntity(EntityManager entityManager, RevisionHistoryDetail detail) {
-		RevisionTarget target = detail.getTarget();
-
-		Long revisionNumber = detail.getRevision().getId();
-		Class entityClass = target.getEntityClass();
-		Object entityId = RevisionConverter.deSerializedObject(detail.getEntityId());
-		return getAuditedEntityRepository(entityManager)
-			 .findPreAuditedEntity(entityClass, entityId, revisionNumber);
-	}
-
-	private AuditedEntityRepositoryImpl getAuditedEntityRepository(EntityManager entityManager) {
-		return new AuditedEntityRepositoryImpl(entityManager);
-	}
-
-	private boolean isNotChanged(RevisionTarget target, Object auditedEntity, Object anotherEntity) {
-		Object currentVO = target.getCompareVO(auditedEntity);
-		Object anotherVO = target.getCompareVO(anotherEntity);
-		return currentVO.equals(anotherVO);
+		AuditedEntityRepository auditedEntityRepository = getAuditedEntityRepository(entityManager);
+		return auditedEntityRepository.get(entityClass, entityId, revisionNumber);
 	}
 
 	private RevisionEventStatus getEventStatus(
 		 RevisionTarget target,
 		 Object auditedEntity,
-		 Optional<Object> maybePreAuditedEntity
+		 Object preAuditedEntity
 	) {
-		if (
-			 maybePreAuditedEntity.isPresent()
-			 && isNotChanged(target, auditedEntity, maybePreAuditedEntity.get())
-		) {
+		if (preAuditedEntity != null
+			 && isNotChanged(target, auditedEntity, preAuditedEntity)) {
 			return UNCHANGED;
 		} else {
-			return RevisionEventStatus.DIRTY_CHECKING;// todo gmoon
+			return RevisionEventStatus.DIRTY_CHECKING;
 		}
+	}
+
+	private boolean isNotChanged(RevisionTarget target, Object auditedEntity, Object anotherAuditedEntity) {
+		Object currentVO = target.getCompareVO(auditedEntity);
+		Object anotherVO = target.getCompareVO(anotherAuditedEntity);
+		return currentVO.equals(anotherVO);
 	}
 
 	private void updateEventStatus(
@@ -113,20 +101,28 @@ public class RevisionHistoryEventListener implements PostCommitInsertEventListen
 		 RevisionEventStatus eventStatus
 	) {
 		EntityTransaction transaction = entityManager.getTransaction();
-		Long id = detail.getId();
+		Long detailId = detail.getId();
 		try {
 			transaction.begin();
-			getRevisionHistoryDetailRepositoryQueryDsl(entityManager).updateEventStatus(id, eventStatus);
+			getRevisionHistoryDetailRepositoryQueryDsl(entityManager).updateEventStatus(detailId, eventStatus);
 			transaction.commit();
-		} catch (Exception ex) {
-			String errorMessage = String.format(
-				 "[Error] Update RevisionModifiedEntity id : %d, target : %s, entityId : %s",
-				 id,
-				 eventStatus
-			);
-			log.warn(errorMessage, ex);
+		} catch (Exception e) {
+			log.warn(String.format("[Error] Update revision detail status detailId: %d, status : %s", detailId,
+				 eventStatus), e);
 			transaction.rollback();
 		}
+	}
+
+	private AuditedEntityRepository getAuditedEntityRepository(
+		 EntityManager entityManager
+	) {
+		return new AuditedEntityRepositoryImpl(entityManager);
+	}
+
+	private RevisionHistoryDetailRepositoryQueryDsl getRevisionHistoryDetailRepositoryQueryDsl(
+		 EntityManager entityManager
+	) {
+		return new RevisionHistoryDetailRepositoryQueryDslImpl(entityManager);
 	}
 
 	@Override

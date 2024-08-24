@@ -15,15 +15,13 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Audited
 @Entity
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = {"id"})
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Member extends BaseTrackingEntity {
 
 	@Serial
@@ -31,6 +29,7 @@ public class Member extends BaseTrackingEntity {
 
 	@Id
 	@GeneratedValue
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	@Column(length = 50, unique = true, updatable = false)

@@ -12,17 +12,16 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString(exclude = "members")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Team {
 
 	@Id
 	@GeneratedValue
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	private String name;

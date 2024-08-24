@@ -24,12 +24,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_ticket")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Ticket implements Serializable {
 
 	@Id
 	@UuidGenerator
 	@Column(length = 50)
+	@EqualsAndHashCode.Include
 	private String id;
 
 	// @ManyToMany(fetch = FetchType.LAZY)

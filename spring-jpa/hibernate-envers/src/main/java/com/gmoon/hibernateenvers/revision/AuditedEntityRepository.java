@@ -2,18 +2,13 @@ package com.gmoon.hibernateenvers.revision;
 
 import java.util.Optional;
 
-import org.hibernate.envers.RevisionType;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
 
+@Transactional(readOnly = true)
 public interface AuditedEntityRepository {
 
-	<T extends BaseTrackingEntity> Optional<T> findAuditedEntity(Class<T> entityClass, Object entityId,
-		 Long revisionNumber);
-
-	<T extends BaseTrackingEntity> Optional<T> findAuditedEntity(Class<T> entityClass, Object entityId,
-		 Long revisionNumber, RevisionType revisionType);
-
-	<T extends BaseTrackingEntity> Optional<T> findPreAuditedEntity(Class<T> entityClass, Object entityId,
-		 Long revisionNumber);
+	<T extends BaseTrackingEntity> Optional<T> find(Class<T> entityClass, Object entityId, Long revisionNumber);
+	<T extends BaseTrackingEntity> T get(Class<T> entityClass, Object entityId, Long revisionNumber);
 }

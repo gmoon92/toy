@@ -6,7 +6,7 @@ import java.time.Duration;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class LockKey implements Serializable {
 
 	private static final long serialVersionUID = -94383080006313306L;

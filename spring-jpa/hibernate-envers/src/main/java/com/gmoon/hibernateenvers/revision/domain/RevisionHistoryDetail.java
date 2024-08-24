@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "rev_history_detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RevisionHistoryDetail extends BaseEntity {
 
 	@Id

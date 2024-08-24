@@ -20,8 +20,7 @@ import lombok.ToString;
 @Table(name = "tb_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -7636049955759609730L;

@@ -22,8 +22,7 @@ import lombok.ToString;
 @Table
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ApplyForm {
 
 	@EmbeddedId

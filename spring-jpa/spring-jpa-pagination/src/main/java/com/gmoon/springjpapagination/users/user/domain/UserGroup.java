@@ -20,7 +20,7 @@ import lombok.ToString;
 @Table(name = "tb_user_group")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class UserGroup implements Serializable {
 

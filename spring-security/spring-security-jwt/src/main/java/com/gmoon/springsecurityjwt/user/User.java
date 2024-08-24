@@ -29,7 +29,7 @@ import lombok.ToString;
 	 }
 )
 @Getter
-@EqualsAndHashCode(of = "username")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
 	private static final long serialVersionUID = -8809792987207423144L;
@@ -38,6 +38,7 @@ public class User implements UserDetails {
 	@GeneratedValue
 	private Long id;
 
+	@EqualsAndHashCode.Include
 	@ToString.Include
 	private String username;
 

@@ -20,19 +20,18 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Table(name = "tb_user")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
 
 	@Id
 	@UuidGenerator
 	@Column(length = 50)
+	@EqualsAndHashCode.Include
 	private String id;
 
 	@Enumerated(EnumType.STRING)

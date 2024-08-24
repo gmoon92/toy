@@ -15,16 +15,15 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_SIMPLE_TRIGGERS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class QuartzSimpleTriggers {
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private QuartzTriggerId id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

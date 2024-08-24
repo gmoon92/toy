@@ -8,11 +8,9 @@ import com.gmoon.springeventlistener.orders.order.domain.Order;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode
-@ToString
 public class CompletedOrderEvent implements Serializable {
 
 	private final String orderNo;

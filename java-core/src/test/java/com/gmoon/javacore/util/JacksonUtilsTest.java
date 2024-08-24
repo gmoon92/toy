@@ -84,10 +84,11 @@ class JacksonUtilsTest {
 
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@Getter
-	@EqualsAndHashCode(of = "username")
+	@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 	static class User implements Serializable {
 		private static final long serialVersionUID = -2696732525957590605L;
 
+		@EqualsAndHashCode.Include
 		private String username;
 		private boolean enabled;
 

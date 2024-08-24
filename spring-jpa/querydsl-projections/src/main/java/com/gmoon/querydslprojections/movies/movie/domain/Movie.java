@@ -41,12 +41,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Movie implements Serializable {
 
 	@Id
 	@UuidGenerator
 	@Column(length = 50)
+	@EqualsAndHashCode.Include
 	private String id;
 
 	@Column(length = 100, nullable = false)

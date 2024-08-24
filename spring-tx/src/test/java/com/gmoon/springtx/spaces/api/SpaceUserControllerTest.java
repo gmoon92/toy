@@ -23,6 +23,7 @@ class SpaceUserControllerTest extends BaseIntegrationTest {
 			 .param("userId", userId)
 		);
 
+		// todo test
 		perform.andExpect(status().isOk());
 	}
 }

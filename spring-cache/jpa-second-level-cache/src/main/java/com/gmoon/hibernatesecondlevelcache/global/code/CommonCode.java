@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
@@ -20,7 +19,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public class CommonCode {
 
 	@Id

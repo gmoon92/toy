@@ -27,11 +27,12 @@ import lombok.NoArgsConstructor;
 	 , attributeNodes = {@NamedAttributeNode(value = "memberOption")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Member {
 
 	@Id
 	@GeneratedValue
+	@EqualsAndHashCode.Include
 	private Long id;
 
 	@Column

@@ -6,12 +6,11 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.exception.AuditException;
-import org.hibernate.envers.exception.NotAuditedException;
 import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQueryCreator;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.envers.query.AuditQuery;
 
 import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
+import com.gmoon.hibernateenvers.revision.exception.AuditedEntityNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -25,83 +24,51 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 
 	private final EntityManager entityManager;
 
-	private AuditReader getAuditReader() {
-		return AuditReaderFactory.get(entityManager);
-	}
-
-	private AuditQueryCreator getAuditQuery() {
-		return getAuditReader().createQuery();
+	@Override
+	public <T extends BaseTrackingEntity> Optional<T> find(
+		 Class<T> entityClass,
+		 Object entityId,
+		 Long revisionNumber
+	) {
+		return Optional.ofNullable(get(entityClass, entityId, revisionNumber));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public <T extends BaseTrackingEntity> Optional<T> findAuditedEntity(Class<T> entityClass, Object entityId,
-		 Long revisionNumber) {
-		Object auditedEntity = null;
-		try {
-			auditedEntity = getAuditQuery()
-				 .forEntitiesModifiedAtRevision(entityClass, revisionNumber)
-				 .add(AuditEntity.id().eq(entityId))
-				 .getSingleResult();
-		} catch (AuditException | NonUniqueResultException | NoResultException ex) {
-			log.warn(String.format("Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s",
-				 revisionNumber, entityClass, entityId), ex);
-		} catch (Exception ex) {
-			throw new RuntimeException(
-				 String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
-					  revisionNumber,
-					  entityClass, entityId), ex);
-		} finally {
-			return Optional.ofNullable(entityClass.cast(auditedEntity));
-		}
+	public <T extends BaseTrackingEntity> T get(
+		 Class<T> entityClass,
+		 Object entityId,
+		 Long revisionNumber
+	) {
+		return get(entityClass, entityId, revisionNumber, RevisionType.values());
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public <T extends BaseTrackingEntity> Optional<T> findAuditedEntity(Class<T> entityClass, Object entityId,
-		 Long revisionNumber, RevisionType revisionType) {
-		Object auditedEntity = null;
-		try {
-			auditedEntity = getAuditQuery()
-				 .forEntitiesModifiedAtRevision(entityClass, revisionNumber)
-				 .add(AuditEntity.id().eq(entityId))
-				 .add(AuditEntity.revisionType().eq(revisionType))
-				 .getSingleResult();
-		} catch (AuditException | NonUniqueResultException | NoResultException ex) {
-			log.warn(String.format("Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s",
-				 revisionNumber, entityClass, entityId), ex);
-		} catch (Exception ex) {
-			throw new RuntimeException(
-				 String.format("Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s",
-					  revisionNumber,
-					  entityClass, entityId), ex);
-		} finally {
-			return Optional.ofNullable(entityClass.cast(auditedEntity));
-		}
-	}
+	private <T extends BaseTrackingEntity> T get(
+		 Class<T> entityClass,
+		 Object entityId,
+		 Long revisionNumber,
+		 RevisionType... revisionTypes
+	) {
+		if (revisionNumber > 0) {
+			try {
+				AuditReader auditReader = AuditReaderFactory.get(entityManager);
+				AuditQuery query = auditReader.createQuery()
+					 .forEntitiesModifiedAtRevision(entityClass, revisionNumber)
+					 .add(AuditEntity.id().eq(entityId))
+					 .add(AuditEntity.revisionType().in(revisionTypes));
 
-	@Override
-	@Transactional(readOnly = true)
-	public <T extends BaseTrackingEntity> Optional<T> findPreAuditedEntity(Class<T> entityClass, Object entityId,
-		 Long revisionNumber) {
-		T auditedEntity = null;
-		try {
-			auditedEntity = getAuditReader().find(entityClass, entityId, revisionNumber - 1);
-		} catch (IllegalArgumentException | NotAuditedException | IllegalStateException ex) {
-			String errorMessage = String.format(
-				 "Not found audited entity... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
-				 entityClass,
-				 entityId);
-			log.warn(errorMessage, ex);
-		} catch (Exception ex) {
-			String errorMessage = String.format(
-				 "Unexpected exception... revisionNumber : %s, entityClass : %s, entityId : %s", revisionNumber,
-				 entityClass,
-				 entityId);
-			log.error(errorMessage, ex);
-			throw new RuntimeException(errorMessage, ex);
-		} finally {
-			return Optional.ofNullable(auditedEntity);
+				@SuppressWarnings({"unchecked", "cast"})
+				T singleResult = (T)query.getSingleResult();
+				return singleResult;
+			} catch (AuditException | NonUniqueResultException | NoResultException e) {
+				log.warn(
+					 String.format("Not found audited entity revision: %d, entityId: %s"
+							   + "%n entityClass: %s",
+						  revisionNumber, entityId, entityClass), e);
+				return null;
+			} catch (Exception e) {
+				throw new AuditedEntityNotFoundException(entityClass, entityId, revisionNumber, e);
+			}
 		}
+		return null;
 	}
 }

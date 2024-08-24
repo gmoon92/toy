@@ -8,12 +8,10 @@ import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 public class MovieReleaseTime implements Serializable {
 
 	private LocalDateTime value;

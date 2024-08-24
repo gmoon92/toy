@@ -2,11 +2,9 @@ package com.gmoon.springwebsession.room.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public class Room {
 
 	@EqualsAndHashCode.Include

@@ -11,15 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tb_space_user")
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString(of = "id")
 public class SpaceUser implements Serializable {
 
 	@Id

@@ -13,16 +13,15 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "QUARTZ_CALENDARS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class QuartzCalendars {
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@Lob
@@ -31,7 +30,6 @@ public class QuartzCalendars {
 
 	@Embeddable
 	@EqualsAndHashCode(callSuper = true)
-	@ToString(callSuper = true)
 	protected static class Id extends QuartzId {
 
 		@Column(name = "CALENDAR_NAME", length = QuartzColumnLength.CALENDAR_NAME)

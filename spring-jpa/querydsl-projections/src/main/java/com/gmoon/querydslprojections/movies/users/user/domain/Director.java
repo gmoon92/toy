@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_director")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class Director extends User {
 
 	public Director(String id, String name) {

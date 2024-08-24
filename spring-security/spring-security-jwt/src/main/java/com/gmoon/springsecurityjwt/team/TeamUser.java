@@ -22,11 +22,12 @@ import lombok.ToString;
 @Table(name = "tb_team_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class TeamUser implements Serializable {
 	private static final long serialVersionUID = -273473458581806379L;
 
 	@EmbeddedId
+	@EqualsAndHashCode.Include
 	private Id id;
 
 	@ToString.Exclude

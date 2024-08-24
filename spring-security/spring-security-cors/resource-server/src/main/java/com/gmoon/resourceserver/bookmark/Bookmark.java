@@ -12,19 +12,18 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tb_bookmark", uniqueConstraints = {@UniqueConstraint(name = "u_name", columnNames = {"name"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "name")
-@ToString(of = "name")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Bookmark implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@EqualsAndHashCode.Include
 	private String name;
 
 	public static Bookmark create(String name) {

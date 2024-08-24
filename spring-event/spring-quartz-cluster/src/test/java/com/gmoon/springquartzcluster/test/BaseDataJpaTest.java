@@ -13,8 +13,9 @@ import jakarta.persistence.EntityManager;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public abstract class BaseDataJpaTest {
+
 	@Autowired
-	EntityManager entityManager;
+	protected EntityManager entityManager;
 
 	public void flushAndClear() {
 		entityManager.flush();

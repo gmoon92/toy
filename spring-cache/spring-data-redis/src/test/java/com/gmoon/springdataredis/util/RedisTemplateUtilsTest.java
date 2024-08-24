@@ -40,16 +40,16 @@ import lombok.extern.slf4j.Slf4j;
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 class RedisTemplateUtilsTest {
-	final RedisTemplateUtils redisTemplateUtils;
+	final RedisTemplateUtils utils;
 	final RedisTemplate<String, Object> template;
 
 	@BeforeEach
 	void setUp() {
-		redisTemplateUtils.deleteAll();
+		utils.deleteAll();
 	}
 
 	@Test
-	void testSave() {
+	void save() {
 		// given
 		String key = "hello";
 		String value = "redis";
@@ -57,29 +57,29 @@ class RedisTemplateUtilsTest {
 		Cache cache = DefaultCache.create(key, Duration.ofSeconds(ttl));
 
 		// when
-		redisTemplateUtils.save(cache, value);
+		utils.save(cache, value);
 
 		// then
 		assertAll(
-			 () -> assertThat(redisTemplateUtils.getTTL(cache.getKey()))
+			 () -> assertThat(utils.getTTL(cache.getKey()))
 				  .isInstanceOf(Long.class)
 				  .isEqualTo(ttl),
 			 () -> {
-				 String actual = redisTemplateUtils.find(cache.getKey());
+				 String actual = utils.find(cache.getKey());
 				 assertThat(actual).isEqualTo(value);
 			 }
 		);
 	}
 
 	@Test
-	void testFind() {
+	void find() {
 		// given
 		Cache cache = DefaultCache.create("hello");
 		String value = "redis";
-		redisTemplateUtils.save(cache, value);
+		utils.save(cache, value);
 
 		// when
-		String actual = redisTemplateUtils.find(cache.getKey());
+		String actual = utils.find(cache.getKey());
 
 		// then
 		assertThat(actual).isEqualTo(value);
@@ -87,77 +87,77 @@ class RedisTemplateUtilsTest {
 
 	@Test
 	@DisplayName("조회할 Key 가 없다면 예외 발생")
-	void testGetOrElseThrow() {
+	void getOrElseThrow() {
 		// given
 		String key = LocalDateTime.now() + UUID.randomUUID().toString();
 
 		// when then
 		assertThatExceptionOfType(NotFoundDataException.class)
-			 .isThrownBy(() -> redisTemplateUtils.getOrElseThrow(key));
+			 .isThrownBy(() -> utils.getOrElseThrow(key));
 	}
 
-	@Test
 	@Disabled("Embedded Server GETEX command 미지원")
 	@DisplayName("TTL 설정 무효화"
 		 + " 만료되지 않는 key 로 설정 후 조회")
-	void testGetAndChangedByEternalKey() {
+	@Test
+	void getAndChangedByEternalKey() {
 		// given
 		Cache cache = DefaultCache.create("hello", Duration.ofSeconds(10));
-		redisTemplateUtils.save(cache, "redis");
+		utils.save(cache, "redis");
 
 		// when
-		redisTemplateUtils.getAndChangedByEternalKey(cache.getKey());
+		utils.getAndChangedByEternalKey(cache.getKey());
 
 		// then
-		assertThat(redisTemplateUtils.getTTL(cache.getKey())).isEqualTo(-1);
+		assertThat(utils.getTTL(cache.getKey())).isEqualTo(-1);
 	}
 
-	@Test
 	@DisplayName("TTL 설정 변경")
-	void testChangeTTL() {
+	@Test
+	void changeTTL() {
 		// given
 		Cache cache = DefaultCache.create("hello");
-		redisTemplateUtils.save(cache, "redis");
+		utils.save(cache, "redis");
 
 		// when
 		Duration ttl = Duration.ofSeconds(10);
-		redisTemplateUtils.changeTTL(cache.getKey(), ttl);
+		utils.changeTTL(cache.getKey(), ttl);
 
 		// then
 		assertThat(ttl)
-			 .isEqualTo(Duration.ofSeconds(redisTemplateUtils.getTTL(cache.getKey())));
+			 .isEqualTo(Duration.ofSeconds(utils.getTTL(cache.getKey())));
 	}
 
 	@Test
-	void testDelete() {
+	void delete() {
 		// given
 		Cache cache = DefaultCache.create("TEST");
-		redisTemplateUtils.save(cache, UUID.randomUUID().toString());
+		utils.save(cache, UUID.randomUUID().toString());
 
 		// when then
 		assertAll(
-			 () -> assertThat(redisTemplateUtils.delete(cache.getKey())).isTrue(),
-			 () -> assertThat(redisTemplateUtils.delete(cache.getKey())).isFalse()
+			 () -> assertThat(utils.delete(cache.getKey())).isTrue(),
+			 () -> assertThat(utils.delete(cache.getKey())).isFalse()
 		);
 	}
 
-	@Test
 	@DisplayName("정규식으로 등록된 캐시 키 조회")
-	void testKeys() {
+	@Test
+	void keys() {
 		// given
 		String key = "gmoon";
-		redisTemplateUtils.save(DefaultCache.create(key + "1"), "value");
-		redisTemplateUtils.save(DefaultCache.create(key + "2"), "value");
+		utils.save(DefaultCache.create(key + "1"), "value");
+		utils.save(DefaultCache.create(key + "2"), "value");
 
 		// when
-		Set<String> keys = redisTemplateUtils.keys(DefaultCache.create(key).getKey() + "*");
+		Set<String> keys = utils.keys(DefaultCache.create(key).getKey() + "*");
 
 		// then
 		assertThat(keys).hasSize(2);
 	}
 
-	@Nested
 	@DisplayName("RedisTemplate Data Types")
+	@Nested
 	class RedisTemplateTest {
 		@Nested
 		@DisplayName("Set data type "
@@ -172,7 +172,7 @@ class RedisTemplateUtilsTest {
 			}
 
 			@Test
-			void testAdd() {
+			void add() {
 				// when
 				operations.add(key, "hello");
 				operations.add(key, "redis");
@@ -183,9 +183,8 @@ class RedisTemplateUtilsTest {
 			}
 		}
 
+		@DisplayName("List data type lrange {key} 0 -1")
 		@Nested
-		@DisplayName("List data type "
-			 + "lrange {key} 0 -1")
 		class ListType {
 			final ListOperations operations = template.opsForList();
 			final String key = "list-type";
@@ -197,7 +196,7 @@ class RedisTemplateUtilsTest {
 
 			@Test
 			@DisplayName("오른쪽 위치에 저장")
-			void testRightPush() {
+			void rightPush() {
 				// when
 				operations.rightPush(key, "r");
 				operations.rightPush(key, "e");
@@ -210,7 +209,7 @@ class RedisTemplateUtilsTest {
 			}
 
 			@Test
-			void testRightPushAll() {
+			void rightPushAll() {
 				// when
 				operations.rightPushAll(key, Arrays.asList("r", "e", "d", "i", "s"));
 
@@ -219,7 +218,7 @@ class RedisTemplateUtilsTest {
 			}
 
 			@Test
-			void testLeftPushAll() {
+			void leftPushAll() {
 				// when
 				operations.leftPushAll(key, Arrays.asList("r", "e", "d", "i", "s"));
 
@@ -228,9 +227,9 @@ class RedisTemplateUtilsTest {
 				assertThat(getAllElements()).containsExactly("i", "d", "e", "r");
 			}
 
-			@Test
 			@DisplayName("키의 지정된 위치에 있는 요소의 값 반환")
-			void testIndex() {
+			@Test
+			void index() {
 				// given
 				operations.rightPushAll(key, Arrays.asList("r", "e", "d", "i", "s"));
 
@@ -247,9 +246,9 @@ class RedisTemplateUtilsTest {
 				);
 			}
 
-			@Test
 			@DisplayName("지정된 위치의 요소들만 새롭게 가공")
-			void testTrim() {
+			@Test
+			void trim() {
 				// given
 				operations.rightPushAll(key, Arrays.asList("r", "e", "d", "i", "s"));
 
@@ -265,10 +264,8 @@ class RedisTemplateUtilsTest {
 			}
 		}
 
+		@DisplayName("Hash data type hgetall {key} hget {key} {filed}")
 		@Nested
-		@DisplayName("Hash data type "
-			 + "hgetall {key} "
-			 + "hget {key} {filed}")
 		class HashType {
 			final HashOperations operations = template.opsForHash();
 			final String key = "hash-type";
@@ -282,9 +279,9 @@ class RedisTemplateUtilsTest {
 				}
 			}
 
-			@Test
 			@DisplayName("해시 키 설정")
-			void testPut() {
+			@Test
+			void put() {
 				// given
 				List<String> group1 = Arrays.asList("gmoon", "lee", "park");
 				List<String> group2 = Arrays.asList("anonymous");
@@ -307,9 +304,9 @@ class RedisTemplateUtilsTest {
 				);
 			}
 
-			@Test
 			@DisplayName("키에 저장된 해시 키 삭제")
-			void testDelete() {
+			@Test
+			void delete() {
 				// given
 				List<String> group1 = Arrays.asList("gmoon", "lee", "park");
 				List<String> group2 = Arrays.asList("anonymous");
@@ -328,9 +325,9 @@ class RedisTemplateUtilsTest {
 				);
 			}
 
-			@Test
 			@DisplayName("지정된 키의 엔트리 조회")
-			void testEntries() {
+			@Test
+			void entries() {
 				// given
 				List<String> group1 = Arrays.asList("gmoon", "lee", "park");
 				List<String> group2 = Arrays.asList("anonymous");
@@ -349,10 +346,10 @@ class RedisTemplateUtilsTest {
 					 .contains(entry("group1", group1), entry("group2", group2));
 			}
 
-			@Test
 			@DisplayName("전달된 값을 기반으로 해시 키의 키를 누적하는 데 사용, "
 				 + "전달된 값은 double 또는 long만 될 수 있으며 부동 소수점은 허용하지 않는다.")
-			void testIncrement() {
+			@Test
+			void increment() {
 				// given
 				int plus = 2;
 
@@ -363,9 +360,9 @@ class RedisTemplateUtilsTest {
 				assertThat(seq).isEqualTo(plus);
 			}
 
-			@Test
 			@DisplayName("hash key 로 데이터를 한번에 가져온다.")
-			void testMultiGet() {
+			@Test
+			void multiGet() {
 				// given
 				List<String> names1 = Arrays.asList("gmoon", "lee", "park");
 				List<String> names2 = Arrays.asList("anonymous");
@@ -384,10 +381,9 @@ class RedisTemplateUtilsTest {
 					 .containsExactly(names1, names2);
 			}
 
+			@DisplayName("hash key 로 데이터를 한번에 가져온다. MultiGet 일급 컬렉션")
 			@Test
-			@DisplayName("hash key 로 데이터를 한번에 가져온다. "
-				 + "MultiGet 일급 컬렉션")
-			void testMultiGet_with_firstClass() {
+			void multiGetWithFirstClass() {
 				// given
 				Names names1 = Names.from("gmoon", "lee", "park");
 				Names names2 = Names.from("anonymous");
@@ -403,7 +399,8 @@ class RedisTemplateUtilsTest {
 				// then
 				assertThat(actual)
 					 .hasSize(2)
-					 .containsExactly(names1, names2);
+					 .flatMap(Names::getValue)
+					 .containsExactly("gmoon", "lee", "park", "anonymous");
 			}
 		}
 	}
