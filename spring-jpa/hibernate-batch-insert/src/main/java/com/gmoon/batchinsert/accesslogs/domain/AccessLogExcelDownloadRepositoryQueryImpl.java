@@ -6,6 +6,8 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.jpa.impl.JPAInsertClause;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,13 +25,14 @@ public class AccessLogExcelDownloadRepositoryQueryImpl implements AccessLogExcel
 	private final EntityManager em;
 
 	// https://docs.jboss.org/hibernate/core/3.5/reference/en/html/batch.html
+	@Transactional
 	@Override
 	public List<AccessLogExcelDownload> bulkSaveAllAtStatelessSession(List<AccessLog> accessLogs) {
 		Session session = em.unwrap(Session.class);
 		SessionFactory sessionFactory = session.getSessionFactory();
 
 		try (StatelessSession statelessSession = sessionFactory.openStatelessSession()) {
-			// Transaction tx = statelessSession.beginTransaction();
+			Transaction tx = statelessSession.beginTransaction();
 
 			List<AccessLogExcelDownload> result = new ArrayList<>(accessLogs.size());
 			for (AccessLog accessLog : accessLogs) {
@@ -40,7 +43,7 @@ public class AccessLogExcelDownloadRepositoryQueryImpl implements AccessLogExcel
 				result.add(data);
 			}
 
-			// tx.commit();
+			tx.commit();
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("Not saved excel download data", e);
