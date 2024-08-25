@@ -1,4 +1,4 @@
-package com.gmoon.hibernateenvers.member;
+package com.gmoon.hibernateenvers.member.infra;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

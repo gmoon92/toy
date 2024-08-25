@@ -1,4 +1,4 @@
-package com.gmoon.hibernateenvers.revision.exception;
+package com.gmoon.hibernateenvers.revision.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 

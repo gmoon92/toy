@@ -11,8 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 import com.gmoon.hibernateenvers.global.annotation.TODO;
-import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
-import com.gmoon.hibernateenvers.global.vo.BaseRevisionCompareVO;
+import com.gmoon.hibernateenvers.global.domain.BaseEntity;
+import com.gmoon.hibernateenvers.global.model.BaseRevisionCompareVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +62,7 @@ public class RevisionConverter {
 		}
 	}
 
-	public static <Entity extends BaseTrackingEntity, Convert extends BaseRevisionCompareVO> Convert convertTo(
+	public static <Entity extends BaseEntity, Convert extends BaseRevisionCompareVO> Convert convertTo(
 		 Entity entity, Class<Convert> convertClass) {
 		Assert.notNull(entity, "Error with entity parameter null");
 

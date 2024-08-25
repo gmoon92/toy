@@ -1,4 +1,4 @@
-package com.gmoon.hibernateenvers.revision;
+package com.gmoon.hibernateenvers.revision.infra;
 
 import java.util.Optional;
 
@@ -6,11 +6,13 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.exception.AuditException;
+import org.hibernate.envers.exception.NotAuditedException;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.stereotype.Repository;
 
-import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
-import com.gmoon.hibernateenvers.revision.exception.AuditedEntityNotFoundException;
+import com.gmoon.hibernateenvers.global.domain.BaseEntity;
+import com.gmoon.hibernateenvers.revision.infra.exception.AuditedEntityNotFoundException;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -19,13 +21,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Repository
 @RequiredArgsConstructor
 public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 
 	private final EntityManager entityManager;
 
 	@Override
-	public <T extends BaseTrackingEntity> Optional<T> find(
+	public <T extends BaseEntity> Optional<T> find(
 		 Class<T> entityClass,
 		 Object entityId,
 		 Long revisionNumber
@@ -34,7 +37,7 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 	}
 
 	@Override
-	public <T extends BaseTrackingEntity> T get(
+	public <T extends BaseEntity> T get(
 		 Class<T> entityClass,
 		 Object entityId,
 		 Long revisionNumber
@@ -42,7 +45,7 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 		return get(entityClass, entityId, revisionNumber, RevisionType.values());
 	}
 
-	private <T extends BaseTrackingEntity> T get(
+	private <T extends BaseEntity> T get(
 		 Class<T> entityClass,
 		 Object entityId,
 		 Long revisionNumber,
@@ -70,5 +73,26 @@ public class AuditedEntityRepositoryImpl implements AuditedEntityRepository {
 			}
 		}
 		return null;
+	}
+
+	public <T extends BaseEntity> Optional<T> findAuditedEntity(
+		 Class<T> entityClass,
+		 Object entityId,
+		 Long revisionNumber
+	) {
+		try {
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+			T auditedEntity = auditReader.find(entityClass, entityId, revisionNumber);
+			return Optional.ofNullable(auditedEntity);
+		} catch (IllegalArgumentException | NotAuditedException | IllegalStateException e) {
+			log.warn(
+				 String.format("Not found audited entity revision: %d, entityId: %s"
+						   + "%n entityClass: %s",
+					  revisionNumber, entityId, entityClass), e);
+			return Optional.empty();
+		} catch (Exception e) {
+			throw new AuditedEntityNotFoundException(entityClass, entityId, revisionNumber, e);
+		}
 	}
 }

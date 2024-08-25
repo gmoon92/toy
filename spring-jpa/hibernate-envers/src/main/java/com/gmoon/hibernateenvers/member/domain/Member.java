@@ -4,7 +4,7 @@ import java.io.Serial;
 
 import org.hibernate.envers.Audited;
 
-import com.gmoon.hibernateenvers.global.domain.BaseTrackingEntity;
+import com.gmoon.hibernateenvers.global.domain.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Member extends BaseTrackingEntity {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+public class Member extends BaseEntity {
 
 	@Serial
 	private static final long serialVersionUID = 2239812311178022258L;

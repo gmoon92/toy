@@ -1,6 +1,4 @@
-package com.gmoon.hibernateenvers.global.vo;
-
-import java.util.Date;
+package com.gmoon.hibernateenvers.global.model;
 
 import org.springframework.data.domain.Sort;
 
@@ -14,14 +12,12 @@ import lombok.Setter;
 @Setter
 public abstract class BaseSearchVO extends BasePageable {
 
-	public BaseSearchVO(Sort sort) {
-		super(sort);
-	}
-
-	private Date startDt;
-
-	private Date endDt;
+	private Long startTime;
 
 	private String searchKeyword;
+	private Long endTime;
+	protected BaseSearchVO(Sort sort) {
+		super(sort);
+	}
 
 }

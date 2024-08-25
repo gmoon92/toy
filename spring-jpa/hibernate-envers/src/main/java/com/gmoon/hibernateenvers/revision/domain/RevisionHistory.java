@@ -1,65 +1,106 @@
 package com.gmoon.hibernateenvers.revision.domain;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serial;
+import java.io.Serializable;
 
-import org.hibernate.envers.RevisionEntity;
-import org.hibernate.envers.RevisionNumber;
-import org.hibernate.envers.RevisionTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.internal.entities.RevisionTypeType;
 
-import com.gmoon.hibernateenvers.global.domain.BaseEntity;
-import com.gmoon.hibernateenvers.global.envers.listener.CustomRevisionListener;
-import com.gmoon.hibernateenvers.revision.enums.RevisionTarget;
+import com.gmoon.hibernateenvers.global.annotation.TODO;
+import com.gmoon.hibernateenvers.global.utils.RevisionConverter;
+import com.gmoon.hibernateenvers.member.domain.Member;
+import com.gmoon.hibernateenvers.revision.domain.vo.RevisionStatus;
+import com.gmoon.hibernateenvers.revision.domain.vo.RevisionTarget;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "lt_revision_history")
 @Entity
-@Table(name = "rev_history")
-@RevisionEntity(CustomRevisionListener.class)
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class RevisionHistory extends BaseEntity {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class RevisionHistory implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 892401811841730874L;
 
 	@Id
 	@GeneratedValue
-	@RevisionNumber
-	@EqualsAndHashCode.Include
 	private Long id;
 
-	@RevisionTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "revision_number")
+	@EqualsAndHashCode.Include
+	private Revision revision;
+
+	@TODO("복합키 고려해보기... toString")
+	@Column(updatable = false, nullable = false)
+	@Lob
+	@EqualsAndHashCode.Include
+	private byte[] entityId;
+
+	@Enumerated(EnumType.STRING)
+	@Column(updatable = false)
+	@EqualsAndHashCode.Include
+	private RevisionTarget target;
+
+	@Enumerated(EnumType.STRING)
+	@Type(RevisionTypeType.class)
+	@Column(updatable = false, nullable = false)
+	private RevisionType type;
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Date createdDt;
+	private RevisionStatus status;
 
-	private String updatedBy;
+	@ManyToOne
+	@JoinColumn(
+		 name = "target_member_id",
+		 foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT)
+	)
+	private Member targetMember;
 
-	private String updatedByUsername;
+	@Column
+	private String targetMemberName;
 
-	/**
-	 * 일반적으로 각 Revision에서 변경된 Entity Type을 추적하지 않는다.
-	 * 수정된 Entity 이름을 추적하는 세 가지 방법으로 활성화할 수 있다.
-	 * 1) @org.hibernate.envers.ModifiedEntityNames 애노테이션 방식 : Property는 Set<String> 유형이어야한다.
-	 * https://docs.jboss.org/hibernate/core/4.1/devguide/en-US/html/ch15.html#envers-tracking-properties-changes
-	 */
-	@OneToMany(mappedBy = "revision", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-	private Set<RevisionHistoryDetail> details = new HashSet<>();
+	public static RevisionHistory create(
+		 Revision revision,
+		 RevisionType revisionType,
+		 Object entityId,
+		 RevisionTarget revisionTarget
+	) {
+		return RevisionHistory.builder()
+			 .revision(revision)
+			 .type(revisionType)
+			 .entityId(RevisionConverter.serializedObject(entityId))
+			 .target(revisionTarget)
+			 .status(RevisionStatus.WAIT)
+			 .build();
+	}
 
-	public void changeEntity(Class entityClass, Object entityId, RevisionType revisionType) {
-		details.add(RevisionHistoryDetail.newCreate(this, revisionType, entityId, RevisionTarget.of(entityClass)));
+	public void changeStatus(RevisionStatus status) {
+		this.status = status;
 	}
 }
+

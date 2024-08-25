@@ -30,5 +30,4 @@ logging:
   level:
     "[com.gmoon]": TRACE
     "[org.hibernate.sql]": DEBUG
-    "[org.hibernate.type]": TRACE
-#    "[org.hibernate.type.descriptor.sql]": TRACE
+    "[org.hibernate.type.descriptor.sql]": TRACE

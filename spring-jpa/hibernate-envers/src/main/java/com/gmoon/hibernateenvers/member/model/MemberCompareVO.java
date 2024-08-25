@@ -1,6 +1,6 @@
-package com.gmoon.hibernateenvers.member.vo;
+package com.gmoon.hibernateenvers.member.model;
 
-import com.gmoon.hibernateenvers.global.vo.BaseRevisionCompareVO;
+import com.gmoon.hibernateenvers.global.model.BaseRevisionCompareVO;
 
 import lombok.Getter;
 import lombok.Setter;

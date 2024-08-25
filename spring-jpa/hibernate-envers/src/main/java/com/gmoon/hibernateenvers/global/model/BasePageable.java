@@ -1,4 +1,6 @@
-package com.gmoon.hibernateenvers.global.vo;
+package com.gmoon.hibernateenvers.global.model;
+
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,14 +17,11 @@ import lombok.Setter;
 public abstract class BasePageable {
 
 	private Integer block = 5;
-
 	protected Integer page = 1;
-
 	private Sort sort;
 
-	public BasePageable(Sort sort) {
-		sort = sort == null ? getDefaultSort() : sort;
-		this.sort = sort;
+	protected BasePageable(Sort sort) {
+		this.sort = Objects.requireNonNullElse(sort, getDefaultSort());
 	}
 
 	public Pageable getPageable() {
