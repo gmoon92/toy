@@ -1,5 +1,14 @@
-spring:
-  config:
-    import: classpath:application.yml
+service:
   redis:
-    port: 4000
+#    embedded-enabled: true
+
+spring:
+  cache:
+    type: REDIS
+
+#  redis:
+#    port: 4000
+
+logging:
+  level:
+    "[com.gmoon]": DEBUG

@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
 import com.gmoon.springdataredis.cache.Cache;
-import com.gmoon.springdataredis.cache.CacheName;
+import com.gmoon.springdataredis.cache.CachePolicy;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,12 +17,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@RedisHash(value = CacheUser.KEY)
+@RedisHash(value = CachePolicy.Name.USER)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CacheUser implements Cache {
-	static final String KEY = CacheName.Constants.USER;
 	static final long MINUTES_OF_TTL = 5;
 
 	@Id
@@ -43,16 +42,16 @@ public class CacheUser implements Cache {
 		this.username = username;
 		this.email = email;
 		this.enabled = enabled;
-		this.expiration = MINUTES_OF_TTL;
+		this.expiration = CachePolicy.USER.ttl.toMinutes();
 	}
 
 	@Override
-	public String getKey() {
-		return KEY;
+	public String key() {
+		return CachePolicy.USER.name;
 	}
 
 	@Override
-	public Duration getTtl() {
-		return Duration.ofMinutes(MINUTES_OF_TTL);
+	public Duration ttl() {
+		return CachePolicy.USER.ttl;
 	}
 }

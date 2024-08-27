@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.test;
+package com.gmoon.springdataredis.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,9 +6,11 @@ import java.io.IOException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import redis.embedded.RedisExecProvider;
 import redis.embedded.RedisServer;
@@ -16,9 +18,20 @@ import redis.embedded.util.Architecture;
 import redis.embedded.util.OS;
 
 @Slf4j
-@TestConfiguration
+@Configuration
+@ConditionalOnExpression(
+	 "#{('${service.redis.embedded-enabled}' and '${spring.cache.type}' eq 'REDIS')}"
+)
 public class EmbeddedRedisConfig implements InitializingBean, DisposableBean {
+
 	private RedisServer redisServer;
+
+	@PostConstruct
+	public void init() {
+		log.info("=====================================================");
+		log.info("setup embedded redis server");
+		log.info("=====================================================");
+	}
 
 	public EmbeddedRedisConfig(@Value("${spring.redis.port:4000}") int port) throws IOException {
 		log.info("Embedded redis server. spring.redis.port : {}", port);

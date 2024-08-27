@@ -173,7 +173,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 
-import com.gmoon.springdataredis.test.EmbeddedRedisConfig;
+import com.gmoon.springdataredis.config.EmbeddedRedisConfig;
 
 import lombok.extern.slf4j.Slf4j;
 

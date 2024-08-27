@@ -5,7 +5,7 @@ Caused by: java.lang.RuntimeException: Can't start redis server. Check logs for 
 	at redis.embedded.AbstractRedisInstance.awaitRedisServerReady(AbstractRedisInstance.java:70)
 	at redis.embedded.AbstractRedisInstance.start(AbstractRedisInstance.java:42)
 	at redis.embedded.RedisServer.start(RedisServer.java:9)
-	at com.gmoon.springdataredis.test.EmbeddedRedisConfig.afterPropertiesSet(EmbeddedRedisConfig.java:50)
+	at com.gmoon.springdataredis.config.EmbeddedRedisConfig.afterPropertiesSet(EmbeddedRedisConfig.java:50)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800)
 	... 75 more

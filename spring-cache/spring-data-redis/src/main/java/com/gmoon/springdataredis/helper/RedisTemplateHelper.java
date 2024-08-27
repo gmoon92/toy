@@ -1,4 +1,4 @@
-package com.gmoon.springdataredis.util;
+package com.gmoon.springdataredis.helper;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.core.SetOperations;
 
 import com.gmoon.javacore.util.BooleanUtils;
 import com.gmoon.springdataredis.cache.Cache;
@@ -18,16 +20,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
-public class RedisTemplateUtils {
-	private static final String ALL = "*";
+public class RedisTemplateHelper {
 
 	private final RedisTemplate<String, Object> template;
 
-	public void save(Cache cache, Serializable value) {
+	public void save(Cache cache, Object value) {
 		template.opsForValue()
-			 .set(cache.getKey(), value, cache.getTtl());
+			 .set(cache.key(), value, cache.ttl());
 	}
 
 	public <T extends Serializable> T find(String key) {
@@ -50,16 +50,16 @@ public class RedisTemplateUtils {
 		template.expire(key, ttl);
 	}
 
-	public Long getTTL(String key) {
-		return template.getExpire(key);
+	public Duration getTTL(String key) {
+		return Duration.ofSeconds(template.getExpire(key));
 	}
 
-	public boolean delete(String... key) {
-		return delete(Arrays.asList(key));
+	public boolean evict(String... key) {
+		return evict(Arrays.asList(key));
 	}
 
 	// Redis PipeLining used
-	public boolean delete(Collection<String> keys) {
+	public boolean evict(Collection<String> keys) {
 		Long result = template.delete(keys);
 		if (Objects.isNull(result)) {
 			return false;
@@ -67,13 +67,29 @@ public class RedisTemplateUtils {
 		return BooleanUtils.toBoolean(result.intValue());
 	}
 
-	public boolean deleteAll() {
-		Set<String> keys = keys(ALL);
-		log.info("delete keys: {}", keys);
-		return delete(keys);
+	public boolean evictAll() {
+		String all = "*";
+		Set<String> keys = findKeys(all);
+		log.debug("evict keys: {}", keys);
+		return evict(keys);
 	}
 
-	public Set<String> keys(String pattern) {
+	public Set<String> findKeys(String pattern) {
 		return template.keys(pattern);
+	}
+
+	@SuppressWarnings({"all", "unchecked", "rawtypes"})
+	public ListOperations opsForList() {
+		return template.opsForList();
+	}
+
+	@SuppressWarnings({"all", "unchecked", "rawtypes"})
+	public SetOperations opsForSet() {
+		return template.opsForSet();
+	}
+
+	@SuppressWarnings({"all", "unchecked", "rawtypes"})
+	public HashOperations opsForHash() {
+		return template.opsForHash();
 	}
 }

@@ -1,4 +1,13 @@
+service:
+  redis:
+    embedded-enabled: false
+
 spring:
+  cache:
+    redis:
+      key-prefix: V1
+      time-to-live: 5ms
+
   data:
     redis:
   #    jedis, lettuce
@@ -16,19 +25,19 @@ spring:
       server-type: STANDALONE
 
       # Redis Cluster
-      cluster:
-        nodes:
-          - 127.0.0.1:6380
-          - 127.0.0.1:6381
-        max-redirects: 3
+#      cluster:
+#        nodes:
+#          - 127.0.0.1:6380
+#          - 127.0.0.1:6381
+#        max-redirects: 3
 
       # Redis Sentinel
-      sentinel:
-        master: gmoon-master
-        nodes:
-          - 127.0.0.1:26379 # default port
-          - 127.0.0.1:26380
-          - 127.0.0.1:26381
+#      sentinel:
+#        master: gmoon-master
+#        nodes:
+#          - 127.0.0.1:26379 # default port
+#          - 127.0.0.1:26380
+#          - 127.0.0.1:26381
 
   # JPA persistence
   jpa:

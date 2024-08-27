@@ -7,44 +7,46 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
+
+import com.gmoon.springdataredis.cache.CachePolicy;
+import com.gmoon.springdataredis.helper.CacheHelper;
+import com.gmoon.springdataredis.test.ServiceTest;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-// @ActiveProfiles("local")
-// @Import(EmbeddedRedisConfig.class)
-@SpringBootTest
+@EnabledIf(value = "#{'${spring.cache.type}' == 'REDIS'}", loadContext = true)
+@ServiceTest
 class CacheUserRepositoryTest {
+
 	@Autowired
-	CacheUserRepository repository;
+	private CacheUserRepository repository;
+
 	@Autowired
-	CacheManager cacheManager;
+	private CacheManager cacheManager;
 
 	@BeforeEach
-	void init() {
-		CacheUser cacheUser = CacheUser.builder()
-			 .username("gmoon")
-			 .build();
-
-		repository.save(cacheUser);
+	void init(@Autowired CacheHelper cacheHelper) {
+		cacheHelper.evictAll();
 	}
 
 	@Test
-	void testSave() {
-		// when
+	void save() {
+		repository.save(CacheUser.builder()
+			 .username("gmoon")
+			 .build());
+
 		Optional<CacheUser> actual = repository.findByUsername("gmoon");
 
-		// then
 		log.info("actual: {}", actual);
 		assertThat(actual)
-			 .isNotEmpty()
 			 .isEqualTo(getCachedUser("gmoon"));
 	}
 
 	private Optional<CacheUser> getCachedUser(String username) {
-		return Optional.ofNullable(cacheManager.getCache(CacheUser.KEY))
+		return Optional.ofNullable(cacheManager.getCache(CachePolicy.Name.USER))
 			 .map(cache -> cache.get(username, CacheUser.class));
 	}
 }

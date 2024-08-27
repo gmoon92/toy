@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.Duration;
 
 public interface Cache extends Serializable {
-	String getKey();
+	String key();
 
-	Duration getTtl();
+	Duration ttl();
 }
