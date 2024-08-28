@@ -118,7 +118,8 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 
 따라서 비동기 처리된 결과를 받을 경우엔 다음 3 가지의 리턴 타입을 골라 사용하면 되는데, 참고로 `CompletableFuture`, `ListenableFuture` 클래스는 `java.util.concurrent.Future` 인터페이스를 구현한 클래스이다. 각각의 클래스별 동작 방식과 사용법이 다르다. 본 포스팅에선 해당 내용은 생략하겠다.
 
-다음과 같이 `Future`를 구현한 `AsyncResult` 클래스를 사용하면 된다.
+~~다음과 같이 `Future`를 구현한 `AsyncResult` 클래스를 사용하면 된다.~~
+AsyncResult deprecated since 6.0. using CompletableFuture
 
 ```java
 @Service
@@ -127,7 +128,7 @@ public class MailService {
   @Async
   public Future<String> sendInviteMailFrom(final String publicUrl) {
     // send mail logic...
-    return new AsyncResult<>(publicUrl);
+	  return CompletableFuture.completedFuture(publicUrl);
   }
 }
 
@@ -173,7 +174,8 @@ public interface TaskExecutor extends java.util.concurrent.Executor {
 `SimpleAsyncTaskExecutor`는 Thread Pool이 아니므로 비동기 요청이 올때 마다 매번 Thread를 생성하게 된다. Thread 생성하는 비용이 크기 때문에 Overflow의 위험이 따른다.
 
 > TaskExecutor implementation that fires up a new Thread for each task, executing it asynchronously.
-Supports limiting concurrent threads through the "concurrencyLimit" bean property. By default, the number of concurrent threads is unlimited.<br/>
+> Supports limiting concurrent threads through the "concurrencyLimit" bean property. By default, the number of
+> concurrent threads is unlimited.<br/>
 > NOTE: This implementation does not reuse threads! Consider a thread-pooling TaskExecutor implementation instead, in particular for executing a large number of short-lived tasks.<br/>
 > - [javadoc-api: SimpleAsyncTaskExecutor.java](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/task/SimpleAsyncTaskExecutor.html)
 
@@ -309,7 +311,7 @@ public class MailService {
   @Async("customTaskExecutor") // 커스텀한 TaskExecutor bean name 지정
   public void sendInviteMailFrom(final String publicUrl) {
     // send mail...
-    return new AsyncResult<>(publicUrl);
+	  return CompletableFuture.completedFuture(publicUrl);
   }
 }
 ```

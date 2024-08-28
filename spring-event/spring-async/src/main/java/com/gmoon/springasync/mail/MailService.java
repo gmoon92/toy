@@ -1,12 +1,12 @@
 package com.gmoon.springasync.mail;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +46,7 @@ public class MailService {
 	@Async
 	public Future<String> sendInviteMailFromServerWillReturn(final String publicUrl) {
 		self.sendInviteMailFrom(publicUrl);
-		return new AsyncResult<>(publicUrl);
+		return CompletableFuture.completedFuture(publicUrl);
 	}
 
 	@Async
