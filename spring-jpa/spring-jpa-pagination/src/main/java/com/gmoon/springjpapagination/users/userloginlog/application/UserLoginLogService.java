@@ -8,13 +8,13 @@ import com.gmoon.springjpapagination.users.userloginlog.dto.UserLoginLogListVO;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class UserLoginLogService {
 
 	private final UserLoginLogRepository repository;
 
-	@Transactional(readOnly = true)
 	public UserLoginLogListVO getUserLoginLogListVO(UserLoginLogListVO listVO) {
 		return repository.getUserLoginLogListVO(listVO);
 	}

@@ -10,6 +10,7 @@ import com.gmoon.springeventlistener.orders.order.events.CompletedOrderEvent;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class OrderService {

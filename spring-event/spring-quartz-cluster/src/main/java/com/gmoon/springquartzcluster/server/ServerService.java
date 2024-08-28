@@ -12,18 +12,17 @@ import com.gmoon.springquartzcluster.model.WebServerSaveForm;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ServerService {
 	private final ServerRepository serverRepository;
 
-	@Transactional(readOnly = true)
 	@Cacheable(value = ServerCacheNames.SERVER_ALL)
 	public List<Server> getEnabledServers() {
 		return serverRepository.getEnabledServers();
 	}
 
-	@Transactional(readOnly = true)
 	@Cacheable(value = ServerCacheNames.SERVER_FIND_BY_NAME, key = "#serverName")
 	public Server getServer(String serverName) {
 		return serverRepository.findServerByName(serverName);

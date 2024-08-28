@@ -139,8 +139,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gmoon.springtx.spaces.domain.SpaceUserRepository;
 
-@Service
 @Transactional(readOnly = true)
+@Service
 public class SpaceUserService {
 
 	private final SpaceUserRepository spaceUserRepository;

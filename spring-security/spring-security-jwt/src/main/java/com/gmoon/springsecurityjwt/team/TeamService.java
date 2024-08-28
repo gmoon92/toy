@@ -5,12 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class TeamService {
 	private final TeamRepository repository;
 
-	@Transactional(readOnly = true)
 	public Team get(Long teamId) {
 		return repository.getById(teamId);
 	}

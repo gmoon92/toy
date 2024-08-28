@@ -12,12 +12,12 @@ import com.gmoon.quickperf.repository.TeamRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class TeamService {
 	private final TeamRepository repository;
 
-	@Transactional(readOnly = true)
 	public Team findByName(String name) {
 		return repository.findByName(name);
 	}

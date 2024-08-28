@@ -21,6 +21,7 @@ import com.gmoon.quickperf.test.InitTestDataExecutor;
 @Disabled("24.05.26 기준으로 spring boot 3 호환성 문제 발생으로 테스트 검증 제외"
 	 + "참고 링크 https://github.com/quick-perf/quickperf/issues/196")
 @SpringBootTest
+@Transactional
 @ExtendWith(QuickPerfTestExtension.class)
 class TeamServiceTest extends InitTestDataExecutor {
 
@@ -35,7 +36,6 @@ class TeamServiceTest extends InitTestDataExecutor {
 	}
 
 	@Test
-	@Transactional
 	@ExpectUpdate
 	@ExpectSelect(3)
 	@DisplayName("기존의 팀의 맴버들을 새로운 팀으로 할당한다")

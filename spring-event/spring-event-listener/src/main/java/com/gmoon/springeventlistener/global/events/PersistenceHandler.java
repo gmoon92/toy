@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Component
 @RequiredArgsConstructor
 public class PersistenceHandler {

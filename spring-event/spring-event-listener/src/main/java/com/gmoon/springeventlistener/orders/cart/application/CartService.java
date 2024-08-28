@@ -9,6 +9,7 @@ import com.gmoon.springeventlistener.orders.cart.domain.vo.UserId;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class CartService {

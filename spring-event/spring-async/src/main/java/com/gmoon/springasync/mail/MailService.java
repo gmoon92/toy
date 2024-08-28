@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class MailService {
@@ -33,7 +34,6 @@ public class MailService {
 	}
 
 	@Async
-	@Transactional(readOnly = true)
 	public void sendInviteMailFrom(final String publicUrl) {
 		log.info("async send mail...");
 		memberRepository.streamFindAll()
@@ -44,14 +44,12 @@ public class MailService {
 	}
 
 	@Async
-	@Transactional(readOnly = true)
 	public Future<String> sendInviteMailFromServerWillReturn(final String publicUrl) {
 		self.sendInviteMailFrom(publicUrl);
 		return new AsyncResult<>(publicUrl);
 	}
 
 	@Async
-	@Transactional(readOnly = true)
 	public void sendMailIfPublicUrlIsBlankThrow(final String publicUrl) {
 		if (StringUtils.isBlank(publicUrl)) {
 			throw new SendMailException();
@@ -61,7 +59,6 @@ public class MailService {
 	}
 
 	@Async
-	@Transactional(readOnly = true)
 	public Future<String> sendMailWillReturnIfPublicUrlIsBlankThrow(final String publicUrl) {
 		if (StringUtils.isBlank(publicUrl)) {
 			throw new SendMailException();

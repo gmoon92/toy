@@ -11,13 +11,13 @@ import com.gmoon.resourceserver.util.CorsUtils;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class CorsOriginService {
 	private final CorsOriginRepository corsOriginRepository;
 	private final CorsHttpMethodRepository corsHttpMethodRepository;
 
-	@Transactional(readOnly = true)
 	@Cacheable(value = CacheName.Constants.ALLOWED_ORIGIN_PATTERN, key = "#root.methodName")
 	public List<String> getAllowedOriginPatterns() {
 		List<String> hosts = corsOriginRepository.getAllHost();
@@ -28,7 +28,6 @@ public class CorsOriginService {
 		return CorsUtils.getAllowedOriginPatterns(hosts);
 	}
 
-	@Transactional(readOnly = true)
 	public List<CorsOrigin> getAll() {
 		return corsOriginRepository.findAll();
 	}
@@ -44,7 +43,6 @@ public class CorsOriginService {
 			 .ifPresent(corsOriginRepository::delete);
 	}
 
-	@Transactional(readOnly = true)
 	@Cacheable(value = CacheName.Constants.ALLOWED_HTTP_METHODS, key = "#root.methodName")
 	public List<String> getAllowedHttpMethods() {
 		return corsHttpMethodRepository.findAllByEnabled();

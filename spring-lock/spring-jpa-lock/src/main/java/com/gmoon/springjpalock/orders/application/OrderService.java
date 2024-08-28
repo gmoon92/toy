@@ -15,6 +15,7 @@ import com.gmoon.springjpalock.orders.domain.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class OrderService {

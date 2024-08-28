@@ -9,6 +9,7 @@ import com.gmoon.hibernateperformance.member.model.MemberOptionUpdateRequestVO;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class MemberService {
