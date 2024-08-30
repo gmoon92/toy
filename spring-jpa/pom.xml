@@ -26,6 +26,7 @@
         <module>spring-jpa-pagination</module>
         <module>spring-jpa-specs</module>
         <module>spring-jpa-multi-datasource</module>
+        <module>time-sorted-unique-identifier</module>
     </modules>
 
     <properties>

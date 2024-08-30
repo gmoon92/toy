@@ -30,6 +30,7 @@
     - [spring-jpa-pagination](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-pagination/README.md)
     - [spring-jpa-specs](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-specs/README.md)
     - [spring-jpa-multi-datasource](https://github.com/gmoon92/toy/blob/master/spring-jpa/spring-jpa-multi-datasource/README.md)
+    - [time-sorted-unique-identifier](https://github.com/gmoon92/toy/blob/master/spring-jpa/time-sorted-unique-identifier/README.md)
 - spring-lock
     - [spring-jpa-lock](https://github.com/gmoon92/toy/blob/master/spring-lock/spring-jpa-lock/README.md)
     - [spring-lock-redisson](https://github.com/gmoon92/toy/blob/master/spring-lock/spring-lock-redisson/README.md)
