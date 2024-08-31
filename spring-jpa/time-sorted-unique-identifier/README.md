@@ -54,6 +54,9 @@ Time-Sorted Unique Identifier를 생성하는 java library로, Twitter의 snowfl
 
 ## Reference
 
-- https://en.wikipedia.org/wiki/Snowflake_ID
+- git link
+  - [twitter archive - snowflake](https://github.com/twitter-archive/snowflake)
+  - [sony - Sonyflake for java](https://github.com/sony/sonyflake)
+  - [baidu - UIDGenerator](https://github.com/baidu/uid-generator)
+- [wiki - Snowflake_ID](https://en.wikipedia.org/wiki/Snowflake_ID)
 - https://velog.io/@ssssujini99/%EA%B0%9C%EB%B0%9C-idPK-%EC%A7%81%EC%A0%91%ED%95%A0%EB%8B%B9-%EC%A0%84%EB%9E%B5-Random-UUID-TSID-%EA%B0%81%EA%B0%81-%EB%B9%84%EA%B5%90%EB%B6%84%EC%84%9D#3-tsid%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-idpk-%ED%95%A0%EB%8B%B9
-- https://github.com/sony/sonyflake
