@@ -1,9 +1,9 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
+import static org.assertj.core.api.Assertions.assertThat;
+
 class SequenceTest {
 
 	@Test
@@ -12,7 +12,6 @@ class SequenceTest {
 
 		Sequence sequence = Sequence.create(timestamp);
 
-		long value = sequence.getValue();
-		log.info("{}", value);
+		assertThat(sequence.getValue()).isZero();
 	}
 }
