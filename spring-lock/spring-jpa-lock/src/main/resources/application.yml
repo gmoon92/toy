@@ -15,8 +15,11 @@ spring:
 #    database-platform: org.hibernate.dialect.MySQLDialect
     defer-datasource-initialization: true
     show-sql: &show-sql true
+    hibernate:
+      ddl-auto: create-drop
     properties:
-      "[javax.persistence.query.timeout]": 1000
+#      "[javax.persistence.query.timeout]": 1000
+      "[jakarta.persistence.query.timeout]": 1000
       hibernate:
 #        "[hbm2ddl.auto]": create-drop
         #      "[hbm2ddl.auto]": create-drop
@@ -25,11 +28,8 @@ spring:
         #        use_sql_comments: *show-sql
         #        format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect
-    hibernate:
-      ddl-auto: create-drop
 
   sql:
     init:
       mode: always
-
-#"[logging.level.org.hibernate.type.descriptor.sql]": trace
+      continue-on-error: true

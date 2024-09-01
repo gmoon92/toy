@@ -1,15 +1,11 @@
 package com.gmoon.springjpalock.orders.domain;
 
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
-import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface OrderRepository extends JpaRepository<Order, String> {
@@ -24,6 +20,10 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	@Query("SELECT o FROM Order o WHERE o.no = ?1")
 	Optional<Order> findByNoWithExclusiveLock(String no);
 
-	@Query
-	void increment(String no);
+	/**
+	 * @implNote @Query 어노테이션을 통해 작성된 변경이 일어나는 쿼리(INSERT, DELETE, UPDATE )를 실행할 때 사용
+	 * */
+	@Modifying
+	@Query("UPDATE Order o SET o.issuedCount = o.issuedCount +1 WHERE o.no = :no")
+	void incrementIssuedCount(String no);
 }

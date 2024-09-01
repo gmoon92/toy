@@ -15,7 +15,7 @@
 
     <logger name="org.hibernate.type.descriptor.sql" level="OFF"/>
     <logger name="MySQL" level="OFF"/>
-    <logger name="com.gmoon" level="WARN"/>
+    <logger name="com.gmoon" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

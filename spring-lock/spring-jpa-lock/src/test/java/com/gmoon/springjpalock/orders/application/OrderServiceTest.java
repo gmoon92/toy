@@ -1,21 +1,24 @@
 package com.gmoon.springjpalock.orders.application;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
 import com.gmoon.springjpalock.orders.domain.OrderLineItem;
 import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Disabled
 @SpringBootTest
@@ -64,5 +67,26 @@ class OrderServiceTest {
 		return OrderLineItem.builder()
 			 .quantity(quantity)
 			 .build();
+	}
+
+	@DisplayName("동시성 이슈 검증")
+	@Rollback
+	@Test
+	void issueReceipt() {
+		CompletableFuture.allOf(
+			 IntStream.range(0, 1_000)
+				  .mapToObj(number -> CompletableFuture.runAsync(this::incrementIssuedCount))
+				  .toArray(CompletableFuture[]::new)
+		).join();
+
+		Order order = service.getOrder(Fixtures.ORDER_NO);
+
+		assertThat(order)
+			 .hasFieldOrPropertyWithValue("issuedCount", 1_000L)
+			 .isNotNull();
+	}
+
+	private void incrementIssuedCount() {
+		service.issueReceipt(Fixtures.ORDER_NO);
 	}
 }

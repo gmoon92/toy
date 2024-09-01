@@ -1,20 +1,20 @@
 package com.gmoon.springjpalock.orders.application;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.gmoon.springjpalock.menus.domain.Menu;
 import com.gmoon.springjpalock.menus.domain.MenuRepository;
 import com.gmoon.springjpalock.orders.domain.Order;
 import com.gmoon.springjpalock.orders.domain.OrderLineItem;
 import com.gmoon.springjpalock.orders.domain.OrderRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Slf4j
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
@@ -37,5 +37,16 @@ public class OrderService {
 		// 2. 메뉴 재고 감소
 		menu.decreaseQuantity();
 		return orderRepository.saveAndFlush(param);
+	}
+
+	@Transactional
+	public void issueReceipt(String orderNo) {
+		log.info("issued receipt {}", orderNo);
+		orderRepository.incrementIssuedCount(orderNo);
+	}
+
+	public Order getOrder(String orderNo) {
+		return orderRepository.findById(orderNo)
+			 .orElseThrow(EntityNotFoundException::new);
 	}
 }
