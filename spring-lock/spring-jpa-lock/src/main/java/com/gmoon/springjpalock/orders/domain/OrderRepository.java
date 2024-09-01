@@ -23,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	/**
 	 * @implNote @Query 어노테이션을 통해 작성된 변경이 일어나는 쿼리(INSERT, DELETE, UPDATE )를 실행할 때 사용
 	 * */
-	@Modifying
+	@Modifying(clearAutomatically = true, flushAutomatically = true)
 	@Query("UPDATE Order o SET o.issuedCount = o.issuedCount +1 WHERE o.no = :no")
 	void incrementIssuedCount(String no);
 }
