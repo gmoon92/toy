@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 class Sequence implements BitField {
 
+	private BitAllocation bitAllocation = BitAllocation.SEQUENCE;
 	private long value = 0L;
 
 	private Sequence(Timestamp timestamp) {
@@ -27,10 +28,5 @@ class Sequence implements BitField {
 
 	public boolean isZero() {
 		return value == 0L;
-	}
-
-	@Override
-	public long getLength() {
-		return 12L;
 	}
 }

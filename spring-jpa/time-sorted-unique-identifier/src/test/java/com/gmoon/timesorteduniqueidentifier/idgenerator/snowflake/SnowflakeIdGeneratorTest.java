@@ -2,6 +2,7 @@ package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -17,11 +18,11 @@ class SnowflakeIdGeneratorTest {
 		long workerId = 31;
 		long dataCenterId = 31;
 
-		SnowflakeIdGenerator worker = new SnowflakeIdGenerator(workerId, dataCenterId);
+		SnowflakeIdGenerator idGenerator = new SnowflakeIdGenerator(workerId, dataCenterId);
 
-		long id = worker.generate();
+		long id = idGenerator.generate();
 		for (int i = 0; i < 1_000; i++) {
-			long nextId = worker.generate();
+			long nextId = idGenerator.generate();
 			assertThat(nextId).isGreaterThan(id);
 
 			log.info("id: {}, nextId: {}", id, nextId);
@@ -46,5 +47,29 @@ class SnowflakeIdGeneratorTest {
 				  ).toInstant(ZoneOffset.UTC)
 				  .toEpochMilli()
 		).isEqualTo(1288834974657L);
+	}
+
+	@Nested
+	class ExtractTest {
+
+		@Test
+		void test() {
+			long workerId = 31;
+			long dataCenterId = 30;
+
+			SnowflakeIdGenerator idGenerator = new SnowflakeIdGenerator(workerId, dataCenterId);
+			long snowflakeId = idGenerator.generate();
+			log.info("snowflakeId: {}", snowflakeId);
+
+			log.info("Sign bit    : {}", BitAllocation.SIGN_BIT.extract(snowflakeId));
+			log.info("Timestamp   : {}", BitAllocation.TIMESTAMP.extract(snowflakeId));
+			log.info("Timestamp   : {}", Timestamp.toInstant(BitAllocation.TIMESTAMP.extract(snowflakeId)));
+			log.info("Data center : {}", BitAllocation.DATA_CENTER.extract(snowflakeId));
+			log.info("Worker id   : {}", BitAllocation.WORKER_ID.extract(snowflakeId));
+			log.info("Sequence    : {}", BitAllocation.SEQUENCE.extract(snowflakeId));
+
+			assertThat(BitAllocation.WORKER_ID.extract(snowflakeId)).isEqualTo(31);
+			assertThat(BitAllocation.DATA_CENTER.extract(snowflakeId)).isEqualTo(30);
+		}
 	}
 }

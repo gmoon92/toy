@@ -1,17 +1,21 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
 import com.gmoon.timesorteduniqueidentifier.idgenerator.exception.InvalidSystemClock;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Slf4j
-class Timestamp {
+class Timestamp implements BitField {
 	private static final long TWITTER_EPOCH = LocalDateTime.of(2010, 11, 4, 1, 42, 54, 657000000)
 		 .toInstant(ZoneOffset.UTC)
 		 .toEpochMilli();
 
+	@Getter
+	private final BitAllocation bitAllocation = BitAllocation.TIMESTAMP;
 	private long lastGeneratedTimestamp = -1L;
 	private long value;
 
@@ -56,5 +60,9 @@ class Timestamp {
 
 	public boolean hasTimestampCollision() {
 		return lastGeneratedTimestamp == value;
+	}
+
+	public static Instant toInstant(long timestamp) {
+		return Instant.ofEpochMilli(timestamp + Timestamp.TWITTER_EPOCH);
 	}
 }

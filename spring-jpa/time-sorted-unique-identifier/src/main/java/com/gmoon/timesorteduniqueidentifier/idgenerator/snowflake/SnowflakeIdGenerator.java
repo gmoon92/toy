@@ -13,12 +13,14 @@ import lombok.extern.slf4j.Slf4j;
 public class SnowflakeIdGenerator {
 
 	private final Timestamp timestamp;
-	private final InstanceId instanceId;
+	private final Worker worker;
+	private final DataCenter dataCenter;
 	private final Sequence sequence;
 
 	public SnowflakeIdGenerator(long workerId, long dataCenterId) {
 		this.timestamp = Timestamp.create();
-		this.instanceId = InstanceId.create(workerId, dataCenterId);
+		this.worker = Worker.create(workerId);
+		this.dataCenter = DataCenter.create(dataCenterId);
 		this.sequence = Sequence.create(timestamp);
 
 		log.info("worker starting. workerId: {}, dataCenterId: {}", workerId, dataCenterId);
@@ -34,19 +36,13 @@ public class SnowflakeIdGenerator {
 	}
 
 	private long nextId(Timestamp timestamp, Sequence sequence) {
-		long workerId = instanceId.getWorkerId();
-		long dataCenterId = instanceId.getDataCenterId();
-		long workerIdBits = instanceId.getWorkerIdBits();
-		long dataCenterIdBits = instanceId.getDataCenterIdBits();
-
-		final long sequenceBits = sequence.getLength();
-		final long workerIdLeftShift = sequenceBits;
-		final long datacenterIdLeftShift = sequenceBits + workerIdBits;
-		final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;
+		final long workerIdLeftShift = worker.shiftLeft();
+		final long datacenterIdLeftShift = dataCenter.shiftLeft();
+		final long timestampLeftShift = timestamp.shiftLeft();
 
 		return (timestamp.getValue() << timestampLeftShift)
-			 | (dataCenterId << datacenterIdLeftShift)
-			 | (workerId << workerIdLeftShift)
+			 | (dataCenter.getId() << datacenterIdLeftShift)
+			 | (worker.getId() << workerIdLeftShift)
 			 | sequence.getValue();
 	}
 }
