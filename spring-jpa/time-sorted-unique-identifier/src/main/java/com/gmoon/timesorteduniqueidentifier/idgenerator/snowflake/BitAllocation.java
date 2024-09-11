@@ -1,9 +1,5 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.util.stream.Stream;
 
 /**
@@ -12,8 +8,6 @@ import java.util.stream.Stream;
  *    1bits     41bits    10bits    12bits
  * </pre>
  */
-@RequiredArgsConstructor
-@Getter(AccessLevel.PRIVATE)
 public enum BitAllocation {
 
 	SIGN_BIT(1, 1),
@@ -24,26 +18,26 @@ public enum BitAllocation {
 
 	public final int position;
 	public final long bitLength;
+	public final long bitMask;
 
-	public long shiftLeft() {
+	BitAllocation(int position, long bitLength) {
+		this.position = position;
+		this.bitLength = bitLength;
+		this.bitMask = ~(-1L << bitLength);
+	}
+
+	public long shift() {
 		return Stream.of(values())
 			 .filter(allocation -> allocation.position > position)
-			 .mapToLong(BitAllocation::getBitLength)
+			 .mapToLong(bit -> bit.bitLength)
 			 .sum();
 	}
 
-	public long shiftRight() {
-		return Stream.of(values())
-			 .filter(allocation -> allocation.position < position)
-			 .mapToLong(BitAllocation::getBitLength)
-			 .sum();
-	}
-
-	public long getBitMask() {
-		return ~(-1L << bitLength);
+	public long masking(long value) {
+		return value & bitMask;
 	}
 
 	public long extract(long snowflakeId) {
-		return (snowflakeId >> shiftLeft()) & getBitMask();
+		return (snowflakeId >> shift()) & bitMask;
 	}
 }

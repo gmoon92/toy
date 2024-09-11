@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -68,8 +69,11 @@ class SnowflakeIdGeneratorTest {
 			log.info("Worker id   : {}", BitAllocation.WORKER_ID.extract(snowflakeId));
 			log.info("Sequence    : {}", BitAllocation.SEQUENCE.extract(snowflakeId));
 
-			assertThat(BitAllocation.WORKER_ID.extract(snowflakeId)).isEqualTo(31);
+			assertThat(BitAllocation.SIGN_BIT.extract(snowflakeId)).isZero();
+			assertThat(BitAllocation.TIMESTAMP.extract(snowflakeId)).isGreaterThanOrEqualTo(Instant.now().getEpochSecond());
 			assertThat(BitAllocation.DATA_CENTER.extract(snowflakeId)).isEqualTo(30);
+			assertThat(BitAllocation.WORKER_ID.extract(snowflakeId)).isEqualTo(31);
+			assertThat(BitAllocation.SEQUENCE.extract(snowflakeId)).isZero();
 		}
 	}
 }

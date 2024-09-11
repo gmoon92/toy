@@ -1,26 +1,24 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class Sequence implements BitField {
 
-	private BitAllocation bitAllocation = BitAllocation.SEQUENCE;
+	private final BitAllocation bitAllocation = BitAllocation.SEQUENCE;
 	private long value = 0L;
 
-	private Sequence(Timestamp timestamp) {
-		increment(timestamp);
-	}
-
 	static Sequence create(Timestamp timestamp) {
-		return new Sequence(timestamp);
+		Sequence sequence = new Sequence();
+		sequence.incrementOrReset(timestamp);
+		return sequence;
 	}
 
-	public void increment(Timestamp timestamp) {
-		if (timestamp.hasTimestampCollision()) {
-			// 동일한 타임스탬프에서 시퀀스를 증가
-			long sequenceMask = getBitMask();
-			value = (value + 1) & sequenceMask;
+	public void incrementOrReset(Timestamp timestamp) {
+		if (timestamp.hasConflict()) {
+			// 동시성 이슈가 발생시 시퀀스 증가
+			value = value + 1;
 		} else {
 			value = 0L;
 		}
@@ -28,5 +26,15 @@ class Sequence implements BitField {
 
 	public boolean isZero() {
 		return value == 0L;
+	}
+
+	@Override
+	public long getValue() {
+		return bitAllocation.masking(value);
+	}
+
+	@Override
+	public BitAllocation getBitAllocation() {
+		return bitAllocation;
 	}
 }
