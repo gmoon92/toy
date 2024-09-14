@@ -8,7 +8,7 @@ import java.util.stream.Stream;
  *    1bits     41bits    10bits    12bits
  * </pre>
  */
-public enum BitAllocation {
+enum BitAllocation {
 
 	SIGN_BIT(1, 1),
 	TIMESTAMP(2, 41),
@@ -29,7 +29,7 @@ public enum BitAllocation {
 	public long shift() {
 		return Stream.of(values())
 			 .filter(allocation -> allocation.position > position)
-			 .mapToLong(bit -> bit.bits)
+			 .mapToLong(allocation -> allocation.bits)
 			 .sum();
 	}
 
