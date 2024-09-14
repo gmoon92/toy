@@ -1,10 +1,13 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.tsid;
 
-import com.gmoon.timesorteduniqueidentifier.idgenerator.base.BitUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static com.gmoon.timesorteduniqueidentifier.idgenerator.base.BitUtils.masking;
 
 /**
  * <pre>
@@ -16,33 +19,59 @@ import java.security.SecureRandom;
 @Slf4j
 public class TsidGenerator {
 
-	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+	private final ReentrantLock lock = new ReentrantLock();
+	private final Random random = new SecureRandom();
 
-	public long generate() {
-		long timestamp = systemTimeMillis();
-		long random = nextValue();
-		log.info("Generated timestamp: {}, random: {}", timestamp, random);
+	private long timestamp = -1L;
+	private long count;
 
-		return BigInteger.valueOf(timestamp)
-			 .shiftLeft(Bits.RANDOMNESS)
-			 .or(BigInteger.valueOf(random))
-			 .longValue();
+	public BigInteger generate() {
+		try {
+			lock.lock();
+			long timestamp = systemTimeMillis();
+			long randomValue = random.nextLong();
+
+			log.trace("Generated timestamp: {}, random: {}, count: {}", timestamp, randomValue, count);
+			return BigInteger.valueOf(masking(timestamp, Bits.TIMESTAMP))
+				 .shiftLeft(Bits.RANDOMNESS)
+				 .or(BigInteger.valueOf(masking(randomValue, Bits.RANDOM)).shiftLeft(Bits.COUNT))
+				 .or(BigInteger.valueOf(count));
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	private long systemTimeMillis() {
-		return BitUtils.masking(
-			 System.currentTimeMillis(),
-			 Bits.TIMESTAMP
-		);
+		long timestamp = System.currentTimeMillis();
+		boolean conflictTime = timestamp <= this.timestamp;
+		if (conflictTime) {
+			count++;
+
+			long carry = count >>> Bits.COUNT;
+			boolean overflow = carry > 0;
+			if (overflow) {
+				log.trace("overflow count: {}", count);
+				timestamp = this.timestamp + carry; // increment time
+				resetCount();
+			}
+			count = (int) masking(count, Bits.COUNT);
+		} else {
+			resetCount();
+		}
+
+		this.timestamp = timestamp;
+		return timestamp;
 	}
 
-	private long nextValue() {
-		return BitUtils.masking(SECURE_RANDOM.nextLong(), Bits.RANDOMNESS);
+	private void resetCount() {
+		count = 0;
 	}
 
 	static class Bits {
 
 		public static final int TIMESTAMP = 48;
 		public static final int RANDOMNESS = 80;
+		public static final int RANDOM = 63; // max = 2^6 -1 = long type bits(64bits, 2^6) -1
+		public static final int COUNT = RANDOMNESS - RANDOM;
 	}
 }
