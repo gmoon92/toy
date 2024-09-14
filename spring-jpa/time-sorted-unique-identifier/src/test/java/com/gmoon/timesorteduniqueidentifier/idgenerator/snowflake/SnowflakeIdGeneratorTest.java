@@ -1,36 +1,75 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class SnowflakeIdGeneratorTest {
 
+	private static SnowflakeIdGenerator generator;
+
+	@BeforeAll
+	static void beforeAll() {
+		int workerId = 31;
+		int dataCenterId = 31;
+		generator = new SnowflakeIdGenerator(workerId, dataCenterId);
+	}
+
 	@RepeatedTest(100)
 	void generate() {
-		long workerId = 31;
-		long dataCenterId = 31;
-
-		SnowflakeIdGenerator idGenerator = new SnowflakeIdGenerator(workerId, dataCenterId);
-
-		long id = idGenerator.generate();
+		long id = generator.generate();
 		for (int i = 0; i < 1_000; i++) {
-			long nextId = idGenerator.generate();
+			long nextId = generator.generate();
 			assertThat(nextId).isGreaterThan(id)
 				 .isPositive();
 
 			log.info("id: {}, nextId: {}, {}", id, nextId, Timestamp.toInstant(BitAllocation.TIMESTAMP.extract(nextId)));
 			id = nextId;
 		}
+	}
+
+	@DisplayName("동시성 검증")
+	@ParameterizedTest
+	@ValueSource(ints = {1_000, 10_000, 50_000, 100_000, 500_000})
+	void concurrency(int userAgent) {
+		ExecutorService executor = Executors.newCachedThreadPool();
+		List<Callable<Long>> callables = IntStream.range(0, userAgent)
+			 .mapToObj(i -> (Callable<Long>) () -> generator.generate())
+			 .toList();
+
+		Awaitility
+			 .await("동시 요청자 수: " + userAgent)
+			 .untilAsserted(
+				  () -> assertThat(executor.invokeAll(callables)
+					   .stream()
+					   .map(future -> {
+						   try {
+							   return future.get();
+						   } catch (InterruptedException | ExecutionException e) {
+							   throw new RuntimeException(e);
+						   }
+					   })
+					   .distinct()
+					   .count()
+				  ).isEqualTo(userAgent)
+			 );
+
+		executor.shutdownNow();
 	}
 
 	@DisplayName(
