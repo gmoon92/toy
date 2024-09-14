@@ -3,6 +3,7 @@ package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 class SnowflakeIdGeneratorTest {
 
-	@Test
+	@RepeatedTest(100)
 	void generate() {
 		long workerId = 31;
 		long dataCenterId = 31;
@@ -24,9 +25,10 @@ class SnowflakeIdGeneratorTest {
 		long id = idGenerator.generate();
 		for (int i = 0; i < 1_000; i++) {
 			long nextId = idGenerator.generate();
-			assertThat(nextId).isGreaterThan(id);
+			assertThat(nextId).isGreaterThan(id)
+				 .isPositive();
 
-			log.info("id: {}, nextId: {}", id, nextId);
+			log.info("id: {}, nextId: {}, {}", id, nextId, Timestamp.toInstant(BitAllocation.TIMESTAMP.extract(nextId)));
 			id = nextId;
 		}
 	}

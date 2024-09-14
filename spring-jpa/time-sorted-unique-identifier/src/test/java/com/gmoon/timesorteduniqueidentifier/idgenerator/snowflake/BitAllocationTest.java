@@ -11,10 +11,10 @@ class BitAllocationTest {
 
 	@Test
 	void shift() {
-		assertThat(SIGN_BIT.shift()).isEqualTo(TIMESTAMP.bitLength + DATA_CENTER.bitLength + WORKER_ID.bitLength + SEQUENCE.bitLength);
-		assertThat(TIMESTAMP.shift()).isEqualTo(DATA_CENTER.bitLength + WORKER_ID.bitLength + SEQUENCE.bitLength);
-		assertThat(DATA_CENTER.shift()).isEqualTo(WORKER_ID.bitLength + SEQUENCE.bitLength);
-		assertThat(WORKER_ID.shift()).isEqualTo(SEQUENCE.bitLength);
+		assertThat(SIGN_BIT.shift()).isEqualTo(TIMESTAMP.bits + DATA_CENTER.bits + WORKER_ID.bits + SEQUENCE.bits);
+		assertThat(TIMESTAMP.shift()).isEqualTo(DATA_CENTER.bits + WORKER_ID.bits + SEQUENCE.bits);
+		assertThat(DATA_CENTER.shift()).isEqualTo(WORKER_ID.bits + SEQUENCE.bits);
+		assertThat(WORKER_ID.shift()).isEqualTo(SEQUENCE.bits);
 		assertThat(SEQUENCE.shift()).isZero();
 	}
 }

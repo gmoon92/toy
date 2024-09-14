@@ -17,19 +17,19 @@ public enum BitAllocation {
 	SEQUENCE(5, 12);
 
 	public final int position;
-	public final long bitLength;
+	public final long bits;
 	public final long bitMask;
 
-	BitAllocation(int position, long bitLength) {
+	BitAllocation(int position, long bits) {
 		this.position = position;
-		this.bitLength = bitLength;
-		this.bitMask = ~(-1L << bitLength);
+		this.bits = bits;
+		this.bitMask = ~(-1L << bits);
 	}
 
 	public long shift() {
 		return Stream.of(values())
 			 .filter(allocation -> allocation.position > position)
-			 .mapToLong(bit -> bit.bitLength)
+			 .mapToLong(bit -> bit.bits)
 			 .sum();
 	}
 
