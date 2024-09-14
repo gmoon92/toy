@@ -1,6 +1,6 @@
 package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
 
-import com.gmoon.timesorteduniqueidentifier.idgenerator.exception.InvalidSystemClockException;
+import com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake.exception.InvalidSystemClockException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
