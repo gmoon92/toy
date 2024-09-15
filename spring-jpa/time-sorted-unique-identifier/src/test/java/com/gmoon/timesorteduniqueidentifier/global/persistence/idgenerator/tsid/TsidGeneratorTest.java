@@ -1,7 +1,7 @@
-package com.gmoon.timesorteduniqueidentifier.idgenerator.tsid;
+package com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.tsid;
 
 import com.github.f4b6a3.tsid.TsidFactory;
-import com.gmoon.timesorteduniqueidentifier.idgenerator.base.BitUtils;
+import com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.base.BitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;

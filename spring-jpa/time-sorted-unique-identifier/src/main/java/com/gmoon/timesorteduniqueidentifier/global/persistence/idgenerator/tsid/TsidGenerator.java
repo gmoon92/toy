@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.idgenerator.tsid;
+package com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.tsid;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.gmoon.timesorteduniqueidentifier.idgenerator.base.BitUtils.masking;
+import static com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.base.BitUtils.masking;
 
 /**
  * <pre>

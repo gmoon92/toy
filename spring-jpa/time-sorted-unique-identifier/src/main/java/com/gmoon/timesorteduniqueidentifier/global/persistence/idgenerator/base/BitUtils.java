@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.idgenerator.base;
+package com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.base;
 
 import lombok.experimental.UtilityClass;
 

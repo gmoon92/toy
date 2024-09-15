@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake.exception;
+package com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.snowflake.exception;
 
 import java.io.Serial;
 

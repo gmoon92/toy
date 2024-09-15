@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
+package com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.snowflake;
 
 class WorkerId implements BitField {
 

@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.idgenerator.snowflake;
+package com.gmoon.timesorteduniqueidentifier.global.persistence.idgenerator.snowflake;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
