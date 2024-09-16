@@ -30,15 +30,92 @@
 - **병렬 처리**: Chunk 기반 병렬 처리를 지원하여 대규모 데이터를 빠르게 처리할 수 있음
 - **부분 처리**: 레코드를 건너뛰는 기능 등을 제공해 오류 발생 시 유연한 처리 가능
 
-## 3. 구성 요소
+## 구성 요소
 
 스프링 배치는 **Job**과 **Step**이라는 두 가지 주요 구성 요소로 나뉜다.
 
-- **Job**: 하나의 배치 작업을 의미하며, 예를 들어 "파일 읽기 -> 데이터 처리 -> 데이터베이스에 저장"과 같은 전체 흐름이 하나의 Job이 될 수 있다. Job은 여러 개의 **Step**으로 구성된다.
-- **Step**: Job을 구성하는 작은 작업 단위로, 파일을 읽거나 데이터를 변환하고 저장하는 등의 작업을 수행한다.
-  - **ItemReader**: 데이터를 읽어오는 역할 (예: 파일, 데이터베이스)
-  - **ItemProcessor**: 데이터를 변환하거나 검증하는 역할 (예: 데이터 포맷 변경)
-  - **ItemWriter**: 처리된 데이터를 최종적으로 저장하는 역할 (예: 데이터베이스나 파일에 쓰기)
+### Job
+
+`Job`은 배치 처리의 전체 흐름을 정의하는 단위로써, 하나의 배치 작업을 의미한다.
+
+예를 들어, "파일 읽기 -> 데이터 처리 -> 데이터베이스에 저장"과 같은 전체 배치 흐름이 하나의 Job으로 구성될 수 있다. 
+
+`Job`은 **여러 개의 Step**으로 구성되며, 각 `Step`은 하나의 작업 단위를 의미한다.
+
+### Step
+
+`Step`은 Job을 구성하는 하나의 단위로, 데이터 처리 단계를 나타낸다.
+
+각 Step은 데이터의 읽기, 처리, 쓰기를 담당하는 특정 작업을 수행한다. Step은 다음과 같은 주요 구성 요소로 이루어진다.
+
+- **ItemReader**: 데이터를 읽어오는 역할 (예: 파일, 데이터베이스)
+- **ItemProcessor**: 데이터를 변환하거나 검증하는 역할 (예: 데이터 포맷 변경)
+- **ItemWriter**: 처리된 데이터를 최종적으로 저장하는 역할 (예: 데이터베이스나 파일에 쓰기)
+
+### 구성 요소 예시 코드
+
+다음은 간단한 스프링 배치 예시 코드로, 각 구성 요소의 역할을 보여준다.
+
+- `ItemReader`는 파일에서 데이터를 읽어오고,
+- `ItemProcessor`는 데이터를 대문자로 변환하며,
+- `ItemWriter`는 처리된 데이터를 출력한다. 
+- 각 단계는 `chunk` 크기(이 경우 10)만큼 데이터를 처리한다.
+
+```java
+@Configuration
+@EnableBatchProcessing
+public class BatchConfig {
+
+    @Autowired
+    private JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
+    private StepBuilderFactory stepBuilderFactory;
+
+    @Bean
+    public Job sampleJob() {
+        return jobBuilderFactory.get("sampleJob")
+                .start(sampleStep()) // Job은 여러 개의 Step으로 구성
+                .build();
+    }
+
+    @Bean
+    public Step sampleStep() {
+        return stepBuilderFactory.get("sampleStep")
+                .<String, String>chunk(10) // Chunk 단위로 처리 (ItemReader -> ItemProcessor -> ItemWriter)
+                .reader(itemReader())      // 데이터를 읽어오는 ItemReader
+                .processor(itemProcessor()) // 데이터를 처리하는 ItemProcessor
+                .writer(itemWriter())       // 데이터를 저장하는 ItemWriter
+                .build();
+    }
+
+    @Bean
+    public ItemReader<String> itemReader() {
+        return new FlatFileItemReaderBuilder<String>()
+                .name("sampleItemReader")
+                .resource(new FileSystemResource("input/sample-data.csv"))
+                .delimited().names(new String[]{"field1", "field2"})
+                .fieldSetMapper(new BeanWrapperFieldSetMapper<>() {{
+                    setTargetType(String.class);
+                }})
+                .build();
+    }
+
+    @Bean
+    public ItemProcessor<String, String> itemProcessor() {
+        return item -> item.toUpperCase(); // 데이터를 대문자로 변환
+    }
+
+    @Bean
+    public ItemWriter<String> itemWriter() {
+        return items -> {
+            for (String item : items) {
+                System.out.println("Writing item: " + item); // 처리된 데이터를 출력 (데이터베이스나 파일에 저장 가능)
+            }
+        };
+    }
+}
+```
 
 ## 4. 배치 작업 흐름
 
@@ -47,9 +124,25 @@
 1. `Job`이 시작되면, 등록된 `Step`들이 순차적으로 실행된다.
 2. `ItemReader`가 데이터를 읽어오고, `ItemProcessor`가 이를 처리한 후, `ItemWriter`가 데이터를 저장한다.
 3. 모든 `Step`이 정상적으로 완료되면 `Job`이 완료된다.
-4. 만약 `Step` 도중 오류가 발생하면, 스프링 배치는 설정된 **재시도 정책(Retry Policy)** 또는 **건너뛰기 정책(Skip Policy)** 에 따라 해당 Step을 롤백하거나 재시도한다.
+4. 만약 `Step` 도중 오류가 발생하면, 스프링 배치는 설정된 **재시도 정책(Retry Policy)** 또는 **건너뛰기 정책(Skip Policy)** 에 따라 해당 `Step`을 롤백하거나 재시도한다.
+    ```java
+    @Bean
+    public Step sampleStep() {
+        return stepBuilderFactory.get("sampleStep")
+                .<String, String>chunk(10) // 10개의 데이터를 Chunk 단위로 처리
+                .reader(itemReader())      // 데이터를 읽어오는 ItemReader
+                .processor(itemProcessor()) // 데이터를 처리하는 ItemProcessor
+                .writer(itemWriter())       // 데이터를 저장하는 ItemWriter
+                .faultTolerant()            // 오류 허용 설정
+                .skipLimit(5)               // 최대 5번의 오류를 건너뛰도록 설정
+                .skip(Exception.class)      // 특정 예외 발생 시 건너뛰기
+                .retryLimit(3)              // 최대 3번 재시도
+                .retry(Exception.class)     // 특정 예외 발생 시 재시도
+                .build();
+    }
+    ```
 
-## 5. 스프링 배치를 사용해야 하는 이유
+## 스프링 배치를 사용해야 하는 이유
 
 - **효율적인 대량 데이터 처리**: 데이터를 대량으로 처리할 때 복잡한 작업을 자동화하여 효율적으로 처리 가능
 - **안정성**: 오류 발생 시 작업을 중단하고 재시도하는 기능을 통해 데이터 손실을 최소화
