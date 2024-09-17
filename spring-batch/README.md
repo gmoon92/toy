@@ -201,4 +201,5 @@ Spring Batch는 대량 데이터를 효율적으로 처리하고, 반복적인 �
 
 ## Reference
 
+- https://spring.io/projects/spring-batch
 - https://docs.spring.io/spring-batch/reference/index.html
