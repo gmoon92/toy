@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.global.test;
+package com.gmoon.timesorteduniqueidentifier.global.base;
 
 import com.gmoon.timesorteduniqueidentifier.users.user.application.port.out.LoadUserPort;
 import com.gmoon.timesorteduniqueidentifier.users.user.application.port.out.UpdateUserPasswordPort;

@@ -1,7 +1,7 @@
 package com.gmoon.timesorteduniqueidentifier.users.user.application;
 
 import com.gmoon.javacore.util.StringUtils;
-import com.gmoon.timesorteduniqueidentifier.global.test.InMemoryRepository;
+import com.gmoon.timesorteduniqueidentifier.global.base.InMemoryRepository;
 import com.gmoon.timesorteduniqueidentifier.users.user.application.port.in.UserPasswordUpdateCommand;
 import com.gmoon.timesorteduniqueidentifier.users.user.application.port.out.LoadUserPort;
 import com.gmoon.timesorteduniqueidentifier.users.user.domain.Fixtures;

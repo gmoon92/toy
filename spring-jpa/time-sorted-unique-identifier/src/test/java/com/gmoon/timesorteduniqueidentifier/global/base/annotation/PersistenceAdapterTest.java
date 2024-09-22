@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.global.test.annotation;
+package com.gmoon.timesorteduniqueidentifier.global.base.annotation;
 
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

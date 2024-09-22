@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.global.test.annotation;
+package com.gmoon.timesorteduniqueidentifier.global.base.annotation;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 

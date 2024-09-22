@@ -1,6 +1,6 @@
 package com.gmoon.timesorteduniqueidentifier.users.user.adapter.out.persistence;
 
-import com.gmoon.timesorteduniqueidentifier.global.test.annotation.PersistenceAdapterTest;
+import com.gmoon.timesorteduniqueidentifier.global.base.annotation.PersistenceAdapterTest;
 import com.gmoon.timesorteduniqueidentifier.users.user.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

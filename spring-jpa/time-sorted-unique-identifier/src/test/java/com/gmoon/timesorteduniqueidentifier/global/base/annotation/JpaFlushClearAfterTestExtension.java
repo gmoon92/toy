@@ -1,4 +1,4 @@
-package com.gmoon.timesorteduniqueidentifier.global.test.annotation;
+package com.gmoon.timesorteduniqueidentifier.global.base.annotation;
 
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +14,19 @@ class JpaFlushClearAfterTestExtension implements AfterTestExecutionCallback {
 	@Override
 	public void afterTestExecution(ExtensionContext context) throws Exception {
 		Class<?> requiredTestClass = context.getRequiredTestClass();
-		JpaFlushAndClear annotation = AnnotatedElementUtils.findMergedAnnotation(requiredTestClass, JpaFlushAndClear.class);
+		JpaFlushAndClear annotation = getJpaFlushAndClear(requiredTestClass);
 		if (annotation.enabled()) {
 			flushAndClear(context);
 		}
+	}
+
+	private JpaFlushAndClear getJpaFlushAndClear(Class<?> requiredTestClass) {
+		JpaFlushAndClear annotation = AnnotatedElementUtils.findMergedAnnotation(requiredTestClass, JpaFlushAndClear.class);
+		if (annotation == null) {
+			Class<?> nestedClass = requiredTestClass.getEnclosingClass();
+			return getJpaFlushAndClear(nestedClass);
+		}
+		return annotation;
 	}
 
 	private void flushAndClear(ExtensionContext context) {
