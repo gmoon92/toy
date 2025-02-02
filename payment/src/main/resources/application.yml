@@ -1,3 +1,19 @@
 spring:
   application:
     name: payment
+
+service:
+  storage:
+    file-path: file:/Users/gmoon/ # server storage path.
+
+  payment:
+    appstore:
+      root-ca-directory-path: ${service.storage.file-path}/apple/cert/root
+      environment: PRODUCTION
+      bundle-id: com.example # Your app’s bundle ID
+      issuer-id: 99b16628-15e4-4668-972b-eeff55eeff55 # Your issuer ID from the Keys page in App Store Connect
+      private-key:
+        id: ABCDEFGHIJ # Your private key ID from App Store Connect
+
+        # Your private key downloaded from App Store Connect
+        file-path: ${service.storage.file-path}/apple/cert/SubscriptionKey_${service.payment.appstore.private-key.id}.p8
