@@ -1,13 +1,16 @@
 service:
-  storage:
-    file-path: 'classpath:'
+  project-dir: 'classpath:'
 
   payment:
     appstore:
-      root-ca-directory-path: ${service.storage.file-path}/apple/cert/root
+      cert-storage: ${service.project-dir}/apple/cert
+      root-cert-dir: ${service.payment.appstore.cert-storage}/root
       environment: SANDBOX
       bundle-id: com.rsupport.remoteview.iphone.cn # Your app’s bundle ID
       issuer-id: 69a6de6e-cfbf-47e3-e053-5b8c7c11a4d1 # Your issuer ID from the Keys page in App Store Connect
+      app-apple-id: 518615856 # The unique identifier of the app in the App Store.
       private-key:
         id: 5W6FN499VZ # Your private key ID from App Store Connect
-        file-path: ${service.storage.file-path}/apple/cert/SubscriptionKey_${service.payment.appstore.private-key.id}.p8 # Your private key downloaded from App Store Connect
+
+        # Your private key downloaded from App Store Connect
+        file-path: ${service.payment.appstore.cert-storage}/SubscriptionKey_${service.payment.appstore.private-key.id}.p8

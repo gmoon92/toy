@@ -1,5 +1,6 @@
 package com.gmoon.payment.appstore;
 
+import com.apple.itunes.storekit.model.Environment;
 import com.gmoon.payment.test.UnitTestCase;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class AppStorePropertiesTest {
 	void test() {
 		log.info("{}", properties);
 
-		assertThat(properties.environment()).isEqualTo(AppStoreEnvironment.SANDBOX);
+		assertThat(properties.getEnvironment()).isEqualTo(Environment.SANDBOX);
 		assertThat(properties.privateKey().id()).isNotNull();
 		assertThat(properties.privateKey().filePath()).isNotNull();
 	}

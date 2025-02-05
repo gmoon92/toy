@@ -12,28 +12,18 @@ import java.text.DecimalFormat;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CurrencyUtils {
 
-	public static String toMoneyString(Currency currency, BigDecimal amount) {
-		String pattern = getPattern(currency);
-		String result = toMoney(amount, pattern);
-		log.debug("Converting({}) currency {} to {}, {}", pattern, currency, amount, result);
+	public static String formatCurrencyString(Currency currency, BigDecimal price) {
+		var currencyFormatted = newCurrencyDecimalFormat(currency);
+		var result = currencyFormatted.format(price);
+		log.debug("Converting currency {} with price {} to formatted price: {}", currency, price, result);
 		return switch (currency) {
-			case CNY, YEN ->
-				 result + " " + currency.unit;
+			case CNY, YEN -> result + " " + currency.unit;
 			default -> currency.unit + " " + result;
 		};
 	}
 
-	private static String toMoney(BigDecimal amount, String pattern) {
-		if (amount.equals(BigDecimal.ZERO)) {
-			return "0";
-		}
-
-		return new DecimalFormat(pattern)
-			 .format(amount.doubleValue());
-	}
-
-	private static String getPattern(Currency currency) {
-		StringBuilder pattern = new StringBuilder("#,##0");
+	private static DecimalFormat newCurrencyDecimalFormat(Currency currency) {
+		var pattern = new StringBuilder("#,##0");
 		if (currency.decimalPlaces > 0) {
 			pattern.append(".");
 			if (Currency.CNY == currency) {
@@ -42,6 +32,6 @@ public final class CurrencyUtils {
 				pattern.append("#".repeat(currency.decimalPlaces));
 			}
 		}
-		return pattern.toString();
+		return new DecimalFormat(pattern.toString());
 	}
 }
