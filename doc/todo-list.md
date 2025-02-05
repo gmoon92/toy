@@ -7,3 +7,8 @@
 - java-core
   - generic
   - variance
+- Spring Cloud
+  - Spring Feign
+  - Spring Hystrix
+  - Spring Hystrix
+- Spring Actuator
