@@ -1,0 +1,20 @@
+██████╗  █████╗ ██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗
+██╔══██╗██╔══██╗╚██╗ ██╔╝████╗ ████║██╔════╝████╗  ██║╚══██╔══╝
+██████╔╝███████║ ╚████╔╝ ██╔████╔██║█████╗  ██╔██╗ ██║   ██║
+██╔═══╝ ██╔══██║  ╚██╔╝  ██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║
+██║     ██║  ██║   ██║   ██║ ╚═╝ ██║███████╗██║ ╚████║   ██║
+╚═╝     ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝
+
+:: Spring Boot :: ${AnsiColor.GREEN}${spring-boot.formatted-version}
+
+${AnsiColor.BLUE}
+Application       :${spring.application.name} ${application.formatted-version}
+JDK Version       :${java.version}
+Release number    :${spring.application.build.number}
+Release time      :${spring.application.build.timestamp}
+
+${AnsiBackground.BLACK}
+- https://docs.spring.io/spring-boot/reference/features/spring-application.html#features.spring-application.banner
+- https://patorjk.com/software/taag/
+- https://devops.datenkollektiv.de/banner.txt/index.html
+- https://www.asciiart.eu/

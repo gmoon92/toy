@@ -9,7 +9,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <jenkins.build_number>${jenkins.build_number}</jenkins.build_number>
+                <jenkins.build.number>${jenkins.build.number}</jenkins.build.number>
             </properties>
         </profile>
     </profiles>

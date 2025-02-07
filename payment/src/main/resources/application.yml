@@ -1,6 +1,10 @@
 spring:
   application:
     name: payment
+    version: '@project.version@'
+    build:
+      number: '@jenkins.build.number@'
+      timestamp: '@jenkins.build.timestamp@'
 
   config:
     import: "optional:configserver:"
