@@ -2,6 +2,15 @@ spring:
   application:
     name: payment
 
+  config:
+    import: "optional:configserver:"
+
+  # config server
+  cloud:
+    config:
+      enabled: true
+      label: payment
+
 service:
   project-dir: file:/Users/gmoon/payment
 
