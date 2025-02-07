@@ -3,6 +3,7 @@ service:
 
   payment:
     appstore:
+      enabled: 1
       cert-storage: ${service.project-dir}/apple/cert
       root-cert-dir: ${service.payment.appstore.cert-storage}/root
       environment: SANDBOX

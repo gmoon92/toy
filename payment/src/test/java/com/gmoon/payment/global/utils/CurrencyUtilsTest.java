@@ -1,13 +1,15 @@
-package com.gmoon.payment.utils;
+package com.gmoon.payment.global.utils;
 
-import com.gmoon.payment.vo.Currency;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import com.gmoon.payment.global.vo.Currency;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class CurrencyUtilsTest {

@@ -1,4 +1,4 @@
-package com.gmoon.payment.vo;
+package com.gmoon.payment.global.vo;
 
 import lombok.RequiredArgsConstructor;
 

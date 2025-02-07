@@ -1,20 +1,22 @@
-package com.gmoon.payment.appstore;
+package com.gmoon.payment.global.properties;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.apple.itunes.storekit.model.Environment;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "service.payment.appstore")
 public record AppStoreProperties(
 	 AppStoreEnvironment environment,
-	 String rootCertDir,
 	 PrivateKey privateKey,
+	 Long appAppleId,
 	 String bundleId,
 	 String issuerId,
-	 Long appAppleId
+	 String rootCertDir
 ) {
 
-	record PrivateKey(String id, String filePath) {
+	public record PrivateKey(String id, String filePath) {
 	}
 
 	public Environment getEnvironment() {

@@ -1,12 +1,13 @@
-package com.gmoon.payment.utils;
-
-import com.gmoon.payment.vo.Currency;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+package com.gmoon.payment.global.utils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+
+import com.gmoon.payment.global.vo.Currency;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

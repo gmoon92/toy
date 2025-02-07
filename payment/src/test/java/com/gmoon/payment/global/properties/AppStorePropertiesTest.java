@@ -1,12 +1,14 @@
-package com.gmoon.payment.appstore;
+package com.gmoon.payment.global.properties;
 
-import com.apple.itunes.storekit.model.Environment;
-import com.gmoon.payment.test.UnitTestCase;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.apple.itunes.storekit.model.Environment;
+import com.gmoon.payment.test.UnitTestCase;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @UnitTestCase
