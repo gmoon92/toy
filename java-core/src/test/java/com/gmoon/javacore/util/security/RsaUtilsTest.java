@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Base64Utils;
 
 import com.gmoon.javacore.util.PropertiesUtils;
 
@@ -70,8 +69,8 @@ class RsaUtilsTest {
 		PrivateKey privateKey = keyPair.getPrivateKey();
 
 		// then
-		assertThat(Base64Utils.encodeToString(publicKey.getEncoded())).isEqualTo(publicKeyText);
-		assertThat(Base64Utils.encodeToString(privateKey.getEncoded())).isEqualTo(privateKeyText);
+		assertThat(RsaUtils.encodeBase64String(publicKey.getEncoded())).isEqualTo(publicKeyText);
+		assertThat(RsaUtils.encodeBase64String(privateKey.getEncoded())).isEqualTo(privateKeyText);
 	}
 
 	@Test
@@ -104,7 +103,7 @@ class RsaUtilsTest {
 
 			// then
 			int sha256BitSize = 256;
-			assertThat(Base64Utils.decodeFromString(signature).length)
+			assertThat(RsaUtils.decodeBase64String(signature).length)
 				 .isEqualTo(sha256BitSize);
 		}
 

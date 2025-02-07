@@ -14,17 +14,15 @@ import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
-
-import org.springframework.util.Base64Utils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-// import sun.security.jca.JCAUtil;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -40,10 +38,14 @@ public final class RsaUtils {
 			cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
 			byte[] encrypted = cipher.doFinal(plainText.getBytes(CHARSET));
-			return Base64Utils.encodeToString(encrypted);
+			return encodeBase64String(encrypted);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static String encodeBase64String(byte[] encrypted) {
+		return Base64.getEncoder().encodeToString(encrypted);
 	}
 
 	public static String decode(PrivateKey privateKey, String cipherText) {
@@ -51,7 +53,7 @@ public final class RsaUtils {
 			Cipher cipher = Cipher.getInstance(ALGORITHM);
 			cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-			byte[] decoded = Base64Utils.decodeFromString(cipherText);
+			byte[] decoded = decodeBase64String(cipherText);
 			return new String(cipher.doFinal(decoded), CHARSET);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -64,7 +66,7 @@ public final class RsaUtils {
 			signature.initSign(privateKey);
 			signature.update(data.getBytes(CHARSET));
 			byte[] encodedHex = signature.sign();
-			return Base64Utils.encodeToString(encodedHex);
+			return encodeBase64String(encodedHex);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -75,11 +77,15 @@ public final class RsaUtils {
 			Signature signature = Signature.getInstance(ALGORITHM_OF_SIGNATURE);
 			signature.initVerify(publicKey);
 			signature.update(data.getBytes(CHARSET));
-			byte[] decodedHex = Base64Utils.decodeFromString(signatureText);
+			byte[] decodedHex = decodeBase64String(signatureText);
 			return signature.verify(decodedHex);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static byte[] decodeBase64String(String signatureText) {
+		return Base64.getDecoder().decode(signatureText);
 	}
 
 	public static PublicKey convertToPublicKeyFromString(String publicKeyText) {
@@ -136,7 +142,7 @@ public final class RsaUtils {
 
 		private PrivateKey createPrivateKey(String privateKeyText) {
 			try {
-				byte[] decoded = Base64Utils.decodeFromString(privateKeyText);
+				byte[] decoded = decodeBase64String(privateKeyText);
 				EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
 				return KeyFactory.getInstance(ALGORITHM).generatePrivate(keySpec);
 			} catch (Exception e) {
@@ -146,7 +152,7 @@ public final class RsaUtils {
 
 		private PublicKey createPublicKey(String publicKeyText) {
 			try {
-				byte[] decoded = Base64Utils.decodeFromString(publicKeyText);
+				byte[] decoded = decodeBase64String(publicKeyText);
 				EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
 				return KeyFactory.getInstance(ALGORITHM).generatePublic(keySpec);
 			} catch (Exception e) {
@@ -156,8 +162,8 @@ public final class RsaUtils {
 
 		@Override
 		public String toString() {
-			String privateKey = Base64Utils.encodeToString(this.privateKey.getEncoded());
-			String publicKey = Base64Utils.encodeToString(this.publicKey.getEncoded());
+			String privateKey = Base64.getEncoder().encodeToString(this.privateKey.getEncoded());
+			String publicKey = Base64.getEncoder().encodeToString(this.publicKey.getEncoded());
 			return String.format("private: %s, publicKey: %s", privateKey, publicKey);
 		}
 	}
