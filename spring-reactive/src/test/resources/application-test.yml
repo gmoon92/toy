@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: react
+
+service:
+  webclient:
+    max-in-memory-size: 16777216B
+
+    # response connect timeout config
+    connect-timeout: 30s
+    response-timeout: 30s
+
+    # read / write response timeout config
+    read-write-timeout: 30s
+    read-timeout: ${service.webclient.read-write-timeout}
+    write-timeout: ${service.webclient.read-write-timeout}
+
+    max-idle-and-life-time: 18s
+    max-idle-time: ${service.webclient.max-idle-and-life-time} # 연결이 유휴 상태로 있을 수 있는 최대 시간
+    max-life-time: ${service.webclient.max-idle-and-life-time} # 연결의 최대 수명
