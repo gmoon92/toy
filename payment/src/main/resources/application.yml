@@ -15,6 +15,10 @@ spring:
       enabled: true
       label: payment
 
+  # spring banner
+  main:
+    banner-mode: log
+
 service:
   project-dir: file:/Users/gmoon/payment
 
