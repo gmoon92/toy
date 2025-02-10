@@ -10,7 +10,12 @@
             </activation>
             <properties>
                 <jenkins.build.number>${jenkins.build.number}</jenkins.build.number>
+                <appstore.bundle-id>com.example</appstore.bundle-id>
+                <appstore.issuer-id>99b16628-15e4-4668-972b-eeff55eeff55</appstore.issuer-id>
+                <appstore.app-apple-id>518615856</appstore.app-apple-id>
             </properties>
         </profile>
     </profiles>
+
+
 </settings>

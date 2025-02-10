@@ -23,6 +23,10 @@
 
         <jenkins.build.number>0</jenkins.build.number>
         <jenkins.build.timestamp>${maven.build.timestamp}</jenkins.build.timestamp>
+        <appstore.bundle-id>${appstore.bundle-id}</appstore.bundle-id>
+        <appstore.issuer-id>${appstore.issuer-id}</appstore.issuer-id>
+        <appstore.app-apple-id>${appstore.app-apple-id}</appstore.app-apple-id>
+        <appstore.private-key-id>${appstore.private-key-id}</appstore.private-key-id>
     </properties>
 
     <dependencyManagement>

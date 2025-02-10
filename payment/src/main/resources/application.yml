@@ -20,19 +20,20 @@ spring:
     banner-mode: log
 
 service:
-  project-dir: file:/Users/gmoon/payment
+#  project-dir: file:/Users/gmoon/payment
+  project-dir: 'classpath:'
 
   payment:
     appstore:
       enabled: 1
-      cert-storage: ${service.project-dir}/apple/cert
+      cert-storage: ${service.project-dir}/appstore/cert
       root-cert-dir: ${service.payment.appstore.cert-storage}/root
       environment: PRODUCTION
-      bundle-id: com.example # Your app’s bundle ID
-      issuer-id: 99b16628-15e4-4668-972b-eeff55eeff55 # Your issuer ID from the Keys page in App Store Connect
-      app-apple-id: 518615856 # The unique identifier of the app in the App Store.
+      bundle-id: @appstore.bundle-id@ # Your app’s bundle ID
+      issuer-id: @appstore.issuer-id@ # Your issuer ID from the Keys page in App Store Connect
+      app-apple-id: @appstore.app-apple-id@ # The unique identifier of the app in the App Store.
       private-key:
-        id: ABCDEFGHIJ # Your private key ID from App Store Connect
+        id: @appstore.private-key-id@ # Your private key ID from App Store Connect
 
         # Your private key downloaded from App Store Connect
         file-path: ${service.payment.appstore.cert-storage}/SubscriptionKey_${service.payment.appstore.private-key.id}.p8
