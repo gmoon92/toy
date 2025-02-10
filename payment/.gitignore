@@ -1,1 +1,2 @@
 **/src/test/**/cert/SubscriptionKey*
+**/rest/http-client.private.*.json

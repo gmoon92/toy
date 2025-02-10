@@ -1,0 +1,5 @@
+### AppStore
+
+GET {{http-origin}}/appstore/{{appstore.transaction-id}}
+Accept: application/json
+Content-Type: application/json
