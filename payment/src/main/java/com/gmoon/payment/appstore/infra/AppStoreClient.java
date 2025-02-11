@@ -1,33 +1,10 @@
 package com.gmoon.payment.appstore.infra;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-
 import com.apple.itunes.storekit.client.APIException;
 import com.apple.itunes.storekit.client.AppStoreServerAPIClient;
 import com.apple.itunes.storekit.client.GetTransactionHistoryVersion;
 import com.apple.itunes.storekit.migration.ReceiptUtility;
-import com.apple.itunes.storekit.model.Environment;
-import com.apple.itunes.storekit.model.HistoryResponse;
-import com.apple.itunes.storekit.model.JWSTransactionDecodedPayload;
-import com.apple.itunes.storekit.model.SendTestNotificationResponse;
-import com.apple.itunes.storekit.model.TransactionHistoryRequest;
-import com.apple.itunes.storekit.model.TransactionInfoResponse;
+import com.apple.itunes.storekit.model.*;
 import com.apple.itunes.storekit.offers.PromotionalOfferSignatureCreator;
 import com.apple.itunes.storekit.verification.SignedDataVerifier;
 import com.apple.itunes.storekit.verification.VerificationException;
@@ -36,9 +13,18 @@ import com.gmoon.payment.appstore.exception.AppStoreCertificateException;
 import com.gmoon.payment.appstore.exception.AppStoreIOException;
 import com.gmoon.payment.appstore.exception.AppStoreVerificationException;
 import com.gmoon.payment.global.properties.AppStoreProperties;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -66,21 +52,29 @@ public class AppStoreClient implements InitializingBean {
 		log.info("app store prop ==========================");
 
 		this.apiClient = new AppStoreServerAPIClient(
-		  getSigningKey(),
-		  privateKey.id(),
-		  issuerId,
-		  bundleId,
-		  environment
+			 getSigningKey(),
+			 privateKey.id(),
+			 issuerId,
+			 bundleId,
+			 environment
 		);
 
 		boolean enableOnlineChecks = false;
-		this.signedDataVerifier = new SignedDataVerifier(
-		  getRootCertInputStreams(),
-		  bundleId,
-		  appAppleId, // appAppleId must be provided for the Production environment
-		  environment,
-		  enableOnlineChecks // Whether to enable revocation checking and check expiration using the current date
-		);
+		Set<InputStream> rootCertInputStreams = new LinkedHashSet<>();
+		try {
+			rootCertInputStreams = getRootCertInputStreams();
+			this.signedDataVerifier = new SignedDataVerifier(
+				 rootCertInputStreams,
+				 bundleId,
+				 appAppleId, // appAppleId must be provided for the Production environment
+				 environment,
+				 enableOnlineChecks // Whether to enable revocation checking and check expiration using the current date
+			);
+		} finally {
+			for (InputStream inputStream : rootCertInputStreams) {
+				inputStream.close();
+			}
+		}
 	}
 
 	private Set<InputStream> getRootCertInputStreams() {
@@ -90,16 +84,16 @@ public class AppStoreClient implements InitializingBean {
 			if (directory.isDirectory()) {
 				try (Stream<Path> paths = Files.walk(directory.toPath())) {
 					return paths
-					  .filter(Files::isRegularFile)
-					  .map(Path::toFile)
-					  .map(file -> {
-						  try {
-							  return new FileInputStream(file);
-						  } catch (FileNotFoundException e) {
-							  throw new AppStoreCertificateException(e, "Not found root cert file.");
-						  }
-					  })
-					  .collect(Collectors.toSet());
+						 .filter(Files::isRegularFile)
+						 .map(Path::toFile)
+						 .map(file -> {
+							 try {
+								 return new FileInputStream(file);
+							 } catch (FileNotFoundException e) {
+								 throw new AppStoreCertificateException(e, "Not found root cert file.");
+							 }
+						 })
+						 .collect(Collectors.toSet());
 				}
 			}
 
@@ -111,7 +105,7 @@ public class AppStoreClient implements InitializingBean {
 
 	public JWSTransactionDecodedPayload verifyAndDecodeTransaction(String transactionId) {
 		String notificationPayload = getTransactionInfo(transactionId)
-		  .getSignedTransactionInfo();
+			 .getSignedTransactionInfo();
 
 		try {
 			return signedDataVerifier.verifyAndDecodeTransaction(notificationPayload);
@@ -147,20 +141,20 @@ public class AppStoreClient implements InitializingBean {
 		String encodedKey = getSigningKey();
 
 		PromotionalOfferSignatureCreator signatureCreator = new PromotionalOfferSignatureCreator(
-		  encodedKey,
-		  keyId,
-		  bundleId
+			 encodedKey,
+			 keyId,
+			 bundleId
 		);
 
 		UUID nonce = UUID.randomUUID();
 		long timestamp = System.currentTimeMillis();
 		String encodedSignature = signatureCreator.createSignature(
-		  productId,
-		  subscriptionOfferId,
-		  appAccountToken,
-		  nonce, // A one-time UUID value that your server generates. Generate a new nonce for every signature.
-		  timestamp
-		  // A timestamp your server generates in UNIX time format, in milliseconds. The timestamp keeps the offer active for 24 hours.
+			 productId,
+			 subscriptionOfferId,
+			 appAccountToken,
+			 nonce, // A one-time UUID value that your server generates. Generate a new nonce for every signature.
+			 timestamp
+			 // A timestamp your server generates in UNIX time format, in milliseconds. The timestamp keeps the offer active for 24 hours.
 		);
 		log.debug("signature: {}", encodedSignature);
 		return encodedSignature;
@@ -194,16 +188,16 @@ public class AppStoreClient implements InitializingBean {
 
 		// migration
 		TransactionHistoryRequest request = new TransactionHistoryRequest()
-		  .sort(TransactionHistoryRequest.Order.ASCENDING)
-		  .revoked(false)
-		  .productTypes(List.of(TransactionHistoryRequest.ProductType.AUTO_RENEWABLE));
+			 .sort(TransactionHistoryRequest.Order.ASCENDING)
+			 .revoked(false)
+			 .productTypes(List.of(TransactionHistoryRequest.ProductType.AUTO_RENEWABLE));
 
 		HistoryResponse response = null;
 		List<String> transactions = new LinkedList<>();
 		do {
 			String revision = response != null ? response.getRevision() : null;
 			response = apiClient.getTransactionHistory(transactionId, revision, request,
-			  GetTransactionHistoryVersion.V2);
+				 GetTransactionHistoryVersion.V2);
 			transactions.addAll(response.getSignedTransactions());
 		} while (response.getHasMore());
 		return transactions;
