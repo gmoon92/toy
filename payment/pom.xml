@@ -23,6 +23,8 @@
 
         <jenkins.build.number>0</jenkins.build.number>
         <jenkins.build.timestamp>${maven.build.timestamp}</jenkins.build.timestamp>
+
+        <appstore.enabled>${appstore.enabled}</appstore.enabled>
         <appstore.bundle-id>${appstore.bundle-id}</appstore.bundle-id>
         <appstore.issuer-id>${appstore.issuer-id}</appstore.issuer-id>
         <appstore.app-apple-id>${appstore.app-apple-id}</appstore.app-apple-id>
@@ -65,9 +67,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gmoon</groupId>
-            <artifactId>java-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.17.0</version>
         </dependency>
 
         <dependency>
@@ -85,6 +87,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>4.0.0</version>
         </dependency>
     </dependencies>
 

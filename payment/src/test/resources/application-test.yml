@@ -1,17 +1,24 @@
+spring:
+  config:
+    import: "optional:file:.env[.properties]:optional:configserver:"
+
 service:
   project-dir: 'classpath:'
 
   payment:
     appstore:
-      enabled: 1
+      enabled: ${appstore.enabled:0}
       cert-storage: ${service.project-dir}/appstore/cert
       root-cert-dir: ${service.payment.appstore.cert-storage}/root
       environment: SANDBOX
-      bundle-id: @appstore.bundle-id@ # Your app’s bundle ID
-      issuer-id: @appstore.issuer-id@ # Your issuer ID from the Keys page in App Store Connect
-      app-apple-id: @appstore.app-apple-id@ # The unique identifier of the app in the App Store.
+      bundle-id: ${appstore.bundle-id} # Your app’s bundle ID
+      issuer-id: ${appstore.issuer-id} # Your issuer ID from the Keys page in App Store Connect
+      app-apple-id: ${appstore.app-apple-id} # The unique identifier of the app in the App Store.
       private-key:
-        id: @appstore.private-key-id@ # Your private key ID from App Store Connect
-
+        id: ${appstore.private-key-id} # Your private key ID from App Store Connect
         # Your private key downloaded from App Store Connect
         file-path: ${service.payment.appstore.cert-storage}/SubscriptionKey_${service.payment.appstore.private-key.id}.p8
+
+logging:
+  level:
+    root: trace

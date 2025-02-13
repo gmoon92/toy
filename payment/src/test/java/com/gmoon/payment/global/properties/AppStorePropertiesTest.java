@@ -1,14 +1,12 @@
 package com.gmoon.payment.global.properties;
 
-import static org.assertj.core.api.Assertions.*;
-
+import com.apple.itunes.storekit.model.Environment;
+import com.gmoon.payment.test.UnitTestCase;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.apple.itunes.storekit.model.Environment;
-import com.gmoon.payment.test.UnitTestCase;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @UnitTestCase
@@ -20,6 +18,8 @@ class AppStorePropertiesTest {
 	@Test
 	void test() {
 		log.info("{}", properties);
+		log.info("{}", properties.appAppleId());
+		log.info("{}", properties.privateKey().id());
 
 		assertThat(properties.getEnvironment()).isEqualTo(Environment.SANDBOX);
 		assertThat(properties.privateKey().id()).isNotNull();

@@ -17,4 +17,8 @@
     <logger name="org.springframework.boot.SpringApplication" level="DEBUG"/>
 
     <logger name="com.gmoon" level="TRACE"/>
+
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+    </root>
 </configuration>

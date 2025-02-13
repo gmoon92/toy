@@ -5,6 +5,7 @@ import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.EncodedResource;
@@ -14,7 +15,13 @@ import java.util.Properties;
 
 @TestConfiguration
 @ConfigurationPropertiesScan(basePackageClasses = PaymentApplication.class)
-@PropertySource(value = "classpath:application-test.yml", factory = TestConfig.YamlPropertySourceFactory.class)
+@PropertySources({
+	 @PropertySource("file:.env"),
+	 @PropertySource(
+		  value = "classpath:application-test.yml",
+		  factory = TestConfig.YamlPropertySourceFactory.class
+	 )
+})
 public class TestConfig {
 
 	static class YamlPropertySourceFactory implements PropertySourceFactory {
