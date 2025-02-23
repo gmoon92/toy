@@ -16,7 +16,7 @@
     <description>spring-security-jwt</description>
 
     <properties>
-        <java-jwt.version>3.8.2</java-jwt.version>
+        <java-jwt.version>4.4.0</java-jwt.version>
         <json-path.version>2.9.0</json-path.version>
         <quick-perf.version>1.1.0</quick-perf.version>
     </properties>
@@ -124,7 +124,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.6.1</version>
                 <configuration>
                     <excludes>
                         <exclude>
