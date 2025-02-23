@@ -1,5 +1,12 @@
 package com.gmoon.springsecurityjwt.config;
 
+import com.gmoon.springsecurityjwt.jwt.JwtAuthenticationFilter;
+import com.gmoon.springsecurityjwt.jwt.JwtExceptionHandler;
+import com.gmoon.springsecurityjwt.jwt.JwtUtil;
+import com.gmoon.springsecurityjwt.jwt.JwtVerifyFilter;
+import com.gmoon.springsecurityjwt.user.Role;
+import com.gmoon.springsecurityjwt.util.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,15 +26,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import com.gmoon.springsecurityjwt.jwt.JwtAuthenticationFilter;
-import com.gmoon.springsecurityjwt.jwt.JwtExceptionHandler;
-import com.gmoon.springsecurityjwt.jwt.JwtUtil;
-import com.gmoon.springsecurityjwt.jwt.JwtVerifyFilter;
-import com.gmoon.springsecurityjwt.user.Role;
-import com.gmoon.springsecurityjwt.util.SecurityUtils;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -63,7 +61,7 @@ public class SecurityConfig {
 				  sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			 .authorizeHttpRequests(authorization ->
 				  authorization
-					   .requestMatchers("/", "**/login**").permitAll()
+					   .requestMatchers("/", "/login").permitAll()
 					   .requestMatchers(HttpMethod.DELETE, "**").hasRole(Role.ADMIN.name())
 					   .anyRequest().authenticated())
 			 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))

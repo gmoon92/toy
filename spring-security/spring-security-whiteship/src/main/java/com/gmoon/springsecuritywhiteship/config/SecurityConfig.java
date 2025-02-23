@@ -1,7 +1,10 @@
 package com.gmoon.springsecuritywhiteship.config;
 
-import java.util.Arrays;
-
+import com.gmoon.springsecuritywhiteship.account.AccountRole;
+import com.gmoon.springsecuritywhiteship.account.AccountService;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,13 +35,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.gmoon.springsecuritywhiteship.account.AccountRole;
-import com.gmoon.springsecuritywhiteship.account.AccountService;
-
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
 
 /**
  * <pre>
@@ -124,10 +123,16 @@ public class SecurityConfig {
 			 // [1] 인가(Authorization) 설정, 어떤 요청들을 어떻게 설정 할지
 			 .authorizeHttpRequests(request ->
 					   request
-							.requestMatchers("/", "/signup", "/info", "/account/**", "/sample/**").permitAll()
-							.requestMatchers("/admin").hasRole(AccountRole.ADMIN.getRole())
-							.requestMatchers("/user").hasRole(AccountRole.USER.getRole())
-							.requestMatchers("/user/**").hasRole(AccountRole.ADMIN.getRole())
+							.requestMatchers(
+								 AntPathRequestMatcher.antMatcher("/"),
+								 AntPathRequestMatcher.antMatcher("/signup"),
+								 AntPathRequestMatcher.antMatcher("/info"),
+								 AntPathRequestMatcher.antMatcher("/account/**"),
+								 AntPathRequestMatcher.antMatcher("/sample/**")
+							).permitAll()
+							.requestMatchers(AntPathRequestMatcher.antMatcher("/admin")).hasRole(AccountRole.ADMIN.getRole())
+							.requestMatchers(AntPathRequestMatcher.antMatcher("/user")).hasRole(AccountRole.USER.getRole())
+							.requestMatchers(AntPathRequestMatcher.antMatcher("/user/**")).hasRole(AccountRole.ADMIN.getRole())
 							.anyRequest().authenticated() // etc... 나머지 요청은 인증처리를 하겠다.
 				  //            .accessDecisionManager(customAccessDecisionManager()); // 커스텀 1. accessDecisionManager
 				  // .expressionHandler(customExpressionHandler()) // 커스텀 2. expression handler

@@ -1,5 +1,12 @@
 package com.gmoon.resourceserver.config;
 
+import com.gmoon.resourceserver.jwt.JwtAuthenticationFilter;
+import com.gmoon.resourceserver.jwt.JwtExceptionHandler;
+import com.gmoon.resourceserver.jwt.JwtUtils;
+import com.gmoon.resourceserver.jwt.JwtVerifyFilter;
+import com.gmoon.resourceserver.user.UserService;
+import com.gmoon.resourceserver.util.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,15 +25,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
-
-import com.gmoon.resourceserver.jwt.JwtAuthenticationFilter;
-import com.gmoon.resourceserver.jwt.JwtExceptionHandler;
-import com.gmoon.resourceserver.jwt.JwtUtils;
-import com.gmoon.resourceserver.jwt.JwtVerifyFilter;
-import com.gmoon.resourceserver.user.UserService;
-import com.gmoon.resourceserver.util.SecurityUtils;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -59,7 +57,7 @@ public class SecurityConfig {
 			 .httpBasic(AbstractHttpConfigurer::disable)
 			 .formLogin(AbstractHttpConfigurer::disable)
 			 .authorizeHttpRequests(request -> request
-				  .requestMatchers("**/login**").permitAll()
+				  .requestMatchers("/login**").permitAll()
 				  .anyRequest().authenticated())
 			 .sessionManagement(this::httpStateless)
 			 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtils))

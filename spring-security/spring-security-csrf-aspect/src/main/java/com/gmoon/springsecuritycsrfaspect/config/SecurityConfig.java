@@ -1,5 +1,7 @@
 package com.gmoon.springsecuritycsrfaspect.config;
 
+import com.gmoon.springsecuritycsrfaspect.login.CustomAuthenticationSuccessHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import com.gmoon.springsecuritycsrfaspect.login.CustomAuthenticationSuccessHandler;
-
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Slf4j
 @Configuration
@@ -36,7 +35,7 @@ public class SecurityConfig {
 			 .authorizeHttpRequests(request ->
 				  // request.mvcMatchers("**/user/**").hasRole("ADMIN")
 				  request
-					   .requestMatchers("**/user/**").hasRole("ADMIN")
+					   .requestMatchers(AntPathRequestMatcher.antMatcher("**/user/**")).hasRole("ADMIN")
 					   .anyRequest()
 					   .permitAll()
 
