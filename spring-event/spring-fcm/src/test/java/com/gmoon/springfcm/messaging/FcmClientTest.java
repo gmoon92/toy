@@ -1,14 +1,15 @@
 package com.gmoon.springfcm.messaging;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.*;
-
-import java.io.InputStream;
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gmoon.javacore.util.JacksonUtils;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.WebpushConfig;
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.messaging.AndroidConfig;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
-import com.google.firebase.messaging.WebpushConfig;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 
-import com.gmoon.javacore.util.JacksonUtils;
-
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Slf4j
 @SpringBootTest
@@ -49,7 +47,7 @@ class FcmClientTest {
 	@Value("${firebase.credentials}")
 	private String credentialsPath;
 
-	@DisplayName("기존 레거시 API 사용."
+	@Disabled("기존 레거시 API 사용."
 		 + "Firebase Cloud Messaging API 에서 6월까지 지원.")
 	@Test
 	void pushByLegacyApi() {
