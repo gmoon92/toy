@@ -3,7 +3,10 @@ package com.gmoon.payment.appstore.model;
 import com.apple.itunes.storekit.model.JWSTransactionDecodedPayload;
 import com.gmoon.payment.global.utils.NumberUtils;
 
+import java.util.UUID;
+
 public record AppStorePaymentResponse(
+	 UUID appAccountToken,
 	 String transactionId,
 	 String orgTransactionId,
 	 double price,
@@ -23,6 +26,7 @@ public record AppStorePaymentResponse(
 			 .doubleValue();
 
 		return new AppStorePaymentResponse(
+			 payload.getAppAccountToken(),
 			 payload.getTransactionId(),
 			 payload.getOriginalTransactionId(),
 			 price,
