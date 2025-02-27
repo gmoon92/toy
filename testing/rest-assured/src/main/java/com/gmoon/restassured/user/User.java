@@ -1,14 +1,13 @@
 package com.gmoon.restassured.user;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
+
 	@EqualsAndHashCode.Include
 	private String name;
 
