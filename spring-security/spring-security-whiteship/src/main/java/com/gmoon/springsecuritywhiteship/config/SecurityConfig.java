@@ -18,6 +18,9 @@ import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.concurrent.DelegatingSecurityContextCallable;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
+import org.springframework.security.concurrent.DelegatingSecurityContextRunnable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
@@ -38,6 +42,7 @@ import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 
 /**
  * <pre>
@@ -54,10 +59,20 @@ public class SecurityConfig {
 
 	private final AccountService accountService;
 
+	/**
+	 * do not used MODE_INHERITABLETHREADLOCAL
+	 * {@code SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);}
+	 * @see <a href="https://github.com/spring-projects/spring-security/issues/6856">#6856 spring security issued</a>
+	 * @see DelegatingSecurityContextExecutor
+	 * @see DelegatingSecurityContextAsyncTaskExecutor
+	 * @see org.springframework.security.concurrent.AbstractDelegatingSecurityContextSupport#wrap(Runnable)
+	 * @see org.springframework.security.concurrent.AbstractDelegatingSecurityContextSupport#wrap(Callable)
+	 * @see DelegatingSecurityContextRunnable#run()
+	 * @see DelegatingSecurityContextCallable#call()
+	 * */
 	@PostConstruct
 	public void init() {
-		// 	https://github.com/spring-projects/spring-security/issues/6856
-		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+//		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 	}
 
 	/**
