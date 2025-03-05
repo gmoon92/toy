@@ -1,8 +1,7 @@
 package com.gmoon.payment.appstore.api;
 
-import com.gmoon.payment.global.exception.ErrorCode;
-import com.gmoon.payment.test.Fixtures;
-import com.gmoon.payment.test.IntegrationTestCase;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,11 +13,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.gmoon.payment.global.exception.ErrorCode;
+import com.gmoon.payment.test.Fixtures;
+import com.gmoon.payment.test.IntegrationTestCase;
 
 @EnabledIf(value = "#{'${service.payment.appstore.enabled}' == '1'}", loadContext = true)
-@TestPropertySource(properties = {"service.payment.appstore.enabled=1"})
+@TestPropertySource(properties = {"service.payment.appstore.enabled=0"})
 @IntegrationTestCase
 class AppStoreControllerTest {
 

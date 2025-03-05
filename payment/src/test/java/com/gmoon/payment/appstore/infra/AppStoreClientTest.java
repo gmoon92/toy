@@ -1,22 +1,25 @@
 package com.gmoon.payment.appstore.infra;
 
-import com.apple.itunes.storekit.model.JWSTransactionDecodedPayload;
-import com.gmoon.payment.test.Fixtures;
-import com.gmoon.payment.test.UnitTestCase;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 
-import java.util.List;
+import com.apple.itunes.storekit.model.JWSTransactionDecodedPayload;
+import com.gmoon.payment.global.config.PaymentConfig;
+import com.gmoon.payment.test.Fixtures;
+import com.gmoon.payment.test.UnitTestCase;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @EnabledIf(value = "#{'${service.payment.appstore.enabled}' == '1'}", loadContext = true)
-@UnitTestCase(AppStoreClient.class)
+@UnitTestCase(PaymentConfig.class)
 class AppStoreClientTest {
 
 	@Autowired
