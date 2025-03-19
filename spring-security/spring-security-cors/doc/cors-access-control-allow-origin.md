@@ -197,6 +197,64 @@ public class SecurityConfig {
 }
 ````
 
+## 4. 개발 범위
+
+- [Access-Control-Allow-Credentials](#41-access-control-allow-credentials)
+- [Access-Control-Expose-Headers](#42-access-control-expose-headers)
+
+### 4.1. Access-Control-Allow-Credentials
+
+CORS는 기본적으로 보안상의 이유로 `HTTP Cookie` 와 `HTTP Authentication` 헤더 정보를 요청할 수 없도록 제약한다.
+
+- Access-Control-Allow-Credentials: true
+- Access-Control-Allow-Origin: https://gmoon.com
+
+만약 Credentials 옵션을 활성화하고, 허용 Origin 을 와일드 카드로 설정해놨다면 서버에선 와일드 카드를 사용할 수 없다는 에러가 발생한다.
+
+```java
+CorsConfiguration config = new CorsConfiguration();
+config.setAllowCredentials(true);
+config.setAllowedOrigins(Arrays.asList("gmoon.com"));
+
+// 주의: 허용 Origin에 대해 패턴 설정으로 와일드 카드로 설정했다면, Credential 요청에 대한 검증은 제외된다.
+// config.addAllowedOriginPattern("*");
+```
+
+추가적으로 Fetch API 나 XMLHttpRequest 에서도 요청에 Cookie 나 Authentication 헤더를 포함하도록 별도로 설정해줘야 한다.
+
+- Fetch API
+  ```javascript
+  fetch("https://gmoon.com/v2", {
+    credentials: "include",
+  });
+  ```
+- AXIOS
+    ```javascript
+    axios.get("https://gmoon.com/v2", {
+      withCredentials: true,
+    });
+    ```
+
+### 4.2. [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers)
+
+클라이언트는 `CORS-safelisted` 응답 헤더를 제외한 모든 응답 헤더에 접근할 수 없다.
+
+- [CORS-safelisted 응답 헤더](https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header)
+  - By default, the safelist includes the following response headers:
+    - Cache-Control
+    - Content-Language
+    - Content-Length
+    - Content-Type
+    - Expires
+    - Last-Modified
+    - Pragma
+
+예를 들어 사용자 정의 헤더(`X-AUTH-TOKEN`)를 브라우저의 스크립트에서 접근할 수 있도록 하려면, 서버는 `Access-Control-Expose-Headers` 응답 헤더에 정의한다. 
+
+```java
+CorsConfiguration config = new CorsConfiguration();
+config.addExposedHeader("X-Auth-Token");
+```
 
 ## Reference
 
