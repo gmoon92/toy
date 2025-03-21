@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>spring-access-log</module>
     <module>spring-web-converter</module>
     <module>spring-web-session</module>
   </modules>
