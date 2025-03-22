@@ -1,6 +1,7 @@
 package com.rsupport.rv5x.springaccesslog.users.api;
 
 import com.rsupport.rv5x.springaccesslog.users.application.UserService;
+import com.rsupport.rv5x.springaccesslog.users.domain.User;
 import com.rsupport.rv5x.springaccesslog.users.model.UserForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,8 @@ public class UserController {
 	@GetMapping("/view")
 	public String view(@RequestParam String id, Model model) {
 		UserForm userForm = userService.getView(id);
-		model.addAttribute("userFrom", userForm);
+		log.info("view userForm: {}", userForm);
+		model.addAttribute("userForm", userForm);
 		return "view";
 	}
 
@@ -41,20 +43,21 @@ public class UserController {
 		 RedirectAttributes redirectAttributes,
 		 SessionStatus status
 	) {
-		UserForm savedUserForm = userService.save(userForm);
 		status.setComplete();
 
-		redirectAttributes.addAttribute("id", savedUserForm.getId());
+		User savedUser = userService.save(userForm);
+		redirectAttributes.addAttribute("id", savedUser.getId());
 
-		RedirectView redirectView = new RedirectView("/users/view");
-		redirectAttributes.addFlashAttribute("userForm", savedUserForm);
+		RedirectView redirectView = new RedirectView("/user/view");
+		redirectAttributes.addFlashAttribute("userForm", new UserForm(savedUser));
 		return redirectView;
 	}
 
 	@PatchMapping
 	@ResponseBody
-	public HttpEntity<Void> update(@RequestBody UserForm userForm) {
-		userService.update(userForm);
+	public HttpEntity<Void> update(@RequestParam String id, @RequestBody UserForm userForm) {
+		UserForm mergedUser = userService.update(id, userForm);
+		log.info("update user: {}", mergedUser);
 		return ResponseEntity.noContent().build();
 	}
 

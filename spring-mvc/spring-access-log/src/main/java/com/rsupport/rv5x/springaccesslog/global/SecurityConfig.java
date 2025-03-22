@@ -19,6 +19,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
+			 .csrf(AbstractHttpConfigurer::disable)
 			 .headers(config -> config.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 			 .authorizeHttpRequests(
 				  auth -> auth

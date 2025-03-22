@@ -28,18 +28,17 @@ public class UserService {
 		return new UserForm(user);
 	}
 
-	public UserForm save(UserForm userForm) {
-		var savedUser = repository.save(new User(
+	public User save(UserForm userForm) {
+		return repository.save(new User(
 			 UUID.randomUUID().toString(),
 			 userForm.getUsername(),
 			 "123",
 			 userForm.getAge()
 		));
-		return new UserForm(savedUser);
 	}
 
-	public UserForm update(UserForm userForm) {
-		var user = repository.get(userForm.getId());
+	public UserForm update(String id, UserForm userForm) {
+		var user = repository.get(id);
 		user.setUsername(userForm.getUsername());
 		user.setAge(userForm.getAge());
 		repository.save(user);
