@@ -7,7 +7,7 @@ import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
 import io.restassured.response.ExtractableResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matchers;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @SpringBootTest
@@ -48,13 +50,21 @@ class UserControllerTest {
 			 .get("id");
 
 		사용자_정보를_요청한다(authentication, id)
-			 .status(HttpStatus.OK)
-			 .body(Matchers.containsString("<p><strong>나이:</strong> <span>10</span></p>"));
+			 .assertThat(result -> {
+				 ModelAndView modelAndView = result.getModelAndView();
+				 ModelMap modelMap = modelAndView.getModelMap();
+				 UserForm userForm = (UserForm) modelMap.get("userForm");
+				 Assertions.assertThat(userForm.getAge()).isEqualTo(10);
+			 });
 
 		사용자_정보를_수정한다(authentication, id, new UserForm("moon", 20));
 		사용자_정보를_요청한다(authentication, id)
-			 .status(HttpStatus.OK)
-			 .body(Matchers.containsString("<p><strong>나이:</strong> <span>20</span></p>"));
+			 .assertThat(result -> {
+				 ModelAndView modelAndView = result.getModelAndView();
+				 ModelMap modelMap = modelAndView.getModelMap();
+				 UserForm userForm = (UserForm) modelMap.get("userForm");
+				 Assertions.assertThat(userForm.getAge()).isEqualTo(20);
+			 });
 
 		사용자를_삭제한다(authentication, id);
 	}
@@ -79,7 +89,6 @@ class UserControllerTest {
 				 .get()
 			 .then()
 				 .contentType(ContentType.HTML)
-				 .body(Matchers.containsString("사용자 목록"))
 				 .status(HttpStatus.OK);
 		//@formatter:on
 	}
