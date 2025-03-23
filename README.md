@@ -17,6 +17,7 @@
     - [spring-async](spring-event/spring-async/README.md)
     - [spring-event-listener](spring-event/spring-event-listener/README.md)
     - [spring-fcm](spring-event/spring-fcm/README.md)
+    - [spring-kafka](spring-event/spring-kafka/README.md)
     - [spring-quartz-cluster](spring-event/spring-quartz-cluster/README.md)
     - [spring-scheduling](spring-event/spring-scheduling/README.md)
 - [spring-jooq](spring-jooq/README.md)

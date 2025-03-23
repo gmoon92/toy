@@ -18,8 +18,9 @@
     <modules>
         <module>spring-async</module>
         <module>spring-scheduling</module>
+        <module>spring-fcm</module>
+        <module>spring-kafka</module>
         <module>spring-quartz-cluster</module>
         <module>spring-event-listener</module>
-        <module>spring-fcm</module>
     </modules>
 </project>
