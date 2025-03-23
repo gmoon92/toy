@@ -29,6 +29,7 @@ class RequestUtilsTest {
 		request.addHeader("User-Agent", "JUnit");
 		request.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		request.setContent("{\"username\":\"gmoon\"}".getBytes());
+		request.setQueryString("id=123");
 		request.setParameter("id", "123");
 
 		ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
@@ -45,6 +46,11 @@ class RequestUtilsTest {
 		Assertions.assertThat(RequestUtils.getRequestBody(request)).isEqualTo("{\"username\":\"gmoon\"}");
 		Assertions.assertThat(RequestUtils.getRequestBody(request)).isEqualTo("{\"username\":\"gmoon\"}");
 		Assertions.assertThat(RequestUtils.getRequestBody(request)).isEqualTo("{\"username\":\"gmoon\"}");
+	}
+
+	@Test
+	void getRequestQueryString() {
+		Assertions.assertThat(RequestUtils.getRequestQueryString(request)).isEqualTo("id=123");
 	}
 
 	@Test

@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.nio.charset.Charset;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RequestUtils {
 
@@ -23,14 +25,24 @@ public final class RequestUtils {
 	}
 
 	public static String getRequestBody(HttpServletRequest request) {
-		ContentCachingRequestWrapper wrappedRequest = newContentCachingRequestWrapper(request);
-		byte[] content = wrappedRequest.getContentAsByteArray();
+		boolean cachedContent = ContentCachingRequestWrapper.class.isInstance(request);
+		if (!cachedContent) {
+			log.warn("Request is not an instance of ContentCachingRequestWrapper. Unable to read body.");
+			return "";
+		}
+
+		ContentCachingRequestWrapper wrappingRequest = (ContentCachingRequestWrapper) request;
+		byte[] content = wrappingRequest.getContentAsByteArray();
 		if (content.length > 0) {
-			Charset charset = getCharset(wrappedRequest);
+			Charset charset = getCharset(wrappingRequest);
 			return new String(content, charset);
 		}
 
 		return "";
+	}
+
+	public static String getRequestQueryString(HttpServletRequest request) {
+		return request.getQueryString();
 	}
 
 	private static Charset getCharset(HttpServletRequest request) {
@@ -40,15 +52,6 @@ public final class RequestUtils {
 		} catch (Exception e) {
 			return DEFAULT_CHARACTER_ENCODING;
 		}
-	}
-
-	private static ContentCachingRequestWrapper newContentCachingRequestWrapper(HttpServletRequest request) {
-		boolean cached = ContentCachingRequestWrapper.class.isInstance(request);
-		if (cached) {
-			return (ContentCachingRequestWrapper) request;
-		}
-
-		return new ContentCachingRequestWrapper(request);
 	}
 
 	public static String getRequestUri(HttpServletRequest request) {
