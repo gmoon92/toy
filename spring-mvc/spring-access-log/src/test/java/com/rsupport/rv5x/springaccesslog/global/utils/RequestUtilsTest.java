@@ -43,9 +43,9 @@ class RequestUtilsTest {
 
 	@Test
 	void getRequestBody() {
-		Assertions.assertThat(RequestUtils.getRequestBody(request)).isEqualTo("{\"username\":\"gmoon\"}");
-		Assertions.assertThat(RequestUtils.getRequestBody(request)).isEqualTo("{\"username\":\"gmoon\"}");
-		Assertions.assertThat(RequestUtils.getRequestBody(request)).isEqualTo("{\"username\":\"gmoon\"}");
+		Assertions.assertThat(RequestUtils.getRequestBody((ContentCachingRequestWrapper) request)).isEqualTo("{\"username\":\"gmoon\"}");
+		Assertions.assertThat(RequestUtils.getRequestBody((ContentCachingRequestWrapper) request)).isEqualTo("{\"username\":\"gmoon\"}");
+		Assertions.assertThat(RequestUtils.getRequestBody((ContentCachingRequestWrapper) request)).isEqualTo("{\"username\":\"gmoon\"}");
 	}
 
 	@Test
