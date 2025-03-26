@@ -1,0 +1,29 @@
+version: 'v1'
+# https://hub.docker.com/r/apache/kafka
+# https://kafka.apache.org/downloads
+# https://kafka.apache.org/blog#apache_kafka_400_release_announcement
+# https://kafka.apache.org/documentation/#quickstart_startserver
+# https://github.com/apache/kafka/blob/trunk/docker/examples/README.md
+services:
+  kafka:
+    image: apache/kafka:4.0.0
+    container_name: broker
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: 1
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      #https://www.confluent.io/blog/kafka-listeners-explained/
+      # https://westlife0615.tistory.com/529
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
