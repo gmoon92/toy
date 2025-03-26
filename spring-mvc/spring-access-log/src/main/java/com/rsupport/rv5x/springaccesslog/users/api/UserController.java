@@ -1,5 +1,6 @@
 package com.rsupport.rv5x.springaccesslog.users.api;
 
+import com.rsupport.rv5x.springaccesslog.http.annotation.ApiEventTracking;
 import com.rsupport.rv5x.springaccesslog.users.application.UserService;
 import com.rsupport.rv5x.springaccesslog.users.domain.User;
 import com.rsupport.rv5x.springaccesslog.users.model.UserForm;
@@ -37,6 +38,7 @@ public class UserController {
 		return "view";
 	}
 
+	@ApiEventTracking
 	@PostMapping
 	public RedirectView save(
 		 @ModelAttribute UserForm userForm,
@@ -53,6 +55,7 @@ public class UserController {
 		return redirectView;
 	}
 
+	@ApiEventTracking
 	@PatchMapping
 	@ResponseBody
 	public HttpEntity<Void> update(@RequestParam String id, @RequestBody UserForm userForm) {
