@@ -1,4 +1,4 @@
-package com.gmoon.springkafka.basic;
+package com.gmoon.springkafka.basic.consumer;
 
 import com.gmoon.springkafka.test.Constants;
 import lombok.extern.slf4j.Slf4j;
