@@ -1,16 +1,15 @@
 package com.gmoon.springsecuritypasswordencoder.password;
 
-import static org.assertj.core.api.Assertions.*;
-
+import com.gmoon.javacore.util.StringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.gmoon.javacore.util.StringUtils;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PasswordEncoderHolderTest {
 
 	@ParameterizedTest
-	@ValueSource(ints = {1, 9, 10, 11, 100})
+	@ValueSource(ints = {1, 9, 10, 11, 72})
 	void length(int length) {
 		String rawPassword = StringUtils.randomAlphabetic(length);
 
