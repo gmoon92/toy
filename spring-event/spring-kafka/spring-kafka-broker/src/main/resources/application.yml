@@ -1,1 +1,3 @@
-spring.application.name=spring-kafka-broker
+spring:
+  application:
+    name: spring-kafka-admin
