@@ -48,6 +48,24 @@ public class KafkaAdminExample {
 
 더 자세한 내용은 [Kafka Admin API Javadoc](https://kafka.apache.org/documentation/#adminapi)을 참고하면 된다.
 
+# 토픽 자동 생성 옵션
+
+``` properties
+# broker
+auto.create.topics.enable=false
+
+# consumer
+allow.auto.create.topics=false
+```
+
+프로듀서 토픽에 레코드 발송시 에러 로그 확인.
+
+```text
+20:23:56.258 [kafka-producer-network-thread | producer-1] WARN org.apache.kafka.clients.NetworkClient -- [Producer clientId=producer-1] Error while fetching metadata with correlation id 29 : {topic.sample=UNKNOWN_TOPIC_OR_PARTITION}
+20:23:57.263 [kafka-producer-network-thread | producer-1] WARN org.apache.kafka.clients.NetworkClient -- [Producer clientId=producer-1] Error while fetching metadata with correlation id 30 : {topic.sample=UNKNOWN_TOPIC_OR_PARTITION}
+20:23:58.268 [kafka-producer-network-thread | producer-1] WARN org.apache.kafka.clients.NetworkClient -- [Producer clientId=producer-1] Error while fetching metadata with correlation id 31 : {topic.sample=UNKNOWN_TOPIC_OR_PARTITION}
+```
+
 ## Reference
 
 - [Apache Kafka - Admin API](https://kafka.apache.org/documentation/#adminapi)
