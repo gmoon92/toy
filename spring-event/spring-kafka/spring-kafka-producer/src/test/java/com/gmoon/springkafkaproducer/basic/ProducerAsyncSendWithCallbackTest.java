@@ -1,20 +1,14 @@
 package com.gmoon.springkafkaproducer.basic;
 
-import java.util.Properties;
-
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Properties;
 
 @Slf4j
 @Disabled
@@ -99,6 +93,3 @@ class ProducerAsyncSendWithCallbackTest {
 		return props;
 	}
 }
-
-
-
