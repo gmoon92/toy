@@ -3,15 +3,13 @@ package com.gmoon.springkafkabroker.adminclient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.Node;
 import org.apache.kafka.common.TopicCollection;
 import org.apache.kafka.common.config.ConfigResource;
 import org.apache.kafka.common.config.TopicConfig;
 import org.junit.jupiter.api.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -194,6 +192,36 @@ class KafkaAdminClientTest {
 				 .get(configKey);
 		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	@DisplayName("브로커 설정 정보")
+	@Test
+	void brokerConfigs() throws Exception{
+		DescribeClusterResult clusterResult = adminClient.describeCluster();
+		KafkaFuture<Collection<Node>> nodes = clusterResult.nodes();
+
+		for (Node node : nodes.get()) {
+			log.info("node: {}", node);
+
+			ConfigResource resource = new ConfigResource(ConfigResource.Type.BROKER, node.idString());
+			DescribeConfigsResult configsResult = adminClient.describeConfigs(Collections.singleton(resource));
+			Map<ConfigResource, Config> map = configsResult.all().get();
+
+			for (Map.Entry<ConfigResource, Config> entry : map.entrySet()) {
+				log.info("{}={}", entry.getKey(), entry.getValue());
+			}
+		}
+	}
+
+	@DisplayName("컨슈머 그룹 조회")
+	@Test
+	void consumerGroup() throws Exception {
+		ListConsumerGroupsResult result = adminClient.listConsumerGroups();
+		Collection<ConsumerGroupListing> groups = result.all().get();
+
+		for (ConsumerGroupListing group : groups) {
+			log.info("group: {}", group);
 		}
 	}
 }
