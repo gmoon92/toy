@@ -26,7 +26,7 @@ kafka-clients -X-> kafka broker
 
 - [1. 메시지 전달 시멘틱](#1-메시지-전달-시멘틱--message-delivery-semantics-)
 - [2. 프로듀서의 적어도 한번 메시지 전송](#2-프로듀서의-적어도-한번-메시지-전송)
-  - [2.1. 네트워크 장애로 AKS 응답을 받지 못한 경우](#21-네트워크-장애로-aks-응답을-받지-못한-경우)
+  - [2.1. 네트워크 장애로 ACK 응답을 받지 못한 경우](#21-네트워크-장애로-ACK-응답을-받지-못한-경우)
   - [2.2. 브로커의 ISR 복제 지연 또는 리더 선출 시나리오](#22-브로커의-isr-복제-지연-또는-리더-선출-시나리오)
 - [3. 멱등성 프로듀서](#3-멱등성-프로듀서)
   - [3.1. 멱등적 프로듀서 작동 원리](#31-멱등적-프로듀서-작동-원리)
@@ -52,23 +52,118 @@ kafka-clients -X-> kafka broker
 
 달리 말하자면 프로듀서에서도 특정 상황에 따라 중복된 메시지가 발행할 수 있다.
 
-- 네트워크 장애로 AKS 응답을 받지 못한 경우.
+- 네트워크 장애로 ACK 응답을 받지 못한 경우.
 - 브로커의 ISR 복제 지연이나 리더 선출 시나리오에서도 중복 발생 가능.
 
-### 2.1. 네트워크 장애로 AKS 응답을 받지 못한 경우
+### 2.1. 네트워크 장애로 ACK 응답을 받지 못한 경우
 
-![scenario1.png](images/scenario1.png)
+![scenario1.png](../spring-kafka-producer/images/scenario1.png)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Producer
+    participant Broker
+%% 네트워크 장애로 ACK 응답을 받지 못한 경우
+    Producer ->> Broker: send(Record 1)
+    activate Producer
+    activate Broker
+    note right of Broker: partition0 = [Record 1]
+    Broker ->> Broker: 토픽의 파티션에 레코드 저장
+    note over Producer, Broker: 네트워크 장애 발생
+    Broker --x Producer: Acknowledgement
+    deactivate Producer
+    deactivate Broker
+    Producer ->> Broker: Retry
+    activate Producer
+    activate Broker
+    Broker ->> Broker: 토픽의 파티션에 레코드 저장
+    note right of Broker: partition0 = [Record 1, Record1]
+    Broker ->> Producer: Acknowledgement
+    deactivate Producer
+    deactivate Broker
+```
 
 1. 프로듀서가 카프카로 레코드 전송
 2. 카프카는 지정된 토픽의 파티션에 레코드를 저장
-3. 카프카 서버 네트워크 장애 발생
-4. ack 미응답
-5. 프로듀서는 데이터 유실로 판단하여, 재전송 시도
-6. 재전송된 레코드로 인한 중복 데이터 발생
+3. ACK 미응답, 카프카 서버 네트워크 장애 발생
+4. 프로듀서는 데이터 유실로 판단하여, 재전송 시도
+5. 재전송된 레코드로 인한 중복 데이터 발생
+6. ACK 응답
 
 ### 2.2. 브로커의 ISR 복제 지연 또는 리더 선출 시나리오
 
-![scenario2.png](images/scenario2.png)
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Producer
+    participant Kafka Cluster
+    box ISR(InSync Replica) 그룹
+        participant Broker1 partition0
+        participant Broker2 partition0
+    end
+    Producer ->> Kafka Cluster: send(Record 1)
+    activate Producer
+    activate Kafka Cluster
+    Kafka Cluster ->> Broker1 partition0: 리더 파티션에 레코드 저장 요청
+    activate Broker1 partition0
+    alt 리더/팔로우 파티션 리플리케이션
+        Broker1 partition0 ->> Broker1 partition0: 리더 파티션 레코드(offset0) 저장
+        note right of Broker1 partition0: partition0 Leader = [Record 1]
+        Broker2 partition0 ->> Broker1 partition0: fetch()<br/>offset0
+        activate Broker2 partition0
+        note right of Broker2 partition0: 특정 주기마다 리플리케이션 요청
+        Broker1 partition0 ->> Broker2 partition0: Record
+        Broker2 partition0 ->> Broker2 partition0: 레코드(offset0) 복제
+        note right of Broker2 partition0: partition0 Follower = [Record 1]
+        deactivate Broker2 partition0
+        Broker2 partition0 ->> Broker1 partition0: fetch()<br/>offset1
+        activate Broker2 partition0
+        Broker1 partition0 ->> Broker1 partition0: commit()<br/>레코드(offset0) 커밋 마킹
+        note right of Broker1 partition0: partition0 Leader = [Record 1(commited)]
+        Broker1 partition0 ->> Broker1 partition0: 하이워터마크(high watermark) 증가<br/>
+        note right of Broker1 partition0: high watermark=1<br/>마지막으로 커밋된 레코드의 오프셋 +1
+        Broker1 partition0 ->> Broker2 partition0: 1. 새로운 메시지(offset)<br/>2. 하이워터마크<br/>3. 로그 엔드 오프셋<br/>[4. 리더 에포크(Leader Epoch)]
+        note right of Broker2 partition0: 하이워터마크 참조하여 메시지 커밋 마킹
+        Broker2 partition0 ->> Broker2 partition0: commit()<br/>레코드(offset0) 커밋 마킹
+        note right of Broker2 partition0: partition0 Follower = [Record 1(commited)]
+        note over Kafka Cluster, Broker1 partition0: 리더 브로커1 장애 발생
+        Broker1 partition0 --x Kafka Cluster: OK
+        deactivate Broker1 partition0
+        Broker2 partition0 ->> Broker2 partition0: 하이워터마크(high watermark) 증가
+        note right of Broker2 partition0: high watermark=1<br/>마지막으로 커밋된 레코드의 오프셋 +1
+        deactivate Broker2 partition0
+    end
+
+    Kafka Cluster --x Producer: Acknowledgement
+    Producer ->> Producer: Timeout Exception
+    deactivate Producer
+
+    alt ISR 그룹 리더 파티션 선출
+        Kafka Cluster -->> Broker1 partition0: 리더 브로커1 장애 확인
+        Kafka Cluster ->> Kafka Cluster: ISR 그룹에서 브로커1 제외
+        Kafka Cluster ->> Kafka Cluster: 리더 선출 진행
+        Kafka Cluster ->> Broker2 partition0: 브로커2를 새로운 리더 파티션으로 승격
+        activate Broker2 partition0
+        Broker2 partition0 ->> Kafka Cluster: OK
+        deactivate Broker2 partition0
+    end
+
+    deactivate Kafka Cluster
+    Producer ->> Kafka Cluster: Retry
+    activate Producer
+    activate Kafka Cluster
+    Kafka Cluster ->> Broker2 partition0: 리더 파티션 레코드 저장
+    activate Broker2 partition0
+    note right of Broker2 partition0: partition0 Leader = [Record 1, Record 1]
+    Broker2 partition0 ->> Broker2 partition0: 리더 파티션 레코드 저장
+    Broker2 partition0 ->> Kafka Cluster: OK
+    deactivate Broker2 partition0
+    note right of Kafka Cluster: acks 옵션에 따라 다름
+    Kafka Cluster ->> Producer: Acknowledgement
+    deactivate Producer
+    deactivate Kafka Cluster
+```
 
 1. 프로듀서가 카프카로 레코드 전송
 2. 파티션 리더가 프로듀서로부터 레코드를 받아, 팔로워들에게 복제를 완료함.
@@ -93,8 +188,32 @@ kafka-clients -X-> kafka broker
 
 브로커는 PID와 Seq 가지고 있다가 중복 적재 요청이 오면 이후에 요청된 중복 레코드는 적재하지 않는다.
 
-![idempotence-partition.png](images/idempotence-partition.png)
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Producer
+    participant Broker
 
+    Producer ->> Broker: send(Record 1)<br/>Header=(PID=0, Seq=0)
+    activate Producer
+    activate Broker
+    Broker ->> Broker: PID=0, Seq=0 검증
+    Broker ->> Broker: 신규 레코드 → 파티션 저장
+    note right of Broker: partition0 = [Record 1]
+    Broker ->> Producer: Ack (성공)
+    deactivate Producer
+    deactivate Broker
+
+    note over Producer, Broker: 네트워크 장애로 Ack 전달 실패
+    Producer ->> Broker: Retry<br/>Record 1<br/>Header=(PID=0, Seq=0)
+    activate Producer
+    activate Broker
+    Broker ->> Broker: PID=0, Seq=0 검증
+    note right of Broker: 이미 처리된 Seq → 중복으로 판단
+    Broker ->> Producer: Ack (성공, 실제 저장 X)
+    deactivate Producer
+    deactivate Broker
+```
 1. 멱등성 프로듀서는 레코드 전송시 PID(Producer Id) 와 Sequence Number(메시지 번호) 를 헤더에 포함해 전송한다.
 2. 브로커는 레코드를 저장할 때, PID 와 Seq을 메모리에 함께 기록한다.
 3. 프로듀서가 재전송하더라도, 브로커는 PID와 Seq 를 비교하여 중복된 메시지가 판단한다.
