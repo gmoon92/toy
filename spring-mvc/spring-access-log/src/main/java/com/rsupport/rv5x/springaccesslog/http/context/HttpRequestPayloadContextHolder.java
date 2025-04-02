@@ -1,18 +1,19 @@
 package com.rsupport.rv5x.springaccesslog.http.context;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.util.function.Supplier;
+
 import org.springframework.util.Assert;
 
-import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpRequestPayloadContextHolder {
 
-	private static final ThreadLocal<Supplier<HttpRequestPayload>> contextHolder = new ThreadLocal<>();
+	private static final ThreadLocal<Supplier<HttpRequestPayload>> context = new ThreadLocal<>();
 
 	public static void clearContext() {
-		contextHolder.remove();
+		context.remove();
 	}
 
 	public static HttpRequestPayload getContext() {
@@ -21,15 +22,15 @@ public final class HttpRequestPayloadContextHolder {
 
 	public static void setContext(HttpRequestPayload context) {
 		Assert.notNull(context, "Only non-null SecurityContext instances are permitted");
-		contextHolder.set(() -> context);
+		HttpRequestPayloadContextHolder.context.set(() -> context);
 	}
 
 	private static Supplier<HttpRequestPayload> getDeferredContext() {
-		Supplier<HttpRequestPayload> result = contextHolder.get();
+		Supplier<HttpRequestPayload> result = context.get();
 		if (result == null) {
 			HttpRequestPayload context = new HttpRequestPayload();
 			result = () -> context;
-			contextHolder.set(result);
+			HttpRequestPayloadContextHolder.context.set(result);
 		}
 		return result;
 	}
