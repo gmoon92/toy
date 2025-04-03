@@ -1,10 +1,7 @@
 package com.gmoon.springkafkaproducer.basic;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +16,7 @@ class ProducerExactlyOnceSendTest {
 
 	/**
 	 * @see <a href="https://kafka.apache.org/documentation/#usingtransactions">Apache Kafka - Using Transactions</a>
-	 * */
+	 */
 	@Test
 	void withTransaction() {
 		Properties props = new Properties();
@@ -42,13 +39,15 @@ class ProducerExactlyOnceSendTest {
 			producer.beginTransaction(); // 트랜잭션 시작
 
 			var record = new ProducerRecord<String, String>("topic.sample", "callback");
-			producer.send(record);
+			RecordMetadata recordMetadata = producer.send(record).get();
+			log.info(recordMetadata.toString());
+
 			producer.flush();
+			producer.commitTransaction(); // 트랜잭션 커밋
 		} catch (Exception e) {
 			producer.abortTransaction(); // 트랜잭션 중단
 			throw new RuntimeException(e);
 		} finally {
-			producer.commitTransaction(); // 트랜잭션 커밋
 			producer.close();
 		}
 	}
