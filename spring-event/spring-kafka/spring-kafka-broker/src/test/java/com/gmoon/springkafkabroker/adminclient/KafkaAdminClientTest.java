@@ -142,7 +142,6 @@ class KafkaAdminClientTest {
 
 			ConfigEntry configEntry = getConfigEntry(configResource, compactConfig.name());
 			assertThat(configEntry.value()).isEqualTo(TopicConfig.CLEANUP_POLICY_COMPACT);
-
 		}
 
 		// 기본 값으로 설정 되돌리기
