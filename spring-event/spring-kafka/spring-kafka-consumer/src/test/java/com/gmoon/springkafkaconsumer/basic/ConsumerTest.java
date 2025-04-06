@@ -94,6 +94,7 @@ class ConsumerTest {
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "consumer-group01"); // 컨슈머 그룹 지정
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true"); // 오토 커밋 활성화
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest"); // 컨슈머 오프셋을 찾지 못한 경우 최근 메시지를 가져옴
+		props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed"); // 커밋된 메시지만 읽음
 		return props;
 	}
 }
