@@ -218,9 +218,9 @@ sequenceDiagram
   activate B
   B ->> B: 시퀀스 번호 검증 (멱등성 확인)
   alt 트랜잭션 상태 추가 (첫 메시지 전송 후)
-    B --> TC: AddPartitionsToTxnRequest(PID, TID, Topic, Partition) 정보 전달
-    note over B, TC: 전송된 메시지가 오면, 코디네이터는 그제서야 트랜잭션을 시작함
+    B -->> TC: AddPartitionsToTxnRequest(PID, TID, Topic, Partition) 정보 전달
     activate TC
+    note over B, TC: 전송된 메시지가 오면, 코디네이터는 그제서야 트랜잭션을 시작함
     TC ->> TS: 현재 트랜잭션 상태를 "Ongoing"으로 업데이트
     activate TS
     note over TC, TS: timer 1분, 트랜잭션 상태에 대한 없데이트가 없다면 트랜잭션 실패로 처리된다.
