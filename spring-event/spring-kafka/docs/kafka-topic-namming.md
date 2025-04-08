@@ -127,11 +127,12 @@ Kafka의 내부 시스템 토픽은 `__`(더블 언더스코어)로 시작하는
 ## Reference
 
 - [Confluent 공식 가이드](https://www.confluent.io/learn/kafka-topic-naming-convention/)
-- [Kafka Topic Naming Convention - Data Engineer Tech](https://data-engineer-tech.tistory.com/36)
-- [개기심사 블로그](https://devfoxstar.github.io/middleware/kafka-topic-naming/)
-- [마루-IT 블로그](https://maru-itdeveloper.tistory.com/36)
-- [Digital Bourgeois](https://digitalbourgeois.tistory.com/269)
-- [네이버 카프카 활용 사례 (YouTube)](https://www.youtube.com/watch?v=OxMdru93E6k)
-- [Velog 블로그 모음](https://velog.io/@parktaejung/10-토픽-작명-방법)
-- [GC Tech 블로그: Kafka 기반 EDA 설계](https://techblog.gccompany.co.kr/apache-kafka%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-eda-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-bf263c79efd0)
-- [CallMeSmith 블로그](https://devboi.tistory.com/660)
+- [Apache Kafka - topic naming](https://kafka.apache.org/documentation/#multitenancy-topic-naming)
+- [YouTube 네이버 D2 컨퍼런스- 네이버 스케일로 카프카 컨슈머 사용하기](https://www.youtube.com/watch?v=OxMdru93E6k)
+- blogs
+  - [여기어때 기술 블로그 - Apache Kafka를 사용하여 EDA 적용하기](https://techblog.gccompany.co.kr/apache-kafka%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-eda-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-bf263c79efd0)
+  - [Data Engineer Tech - [🧙Kafka] 카프카 토픽 이름 짓는 법(Topic Naming Convention)](https://data-engineer-tech.tistory.com/36)
+  - [개기심사 블로그 - 카프카 토픽 이름 정하기 (Kafka Topic Naming Conventions)](https://devfoxstar.github.io/middleware/kafka-topic-naming/)
+  - [마루-IT 블로그 - [Apache Kafka] 4. 의미 있는 토픽 이름 작명 방법](https://maru-itdeveloper.tistory.com/36)
+  - [Digital Bourgeois - Kafka 토픽 네이밍 규칙: 혼돈을 피하고 효율성을 극대화하는 방법](https://digitalbourgeois.tistory.com/269)
+  - [@parktaejung - #10 토픽 작명 방법](https://velog.io/@parktaejung/10-%ED%86%A0%ED%94%BD-%EC%9E%91%EB%AA%85-%EB%B0%A9%EB%B2%95)
