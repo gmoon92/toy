@@ -1,0 +1,27 @@
+### Get all connectors
+GET http://localhost:8083/connectors
+Accept: application/json
+
+### Register Outbox Connector
+POST http://localhost:8083/connectors
+Content-Type: application/json
+Accept: application/json
+
+{
+  "schema": {
+    "type": "struct",
+    "fields": [
+      {
+        "type": "string",
+        "optional": false,
+        "field": "databaseName"
+      }
+    ],
+    "optional": false,
+    "name": "io.debezium.connector.mariadb.SchemaChangeKey",
+    "version": 1
+  },
+  "payload": {
+    "databaseName": "inventory"
+  }
+}

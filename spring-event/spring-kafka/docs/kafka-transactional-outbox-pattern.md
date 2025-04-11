@@ -18,6 +18,7 @@ curl -X POST 127.0.0.1:8083/connectors
 ## Reference
 
 - [Confluent - Connect](https://docs.confluent.io/platform/current/connect/index.html)
+  - [Confluent - Event Sourcing pattern explained](https://developer.confluent.io/courses/microservices/the-transactional-outbox-pattern/)
 - [Apache Kafka - Connect](https://kafka.apache.org/documentation.html#connect)
   - [Apache Kafka - Quickstart Connect](https://kafka.apache.org/quickstart#quickstart_kafkaconnect)
 - [Debezium - Source connect mariadb](https://debezium.io/documentation/reference/stable/connectors/mariadb.html)

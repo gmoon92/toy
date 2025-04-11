@@ -1,4 +1,4 @@
-version: '2'
+#version: '2'
 # https://kafka.apache.org/documentation/#quickstart_startserver
 # https://github.com/apache/kafka/blob/trunk/docker/examples/README.md
 services:
@@ -33,3 +33,54 @@ services:
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
 
+  #/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+  # Create Source Connect topics
+  kafka-init-topics:
+    image: apache/kafka:4.0.0
+    depends_on:
+      - kafka
+    volumes:
+#     chmod +x create-source-connector-topics
+      - ./create-source-connector-topics.sh:/create-source-connector-topics.sh
+    entrypoint: [ "sh", "/create-source-connector-topics.sh" ]
+#    command: >
+#      "echo '[+] Waiting for Kafka broker to be ready...' && \
+#        sleep 2 && \
+#        echo '[+] Creating required Kafka topics...' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --create --if-not-exists --topic connect.offsets --replication-factor 1 --partitions 1 --config cleanup.policy=compact && \
+#        echo '[✓] Topic "connect.offsets" created or already exists.' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --create --if-not-exists --topic connect.configs --replication-factor 1 --partitions 1 --config cleanup.policy=compact && \
+#        echo '[✓] Topic "connect.configs" created or already exists.' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --create --if-not-exists --topic connect.status --replication-factor 1 --partitions 1 --config cleanup.policy=compact && \
+#        echo '[✓] Topic "connect.status" created or already exists.' && \
+#        echo '[+] Listing current Kafka topics...' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --list && \
+#        echo '[✓] Kafka topic setup complete.'
+#      "
+
+  # Kafka connect + Debezium
+  # https://hub.docker.com/r/debezium/connect
+  # https://kafka.apache.org/documentation.html#connect_plugindiscovery_migratesource
+  kafka-connect:
+    image: debezium/connect:3.0.0.Final
+    container_name: kafka-connect
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka
+      - kafka-init-topics
+    environment:
+      #      https://kafka.apache.org/documentation.html#connectconfigs
+      #      BOOTSTRAP_SERVERS: broker:19092
+      #      BOOTSTRAP_SERVERS: localhost:29092
+      BOOTSTRAP_SERVERS: broker:19092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect.configs
+      OFFSET_STORAGE_TOPIC: connect.offsets
+      STATUS_STORAGE_TOPIC: connect.status
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      REST_ADVERTISED_HOST_NAME: connect
+      REST_PORT: 8083
+      #      PLUGIN_PATH: /kafka/connect
+      PLUGIN_DISCOVERY: SERVICE_LOAD
