@@ -1,6 +1,8 @@
 # https://hub.docker.com/r/apache/kafka
 # https://github.com/apache/kafka/blob/trunk/docker/examples/README.md
-version: '2'
+version: 'v2'
+name: kafka-cluster
+
 services:
   controller-1:
     image: apache/kafka:4.0.0

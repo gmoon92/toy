@@ -1,6 +1,8 @@
-version: '2'
 # https://kafka.apache.org/documentation/#quickstart_startserver
 # https://github.com/apache/kafka/blob/trunk/docker/examples/README.md
+version: 'v2'
+name: kafka-single-node
+
 services:
   kafka:
     image: apache/kafka:4.0.0
