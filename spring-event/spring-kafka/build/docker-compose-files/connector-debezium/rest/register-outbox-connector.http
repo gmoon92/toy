@@ -1,0 +1,33 @@
+### Get all connectors
+GET http://localhost:8083/connectors
+Accept: application/json
+
+### Delete connector
+DELETE http://localhost:8083/connectors/debezium-mysql-connector
+Accept: application/json
+
+### Register Outbox Connector
+POST http://localhost:8083/connectors
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "debezium-mysql-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "root",
+    "database.password": "111111",
+    "database.server.id": "184054",
+    "topic.prefix": "outbox",
+    "schema.history.internal.kafka.bootstrap.servers": "broker:19092",
+    "schema.history.internal.kafka.topic": "db.schema.changed",
+
+    "include.schema.changes": "false",
+
+    transforms=outbox
+    transforms.outbox.type=io.debezium.transforms.outbox.EventRouter
+
+  }
+}

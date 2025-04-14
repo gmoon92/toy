@@ -1,5 +1,6 @@
 package com.gmoon.springkafkaproducer.messages;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -16,8 +17,18 @@ public class OutboxMessage {
 
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
-	private String key;
+	private String id;
 
-	private String entityId;
+	@Column(length = 255, nullable = false)
+	private String aggregateType;
+
+	@Column(length = 255, nullable = false)
+	private String aggregateId;
+
+	@Column(length = 255, nullable = false)
 	private String type;
+
+	@Column(length = 255, nullable = false)
+	private String payload;
+
 }

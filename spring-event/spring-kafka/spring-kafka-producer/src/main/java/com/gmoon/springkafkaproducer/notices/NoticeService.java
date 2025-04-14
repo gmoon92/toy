@@ -33,7 +33,7 @@ public class NoticeService {
 		notice.updateContent(content);
 
 		OutboxMessage message = OutboxMessage.builder()
-			 .entityId(notice.getId())
+			 .aggregateId(notice.getId())
 			 .type("updated-content")
 			 .build();
 		outBoxRepository.save(message);
