@@ -1,10 +1,9 @@
 package com.gmoon.javacore.util;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtils {
@@ -153,5 +152,9 @@ public final class StringUtils {
 
 	public static String escapeXml10(String input) {
 		return StringEscapeUtils.escapeXml10(input);
+	}
+
+	public static String rightPad(String str, int size, String padStr) {
+		return org.apache.commons.lang3.StringUtils.rightPad(str, size, padStr);
 	}
 }
