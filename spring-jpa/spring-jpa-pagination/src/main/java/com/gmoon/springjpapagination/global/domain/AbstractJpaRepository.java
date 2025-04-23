@@ -34,9 +34,9 @@ public abstract class AbstractJpaRepository implements BaseRepository {
 		JPAQuery<T> countQuery = query.clone();
 
 		clearOrderBy(countQuery);
-		clearLimitOffset(query);
+		clearLimitOffset(countQuery);
 
-		NumberOperation<Long> countExpression = getCountExpression(query);
+		NumberOperation<Long> countExpression = getCountExpression(countQuery);
 		return countQuery.select(
 			 countExpression
 		).fetchFirst();
