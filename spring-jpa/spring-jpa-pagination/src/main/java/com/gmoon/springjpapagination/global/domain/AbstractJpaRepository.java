@@ -1,7 +1,5 @@
 package com.gmoon.springjpapagination.global.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.querydsl.core.JoinExpression;
 import com.querydsl.core.QueryMetadata;
 import com.querydsl.core.QueryModifiers;
@@ -12,34 +10,29 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberOperation;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractJpaRepository implements BaseRepository {
 
 	@Autowired
 	protected JPAQueryFactory queryFactory;
 
-	protected JPAQuery<?> pagingQuery(BasePageable pageable) {
-		return queryFactory.query()
+	protected JPAQuery<?> fetchAndPaginated(BasePageable pageable) {
+		return queryFactory
+			 .query()
 			 .limit(pageable.getPageSize())
 			 .offset(pageable.getOffset());
 	}
 
-	protected <T> JPAQuery<T> pagination(JPAQuery<T> query, BasePageable pageable) {
-		return query
-			 .limit(pageable.getPageSize())
-			 .offset(pageable.getOffset());
-	}
-
-	protected <T> Long countQuery(JPAQuery<T> query) {
+	protected <T> Long fetchTotalCount(JPAQuery<T> query) {
 		JPAQuery<T> countQuery = query.clone();
 
 		clearOrderBy(countQuery);
 		clearLimitOffset(countQuery);
 
-		NumberOperation<Long> countExpression = getCountExpression(countQuery);
-		return countQuery.select(
-			 countExpression
-		).fetchFirst();
+		return countQuery
+			 .select(getCountExpression(countQuery))
+			 .fetchFirst();
 	}
 
 	private <T> void clearLimitOffset(JPAQuery<T> query) {

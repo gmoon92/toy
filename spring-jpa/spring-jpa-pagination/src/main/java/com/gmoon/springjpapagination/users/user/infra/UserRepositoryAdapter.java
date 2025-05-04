@@ -1,24 +1,21 @@
 package com.gmoon.springjpapagination.users.user.infra;
 
-import static com.gmoon.springjpapagination.users.user.domain.QUser.*;
-import static com.gmoon.springjpapagination.users.user.domain.QUserGroup.*;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
-import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.impl.JPAQuery;
-
 import com.gmoon.springjpapagination.global.domain.AbstractJpaRepository;
 import com.gmoon.springjpapagination.global.domain.BasePageable;
 import com.gmoon.springjpapagination.users.user.domain.User;
 import com.gmoon.springjpapagination.users.user.domain.UserRepository;
-
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.gmoon.springjpapagination.users.user.domain.QUser.user;
+import static com.gmoon.springjpapagination.users.user.domain.QUserGroup.userGroup;
 
 @Slf4j
 @Repository
@@ -41,7 +38,7 @@ public class UserRepositoryAdapter
 	}
 
 	private JPAQuery<User> getUserQuery(String groupId, String keyword, BasePageable pageable) {
-		return pagingQuery(pageable)
+		return fetchAndPaginated(pageable)
 			 .select(user)
 			 .from(user)
 			 .join(user.userGroup, userGroup)
@@ -54,7 +51,7 @@ public class UserRepositoryAdapter
 
 	@Override
 	public long countBy(String groupId, String keyword) {
-		return countQuery(
+		return fetchTotalCount(
 			 getUserQuery(
 				  groupId,
 				  keyword,

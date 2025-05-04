@@ -1,19 +1,16 @@
 package com.gmoon.springjpapagination.users.user.infra;
 
-import static com.gmoon.springjpapagination.users.user.domain.QUserGroup.*;
-
-import java.util.List;
-
-import org.springframework.stereotype.Repository;
-
-import com.querydsl.jpa.impl.JPAQuery;
-
 import com.gmoon.springjpapagination.global.domain.AbstractJpaRepository;
 import com.gmoon.springjpapagination.global.domain.BasePageable;
 import com.gmoon.springjpapagination.users.user.domain.UserGroup;
 import com.gmoon.springjpapagination.users.user.domain.UserGroupRepository;
-
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.gmoon.springjpapagination.users.user.domain.QUserGroup.userGroup;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,7 +25,7 @@ public class UserGroupRepositoryAdapter extends AbstractJpaRepository implements
 	}
 
 	private JPAQuery<UserGroup> getGroupQuery(String groupId, String keyword, BasePageable pageable) {
-		return pagingQuery(pageable)
+		return fetchAndPaginated(pageable)
 			 .select(userGroup)
 			 .from(userGroup)
 			 .where(
@@ -39,7 +36,7 @@ public class UserGroupRepositoryAdapter extends AbstractJpaRepository implements
 
 	@Override
 	public long countBy(String groupId, String keyword) {
-		return countQuery(
+		return fetchTotalCount(
 			 getGroupQuery(groupId, keyword, BasePageable.unpaged())
 		);
 	}
