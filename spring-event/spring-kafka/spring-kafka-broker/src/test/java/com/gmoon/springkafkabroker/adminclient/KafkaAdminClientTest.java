@@ -1,5 +1,7 @@
 package com.gmoon.springkafkabroker.adminclient;
 
+import com.gmoon.springkafkabroker.test.KafkaTestContainer;
+import com.gmoon.springkafkabroker.test.KafkaTestContainerExtension;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
@@ -22,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 @Disabled
+@KafkaTestContainer
 class KafkaAdminClientTest {
 
 	private static AdminClient adminClient;
@@ -32,7 +35,8 @@ class KafkaAdminClientTest {
 	@BeforeAll
 	static void beforeAll() {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", "localhost:9092");
+//		props.put("bootstrap.servers", "localhost:9092");
+		props.put("bootstrap.servers", KafkaTestContainerExtension.KAFKA_CONTAINER.getBootstrapServers());
 		props.put("request.timeout.ms", 1000);
 		props.put("default.api.timeout.ms", 1000);
 
