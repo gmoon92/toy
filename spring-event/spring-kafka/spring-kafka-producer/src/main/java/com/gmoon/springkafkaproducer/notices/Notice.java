@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -24,6 +25,10 @@ public class Notice {
 	private String title;
 	private String content;
 
+	@ColumnDefault("0")
+	@Column
+	private long likeCount;
+
 	@CreatedDate
 	@Column(updatable = false)
 	private Instant createdAt;
@@ -33,6 +38,7 @@ public class Notice {
 		this.userId = userId;
 		this.title = title;
 		this.content = content;
+		this.likeCount = 0L;
 	}
 
 	public void updateContent(String content) {

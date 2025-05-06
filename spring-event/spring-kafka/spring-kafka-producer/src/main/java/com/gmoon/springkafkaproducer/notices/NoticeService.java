@@ -31,10 +31,20 @@ public class NoticeService {
 			 .orElseThrow(EntityNotFoundException::new);
 
 		notice.updateContent(content);
+	}
+
+	@Transactional
+	public void increaseLike(String id) {
+		Notice notice = noticeRepository.findById(id)
+			 .orElseThrow(EntityNotFoundException::new);
+
+		noticeRepository.increaseLikeCount(id);
 
 		OutboxMessage message = OutboxMessage.builder()
-			 .entityId(notice.getId())
-			 .type("updated-content")
+			 .aggregateId(notice.getId())
+			 .aggregateType("notice")
+			 .eventType("like-increased")
+			 .payload(notice)
 			 .build();
 		outBoxRepository.save(message);
 	}

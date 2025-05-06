@@ -32,4 +32,15 @@ class NoticeServiceTest {
 		Assertions.assertThatCode(() -> service.updateContent(notice.getId(), "update-content"))
 			 .doesNotThrowAnyException();
 	}
+
+	@Test
+	void increaseLike() {
+		CreateNoticeVO vo = new CreateNoticeVO();
+		vo.setTitle("title");
+		vo.setContent("content");
+		Notice notice = service.create(vo);
+
+		Assertions.assertThatCode(() -> service.increaseLike(notice.getId()))
+			 .doesNotThrowAnyException();
+	}
 }
