@@ -2,15 +2,10 @@ package com.gmoon.springkafkaproducer.messages;
 
 import com.gmoon.springkafkaproducer.common.ColumnLength;
 import com.gmoon.springkafkaproducer.global.converter.JsonConverter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 
@@ -38,7 +33,8 @@ public class OutboxMessage {
 	private String eventType;
 
 	@Convert(converter = JsonConverter.class)
-	@JdbcTypeCode(SqlTypes.JSON)
+//	@JdbcTypeCode(SqlTypes.JSON)
+	@Lob
 	@Column(nullable = false)
 	private Object payload;
 
