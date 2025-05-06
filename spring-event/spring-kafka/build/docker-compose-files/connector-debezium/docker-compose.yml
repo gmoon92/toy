@@ -1,0 +1,117 @@
+# https://kafka.apache.org/documentation/#quickstart_startserver
+# https://github.com/apache/kafka/blob/trunk/docker/examples/README.md
+#version: 'v3'
+name: kafka-connector-debezium
+
+networks:
+  kafka-network:
+    driver: bridge
+
+services:
+  kafka:
+    image: apache/kafka:4.0.0
+    container_name: broker
+    hostname: broker
+    restart: always
+    ports:
+      - "9092:9092"   # 외부 접속용 포트 (호스트:컨테이너)
+      - "29092:29092" # 브로커간 내부 통신
+    # https://hub.docker.com/r/apache/kafka
+    # https://github.com/apache/kafka/blob/trunk/docker/examples/README.md
+    # https://kafka.apache.org/documentation/#brokerconfigs
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: "controller,broker"
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT'
+      KAFKA_LISTENERS: 'CONTROLLER://:29093,PLAINTEXT_HOST://:9092,PLAINTEXT://:19092,PLAINTEXT_INTERNAL://:29092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT_HOST://localhost:9092,PLAINTEXT://broker:19092,PLAINTEXT_INTERNAL://broker:29092'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR: 1
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    networks:
+      - kafka-network
+
+  #/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+  # Create Source Connect topics
+  kafka-init-topics:
+    image: apache/kafka:4.0.0
+    depends_on:
+      - kafka
+    volumes:
+#     chmod +x create-source-connector-topics
+      - ./create-source-connector-topics.sh:/create-source-connector-topics.sh
+    entrypoint: [ "sh", "/create-source-connector-topics.sh" ]
+#    command: >
+#      "echo '[+] Waiting for Kafka broker to be ready...' && \
+#        sleep 2 && \
+#        echo '[+] Creating required Kafka topics...' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --create --if-not-exists --topic connect.offsets --replication-factor 1 --partitions 1 --config cleanup.policy=compact && \
+#        echo '[✓] Topic "connect.offsets" created or already exists.' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --create --if-not-exists --topic connect.configs --replication-factor 1 --partitions 1 --config cleanup.policy=compact && \
+#        echo '[✓] Topic "connect.configs" created or already exists.' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --create --if-not-exists --topic connect.status --replication-factor 1 --partitions 1 --config cleanup.policy=compact && \
+#        echo '[✓] Topic "connect.status" created or already exists.' && \
+#        echo '[+] Listing current Kafka topics...' && \
+#        /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:19092 --list && \
+#        echo '[✓] Kafka topic setup complete.'
+#      "
+    networks:
+      - kafka-network
+
+  source-connect-db:
+#    https://hub.docker.com/r/bitnami/mysql
+    container_name: mysql
+    image: bitnami/mysql:8.4.4
+    environment:
+      - TZ=UTC
+      - MYSQL_ROOT_PASSWORD=111111
+      - MYSQL_CHARACTER_SET=utf8mb4
+      - MYSQL_COLLATE=utf8mb4_unicode_ci
+    ports:
+      - 3306:3306
+    networks:
+      - kafka-network
+
+
+  # Kafka connect + Debezium
+  # https://hub.docker.com/r/debezium/connect
+  # https://kafka.apache.org/documentation.html#connect_plugindiscovery_migratesource
+  kafka-connect:
+    image: debezium/connect:3.0.0.Final
+    container_name: kafka-connect
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka
+      - kafka-init-topics
+      - source-connect-db
+    environment:
+      #      https://kafka.apache.org/documentation.html#connectconfigs
+      BOOTSTRAP_SERVERS: broker:19092
+      GROUP_ID: 1
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
+      # 커넥터 메타 토픽
+#      create-source-connector-topics.sh
+#      topic.prefix 기준으로 커넥터 메타 토픽 자동 생성됨
+      CONFIG_STORAGE_TOPIC: SOURCE_CONNECT_CONFIG # 커넥터 및 태스크 설정 정보 저장. 어떤 커넥터가 어떤 설정으로 실행되고 있는지
+      OFFSET_STORAGE_TOPIC: SOURCE_CONNECT_OFFSET # 소스 데이터베이스 변경 사항 추적 위치(offset) 저장. 즉, DB의 어디까지 읽었는지를 기억
+      STATUS_STORAGE_TOPIC: SOURCE_CONNECT_STATUS # 커넥터 및 태스크 실행 상태 모니터링 (RUNNING, FAILED 등)
+      REST_ADVERTISED_HOST_NAME: connect
+      REST_PORT: 8083
+      PLUGIN_DISCOVERY: SERVICE_LOAD
+      PLUGIN_PATH: /kafka/connect/debezium-connector-mysql
+    networks:
+      - kafka-network

@@ -1,0 +1,57 @@
+### Get connector plugins
+GET http://localhost:8083/connector-plugins
+Accept: application/json
+
+### Get all connectors
+GET http://localhost:8083/connectors
+Accept: application/json
+
+### 커넥터 상태 조회
+GET http://localhost:8083/connectors/debezium-mysql-connector/status
+Accept: application/json
+
+### Delete connector
+DELETE http://localhost:8083/connectors/debezium-mysql-connector
+Accept: application/json
+
+### Register Outbox Connector
+POST http://localhost:8083/connectors
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "debezium-mysql-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "root",
+    "database.password": "111111",
+
+    "database.server.id": "184054",
+    "topic.prefix": "outbox",
+
+    "schema.history.internal.kafka.bootstrap.servers": "broker:19092",
+    "schema.history.internal.kafka.topic": "schemahistory.spring_kafka",
+
+    "include.schema.changes": "false",
+    "database.include.list": "spring_kafka",
+    "table.include.list": "spring_kafka.outbox_message",
+
+    "tombstones.on.delete": "true",
+
+    "transforms": "outbox",
+    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+    "transforms.outbox.table.field.event.key": "aggregate_id",
+    "transforms.outbox.route.by.field": "aggregate_type",
+    "transforms.outbox.table.field.event.timestamp": "created_at",
+    "transforms.outbox.table.field.event.payload": "payload",
+    "transforms.outbox.table.expand.json.payload": "true",
+    "transforms.outbox.table.fields.additional.placement": "event_type:header,created_at:envelope",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false
+  }
+}
