@@ -1,7 +1,11 @@
 package com.gmoon.hibernatetype.users.domain;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, String>,
-	 UserRepositoryQuery {
+public interface UserRepository {
+
+	Optional<User> findById(String id);
+	User save(User user);
+	List<User> findAllByEncEmail(String email);
 }

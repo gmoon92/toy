@@ -1,19 +1,16 @@
-package com.gmoon.hibernatetype.users.domain;
+package com.gmoon.hibernatetype.users.infra;
 
-import static com.gmoon.hibernatetype.users.domain.QUser.*;
+import com.gmoon.hibernatetype.users.domain.User;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import static com.gmoon.hibernatetype.users.domain.QUser.user;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import lombok.RequiredArgsConstructor;
-
-@Repository
 @RequiredArgsConstructor
-public class UserRepositoryQueryImpl implements UserRepositoryQuery {
+class UserRepositoryQueryImpl implements UserRepositoryQuery {
 
 	private final JPAQueryFactory factory;
 
