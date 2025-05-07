@@ -1,18 +1,16 @@
 package com.gmoon.springsecurityjwt.user;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.Optional;
-
+import com.gmoon.springsecurityjwt.base.AbstractJpaRepositoryTest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.springsecurityjwt.base.BaseDataJpaTest;
+import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RequiredArgsConstructor
-class UserRepositoryTest extends BaseDataJpaTest {
+class UserRepositoryTest extends AbstractJpaRepositoryTest {
 	final UserRepository userRepository;
 
 	@Test

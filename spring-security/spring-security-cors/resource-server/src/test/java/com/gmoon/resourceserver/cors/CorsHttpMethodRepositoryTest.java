@@ -1,17 +1,16 @@
 package com.gmoon.resourceserver.cors;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
+import com.gmoon.resourceserver.test.AbstractJpaRepositoryTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
-import com.gmoon.resourceserver.test.BaseJpaTest;
+import java.util.List;
 
-class CorsHttpMethodRepositoryTest extends BaseJpaTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class CorsHttpMethodRepositoryTest extends AbstractJpaRepositoryTest {
 	@Autowired
 	CorsHttpMethodRepository repository;
 

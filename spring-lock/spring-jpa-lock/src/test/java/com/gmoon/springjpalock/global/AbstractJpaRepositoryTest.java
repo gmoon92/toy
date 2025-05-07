@@ -1,24 +1,17 @@
 package com.gmoon.springjpalock.global;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
+import jakarta.persistence.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.PersistenceUnit;
-import jakarta.persistence.RollbackException;
-import lombok.extern.slf4j.Slf4j;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public abstract class BaseJpaTestCase {
+public abstract class AbstractJpaRepositoryTest {
 
 	@PersistenceUnit
 	protected EntityManagerFactory factory;

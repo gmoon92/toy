@@ -1,18 +1,12 @@
 package com.gmoon.springjpalock.global.lock;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.gmoon.springjpalock.global.BaseJpaTestCase;
+import com.gmoon.springjpalock.global.AbstractJpaRepositoryTest;
 import com.gmoon.springjpalock.global.Fixtures;
 import com.gmoon.springjpalock.orders.domain.Order;
 import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.RollbackException;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.LockAcquisitionException;
@@ -20,9 +14,16 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @Slf4j
 @Disabled
-class OptimisticLockTest extends BaseJpaTestCase {
+class OptimisticLockTest extends AbstractJpaRepositoryTest {
 
 	@DisplayName("@OptimisticLock 특정 컬럼을 데이터 충돌 검사에서 제외한다.")
 	@Test

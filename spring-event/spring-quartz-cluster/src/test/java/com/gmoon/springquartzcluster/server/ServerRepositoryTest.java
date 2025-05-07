@@ -1,18 +1,16 @@
 package com.gmoon.springquartzcluster.server;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-
+import com.gmoon.springquartzcluster.model.WebServerSaveForm;
+import com.gmoon.springquartzcluster.test.AbstractJpaRepositoryTest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.springquartzcluster.model.WebServerSaveForm;
-import com.gmoon.springquartzcluster.test.BaseDataJpaTest;
-
-import lombok.RequiredArgsConstructor;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 @RequiredArgsConstructor
-class ServerRepositoryTest extends BaseDataJpaTest {
+class ServerRepositoryTest extends AbstractJpaRepositoryTest {
 	final ServerRepository repository;
 
 	@Test

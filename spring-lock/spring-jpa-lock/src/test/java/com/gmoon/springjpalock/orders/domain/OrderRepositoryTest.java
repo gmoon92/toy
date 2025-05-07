@@ -1,10 +1,8 @@
 package com.gmoon.springjpalock.orders.domain;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.CompletableFuture;
-
+import com.gmoon.springjpalock.global.AbstractJpaRepositoryTest;
+import com.gmoon.springjpalock.global.Fixtures;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -13,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaSystemException;
 
-import com.gmoon.springjpalock.global.BaseJpaTestCase;
-import com.gmoon.springjpalock.global.Fixtures;
+import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @Slf4j
 @Disabled
-class OrderRepositoryTest extends BaseJpaTestCase {
+class OrderRepositoryTest extends AbstractJpaRepositoryTest {
 
 	@Autowired
 	private OrderRepository repository;

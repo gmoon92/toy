@@ -1,19 +1,17 @@
 package com.gmoon.springsecurityjwt.team;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
+import com.gmoon.springsecurityjwt.base.AbstractJpaRepositoryTest;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.quickperf.sql.annotation.ExpectInsert;
 import org.quickperf.sql.annotation.ExpectSelect;
 
-import com.gmoon.springsecurityjwt.base.BaseDataJpaTest;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RequiredArgsConstructor
-class TeamRepositoryTest extends BaseDataJpaTest {
+class TeamRepositoryTest extends AbstractJpaRepositoryTest {
 	final TeamRepository repository;
 
 	@Test

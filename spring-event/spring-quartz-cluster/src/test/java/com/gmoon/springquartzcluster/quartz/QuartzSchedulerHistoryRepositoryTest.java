@@ -1,20 +1,18 @@
 package com.gmoon.springquartzcluster.quartz;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-
+import com.gmoon.springquartzcluster.test.AbstractJpaRepositoryTest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.springquartzcluster.test.BaseDataJpaTest;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @RequiredArgsConstructor
-class QuartzSchedulerHistoryRepositoryTest extends BaseDataJpaTest {
+class QuartzSchedulerHistoryRepositoryTest extends AbstractJpaRepositoryTest {
 
 	private final QuartzSchedulerHistoryRepository repository;
 
