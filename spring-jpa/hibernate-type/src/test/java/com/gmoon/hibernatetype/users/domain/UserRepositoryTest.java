@@ -1,30 +1,27 @@
 package com.gmoon.hibernatetype.users.domain;
 
-import static org.assertj.core.api.Assertions.*;
-
+import com.gmoon.hibernatetype.test.AbstractRepositoryTest;
+import com.gmoon.hibernatetype.users.infra.UserRepositoryAdapter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Rollback;
 
-import com.gmoon.hibernatetype.global.JpaConfig;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @Slf4j
-@Import(JpaConfig.class)
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserRepositoryTest {
+@Import(UserRepositoryAdapter.class)
+class UserRepositoryTest extends AbstractRepositoryTest {
 
 	@Autowired
 	private UserRepository repository;
 
 	@Test
-	void find() {
-		repository.findById("user0");
+	void findById() {
+		assertThatCode(() -> repository.findById("1"))
+			 .doesNotThrowAnyException();
 	}
 
 	@Test
@@ -32,24 +29,31 @@ class UserRepositoryTest {
 	void save() {
 		String mail = "gmoon92@gmail.com";
 
-		repository.save(User.builder()
+		User savedUser = repository.save(User.builder()
 			 .email(mail)
 			 .encEmail(mail)
 			 .build());
+
+		flushAndClear();
+
+		assertThat(repository.findById(savedUser.getId()))
+			 .map(User::getEmail)
+			 .get()
+			 .isEqualTo(mail);
 	}
 
 	@Test
 	void findAllByEncEmail() {
 		String mail = "test@gmail.com";
-
-		User merged = repository.save(User.builder()
+		repository.save(User.builder()
 			 .email(mail)
 			 .encEmail(mail)
 			 .build());
 
-		log.info("enc: {}", merged.getEncEmail());
-		log.info("enc: {}", merged.getEncEmail());
+		flushAndClear();
+
 		assertThat(repository.findAllByEncEmail(mail))
-			 .isNotEmpty();
+			 .map(User::getEncEmail)
+			 .containsExactly("test@gmail.com");
 	}
 }

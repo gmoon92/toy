@@ -1,15 +1,13 @@
-package com.gmoon.hibernatetype.global.crypt;
+package com.gmoon.hibernatetype.global.utils;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.UUID;
-
-import javax.crypto.spec.SecretKeySpec;
-
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class CryptoUtilsTest {
