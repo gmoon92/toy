@@ -1,11 +1,10 @@
 package com.gmoon.hibernatetype.global.type;
 
-import javax.crypto.spec.SecretKeySpec;
-
-import com.gmoon.hibernatetype.global.crypt.CryptoUtils;
-
+import com.gmoon.hibernatetype.global.utils.CryptoUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import javax.crypto.spec.SecretKeySpec;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColumnEncryptionConstants {

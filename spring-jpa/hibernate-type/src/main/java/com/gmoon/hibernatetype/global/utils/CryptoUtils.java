@@ -1,12 +1,13 @@
-package com.gmoon.hibernatetype.global.crypt;
+package com.gmoon.hibernatetype.global.utils;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Hex;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <pre>
@@ -14,7 +15,8 @@ import org.apache.commons.codec.binary.Hex;
  * https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_.28ECB.29
  * </pre>
  */
-public class CryptoUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CryptoUtils {
 
 	private static final Charset UTF8 = StandardCharsets.UTF_8;
 
