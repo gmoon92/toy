@@ -66,4 +66,5 @@
     - [mockito](testing/mockito/README.md)
     - [quickperf](testing/quickperf/README.md)
     - [rest-assured](testing/rest-assured/README.md)
+    - [spring-bean-profiler](testing/spring-bean-profiler/README.md)
     - [test-context-caching](testing/test-context-caching/README.md)

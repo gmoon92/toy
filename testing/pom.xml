@@ -25,6 +25,7 @@
         <module>mockito</module>
         <module>quickperf</module>
         <module>rest-assured</module>
+        <module>spring-bean-profiler</module>
         <module>test-context-caching</module>
     </modules>
 </project>
