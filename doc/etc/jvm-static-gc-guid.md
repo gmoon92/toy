@@ -25,6 +25,8 @@ GC 대상 조건, 그리고 클래스 로더의 수명까지 파고들게 되었
 - 웹 컨테이너에서 `static` 필드가 유발하는 메모리 누수 사례
 - 그리고 현업에서 적용할 수 있는 static 변수의 설계 가이드라인
 
+---
+
 ## JVM 메모리 구조
 
 자바 프로그램이 실행될 때, JVM(자바 가상머신)은 주요 데이터(변수, 상수 등)를 각각 다른 영역(메서드 영역, 힙, 스택)에 나눠서 관리한다.
@@ -126,6 +128,8 @@ class Data {
 | 메서드 영역(Method Area) or 메타스페이스(Metaspace) | 클래스 정보, static 변수, static 메서드, 런타임 상수 풀 등 저장    | JDK7까지는 PermGen, JDK8부터는 Metaspace |
 | 런타임 상수 풀(Runtime Constant Pool)          | 클래스별 상수(문자열, static final 등), String 리터럴을 저장한다. | 메서드영역/메타스페이스 내부                    |
 
+---
+
 ## 리터럴 vs 객체: 저장 영역과 GC
 
 JVM이 값을 메모리에 저장하는 방식은 “리터럴”과 “객체(new로 생성)”에 따라 다르다.
@@ -197,62 +201,108 @@ class Data {
 
 결국 기본형 리터럴은 변수의 종류(인스턴스, 클래스, 지역)에 따라 각각 힙, 메서드 영역, 스택 등에서 실제 값으로 저장되고, 문자열 리터럴은 코드에 등장하는 순간 런타임 상수 풀에 한 번만 저장되어 프로그램 종료 전까지 JVM 내에 남게 된다. 따라서, 값이 어느 영역에 저장되고 GC의 직접 대상이 되는지는 변수 선언 위치, 객체 생성 방식, 그리고 참조의 생명주기에 따라 모두 달라진다는 점을 반드시 이해해야 한다.
 
+---
 
 ---
 
-## 4. 오토박싱 & 래퍼 클래스의 캐싱
+## 오토박싱 & 래퍼 클래스의 캐싱
 
-**오토박싱:**  
-기본형을 자동으로 래퍼 클래스 객체로 변환  
-예) `Integer i = 10;` → `Integer.valueOf(10)` 호출됨
+**오토박싱이란?**
+
+자바에서 기본형 값을 자동으로 해당 래퍼 클래스 객체(참조타입)로 변환하여 컬렉션, 다형성, 추상화 등 객체 중심의 구조에서도 별도의 명시적 변환 없이 자유롭게 사용할 수 있게 하는 기능이다.
+
+예를 들어, `Integer i = 10;`은 내부적으로 `Integer.valueOf(10)`이 호출된다.
+
+```java
+void autoBoxing() {
+    List<Integer> nums = new ArrayList<>();
+    nums.add(1); // 컴파일러가 1 → Integer.valueOf(1)로 오토박싱
+}
+```
+
+기본형과 참조형 사이의 명시적 변환 과정(박싱/언박싱)을 생략함으로써 코드의 가독성을 높이고 특히 컬렉션·다형성·추상화 등 객체지향 컨테이너 구조와의 통합/호환성을 보장한다.
+
+컬렉션(List, Set 등)은 원래 참조 타입(객체)만 저장 가능하지만, 오토박싱 덕분에 `List<Integer> list = Arrays.asList(1, 2, 3);` 와 같이 `int`와 같은 기본형도 자연스럽게 객체처럼 사용할 수 있다.
+
+> 오토박싱/언박싱은 "다형성(polymorphism)"의 활용성을 넓히고, 값 그 자체(primitive)와 객체(참조, 값 포함)를 개발자의 개입 없이 자유롭게 변환시켜
+코드 추상화 및 객체 중심 프로그래밍에 큰 기여를 한다.
+
+###  오토박싱의 내부 동작: valueOf와 캐싱
+
+기본형 타입의 래퍼 클래스에 기본값을 대입하면 자바의 오토박싱이 동작하는데, 이때 실제로는 `Integer.valueOf()`, `Boolean.valueOf()` 같은 정적 메서드가 내부적으로 호출된다.
+
+```java
+void autoBoxing() {
+    List<Integer> nums = new ArrayList<>();
+
+    // 컴파일러가 1 -> Integer.valueOf(1)로 오토박싱
+    nums.add(1);
+    Integer i = 10;
+}
+```
+
+아래 `Integer`의 실제 valueOf 구현 코드를 보면, 자바가 어떻게 범위 내의 값을 캐싱하는지 알 수 있다.
+
+```java
+package java.lang;
+
+public class Integer {
+    @IntrinsicCandidate
+    public static Integer valueOf(int i) {
+        if (i >= IntegerCache.low && i <= IntegerCache.high)
+            return IntegerCache.cache[i + (-IntegerCache.low)];
+        return new Integer(i);
+    }
+}
+```
+
+이 valueOf 메서드는, 자주 사용되는 값을 `싱글톤(캐시/풀)` 객체를 재사용하여 메모리 낭비를 줄이고, 불필요한 객체 생성을 최소화한다.
 
 ### 래퍼 클래스 캐시 규칙
 
-**Boolean:**
+이를 래퍼 클래스 캐시라 하는데, 기본형 래퍼 클래스들은 인스턴스가 생성되더라도 위 방식으로 메모리를 효율적으로 관리하고 있다. 따라서 메모리 관리에 있어 래퍼 클래스 캐시 규칙을 보면 좋다.
 
-- `Boolean.valueOf(true)` → `Boolean.TRUE`
-- `Boolean.valueOf(false)` → `Boolean.FALSE`
+- Boolean
+    - Boolean.valueOf(true) → Boolean.TRUE
+    - Boolean.valueOf(false) → Boolean.FALSE
+- Integer
+    - Integer.valueOf(-128 ~ 127) → 캐시된 싱글톤 객체 반환
+    - 이 범위를 벗어나면(128 이상 또는 -129 이하) 매번 새 객체 생성.
+- Character
+    - Character.valueOf(0~127) → 캐시
+- Double, Float
+    - 별도의 캐시 없음. 무조건 새 객체 생성.
+- new 키워드로 생성
+    - 항상 힙에 새 객체가 생성된다.
+    - 캐시와 무관하며, 참조가 끊기면 GC 대상이 된다.
 
-**Integer:**
+> JVM 옵션으로 예외적으로 범위 확장 가능: `-Djava.lang.Integer.IntegerCache.high`=xxx
 
-- `Integer.valueOf(-128 ~ 127)` → 캐시된 싱글톤 객체 반환
-- 범위 밖(128 이상 등)은 새 객체 생성
+### 캐싱이란 동일성을 보장한다.
 
-**new 키워드로 생성:**
-
-- 무조건 힙에 새로운 객체 생성
-- 참조가 끊기면 GC 대상
-
-### 예시
+오토박싱 캐싱 범위 내 객체는 싱글톤/풀로 관리되어, 객체의 동일성(identity, 참조)이 보장된다.
 
 ```java
-Integer i1 = 100;                 // 캐시 객체
-Integer i2 = 100;                 // 캐시 객체 (i1 == i2 → true)
-Integer i3 = 200;                 // 새 객체
-Integer i4 = 200;                 // 새 객체 (i3 == i4 → false)
-Integer i5 = new Integer(100);    // 새 객체
-Integer i6 = new Integer(100);    // 새 객체 (i5 == i6 → false)
-Boolean b1 = Boolean.valueOf(true);   // Boolean.TRUE
-Boolean b2 = new Boolean(true);       // 새 객체 (b1 != b2)
+void autoBoxing() {
+    Integer a = 10;
+    Integer b = Integer.valueOf(10);
+    int c = 10;
 
-System.out.
-
-println(i1 ==i2); // true
-System.out.
-
-println(i3 ==i4); // false
-System.out.
-
-println(i5 ==i6); // false
-System.out.
-
-println(b1 ==b2); // false
+    Assertions.assertThat(a == b).isTrue();
+    Assertions.assertThat(b == c).isTrue();
+}
 ```
 
-### 정리:
+반면, `new` 연산자 또는 오토박싱 캐시 범위 밖의 값으로 생성한 객체는 항상 새로운 인스턴스가 할당되므로, 동일성(`==` 비교)을 보장하지 않는다.
 
-- 오토박싱 또는 `valueOf(캐시범위 내)` → 힙 낭비 없이 싱글톤 객체 재사용
-- `new`로 인스턴스 생성 시 → 항상 새 객체, GC 대상
+값(동등성, equality)의 비교는 항상 **equals() 메서드를 사용해야 한다.** 특히 컬렉션 자료구조에서 객체 동등성 판별은 기본적으로 `equals()` 메서드에 의존한다.
+
+그리고 **HashSet, HashMap 등 해시 기반 컬렉션에서는 `equals()`와 함께 `hashCode()`도 일치해야 하므로 두 메서드 모두 오버라이딩해야 한다.**
+
+자주 쓰는 값(-128~127, true/false, 작은 문자 범위)만 캐시 범위에 포함되어 효율적으로 힙 객체 생성을 줄일 수 있지만, 오토박싱 캐싱 범위를 벗어난 값을 반복적으로 생성하면 불필요하게 힙 객체가 쌓여 힙 사용량이 낭비될 수 있다.
+
+> 잘못된 `==` 비교나 캐싱 규칙 미숙지로 인한 힙 낭비가 실무에서 흔한 버그와 성능 저하의 원인이다.<br/>
+> 동일성은 오토박싱 캐시가, 동등성은 equals()/hashCode()가 책임지는 포인트임을 반드시 기억하자.
 
 ---
 
