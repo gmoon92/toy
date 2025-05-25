@@ -20,37 +20,40 @@
 ## Quick Start
 
 ```xml
-
 <beanio xmlns="http://www.beanio.org/2012/03">
 
-    <stream name="contacts" format="csv"> <!-- [1] -->
+    <stream name="contacts" format="csv" strict="true"> <!-- [1] -->
 
-        <record name="header" class="map"> <!-- [2] -->
+        <record name="header" class="map" occurs="1"> <!-- [2] -->
             <field name="recordType" rid="true" literal="H"/> <!-- [3] -->
             <field name="fileDate" type="date" format="yyyy-MM-dd"/> <!-- [4] -->
         </record>
 
-        <record name="body" class="example.UserContactDto"> <!-- [5] -->
+        <record name="body" class="example.UserContactDto" occurs="0+"> <!-- [5] -->
             <field name="recordType" rid="true" literal="D" ignore="true"/> <!-- [6] -->
-            <field name="firstName"/> <!-- [7] -->
-            <field name="lastName"/> <!-- [8] -->
-            <field name="street"/> <!-- [9] -->
+            <field name="firstName" maxLength="20"/> <!-- [7] -->
+            <field name="lastName" required="true" maxLength="30"/> <!-- [8] -->
+            <field name="street" maxLength="30"/> <!-- [9] -->
             <field name="city"/> <!-- [10] -->
             <field name="state"/> <!-- [11] -->
-            <field name="zip"/> <!-- [12] -->
+            <field name="zip" regex="\d{5}"/> <!-- [12] -->
         </record>
 
-        <record name="trailer" target="recordCount"> <!-- [13] -->
+        <record name="trailer" target="recordCount" occurs="1"> <!-- [13] -->
             <field name="recordType" rid="true" literal="T"/> <!-- [14] -->
-            <field name="recordCount" type="int"/> <!-- [15] -->
+            <field name="recordCount" type="int" required="true"/> <!-- [15] -->
         </record>
     </stream>
 </beanio>
 ```
 
-- [1] stream 요소로 매핑할 전체 데이터 스트림의 이름(contacts)과 포맷(csv) 지정
+- [1] stream 요소로 매핑할 전체 데이터 정의
+  - `name`: 스트림 이름
+  - `format`: csv 포맷
+  - `strict`: 유효성 검증
 - [2] 헤더 레코드 정의
     - `class="map"`: `java.util.HashMap`에 바인딩
+    - `occurs`: 최소/최대 레코드 발생 횟수
     - [3] 식별자 필드: recordType
         - `rid`로 레코드 식별자 필드 지정
         - `literal` 속성으로 헤더 타입(`H`)임을 명시
@@ -59,13 +62,18 @@
         - `type`은 `Date(date)`와 `Number(int)`을 지원.
 - [5] 상세(body) 레코드 정의
     - 바인딩할 Java 클래스 지정
+    - `occurs`: 최소/최대 레코드 발생 횟수
     - [6] 식별자 필드: recordType
         - `rid`로 레코드 식별자 필드 지정
         - `literal` 속성으로 데이터 타입(`D`)임을 명시
-        - `ignore` 옵션이 활성화된 필드는 DTO에 바인딩하지 않음
+        - `ignore` 속성이 활성화된 필드는 DTO에 바인딩하지 않음
     - [7]~[12] 실제 데이터 필드에 해당되는 각 속성 정의
+        - `required` 속성으로 필수 필드 지정
+        - `maxLength` 속성으로 필드 최대 길이 명시
+        - `regex` 패턴 지정(5자리 숫자)
 - [13] 트레일러 레코드 정의
     - 전체 레코드 개수를 나타내는 `recordCount`에 바인딩
+    - `occurs`: 최소/최대 레코드 발생 횟수
     - [14] 식별자 필드: recordType
         - `rid`로 레코드 식별자 필드 지정
         - `literal` 속성으로 데이터 타입(`T`)임을 명시
