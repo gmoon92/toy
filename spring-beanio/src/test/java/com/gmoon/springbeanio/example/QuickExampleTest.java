@@ -8,31 +8,50 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class QuickExampleTest {
 
 	@Test
 	void test() {
-		runBeanIOStream(
+		List<UserContactDto> result = runBeanIOStream(
 			 getFile("contacts.xml"),
 			 getFile("input.csv"),
 			 getFile("output.csv")
 		);
+
+		assertThat(result).isNotEmpty();
 	}
 
 	@DisplayName("유효성 검증")
 	@Test
 	void strict() {
-		runBeanIOStream(
+		List<UserContactDto> result = runBeanIOStream(
 			 getFile("contacts-strict.xml"),
 			 getFile("input.csv"),
 			 getFile("output.csv")
 		);
+
+		assertThat(result).isNotEmpty();
 	}
 
-	private void runBeanIOStream(File mappingXml, File readerFile, File writerFile) {
+	@Test
+	void withAnnotation() {
+		List<AnnotationUserContactDto> result = runBeanIOStream(
+			 getFile("contacts-annotation.xml"),
+			 getFile("input.csv"),
+			 getFile("output.csv")
+		);
+
+		assertThat(result).isNotEmpty();
+	}
+
+	private <T> List<T> runBeanIOStream(File mappingXml, File readerFile, File writerFile) {
 		StreamFactory factory = StreamFactory.newInstance();
 		factory.load(mappingXml);
 		String streamName = "contacts";
@@ -41,6 +60,7 @@ class QuickExampleTest {
 			 AutoCloseableBeanReader in = new AutoCloseableBeanReader(factory.createReader(streamName, readerFile));
 			 AutoCloseableBeanWriter out = new AutoCloseableBeanWriter(factory.createWriter(streamName, writerFile))
 		) {
+			List<T> result = new ArrayList<>();
 			Object record;
 			while ((record = in.read()) != null) {
 				String recordName = in.getRecordName();
@@ -50,8 +70,9 @@ class QuickExampleTest {
 						log.info("[header] {}: {}", entry.getKey(), entry.getValue());
 					}
 				} else if ("body".equals(recordName)) {
-					UserContactDto userContactDto = (UserContactDto) record;
-					log.info("[body] {}", userContactDto);
+					T body = (T) record;
+					log.info("[body] {}", record);
+					result.add(body);
 				} else if ("trailer".equals(recordName)) {
 					Integer recordCount = (Integer) record;
 					log.info("[trailer] {}: {}", recordName, recordCount);
@@ -61,7 +82,9 @@ class QuickExampleTest {
 			}
 
 			out.flush();
+			return result;
 		}
+
 	}
 
 	private File getFile(String filename) {
