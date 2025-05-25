@@ -14,6 +14,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * 자세한 내용은 <a href="http://beanio.org/2.0/docs/reference/index.html">beanio</a> 참고하자.
+ * */
 @Slf4j
 class QuickExampleTest {
 
