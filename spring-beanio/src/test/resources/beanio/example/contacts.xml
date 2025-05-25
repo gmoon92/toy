@@ -1,0 +1,24 @@
+<beanio xmlns="http://www.beanio.org/2012/03">
+
+    <stream name="contacts" format="csv">
+        <record name="header" class="map">
+            <field name="recordType" rid="true" literal="H"/>
+            <field name="fileDate" type="date" format="yyyy-MM-dd"/>
+        </record>
+
+        <record name="body" class="com.gmoon.springbeanio.example.UserContactDto">
+            <field name="recordType" rid="true" literal="D" ignore="true"/>
+            <field name="firstName"/>
+            <field name="lastName"/>
+            <field name="street"/>
+            <field name="city"/>
+            <field name="state"/>
+            <field name="zip"/>
+        </record>
+
+        <record name="trailer" target="recordCount">
+            <field name="recordType" rid="true" literal="T"/>
+            <field name="recordCount" type="int"/>
+        </record>
+    </stream>
+</beanio>
