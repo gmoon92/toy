@@ -8,6 +8,7 @@
 - [java-core](java-core/README.md)
 - [payment](payment/README.md)
 - [spring-batch](spring-batch/README.md)
+- [spring-beanio](spring-beanio/README.md)
 - spring-cache
     - [jpa-second-level-cache](spring-cache/jpa-second-level-cache/README.md)
     - [spring-data-redis](spring-cache/spring-data-redis/README.md)

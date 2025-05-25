@@ -32,6 +32,7 @@
         <module>java-core</module>
         <module>payment</module>
         <module>spring-batch</module>
+        <module>spring-beanio</module>
         <module>spring-cache</module>
         <module>spring-data-r2dbc</module>
         <module>spring-event</module>
