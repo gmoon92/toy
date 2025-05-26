@@ -53,5 +53,5 @@ spring:
 
 logging:
   level:
-    "[org.jooq]": WARN
-    "[MySQL]": OFF
+    "[org.jooq]": DEBUG
+    "[MySQL]": INFO
