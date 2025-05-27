@@ -116,7 +116,37 @@ public class EntityMetaProcessor extends AbstractProcessor {
 				  + " type=" + field.asType()
 		);
 
-		String columnName = field.getSimpleName().toString();
+		String columnName = getColumnName(field);
+		return FieldSpec.builder(
+				  TypeName.get(String.class),
+				  field.getSimpleName().toString()
+			 )
+			 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+			 .initializer("$S", columnName)
+			 .build();
+	}
+
+
+	/**
+	 * TODO: 컬럼명(column name)에 직접적 영향 주는 JPA/Hibernate 어노테이션/클래스
+	 * <ul>
+	 *   <li>{@link jakarta.persistence.Column}</li>
+	 *   <li>{@link jakarta.persistence.JoinColumn}</li>
+	 *   <li>{@link jakarta.persistence.JoinTable}</li>
+	 *   <li>{@link jakarta.persistence.AttributeOverride}</li>
+	 *   <li>{@link jakarta.persistence.AssociationOverride}</li>
+	 *   <li>{@link jakarta.persistence.MapKeyColumn}</li>
+	 *   <li>{@link jakarta.persistence.OrderColumn}</li>
+	 *   <li>{@link jakarta.persistence.DiscriminatorColumn}</li>
+	 *   <li>{@link jakarta.persistence.PrimaryKeyJoinColumn}</li>
+	 *   <li>{@link jakarta.persistence.SecondaryTable}</li>
+	 *   <li>{@link jakarta.persistence.Embedded}</li>
+	 *   <li>{@link jakarta.persistence.Embeddable}</li>
+	 *   <!-- (옵션) Hibernate 확장 -->
+	 *   <li>{@link org.hibernate.annotations.ColumnTransformer}</li>
+	 * </ul>
+	 */
+	private String getColumnName(Element field) {
 		String annotationElementValue = AnnotationProcessorUtils.getAnnotationAttributeValue(
 			 field,
 			 Column.class,
@@ -124,16 +154,18 @@ public class EntityMetaProcessor extends AbstractProcessor {
 			 String.class
 		);
 		if (StringUtils.isNotBlank(annotationElementValue)) {
-			columnName = annotationElementValue;
+			return annotationElementValue;
 		}
 
-		return FieldSpec.builder(
-				  TypeName.get(String.class),
-				  columnName
-			 )
-			 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-			 .initializer("$S", columnName)
-			 .build();
+		// todo hibernate-naming-strategy 네이밍 전략에 맞게 변환.
+		String fieldName = field.getSimpleName().toString();
+		return toSnakeCase(fieldName);
+	}
+
+	public static String toSnakeCase(String camelCase) {
+		return camelCase
+			 .replaceAll("([a-z])([A-Z]+)", "$1_$2")
+			 .toLowerCase();
 	}
 
 	private MethodSpec newToStringMethodSpec(String className, List<FieldSpec> fields) {
