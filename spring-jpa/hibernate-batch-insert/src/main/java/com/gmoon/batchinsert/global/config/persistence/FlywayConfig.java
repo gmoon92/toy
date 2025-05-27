@@ -1,4 +1,4 @@
-package com.gmoon.batchinsert.global;
+package com.gmoon.batchinsert.global.config.persistence;
 
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;

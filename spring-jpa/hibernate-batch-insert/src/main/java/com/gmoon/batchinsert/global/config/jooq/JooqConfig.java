@@ -1,7 +1,6 @@
-package com.gmoon.batchinsert.global;
+package com.gmoon.batchinsert.global.config.jooq;
 
-import javax.sql.DataSource;
-
+import lombok.RequiredArgsConstructor;
 import org.jooq.ConnectionProvider;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
-import lombok.RequiredArgsConstructor;
+import javax.sql.DataSource;
 
 /**
  * @see org.springframework.boot.autoconfigure.jooq.JooqAutoConfiguration

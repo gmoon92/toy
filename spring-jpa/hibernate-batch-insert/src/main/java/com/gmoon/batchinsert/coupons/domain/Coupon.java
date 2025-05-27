@@ -1,5 +1,6 @@
 package com.gmoon.batchinsert.coupons.domain;
 
+import com.gmoon.batchinsert.global.common.BaseEntity;
 import com.gmoon.javacore.util.TsidUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import java.time.Instant;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Coupon {
+public class Coupon extends BaseEntity {
 
 	@Id
 	@Column(length = 50)

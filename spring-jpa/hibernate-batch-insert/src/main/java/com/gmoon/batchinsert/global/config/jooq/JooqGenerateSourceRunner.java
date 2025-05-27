@@ -1,23 +1,18 @@
-package com.gmoon.batchinsert.global;
+package com.gmoon.batchinsert.global.config.jooq;
 
-import static org.jooq.impl.DSL.*;
-
+import com.gmoon.batchinsert.global.prop.JooqProperties;
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.codegen.GenerationTool;
-import org.jooq.meta.jaxb.Configuration;
-import org.jooq.meta.jaxb.Database;
-import org.jooq.meta.jaxb.Generator;
-import org.jooq.meta.jaxb.Jdbc;
-import org.jooq.meta.jaxb.Target;
+import org.jooq.meta.jaxb.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.stereotype.Component;
 
-import com.gmoon.batchinsert.global.prop.JooqProperties;
-
-import lombok.RequiredArgsConstructor;
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.max;
 
 /**
  * @link {https://www.jooq.org/doc/latest/manual/code-generation/codegen-programmatic/}

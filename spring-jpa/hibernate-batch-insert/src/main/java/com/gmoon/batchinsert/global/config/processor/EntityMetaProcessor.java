@@ -1,29 +1,21 @@
-package com.gmoon.batchinsert.global;
+package com.gmoon.batchinsert.global.config.processor;
 
+import com.google.auto.service.AutoService;
+import jakarta.persistence.Entity;
+
+import javax.annotation.processing.*;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypesException;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
-
-import com.google.auto.service.AutoService;
-
-import jakarta.persistence.Entity;
 
 /**
  * 어노테이션 프로세서 자바 컴파일(javac) 등록
@@ -61,48 +53,63 @@ public class EntityMetaProcessor extends AbstractProcessor {
 	 */
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		messager.printMessage(Diagnostic.Kind.NOTE, "==== EntityMetaProcessor process running! ====");
 		Set<? extends Element> entities = roundEnv.getElementsAnnotatedWith(Entity.class);
+		if (entities.isEmpty()) {
+			return true;
+		}
+
+		messager.printMessage(Diagnostic.Kind.NOTE, "==== EntityMetaProcessor process running! ====");
 		for (Element entity : entities) {
-			Entity annotation = entity.getAnnotation(Entity.class);
-			// try {
-			// 	// This will throw a MirroredTypesException
-			// 	// which is intentional throwing for using MirroredTypesException.getTypeMirrors()
-			// 	annotation.name();
-			// } catch (MirroredTypesException e) {
-			// }
-			generator(annotations, entity);
+			try {
+				// This will throw a MirroredTypesException
+				// which is intentional throwing for using MirroredTypesException.getTypeMirrors()
+				generator(entity);
+			} catch (MirroredTypesException e) {
+				generator(entity);
+			}
 		}
 		return PROCESS_HERE_ONLY;
 	}
 
-	private void generator(Set<? extends TypeElement> annotations, Element elem) {
-		String className = "M" + elem.getSimpleName();
-		String targetPackage = ((PackageElement) elem.getEnclosingElement())
-			 .getQualifiedName().toString();
+	private void generator(Element element) {
+		String targetPackage = elementUtils.getPackageOf(element).getQualifiedName().toString();
+		String className = "M" + element.getSimpleName();
 
-		messager.printMessage(
-			 Diagnostic.Kind.NOTE,
-			 String.format("Processing %s.%s", targetPackage, className)
-		);
-
-		List<? extends Element> fields = elem.getEnclosedElements().stream()
-			 .filter(e -> e.getKind() == ElementKind.FIELD)
-			 .toList();
+		messager.printMessage(Diagnostic.Kind.NOTE, String.format("Processing %s.%s", targetPackage, className));
 		try {
 			JavaFileObject jfo = processingEnv.getFiler()
 				 .createSourceFile(targetPackage + "." + className);
 			try (PrintWriter out = new PrintWriter(jfo.openWriter())) {
-				out.println("package " + targetPackage + ";");
-				out.println("public class " + className + " {");
-				for (Element field : fields) {
-					String fieldName = field.getSimpleName().toString();
-					out.println("    public static final String " + fieldName + " = \"" + fieldName + "\";");
+				out.append("package " + targetPackage + ";\n\n")
+					 .append("public class " + className + " {\n");
+
+				if (element instanceof TypeElement typeElement) {
+					writeFields(out, typeElement);
 				}
-				out.println("}");
+
+				out.append("}");
+				out.flush();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private PrintWriter writeFields(PrintWriter out, TypeElement typeElement) {
+		List<? extends Element> fields = getFieldsIncludingSuper(typeElement);
+		for (Element field : fields) {
+			String fieldName = field.getSimpleName().toString();
+			out.append("    public static final String " + fieldName + " = \"" + fieldName + "\";\n");
+		}
+		return out;
+	}
+
+	private List<? extends Element> getFieldsIncludingSuper(TypeElement typeElement) {
+		return elementUtils.getAllMembers(typeElement)
+			 .stream()
+			 .filter(e -> e.getKind() == ElementKind.FIELD)
+			 // .flatMap(e -> e.getEnclosedElements().stream())
+			 // .filter(e -> !e.getModifiers().contains(javax.lang.model.element.Modifier.STATIC))
+			 .toList();
 	}
 }
