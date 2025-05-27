@@ -4,13 +4,14 @@
 package com.gmoon.batchinsert.global.jmodel;
 
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.processing.Generated;
+
 import org.jooq.Constants;
 import org.jooq.Schema;
 import org.jooq.impl.CatalogImpl;
-
-import javax.annotation.processing.Generated;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
