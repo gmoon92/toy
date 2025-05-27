@@ -1,21 +1,24 @@
 package com.gmoon.batchinsert.global.config.processor;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.google.auto.service.AutoService;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
+import org.springframework.javapoet.*;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 어노테이션 프로세서 자바 컴파일(javac) 등록
@@ -55,61 +58,93 @@ public class EntityMetaProcessor extends AbstractProcessor {
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		Set<? extends Element> entities = roundEnv.getElementsAnnotatedWith(Entity.class);
 		if (entities.isEmpty()) {
-			return true;
+			return false;
 		}
 
 		messager.printMessage(Diagnostic.Kind.NOTE, "==== EntityMetaProcessor process running! ====");
 		for (Element entity : entities) {
 			try {
-				// This will throw a MirroredTypesException
-				// which is intentional throwing for using MirroredTypesException.getTypeMirrors()
-				generator(entity);
-			} catch (MirroredTypesException e) {
-				generator(entity);
+				generateMetaClass(entity);
+			} catch (Exception e) {
+				messager.printMessage(Diagnostic.Kind.ERROR, "Error >>" + e.getMessage());
 			}
 		}
 		return PROCESS_HERE_ONLY;
 	}
 
-	private void generator(Element element) {
-		String targetPackage = elementUtils.getPackageOf(element).getQualifiedName().toString();
-		String className = "M" + element.getSimpleName();
+	private void generateMetaClass(Element element) {
+		TypeSpec metaClassSpec = getMetaClassSpec(element);
+		String metaClassName = metaClassSpec.name;
 
-		messager.printMessage(Diagnostic.Kind.NOTE, String.format("Processing %s.%s", targetPackage, className));
+		String packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
+		messager.printMessage(Diagnostic.Kind.NOTE, String.format("Processing %s.%s", packageName, metaClassName));
 		try {
-			JavaFileObject jfo = processingEnv.getFiler()
-				 .createSourceFile(targetPackage + "." + className);
-			try (PrintWriter out = new PrintWriter(jfo.openWriter())) {
-				out.append("package " + targetPackage + ";\n\n")
-					 .append("public class " + className + " {\n");
-
-				if (element instanceof TypeElement typeElement) {
-					writeFields(out, typeElement);
-				}
-
-				out.append("}");
-				out.flush();
-			}
+			JavaFile.builder(packageName, metaClassSpec)
+				 .build()
+				 .writeTo(processingEnv.getFiler());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private PrintWriter writeFields(PrintWriter out, TypeElement typeElement) {
-		List<? extends Element> fields = getFieldsIncludingSuper(typeElement);
-		for (Element field : fields) {
-			String fieldName = field.getSimpleName().toString();
-			out.append("    public static final String " + fieldName + " = \"" + fieldName + "\";\n");
-		}
-		return out;
+	private TypeSpec getMetaClassSpec(Element element) {
+		List<FieldSpec> fields = getFieldSpecs((TypeElement) element);
+
+		Name className = element.getSimpleName();
+		String metaClassName = "M" + className;
+		return TypeSpec.classBuilder(metaClassName)
+			 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+			 .addFields(fields)
+			 .addMethod(newToStringMethodSpec(metaClassName, fields))
+			 .build();
 	}
 
-	private List<? extends Element> getFieldsIncludingSuper(TypeElement typeElement) {
-		return elementUtils.getAllMembers(typeElement)
+	private List<FieldSpec> getFieldSpecs(TypeElement element) {
+		Set<Modifier> ignoredModifiers = Set.of(Modifier.STATIC, Modifier.TRANSIENT);
+		return AnnotationProcessorUtils.findAllMembersFields(element, ignoredModifiers)
 			 .stream()
-			 .filter(e -> e.getKind() == ElementKind.FIELD)
-			 // .flatMap(e -> e.getEnclosedElements().stream())
-			 // .filter(e -> !e.getModifiers().contains(javax.lang.model.element.Modifier.STATIC))
+			 .filter(field -> AnnotationProcessorUtils.doesNotHaveAnnotation(field, Transient.class))
+			 .map(this::newFieldSpec)
 			 .toList();
+	}
+
+	private FieldSpec newFieldSpec(Element field) {
+		messager.printMessage(Diagnostic.Kind.NOTE,
+			 "field: " + field.getSimpleName()
+				  + " " + field.getKind()
+				  + " mods=" + field.getModifiers()
+				  + " type=" + field.asType()
+		);
+
+		String columnName = field.getSimpleName().toString();
+		String annotationElementValue = AnnotationProcessorUtils.getAnnotationAttributeValue(
+			 field,
+			 Column.class,
+			 "name",
+			 String.class
+		);
+		if (StringUtils.isNotBlank(annotationElementValue)) {
+			columnName = annotationElementValue;
+		}
+
+		return FieldSpec.builder(
+				  TypeName.get(String.class),
+				  columnName
+			 )
+			 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+			 .initializer("$S", columnName)
+			 .build();
+	}
+
+	private MethodSpec newToStringMethodSpec(String className, List<FieldSpec> fields) {
+		String fieldNames = fields.stream()
+			 .map(f -> f.name)
+			 .collect(Collectors.joining(", "));
+		return MethodSpec.methodBuilder("toString")
+			 .addAnnotation(Override.class)
+			 .addModifiers(Modifier.PUBLIC)
+			 .returns(String.class)
+			 .addStatement("return $S", String.format("%s(%s)", className, fieldNames))
+			 .build();
 	}
 }
