@@ -1,13 +1,14 @@
 package com.gmoon.batchinsert.coupons.application;
 
-import com.gmoon.batchinsert.coupons.application.dto.CouponRequest;
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.Instant;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Instant;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
+import com.gmoon.batchinsert.coupons.application.dto.CouponRequest;
 
 @SpringBootTest
 class CouponServiceTest {

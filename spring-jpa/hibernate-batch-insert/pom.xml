@@ -73,6 +73,14 @@
             <version>${querydsl-core.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-sql-codegen/5.0.0 -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-sql-codegen</artifactId>
+            <version>${querydsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -159,42 +167,82 @@
             </plugin>
 
             <!-- https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html -->
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+            <!--                <version>3.11.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>generator-table-mapper-meta-class</id>-->
+            <!--                        <goals>-->
+            <!--                            <goal>compile</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <source>${java.version}</source>-->
+            <!--                    <target>${java.version}</target>-->
+            <!--                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/java</generatedSourcesDirectory>-->
+            <!--                    <annotationProcessorPaths>-->
+            <!--                        &lt;!&ndash;-->
+            <!--                        멀티 모듈시 필요.-->
+            <!--                        <path>-->
+            <!--                            <groupId>com.gmoon.batchinsert</groupId>-->
+            <!--                            <artifactId>batchinsert-entity-processor</artifactId>-->
+            <!--                            <version>1.0.0</version>-->
+            <!--                        </path-->
+            <!--                        &ndash;&gt;-->
+            <!--&lt;!&ndash;                        <path>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <groupId>com.google.auto.service</groupId>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <artifactId>auto-service</artifactId>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <version>${auto-service.version}</version>&ndash;&gt;-->
+            <!--&lt;!&ndash;                        </path>&ndash;&gt;-->
+            <!--                    </annotationProcessorPaths>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-maven-plugin</artifactId>
+                <version>${querydsl.version}</version>
                 <executions>
                     <execution>
-                        <id>generator-table-mapper-meta-class</id>
                         <goals>
-                            <goal>compile</goal>
+                            <goal>export</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-<!--                    <source>21</source>-->
-<!--                    <target>21</target>-->
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-<!--                    <outputDirectory>target/generated-sources/java</outputDirectory>-->
-<!--                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/java</generatedSourcesDirectory>-->
-<!--                    <generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>-->
-                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/java</generatedSourcesDirectory>
-                    <annotationProcessorPaths>
-                        <!--
-                        멀티 모듈시 필요.
-                        <path>
-                            <groupId>com.gmoon.batchinsert</groupId>
-                            <artifactId>batchinsert-entity-processor</artifactId>
-                            <version>1.0.0</version>
-                        </path
-                        -->
-<!--                        <path>-->
-<!--                            <groupId>com.google.auto.service</groupId>-->
-<!--                            <artifactId>auto-service</artifactId>-->
-<!--                            <version>${auto-service.version}</version>-->
-<!--                        </path>-->
-                    </annotationProcessorPaths>
+                    <!--                    <jdbcDriver>com.mysql.cj.jdbc.Driver</jdbcDriver>-->
+                    <jdbcDriver>org.mariadb.jdbc.Driver</jdbcDriver>
+                    <jdbcUrl>jdbc:mariadb://localhost:3306</jdbcUrl>
+                    <jdbcUser>root</jdbcUser>
+                    <jdbcPassword>111111</jdbcPassword>
+                    <schemaPattern>batchinsert</schemaPattern>
+                    <catalogPattern>batchinsert</catalogPattern>
+                    <namePrefix>NQ</namePrefix>
+                    <packageName>com.gmoon.batchinsert</packageName>
+                    <sourceFolder>${project.basedir}/src/main/java</sourceFolder>
+                    <targetFolder>${project.basedir}/target/generated-sources/java</targetFolder>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derby</artifactId>
+                        <version>${derby.version}</version>
+                    </dependency>
+
+                    <!--                    <dependency>-->
+                    <!--                        <groupId>mysql</groupId>-->
+                    <!--                        <artifactId>mysql-connector-java</artifactId>-->
+                    <!--                        <version>${mysql-connector-java.version}</version>-->
+                    <!--                    </dependency>-->
+
+                    <dependency>
+                        <groupId>org.mariadb.jdbc</groupId>
+                        <artifactId>mariadb-java-client</artifactId>
+                        <version>3.3.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

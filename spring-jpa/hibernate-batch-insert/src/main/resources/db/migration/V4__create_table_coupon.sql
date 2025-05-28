@@ -19,6 +19,9 @@ CREATE TABLE tb_coupon (
                            start_at DATETIME NOT NULL,
                            end_at DATETIME NOT NULL,
                            created_at DATETIME NOT NULL,
+                           timestamp     DATETIME    NOT NULL,
+                           registered_by VARCHAR(50) NULL,
+                           registered_at DATETIME    NULL,
                            PRIMARY KEY (no),
                            CONSTRAINT fk_coupon_coupon_group_id
                                FOREIGN KEY (coupon_group_id)

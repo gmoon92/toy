@@ -50,7 +50,7 @@ import jakarta.persistence.Transient;
  * 컴파일 시점에 .class 파일 생성전 META-INF/services/javax.annotation.processing.Processor 먼저 생성되어
  * ClassNotFoundException 예외 발생. {@link #process(Set, RoundEnvironment)} 미동작될 수 있음.
  */
-@AutoService(Processor.class)
+// @AutoService(Processor.class)
 @SupportedAnnotationTypes("jakarta.persistence.Entity")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class EntityMetaProcessor extends AbstractProcessor {
