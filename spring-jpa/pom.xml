@@ -23,6 +23,7 @@
         <module>hibernate-sequence-generator</module>
         <module>hibernate-type</module>
         <module>querydsl-projections</module>
+        <module>querydsl-sql</module>
         <module>spring-jpa-pagination</module>
         <module>spring-jpa-specs</module>
         <module>spring-jpa-multi-datasource</module>
@@ -32,5 +33,6 @@
     <properties>
         <hibernate.version>6.5.2.Final</hibernate.version>
         <querydsl-core.version>5.0.0</querydsl-core.version>
+        <mysql-connector-java>8.0.28</mysql-connector-java>
     </properties>
 </project>

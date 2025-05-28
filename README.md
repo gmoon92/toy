@@ -30,6 +30,7 @@
     - [hibernate-sequence-generator](spring-jpa/hibernate-sequence-generator/README.md)
     - [hibernate-type](spring-jpa/hibernate-type/README.md)
     - [querydsl-projections](spring-jpa/querydsl-projections/README.md)
+    - [querydsl-sql](spring-jpa/querydsl-sql/README.md)
     - [spring-jpa-pagination](spring-jpa/spring-jpa-pagination/README.md)
     - [spring-jpa-specs](spring-jpa/spring-jpa-specs/README.md)
     - [spring-jpa-multi-datasource](spring-jpa/spring-jpa-multi-datasource/README.md)

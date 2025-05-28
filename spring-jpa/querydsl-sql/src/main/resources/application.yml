@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: querydsl-sql
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/querydsl_sql?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&rewriteBatchedStatements=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    username: root
+    password: 111111
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: &showsql true
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        #        "[hbm2ddl.auto]": validate
+        #        format_sql: *showsql
+        # batch
+        order_inserts: true
+        order_updates: true
+        "[jdbc.batch_size]": 500
