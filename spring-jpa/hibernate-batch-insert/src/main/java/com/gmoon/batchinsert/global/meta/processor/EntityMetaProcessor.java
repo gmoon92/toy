@@ -30,9 +30,11 @@ import com.gmoon.batchinsert.global.meta.resolver.AnnotationColumnNameResolver;
 import com.gmoon.batchinsert.global.meta.resolver.CompositeColumnNameResolver;
 import com.gmoon.batchinsert.global.meta.resolver.DefaultColumnNameResolver;
 import com.gmoon.batchinsert.global.meta.utils.AnnotationProcessorUtils;
+import com.gmoon.javacore.util.StringUtils;
 import com.google.auto.service.AutoService;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 /**
@@ -102,15 +104,35 @@ public class EntityMetaProcessor extends AbstractProcessor {
 		}
 	}
 
-	private TypeSpec getMetaClassSpec(Element element) {
-		List<FieldSpec> fields = getFieldSpecs((TypeElement)element);
-
-		Name className = element.getSimpleName();
+	private TypeSpec getMetaClassSpec(Element classElement) {
+		List<FieldSpec> fields = getFieldSpecs((TypeElement)classElement);
+		Name className = classElement.getSimpleName();
 		String metaClassName = "M" + className;
 		return TypeSpec.classBuilder(metaClassName)
 			 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+			 .addField(newTableNameFieldSpec((TypeElement)classElement))
 			 .addFields(fields)
 			 .addMethod(newToStringMethodSpec(metaClassName, fields))
+			 .build();
+	}
+
+	private FieldSpec newTableNameFieldSpec(TypeElement element) {
+		String tableName = AnnotationProcessorUtils.getAnnotationAttributeValue(
+			 element,
+			 Table.class,
+			 "name",
+			 String.class
+		);
+
+		if (StringUtils.isBlank(tableName)) {
+			tableName = StringUtils.toSnakeCase(element.getSimpleName().toString());
+		}
+		return FieldSpec.builder(
+				  String.class,
+				  "tableName",
+				  Modifier.PUBLIC, Modifier.FINAL
+			 )
+			 .initializer("$S", tableName)
 			 .build();
 	}
 
@@ -136,7 +158,7 @@ public class EntityMetaProcessor extends AbstractProcessor {
 				  TypeName.get(String.class),
 				  field.getSimpleName().toString()
 			 )
-			 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+			 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
 			 .initializer("$S", columnName)
 			 .build();
 	}

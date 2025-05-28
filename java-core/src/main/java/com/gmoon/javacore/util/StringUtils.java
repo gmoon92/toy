@@ -1,9 +1,10 @@
 package com.gmoon.javacore.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtils {
@@ -156,5 +157,14 @@ public final class StringUtils {
 
 	public static String rightPad(String str, int size, String padStr) {
 		return org.apache.commons.lang3.StringUtils.rightPad(str, size, padStr);
+	}
+
+	public static String toSnakeCase(String str) {
+		if (isBlank(str)) {
+			return "";
+		}
+
+		return str.replaceAll("([a-z])([A-Z]+)", "$1_$2")
+			 .toLowerCase();
 	}
 }
