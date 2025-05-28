@@ -1,26 +1,15 @@
 package com.gmoon.batchinsert.coupons.domain;
 
-import java.time.Instant;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import com.gmoon.batchinsert.coupons.domain.vo.RegisteredBy;
 import com.gmoon.batchinsert.global.common.BaseEntity;
 import com.gmoon.javacore.util.TsidUtils;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.time.Instant;
 
 @Table(name = "tb_coupon")
 @Entity
@@ -35,9 +24,6 @@ public class Coupon extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private CouponGroup couponGroup;
-
-	@Embedded
-	private RegisteredBy registeredBy = new RegisteredBy();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)

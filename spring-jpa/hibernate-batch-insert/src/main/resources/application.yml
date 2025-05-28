@@ -54,5 +54,5 @@ spring:
 logging:
   level:
     "[com.gmoon]": INFO
-    "[org.jooq]": DEBUG
-    "[MySQL]": INFO
+    "[org.jooq]": WARN
+    "[MySQL]": WARN

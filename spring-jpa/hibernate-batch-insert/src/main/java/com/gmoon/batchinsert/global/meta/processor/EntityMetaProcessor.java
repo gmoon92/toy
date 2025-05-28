@@ -1,17 +1,17 @@
 package com.gmoon.batchinsert.global.meta.processor;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.gmoon.batchinsert.global.meta.resolver.AnnotationColumnNameResolver;
+import com.gmoon.batchinsert.global.meta.resolver.CompositeColumnNameResolver;
+import com.gmoon.batchinsert.global.meta.resolver.DefaultColumnNameResolver;
+import com.gmoon.batchinsert.global.meta.utils.AnnotationProcessorUtils;
+import com.gmoon.javacore.util.StringUtils;
+import com.google.auto.service.AutoService;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import org.springframework.javapoet.*;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -19,25 +19,10 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-
-import org.springframework.javapoet.AnnotationSpec;
-import org.springframework.javapoet.ClassName;
-import org.springframework.javapoet.FieldSpec;
-import org.springframework.javapoet.JavaFile;
-import org.springframework.javapoet.MethodSpec;
-import org.springframework.javapoet.TypeName;
-import org.springframework.javapoet.TypeSpec;
-
-import com.gmoon.batchinsert.global.meta.resolver.AnnotationColumnNameResolver;
-import com.gmoon.batchinsert.global.meta.resolver.CompositeColumnNameResolver;
-import com.gmoon.batchinsert.global.meta.resolver.DefaultColumnNameResolver;
-import com.gmoon.batchinsert.global.meta.utils.AnnotationProcessorUtils;
-import com.gmoon.javacore.util.StringUtils;
-import com.google.auto.service.AutoService;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 어노테이션 프로세서 자바 컴파일(javac) 등록
@@ -50,7 +35,7 @@ import jakarta.persistence.Transient;
  * 컴파일 시점에 .class 파일 생성전 META-INF/services/javax.annotation.processing.Processor 먼저 생성되어
  * ClassNotFoundException 예외 발생. {@link #process(Set, RoundEnvironment)} 미동작될 수 있음.
  */
-// @AutoService(Processor.class)
+@AutoService(Processor.class)
 @SupportedAnnotationTypes("jakarta.persistence.Entity")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class EntityMetaProcessor extends AbstractProcessor {
@@ -114,7 +99,7 @@ public class EntityMetaProcessor extends AbstractProcessor {
 	}
 
 	private TypeSpec getMetaClassSpec(Element classElement) {
-		List<FieldSpec> fields = getFieldSpecs((TypeElement)classElement);
+		List<FieldSpec> fields = getFieldSpecs((TypeElement) classElement);
 		Name className = classElement.getSimpleName();
 		String metaClassName = "M" + className;
 		return TypeSpec.classBuilder(metaClassName)
@@ -128,7 +113,7 @@ public class EntityMetaProcessor extends AbstractProcessor {
 				  elementUtils.getTypeElement("com.gmoon.batchinsert.global.meta.model.MetaModel"))
 			 )
 			 .addFields(fields)
-			 .addMethod(newGetTableNameMethodSpec((TypeElement)classElement))
+			 .addMethod(newGetTableNameMethodSpec((TypeElement) classElement))
 			 .addMethod(newToStringMethodSpec(metaClassName, fields))
 			 .build();
 	}
