@@ -1,4 +1,4 @@
-package com.gmoon.batchinsert.global.processor;
+package com.gmoon.batchinsert.global.meta.utils;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
