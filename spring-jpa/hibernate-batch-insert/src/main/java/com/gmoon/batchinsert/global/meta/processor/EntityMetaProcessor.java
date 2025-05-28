@@ -26,11 +26,12 @@ import org.springframework.javapoet.MethodSpec;
 import org.springframework.javapoet.TypeName;
 import org.springframework.javapoet.TypeSpec;
 
+import com.gmoon.batchinsert.global.meta.resolver.AnnotationColumnNameResolver;
+import com.gmoon.batchinsert.global.meta.resolver.CompositeColumnNameResolver;
+import com.gmoon.batchinsert.global.meta.resolver.DefaultColumnNameResolver;
 import com.gmoon.batchinsert.global.meta.utils.AnnotationProcessorUtils;
-import com.gmoon.javacore.util.StringUtils;
 import com.google.auto.service.AutoService;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
 
@@ -102,7 +103,7 @@ public class EntityMetaProcessor extends AbstractProcessor {
 	}
 
 	private TypeSpec getMetaClassSpec(Element element) {
-		List<FieldSpec> fields = getFieldSpecs((TypeElement) element);
+		List<FieldSpec> fields = getFieldSpecs((TypeElement)element);
 
 		Name className = element.getSimpleName();
 		String metaClassName = "M" + className;
@@ -140,46 +141,12 @@ public class EntityMetaProcessor extends AbstractProcessor {
 			 .build();
 	}
 
-
-	/**
-	 * TODO: 컬럼명(column name)에 직접적 영향 주는 JPA/Hibernate 어노테이션/클래스
-	 * <ul>
-	 *   <li>{@link jakarta.persistence.Column}</li>
-	 *   <li>{@link jakarta.persistence.JoinColumn}</li>
-	 *   <li>{@link jakarta.persistence.JoinTable}</li>
-	 *   <li>{@link jakarta.persistence.AttributeOverride}</li>
-	 *   <li>{@link jakarta.persistence.AssociationOverride}</li>
-	 *   <li>{@link jakarta.persistence.MapKeyColumn}</li>
-	 *   <li>{@link jakarta.persistence.OrderColumn}</li>
-	 *   <li>{@link jakarta.persistence.DiscriminatorColumn}</li>
-	 *   <li>{@link jakarta.persistence.PrimaryKeyJoinColumn}</li>
-	 *   <li>{@link jakarta.persistence.SecondaryTable}</li>
-	 *   <li>{@link jakarta.persistence.Embedded}</li>
-	 *   <li>{@link jakarta.persistence.Embeddable}</li>
-	 *   <!-- (옵션) Hibernate 확장 -->
-	 *   <li>{@link org.hibernate.annotations.ColumnTransformer}</li>
-	 * </ul>
-	 */
 	private String getColumnName(Element field) {
-		String annotationElementValue = AnnotationProcessorUtils.getAnnotationAttributeValue(
-			 field,
-			 Column.class,
-			 "name",
-			 String.class
+		CompositeColumnNameResolver resolver = new CompositeColumnNameResolver(
+			 () -> new AnnotationColumnNameResolver(field),
+			 () -> new DefaultColumnNameResolver(field)
 		);
-		if (StringUtils.isNotBlank(annotationElementValue)) {
-			return annotationElementValue;
-		}
-
-		// todo hibernate-naming-strategy 네이밍 전략에 맞게 변환.
-		String fieldName = field.getSimpleName().toString();
-		return toSnakeCase(fieldName);
-	}
-
-	public static String toSnakeCase(String camelCase) {
-		return camelCase
-			 .replaceAll("([a-z])([A-Z]+)", "$1_$2")
-			 .toLowerCase();
+		return resolver.resolve();
 	}
 
 	private MethodSpec newToStringMethodSpec(String className, List<FieldSpec> fields) {
