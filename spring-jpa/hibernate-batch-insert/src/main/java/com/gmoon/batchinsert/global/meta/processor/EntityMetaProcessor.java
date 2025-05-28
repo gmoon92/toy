@@ -82,26 +82,33 @@ public class EntityMetaProcessor extends AbstractProcessor {
 		for (Element entity : entities) {
 			try {
 				generateMetaClass(entity);
+			} catch (IOException e) {
+				printError(entity, "파일 생성 실패: ", e);
+				throw new RuntimeException(e);
 			} catch (Exception e) {
-				messager.printMessage(Diagnostic.Kind.ERROR, "Error >>" + e.getMessage());
+				printError(entity, "메타 클래스 생성 실패: ", e);
+				throw new RuntimeException(e);
 			}
 		}
 		return PROCESS_HERE_ONLY;
 	}
 
-	private void generateMetaClass(Element element) {
+	private void printError(Element element, String message, Throwable e) {
+		String detailed = message + "\n" +
+			 "원인: " + e.getClass().getSimpleName() + " - " + e.getMessage();
+
+		messager.printMessage(Diagnostic.Kind.ERROR, detailed, element);
+	}
+
+	private void generateMetaClass(Element element) throws IOException {
 		TypeSpec metaClassSpec = getMetaClassSpec(element);
 		String metaClassName = metaClassSpec.name;
 
 		String packageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
 		messager.printMessage(Diagnostic.Kind.NOTE, String.format("Processing %s.%s", packageName, metaClassName));
-		try {
-			JavaFile.builder(packageName, metaClassSpec)
-				 .build()
-				 .writeTo(processingEnv.getFiler());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		JavaFile.builder(packageName, metaClassSpec)
+			 .build()
+			 .writeTo(processingEnv.getFiler());
 	}
 
 	private TypeSpec getMetaClassSpec(Element classElement) {
