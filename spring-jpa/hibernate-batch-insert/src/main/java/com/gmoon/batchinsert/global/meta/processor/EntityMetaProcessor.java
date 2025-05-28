@@ -20,6 +20,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
+import org.springframework.javapoet.AnnotationSpec;
+import org.springframework.javapoet.ClassName;
 import org.springframework.javapoet.FieldSpec;
 import org.springframework.javapoet.JavaFile;
 import org.springframework.javapoet.MethodSpec;
@@ -117,13 +119,21 @@ public class EntityMetaProcessor extends AbstractProcessor {
 		String metaClassName = "M" + className;
 		return TypeSpec.classBuilder(metaClassName)
 			 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-			 .addField(newTableNameFieldSpec((TypeElement)classElement))
+			 .addAnnotation(
+				  AnnotationSpec.builder(ClassName.get("javax.annotation.processing", "Generated"))
+					   .addMember("value", "$S", EntityMetaProcessor.class.getName())
+					   .build()
+			 )
+			 .addSuperinterface(ClassName.get(
+				  elementUtils.getTypeElement("com.gmoon.batchinsert.global.meta.model.MetaModel"))
+			 )
 			 .addFields(fields)
+			 .addMethod(newGetTableNameMethodSpec((TypeElement)classElement))
 			 .addMethod(newToStringMethodSpec(metaClassName, fields))
 			 .build();
 	}
 
-	private FieldSpec newTableNameFieldSpec(TypeElement element) {
+	private MethodSpec newGetTableNameMethodSpec(TypeElement element) {
 		String tableName = AnnotationProcessorUtils.getAnnotationAttributeValue(
 			 element,
 			 Table.class,
@@ -134,12 +144,11 @@ public class EntityMetaProcessor extends AbstractProcessor {
 		if (StringUtils.isBlank(tableName)) {
 			tableName = StringUtils.toSnakeCase(element.getSimpleName().toString());
 		}
-		return FieldSpec.builder(
-				  String.class,
-				  "tableName",
-				  Modifier.PUBLIC, Modifier.FINAL
-			 )
-			 .initializer("$S", tableName)
+		return MethodSpec.methodBuilder("getTableName")
+			 .addAnnotation(Override.class)
+			 .addModifiers(Modifier.PUBLIC)
+			 .returns(String.class)
+			 .addStatement("return $S", tableName)
 			 .build();
 	}
 
