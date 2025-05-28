@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
-@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserControllerIntegrationTest {
 
 	@BeforeAll
-	static void beforeAll(@LocalServerPort int port) {
+	void beforeAll(@LocalServerPort int port) {
 		RestAssured.port = port;
 	}
 
