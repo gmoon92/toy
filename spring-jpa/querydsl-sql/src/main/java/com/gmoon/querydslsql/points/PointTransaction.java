@@ -1,14 +1,13 @@
-package com.gmoon.querydslsql.coupons;
-
-import java.time.LocalDateTime;
+package com.gmoon.querydslsql.points;
 
 import com.gmoon.javacore.util.TsidUtils;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

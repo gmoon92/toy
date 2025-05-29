@@ -19,8 +19,9 @@
         <jdbc.username>root</jdbc.username>
         <jdbc.password>111111</jdbc.password>
         <jdbc.option>createDatabaseIfNotExist=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false&amp;characterEncoding=UTF-8&amp;rewriteBatchedStatements=true&amp;logger=Slf4JLogger&amp;profileSQL=true&amp;maxQuerySizeToLog=999999</jdbc.option>
-        <jdbc.url>jdbc:mysql://localhost:3306/${db.schema}</jdbc.url>
+        <jdbc.url>jdbc:mysql://localhost:3306</jdbc.url>
         <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
+        <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
     </properties>
     <dependencies>
         <dependency>
@@ -57,6 +58,13 @@
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql</artifactId>
             <version>${querydsl.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-sql-codegen</artifactId>
+            <version>${querydsl.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -118,6 +126,34 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-querydsl-sql-sdomain</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.gmoon.querydslsql.generator.QueryDslSQLMetaModelGenerator</mainClass>
+                            <arguments>
+                                <argument>--jdbcDriver=${jdbc.driver}</argument>
+                                <argument>--jdbcUrl=${jdbc.url}</argument>
+                                <argument>--jdbcUser=${jdbc.username}</argument>
+                                <argument>--jdbcPassword=${jdbc.password}</argument>
+                                <argument>--dbSchema=${db.schema}_sdomain</argument>
+                                <argument>--targetFolder=${project.basedir}/target/generated-sources/java</argument>
+                                <argument>--hibernateDialect=${hibernate.dialect}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

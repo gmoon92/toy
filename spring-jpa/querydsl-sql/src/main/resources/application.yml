@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: @jdbc.driver@
-    url: @jdbc.url@?@jdbc.option@
+    url: @jdbc.url@/@db.schema@?@jdbc.option@
     username: @jdbc.username@
     password: @jdbc.password@
     hikari:
@@ -12,7 +12,7 @@ spring:
 
   jpa:
     open-in-view: false
-    database-platform: org.hibernate.dialect.MySQLDialect
+    database-platform: @hibernate.dialect@
     show-sql: &showsql true
     generate-ddl: true
     hibernate:
@@ -20,7 +20,7 @@ spring:
 
     properties:
       hibernate:
-        #        "[hbm2ddl.auto]": validate
+        "[hbm2ddl.auto]": create
         #        format_sql: *showsql
         # batch
         order_inserts: true
