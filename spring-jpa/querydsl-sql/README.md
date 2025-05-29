@@ -32,8 +32,7 @@ QueryDSL SQL은 database schema driven codegen(코드 생성기)다.
 
 ## Dependencies
 
-```xml
-
+```text
 <dependency>
     <groupId>com.querydsl</groupId>
     <artifactId>querydsl-sql</artifactId>
@@ -41,10 +40,10 @@ QueryDSL SQL은 database schema driven codegen(코드 생성기)다.
 </dependency>
 
 <dependency>
-<groupId>com.querydsl</groupId>
-<artifactId>querydsl-sql-codegen</artifactId>
-<version>${querydsl.version}</version>
-<scope>provided</scope>
+    <groupId>com.querydsl</groupId>
+    <artifactId>querydsl-sql-codegen</artifactId>
+    <version>${querydsl.version}</version>
+    <scope>provided</scope>
 </dependency>
 ```
 

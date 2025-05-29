@@ -3,17 +3,18 @@ spring:
     name: querydsl-sql
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/querydsl_sql?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&rewriteBatchedStatements=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-    username: root
-    password: 111111
+    driver-class-name: @jdbc.driver@
+    url: @jdbc.url@?@jdbc.option@
+    username: @jdbc.username@
+    password: @jdbc.password@
     hikari:
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      driver-class-name: @jdbc.driver@
 
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: &showsql true
+    generate-ddl: true
     hibernate:
       ddl-auto: create
 
