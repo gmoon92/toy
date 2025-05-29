@@ -5,7 +5,13 @@ import com.querydsl.sql.codegen.MetaDataExporter;
 import jakarta.persistence.Entity;
 import lombok.ToString;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.relational.internal.SchemaManagerImpl;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.internal.HibernateSchemaManagementTool;
+import org.hibernate.tool.schema.spi.SchemaCreator;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -18,6 +24,23 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <pre>
+ * <a href="https://stackoverflow.com/questions/74095282/hibernate-6-schemaexport-class-not-found">hibernate6 SchemaExport class not found</a>
+ * https://hibernate.org/tools/
+ * https://github.com/hibernate/hibernate-tools
+ * https://central.sonatype.com/artifact/org.hibernate/hibernate-tools-maven-plugin
+ * </pre>
+ *
+ * @see MetadataSources
+ * @see StandardServiceRegistry
+ * @see HibernateSchemaManagementTool
+ * @see SchemaCreator
+ * @see org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl#generateSchema
+ * @see jakarta.persistence.Persistence#generateSchema
+ * @see SchemaManagerImpl
+ * @see SchemaExport
+ */
 public class QueryDslSQLMetaModelGenerator {
 	private static final String TOOL = "QDSL-SQL";
 
@@ -35,7 +58,6 @@ public class QueryDslSQLMetaModelGenerator {
 		log.banner(TOOL + " GENERATOR START");
 		log.info("Input args : " + Arrays.toString(args));
 		log.info("Options    : " + option);
-
 		String jdbcUrl = option.jdbcUrl;
 		String jdbcUser = option.jdbcUser;
 		String jdbcPassword = option.jdbcPassword;
@@ -43,10 +65,10 @@ public class QueryDslSQLMetaModelGenerator {
 		log.info("Connecting to database: " + jdbcUrl + " (user: " + jdbcUser + ")");
 		try (Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword)) {
 			log.step("Hibernate Session Opening");
-			try (SessionFactory sf = generator.createSessionFactory(option)) {
+			try (SessionFactory sf = generator.createSessionFactory()) {
 				long start = System.currentTimeMillis();
 				log.step("MetaModel Generation");
-				generator.generateMetaModel(option, conn);  // log 객체 전달
+				generator.generateMetaModel(conn);  // log 객체 전달
 				long end = System.currentTimeMillis();
 				log.info("MetaModel Generation Done (" + (end - start) + "ms)");
 			}
@@ -61,7 +83,7 @@ public class QueryDslSQLMetaModelGenerator {
 		log.banner(TOOL + "GENERATOR END");
 	}
 
-	private void generateMetaModel(MetaDataExporterOption option, Connection conn) throws SQLException {
+	private void generateMetaModel(Connection conn) throws SQLException {
 		MetaDataExporter exporter = new MetaDataExporter();
 		exporter.setSchemaPattern(option.schema);
 		exporter.setCatalogPattern(option.schema);
@@ -74,7 +96,7 @@ public class QueryDslSQLMetaModelGenerator {
 	/**
 	 * @see org.hibernate.cfg.AvailableSettings
 	 */
-	private SessionFactory createSessionFactory(MetaDataExporterOption option) {
+	private SessionFactory createSessionFactory() {
 		Configuration config = new Configuration();
 		String schema = option.schema;
 		String jdbcUrl = option.jdbcUrl;

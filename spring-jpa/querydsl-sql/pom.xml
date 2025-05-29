@@ -78,6 +78,12 @@
             <artifactId>java-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-ant</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -19,6 +19,10 @@ spring:
       ddl-auto: create
 
     properties:
+      # application 실행 시 DDL 파일만 export 가능 (DB에는 적용되지 않음).
+#      javax.persistence.schema-generation.scripts.action: create
+#      javax.persistence.schema-generation.scripts.create-target: schema.sql
+
       hibernate:
         "[hbm2ddl.auto]": create
         #        format_sql: *showsql
