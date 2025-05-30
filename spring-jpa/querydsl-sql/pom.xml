@@ -145,15 +145,18 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.gmoon.querydslsql.generator.QueryDslSQLMetaModelGenerator</mainClass>
+                            <mainClass>com.gmoon.querydslsql.generator.QueryDslSqlMetaModelGenerator</mainClass>
                             <arguments>
                                 <argument>--jdbcDriver=${jdbc.driver}</argument>
                                 <argument>--jdbcUrl=${jdbc.url}</argument>
                                 <argument>--jdbcUser=${jdbc.username}</argument>
                                 <argument>--jdbcPassword=${jdbc.password}</argument>
-                                <argument>--dbSchema=${db.schema}_sdomain</argument>
+                                <argument>--schema=${db.schema}_sdomain</argument>
+                                <argument>--dialect=${hibernate.dialect}</argument>
+                                <argument>--namePrefix=S</argument>
+                                <argument>--entityBasePackage=com.gmoon.querydslsql</argument>
                                 <argument>--targetFolder=${project.basedir}/target/generated-sources/java</argument>
-                                <argument>--hibernateDialect=${hibernate.dialect}</argument>
+                                <argument>--targetPackage=com.gmoon.querydslsql.sdomains</argument>
                             </arguments>
                         </configuration>
                     </execution>
