@@ -1,13 +1,7 @@
-package com.gmoon.querydslsql.generator;
+package com.gmoon.querydslsql.codegen.generator;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.querydsl.sql.codegen.MetaDataExporter;
+import jakarta.persistence.Entity;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -20,11 +14,15 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
-import com.querydsl.sql.codegen.MetaDataExporter;
-
-import jakarta.persistence.Entity;
-import lombok.ToString;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <pre>
@@ -78,7 +76,9 @@ public class QueryDslSqlMetaModelGenerator {
 			ex.printStackTrace(System.err);
 			System.exit(1);
 		} finally {
-			AbandonedConnectionCleanupThread.checkedShutdown();
+			log.step("DB Connection closing.");
+			generator.closeDbConnection();
+			log.step("DB Connection closed.");
 		}
 		log.info("QueryDSL-SQL meta-model classes generation completed successfully.");
 		log.banner("GENERATOR END");
@@ -130,7 +130,60 @@ public class QueryDslSqlMetaModelGenerator {
 		exporter.export(conn.getMetaData());
 	}
 
-	@ToString
+	/**
+	 * <pre>
+	 * MySQL Connector/J의 `AbandonedConnectionCleanupThread`는
+	 * 드라이버의 리소스를 관리하기 위한 백그라운드 스레드다.
+	 * - 과거(5.x~8.x)엔 명시적으로 checkedShutdown() 호출이 필요했고,
+	 *   그래도 JVM 종료 시 스레드가 계속 살아있어 다음과 같은 WARNING이 발생할 수 있다.
+	 *
+	 * [WARNING] thread Thread[#53,mysql-cj-abandoned-connection-cleanup,5,main] was interrupted but is still alive after waiting at least 15000msecs
+	 * [WARNING] thread ... will linger despite being asked to die via interruption
+	 * [WARNING] NOTE: 1 thread(s) did not finish despite being asked to via interruption. This is not a problem with exec:java, it is a problem with the running code. Although not serious, it should be remedied.
+	 *
+	 * - 최신 9.x에서는 해당 cleanup thread가 사라지거나 동작 방식이 변경되어 있어 일반적으로 이런 경고가 더는 발생하지 않아야 정상이다.
+	 * - 그러나 프로젝트에 복수 또는 구버전(8.x) 드라이버가 classpath 상에 섞여 있거나,
+	 * exec-maven-plugin 등 별도 JVM환경(classloader isolation)에서 실행하는 경우 여전히 나타날 수 있다.
+	 *
+	 * 해결 방법:
+	 *    1. 가능한 모든 Connection, DataSource를 명시적으로 close하고,
+	 *    2. DriverManager에서 MySQL 드라이버를 deregister(언로드) 하며,
+	 *    3. (8.x 이하 구버전일 경우에만) AbandonedConnectionCleanupThread.checkedShutdown() 호출
+	 *
+	 * 아래 closeDbConnection() 메서드가 이를 수행합니다.
+	 * </pre>
+	 */
+	private void closeDbConnection() {
+		try {
+			Enumeration<Driver> drivers = DriverManager.getDrivers();
+			while (drivers.hasMoreElements()) {
+				Driver driver = drivers.nextElement();
+				if (driver.getClass().getName().contains("mysql")) {
+					try {
+						DriverManager.deregisterDriver(driver);
+					} catch (Exception e) {
+						log.error("Failed to deregister JDBC driver (" + driver.getClass().getName() + "): " + e.getMessage());
+						throw e;
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("Failed to enumerate JDBC drivers: " + e.getMessage());
+			e.printStackTrace(System.err);
+		}
+
+		try {
+			// 8.x 구버전 호환: AbandonedConnectionCleanupThread shutdown 호출
+			// 9.x 이상이면 이 클래스가 없어도 정상.
+			Class<?> cleanupThread = Class.forName("com.mysql.cj.jdbc.AbandonedConnectionCleanupThread");
+			cleanupThread.getMethod("checkedShutdown").invoke(null);
+		} catch (ClassNotFoundException ignore) {
+		} catch (Exception e) {
+			log.error("Failed to shutdown AbandonedConnectionCleanupThread: " + e.getMessage());
+			e.printStackTrace(System.err);
+		}
+	}
+
 	static class Config {
 		public final String jdbcDriver;
 		public final String jdbcUrl;
@@ -164,8 +217,23 @@ public class QueryDslSqlMetaModelGenerator {
 			this.targetPackage = map.get("targetPackage");
 			this.targetFolder = map.get("targetFolder");
 		}
-	}
 
+		@Override
+		public String toString() {
+			return "Config{" +
+				 "jdbcDriver='" + jdbcDriver + '\'' +
+				 ", jdbcUrl='" + jdbcUrl + '\'' +
+				 ", jdbcUser='" + jdbcUser + '\'' +
+				 ", jdbcPassword='" + jdbcPassword + '\'' +
+				 ", schema='" + schema + '\'' +
+				 ", dialect='" + dialect + '\'' +
+				 ", entityBasePackage='" + entityBasePackage + '\'' +
+				 ", targetFolder='" + targetFolder + '\'' +
+				 ", targetPackage='" + targetPackage + '\'' +
+				 ", namePrefix='" + namePrefix + '\'' +
+				 '}';
+		}
+	}
 	static class ConsoleLog {
 		private final String label;
 

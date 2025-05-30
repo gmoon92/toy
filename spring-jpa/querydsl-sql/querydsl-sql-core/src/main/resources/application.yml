@@ -1,6 +1,6 @@
 spring:
   application:
-    name: querydsl-sql
+    name: querydsl-sql-core
 
   datasource:
     driver-class-name: @jdbc.driver@
@@ -19,9 +19,9 @@ spring:
       ddl-auto: create
 
     properties:
-      # application 실행 시 DDL 파일만 export 가능 (DB에는 적용되지 않음).
-#      javax.persistence.schema-generation.scripts.action: create
-#      javax.persistence.schema-generation.scripts.create-target: schema.sql
+      # application \uC2E4\uD589 \uC2DC DDL \uD30C\uC77C\uB9CC export \uAC00\uB2A5 (DB\uC5D0\uB294 \uC801\uC6A9\uB418\uC9C0 \uC54A\uC74C).
+      #      javax.persistence.schema-generation.scripts.action: create
+      #      javax.persistence.schema-generation.scripts.create-target: schema.sql
 
       hibernate:
         "[hbm2ddl.auto]": create

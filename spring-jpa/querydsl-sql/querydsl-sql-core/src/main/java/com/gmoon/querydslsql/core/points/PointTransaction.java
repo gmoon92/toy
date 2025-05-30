@@ -1,4 +1,4 @@
-package com.gmoon.querydslsql.points;
+package com.gmoon.querydslsql.core.points;
 
 import com.gmoon.javacore.util.TsidUtils;
 import jakarta.persistence.Entity;
