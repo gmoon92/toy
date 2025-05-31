@@ -1,5 +1,6 @@
 package com.gmoon.querydslsql.codegen.generator;
 
+import com.gmoon.querydslsql.codegen.generator.logging.ConsoleLog;
 import com.querydsl.sql.codegen.MetaDataExporter;
 import jakarta.persistence.Entity;
 import org.hibernate.SessionFactory;
@@ -21,8 +22,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <pre>
@@ -181,117 +180,6 @@ public class QueryDslSqlMetaModelGenerator {
 		} catch (Exception e) {
 			log.error("Failed to shutdown AbandonedConnectionCleanupThread: " + e.getMessage());
 			e.printStackTrace(System.err);
-		}
-	}
-
-	static class Config {
-		public final String jdbcDriver;
-		public final String jdbcUrl;
-		public final String jdbcUser;
-		public final String jdbcPassword;
-		public final String schema;
-		public final String dialect;
-		public final String entityBasePackage;
-		public final String targetFolder;
-		public final String targetPackage;
-		public final String namePrefix;
-
-		public Config(String[] args) {
-			Map<String, String> map = new HashMap<>();
-			for (String arg : args) {
-				if (arg.startsWith("--")) {
-					String[] split = arg.substring(2).split("=", 2);
-					if (split.length == 2) {
-						map.put(split[0], split[1]);
-					}
-				}
-			}
-			this.jdbcDriver = map.get("jdbcDriver");
-			this.jdbcUrl = map.get("jdbcUrl");
-			this.jdbcUser = map.get("jdbcUser");
-			this.jdbcPassword = map.get("jdbcPassword");
-			this.schema = map.get("schema");
-			this.dialect = map.get("dialect");
-			this.namePrefix = map.get("namePrefix");
-			this.entityBasePackage = map.get("entityBasePackage");
-			this.targetPackage = map.get("targetPackage");
-			this.targetFolder = map.get("targetFolder");
-		}
-
-		@Override
-		public String toString() {
-			return "Config{" +
-				 "jdbcDriver='" + jdbcDriver + '\'' +
-				 ", jdbcUrl='" + jdbcUrl + '\'' +
-				 ", jdbcUser='" + jdbcUser + '\'' +
-				 ", jdbcPassword='" + jdbcPassword + '\'' +
-				 ", schema='" + schema + '\'' +
-				 ", dialect='" + dialect + '\'' +
-				 ", entityBasePackage='" + entityBasePackage + '\'' +
-				 ", targetFolder='" + targetFolder + '\'' +
-				 ", targetPackage='" + targetPackage + '\'' +
-				 ", namePrefix='" + namePrefix + '\'' +
-				 '}';
-		}
-	}
-	static class ConsoleLog {
-		private final String label;
-
-		public ConsoleLog(String label) {
-			this.label = label;
-		}
-
-		public void info(String msg) {
-			String message = formatMsg(Color.GREEN, "", msg);
-			System.out.println(message);
-		}
-
-		public void warn(String msg) {
-			String message = formatMsg(Color.YELLOW, "[WARN]", msg);
-			System.out.println(message);
-		}
-
-		public void step(String msg) {
-			String message = formatMsg(Color.BLUE, "", msg);
-			System.out.println(message);
-		}
-
-		public void error(String msg) {
-			String message = formatMsg(Color.RED, "[ERROR]", msg);
-			System.err.println(message);
-		}
-
-		private String formatMsg(Color color, String prefix, String msg) {
-			String format = String.format("[%s]%s %s", label, prefix, msg);
-			return color.apply(format);
-		}
-
-		public void banner(String msg) {
-			String bannerMsg = String.format("================== %s %s ==================", label, msg);
-			System.out.println("\n" + Color.bold(Color.GREEN, bannerMsg) + "\n");
-		}
-	}
-
-	public enum Color {
-		RESET("\u001B[0m"),
-		RED("\u001B[31m"),
-		GREEN("\u001B[32m"),
-		YELLOW("\u001B[33m"),
-		BLUE("\u001B[34m"),
-		CYAN("\u001B[36m");
-
-		private final String code;
-
-		Color(String code) {
-			this.code = code;
-		}
-
-		public String apply(String text) {
-			return code + text + RESET.code;
-		}
-
-		public static String bold(Color color, String text) {
-			return "\u001B[1m" + color.code + text + RESET.code;
 		}
 	}
 }
