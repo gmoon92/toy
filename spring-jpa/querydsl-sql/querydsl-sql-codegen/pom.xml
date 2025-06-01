@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-core</artifactId>
-            <version>${querydsl.version}</version>
+            <version>${querydsl-core.version}</version>
             <optional>true</optional>
         </dependency>
 
