@@ -13,6 +13,13 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>querydsl-sql-core</name>
     <description>querydsl-sql-core</description>
+    <properties>
+        <project.base.package>com.gmoon.querydslsql</project.base.package>
+
+        <querydslsql.target.dir>${project.basedir}/target/generated-sources/java/querydslsql</querydslsql.target.dir>
+        <querydslsql.target.package>${project.base.package}.querydslsql</querydslsql.target.package>
+        <querydslsql.metamodel.prefix>S</querydslsql.metamodel.prefix>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -141,12 +148,12 @@
                                 <argument>--jdbcUrl=${jdbc.url}</argument>
                                 <argument>--jdbcUser=${jdbc.username}</argument>
                                 <argument>--jdbcPassword=${jdbc.password}</argument>
-                                <argument>--schema=${db.schema}_sdomain</argument>
+                                <argument>--schema=${db.schema}_querydslsql</argument>
                                 <argument>--dialect=${hibernate.dialect}</argument>
-                                <argument>--namePrefix=S</argument>
-                                <argument>--entityBasePackage=com.gmoon.querydslsql</argument>
-                                <argument>--targetFolder=${project.basedir}/target/generated-sources/java</argument>
-                                <argument>--targetPackage=com.gmoon.querydslsql.sdomains</argument>
+                                <argument>--namePrefix=${querydslsql.metamodel.prefix}</argument>
+                                <argument>--entityBasePackage=${project.base.package}</argument>
+                                <argument>--targetFolder=${querydslsql.target.dir}</argument>
+                                <argument>--targetPackage=${querydslsql.target.package}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -178,7 +185,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <queryDslSqlNamePrefix>S</queryDslSqlNamePrefix>
+                    <sourceDirectory>${querydslsql.target.dir}</sourceDirectory>
                 </configuration>
                 <dependencies>
                     <dependency>

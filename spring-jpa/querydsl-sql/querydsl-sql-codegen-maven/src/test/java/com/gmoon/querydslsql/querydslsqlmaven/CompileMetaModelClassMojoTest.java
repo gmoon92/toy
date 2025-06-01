@@ -62,10 +62,8 @@ class CompileMetaModelClassMojoTest {
 			 getAbsolutePath("lib/querydsl-sql-5.1.0.jar")
 		)).when(mavenProject).getCompileClasspathElements();
 
-		String queryDslSqlNamePrefix = "S";
 		mojo = new CompileMetaModelClassMojo(
 			 mavenProject,
-			 queryDslSqlNamePrefix,
 			 sourceDirectory,
 			 classesDirectory
 		);

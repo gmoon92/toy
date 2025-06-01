@@ -36,10 +36,7 @@ public class CompileMetaModelClassMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	private MavenProject mavenProject;
 
-	@Parameter(defaultValue = "S", required = true)
-	private String metaModelClassPrefix;
-
-	@Parameter(defaultValue = "${project.build.directory}/generated-sources/java", readonly = true, required = true)
+	@Parameter(defaultValue = "${project.build.directory}/generated-sources/java/querydslmeta", readonly = true, required = true)
 	private File sourceDirectory;
 
 	@Parameter(defaultValue = "${project.build.directory}/classes", readonly = true, required = true)
@@ -51,14 +48,8 @@ public class CompileMetaModelClassMojo extends AbstractMojo {
 	public CompileMetaModelClassMojo() {
 	}
 
-	public CompileMetaModelClassMojo(
-		 MavenProject mavenProject,
-		 String queryDslSqlNamePrefix,
-		 File sourceDirectory,
-		 File classesDirectory
-	) {
+	public CompileMetaModelClassMojo(MavenProject mavenProject, File sourceDirectory, File classesDirectory) {
 		this.mavenProject = mavenProject;
-		this.metaModelClassPrefix = queryDslSqlNamePrefix;
 		this.sourceDirectory = sourceDirectory;
 		this.classesDirectory = classesDirectory;
 	}
@@ -89,7 +80,7 @@ public class CompileMetaModelClassMojo extends AbstractMojo {
 		getLog().info("[MetaModel] Scanning for metamodel sources under: " + sourceDirectory);
 		FileSet fileSet = new FileSet();
 		fileSet.setDirectory(sourceDirectory.getAbsolutePath());
-		fileSet.addInclude("**/" + metaModelClassPrefix + "*.java");
+		fileSet.addInclude("**/*.java");
 
 		FileSetManager fileSetManager = new FileSetManager();
 		String[] files = fileSetManager.getIncludedFiles(fileSet);
