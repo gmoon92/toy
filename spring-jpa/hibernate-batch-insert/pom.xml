@@ -141,7 +141,7 @@
                 </configuration>
             </plugin>
 
-            <!--https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html-->
+            <!--            https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html-->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
@@ -193,7 +193,7 @@
                         </goals>
                         <configuration>
                             <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
-                            <!--                            <outputDirectory>target/generated-sources/java</outputDirectory>-->
+                            <outputDirectory>target/generated-sources/java</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
