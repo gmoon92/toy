@@ -126,6 +126,8 @@ public class QueryDslSqlMetaModelGenerator {
 		exporter.setNamePrefix(config.namePrefix);
 		exporter.setPackageName(config.targetPackage);
 		exporter.setTargetFolder(new File(config.targetFolder));
+//		exporter.setGeneratedAnnotationClass("jakarta.annotation.Generated");
+		exporter.setGeneratedAnnotationClass("com.gmoon.querydslsql.codegen.generator.QueryDslSqlMetaModelGenerated");
 		exporter.export(conn.getMetaData());
 	}
 
