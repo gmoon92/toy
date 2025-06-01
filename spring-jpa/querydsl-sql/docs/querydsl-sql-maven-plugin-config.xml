@@ -9,7 +9,7 @@
                 <plugin>
                     <groupId>com.querydsl</groupId>
                     <artifactId>querydsl-maven-plugin</artifactId>
-                    <version>${querydsl.version}</version>
+                    <version>${querydsl-core.version}</version>
                     <executions>
                         <execution>
                             <id>generator-querydsl-meta-model</id>

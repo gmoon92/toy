@@ -15,11 +15,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -73,8 +69,6 @@ public class QueryDslSqlMetaModelGenerator {
 				generateMetaModel(conn);
 				long end = System.currentTimeMillis();
 				log.step("MetaModel Generation Done (" + (end - start) + "ms)");
-
-//				writeByteCodeToFile();
 			}
 		} catch (Exception ex) {
 			log.error("Code generation failed: " + ex.getMessage());
@@ -87,38 +81,6 @@ public class QueryDslSqlMetaModelGenerator {
 		}
 		log.info("QueryDSL-SQL meta-model classes generation completed successfully.");
 		log.banner("GENERATOR END");
-	}
-
-	private void writeByteCodeToFile() {
-		log.step("Compiling ByteCode to file start....");
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		String targetDir = config.targetFolder;
-		String targetPackage = config.targetPackage.replace('.', '/');
-		String targetPath = String.format("%s/%s", targetDir, targetPackage);
-		File javaDir = new File(targetPath);
-		log.step("Target path: " + targetPath);
-		if (!javaDir.exists() || !javaDir.isDirectory()) {
-			throw new RuntimeException("Target java source directory does not exist: " + javaDir.getAbsolutePath());
-		}
-
-		String cp = System.getProperty("java.class.path");
-		log.step("Effective classpath for javac: " + cp);
-
-		for (File file : javaDir.listFiles((dir, name) -> name.endsWith(".java"))) {
-			log.step("Processing file: " + file.getAbsolutePath());
-			ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-			int result = compiler.run(
-				 null, null, new PrintStream(errStream),
-				 "-classpath", cp,
-				 "-d", "target/classes",
-				 file.getPath()
-			);
-			if (result != 0) {
-				log.error(errStream.toString());
-				throw new RuntimeException("Compilation failed for " + file);
-			}
-		}
-		log.step("Compiling ByteCode to file end....");
 	}
 
 	/**

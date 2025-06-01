@@ -35,26 +35,26 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-core</artifactId>
-            <version>${querydsl.version}</version>
+            <version>${querydsl-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>${querydsl.version}</version>
+            <version>${querydsl-core.version}</version>
             <classifier>jakarta</classifier>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql</artifactId>
-            <version>${querydsl.version}</version>
+            <version>${querydsl-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql-codegen</artifactId>
-            <version>${querydsl.version}</version>
+            <version>${querydsl-core.version}</version>
         </dependency>
 
         <dependency>
@@ -117,7 +117,7 @@
                     <dependency>
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-apt</artifactId>
-                        <version>${querydsl.version}</version>
+                        <version>${querydsl-core.version}</version>
                         <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>
@@ -161,7 +161,35 @@
                     <dependency>
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-sql-codegen</artifactId>
-                        <version>${querydsl.version}</version>
+                        <version>${querydsl-core.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>com.gmoon.querydsl-sql</groupId>
+                <artifactId>querydsl-sql-codegen-maven</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile-meta</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <queryDslSqlNamePrefix>S</queryDslSqlNamePrefix>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.querydsl</groupId>
+                        <artifactId>querydsl-sql</artifactId>
+                        <version>${querydsl-core.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.querydsl</groupId>
+                        <artifactId>querydsl-core</artifactId>
+                        <version>${querydsl-core.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

@@ -24,12 +24,12 @@
         <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
         <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
         <hibernate.version>6.5.2.Final</hibernate.version>
-        <querydsl-core.version>5.0.0</querydsl-core.version>
         <mysql-connector-java>8.0.28</mysql-connector-java>
     </properties>
 
     <modules>
         <module>querydsl-sql-codegen</module>
+        <module>querydsl-sql-codegen-maven</module>
         <module>querydsl-sql-core</module>
     </modules>
 </project>
