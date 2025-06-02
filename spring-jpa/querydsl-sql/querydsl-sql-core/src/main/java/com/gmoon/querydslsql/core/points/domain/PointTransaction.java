@@ -1,14 +1,16 @@
-package com.gmoon.querydslsql.core.points;
+package com.gmoon.querydslsql.core.points.domain;
 
 import com.gmoon.javacore.util.TsidUtils;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Table(name = "tb_point_transaction")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
