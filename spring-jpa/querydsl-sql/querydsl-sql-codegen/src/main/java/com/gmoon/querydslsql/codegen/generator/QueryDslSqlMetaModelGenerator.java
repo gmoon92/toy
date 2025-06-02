@@ -5,8 +5,10 @@ import com.querydsl.sql.codegen.MetaDataExporter;
 import jakarta.persistence.Entity;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.MappingSettings;
 import org.hibernate.relational.internal.SchemaManagerImpl;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.internal.HibernateSchemaManagementTool;
@@ -97,6 +99,15 @@ public class QueryDslSqlMetaModelGenerator {
 		configuration.setProperty("hibernate.connection.password", config.jdbcPassword);
 		configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 		configuration.setProperty("hibernate.dialect", config.dialect);
+
+		 configuration.setProperty(MappingSettings.IMPLICIT_NAMING_STRATEGY, "org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl");
+		 configuration.setProperty(MappingSettings.PHYSICAL_NAMING_STRATEGY, "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
+		// configuration.setProperty(MappingSettings.IMPLICIT_NAMING_STRATEGY, SpringImplicitNamingStrategy.class.getName());
+		// configuration.setProperty(MappingSettings.PHYSICAL_NAMING_STRATEGY, CamelCaseToUnderscoresNamingStrategy.class.getName());
+
+		// JPA/Hibernate 6.x 이상에서는 set*NamingStrategy 사용.
+		// configuration.setImplicitNamingStrategy(new SpringImplicitNamingStrategy());
+		configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
 		configuration.setProperty("hibernate.show_sql", "true");
 
 		String basePackage = config.entityBasePackage;
@@ -123,10 +134,13 @@ public class QueryDslSqlMetaModelGenerator {
 		MetaDataExporter exporter = new MetaDataExporter();
 		exporter.setSchemaPattern(config.schema);
 		exporter.setCatalogPattern(config.schema);
-		exporter.setNamePrefix(config.namePrefix);
+		// exporter.setNamePrefix(config.namePrefix);
 		exporter.setPackageName(config.targetPackage);
 		exporter.setTargetFolder(new File(config.targetFolder));
-//		exporter.setGeneratedAnnotationClass("jakarta.annotation.Generated");
+		// exporter.setNamingStrategy(new OriginalNamingStrategy()); // Stb_point_transaction
+		// exporter.setNamingStrategy(new ExtendedNamingStrategy()); // STbPointTransaction
+		// exporter.setNamingStrategy(new DefaultNamingStrategy()); // STbPointTransaction
+		// exporter.setGeneratedAnnotationClass("jakarta.annotation.Generated");
 		exporter.setGeneratedAnnotationClass("com.gmoon.querydslsql.codegen.generator.QueryDslSqlMetaModelGenerated");
 		exporter.export(conn.getMetaData());
 	}
@@ -163,7 +177,8 @@ public class QueryDslSqlMetaModelGenerator {
 					try {
 						DriverManager.deregisterDriver(driver);
 					} catch (Exception e) {
-						log.error("Failed to deregister JDBC driver (" + driver.getClass().getName() + "): " + e.getMessage());
+						log.error("Failed to deregister JDBC driver (" + driver.getClass().getName() + "): "
+							 + e.getMessage());
 						throw e;
 					}
 				}
