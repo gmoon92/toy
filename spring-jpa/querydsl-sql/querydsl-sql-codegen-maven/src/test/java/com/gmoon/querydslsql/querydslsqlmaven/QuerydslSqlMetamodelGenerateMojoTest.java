@@ -30,7 +30,7 @@ import java.util.Deque;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-class CompileMetaModelClassMojoTest {
+class QuerydslSqlMetamodelGenerateMojoTest {
 
 	private final Deque<String> logMessages = new ArrayDeque<>();
 
@@ -38,7 +38,7 @@ class CompileMetaModelClassMojoTest {
 	private File tempDir;
 
 	private File metaClass;
-	private CompileMetaModelClassMojo mojo;
+	private QuerydslSqlMetamodelGenerateMojo mojo;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -62,7 +62,7 @@ class CompileMetaModelClassMojoTest {
 			 getAbsolutePath("lib/querydsl-sql-5.1.0.jar")
 		)).when(mavenProject).getCompileClasspathElements();
 
-		mojo = new CompileMetaModelClassMojo(
+		mojo = new QuerydslSqlMetamodelGenerateMojo(
 			 mavenProject,
 			 sourceDirectory,
 			 classesDirectory
@@ -93,7 +93,7 @@ class CompileMetaModelClassMojoTest {
 	}
 
 	private void invokePrivateMethod(String methodName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-		Method method = CompileMetaModelClassMojo.class.getDeclaredMethod(methodName);
+		Method method = QuerydslSqlMetamodelGenerateMojo.class.getDeclaredMethod(methodName);
 		method.setAccessible(true);
 		method.invoke(mojo);
 	}

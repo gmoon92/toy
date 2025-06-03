@@ -60,18 +60,6 @@
 
         <dependency>
             <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-sql-codegen</artifactId>
-            <version>${querydsl-core.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gmoon.querydsl-sql</groupId>
-            <artifactId>querydsl-sql-codegen</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql-spring</artifactId>
             <version>${querydsl-core.version}</version>
         </dependency>
@@ -138,71 +126,36 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-querydsl-sql-sdomain</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>com.gmoon.querydslsql.codegen.generator.QueryDslSqlMetaModelGenerator</mainClass>
-                            <arguments>
-                                <argument>--jdbcDriver=${jdbc.driver}</argument>
-                                <argument>--jdbcUrl=${jdbc.url}</argument>
-                                <argument>--jdbcUser=${jdbc.username}</argument>
-                                <argument>--jdbcPassword=${jdbc.password}</argument>
-                                <argument>--schema=${db.schema}_querydslsql</argument>
-                                <argument>--dialect=${hibernate.dialect}</argument>
-                                <argument>--entityBasePackage=${project.base.package}</argument>
-                                <argument>--targetFolder=${querydslsql.target.dir}</argument>
-                                <argument>--targetPackage=${querydslsql.target.package}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.gmoon.querydsl-sql</groupId>
-                        <artifactId>querydsl-sql-codegen</artifactId>
-                        <version>0.0.1-SNAPSHOT</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>com.querydsl</groupId>
-                        <artifactId>querydsl-sql-codegen</artifactId>
-                        <version>${querydsl-core.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
-            <plugin>
                 <groupId>com.gmoon.querydsl-sql</groupId>
                 <artifactId>querydsl-sql-codegen-maven</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>compile-meta</goal>
+                            <goal>generate-querydsl-sql-metamodel</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <sourceDirectory>${querydslsql.target.dir}</sourceDirectory>
+                    <options>
+                        <option>--jdbcDriver=${jdbc.driver}</option>
+                        <option>--jdbcUrl=${jdbc.url}</option>
+                        <option>--jdbcUser=${jdbc.username}</option>
+                        <option>--jdbcPassword=${jdbc.password}</option>
+                        <option>--schema=${db.schema}_querydslsql</option>
+                        <option>--dialect=${hibernate.dialect}</option>
+                        <option>--entityBasePackage=${project.base.package}</option>
+                        <option>--targetFolder=${querydslsql.target.dir}</option>
+                        <option>--targetPackage=${querydslsql.target.package}</option>
+                        <option>--outputDirectory=${project.build.directory}/classes</option>
+                    </options>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>com.querydsl</groupId>
-                        <artifactId>querydsl-sql</artifactId>
-                        <version>${querydsl-core.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.querydsl</groupId>
-                        <artifactId>querydsl-core</artifactId>
-                        <version>${querydsl-core.version}</version>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${mysql-connector-java}</version>
                     </dependency>
                 </dependencies>
             </plugin>

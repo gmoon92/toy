@@ -80,12 +80,50 @@
         </dependency>
         <!-- maven plugin -->
 
+        <!-- persistence -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-ant</artifactId>
+            <version>${hibernate.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <!-- persistence -->
+
+        <!-- querydsl -->
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql</artifactId>
             <version>${querydsl-core.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-core</artifactId>
+            <version>${querydsl-core.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-sql-codegen</artifactId>
+            <version>${querydsl-core.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <!-- querydsl -->
+
+        <!-- etc -->
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.146</version>
+        </dependency>
+        <!-- etc -->
 
         <!-- test -->
         <dependency>
@@ -108,25 +146,25 @@
         <!-- test -->
     </dependencies>
 
-    <profiles>
-        <profile>
-            <!-- See http://stackoverflow.com/a/22296107/14731 -->
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
+    <!--    <profiles>-->
+    <!--        <profile>-->
+    <!--            &lt;!&ndash; See http://stackoverflow.com/a/22296107/14731 &ndash;&gt;-->
+    <!--            <id>doclint-java8-disable</id>-->
+    <!--            <activation>-->
+    <!--                <jdk>[1.8,)</jdk>-->
+    <!--            </activation>-->
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <!--            <build>-->
+    <!--                <plugins>-->
+    <!--                    <plugin>-->
+    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                        <artifactId>maven-javadoc-plugin</artifactId>-->
+    <!--                        <configuration>-->
+    <!--                            <additionalparam>-Xdoclint:none</additionalparam>-->
+    <!--                        </configuration>-->
+    <!--                    </plugin>-->
+    <!--                </plugins>-->
+    <!--            </build>-->
+    <!--        </profile>-->
+    <!--    </profiles>-->
 </project>
