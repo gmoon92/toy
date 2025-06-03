@@ -1,0 +1,55 @@
+<project>
+    <dependencies>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-sql-codegen</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-querydsl-sql-sdomain</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.gmoon.querydslsql.codegen.generator.QueryDslSqlMetaModelGenerator</mainClass>
+                            <arguments>
+                                <argument>--jdbcDriver=${jdbc.driver}</argument>
+                                <argument>--jdbcUrl=${jdbc.url}</argument>
+                                <argument>--jdbcUser=${jdbc.username}</argument>
+                                <argument>--jdbcPassword=${jdbc.password}</argument>
+                                <argument>--schema=${db.schema}_querydslsql</argument>
+                                <argument>--dialect=${hibernate.dialect}</argument>
+                                <argument>--entityBasePackage=${project.base.package}</argument>
+                                <argument>--targetFolder=${querydslsql.target.dir}</argument>
+                                <argument>--targetPackage=${querydslsql.target.package}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.gmoon.querydsl-sql</groupId>
+                        <artifactId>querydsl-sql-codegen</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>com.querydsl</groupId>
+                        <artifactId>querydsl-sql-codegen</artifactId>
+                        <version>${querydsl-core.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>
