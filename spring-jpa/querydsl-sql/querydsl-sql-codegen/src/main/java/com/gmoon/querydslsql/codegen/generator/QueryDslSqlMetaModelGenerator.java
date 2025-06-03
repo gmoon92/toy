@@ -100,8 +100,8 @@ public class QueryDslSqlMetaModelGenerator {
 		configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 		configuration.setProperty("hibernate.dialect", config.dialect);
 
-		 configuration.setProperty(MappingSettings.IMPLICIT_NAMING_STRATEGY, "org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl");
-		 configuration.setProperty(MappingSettings.PHYSICAL_NAMING_STRATEGY, "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
+		configuration.setProperty(MappingSettings.IMPLICIT_NAMING_STRATEGY, "org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl");
+		configuration.setProperty(MappingSettings.PHYSICAL_NAMING_STRATEGY, "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
 		// configuration.setProperty(MappingSettings.IMPLICIT_NAMING_STRATEGY, SpringImplicitNamingStrategy.class.getName());
 		// configuration.setProperty(MappingSettings.PHYSICAL_NAMING_STRATEGY, CamelCaseToUnderscoresNamingStrategy.class.getName());
 
