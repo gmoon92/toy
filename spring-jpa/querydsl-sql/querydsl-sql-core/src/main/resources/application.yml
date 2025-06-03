@@ -27,6 +27,6 @@ spring:
         "[hbm2ddl.auto]": create
         #        format_sql: *showsql
         # batch
+        "[jdbc.batch_size]": 500
         order_inserts: true
         order_updates: true
-        "[jdbc.batch_size]": 500

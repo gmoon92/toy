@@ -19,7 +19,7 @@
         <db.schema>querydsl_sql</db.schema>
         <jdbc.username>root</jdbc.username>
         <jdbc.password>111111</jdbc.password>
-        <jdbc.option>createDatabaseIfNotExist=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false&amp;characterEncoding=UTF-8&amp;rewriteBatchedStatements=true&amp;logger=Slf4JLogger&amp;profileSQL=true&amp;maxQuerySizeToLog=999999</jdbc.option>
+        <jdbc.option>createDatabaseIfNotExist=true&amp;serverTimezone=UTC&amp;characterEncoding=UTF-8&amp;rewriteBatchedStatements=true&amp;logger=Slf4JLogger&amp;profileSQL=true&amp;maxQuerySizeToLog=999999</jdbc.option>
         <jdbc.url>jdbc:mysql://localhost:3306</jdbc.url>
         <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
         <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>

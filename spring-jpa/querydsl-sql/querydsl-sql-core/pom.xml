@@ -17,8 +17,7 @@
         <project.base.package>com.gmoon.querydslsql</project.base.package>
 
         <querydslsql.target.dir>${project.basedir}/target/generated-sources/java/querydslsql</querydslsql.target.dir>
-        <querydslsql.target.package>${project.base.package}.querydslsql</querydslsql.target.package>
-        <querydslsql.metamodel.prefix>S</querydslsql.metamodel.prefix>
+        <querydslsql.target.package>${project.base.package}.core.querydslsql</querydslsql.target.package>
     </properties>
 
     <dependencies>
@@ -52,6 +51,7 @@
             <classifier>jakarta</classifier>
         </dependency>
 
+        <!-- querydsl sql -->
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql</artifactId>
@@ -65,6 +65,19 @@
         </dependency>
 
         <dependency>
+            <groupId>com.gmoon.querydsl-sql</groupId>
+            <artifactId>querydsl-sql-codegen</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-sql-spring</artifactId>
+            <version>${querydsl-core.version}</version>
+        </dependency>
+        <!-- querydsl sql -->
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
@@ -73,12 +86,6 @@
         <dependency>
             <groupId>com.gmoon</groupId>
             <artifactId>java-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gmoon.querydsl-sql</groupId>
-            <artifactId>querydsl-sql-codegen</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -150,7 +157,6 @@
                                 <argument>--jdbcPassword=${jdbc.password}</argument>
                                 <argument>--schema=${db.schema}_querydslsql</argument>
                                 <argument>--dialect=${hibernate.dialect}</argument>
-                                <argument>--namePrefix=${querydslsql.metamodel.prefix}</argument>
                                 <argument>--entityBasePackage=${project.base.package}</argument>
                                 <argument>--targetFolder=${querydslsql.target.dir}</argument>
                                 <argument>--targetPackage=${querydslsql.target.package}</argument>
