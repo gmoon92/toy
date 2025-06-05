@@ -1,14 +1,14 @@
 package com.gmoon.querydslsql.core.points;
 
-import com.gmoon.javacore.util.TsidUtils;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Table(name = "tb_point_transaction")
 @Entity
@@ -24,7 +24,7 @@ public class PointTransaction {
 	private LocalDateTime transactionAt;
 
 	public PointTransaction(String userId, int amount, String type) {
-		this.id = TsidUtils.generate(4, 4, "-");
+		this.id = UUID.randomUUID().toString();
 		this.userId = userId;
 		this.amount = amount;
 		this.type = type;

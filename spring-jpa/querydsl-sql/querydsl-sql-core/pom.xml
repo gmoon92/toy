@@ -15,8 +15,6 @@
     <description>querydsl-sql-core</description>
     <properties>
         <project.base.package>com.gmoon.querydslsql</project.base.package>
-
-        <querydslsql.target.dir>${project.basedir}/target/generated-sources/java/querydslsql</querydslsql.target.dir>
         <querydslsql.target.package>${project.base.package}.core.querydslsql</querydslsql.target.package>
     </properties>
 
@@ -69,12 +67,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.gmoon</groupId>
-            <artifactId>java-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -132,24 +124,21 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>generate-querydsl-sql-metamodel</goal>
+                            <goal>process</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <sourceDirectory>${querydslsql.target.dir}</sourceDirectory>
-                    <options>
-                        <option>--jdbcDriver=${jdbc.driver}</option>
-                        <option>--jdbcUrl=${jdbc.url}</option>
-                        <option>--jdbcUser=${jdbc.username}</option>
-                        <option>--jdbcPassword=${jdbc.password}</option>
-                        <option>--schema=${db.schema}_querydslsql</option>
-                        <option>--dialect=${hibernate.dialect}</option>
-                        <option>--entityBasePackage=${project.base.package}</option>
-                        <option>--targetFolder=${querydslsql.target.dir}</option>
-                        <option>--targetPackage=${querydslsql.target.package}</option>
-                        <option>--outputDirectory=${project.build.directory}/classes</option>
-                    </options>
+                    <config>
+                        <jdbcDriver>${jdbc.driver}</jdbcDriver>
+                        <jdbcUrl>${jdbc.url}</jdbcUrl>
+                        <jdbcUser>${jdbc.username}</jdbcUser>
+                        <jdbcPassword>${jdbc.password}</jdbcPassword>
+                        <schema>${db.schema}</schema>
+                        <dialect>${hibernate.dialect}</dialect>
+                        <basePackage>${project.base.package}</basePackage>
+                        <targetPackage>${querydslsql.target.package}</targetPackage>
+                    </config>
                 </configuration>
                 <dependencies>
                     <dependency>

@@ -29,7 +29,7 @@
                                 <argument>--jdbcPassword=${jdbc.password}</argument>
                                 <argument>--schema=${db.schema}_querydslsql</argument>
                                 <argument>--dialect=${hibernate.dialect}</argument>
-                                <argument>--entityBasePackage=${project.base.package}</argument>
+                                <argument>--basePackage=${project.base.package}</argument>
                                 <argument>--targetFolder=${querydslsql.target.dir}</argument>
                                 <argument>--targetPackage=${querydslsql.target.package}</argument>
                             </arguments>

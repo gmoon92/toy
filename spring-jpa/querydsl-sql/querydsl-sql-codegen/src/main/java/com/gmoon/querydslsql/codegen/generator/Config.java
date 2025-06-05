@@ -10,7 +10,7 @@ public class Config {
 	public final String jdbcPassword;
 	public final String schema;
 	public final String dialect;
-	public final String entityBasePackage;
+	public final String basePackage;
 	public final String targetFolder;
 	public final String targetPackage;
 	public final String namePrefix;
@@ -32,7 +32,7 @@ public class Config {
 		this.schema = map.get("schema");
 		this.dialect = map.get("dialect");
 		this.namePrefix = map.get("namePrefix");
-		this.entityBasePackage = map.get("entityBasePackage");
+		this.basePackage = map.get("entityBasePackage");
 		this.targetPackage = map.get("targetPackage");
 		this.targetFolder = map.get("targetFolder");
 	}
@@ -46,7 +46,7 @@ public class Config {
 			 ", jdbcPassword='" + jdbcPassword + '\'' +
 			 ", schema='" + schema + '\'' +
 			 ", dialect='" + dialect + '\'' +
-			 ", entityBasePackage='" + entityBasePackage + '\'' +
+			 ", entityBasePackage='" + basePackage + '\'' +
 			 ", targetFolder='" + targetFolder + '\'' +
 			 ", targetPackage='" + targetPackage + '\'' +
 			 ", namePrefix='" + namePrefix + '\'' +

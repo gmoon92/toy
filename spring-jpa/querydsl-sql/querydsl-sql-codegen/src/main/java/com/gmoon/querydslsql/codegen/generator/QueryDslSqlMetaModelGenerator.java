@@ -110,7 +110,7 @@ public class QueryDslSqlMetaModelGenerator {
 		configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
 		configuration.setProperty("hibernate.show_sql", "true");
 
-		String basePackage = config.entityBasePackage;
+		String basePackage = config.basePackage;
 		registerEntityClasses(configuration, basePackage);
 		return configuration.buildSessionFactory();
 	}

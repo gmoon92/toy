@@ -15,7 +15,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <java.version>21</java.version>
         <db.schema>querydsl_sql</db.schema>
         <jdbc.username>root</jdbc.username>
         <jdbc.password>111111</jdbc.password>
