@@ -1,3 +1,28 @@
+Spring boot 3.5 version issued
+
+@Query hibernate SyntaxException
+
+- https://github.com/spring-projects/spring-boot/issues/45661
+- https://github.com/spring-projects/spring-data-jpa/issues/3895
+
+```java
+public interface JpaTicketOfficeRepository extends JpaRepository<TicketOffice, Long> {
+
+	@Query("SELECT m FROM Movie m WHERE m.id =:movieId AND m.ticketOffice.id = :id")
+	Optional<Movie> findByIdAndMovieId(Long id, Long movieId);
+}
+```
+```text
+org.springframework.dao.InvalidDataAccessApiUsageException: org.hibernate.query.SyntaxException: At 1:55 and token ')', no viable alternative at input 'SELECT new com.gmoon.dbrestore.web.movies.domain.Movie(*) FROM Movie m WHERE m.id = :movieId AND m.ticketOffice.id = :id' [SELECT new com.gmoon.dbrestore.web.movies.domain.Movie() FROM Movie m WHERE m.id = :movieId AND m.ticketOffice.id = :id]
+```
+
+```java
+// @Query("SELECT m FROM Movie m WHERE m.id =:movieId AND m.ticketOffice.id = :id")
+@Query("FROM Movie m WHERE m.id =:movieId AND m.ticketOffice.id = :id")
+```
+
+----
+
 ## DB Lock
 
 ### dataSource.getConnection()

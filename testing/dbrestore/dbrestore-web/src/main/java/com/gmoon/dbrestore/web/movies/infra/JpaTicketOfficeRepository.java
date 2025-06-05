@@ -18,6 +18,7 @@ public interface JpaTicketOfficeRepository extends JpaRepository<TicketOffice, L
 	@Query("SELECT to, m FROM TicketOffice to JOIN to.movies m WHERE m.id = :movieId")
 	Page<TicketOffice> findAllByMovieIdAndPage(@Param("movieId") Long movieId, Pageable pageable);
 
-	@Query("SELECT m FROM Movie m WHERE m.id =:movieId AND m.ticketOffice.id = :id")
+	// @Query("SELECT m FROM Movie m WHERE m.id =:movieId AND m.ticketOffice.id = :id")
+	@Query("FROM Movie m WHERE m.id =:movieId AND m.ticketOffice.id = :id")
 	Optional<Movie> findByIdAndMovieId(Long id, Long movieId);
 }
