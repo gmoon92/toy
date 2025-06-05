@@ -1,18 +1,15 @@
 package com.gmoon.springdatar2dbc.global;
 
-import javax.sql.DataSource;
-
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
 
+@Profile("jpa")
 @Configuration
 @EnableJpaRepositories(
 	 basePackages = {"com.gmoon.*"},
