@@ -17,7 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <app-store-server-library.version>3.2.0</app-store-server-library.version>
-        <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
 
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
