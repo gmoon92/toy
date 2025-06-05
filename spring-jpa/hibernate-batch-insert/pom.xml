@@ -15,7 +15,6 @@
     <description>hibernate-batch-insert</description>
 
     <properties>
-        <java.version>21</java.version>
         <lombok.version>1.18.36</lombok.version>
         <auto-service.version>1.1.1</auto-service.version>
     </properties>
