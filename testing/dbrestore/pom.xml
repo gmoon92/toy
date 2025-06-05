@@ -16,12 +16,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>test</module>
-        <module>web</module>
+        <module>dbrestore-test</module>
+        <module>dbrestore-web</module>
     </modules>
 
     <properties>
-        <java.version>17</java.version>
         <sql-maven-plugin.version>3.0.0</sql-maven-plugin.version>
         <p6spy.version>3.8.2</p6spy.version>
         <jsqlparser.version>5.0</jsqlparser.version>

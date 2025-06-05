@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>com.gmoon.dbrestore</groupId>
-            <artifactId>test</artifactId>
+            <artifactId>dbrestore-test</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
