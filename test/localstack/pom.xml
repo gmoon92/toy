@@ -4,15 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.gmoon</groupId>
-        <artifactId>testing</artifactId>
+        <artifactId>test</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <groupId>com.gmoon</groupId>
-    <artifactId>junit5</artifactId>
+    <artifactId>localstack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>junit5</name>
-    <description>junit5</description>
+    <name>localstack</name>
+    <description>localstack</description>
+
+    <properties>
+        <aws-java-sdk-s3.version>1.12.295</aws-java-sdk-s3.version>
+        <localstack-utils.version>0.2.21</localstack-utils.version>
+        <testcontainers.version>1.17.3</testcontainers.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -32,14 +38,44 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-            <scope>runtime</scope>
+            <groupId>com.gmoon</groupId>
+            <artifactId>java-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws-java-sdk-s3.version}</version>
+        </dependency>
+
+        <!-- localstack -->
+        <dependency>
+            <groupId>cloud.localstack</groupId>
+            <artifactId>localstack-utils</artifactId>
+            <version>${localstack-utils.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- localstack -->
+
+        <!-- testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>localstack</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- testcontainers -->
     </dependencies>
 
     <build>

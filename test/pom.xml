@@ -10,7 +10,7 @@
 	</parent>
 
     <groupId>com.gmoon</groupId>
-    <artifactId>testing</artifactId>
+    <artifactId>test</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>testing</name>
     <packaging>pom</packaging>

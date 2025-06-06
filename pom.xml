@@ -47,6 +47,6 @@
         <module>spring-triangle</module>
         <module>spring-tx</module>
         <module>spring-utils</module>
-        <module>testing</module>
+        <module>test</module>
     </modules>
 </project>
