@@ -27,8 +27,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
@@ -160,20 +158,34 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 
 	private void scanMetaModelSources() {
 		log.step("Scanning generated metamodel sources in: " + targetFolder.getAbsolutePath());
-		FileSet fileSet = new FileSet();
-		fileSet.setDirectory(targetFolder.getAbsolutePath());
-		fileSet.addInclude("**/*.java");
-
-		FileSetManager fileSetManager = new FileSetManager();
-		String[] files = fileSetManager.getIncludedFiles(fileSet);
-		for (String fileName : files) {
-			File candidateFile = new File(targetFolder, fileName);
+		List<File> found = new ArrayList<>();
+		findJavaFiles(targetFolder, found);
+		for (File candidateFile : found) {
 			if (candidateFile.isFile()) {
 				metaModelSources.add(candidateFile);
 				log.step("Found metamodel source: " + candidateFile.getAbsolutePath());
 			}
 		}
 		log.step("Total metamodel sources found: " + metaModelSources.size());
+	}
+
+	private void findJavaFiles(File dir, List<File> found) {
+		if (dir == null || !dir.exists()) {
+			return;
+		}
+
+		File[] files = dir.listFiles();
+		if (files == null) {
+			return;
+		}
+
+		for (File file : files) {
+			if (file.isDirectory()) {
+				findJavaFiles(file, found);
+			} else if (file.getName().endsWith(".java")) {
+				found.add(file);
+			}
+		}
 	}
 
 	private void compileMetaModelSources() throws MojoExecutionException {
@@ -314,9 +326,13 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 	private void generateMetaModel(Connection conn) throws SQLException {
 		long start = System.currentTimeMillis();
 		log.step("MetaModel Generation");
+		String queryDslSqlSchema = getQueryDslSqlSchema();
+		log.info("target schema : " + queryDslSqlSchema);
+		log.info("target package: " + config.getTargetPackage());
+		log.info("target folder : " + targetFolder.getAbsolutePath());
 		MetaDataExporter exporter = new MetaDataExporter();
-		exporter.setSchemaPattern(getQueryDslSqlSchema());
-		exporter.setCatalogPattern(getQueryDslSqlSchema());
+		exporter.setSchemaPattern(queryDslSqlSchema);
+		exporter.setCatalogPattern(queryDslSqlSchema);
 		exporter.setPackageName(config.getTargetPackage());
 
 		exporter.setTargetFolder(targetFolder);
