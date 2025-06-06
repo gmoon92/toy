@@ -8,6 +8,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+
             <properties>
                 <jenkins.build.number/>
                 <appstore.bundle-id>com.example</appstore.bundle-id>

@@ -47,10 +47,18 @@
             <artifactId>spring-data-envers</artifactId>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>3.3.1</version>
+            <version>${mariadb.jdbc.version}</version>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${jdbc.mysql.version}</version>
         </dependency>
 
         <dependency>

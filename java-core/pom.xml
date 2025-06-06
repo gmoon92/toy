@@ -20,6 +20,7 @@
         <zxing.version>3.5.1</zxing.version>
         <totp.version>1.7.1</totp.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

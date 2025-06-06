@@ -17,7 +17,6 @@
     <properties>
         <db.address>localhost</db.address>
         <db.name>dbrestore</db.name>
-        <jdbc.driverClassName>com.mysql.cj.jdbc.Driver</jdbc.driverClassName>
         <jdbc.connection-protocol>jdbc:mysql:</jdbc.connection-protocol>
         <jdbc.option>createDatabaseIfNotExist=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false&amp;useUnicode=true&amp;autoReconnect=true&amp;rewriteBatchedStatements=true&amp;characterEncoding=UTF-8</jdbc.option>
         <jdbc.url>${jdbc.connection-protocol}//${db.address}/${db.name}?${jdbc.option}</jdbc.url>
@@ -42,7 +41,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
+            <version>${jdbc.mysql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.gmoon</groupId>
@@ -74,12 +73,12 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-core</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
             <classifier>jakarta</classifier>
             <exclusions>
                 <exclusion>
@@ -119,7 +118,7 @@
                     <dependency>
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql-connector-java.version}</version>
+                        <version>${jdbc.mysql.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -131,7 +130,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <driver>${jdbc.driverClassName}</driver>
+                            <driver>${jdbc.mysql.driver}</driver>
                             <url>${dbrestore.jdbc.url}</url>
                             <username>${jdbc.username}</username>
                             <password>${jdbc.password}</password>
@@ -164,7 +163,7 @@
                     <dependency>
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-apt</artifactId>
-                        <version>${querydsl-core.version}</version>
+                        <version>${querydsl.version}</version>
                         <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>

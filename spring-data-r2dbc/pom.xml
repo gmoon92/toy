@@ -15,8 +15,9 @@
 
     <properties>
         <r2dbc-mariadb.version>1.2.1</r2dbc-mariadb.version>
+        <r2dbc-mysql.version>1.4.0</r2dbc-mysql.version>
+        
         <netty-resolver-dns-native-macos.version>4.1.121.Final</netty-resolver-dns-native-macos.version>
-        <mariadb-java-client.version>3.4.1</mariadb-java-client.version>
     </properties>
 
     <dependencies>
@@ -53,17 +54,31 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- mariadb
         <dependency>
             <groupId>org.mariadb</groupId>
             <artifactId>r2dbc-mariadb</artifactId>
             <version>${r2dbc-mariadb.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>${mariadb-java-client.version}</version>
+            <version>${mariadb.jdbc.version}</version>
         </dependency>
+        -->
+
+        <!-- https://github.com/asyncer-io/r2dbc-mysql -->
+        <dependency>
+            <groupId>io.asyncer</groupId>
+            <artifactId>r2dbc-mysql</artifactId>
+            <version>${r2dbc-mysql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${jdbc.mysql.version}</version>
+        </dependency>
+
         <!-- M1 netty issued https://github.com/netty/netty/issues/11020 -->
         <dependency>
             <groupId>io.netty</groupId>

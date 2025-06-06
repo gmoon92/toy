@@ -33,19 +33,19 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java}</version>
+            <version>${jdbc.mysql.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-core</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
             <classifier>jakarta</classifier>
         </dependency>
 
@@ -53,13 +53,13 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-sql-spring</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
         </dependency>
         <!-- querydsl sql -->
 
@@ -111,7 +111,7 @@
                     <dependency>
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-apt</artifactId>
-                        <version>${querydsl-core.version}</version>
+                        <version>${querydsl.version}</version>
                         <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>
@@ -130,12 +130,12 @@
                 </executions>
                 <configuration>
                     <config>
-                        <jdbcDriver>${jdbc.driver}</jdbcDriver>
+                        <jdbcDriver>${jdbc.mysql.driver}</jdbcDriver>
                         <jdbcUrl>${jdbc.url}</jdbcUrl>
                         <jdbcUser>${jdbc.username}</jdbcUser>
                         <jdbcPassword>${jdbc.password}</jdbcPassword>
                         <schema>${db.schema}</schema>
-                        <dialect>${hibernate.dialect}</dialect>
+                        <dialect>${hibernate.mysql.dialect}</dialect>
                         <basePackage>${project.base.package}</basePackage>
                         <targetPackage>${querydslsql.target.package}</targetPackage>
                     </config>
@@ -144,7 +144,7 @@
                     <dependency>
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql-connector-java}</version>
+                        <version>${jdbc.mysql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

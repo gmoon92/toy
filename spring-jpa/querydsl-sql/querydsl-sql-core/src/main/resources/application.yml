@@ -3,16 +3,16 @@ spring:
     name: querydsl-sql-core
 
   datasource:
-    driver-class-name: @jdbc.driver@
+    driver-class-name: @jdbc.mysql.driver@
     url: @jdbc.url@/@db.schema@?@jdbc.option@
     username: @jdbc.username@
     password: @jdbc.password@
     hikari:
-      driver-class-name: @jdbc.driver@
+      driver-class-name: @jdbc.mysql.driver@
 
   jpa:
     open-in-view: false
-    database-platform: @hibernate.dialect@
+    database-platform: @hibernate.mysql.dialect@
     show-sql: &showsql true
     generate-ddl: true
     hibernate:

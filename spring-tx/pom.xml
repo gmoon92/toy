@@ -39,12 +39,12 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-core</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
             <classifier>jakarta</classifier>
             <exclusions>
                 <exclusion>
@@ -107,7 +107,7 @@
                     <dependency>
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-apt</artifactId>
-                        <version>${querydsl-core.version}</version>
+                        <version>${querydsl.version}</version>
                         <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>

@@ -12,6 +12,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-kafka-broker</name>
     <description>spring-kafka-broker</description>
+
     <properties>
         <testcontainers.version>1.21.0</testcontainers.version>
     </properties>
@@ -48,6 +49,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>${jdbc.mysql.version}</version>
         </dependency>
         <!-- persistence -->
 

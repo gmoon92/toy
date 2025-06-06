@@ -15,10 +15,6 @@
     <name>spring-quartz-cluster</name>
     <description>spring-quartz-cluster</description>
 
-    <properties>
-        <querydsl-core.version>5.0.0</querydsl-core.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,7 +48,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
+            <version>${jdbc.mysql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -62,13 +58,13 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>${querydsl-core.version}</version>
+            <version>${querydsl.version}</version>
             <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
+            <version>${jdbc.h2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -112,7 +108,7 @@
                     <dependency>
                         <groupId>com.querydsl</groupId>
                         <artifactId>querydsl-apt</artifactId>
-                        <version>${querydsl-core.version}</version>
+                        <version>${querydsl.version}</version>
                         <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>

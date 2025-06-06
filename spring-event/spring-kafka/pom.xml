@@ -20,16 +20,12 @@
         <module>spring-kafka-producer</module>
     </modules>
 
-    <properties>
-        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-connector-java.version}</version>
+                <version>${jdbc.mysql.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

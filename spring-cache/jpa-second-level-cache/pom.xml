@@ -18,6 +18,7 @@
     <properties>
         <quick-perf.version>1.1.0</quick-perf.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -100,7 +101,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
+            <version>${jdbc.h2.version}</version>
         </dependency>
         <!-- persistence end -->
 

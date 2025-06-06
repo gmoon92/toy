@@ -13,10 +13,6 @@
     <name>spring-bean-profiler</name>
     <description>spring-bean-profiler</description>
 
-    <properties>
-        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,7 +39,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
+            <version>${jdbc.mysql.version}</version>
         </dependency>
     </dependencies>
 

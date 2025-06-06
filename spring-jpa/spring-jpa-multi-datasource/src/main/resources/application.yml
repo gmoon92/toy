@@ -2,15 +2,18 @@ spring:
   datasource:
     jdbc-url-option: createDatabaseIfNotExist=true
 #    EntityManager 는 데이터베이스 및 dialect 는 단 하나만 존재 설정 가능
-    driver-class-name: &driverClassName org.mariadb.jdbc.Driver
+#    driver-class-name: &driverClassName org.mariadb.jdbc.Driver
+    driver-class-name: &driverClassName com.mysql.cj.jdbc.Driver
     master:
       driver-class-name: *driverClassName
-      url: jdbc:mariadb://localhost:3306/spring-jpa-multi-datasource?${spring.datasource.jdbc-url-option}
+#      url: jdbc:mariadb://localhost:3306/spring-jpa-multi-datasource?${spring.datasource.jdbc-url-option}
+      url: jdbc:mysql://localhost:3306/spring-jpa-multi-datasource?${spring.datasource.jdbc-url-option}
       username: root
       password: 111111
     slave:
       driver-class-name: *driverClassName
-      url: jdbc:mariadb://localhost:3306/spring-jpa-multi-datasource?${spring.datasource.jdbc-url-option}
+#      url: jdbc:mariadb://localhost:3306/spring-jpa-multi-datasource?${spring.datasource.jdbc-url-option}
+      url: jdbc:mysql://localhost:3306/spring-jpa-multi-datasource?${spring.datasource.jdbc-url-option}
       username: root
       password: 111111
       read-only: true
@@ -18,7 +21,8 @@ spring:
   jpa:
     defer-datasource-initialization: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.MariaDBDialect
+#    database-platform: org.hibernate.dialect.MariaDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     generate-ddl: true
     properties:
       hibernate:

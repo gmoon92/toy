@@ -1,11 +1,13 @@
 #database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true
-database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+#database-url: mariadb://localhost:3306/spring-data-r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+database-url: mysql://localhost:3306/spring-data-r2dbc
 spring:
   data:
 #    "[r2dbc.repositories.enabled]": false
 
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
+#    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:${database-url}
     username: root
     password: 111111
@@ -13,7 +15,8 @@ spring:
   jpa:
     defer-datasource-initialization: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.MariaDBDialect
+#    database-platform: org.hibernate.dialect.MariaDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: &show-sql true
     generate-ddl: true
     properties:
