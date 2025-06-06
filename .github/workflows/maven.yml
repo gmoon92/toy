@@ -42,8 +42,7 @@ jobs:
     # https://github.com/marketplace/actions/actions-setup-mysql
     steps:
       - name: Set up mysql
-      - uses: actions/checkout@v4
-      - uses: shogo82148/actions-setup-mysql@v1
+        uses: shogo82148/actions-setup-mysql@v1
 #        uses: getong/mariadb-action@v1.11
         with:
           mysql-version: "8.0"
