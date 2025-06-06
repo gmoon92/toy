@@ -20,7 +20,7 @@ class CouponServiceTest {
 	void issue() {
 		CouponRequest couponRequest = new CouponRequest(
 			 "new 2025",
-			 100_000, // 1s
+			 100,
 			 Instant.now(),
 			 Instant.now()
 		);
