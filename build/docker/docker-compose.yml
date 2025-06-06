@@ -7,20 +7,30 @@ services:
     ports:
       - "6379:6379"
 
-  # https://mariadb.com/kb/en/how-to-quickly-insert-data-into-mariadb/
-  mariadb:
-    image: mariadb:11.2.4-jammy
+  mysql:
+    image: bitnami/mysql:8.4.4
     environment:
       - TZ=UTC
-      - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=111111
+      - MYSQL_CHARACTER_SET=utf8mb4
+      - MYSQL_COLLATE=utf8mb4_unicode_ci
     ports:
       - 3306:3306
-    command:
-      - --lower_case_table_names=1
-      - --skip-ssl
-      - --character_set_server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
+
+  # https://mariadb.com/kb/en/how-to-quickly-insert-data-into-mariadb/
+#  mariadb:
+#    image: mariadb:11.2.4-jammy
+#    environment:
+#      - TZ=UTC
+#      - MYSQL_USER=root
+#      - MYSQL_ROOT_PASSWORD=111111
+#    ports:
+#      - 3306:3306
+#    command:
+#      - --lower_case_table_names=1
+#      - --skip-ssl
+#      - --character_set_server=utf8mb4
+#      - --collation-server=utf8mb4_unicode_ci
 
   rabbitmq:
     image: rabbitmq:management
