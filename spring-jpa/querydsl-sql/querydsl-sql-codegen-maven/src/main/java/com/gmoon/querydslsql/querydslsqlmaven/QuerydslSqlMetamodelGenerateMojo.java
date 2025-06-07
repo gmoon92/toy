@@ -1,12 +1,6 @@
 package com.gmoon.querydslsql.querydslsqlmaven;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -16,9 +10,6 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -36,14 +27,12 @@ import org.hibernate.cfg.MappingSettings;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.gmoon.querydslsql.querydslsqlmaven.logging.ConsoleLog;
 import com.google.common.annotations.VisibleForTesting;
 import com.querydsl.sql.codegen.MetaDataExporter;
-
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
-import jakarta.persistence.Entity;
 
 /**
  * Maven Mojo for QueryDSL SQL MetaModel code generation and on-the-fly compilation.
@@ -82,6 +71,11 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 	@Parameter(defaultValue = "false")
 	private boolean testClasspath;
 
+	@Parameter
+	private List<String> compilerOptions = new ArrayList<>();
+
+	private JavaCompilerHelper javaCompilerHelper;
+
 	public QuerydslSqlMetamodelGenerateMojo() {
 	}
 
@@ -94,29 +88,26 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 		this.mavenProject = mavenProject;
 		this.generatedSourcesDirectory = generatedSourcesDirectory;
 		this.classesDirectory = classesDirectory;
-		setup(targetFolder);
+		setupTargetFolder(targetFolder);
 	}
 
-	private void setup(String targetFolder) throws MojoExecutionException {
-		this.targetFolder = getFileDir(generatedSourcesDirectory, targetFolder);
-	}
-
-	private File getFileDir(File target, String targetFolder) throws MojoExecutionException {
-		log.info("target: " + targetFolder + " targetDirectory: " + target);
-		File targetDirectory = new File(target, targetFolder);
+	private void setupTargetFolder(String targetFolder) throws MojoExecutionException {
+		log.info("target: " + targetFolder + " targetDirectory: " + generatedSourcesDirectory);
+		File targetDirectory = new File(generatedSourcesDirectory, targetFolder);
 		if (!targetDirectory.exists()) {
 			boolean created = targetDirectory.mkdirs();
 			if (!created) {
 				throw new MojoExecutionException("Failed to create target directory: " + targetDirectory);
 			}
 		}
-		return targetDirectory;
+		this.targetFolder = targetDirectory;
+		javaCompilerHelper = new JavaCompilerHelper(mavenProject, compilerOptions, testClasspath);
 	}
 
 	@Override
 	public void execute() throws MojoExecutionException {
 		log.banner("QUERYDSL META MODEL GENERATION START");
-		setup("qeurydslsql");
+		setupTargetFolder("qeurydslsql");
 		log.info("Config: " + config);
 		ensureDirectoryExists(targetFolder, "Source");
 		ensureDirectoryExists(classesDirectory, "Classes");
@@ -129,19 +120,21 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 		log.banner("QUERYDSL META MODEL GENERATION END");
 	}
 
-	private void generateMetaModel() {
+	private void generateMetaModel() throws MojoExecutionException {
 		log.step("DB Connection");
-		log.info("Connecting: " + config.getJdbcUrl() + " (user: " + config.getJdbcUser() + ")");
-		try (Connection conn = DriverManager.getConnection(config.getJdbcUrl(), config.getJdbcUser(),
-			 config.getJdbcPassword())) {
-			createSchema();
+		String jdbcUrl = config.getJdbcUrl();
+		String jdbcUser = config.getJdbcUser();
+		Metadata metadata = getMetadata();
+		log.info("Connecting: " + jdbcUrl + " (user: " + jdbcUser + ")");
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUser, config.getJdbcPassword())) {
+			createSchema(metadata);
 			generateMetaModel(conn);
 		} catch (Exception ex) {
 			log.error("Code generation failed: " + ex.getMessage());
 			ex.printStackTrace(System.err);
-			System.exit(1);
 		} finally {
 			log.step("DB Connection closing.");
+			dropSchema(metadata);
 			closeDbConnection();
 			log.step("DB Connection closed.");
 		}
@@ -158,8 +151,7 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 
 	private void scanMetaModelSources() {
 		log.step("Scanning generated metamodel sources in: " + targetFolder.getAbsolutePath());
-		List<File> found = new ArrayList<>();
-		findJavaFiles(targetFolder, found);
+		List<File> found = javaCompilerHelper.findJavaFiles(targetFolder);
 		for (File candidateFile : found) {
 			if (candidateFile.isFile()) {
 				metaModelSources.add(candidateFile);
@@ -169,86 +161,19 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 		log.step("Total metamodel sources found: " + metaModelSources.size());
 	}
 
-	private void findJavaFiles(File dir, List<File> found) {
-		if (dir == null || !dir.exists()) {
-			return;
-		}
-
-		File[] files = dir.listFiles();
-		if (files == null) {
-			return;
-		}
-
-		for (File file : files) {
-			if (file.isDirectory()) {
-				findJavaFiles(file, found);
-			} else if (file.getName().endsWith(".java")) {
-				found.add(file);
-			}
-		}
-	}
-
 	private void compileMetaModelSources() throws MojoExecutionException {
-		if (metaModelSources.isEmpty()) {
-			log.info("No metamodel sources found. Skipping compile step.");
-			return;
-		}
-		log.info("Compiling " + metaModelSources.size() + " metamodel source files...");
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		if (compiler == null) {
-			throw new MojoExecutionException("JDK required for source compilation (no javac found).");
-		}
+		log.info("Metamodel compiling " + metaModelSources.size() + " metamodel source files...");
+		javaCompilerHelper.compileJavaFiles(metaModelSources, classesDirectory);
 
-		List<String> classpathElements = getClasspathElements();
-		String classpath = classpathElements.isEmpty() ? "" : String.join(File.pathSeparator, classpathElements);
-
-		for (File sourceFile : metaModelSources) {
-			log.info("Compiling: " + sourceFile.getAbsolutePath());
-			try (ByteArrayOutputStream errStream = new ByteArrayOutputStream()) {
-				int result = compiler.run(
-					 null,
-					 null,
-					 errStream,
-					 "-classpath", classpath,
-					 "-d", classesDirectory.getAbsolutePath(),
-					 sourceFile.getAbsolutePath()
-				);
-				if (result != 0) {
-					String errorMsg = "Compilation failed for " + sourceFile.getName() + ":\n" + errStream.toString(
-						 StandardCharsets.UTF_8);
-					log.error(errorMsg);
-					throw new MojoExecutionException(errorMsg);
-				}
-			} catch (IOException e) {
-				throw new MojoExecutionException("Error compiling: " + sourceFile.getAbsolutePath(), e);
-			}
-		}
 		log.info("Metamodel source compilation finished.");
-	}
-
-	private List<String> getClasspathElements() throws MojoExecutionException {
-		try {
-			if (testClasspath) {
-				return mavenProject.getTestClasspathElements();
-			}
-			return mavenProject.getCompileClasspathElements();
-		} catch (Exception e) {
-			throw new MojoExecutionException("Could not get classpath elements.", e);
-		}
 	}
 
 	/**
 	 * @see <a href="https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/A-version-5-Hibernate-SchemaExport-example-with-the-ServiceRegistry-and-Metadata">Configure Hibernate metadata</a>
+	 * @param metadata
 	 */
-	private void createSchema() {
-		log.step("Schema Export (Hibernate)");
-		Properties hibernateProperties = getHibernateProperties();
-		StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-			 .applySettings(hibernateProperties)
-			 .build();
-
-		Metadata metadata = getMetadata(serviceRegistry);
-
+	private void createSchema(Metadata metadata) {
+		log.step("Create Schema.");
 		SchemaExport schemaExport = new SchemaExport();
 		schemaExport.setHaltOnError(true);
 		schemaExport.setOutputFile(classesDirectory + "/hibernate-schema.sql");
@@ -258,7 +183,22 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 		);
 	}
 
-	private Metadata getMetadata(StandardServiceRegistry serviceRegistry) {
+	private void dropSchema(Metadata metadata) {
+		log.step("Drop Schema");
+		SchemaExport schemaExport = new SchemaExport();
+		schemaExport.setHaltOnError(true);
+		schemaExport.drop(
+			 EnumSet.of(TargetType.STDOUT, TargetType.DATABASE),
+			 metadata
+		);
+	}
+
+	private Metadata getMetadata() throws MojoExecutionException {
+		Properties hibernateProperties = getHibernateProperties();
+		StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+			 .applySettings(hibernateProperties)
+			 .build();
+
 		MetadataSources metadataSources = new MetadataSources(serviceRegistry);
 		addEntityClasses(metadataSources);
 		return metadataSources
@@ -266,38 +206,43 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 			 .build();
 	}
 
-	private void addEntityClasses(MetadataSources sources) {
-		String pkg = config.getBasePackage();
-		String classesPath = classesDirectory.getAbsolutePath();
-		log.info(String.format("Scanning for @Entity classes in package=%s under=%s", pkg, classesPath));
-		try (ScanResult scanResult = new ClassGraph()
-			 .enableAnnotationInfo()
-			 .overrideClasspath(classesPath)
-			 .acceptPackages(pkg)
-			 .addClassLoader(buildProjectClassLoader())
-			 .scan()) {
-			for (ClassInfo ci : scanResult.getClassesWithAnnotation(Entity.class.getName())) {
-				Class<?> clazz = ci.loadClass();
-				log.info(String.format("Found entity: %s", clazz.getName()));
-				sources.addAnnotatedClassName(clazz.getName());
+	private void addEntityClasses(MetadataSources sources) throws MojoExecutionException {
+		File srcMainJava = new File(mavenProject.getBasedir(), "src/main/java");
+		File tempClassDir = new File(mavenProject.getBuild().getDirectory(), "tmp/entity-classes");
+		List<File> javaFiles = javaCompilerHelper.findJavaFiles(srcMainJava);
+		List<String> entityFqns = new ArrayList<>();
+		List<File> entityJavaFiles = new ArrayList<>();
+		log.info("Scanning for @Entity classes in " + srcMainJava.getAbsolutePath());
+		for (File file : javaFiles) {
+			try {
+				CompilationUnit cu = StaticJavaParser.parse(file);
+				cu.findAll(ClassOrInterfaceDeclaration.class)
+					 .forEach(clazz -> {
+						 if (clazz.getAnnotationByName("Entity").isPresent()) {
+							 String packageName = cu.getPackageDeclaration()
+								  .map(pd -> pd.getName().toString())
+								  .orElse("");
+							 String className = clazz.getNameAsString();
+							 String fqn = packageName.isEmpty() ? className : packageName + "." + className;
+							 log.info("Found entity: " + fqn);
+							 entityFqns.add(fqn);
+							 entityJavaFiles.add(file);
+						 }
+					 });
+			} catch (Exception e) {
+				log.warn("Parse error on file: " + file + " " + e.getMessage());
 			}
 		}
-	}
 
-	private URLClassLoader buildProjectClassLoader() {
-		try {
-			String classPath = classesDirectory.getAbsolutePath();
-			URL[] urls = new URL[] {new File(classPath).toURI().toURL()};
-			URLClassLoader urlClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
-			Thread.currentThread().setContextClassLoader(urlClassLoader); // 혹은 아래와 같이 Reflections/CG에 넘김
-			return urlClassLoader;
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
+		javaCompilerHelper.compileJavaFiles(entityJavaFiles, tempClassDir);
+		javaCompilerHelper.registerClassLoader(tempClassDir);
+		 for (String fqn : entityFqns) {
+			 sources.addAnnotatedClassName(fqn);
+		 }
 	}
 
 	private Properties getHibernateProperties() {
-		String schema = getQueryDslSqlSchema();
+		String schema = config.getSchema();
 		String jdbcUrl = config.getJdbcUrl();
 		String jdbcFqnUrl = String.format("%s/%s?createDatabaseIfNotExist=true", jdbcUrl, schema);
 		Properties settings = new Properties();
@@ -308,7 +253,6 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 		settings.setProperty("hibernate.dialect", config.getDialect());
 		settings.setProperty("hibernate.show_sql", "true");
 		settings.setProperty("hibernate.format_sql", "true");
-		settings.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 		// JPA/Hibernate 6.x 이상에서는 set*NamingStrategy 사용.
 		//        Configuration configuration = new Configuration();
 		//        configuration.setImplicitNamingStrategy(new SpringImplicitNamingStrategy());
@@ -319,21 +263,18 @@ public class QuerydslSqlMetamodelGenerateMojo extends AbstractMojo {
 		return settings;
 	}
 
-	private String getQueryDslSqlSchema() {
-		return config.getSchema() + "_querydslsql";
-	}
-
 	private void generateMetaModel(Connection conn) throws SQLException {
 		long start = System.currentTimeMillis();
 		log.step("MetaModel Generation");
-		String queryDslSqlSchema = getQueryDslSqlSchema();
+		String targetPackage = config.getBasePackage() + ".querydslsql";
+		String queryDslSqlSchema = config.getSchema();
 		log.info("target schema : " + queryDslSqlSchema);
-		log.info("target package: " + config.getTargetPackage());
+		log.info("target package: " + targetPackage);
 		log.info("target folder : " + targetFolder.getAbsolutePath());
 		MetaDataExporter exporter = new MetaDataExporter();
 		exporter.setSchemaPattern(queryDslSqlSchema);
 		exporter.setCatalogPattern(queryDslSqlSchema);
-		exporter.setPackageName(config.getTargetPackage());
+		exporter.setPackageName(targetPackage);
 
 		exporter.setTargetFolder(targetFolder);
 		exporter.export(conn.getMetaData());

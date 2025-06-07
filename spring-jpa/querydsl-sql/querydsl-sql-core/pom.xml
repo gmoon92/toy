@@ -15,7 +15,6 @@
     <description>querydsl-sql-core</description>
     <properties>
         <project.base.package>com.gmoon.querydslsql</project.base.package>
-        <querydslsql.target.package>${project.base.package}.core.querydslsql</querydslsql.target.package>
     </properties>
 
     <dependencies>
@@ -137,7 +136,6 @@
                         <schema>${db.schema}</schema>
                         <dialect>${hibernate.mysql.dialect}</dialect>
                         <basePackage>${project.base.package}</basePackage>
-                        <targetPackage>${querydslsql.target.package}</targetPackage>
                     </config>
                 </configuration>
                 <dependencies>

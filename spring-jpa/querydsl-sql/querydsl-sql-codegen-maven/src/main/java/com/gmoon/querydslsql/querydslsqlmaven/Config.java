@@ -8,7 +8,6 @@ public class Config {
 	private String schema;
 	private String dialect;
 	private String basePackage;
-	private String targetPackage;
 
 	public String getJdbcDriver() {
 		return jdbcDriver;
@@ -27,7 +26,11 @@ public class Config {
 	}
 
 	public String getSchema() {
-		return schema;
+		String suffix = "_querydslsql";
+		if (schema == null) {
+			return suffix;
+		}
+		return schema + "_querydslsql";
 	}
 
 	public String getDialect() {
@@ -36,10 +39,6 @@ public class Config {
 
 	public String getBasePackage() {
 		return basePackage;
-	}
-
-	public String getTargetPackage() {
-		return targetPackage;
 	}
 
 	@Override
@@ -52,7 +51,6 @@ public class Config {
 			 ", schema='" + schema + '\'' +
 			 ", dialect='" + dialect + '\'' +
 			 ", basePackage='" + basePackage + '\'' +
-			 ", targetPackage='" + targetPackage + '\'' +
 			 '}';
 	}
 }

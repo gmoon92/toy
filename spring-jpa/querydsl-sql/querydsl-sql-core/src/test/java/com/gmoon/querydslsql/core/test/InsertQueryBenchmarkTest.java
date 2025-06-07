@@ -2,7 +2,7 @@ package com.gmoon.querydslsql.core.test;
 
 import com.gmoon.querydslsql.core.points.PointTransaction;
 import com.gmoon.querydslsql.core.points.QPointTransaction;
-import com.gmoon.querydslsql.core.querydslsql.QTbPointTransaction;
+import com.gmoon.querydslsql.querydslsql.QTbPointTransaction;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.dml.SQLInsertClause;
