@@ -3,8 +3,8 @@ spring:
     proxy-target-class: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/spring-tx?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-    url: jdbc:mysql://localhost:3306/spring-tx?createDatabaseIfNotExist=true
+#    url: jdbc:mysql://localhost:3306/spring_tx?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    url: jdbc:mysql://localhost:3306/spring_tx?createDatabaseIfNotExist=true
     username: root
     password: 111111
 
