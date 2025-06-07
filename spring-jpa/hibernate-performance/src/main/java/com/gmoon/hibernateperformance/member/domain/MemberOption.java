@@ -1,5 +1,8 @@
 package com.gmoon.hibernateperformance.member.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -24,6 +27,7 @@ public class MemberOption {
 
 	@MapsId
 	@OneToOne
+	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	@PrimaryKeyJoinColumn(name = "member_id", referencedColumnName = "id")
 	private Member member;
 
