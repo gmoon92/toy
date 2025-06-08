@@ -1,257 +1,99 @@
-# Spring Enum Request Param
+# Spring Data Binding
 
-## Enum
+## PropertyEditor vs Converter vs Formatter
+
+| 구분            | PropertyEditor                                       | Converter                              | Formatter             |
+|---------------|------------------------------------------------------|----------------------------------------|-----------------------|
+| **등장 시기**     | 자바 빈즈(옛날), 스프링 3 이전                                  | 스프링 3~                                 | 스프링 3~                |
+| **등록 위치**     | DataBinder                                           | ConversionService                      | ConversionService     |
+| **변환 방향**     | 문자(String) <-> 객체                                    | 범용(object <-> object)                  | 문자(String) <-> 객체(특화) |
+| **Locale 지원** | X                                                    | X                                      | O                     |
+| **스레드 안정성**   | stateful(비안전)                                        | stateless(안전)                          | stateless(안전)         |
+| **설정 방식**     | 수동 등록, 코드 기반                                         | 타입별 등록, 선언적                            | 타입별, Locale-aware     |
+| **대표 용도**     | 구식 폼 value 처리<br/>매우 제한적(사용 자제)                      | 기본 파라미터 변환 도입부<br/>전체 타입 변환 (id→엔티티 등) | 날짜/숫자/포맷팅(문자 <-> 객체)  |
+| **활용 예시**     | 거의 쓰지 않음, 레거시 호환<br/>폼 입력 문자열 변환 (String <-> Date 등) | @RequestParam, @ModelAttribute 등       | 포매팅/국제화 필요할 때         |
+
+- PropertyEditor: **실제로 쓸 일은 거의 없음.**
+    - 레거시 유지보수 등에 한정, 새로 프로젝트 도입시 고려 대상에서 제외.
+- Converter: type conversion
+    - **문자열 <-> 객체 <-> 객체 <-> 객체 변환 전반**
+    - StringToLocalDateTimeConverter.class
+    - LocalDateTimeToBytesConverter.class
+- Formatter: field formatting
+    - **날짜·숫자 등** _**문자 포매팅/파싱/국제화가 필요**_
+    - NumberStyleFormatter
+    - YearMonthFormatter
+
+## PropertyEditor Thread safe
 
 ```java
+import org.springframework.web.bind.annotation.InitBinder;
 
-@RequiredArgsConstructor
-@Getter
-public enum SearchType {
+class Controller {
 
-	DATE("date"),
-	USER_NAME("username");
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		// 요청마다 CustomDateEditor 인스턴스 새로 생성하여 등록 
+		// stateful이므로 빈으로 등록 금지!
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
 
-	private final String value;
-
-	private static final Map<String, SearchType> ALL = Arrays.stream(values())
-	  .collect(collectingAndThen(
-		toMap(SearchType::getValue, Function.identity()),
-		Collections::unmodifiableMap
-	  ));
-
-	public static SearchType from(String value) {
-		return ALL.get(value);
+		// CustomDateEditor는 내부 상태(state)를 가짐! (setAsText 등)
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 	}
 }
 ```
 
-## Converter
+- PropertyEditor은 싱글톤 빈으로 등록하지 말고 반드시 인스턴스 생성하여 사용 권장.
+- stateful 하게 설계되었기 때문에 싱글톤 객체로 활용시 멀티 쓰레드 환경에서 문제가 됨.
+- 반드시 위처럼 요청마다 새로운 인스턴스를 생성해서 등록해야 `thread-safe` 보장됨.
 
-````java
-import org.springframework.core.convert.converter.Converter;
+> Spring MVC 환경에서는 `PropertyEditor`를 싱글톤 빈으로 등록하지 않습니다.<br/>
+> 반드시 `@InitBinder`에서 매 요청마다 새 인스턴스로 등록해야 합니다. <br/>
+> `CustomDateEditor`와 대부분의 `PropertyEditor`는 내부에 입력값을 상태로 저장하기 때문에, 여러 스레드(요청)가 동시에 사용할 경우 값이 섞일 수 있습니다.
 
-public class SearchTypeConverter implements Converter<String, SearchType> {
+## Samples
+
+```java
+// Converter
+class IdToUserConverter
+  implements org.springframework.core.convert.converter.Converter<String, User> {
 
 	@Override
-	public SearchType convert(String source) {
-		return SearchType.from(source);
+	public User convert(String source) {
+		// 문자 <-> 객체, 객체 <-> 객체 등 모든 변환, 
+		// 국제화/포맷 불필요시
 	}
 }
-````
 
-## WebMvcConfigurer Config
+// Formatter
+class MoneyFormatter
+  implements org.springframework.format.Formatter<String> {
 
-```java
-import com.gmoon.springwebconverter.config.converter.SearchTypeConverter;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
+	// 문자 <-> 객체 + 포매팅/국제화 필수시
+	@Override
+	public String parse(String text, Locale locale) throws ParseException {
+		return "";
+	}
 
 	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addConverter(new SearchTypeConverter());
+	public String print(String object, Locale locale) {
+		return "";
 	}
 }
 ```
 
-## Conversion Exception
+- Converter/Formatter 등록은 ConversionService 단일 레지스트리에서 통합 관리
+- **메시지 컨버터(@RequestBody 등, JSON 변환)는 Jackson 등 별도 처리, ConversionService 미적용**
 
-```java
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+## 결론
 
-@RestControllerAdvice
-public class GlobalControllerExceptionHandler {
+- **Converter:** "모든 타입/객체 변환" 필요하면 사용 (90% 상황)
+- **Formatter:** "포맷·로케일 등 문자 변환" 필요하면 사용
+- **PropertyEditor:** "웬만하면 쓰지 X", 레거시 핫픽스/유지보수용
 
-	@ExceptionHandler(ConversionFailedException.class)
-	public ResponseEntity<String> handleConflict(RuntimeException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-	}
-}
-```
-
-## ConverterFactory
-
-### Custom binder interface
-
-```java
-public interface StringToEnumBinder {
-
-	String getValue();
-}
-
-@RequiredArgsConstructor
-@Getter
-public enum PaymentType implements StringToEnumBinder {
-
-	KAKAO_BANK("0001"),
-	NAVER_PAY("0002"),
-	TOSS("0003");
-
-	private final String value;
-}
-
-```
-
-### Custom Converter Factory
-
-```java
-@Slf4j
-public class EnumConverterFactory implements ConverterFactory<String, Enum<?>> {
-
-	private static final Map<Class, Converter> CACHE = new ConcurrentHashMap<>();
-
-	@Override
-	public <T extends Enum<?>> Converter<String, T> getConverter(Class<T> targetClass) {
-		if (CACHE.get(targetClass) == null) {
-			log.info("targetClass: {}", targetClass);
-			CACHE.put(targetClass, StringToEnumFactory.create(targetClass));
-		}
-
-		return CACHE.get(targetClass);
-	}
-
-	private static class StringToEnumFactory {
-
-		static Converter create(Class<? extends Enum<?>> targetClass) {
-			boolean isCustomBinder = stream(targetClass.getInterfaces())
-			  .anyMatch(i -> i == StringToEnumBinder.class);
-			if (isCustomBinder) {
-				return new CustomStringToEnum(targetClass);
-			}
-
-			return new DefaultStringToEnum(targetClass);
-		}
-
-		@RequiredArgsConstructor
-		static class DefaultStringToEnum implements Converter<String, Enum> {
-
-			private final Class<? extends Enum> targetClass;
-
-			@Override
-			public Enum convert(String source) {
-				return Enum.valueOf(targetClass, source);
-			}
-		}
-
-		static class CustomStringToEnum implements Converter<String, Enum<? extends StringToEnumBinder>> {
-
-			private final Map<String, Enum> binder;
-
-			private CustomStringToEnum(Class<? extends Enum> targetClass) {
-				binder = stream(targetClass.getEnumConstants())
-				  .collect(collectingAndThen(
-					toMap(o -> ((StringToEnumBinder)o).getValue(), Function.identity()),
-					Collections::unmodifiableMap
-				  ));
-			}
-
-			@Override
-			public Enum<? extends StringToEnumBinder> convert(String source) {
-				Enum<? extends StringToEnumBinder> result = binder.get(source);
-				if (result == null) {
-					throw new ConversionFailedException();
-				}
-
-				return result;
-			}
-		}
-	}
-
-	public int size() {
-		return CACHE.size();
-	}
-}
-```
-
-### WebMvcConfigurer Config
-
-````java
-import org.springframework.boot.convert.ApplicationConversionService;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.gmoon.springwebconverter.config.converter.EnumConverterFactory;
-
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
-
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		ApplicationConversionService.configure(registry);
-		// registry.addConverter(new SearchTypeConverter());
-		registry.addConverterFactory(new EnumConverterFactory());
-	}
-}
-````
-
-### 동작 방식
-
-```java
-package org.springframework.core.convert.converter;
-
-@FunctionalInterface
-public interface Converter<S, T> {
-}
-
-public interface ConverterFactory<S, R> {
-}
-```
-
-- 커스텀 구현한 Converter 또는 Converter Factory 를 등록한다.
-    - registry.addConverter(Converter)
-    - registry.addConverterFactory(ConverterFactory)
-- 제네릭 `타입 토큰` 클래스로 `ConvertiblePair`를 생성한다.
-    - GenericConversionService.addConverterFactory(ConverterFactory<?, ?>)
-    - 첫 번째 타입: 요청 파라미터 타입
-    - 두 번째 타입: 변환할 타입
-- 요청이 오면 내부적으로 GenericConversionService.convert 호출
-  - 내부적으로 Converter 는 캐시로 관리
-  - 캐시 키는 등록할 때 생성된 `ConvertiblePair` 로 Converter 반환
-
-```java
-package org.springframework.core.convert.support;
-
-public class GenericConversionService implements ConfigurableConversionService {
-
-	@Override
-	@Nullable
-	public Object convert(
-	  @Nullable Object source,
-	  @Nullable TypeDescriptor sourceType,
-	  TypeDescriptor targetType
-	) {
-		// ...
-
-		GenericConverter converter = getConverter(sourceType, targetType);
-		if (converter != null) { // LenientStringToEnumConverterFactory.class
-			Object result = ConversionUtils.invokeConverter(converter, source, sourceType, targetType);
-			return handleResult(sourceType, targetType, result);
-		}
-		return handleConverterNotFound(source, sourceType, targetType);
-	}
-}
-```
-
-- GenericConversionService
-    - convert(Object, TypeDescriptor, TypeDescriptor)
-        - getConverter(TypeDescriptor, TypeDescriptor)
-            - Converters.find(TypeDescriptor, TypeDescriptor)
-            - Converters.getRegisteredConverter(TypeDescriptor, TypeDescriptor, ConvertiblePair)
-        - handleConverterNotFound(Object, TypeDescriptor, TypeDescriptor)
-- ApplicationConversionService
-    - addApplicationConverters
-        - GenericConversionService.addConverter(Converter<?, ?>)
-            - GenericConversionService.addConverter(GenericConverter)
-                - Converters.add(GenericConverter)
-        - GenericConversionService.addConverterFactory(ConverterFactory<?, ?>)
+> 복잡하게 기억 말고, > **대부분은 Converter(범용) ≫ Formatter(문자포맷), PropertyEditor(굳이X)**
 
 ## Reference
 
-- [baeldung - Spring Enum Request Param](https://www.baeldung.com/spring-enum-request-param)
-- [baeldung - Spring Type Conversions](https://www.baeldung.com/spring-type-conversions)
+- https://docs.spring.io/spring-framework/reference/core/validation/beans-beans.html
