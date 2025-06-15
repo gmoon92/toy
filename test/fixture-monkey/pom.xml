@@ -14,6 +14,10 @@
     <name>fixture-monkey</name>
     <description>fixture-monkey</description>
 
+    <properties>
+        <fixture-monkey.version>1.1.11</fixture-monkey.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -30,6 +34,22 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- fixture monkey -->
+        <dependency>
+            <groupId>com.navercorp.fixturemonkey</groupId>
+            <artifactId>fixture-monkey-starter</artifactId>
+            <version>${fixture-monkey.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.navercorp.fixturemonkey</groupId>
+            <artifactId>fixture-monkey-jakarta-validation</artifactId>
+            <version>${fixture-monkey.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- fixture monkey -->
     </dependencies>
 
     <build>
