@@ -19,6 +19,7 @@
         <module>awaitility</module>
         <module>dbrestore</module>
         <module>embedded-redis</module>
+        <module>fixture-monkey</module>
         <module>jacoco</module>
         <module>junit5</module>
         <module>localstack</module>
