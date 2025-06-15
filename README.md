@@ -62,6 +62,7 @@
     - [awaitility](test/awaitility/README.md)
     - [dbrestore](test/dbrestore/README.md)
     - [embedded-redis](test/embedded-redis/README.md#1-embedded-redis-for-kstyrc)
+    - [fixture-monkey](test/fixture-monkey/README.md)
     - [jacoco](test/jacoco/README.md)
     - [junit5](test/junit5/src/test/java/com/gmoon/junit5/Junit5ApplicationTests.java)
     - [localstack](test/localstack/README.md)
