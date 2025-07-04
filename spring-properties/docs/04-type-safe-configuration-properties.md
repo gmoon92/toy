@@ -268,6 +268,28 @@ public class MyService {
 
 ---
 
+## [서드파티(Third-party) 설정](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.third-party-configuration)
+
+클래스에 `@ConfigurationProperties`를 붙이는 것뿐만 아니라, 공개된 `@Bean` 메서드에도 붙일 수 있다. 이 방식은 특히 내 제어권 밖에 있는 서드파티 컴포넌트에 프로퍼티를 바인딩할 때 유용하다.
+
+`Environment` 프로퍼티를 통해 빈을 설정하려면, 아래 예시처럼 해당 빈을 등록할 때 `@ConfigurationProperties`를 같이 붙이면 된다.
+
+```java
+@Configuration(proxyBeanMethods = false)
+public class ThirdPartyConfiguration {
+
+	@Bean
+	@ConfigurationProperties("another")
+	public AnotherComponent anotherComponent() {
+		return new AnotherComponent();
+	}
+}
+```
+
+`another` 접두사(prefix)를 갖는 모든 JavaBean 프로퍼티가 `AnotherComponent` 빈에 매핑된다.
+
+---
+
 이 문서는 Spring Boot 설정 파일의 유연한 구성과 다양한 환경 대응 방식을 설명하며, 특히 클라우드 환경에서의 운영에 유용한 정보를 포함하고 있다.
 
 ## Reference
