@@ -1,0 +1,11 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.gmoon.spring-beanio'
+description = 'spring-beanio'
+
+dependencies {
+    implementation("org.beanio:beanio:2.1.0")
+}

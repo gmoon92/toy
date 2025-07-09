@@ -1,0 +1,28 @@
+rootProject.name = 'toy'
+// https://docs.gradle.org/current/userguide/multi_project_builds.html#multi_project_builds
+include(
+        'google-spreadsheet',
+        'java-core',
+        'payment',
+        'spring-batch',
+        'spring-beanio',
+        'spring-cache',
+        'spring-cache:jpa-second-level-cache',
+        'spring-cache:spring-data-redis',
+
+        'spring-data-r2dbc',
+//        'spring-event',
+//        'spring-integration',
+//        'spring-jooq',
+//        'spring-jpa',
+//        'spring-lock',
+//        'spring-mvc',
+//        'spring-properties',
+//        'spring-reactive',
+//        'spring-security',
+//        'spring-triangle',
+//        'spring-tx',
+//        'spring-utils',
+//
+//        'test'
+)

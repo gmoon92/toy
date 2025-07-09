@@ -1,0 +1,50 @@
+plugins {
+    id 'org.springframework.boot' version "3.5.0" apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation"
+}
+
+ext {
+    springBootVersion = "3.5.0"
+}
+
+// `allprojects`: 루트와 모든 서브프로젝트에 적용
+allprojects {
+    group = 'com.gmoon.toy'
+    version = '1.0.0-SNAPSHOT'
+
+    // 파일 인코딩 설정 (sourceEncoding 등)
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'java'
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+// subprojects: 서브프로젝트에만 적용
+subprojects {
+    dependencies {
+        // 공통 라이브러리 추가
+        implementation "org.springframework.boot:spring-boot-starter"
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
+
+        implementation 'org.projectlombok:lombok'
+//        compileOnly 'org.projectlombok:lombok'
+//        testCompileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+
+        implementation(libs.apache.commons.lang3)
+
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+}

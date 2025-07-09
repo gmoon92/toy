@@ -1,0 +1,54 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+group = 'com.gmoon.java-core'
+description = 'java-core'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+//    compileOnly 'org.projectlombok:lombok'
+//    annotationProcessor 'org.projectlombok:lombok'
+//    testCompileOnly 'org.projectlombok:lombok'
+//    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'net.bytebuddy:byte-buddy'
+
+    implementation 'com.jayway.jsonpath:json-path:2.7.0' // 버전 직접 명시 또는 버전 카탈로그 활용
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'org.apache.commons:commons-text:1.3'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.reflections:reflections:0.10.2'
+
+    // Apache POI
+    implementation 'org.apache.poi:poi:4.1.1'
+    implementation 'org.apache.poi:poi-examples:4.1.1'
+    implementation 'org.apache.poi:poi-ooxml:4.1.1'
+
+    // ZXing
+    implementation 'com.google.zxing:core:3.5.1'
+    implementation 'com.google.zxing:javase:3.5.1'
+
+    // TSID Creator
+    implementation 'com.github.f4b6a3:tsid-creator:5.2.6'
+
+    // TOTP (exclusion 필요하면 직접 exclude 처리)
+    implementation('dev.samstevens.totp:totp:1.7.1') {
+        exclude group: 'com.google.zxing', module: 'core'
+        exclude group: 'com.google.zxing', module: 'javase'
+    }
+}

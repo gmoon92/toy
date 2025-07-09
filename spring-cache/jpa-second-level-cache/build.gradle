@@ -1,0 +1,34 @@
+group = 'com.gmoon.spring-cache.jpa-second-level-cache'
+description = 'jpa-second-level-cache'
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+
+    // cache start
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.ehcache:ehcache:3.9.6")
+    implementation("javax.cache:cache-api:1.1.1")
+
+    // hazelcast
+    implementation("com.hazelcast:hazelcast:4.2.2")
+
+    // redisson
+    implementation("org.redisson:redisson:3.17.7")
+
+    // embedded redis server
+    testImplementation("it.ozimov:embedded-redis:0.7.3") {
+        exclude group: "commons-io", module: "commons-io"
+    }
+    // cache end
+
+    // persistence start
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    implementation(libs.hibernate.core)
+    implementation(libs.hibernate.jcache)
+    implementation(libs.jdbc.h2)
+    // persistence end
+
+    testImplementation(libs.quickperf)
+    testImplementation(libs.quickperf.spring)
+}

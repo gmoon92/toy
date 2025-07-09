@@ -1,0 +1,50 @@
+buildscript {
+    ext {
+        appStoreServerLibraryVersion = "3.2.0"
+        springCloudVersion = "2025.0.0"
+        mavenBuildTimestampFormat = "yyyy-MM-dd HH:mm:ss"
+        jenkinsBuildNumber = 0
+        // Gradle에서 빌드 타임스탬프 생성 (예시. 실제 Jenkins에서 넘기면 System.getenv()와 같이 받는 경우 있음)
+        jenkinsBuildTimestamp = new Date().format(mavenBuildTimestampFormat)
+
+        // filter resource
+        appstoreEnabled = ""
+        appstoreBundleId = ""
+        appstoreIssuerId = ""
+        appstoreAppAppleId = ""
+        appstorePrivateKeyId = ""
+    }
+}
+
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.gmoon.payment'
+description = 'payment'
+
+dependencies {
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.apple.itunes.storekit:app-store-server-library:${appStoreServerLibraryVersion}")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+
+    runtimeOnly("org.springframework.boot:spring-boot-devtools")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            additional = [
+                    "number": "${jenkinsBuildNumber}",
+                    "time"  : "${jenkinsBuildTimestamp}"
+            ]
+        }
+    }
+}
