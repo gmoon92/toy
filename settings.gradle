@@ -7,6 +7,9 @@ include(
         'spring-batch',
         'spring-beanio',
         'spring-cache',
+
+//        ./gradlew :spring-cache:jpa-second-level-cache:dependencies --configuration runtimeClasspath
+//        ./gradlew :spring-cache:jpa-second-level-cache:dependencies --configuration testCompileClasspath
         'spring-cache:jpa-second-level-cache',
         'spring-cache:spring-data-redis',
 
