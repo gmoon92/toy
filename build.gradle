@@ -1,4 +1,5 @@
 plugins {
+    id 'java'
     id 'org.springframework.boot' version "3.5.0" apply false
     id 'io.spring.dependency-management' version '1.1.7' apply false
 }
@@ -9,6 +10,12 @@ tasks.withType(JavaCompile) {
 
 ext {
     springBootVersion = "3.5.0"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 // `allprojects`: 루트와 모든 서브프로젝트에 적용
@@ -26,8 +33,10 @@ allprojects {
     }
 
     apply plugin: 'java'
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    // 소스/클래스 JDK 파일 버전 지정
+    // toochain 방식으로 JDK 버전 강제화, 권장
+    // sourceCompatibility = JavaVersion.VERSION_21
+    // targetCompatibility = JavaVersion.VERSION_21
 }
 
 // subprojects: 서브프로젝트에만 적용
