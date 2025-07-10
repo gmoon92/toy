@@ -8,6 +8,7 @@ quick-perf = "1.1.0"
 
 hibernate = "6.6.15.Final"
 querydsl = "5.1.0"
+testcontainers = "1.21.0"
 
 # etc
 apache-commons-lang3 = "3.17.0"
@@ -25,7 +26,10 @@ hibernate-dialect-mariadb = "org.hibernate.dialect.MariaDBDialect"
 [libraries]
 # persistence
 hibernate-core = { module = "org.hibernate:hibernate-core", version.ref = "hibernate" }
+hibernate-envers = { module = "org.hibernate.orm:hibernate.orm", version.ref = "hibernate" }
 hibernate-jcache = { module = "org.hibernate.orm:hibernate-jcache", version.ref = "hibernate" }
+
+querydsl-jpa = { module = "com.querydsl:querydsl-jpa", version.ref = "querydsl" }
 
 jdbc-mysql = { group = "mysql", name = "mysql-connector-java", version.ref = "jdbc-mysql" }
 jdbc-mariadb = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "jdbc-mariadb" }
@@ -35,5 +39,11 @@ jdbc-h2 = { group = "com.h2database", name = "h2", version.ref = "jdbc-h2" }
 apache-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "apache-commons-lang3" }
 
 # test
-quickperf = { group = "org.quickperf", name = "quick-perf-junit5", version.ref = "quick-perf" }
+quickperf-junit5 = { group = "org.quickperf", name = "quick-perf-junit5", version.ref = "quick-perf" }
 quickperf-spring = { group = "org.quickperf", name = "quick-perf-springboot2-sql-starter", version.ref = "quick-perf" }
+
+testcontainers-bom = { group = "org.testcontainers", name = "testcontainers-bom", version.ref = "testcontainers" }
+testcontainers-kafka = { group = "org.testcontainers", name = "kafka", version.ref = "testcontainers" }
+testcontainers-junit5 = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
+
+awaitility = { group = "org.awaitility", name = "awaitility", version = "4.2.0" }

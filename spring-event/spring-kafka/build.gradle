@@ -1,0 +1,29 @@
+group = 'com.gmoon.spring-event.spring-kafka'
+description = 'spring-kafka'
+
+bootJar {
+    enabled = false
+}
+
+tasks.register('bootBuildImages') {
+    dependsOn(
+            ':spring-event:spring-kafka:spring-kafka-broker:bootBuildImage',
+            ':spring-event:spring-kafka:spring-kafka-consumer:bootBuildImage',
+            ':spring-event:spring-kafka:spring-kafka-producer:bootBuildImage'
+    )
+}
+
+subprojects {
+    dependencies {
+        implementation platform(libs.jdbc.mysql)
+
+        implementation('org.springframework.kafka:spring-kafka')
+
+        // persistence
+        implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+        implementation(libs.jdbc.mysql)
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+        testImplementation('org.springframework.kafka:spring-kafka-test')
+    }
+}

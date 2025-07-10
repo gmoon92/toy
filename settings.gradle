@@ -14,7 +14,18 @@ include(
         'spring-cache:spring-data-redis',
 
         'spring-data-r2dbc',
-//        'spring-event',
+
+        'spring-event',
+        'spring-event:spring-async',
+        'spring-event:spring-event-listener',
+        'spring-event:spring-fcm',
+        'spring-event:spring-kafka',
+        'spring-event:spring-kafka:spring-kafka-broker',
+        'spring-event:spring-kafka:spring-kafka-consumer',
+        'spring-event:spring-kafka:spring-kafka-producer',
+        'spring-event:spring-quartz-cluster',
+        'spring-event:spring-scheduling',
+
 //        'spring-integration',
 //        'spring-jooq',
 //        'spring-jpa',

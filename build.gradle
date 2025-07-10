@@ -34,9 +34,8 @@ allprojects {
 
     apply plugin: 'java'
     // 소스/클래스 JDK 파일 버전 지정
-    // toochain 방식으로 JDK 버전 강제화, 권장
-    // sourceCompatibility = JavaVersion.VERSION_21
-    // targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 // subprojects: 서브프로젝트에만 적용

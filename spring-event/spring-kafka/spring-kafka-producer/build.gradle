@@ -1,0 +1,6 @@
+group = 'com.gmoon.spring-event.spring-kafka.spring-kafka-producer'
+description = 'spring-kafka-producer'
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web')
+}

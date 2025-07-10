@@ -12,6 +12,10 @@ jar {
     enabled = true
 }
 
+bootBuildImage {
+    enabled = false
+}
+
 group = 'com.gmoon.java-core'
 description = 'java-core'
 
