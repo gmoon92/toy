@@ -26,10 +26,11 @@ hibernate-dialect-mariadb = "org.hibernate.dialect.MariaDBDialect"
 [libraries]
 # persistence
 hibernate-core = { module = "org.hibernate:hibernate-core", version.ref = "hibernate" }
-hibernate-envers = { module = "org.hibernate.orm:hibernate.orm", version.ref = "hibernate" }
+hibernate-envers = { module = "org.hibernate.orm:hibernate-envers", version.ref = "hibernate" }
 hibernate-jcache = { module = "org.hibernate.orm:hibernate-jcache", version.ref = "hibernate" }
 
 querydsl-jpa = { module = "com.querydsl:querydsl-jpa", version.ref = "querydsl" }
+querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl" }
 
 jdbc-mysql = { group = "mysql", name = "mysql-connector-java", version.ref = "jdbc-mysql" }
 jdbc-mariadb = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "jdbc-mariadb" }

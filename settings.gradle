@@ -24,7 +24,7 @@ include(
         'spring-event:spring-kafka:spring-kafka-consumer',
         'spring-event:spring-kafka:spring-kafka-producer',
         'spring-event:spring-quartz-cluster',
-        'spring-event:spring-scheduling',
+        'spring-event:spring-scheduling'
 
 //        'spring-integration',
 //        'spring-jooq',

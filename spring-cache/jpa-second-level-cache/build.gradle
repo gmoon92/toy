@@ -29,6 +29,6 @@ dependencies {
     implementation(libs.jdbc.h2)
     // persistence end
 
-    testImplementation(libs.quickperf)
+    testImplementation(libs.quickperf.junit5)
     testImplementation(libs.quickperf.spring)
 }
