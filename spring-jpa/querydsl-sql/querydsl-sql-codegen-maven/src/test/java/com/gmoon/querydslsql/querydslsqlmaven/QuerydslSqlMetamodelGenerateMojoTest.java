@@ -4,13 +4,7 @@
  */
 package com.gmoon.querydslsql.querydslsqlmaven;
 
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mockito;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +21,13 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
 
 class QuerydslSqlMetamodelGenerateMojoTest {
 
@@ -63,7 +62,7 @@ class QuerydslSqlMetamodelGenerateMojoTest {
 
         String qDomainFilename = "SQueryDslSQLDomain.java";
         metaClass = Files.copy(
-                Paths.get("build/enhance/src/main/java/" + qDomainFilename),
+                Paths.get("enhance/src/main/java/" + qDomainFilename),
                 createFile(metaFolder, qDomainFilename).toPath(),
                 StandardCopyOption.REPLACE_EXISTING
         ).toFile();

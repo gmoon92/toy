@@ -29,7 +29,7 @@
 
 B+ Tree 는 B Tree의 단점을 고안된 자료구조다.
 
-![b+tree-index.png](./images/b+tree-index.png)
+![b+tree-index.png](images/b+tree-index.png)
 
 - 루트 노드, 내부 노드엔 자식 노드에 대한 키와 포인터만 관리한다.
     - 레코드 검색을 제어하는 매개체 역할
