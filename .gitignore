@@ -5,6 +5,7 @@
 !**/src/test/**
 
 **/target/**
+**/build/**
 
 ### STS ###
 .apt_generated

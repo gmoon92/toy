@@ -1,4 +1,4 @@
 **/src/**/cert/SubscriptionKey*
 **/rest/http-client.private.*.json
-**/build/settings-private.xml
+**/build
 /.env
