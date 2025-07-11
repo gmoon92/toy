@@ -27,9 +27,9 @@ include(
         'spring-event:spring-scheduling',
 
         'spring-integration',
-        'spring-integration:spring-integration-amqp'
+        'spring-integration:spring-integration-amqp',
 
-//        'spring-jooq',
+        'spring-jooq',
 //        'spring-jpa',
 //        'spring-lock',
 //        'spring-mvc',
