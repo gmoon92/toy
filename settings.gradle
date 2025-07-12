@@ -52,7 +52,10 @@ include(
         'spring-jpa:spring-jpa-specs',
         'spring-jpa:time-sorted-unique-identifier',
 
-//        'spring-lock',
+        'spring-lock',
+        'spring-lock:spring-jpa-lock',
+        'spring-lock:spring-lock-redisson',
+
 //        'spring-mvc',
 //        'spring-properties',
 //        'spring-reactive',
