@@ -56,7 +56,11 @@ include(
         'spring-lock:spring-jpa-lock',
         'spring-lock:spring-lock-redisson',
 
-//        'spring-mvc',
+        'spring-mvc',
+        'spring-mvc:spring-access-log',
+        'spring-mvc:spring-web-converter',
+        'spring-mvc:spring-web-session',
+
 //        'spring-properties',
 //        'spring-reactive',
 //        'spring-security',

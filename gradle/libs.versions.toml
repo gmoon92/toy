@@ -78,4 +78,7 @@ testcontainers-bom = { group = "org.testcontainers", name = "testcontainers-bom"
 testcontainers-kafka = { group = "org.testcontainers", name = "kafka", version.ref = "testcontainers" }
 testcontainers-junit5 = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
 
+rest-assured-spirngmockmvc = { module = "io.rest-assured:spring-mock-mvc", version = "5.5.5" }
 awaitility = { group = "org.awaitility", name = "awaitility", version = "4.2.0" }
+
+junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version = "2.3.0" }
