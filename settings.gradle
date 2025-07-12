@@ -65,8 +65,18 @@ include(
         'spring-properties:spring-properties-core',
         'spring-properties:spring-properties-web',
 
-//        'spring-reactive',
-//        'spring-security',
+        'spring-reactive',
+
+        'spring-security',
+        'spring-security:spring-security-cors',
+        'spring-security:spring-security-cors:resource-client',
+        'spring-security:spring-security-cors:resource-server',
+        'spring-security:spring-security-csrf-aspect',
+        'spring-security:spring-security-jwk',
+        'spring-security:spring-security-jwt',
+        'spring-security:spring-security-password-encoder',
+        'spring-security:spring-security-whiteship',
+
 //        'spring-triangle',
 //        'spring-tx',
 //        'spring-utils',

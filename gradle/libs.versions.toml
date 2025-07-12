@@ -59,10 +59,19 @@ ehcache = { module = "org.ehcache:ehcache", version = "3.9.6" }
 embedded-redis-ozimov = { module = "it.ozimov:embedded-redis", version = "0.7.3" }
 embedded-redis-kstyrc = { module = "com.github.kstyrc:embedded-redis", version = "0.6" }
 
+# security
+auth0-java-jwt = { module = "com.auth0:java-jwt", version = "3.8.2" }
+
+bouncycastle-bcprov-jdk15 = { module = "org.bouncycastle:bcprov-jdk15on", version = "1.70" }
+bouncycastle-bcprov-jdk18 = { module = "org.bouncycastle:bcprov-jdk18on", version = "1.81" }
+
 # etc
 apache-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "apache-commons-lang3" }
+
 apache-thrift = { module = "org.apache.thrift:libthrift", version = "0.20.0" }
 tsid-creator = { module = "com.github.f4b6a3:tsid-creator", version = "5.2.6" }
+
+jayway-asonpath = { module = "com.jayway.jsonpath:json-path", version = "2.9.0" }
 
 ulisesbocchio-jasypt-spring-boot = { module = "com.github.ulisesbocchio:jasypt-spring-boot", version.ref = "ulisesbocchio-jarsypt" }
 ulisesbocchio-jasypt-spring-boot-starter = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "ulisesbocchio-jarsypt" }

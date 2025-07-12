@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.gmoon.spring-security.spring-security-jwt'
+description = 'spring-security-jwt'
+
+dependencies {
+    implementation project(':java-core')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // persistence
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation libs.querydsl.core
+    implementation "${libs.querydsl.jpa.get()}:jakarta"
+    runtimeOnly libs.jdbc.h2
+
+    // security
+    implementation libs.jayway.asonpath
+    implementation libs.auth0.java.jwt
+
+    // etc
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // test
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'com.jayway.jsonpath', module: 'json-path'
+    }
+
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation libs.quickperf.junit5
+    testImplementation libs.quickperf.spring
+}
+
+applyQuerydslQDomainCodeGen(project)

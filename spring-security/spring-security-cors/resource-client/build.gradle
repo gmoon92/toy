@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.gmoon.spring-security.spring-security-cors.resource-client'
+description = 'resource-client'
+
+dependencies {
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+}
