@@ -61,7 +61,10 @@ include(
         'spring-mvc:spring-web-converter',
         'spring-mvc:spring-web-session',
 
-//        'spring-properties',
+        'spring-properties',
+        'spring-properties:spring-properties-core',
+        'spring-properties:spring-properties-web',
+
 //        'spring-reactive',
 //        'spring-security',
 //        'spring-triangle',
