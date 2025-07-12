@@ -82,7 +82,10 @@ include(
         'spring-triangle:spring-framework',
 
         'spring-tx',
-//        'spring-utils',
-//
+
+        'spring-utils',
+        'spring-utils:spring-core-utils',
+        'spring-utils:spring-logging',
+
 //        'test'
 )
