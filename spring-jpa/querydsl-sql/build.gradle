@@ -1,0 +1,11 @@
+group = 'com.gmoon.spring-jpa.querydsl-sql'
+description = 'querydsl-sql'
+
+subprojects {
+
+    dependencies {
+        //    implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+}

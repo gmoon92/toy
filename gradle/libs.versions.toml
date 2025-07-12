@@ -28,10 +28,16 @@ hibernate-dialect-mariadb = "org.hibernate.dialect.MariaDBDialect"
 [libraries]
 # persistence
 hibernate-core = { module = "org.hibernate:hibernate-core", version.ref = "hibernate" }
+hibernate-ant = { module = "org.hibernate.orm:hibernate-ant", version.ref = "hibernate" }
 hibernate-envers = { module = "org.hibernate.orm:hibernate-envers", version.ref = "hibernate" }
 hibernate-jcache = { module = "org.hibernate.orm:hibernate-jcache", version.ref = "hibernate" }
 
+querydsl-sql = { module = "com.querydsl:querydsl-sql", version.ref = "querydsl" }
+querydsl-sql-spring = { module = "com.querydsl:querydsl-sql-spring", version.ref = "querydsl" }
+querydsl-sql-codegen = { module = "com.querydsl:querydsl-sql-codegen", version.ref = "querydsl" }
+
 querydsl-jpa = { module = "com.querydsl:querydsl-jpa", version.ref = "querydsl" }
+querydsl-core = { module = "com.querydsl:querydsl-core", version.ref = "querydsl" }
 querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl" }
 
 jdbc-mysql = { group = "mysql", name = "mysql-connector-java", version.ref = "jdbc-mysql" }
@@ -40,6 +46,15 @@ jdbc-h2 = { group = "com.h2database", name = "h2", version.ref = "jdbc-h2" }
 
 # etc
 apache-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "apache-commons-lang3" }
+apache-thrift = { module = "org.apache.thrift:libthrift", version = "0.20.0" }
+tsid-creator = { module = "com.github.f4b6a3:tsid-creator", version = "5.2.6" }
+
+commons-codec = { group = "commons-codec", name = "commons-codec", version = "1.15" }
+
+github-classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.146" }
+github-javaparser = { module = "com.github.javaparser:javaparser-core", version = "3.26.1" }
+
+google-auto-service = { module = "com.google.auto.service:auto-service", version = "1.1.1" }
 
 # test
 quickperf-junit5 = { group = "org.quickperf", name = "quick-perf-junit5", version.ref = "quick-perf" }

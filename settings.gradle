@@ -30,7 +30,28 @@ include(
         'spring-integration:spring-integration-amqp',
 
         'spring-jooq',
-//        'spring-jpa',
+
+        'spring-jpa',
+        'spring-jpa:hibernate-annotation',
+        'spring-jpa:hibernate-batch-insert',
+        'spring-jpa:hibernate-envers',
+        'spring-jpa:hibernate-performance',
+        'spring-jpa:hibernate-sequence-generator',
+        'spring-jpa:hibernate-type',
+        'spring-jpa:querydsl-projections',
+
+        // Maven plugin 전용 모듈이므로 Gradle 빌드 대상에서 제외함
+        // Gradle 플러그인화 또는 cross-platform 대응 시 다시 활성화 가능
+         'spring-jpa:querydsl-sql',
+        // 'spring-jpa:querydsl-sql:querydsl-sql-codegen',
+        // 'spring-jpa:querydsl-sql:querydsl-sql-codegen-maven',
+        // 'spring-jpa:querydsl-sql:querydsl-sql-core',
+
+        'spring-jpa:spring-jpa-multi-datasource',
+        'spring-jpa:spring-jpa-pagination',
+        'spring-jpa:spring-jpa-specs',
+        'spring-jpa:time-sorted-unique-identifier',
+
 //        'spring-lock',
 //        'spring-mvc',
 //        'spring-properties',
