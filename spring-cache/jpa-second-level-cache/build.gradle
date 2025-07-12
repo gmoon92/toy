@@ -6,17 +6,17 @@ dependencies {
 
     // cache start
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("org.ehcache:ehcache:3.9.6")
+    implementation(libs.ehcache)
     implementation("javax.cache:cache-api:1.1.1")
 
     // hazelcast
-    implementation("com.hazelcast:hazelcast:4.2.2")
+    implementation libs.hazelcast
 
     // redisson
-    implementation("org.redisson:redisson:3.17.7")
+    implementation libs.redisson
 
     // embedded redis server
-    testImplementation("it.ozimov:embedded-redis:0.7.3") {
+    testImplementation(libs.embedded.redis.ozimov) {
         exclude group: "commons-io", module: "commons-io"
     }
     // cache end
