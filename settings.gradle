@@ -42,7 +42,7 @@ include(
 
         // Maven plugin 전용 모듈이므로 Gradle 빌드 대상에서 제외함
         // Gradle 플러그인화 또는 cross-platform 대응 시 다시 활성화 가능
-         'spring-jpa:querydsl-sql',
+        'spring-jpa:querydsl-sql',
         // 'spring-jpa:querydsl-sql:querydsl-sql-codegen',
         // 'spring-jpa:querydsl-sql:querydsl-sql-codegen-maven',
         // 'spring-jpa:querydsl-sql:querydsl-sql-core',
@@ -77,7 +77,10 @@ include(
         'spring-security:spring-security-password-encoder',
         'spring-security:spring-security-whiteship',
 
-//        'spring-triangle',
+        'spring-triangle',
+        'spring-triangle:spring-aop',
+        'spring-triangle:spring-framework',
+
 //        'spring-tx',
 //        'spring-utils',
 //
