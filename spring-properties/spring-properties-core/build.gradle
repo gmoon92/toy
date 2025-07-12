@@ -1,23 +1,23 @@
 plugins {
-    id 'java-library'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java-library"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 bootJar {
     enabled = false
 }
 
-group = 'com.gmoon.spring-properties.spring-properties-core'
-description = 'spring-properties-core'
+group = "com.gmoon.spring-properties.spring-properties-core"
+description = "spring-properties-core"
 
 dependencies {
-    implementation project(':java-core')
+    implementation project(":java-core")
 
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation libs.ulisesbocchio.jasypt.spring.boot
-    implementation libs.ulisesbocchio.jasypt.spring.boot.starter
-    implementation libs.commons.configuration
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation(libs.ulisesbocchio.jasypt.spring.boot)
+    implementation(libs.ulisesbocchio.jasypt.spring.boot.starter)
+    implementation(libs.apache.commons.configuration)
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

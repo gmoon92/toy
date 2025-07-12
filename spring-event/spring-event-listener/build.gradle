@@ -1,11 +1,11 @@
-group = 'com.gmoon.spring-event.spring-event-listener'
-description = 'spring-event-listener'
+group = "com.gmoon.spring-event.spring-event-listener"
+description = "spring-event-listener"
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation(libs.jdbc.h2)
 
     testImplementation(libs.awaitility)
     testImplementation(libs.quickperf.junit5)
-    testImplementation(libs.quickperf.spring)
+    testImplementation(libs.quickperf.sql.spring)
 }

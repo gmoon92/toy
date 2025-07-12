@@ -1,6 +1,6 @@
-group = 'com.gmoon.spring-event.spring-kafka.spring-kafka-consumer'
-description = 'spring-kafka-consumer'
+group = "com.gmoon.spring-event.spring-kafka.spring-kafka-consumer"
+description = "spring-kafka-consumer"
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }

@@ -1,9 +1,9 @@
-group = 'com.gmoon.spring-integration.spring-integration-amqp'
-description = 'spring-integration-amqp'
+group = "com.gmoon.spring-integration.spring-integration-amqp"
+description = "spring-integration-amqp"
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
-    implementation 'org.springframework.integration:spring-integration-amqp'
-    implementation 'com.rabbitmq:http-client:3.12.1'
+    implementation("org.springframework.integration:spring-integration-amqp")
+    implementation("com.rabbitmq:http-client:3.12.1")
 }

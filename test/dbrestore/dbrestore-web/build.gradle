@@ -1,7 +1,7 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 def prop = [
@@ -12,36 +12,36 @@ def prop = [
 ]
 
 prop.jdbc_url = "${prop.jdbc_connection_protocol}//${prop.db_address}/${prop.db_name}?${prop.jdbc_option}"
-prop.jdbc_username = 'root'
-prop.jdbc_password = '111111'
+prop.jdbc_username = "root"
+prop.jdbc_password = "111111"
 
 def dbrestore_db_name = "${prop.db_name}_backup"
 def dbrestore_jdbc_url = "${prop.jdbc_connection_protocol}//${prop.db_address}/${dbrestore_db_name}?${prop.jdbc_option}"
 
-group = 'com.gmoon.test.dbrestore.dbrestore-web'
-description = 'dbrestore-web'
+group = "com.gmoon.test.dbrestore.dbrestore-web"
+description = "dbrestore-web"
 
 dependencies {
-    implementation project(':java-core')
-    testImplementation project('test:dbrestore:dbrestore-web')
+    implementation project(":java-core")
+    testImplementation project("test:dbrestore:dbrestore-web")
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.codehaus.mojo:sql-maven-plugin:3.0.0'
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.codehaus.mojo:sql-maven-plugin:3.0.0")
 
     // persistence
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation libs.querydsl.core
-    implementation "${libs.querydsl.jpa.get()}:jakarta"
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.querydsl.core)
+    implementation("${libs.querydsl.jpa.get()}:jakarta")
 
-    implementation libs.jdbc.mysql
+    implementation(libs.jdbc.mysql)
 
     // etc
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
     // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 applyQuerydslQDomainCodeGen(project)

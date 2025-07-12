@@ -1,38 +1,25 @@
 # https://docs.gradle.org/current/userguide/version_catalogs.html
 [versions]
-# persistence
-jdbc-h2 = "2.2.224"
-jdbc-mariadb = "3.4.1"
-jdbc-mysql = "8.0.28"
-
+####### persistence
 hibernate = "6.6.15.Final"
 querydsl = "5.1.0"
 
-# cache
+####### cache
 org-redisson = "3.22.0"
 
-# etc
-apache-commons-lang3 = "3.17.0"
+####### etc
+apache-poi = "5.4.1"
 ulisesbocchio-jarsypt = "3.0.5"
+zxing = "3.5.3"
 
-# test
+####### test
 quick-perf = "1.1.0"
 testcontainers = "1.21.0"
 fixturemonkey = "1.1.11"
 rest-assured = "5.5.5"
 
-#[jdbc.driver]
-jdbc.h2.driver = "org.h2.Driver"
-jdbc.mariadb.driver = "org.mariadb.jdbc.Driver"
-jdbc.mysql.driver = "com.mysql.cj.jdbc.Driver"
-
-#[hibernate.direct]
-hibernate-dialect-h2 = "org.hibernate.dialect.H2Dialect"
-hibernate-dialect-mysql = "org.hibernate.dialect.MySQLDialect"
-hibernate-dialect-mariadb = "org.hibernate.dialect.MariaDBDialect"
-
 [libraries]
-# persistence
+####### persistence
 hibernate-core = { module = "org.hibernate:hibernate-core", version.ref = "hibernate" }
 hibernate-ant = { module = "org.hibernate.orm:hibernate-ant", version.ref = "hibernate" }
 hibernate-envers = { module = "org.hibernate.orm:hibernate-envers", version.ref = "hibernate" }
@@ -46,15 +33,16 @@ querydsl-jpa = { module = "com.querydsl:querydsl-jpa", version.ref = "querydsl" 
 querydsl-core = { module = "com.querydsl:querydsl-core", version.ref = "querydsl" }
 querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl" }
 
-jdbc-mysql = { group = "mysql", name = "mysql-connector-java", version.ref = "jdbc-mysql" }
-jdbc-mariadb = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "jdbc-mariadb" }
-jdbc-h2 = { group = "com.h2database", name = "h2", version.ref = "jdbc-h2" }
+#jdbc-mysql = { group = "mysql", name = "mysql-connector-java", version = "8.0.28" }
+jdbc-mysql = { module = "com.mysql:mysql-connector-j", version = "9.3.0" }
+jdbc-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version = "3.4.1" }
+jdbc-h2 = { module = "com.h2database:h2", version = "2.2.224" }
 
-# sql
+####### sql
 jsqlparser = { module = "com.github.jsqlparser:jsqlparser", version = "5.0" }
 p6spy = { module = "p6spy:p6spy", version = "3.8.2" }
 
-# cache
+####### cache
 redisson = { group = "org.redisson", name = "redisson", version.ref = "org-redisson" }
 redisson-spring = { group = "org.redisson", name = "redisson-spring-boot-starter", version.ref = "org-redisson" }
 
@@ -64,37 +52,68 @@ ehcache = { module = "org.ehcache:ehcache", version = "3.9.6" }
 embedded-redis-ozimov = { module = "it.ozimov:embedded-redis", version = "0.7.3" }
 embedded-redis-kstyrc = { module = "com.github.kstyrc:embedded-redis", version = "0.6" }
 
-# security
+####### security
 auth0-java-jwt = { module = "com.auth0:java-jwt", version = "3.8.2" }
 
 bouncycastle-bcprov-jdk15 = { module = "org.bouncycastle:bcprov-jdk15on", version = "1.70" }
 bouncycastle-bcprov-jdk18 = { module = "org.bouncycastle:bcprov-jdk18on", version = "1.81" }
 
-# aws
-aws-java-sdk-s3 = { module = "com.amazonaws:aws-java-sdk-s3", version = "1.12.295" }
+####### aws
+aws-java-sdk-s3 = { module = "com.amazonaws:aws-java-sdk-s3", version = "1.12.787" }
 
-# etc
-apache-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "apache-commons-lang3" }
-
+####### apache
+apache-commons-lang3 = { module = "org.apache.commons:commons-lang3", version = "3.17.0" }
+apache-commons-text = { module = "org.apache.commons:commons-text", version = "1.13.1" }
+apache-commons-collections4 = { module = "org.apache.commons:commons-collections4", version = "4.5.0" }
+apache-commons-compress = { module = "org.apache.commons:commons-compress", version = "1.27.1" }
+apache-commons-io = { module = "commons-io:commons-io", version = "2.19.0" }
+apache-commons-configuration = { module = "commons-configuration:commons-configuration", version = "1.10" }
+apache-commons-configuration2 = { module = "org.apache.commons:commons-configuration2", version = "2.12.0" }
+apache-commons-codec = { group = "commons-codec", name = "commons-codec", version = "1.18.0" }
 apache-thrift = { module = "org.apache.thrift:libthrift", version = "0.20.0" }
+
+apache-poi = { module = "org.apache.poi:poi", version.ref = "apache-poi" }
+apache-poi-examples = { module = "org.apache.poi:poi-examples", version.ref = "apache-poi" }
+apache-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "apache-poi" }
+
+####### etc
+bytebuddy = { module = "net.bytebuddy:byte-buddy", version = "1.17.6" }
+reflections = { module = "org.reflections:reflections", version = "0.10.2" }
+
 tsid-creator = { module = "com.github.f4b6a3:tsid-creator", version = "5.2.6" }
 
-jayway-asonpath = { module = "com.jayway.jsonpath:json-path", version = "2.9.0" }
+jayway-jsonpath = { module = "com.jayway.jsonpath:json-path", version = "2.9.0" }
 
 ulisesbocchio-jasypt-spring-boot = { module = "com.github.ulisesbocchio:jasypt-spring-boot", version.ref = "ulisesbocchio-jarsypt" }
 ulisesbocchio-jasypt-spring-boot-starter = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "ulisesbocchio-jarsypt" }
 
-commons-codec = { group = "commons-codec", name = "commons-codec", version = "1.15" }
-commons-configuration = { module = "commons-configuration:commons-configuration", version = "1.10" }
+beanio = { module = "org.beanio:beanio", version = "2.1.0" }
 
 github-classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.146" }
 github-javaparser = { module = "com.github.javaparser:javaparser-core", version = "3.26.1" }
 
+####### google
 google-auto-service = { module = "com.google.auto.service:auto-service", version = "1.1.1" }
+google-api-client = { module = "com.google.api-client:google-api-client", version = "2.8.0" }
+google-oauth-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version = "1.39.0" }
+google-api-services-sheets = { module = "com.google.apis:google-api-services-sheets", version = "v4-rev612-1.25.0" }
+google-api-services-drive = { module = "com.google.apis:google-api-services-drive", version = "v3-rev197-1.25.0" }
 
-# test
+####### ZXing
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
+zxing-javase = { module = "com.google.zxing:javase", version.ref = "zxing" }
+
+####### TOTP
+totp = { module = "dev.samstevens.totp:totp", version = "1.7.1" }
+
+####### test
 quickperf-junit5 = { group = "org.quickperf", name = "quick-perf-junit5", version.ref = "quick-perf" }
-quickperf-spring = { group = "org.quickperf", name = "quick-perf-springboot2-sql-starter", version.ref = "quick-perf" }
+quickperf-sql-spring = { group = "org.quickperf", name = "quick-perf-springboot2-sql-starter", version.ref = "quick-perf" }
+quickperf-sql-spring5 = { group = "org.quickperf", name = "quick-perf-sql-spring5", version.ref = "quick-perf" }
+quickperf-sql-annotation = { group = "org.quickperf", name = "quick-perf-sql-annotations", version.ref = "quick-perf" }
+quickperf-core = { group = "org.quickperf", name = "quick-perf-core", version.ref = "quick-perf" }
+quickperf-jvm-core = { group = "org.quickperf", name = "quick-perf-jvm-core", version.ref = "quick-perf" }
+quickperf-jvm-annotations = { group = "org.quickperf", name = "quick-perf-jvm-annotations", version.ref = "quick-perf" }
 
 testcontainers-bom = { group = "org.testcontainers", name = "testcontainers-bom", version.ref = "testcontainers" }
 testcontainers-kafka = { group = "org.testcontainers", name = "kafka", version.ref = "testcontainers" }

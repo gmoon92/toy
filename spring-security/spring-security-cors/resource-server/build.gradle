@@ -1,30 +1,30 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.spring-security.spring-security-cors.resource-server'
-description = 'resource-server'
+group = "com.gmoon.spring-security.spring-security-cors.resource-server"
+description = "resource-server"
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
 
     // security
-    implementation libs.auth0.java.jwt
+    implementation(libs.auth0.java.jwt)
 
     // persistence
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation libs.jdbc.mysql
-    implementation libs.querydsl.core
-    implementation "${libs.querydsl.jpa.get()}:jakarta"
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.jdbc.mysql)
+    implementation(libs.querydsl.core)
+    implementation("${libs.querydsl.jpa.get()}:jakarta")
 
     // etc
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
     // test
-    testImplementation libs.jdbc.h2
+    testImplementation(libs.jdbc.h2)
 }
 
 applyQuerydslQDomainCodeGen(project)

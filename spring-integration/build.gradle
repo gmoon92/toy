@@ -1,24 +1,25 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 bootJar {
     enabled = false
 }
 
-group = 'com.gmoon.spring-integration'
-description = 'spring-integration'
+group = "com.gmoon.spring-integration"
+description = "spring-integration"
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "java"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter'
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
         implementation project(":java-core")
+        implementation("org.springframework.boot:spring-boot-starter")
+
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
 }

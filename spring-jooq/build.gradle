@@ -1,25 +1,25 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.spring-jooq'
-description = 'spring-jooq'
+group = "com.gmoon.spring-jooq"
+description = "spring-jooq"
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation libs.jdbc.mysql
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.jdbc.mysql)
 
     // jooq
-    implementation 'org.springframework.boot:spring-boot-starter-jooq'
-    implementation 'org.jooq:jooq'
-    implementation 'org.jooq:jooq-meta'
-    implementation 'org.jooq:jooq-codegen'
+    implementation("org.springframework.boot:spring-boot-starter-jooq")
+    implementation("org.jooq:jooq")
+    implementation("org.jooq:jooq-meta")
+    implementation("org.jooq:jooq-codegen")
 
-    implementation project(':java-core')
+    implementation project(":java-core")
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation libs.jdbc.h2
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.jdbc.h2)
 }

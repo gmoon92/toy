@@ -1,23 +1,23 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.spring-utils.spring-logging'
-description = 'spring-logging'
+group = "com.gmoon.spring-utils.spring-logging"
+description = "spring-logging"
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     }
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
 
     // etc
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
     // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

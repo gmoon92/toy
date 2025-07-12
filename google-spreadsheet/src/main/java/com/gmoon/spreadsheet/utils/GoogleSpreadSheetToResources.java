@@ -1,19 +1,20 @@
 package com.gmoon.spreadsheet.utils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.io.FileHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
-import com.google.api.services.sheets.v4.model.ValueRange;
 
 import com.gmoon.javacore.util.StringUtils;
 import com.gmoon.spreadsheet.config.GoogleSpreadSheetProperties;
 import com.gmoon.spreadsheet.vo.ResourceVO;
+import com.google.api.services.sheets.v4.model.ValueRange;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,15 +69,21 @@ public final class GoogleSpreadSheetToResources {
 	private static void generatePropertiesResource(String sheetName, ResourceVO vo, String targetDirPath,
 		 String targetLanguage) throws Exception {
 		String resourceFilePath = getResourceFilePath(sheetName, targetLanguage, targetDirPath);
+
 		PropertiesConfiguration config = new PropertiesConfiguration();
-		config.setDelimiterParsingDisabled(true);
-		config.setEncoding("UTF-8");
+		config.setListDelimiterHandler(null);
+		// config.setDelimiterParsingDisabled(true);
+		// config.setEncoding("UTF-8");
 		for (Map.Entry<String, String> entry : vo.getDataMap().entrySet()) {
 			if (entry != null && entry.getKey() != null) {
 				config.addProperty(entry.getKey(), entry.getValue());
 			}
 		}
-		config.save(resourceFilePath);
+		// config.save(resourceFilePath);
+
+		FileHandler handler = new FileHandler(config);
+		handler.setEncoding("UTF-8");
+		handler.save(new File(resourceFilePath));
 	}
 
 	private static List<ResourceVO> getResourceVOList(ValueRange sheet) {

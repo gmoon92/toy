@@ -1,9 +1,9 @@
-group = 'com.gmoon.spring-event.spring-fcm'
-description = 'spring-fcm'
+group = "com.gmoon.spring-event.spring-fcm"
+description = "spring-fcm"
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
     // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
-    implementation('com.google.firebase:firebase-admin:9.2.0')
+    implementation("com.google.firebase:firebase-admin:9.5.0")
 }

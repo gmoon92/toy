@@ -1,32 +1,32 @@
 plugins {
-    id 'java-library'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java-library"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 bootJar {
     enabled = false
 }
 
-group = 'com.gmoon.test.dbrestore.dbrestore-test'
-description = 'dbrestore-test'
+group = "com.gmoon.test.dbrestore.dbrestore-test"
+description = "dbrestore-test"
 
 dependencies {
-    implementation project(':java-core')
+    implementation project(":java-core")
 
     // spring tx
-    implementation 'org.springframework.data:spring-data-commons'
-    implementation 'org.springframework:spring-tx'
-    implementation 'jakarta.transaction:jakarta.transaction-api'
+    implementation("org.springframework.data:spring-data-commons")
+    implementation("org.springframework:spring-tx")
+    implementation("jakarta.transaction:jakarta.transaction-api")
 
-    implementation libs.jsqlparser
-    implementation libs.p6spy
+    implementation(libs.jsqlparser)
+    implementation(libs.p6spy)
 
     // etc
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
     // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

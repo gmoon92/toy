@@ -1,15 +1,14 @@
-group = 'com.gmoon.spring-event.spring-kafka.spring-kafka-broker'
-description = 'spring-kafka-broker'
+group = "com.gmoon.spring-event.spring-kafka.spring-kafka-broker"
+description = "spring-kafka-broker"
 
 dependencies {
-    implementation platform(libs.testcontainers.bom)
-
     implementation project(":java-core")
-    implementation('org.springframework.boot:spring-boot-starter-web')
 
-    // testcontainers
+    implementation platform(libs.testcontainers.bom)
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // test
     testImplementation(libs.testcontainers.bom)
     testImplementation(libs.testcontainers.junit5)
     testImplementation(libs.testcontainers.kafka)
-
 }

@@ -1,42 +1,42 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 bootJar {
     enabled = false
 }
 
-group = 'com.gmoon.spring-jpa.querydsl-sql.querydsl-sql-codegen-maven'
-description = 'querydsl-sql-codegen-maven'
+group = "com.gmoon.spring-jpa.querydsl-sql.querydsl-sql-codegen-maven"
+description = "querydsl-sql-codegen-maven"
 
 dependencies {
     // maven plugin
-    compileOnly 'org.apache.maven:maven-plugin-api:${mvn.version}'
-    compileOnly 'org.apache.maven:maven-model:3.9.6'
-    compileOnly 'org.apache.maven:maven-core:${mvn.version}'
-    compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.0'
-//    implementation 'org.apache.maven:maven-artifact:${mvn.version}'
-//    implementation 'org.apache.maven.shared:file-management:3.0.0'
+    compileOnly("org.apache.maven:maven-plugin-api:${mvn.version}")
+    compileOnly("org.apache.maven:maven-model:3.9.6")
+    compileOnly("org.apache.maven:maven-core:${mvn.version}")
+    compileOnly("org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.0")
+//    implementation("org.apache.maven:maven-artifact:${mvn.version}")
+//    implementation("org.apache.maven.shared:file-management:3.0.0")
 
     // persistence
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation libs.hibernate.ant
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.hibernate.ant)
 
     // querydsl
-    implementation libs.querydsl.core
-    implementation libs.querydsl.sql
-    implementation libs.querydsl.sql.codegen
+    implementation(libs.querydsl.core)
+    implementation(libs.querydsl.sql)
+    implementation(libs.querydsl.sql.codegen)
 
     // etc
-    implementation libs.github.classgraph
-    implementation libs.github.javaparser
+    implementation(libs.github.classgraph)
+    implementation(libs.github.javaparser)
 
     // test
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core'
-    testImplementation 'org.mockito:mockito-core'
-//    testImplementation 'org.assertj:assertj-core:3.22.0'
-//    testImplementation 'org.mockito:mockito-core:5.17.0'
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
+//    testImplementation("org.assertj:assertj-core:3.22.0")
+//    testImplementation("org.mockito:mockito-core:5.17.0")
 }

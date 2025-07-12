@@ -1,43 +1,41 @@
 plugins {
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.spring-jpa.hibernate-batch-insert'
-description = 'hibernate-batch-insert'
+group = "com.gmoon.spring-jpa.hibernate-batch-insert"
+description = "hibernate-batch-insert"
 
 dependencies {
-    implementation project(':java-core')
+    implementation project(":java-core")
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-jooq'
-    implementation libs.jdbc.mysql
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-jooq")
+    implementation(libs.jdbc.mysql)
+    implementation("org.flywaydb:flyway-mysql")
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // querydsl
+    implementation(libs.querydsl.core)
+    implementation("${libs.querydsl.jpa.get()}:jakarta")
+    implementation(libs.querydsl.sql)
+    compileOnly(libs.querydsl.sql.codegen)
 
-    implementation libs.querydsl.core
-    implementation "${libs.querydsl.jpa.get()}:jakarta"
-    implementation libs.querydsl.sql
-    compileOnly libs.querydsl.sql.codegen
-
-    implementation 'org.flywaydb:flyway-mysql'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
     // jooq
-    implementation 'org.jooq:jooq-meta'
-    implementation 'org.jooq:jooq-codegen'
-    implementation 'org.jooq:jooq'
+    implementation("org.jooq:jooq-meta")
+    implementation("org.jooq:jooq-codegen")
+    implementation("org.jooq:jooq")
 
     // AutoService: META-INF/services/Processor 자동생성
-    compileOnly libs.google.auto.service
+    compileOnly(libs.google.auto.service)
 
-//    annotationProcessor("${libs.querydsl.apt.get()}:jakarta")
-//    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-//    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 applyQuerydslQDomainCodeGen(project)

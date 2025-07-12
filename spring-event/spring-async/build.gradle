@@ -1,11 +1,12 @@
-group = 'com.gmoon.spring-event.spring-async'
-description = 'spring-async'
+group = "com.gmoon.spring-event.spring-async"
+description = "spring-async"
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation('org.springframework.boot:spring-boot-starter-mail')
-    implementation('commons-io:commons-io:2.15.1')
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    implementation(libs.apache.commons.io)
 
     runtimeOnly(libs.jdbc.h2)
 }

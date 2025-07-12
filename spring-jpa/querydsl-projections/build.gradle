@@ -1,22 +1,23 @@
 plugins {
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.spring-jpa.querydsl-projections'
-description = 'querydsl-projections'
+group = "com.gmoon.spring-jpa.querydsl-projections"
+description = "querydsl-projections"
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation("org.springframework.boot:spring-boot-starter")
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation "${libs.querydsl.jpa.get()}:jakarta"
-    implementation libs.querydsl.core
-    implementation libs.jdbc.mysql
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("${libs.querydsl.jpa.get()}:jakarta")
+    implementation(libs.querydsl.core)
+    implementation(libs.jdbc.mysql)
 
-    implementation 'org.projectlombok:lombok'
+    implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 applyQuerydslQDomainCodeGen(project)

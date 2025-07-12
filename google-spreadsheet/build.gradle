@@ -1,31 +1,27 @@
 plugins {
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 repositories {
     google()
 }
 
-group = 'com.gmoon.google-spreadsheet'
-description = 'google-spreadsheet'
-
-ext {
-    googleApiClientVersion = '1.23.0'
-    junitPlatformEngineVersion = '1.4.0'
-}
+group = "com.gmoon.google-spreadsheet"
+description = "google-spreadsheet"
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-configuration-processor"
-
-    implementation "com.google.api-client:google-api-client:${googleApiClientVersion}"
-    implementation "com.google.oauth-client:google-oauth-client-jetty:${googleApiClientVersion}"
-    implementation "com.google.apis:google-api-services-sheets:v4-rev493-${googleApiClientVersion}"
-    implementation "com.google.apis:google-api-services-drive:v3-rev110-${googleApiClientVersion}"
-
-    implementation "commons-configuration:commons-configuration:1.10"
     implementation project(":java-core")
 
-    runtimeOnly "org.springframework.boot:spring-boot-devtools"
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
+
+    runtimeOnly("org.springframework.boot:spring-boot-devtools")
+    implementation(libs.apache.commons.configuration2)
+
+    // google
+    implementation(libs.google.api.client)
+    implementation(libs.google.oauth.client.jetty)
+    implementation(libs.google.api.services.sheets)
+    implementation(libs.google.api.services.drive)
 }

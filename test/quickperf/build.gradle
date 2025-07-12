@@ -1,24 +1,24 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.test.quickperf'
-description = 'quickperf'
+group = "com.gmoon.test.quickperf"
+description = "quickperf"
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // persistence
-    runtimeOnly libs.jdbc.h2
+    runtimeOnly(libs.jdbc.h2)
 
     // etc
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
     // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation libs.quickperf.junit5
-    testImplementation libs.quickperf.spring
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.quickperf.junit5)
+    testImplementation(libs.quickperf.sql.spring)
 }

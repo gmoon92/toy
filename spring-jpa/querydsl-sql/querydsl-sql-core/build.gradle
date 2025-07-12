@@ -1,24 +1,24 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
-group = 'com.gmoon.spring-jpa.querydsl-sql.querydsl-sql-core'
-description = 'querydsl-sql-core'
+group = "com.gmoon.spring-jpa.querydsl-sql.querydsl-sql-core"
+description = "querydsl-sql-core"
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation libs.jdbc.mysql
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.jdbc.mysql)
 
-    // querydsl sql
-    implementation libs.querydsl.core
-    implementation "${libs.querydsl.jpa.get()}:jakarta"
+    // querydsl
+    implementation(libs.querydsl.core)
+    implementation("${libs.querydsl.jpa.get()}:jakarta")
+    implementation(libs.querydsl.sql)
+    implementation(libs.querydsl.sql.spring)
 
-    implementation libs.querydsl.sql
-    implementation libs.querydsl.sql.spring
+    implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
-    implementation 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

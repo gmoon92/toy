@@ -1,18 +1,18 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id "java"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
 }
 
 bootJar {
     enabled = false
 }
 
-group = 'com.gmoon.spring-security'
-description = 'spring-security'
+group = "com.gmoon.spring-security"
+description = "spring-security"
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "java"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
 }
