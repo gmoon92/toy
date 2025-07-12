@@ -1,0 +1,102 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+
+    // https://docs.gradle.org/current/userguide/jacoco_plugin.html
+    id 'jacoco'
+}
+
+// jacoco plugin config
+jacoco {
+    toolVersion = "0.8.13"
+    // 필요시 기본값 변경, 기본 값: reports/jacoco
+    // reportsDirectory = layout.buildDirectory.dir('reports/jacoco')
+}
+
+// Define dependencies between code coverage reports and test execution
+test {
+    // report is always generated after tests run
+    finalizedBy jacocoTestReport
+    jacoco {
+        enabled = true
+        destinationFile = layout.buildDirectory
+                .file('jacoco/jacocoTest.exec').get()
+                .asFile
+
+    }
+}
+
+// jacoco report config
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir('jacocoHtml'))
+    }
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: [
+                            '**/*Application.class',
+                            '**/global/**',
+                            '**/*Builder.class',
+                            '**/domain/Q*.class'
+                    ])
+                })
+        )
+    }
+}
+
+// Configuring violation rules
+jacocoTestCoverageVerification {
+    dependsOn test
+    violationRules {
+        rule {
+            element = "BUNDLE"
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+        }
+
+        rule {
+            element = "METHOD"
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 50
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
+
+group = 'com.gmoon.test.jacoco'
+description = 'jacoco'
+
+dependencies {
+    implementation project(':java-core')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // persistence
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "${libs.querydsl.jpa.get()}:jakarta"
+    implementation libs.jdbc.h2
+
+    // etc
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+applyQuerydslQDomainCodeGen(project)

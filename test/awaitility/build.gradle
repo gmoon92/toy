@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.gmoon.test.awaitility'
+description = 'awaitility'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    implementation libs.awaitility
+
+    // etc
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

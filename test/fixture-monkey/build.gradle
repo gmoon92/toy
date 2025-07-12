@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.gmoon.test.fixture-monkey'
+description = 'fixture-monkey'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // etc
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation libs.fixture.monkey.starter
+    testImplementation libs.fixture.monkey.jakarta.validation
+}

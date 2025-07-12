@@ -87,5 +87,23 @@ include(
         'spring-utils:spring-core-utils',
         'spring-utils:spring-logging',
 
-//        'test'
+        'test',
+        'test:awaitility',
+
+        // Maven plugin 전용 모듈이므로 Gradle 빌드 대상에서 제외함
+        // Gradle 플러그인화 또는 cross-platform 대응 시 다시 활성화 가능
+        'test:dbrestore',
+//        'test:dbrestore:dbrestore-test',
+//        'test:dbrestore:dbrestore-web',
+
+        'test:embedded-redis',
+        'test:fixture-monkey',
+        'test:jacoco',
+        'test:junit5',
+        'test:localstack',
+        'test:mockito',
+        'test:quickperf',
+        'test:rest-assured',
+        'test:spring-bean-profiler',
+        'test:test-context-caching'
 )
