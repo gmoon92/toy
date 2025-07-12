@@ -81,7 +81,7 @@ include(
         'spring-triangle:spring-aop',
         'spring-triangle:spring-framework',
 
-//        'spring-tx',
+        'spring-tx',
 //        'spring-utils',
 //
 //        'test'
