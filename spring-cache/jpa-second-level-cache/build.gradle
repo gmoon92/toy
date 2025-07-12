@@ -23,6 +23,10 @@ dependencies {
     implementation(libs.hibernate.jcache)
     implementation(libs.jdbc.h2)
 
-    testImplementation(libs.quickperf.junit5)
+    implementation(libs.apache.commons.io)
+    testImplementation(libs.quickperf.junit5) {
+        exclude group: "commons-io", module: "commons-io"
+
+    }
     testImplementation(libs.quickperf.sql.spring)
 }

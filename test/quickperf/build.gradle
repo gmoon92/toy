@@ -19,6 +19,7 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.apache.commons.io)
     testImplementation(libs.quickperf.junit5)
     testImplementation(libs.quickperf.sql.spring)
 }

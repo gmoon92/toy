@@ -6,6 +6,7 @@ dependencies {
     implementation(libs.jdbc.h2)
 
     testImplementation(libs.awaitility)
+    testImplementation(libs.apache.commons.io)
     testImplementation(libs.quickperf.junit5)
     testImplementation(libs.quickperf.sql.spring)
 }

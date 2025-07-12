@@ -8,6 +8,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // test
+    testImplementation(libs.apache.commons.compress)
+    testImplementation(libs.apache.commons.io)
     testImplementation(libs.testcontainers.bom)
     testImplementation(libs.testcontainers.junit5)
     testImplementation(libs.testcontainers.kafka)

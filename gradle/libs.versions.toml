@@ -14,7 +14,7 @@ zxing = "3.5.3"
 
 ####### test
 quick-perf = "1.1.0"
-testcontainers = "1.21.0"
+testcontainers = "1.21.3"
 fixturemonkey = "1.1.11"
 rest-assured = "5.5.5"
 

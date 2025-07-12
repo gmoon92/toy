@@ -33,6 +33,7 @@ dependencies {
     }
 
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation(libs.apache.commons.io)
     testImplementation(libs.quickperf.junit5)
     testImplementation(libs.quickperf.sql.spring)
 }
