@@ -8,8 +8,42 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:deprecation"
 }
 
+// ext: Gradle의 확장 속성 시스템, Extra properties extension
 ext {
     springBootVersion = "3.5.0"
+}
+
+/**
+ * QueryDSL Q 도메인 클래스 코드 생성 설정 공통화(Closure 유형 ext 속성)
+ *
+ * - 루트 build.gradle의 ext에 정의하여 전체 모듈에서 적용 가능.
+ * - 서브 모듈에서는 applyQuerydslQDomainCodeGen(project) 형태로 호출.
+ *   - 만약 네이밍 오버라이드 등 변수 충돌 우려시에는
+ *     project.applyQuerydslQDomainCodeGen.call(project) 형태로 명확하게 지정할 것.
+ * - 추후, 커스텀 Gradle Task나 플러그인 등록 등 빌드 자동화 확장이 필요한 경우
+ *   코드 구조의 확장성도 고려.
+ *
+ * @param project : 설정을 적용할 대상 Gradle Project 객체
+ */
+ext.applyQuerydslQDomainCodeGen = { project ->
+    String generatedDir = "${project.projectDir}/build/generated"
+
+    project.tasks.named('clean') {
+        delete project.file(generatedDir)
+    }
+
+    project.tasks.withType(JavaCompile).configureEach {
+        options.generatedSourceOutputDirectory = project.file(generatedDir)
+    }
+
+    // IDE 자동 인식 용
+    project.sourceSets.main.java.srcDirs += [generatedDir]
+
+    project.dependencies {
+        annotationProcessor("${libs.querydsl.apt.get()}:jakarta")
+        annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+        annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    }
 }
 
 java {
