@@ -1,11 +1,13 @@
 /.metadata/
 /.project/
+/.gradle/
 
 !**/src/main/**
 !**/src/test/**
 
 **/target/**
 **/build/**
+**/.gradle/**
 
 ### STS ###
 .apt_generated
