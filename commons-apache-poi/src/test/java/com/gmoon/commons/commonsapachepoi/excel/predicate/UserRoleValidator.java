@@ -4,17 +4,18 @@ import com.gmoon.commons.commonsapachepoi.common.utils.SecurityUtil;
 import com.gmoon.commons.commonsapachepoi.users.Role;
 import com.gmoon.commons.commonsapachepoi.users.User;
 
-import lombok.RequiredArgsConstructor;
+public class UserRoleValidator extends ExcelEnumValidator<Role> {
 
-@RequiredArgsConstructor
-public class UserRoleValidator implements ExcelValidator {
+	protected UserRoleValidator() {
+		super(Role.class);
+	}
 
 	@Override
-	public boolean isValid(String authority) {
+	public boolean isValid(Role role) {
 		try {
 			User user = SecurityUtil.getCurrentUser();
 			return user.isAdmin()
-				 && Role.USER == Role.valueOf(authority);
+				 && Role.USER == role;
 		} catch (Exception e) {
 			return false;
 		}

@@ -8,17 +8,17 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gmoon.commons.commonsapachepoi.common.base.CodeBasedEnum;
+import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
 
-public abstract class StringToEnumConverter<T extends Enum<T> & CodeBasedEnum<String>>
+public abstract class StringToEnumConverter<T extends Enum<T> & ExcelValueProvider>
 	 implements ExcelConverter<T> {
 
 	private final Map<String, T> codes;
 
-	StringToEnumConverter(Class<T> enumClass) {
+	protected StringToEnumConverter(Class<T> enumClass) {
 		this.codes = Arrays.stream(enumClass.getEnumConstants())
 			 .collect(Collectors.collectingAndThen(
-				  Collectors.toMap(CodeBasedEnum::getCode, Function.identity()),
+				  Collectors.toMap(ExcelValueProvider::getExcelCellValue, Function.identity()),
 				  Collections::unmodifiableMap
 			 ));
 	}
