@@ -45,12 +45,13 @@ import lombok.extern.slf4j.Slf4j;
 public final class ExcelUtil {
 
 	public static <T> void download(
+		 HttpServletRequest request,
 		 OutputStream out,
 		 Class<T> clazz,
 		 List<T> dataList
 	) {
 		ExcelModel excelModelAnnotation = getExcelModelAnnotation(clazz);
-		ExcelFields excelFields = ExcelFields.from(clazz);
+		ExcelFields excelFields = new ExcelFields(clazz, request);
 		try (SXSSFWorkbook wb = new SXSSFWorkbook(1_000)) {
 			String sheetName = excelModelAnnotation.sheetName();
 			Sheet sheet = wb.createSheet(sheetName);
@@ -216,7 +217,7 @@ public final class ExcelUtil {
 		 Class<T> clazz
 	) {
 		ExcelModel excelModelAnnotation = getExcelModelAnnotation(clazz);
-		ExcelFields excelFields = ExcelFields.from(clazz, request);
+		ExcelFields excelFields = new ExcelFields(clazz, request);
 
 		try (FileInputStream fis = new FileInputStream(filePath);
 			 XSSFWorkbook workbook = new XSSFWorkbook(fis)

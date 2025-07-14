@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,16 +28,26 @@ public final class ReflectionUtil {
 		}
 	}
 
-	@SafeVarargs
-	public static Map<Integer, Field> getDeclaredAnnotationFieldMap(Class<?> target,
-		 Class<? extends Annotation>... annotation) {
-		Map<Integer, Field> result = new LinkedHashMap<>();
+	public static Map<Integer, Field> getDeclaredAnnotationFieldMap(
+		 Class<?> target,
+		 Class<? extends Annotation> annotation
+	) {
+		return getDeclaredAnnotationFieldMap(target, annotation, field -> field);
+	}
+
+	public static <T, A extends Annotation> Map<Integer, T> getDeclaredAnnotationFieldMap(
+		 Class<?> target,
+		 Class<A> annotationClass,
+		 Function<Field, T> mapper
+	) {
+		Map<Integer, T> result = new LinkedHashMap<>();
 		int index = 0;
 		Field[] fields = target.getDeclaredFields();
 		for (Field field : fields) {
-			if (existsDeclaredAnnotation(field, annotation)) {
+			A annotation = field.getAnnotation(annotationClass);
+			if (annotation != null) {
 				field.setAccessible(true);
-				result.put(index++, field);
+				result.put(index++, mapper.apply(field));
 			}
 		}
 		return result;

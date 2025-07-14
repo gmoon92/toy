@@ -3,7 +3,6 @@ package com.gmoon.commons.commonsapachepoi.excel.vo;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,62 +24,25 @@ import lombok.Getter;
 
 @Getter
 public class ExcelFields {
-
 	private final Map<Integer, ExcelField> value;
 
-	private ExcelFields(Class<?> excelModelClass, ApplicationContext ctx) {
-		Map<Integer, ExcelField> result = new LinkedHashMap<>();
-		int fieldNum = 0;
-		Field[] fields = excelModelClass.getDeclaredFields();
-		for (Field field : fields) {
-			ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-			if (annotation == null) {
-				continue;
-			}
-			field.setAccessible(true);
-			result.put(fieldNum++, new ExcelField(field, annotation, ctx));
-		}
-
-		if (CollectionUtils.isEmpty(result)) {
-			throw new UnsupportedOperationException(
-				 String.format("@ExcelProperty annotation not found in class %s", excelModelClass.getName())
-			);
-		}
-
-		this.value = Collections.unmodifiableMap(result);
-	}
-
-	private ExcelFields(Class<?> excelModelClass) {
-		Map<Integer, ExcelField> result = new LinkedHashMap<>();
-		int fieldNum = 0;
-		Field[] fields = excelModelClass.getDeclaredFields();
-		for (Field field : fields) {
-			ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-			if (annotation == null) {
-				continue;
-			}
-			field.setAccessible(true);
-			result.put(fieldNum++, new ExcelField(field, annotation));
-		}
-
-		if (CollectionUtils.isEmpty(result)) {
-			throw new UnsupportedOperationException(
-				 String.format("@ExcelProperty annotation not found in class %s", excelModelClass.getName())
-			);
-		}
-
-		this.value = Collections.unmodifiableMap(result);
-	}
-
-	public static ExcelFields from(Class<?> clazz) {
-		return new ExcelFields(clazz);
-	}
-
-	public static ExcelFields from(Class<?> clazz, HttpServletRequest request) {
+	public ExcelFields(Class<?> excelModelClass, HttpServletRequest request) {
 		ServletContext servletContext = request.getServletContext();
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 
-		return new ExcelFields(clazz, ctx);
+		Map<Integer, ExcelField> result = ReflectionUtil.getDeclaredAnnotationFieldMap(
+			 excelModelClass,
+			 ExcelProperty.class,
+			 field -> new ExcelField(field, field.getAnnotation(ExcelProperty.class), ctx)
+		);
+
+		if (CollectionUtils.isEmpty(result)) {
+			throw new UnsupportedOperationException(
+				 String.format("@ExcelProperty annotation not found in class %s", excelModelClass.getName())
+			);
+		}
+
+		this.value = Collections.unmodifiableMap(result);
 	}
 
 	public int size() {
@@ -93,18 +55,10 @@ public class ExcelFields {
 
 	@Getter
 	public static class ExcelField {
-
 		private final Field field;
 		private final boolean required;
 		private final List<ExcelValidator> validators;
 		private final ExcelConverter<?> converter;
-
-		private ExcelField(Field field, ExcelProperty annotation) {
-			this.field = field;
-			this.required = annotation.required();
-			this.validators = null;
-			this.converter = null;
-		}
 
 		private ExcelField(Field field, ExcelProperty annotation, ApplicationContext ctx) {
 			this.field = field;

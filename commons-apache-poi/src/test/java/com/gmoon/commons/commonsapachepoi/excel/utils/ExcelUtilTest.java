@@ -75,7 +75,7 @@ class ExcelUtilTest {
 			 .sampleList(size);
 
 		try (OutputStream outputStream = Files.newOutputStream(Paths.get(excelFilePath))) {
-			ExcelUtil.download(outputStream, ExcelUserVO.class, excelUsers);
+			ExcelUtil.download(request, outputStream, ExcelUserVO.class, excelUsers);
 		}
 	}
 
