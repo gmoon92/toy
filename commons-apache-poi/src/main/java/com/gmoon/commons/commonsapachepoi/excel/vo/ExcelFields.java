@@ -1,6 +1,7 @@
 package com.gmoon.commons.commonsapachepoi.excel.vo;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,8 @@ public class ExcelFields {
 	public List<ExcelBatchValidator> getAllBatchValidators() {
 		return value.values()
 			 .stream()
-			 .flatMap(excelField -> excelField.getBatchValidators().stream())
+			 .map(ExcelField::getBatchValidators)
+			 .flatMap(Collection::stream)
 			 .toList();
 	}
 
