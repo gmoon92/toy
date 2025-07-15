@@ -29,7 +29,7 @@ import com.gmoon.commons.commonsapachepoi.excel.predicate.UniqueCellValueValidat
 import com.gmoon.commons.commonsapachepoi.excel.predicate.UserEmailValidator;
 import com.gmoon.commons.commonsapachepoi.excel.predicate.UserRoleValidator;
 import com.gmoon.commons.commonsapachepoi.excel.predicate.UsernameValidator;
-import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelParseResult;
+import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelSheet;
 import com.gmoon.commons.commonsapachepoi.users.Role;
 import com.gmoon.commons.commonsapachepoi.users.User;
 import com.navercorp.fixturemonkey.FixtureMonkey;
@@ -88,9 +88,9 @@ class ExcelUtilTest {
 		int size = 10;
 		download(size, excelFilePath);
 
-		ExcelParseResult<ExcelUserVO> read = ExcelUtil.read(request, excelFilePath, ExcelUserVO.class);
-		assertThat(read.getInvalidRows()).isEmpty();
-		assertThat(read.getData()).isNotEmpty()
+		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(request, excelFilePath, ExcelUserVO.class);
+		assertThat(excelSheet.isValidSheet()).isTrue();
+		assertThat(excelSheet.getRows()).isNotEmpty()
 			 .hasSize(size)
 			 .allSatisfy(
 				  vo -> {
