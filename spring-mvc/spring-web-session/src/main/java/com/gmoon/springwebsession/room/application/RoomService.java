@@ -1,7 +1,6 @@
 package com.gmoon.springwebsession.room.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class RoomService {
 	public List<Room> findAll() {
 		return repository.findAll().stream()
 			 .filter(Room::isEnabled)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	public void delete(String name) {

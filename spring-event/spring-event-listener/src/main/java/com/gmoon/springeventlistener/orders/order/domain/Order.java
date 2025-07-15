@@ -95,6 +95,6 @@ public class Order implements Serializable {
 		return lines.stream()
 			 .map(OrderLineItem::getProduct)
 			 .map(Product::getNo)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 }

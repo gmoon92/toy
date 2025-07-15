@@ -4,20 +4,18 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import com.gmoon.javacore.util.StringUtils;
 import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.CellFormat;
 import com.google.api.services.sheets.v4.model.Color;
 import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
-
-import com.gmoon.javacore.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -136,7 +134,7 @@ public class GoogleSpreadSheetToXmlDataSet {
 			List<RowData> rowDataList = sheet.getData()
 				 .stream()
 				 .flatMap(gridData -> gridData.getRowData().stream())
-				 .collect(Collectors.toList());
+				 .toList();
 
 			setColumnElements(tableNode, rowDataList);
 			setRowElements(tableNode, rowDataList, ignoreTestData);
@@ -145,7 +143,7 @@ public class GoogleSpreadSheetToXmlDataSet {
 		}
 		return result.stream()
 			 .filter(TableNode::verify)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	private static void setRowElements(TableNode tableNode, List<RowData> rowDataList, boolean ignoreTestData) {
@@ -174,7 +172,7 @@ public class GoogleSpreadSheetToXmlDataSet {
 		return cellDataList.stream()
 			 .map(CellData::getFormattedValue)
 			 .filter(StringUtils::isNotBlank)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	private static TableNode.RowNode getRowNode(List<String> columnElements, List<CellData> cellDataList,

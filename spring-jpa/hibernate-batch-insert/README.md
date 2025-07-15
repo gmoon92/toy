@@ -213,7 +213,7 @@ class AccessLogExcelDownloadRepositoryTest {
 	void saveAll() {
 		List<AccessLogExcelDownload> registered = accessLogs.stream()
 			.map(AccessLogExcelDownload::create)
-			.collect(Collectors.toList());
+			.toList();
 
 		repository.saveAll(registered);
 	}

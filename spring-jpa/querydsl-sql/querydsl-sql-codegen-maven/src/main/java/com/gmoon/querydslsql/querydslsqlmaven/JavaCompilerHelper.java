@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -117,7 +116,7 @@ public final class JavaCompilerHelper {
 
 		List<String> fileNames = javaFiles.stream()
 			 .map(File::getAbsolutePath)
-			 .collect(Collectors.toList());
+			 .toList();
 		options.addAll(fileNames);
 
 		log.info("Javac args: " + options);

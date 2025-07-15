@@ -1,6 +1,15 @@
 package com.gmoon.awaitility.event;
 
-import com.gmoon.awaitility.concurrency.Worker;
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
@@ -10,17 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.gmoon.awaitility.concurrency.Worker;
 
 /**
  * @see <a href="https://github.com/awaitility/awaitility/wiki/Usage">Awaitility wiki</a>
@@ -111,7 +110,7 @@ class EventServiceTest {
 					  )
 				 )
 				 .map(Thread::new)
-				 .collect(Collectors.toList());
+				 .toList();
 		}
 
 		@DisplayName("Concurrency test")

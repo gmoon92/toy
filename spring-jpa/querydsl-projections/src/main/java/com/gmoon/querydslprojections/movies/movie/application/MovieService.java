@@ -1,7 +1,5 @@
 package com.gmoon.querydslprojections.movies.movie.application;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import com.gmoon.querydslprojections.movies.movie.domain.Movie;
@@ -31,7 +29,7 @@ public class MovieService {
 			 .releaseDateTime(movie.getReleaseTime().toSeconds())
 			 .castNames(movie.getCastMembers().stream()
 				  .map(MovieCast::getName)
-				  .collect(Collectors.toList()))
+				  .toList())
 			 .build();
 	}
 }

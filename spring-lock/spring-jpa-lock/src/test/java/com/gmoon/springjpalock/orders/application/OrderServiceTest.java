@@ -1,9 +1,14 @@
 package com.gmoon.springjpalock.orders.application;
 
-import com.gmoon.springjpalock.global.Fixtures;
-import com.gmoon.springjpalock.orders.domain.Order;
-import com.gmoon.springjpalock.orders.domain.OrderLineItem;
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.IntStream;
+
 import org.hibernate.exception.LockAcquisitionException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import com.gmoon.springjpalock.global.Fixtures;
+import com.gmoon.springjpalock.orders.domain.Order;
+import com.gmoon.springjpalock.orders.domain.OrderLineItem;
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 
 @Disabled
 @SpringBootTest
@@ -60,7 +62,7 @@ class OrderServiceTest {
 	private List<OrderLineItem> getNewOrderLineItems() {
 		return IntStream.range(0, 100)
 			 .mapToObj(this::newOrderLineTime)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	private OrderLineItem newOrderLineTime(int quantity) {

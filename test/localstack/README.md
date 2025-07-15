@@ -56,7 +56,7 @@ class LocalStackTest {
       // when
       List<String> bucketNames = s3Client.listBuckets().stream()
         .map(Bucket::getName)
-        .collect(Collectors.toList());
+        .toList();
 
       // then
       assertThat(bucketNames)

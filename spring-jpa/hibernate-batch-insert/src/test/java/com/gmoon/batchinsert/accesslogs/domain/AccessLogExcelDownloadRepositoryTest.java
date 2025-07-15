@@ -1,7 +1,6 @@
 package com.gmoon.batchinsert.accesslogs.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,7 +28,7 @@ class AccessLogExcelDownloadRepositoryTest {
 	void saveAll() {
 		List<AccessLogExcelDownload> registered = accessLogs.stream()
 			 .map(AccessLogExcelDownload::create)
-			 .collect(Collectors.toList());
+			 .toList();
 
 		repository.saveAll(registered);
 	}

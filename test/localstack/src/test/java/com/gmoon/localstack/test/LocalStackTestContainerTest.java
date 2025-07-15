@@ -6,7 +6,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -29,7 +28,6 @@ import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
-
 import com.gmoon.javacore.util.FileUtils;
 
 @Disabled("Testcontainers 로컬 테스트")
@@ -89,7 +87,7 @@ class LocalStackTestContainerTest {
 			// when
 			List<String> bucketNames = s3Client.listBuckets().stream()
 				 .map(Bucket::getName)
-				 .collect(Collectors.toList());
+				 .toList();
 
 			// then
 			assertThat(bucketNames)

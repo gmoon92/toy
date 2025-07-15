@@ -1,12 +1,13 @@
 package com.gmoon.localstack.test;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -22,7 +23,6 @@ import com.amazonaws.services.s3.transfer.Transfer;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
-
 import com.gmoon.javacore.util.FileUtils;
 
 import cloud.localstack.ServiceName;
@@ -59,7 +59,7 @@ class LocalStackTest {
 			// when
 			List<String> bucketNames = s3Client.listBuckets().stream()
 				 .map(Bucket::getName)
-				 .collect(Collectors.toList());
+				 .toList();
 
 			// then
 			assertThat(bucketNames)

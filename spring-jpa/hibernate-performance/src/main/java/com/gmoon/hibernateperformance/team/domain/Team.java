@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.gmoon.hibernateperformance.applyform.domain.ApplyForm;
 import com.gmoon.hibernateperformance.member.domain.Member;
@@ -48,6 +47,6 @@ public class Team {
 		this.teamMembers.clear();
 		this.teamMembers.addAll(managedMembers.stream()
 			 .map(member -> new TeamMember(member, this))
-			 .collect(Collectors.toList()));
+			 .toList());
 	}
 }

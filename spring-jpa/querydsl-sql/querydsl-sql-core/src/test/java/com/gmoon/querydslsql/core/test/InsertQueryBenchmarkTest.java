@@ -1,12 +1,13 @@
 package com.gmoon.querydslsql.core.test;
 
-import com.gmoon.querydslsql.core.points.PointTransaction;
-import com.gmoon.querydslsql.core.points.QPointTransaction;
-import com.gmoon.querydslsql.querydslsql.QTbPointTransaction;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.sql.SQLQueryFactory;
-import com.querydsl.sql.dml.SQLInsertClause;
-import jakarta.persistence.EntityManager;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+
+import java.sql.Timestamp;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
+
 import org.hibernate.query.sqm.InterpretationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +17,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import com.gmoon.querydslsql.core.points.PointTransaction;
+import com.gmoon.querydslsql.core.points.QPointTransaction;
+import com.gmoon.querydslsql.querydslsql.QTbPointTransaction;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.dml.SQLInsertClause;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import jakarta.persistence.EntityManager;
 
 /**
  * <pre>
@@ -210,7 +210,7 @@ class InsertQueryBenchmarkTest {
 					  amount,
 					  "free"
 				 ))
-				 .collect(Collectors.toList());
+				 .toList();
 			consumer.accept(PointTransactions);
 		}
 	}

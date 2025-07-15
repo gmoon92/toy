@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ public class ThreadLocalTest {
 
 		List<String> filedNames = Arrays.stream(Account.class.getDeclaredFields())
 			 .map(Field::getName)
-			 .collect(Collectors.toList());
+			 .toList();
 
 		threadLocal.set(filedNames);
 		System.out.println(Thread.currentThread().getName() + ", objs: " + threadLocal.get());

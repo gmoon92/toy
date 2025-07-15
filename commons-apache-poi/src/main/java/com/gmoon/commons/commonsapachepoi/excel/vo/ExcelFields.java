@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -64,7 +63,7 @@ public class ExcelFields {
 		return value.values()
 			 .stream()
 			 .flatMap(excelField -> excelField.getBatchValidators().stream())
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	private boolean isExcludeField(Field field, String... excludeFieldNames) {

@@ -1,7 +1,6 @@
 package com.gmoon.resourceserver.config;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.cache.Cache;
@@ -28,6 +27,6 @@ public class CacheConfig {
 		return Stream.of(CacheName.values())
 			 .map(CacheName::getValue)
 			 .map(ConcurrentMapCache::new)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 }

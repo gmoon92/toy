@@ -112,7 +112,7 @@ public final class GoogleSpreadSheetToResources {
 			 .stream()
 			 .filter(ResourceVO::verify)
 			 .map(ResourceVO::newInstance)
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	private static String getCellValue(List<Object> row, String sheetHeadString) {

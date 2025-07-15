@@ -3,7 +3,6 @@ package com.gmoon.javacore.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.AccessLevel;
@@ -48,7 +47,7 @@ public final class CollectionUtils {
 
 		return list.stream()
 			 .distinct()
-			 .collect(Collectors.toList());
+			 .toList();
 	}
 
 	public static int minSize(Collection<?>... collections) {
