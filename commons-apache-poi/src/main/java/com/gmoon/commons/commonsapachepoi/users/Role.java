@@ -3,7 +3,7 @@ package com.gmoon.commons.commonsapachepoi.users;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.gmoon.commons.commonsapachepoi.common.base.CodeBasedEnum;
-import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValueProvider;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

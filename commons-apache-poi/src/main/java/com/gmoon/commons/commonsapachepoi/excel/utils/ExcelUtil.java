@@ -31,7 +31,7 @@ import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelModel;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelProperty;
 import com.gmoon.commons.commonsapachepoi.excel.predicate.ExcelBatchValidator;
 import com.gmoon.commons.commonsapachepoi.excel.predicate.ExcelValidator;
-import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValueProvider;
 import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelField;
 import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelFields;
 import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelRow;

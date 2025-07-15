@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValueProvider;
 
 public abstract class StringToEnumConverter<T extends Enum<T> & ExcelValueProvider>
 	 implements ExcelConverter<T> {
