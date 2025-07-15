@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,15 +33,29 @@ public class ExcelSheet<T> {
 		invalidRows.put(rowNum, excelRow);
 	}
 
-	public int size() {
-		return totalRowNum;
+	public void addInvalidRows(Map<ExcelRow<?>, String> invalidChunk) {
+		if (invalidChunk.isEmpty()) {
+			return;
+		}
+
+		for (Map.Entry<ExcelRow<?>, String> entry : invalidChunk.entrySet()) {
+			ExcelRow<?> invalidRow = entry.getKey();
+			int rowNum = invalidRow.getRowNum();
+			invalidRows.put(rowNum, (ExcelRow<T>)invalidRow);
+
+			rows.remove(rowNum);
+		}
 	}
 
 	public List<T> getRows() {
 		return rows.values()
 			 .stream()
 			 .map(ExcelRow::getExcelVO)
-			 .collect(Collectors.toList());
+			 .toList();
+	}
+
+	public int size() {
+		return totalRowNum;
 	}
 
 	public List<ExcelRow<T>> getInvalidRows() {
@@ -51,18 +64,5 @@ public class ExcelSheet<T> {
 
 	public boolean isValidSheet() {
 		return invalidRows.isEmpty();
-	}
-
-	public void addInvalidRow(Map<ExcelRow<?>, String> invalidChunk) {
-		if (invalidChunk.isEmpty()) {
-			return;
-		}
-
-		for (Map.Entry<ExcelRow<?>, String> entry : invalidChunk.entrySet()) {
-			ExcelRow<?> invalidRow = entry.getKey();
-			int rowNum = invalidRow.getRowNum();
-			rows.remove(rowNum);
-			invalidRows.put(invalidRow.getRowNum(), (ExcelRow<T>)invalidRow);
-		}
 	}
 }

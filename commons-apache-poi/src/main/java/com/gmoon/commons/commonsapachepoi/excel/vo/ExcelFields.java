@@ -17,7 +17,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.gmoon.commons.commonsapachepoi.common.utils.ReflectionUtil;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelModel;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelProperty;
-import com.gmoon.commons.commonsapachepoi.excel.predicate.ExcelBatchValidator;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelBatchValidator;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +50,7 @@ public class ExcelFields {
 			);
 		}
 
-		this.value = Collections.unmodifiableMap(result);
+		value = Collections.unmodifiableMap(result);
 	}
 
 	public static ExcelFields of(Class<?> clazz, HttpServletRequest request, String... excludeFieldNames) {

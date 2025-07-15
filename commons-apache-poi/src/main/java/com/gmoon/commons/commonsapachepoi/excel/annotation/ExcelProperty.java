@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.gmoon.commons.commonsapachepoi.excel.converter.ExcelConverter;
-import com.gmoon.commons.commonsapachepoi.excel.converter.StringXssSafeConverter;
-import com.gmoon.commons.commonsapachepoi.excel.predicate.ExcelValidator;
+import com.gmoon.commons.commonsapachepoi.excel.converter.common.StringXssSafeConverter;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

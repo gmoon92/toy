@@ -1,4 +1,4 @@
-package com.gmoon.commons.commonsapachepoi.excel.predicate;
+package com.gmoon.commons.commonsapachepoi.excel.validator.users;
 
 import java.util.regex.Pattern;
 
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.gmoon.commons.commonsapachepoi.common.utils.ValidationUtil;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelComponent;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 
 @ExcelComponent
 public class UsernameValidator implements ExcelValidator {

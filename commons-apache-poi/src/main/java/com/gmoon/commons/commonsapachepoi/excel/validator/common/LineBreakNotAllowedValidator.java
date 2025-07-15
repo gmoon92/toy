@@ -1,6 +1,8 @@
-package com.gmoon.commons.commonsapachepoi.excel.predicate;
+package com.gmoon.commons.commonsapachepoi.excel.validator.common;
 
 import java.util.regex.Pattern;
+
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,10 +1,10 @@
-package com.gmoon.commons.commonsapachepoi.excel.predicate;
+package com.gmoon.commons.commonsapachepoi.excel.validator;
 
-import com.gmoon.commons.commonsapachepoi.excel.converter.StringToEnumConverter;
-import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValueProvider;
+import com.gmoon.commons.commonsapachepoi.excel.converter.BaseEnumConverter;
+import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
 
 public abstract class ExcelEnumValidator<T extends Enum<T> & ExcelValueProvider>
-	 extends StringToEnumConverter<T>
+	 extends BaseEnumConverter<T>
 	 implements ExcelValidator {
 
 	protected ExcelEnumValidator(Class<T> enumClass) {

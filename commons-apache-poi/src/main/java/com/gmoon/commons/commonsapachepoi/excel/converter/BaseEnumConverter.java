@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValueProvider;
+import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
 
-public abstract class StringToEnumConverter<T extends Enum<T> & ExcelValueProvider>
+public abstract class BaseEnumConverter<T extends Enum<T> & ExcelValueProvider>
 	 implements ExcelConverter<T> {
 
 	private final Map<String, T> codes;
 
-	protected StringToEnumConverter(Class<T> enumClass) {
+	protected BaseEnumConverter(Class<T> enumClass) {
 		this.codes = Arrays.stream(enumClass.getEnumConstants())
 			 .collect(Collectors.collectingAndThen(
 				  Collectors.toMap(ExcelValueProvider::getExcelCellValue, Function.identity()),

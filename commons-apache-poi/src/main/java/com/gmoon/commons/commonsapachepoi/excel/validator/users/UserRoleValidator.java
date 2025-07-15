@@ -1,6 +1,7 @@
-package com.gmoon.commons.commonsapachepoi.excel.predicate;
+package com.gmoon.commons.commonsapachepoi.excel.validator.users;
 
 import com.gmoon.commons.commonsapachepoi.common.utils.SecurityUtil;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelEnumValidator;
 import com.gmoon.commons.commonsapachepoi.users.Role;
 import com.gmoon.commons.commonsapachepoi.users.User;
 

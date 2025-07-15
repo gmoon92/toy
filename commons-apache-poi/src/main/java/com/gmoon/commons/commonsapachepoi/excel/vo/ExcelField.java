@@ -13,8 +13,8 @@ import com.gmoon.commons.commonsapachepoi.common.utils.ReflectionUtil;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelComponent;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelProperty;
 import com.gmoon.commons.commonsapachepoi.excel.converter.ExcelConverter;
-import com.gmoon.commons.commonsapachepoi.excel.predicate.ExcelBatchValidator;
-import com.gmoon.commons.commonsapachepoi.excel.predicate.ExcelValidator;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelBatchValidator;
+import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 
 import lombok.Getter;
 

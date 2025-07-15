@@ -1,4 +1,4 @@
-package com.gmoon.commons.commonsapachepoi.excel.predicate;
+package com.gmoon.commons.commonsapachepoi.excel.validator;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,7 +32,7 @@ public abstract class ExcelBatchValidator implements ExcelValidator, ExcelFlusha
 		}
 
 		Map<ExcelRow<?>, String> invalidRows = getInvalidRows();
-		excelSheet.addInvalidRow(invalidRows);
+		excelSheet.addInvalidRows(invalidRows);
 		buffer.clear();
 	}
 
