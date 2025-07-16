@@ -33,15 +33,15 @@ public class ExcelSheet<T> {
 		invalidRows.put(rowNum, excelRow);
 	}
 
-	public void addInvalidRows(Map<ExcelRow<?>, String> invalidChunk) {
+	public void addInvalidRows(Map<Integer, String> invalidChunk) {
 		if (invalidChunk.isEmpty()) {
 			return;
 		}
 
-		for (Map.Entry<ExcelRow<?>, String> entry : invalidChunk.entrySet()) {
-			ExcelRow<?> invalidRow = entry.getKey();
-			int rowNum = invalidRow.getRowNum();
-			invalidRows.put(rowNum, (ExcelRow<T>)invalidRow);
+		for (Map.Entry<Integer, String> entry : invalidChunk.entrySet()) {
+			int rowNum = entry.getKey();
+			ExcelRow<T> invalidRow = rows.get(rowNum);
+			invalidRows.put(rowNum, invalidRow);
 
 			rows.remove(rowNum);
 		}

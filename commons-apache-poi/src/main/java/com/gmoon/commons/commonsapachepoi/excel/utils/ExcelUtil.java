@@ -268,8 +268,8 @@ public final class ExcelUtil {
 					} else {
 						List<ExcelBatchValidator> batchValidators = excelField.getBatchValidators();
 						for (ExcelBatchValidator validator : batchValidators) {
-							validator.collect(excelRow, cellValue);
-							boolean flushed = validator.flushBufferIfNeeded(excelSheet);
+							validator.collect(rowNum, cellValue);
+							boolean flushed = validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
 							if (flushed) {
 								isValidRow = false;
 							}
@@ -284,7 +284,7 @@ public final class ExcelUtil {
 
 			List<ExcelBatchValidator> allValidators = excelFields.getAllBatchValidators();
 			for (ExcelBatchValidator validator : allValidators) {
-				validator.flush(excelSheet);
+				validator.flush(excelSheet::addInvalidRows);
 			}
 			return excelSheet;
 		} catch (Exception e) {
