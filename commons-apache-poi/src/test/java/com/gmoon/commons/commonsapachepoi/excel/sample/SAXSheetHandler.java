@@ -49,6 +49,12 @@ public class SAXSheetHandler extends DefaultHandler {
 		 String name,
 		 Attributes attributes
 	) throws SAXException {
+		System.out.println("=============[START]=================");
+		System.out.println("uri			: " + uri);
+		System.out.println("localName	: " + localName);
+		System.out.println("name		: " + name);
+		System.out.println("attributes	: " + attributes);
+
 		// c => cell
 		if (name.equals("c")) {
 			// Print the cell reference
@@ -61,11 +67,13 @@ public class SAXSheetHandler extends DefaultHandler {
 		}
 		// Clear contents cache
 		lastContents = "";
+		System.out.println("=============[START CLEAR]=================");
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String name)
 		 throws SAXException {
+		System.out.println("=============[END - START]=================");
 		// Process the last contents as required.
 		// Do now, as characters() may be called more than once
 		if (nextIsString && StringUtils.isNotBlank(lastContents)) {
@@ -83,6 +91,7 @@ public class SAXSheetHandler extends DefaultHandler {
 		if (name.equals("v") || (inlineStr && name.equals("c"))) {
 			System.out.println(lastContents);
 		}
+		System.out.println("=============[END - END]=================");
 	}
 
 	@Override

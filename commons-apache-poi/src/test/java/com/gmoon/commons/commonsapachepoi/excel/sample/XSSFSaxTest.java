@@ -32,7 +32,10 @@ class XSSFSaxTest {
 
 	@BeforeEach
 	void setUp() {
-		int dataSize = 1_000;
+		// int dataSize = 1;
+		int dataSize = 100;
+		// int dataSize = 1_000;
+		// int dataSize = 10_000;
 		excelFilePath = Paths.get("src/test/resources/sample/sample-" + dataSize + ".xlsx");
 	}
 
@@ -62,8 +65,8 @@ class XSSFSaxTest {
 			XSSFReader reader = new XSSFReader(pkg);
 			SharedStrings sst = reader.getSharedStringsTable();
 
-			XMLReader xmlReader = XMLHelper.newXMLReader();
-			xmlReader.setContentHandler(new SAXSheetHandler(sst));
+			XMLReader parser = XMLHelper.newXMLReader();
+			parser.setContentHandler(new SAXSheetHandler(sst));
 
 			XSSFReader.SheetIterator sheetIterator = (XSSFReader.SheetIterator)reader.getSheetsData();
 			while (sheetIterator.hasNext()) {
@@ -83,7 +86,7 @@ class XSSFSaxTest {
 					InputStream sheet = reader.getSheet(rId);
 					InputSource sheetSource = new InputSource(sheet);
 
-					xmlReader.parse(sheetSource);
+					parser.parse(sheetSource);
 					sheet.close();
 				}
 
@@ -96,19 +99,19 @@ class XSSFSaxTest {
 	void processAllSheets() throws Exception {
 		// try (OPCPackage pkg = OPCPackage.open(filePath, PackageAccess.READ)) {
 		try (OPCPackage pkg = OPCPackage.open(Files.newInputStream(excelFilePath))) {
-			XSSFReader r = new XSSFReader(pkg);
-			SharedStrings sst = r.getSharedStringsTable();
+			XSSFReader reader = new XSSFReader(pkg);
+			SharedStrings sst = reader.getSharedStringsTable();
 
-			XMLReader xmlReader = XMLHelper.newXMLReader();
-			xmlReader.setContentHandler(new SAXSheetHandler(sst));
+			XMLReader parser = XMLHelper.newXMLReader();
+			parser.setContentHandler(new SAXSheetHandler(sst));
 
-			Iterator<InputStream> sheets = r.getSheetsData();
+			Iterator<InputStream> sheets = reader.getSheetsData();
 			while (sheets.hasNext()) {
 				System.out.println("Processing new sheet:\n");
 
 				InputStream sheetStream = sheets.next();
 				InputSource sheetSource = new InputSource(sheetStream);
-				xmlReader.parse(sheetSource);
+				parser.parse(sheetSource);
 				sheetStream.close();
 			}
 		}
