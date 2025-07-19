@@ -2,14 +2,17 @@ package com.gmoon.commons.commonsapachepoi.excel.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -21,6 +24,9 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.XMLHelper;
+import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -28,10 +34,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
-import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelModel;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelProperty;
 import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
+import com.gmoon.commons.commonsapachepoi.excel.sax.handler.SaxXlsxSheetHandler;
 import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelBatchValidator;
 import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelField;
 import com.gmoon.commons.commonsapachepoi.excel.vo.ExcelFields;
@@ -54,17 +62,15 @@ public final class ExcelUtil {
 		 Class<T> clazz,
 		 List<T> dataList
 	) {
-		ServletContext servletContext = request.getServletContext();
-		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+		ApplicationContext ctx = getApplicationContext(request);
 
 		ExcelFields excelFields = ExcelFields.of(clazz, ctx);
-		ExcelModel excelModelAnnotation = excelFields.getExcelModelAnnotation();
 		try (SXSSFWorkbook wb = new SXSSFWorkbook(1_000)) {
-			String sheetName = excelModelAnnotation.sheetName();
+			String sheetName = excelFields.getSheetName();
 			Sheet sheet = wb.createSheet(sheetName);
 
 			writeTitle(wb, sheet, excelFields);
-			writeData(excelModelAnnotation, sheet, excelFields, dataList);
+			writeData(sheet, excelFields, dataList);
 
 			wb.write(out);
 			out.flush();
@@ -73,15 +79,10 @@ public final class ExcelUtil {
 		}
 	}
 
-	private static <T> void writeData(
-		 ExcelModel excelModel,
-		 Sheet sh,
-		 ExcelFields excelFields,
-		 List<T> dataList
-	) {
-		int rowNum = excelModel.totalTitleRowCount();
+	private static <T> void writeData(Sheet sheet, ExcelFields excelFields, List<T> dataList) {
+		int titleRowCount = excelFields.getTotalTitleRowCount();
 		for (T data : dataList) {
-			Row row = sh.createRow(rowNum++);
+			Row row = sheet.createRow(titleRowCount++);
 			writeRow(row, excelFields, data);
 		}
 	}
@@ -92,15 +93,15 @@ public final class ExcelUtil {
 		CreationHelper factory = wb.getCreationHelper();
 
 		for (Map.Entry<Integer, ExcelField> entry : excelFields.entrySet()) {
-			Integer cellNum = entry.getKey();
-			ExcelField value = entry.getValue();
-			Field field = value.getField();
+			Integer cellColIdx = entry.getKey();
+			ExcelField excelField = entry.getValue();
+			Field field = excelField.getField();
 
 			ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-			Comment comment = createCellComment(row, cellNum, drawing, factory, annotation);
+			Comment comment = createCellComment(row, cellColIdx, drawing, factory, annotation);
 
 			String colTitle = Objects.toString(annotation.title(), field.getName());
-			Cell cell = row.createCell(cellNum);
+			Cell cell = row.createCell(cellColIdx);
 			cell.setCellValue(colTitle);
 			cell.setCellComment(comment);
 		}
@@ -108,7 +109,7 @@ public final class ExcelUtil {
 
 	private static Comment createCellComment(
 		 Row row,
-		 int cellNum,
+		 int cellColIdx,
 		 Drawing<?> drawing,
 		 CreationHelper factory,
 		 ExcelProperty annotation
@@ -121,8 +122,8 @@ public final class ExcelUtil {
 		final int defaultAnchorRowSize = 4;
 
 		ClientAnchor anchor = factory.createClientAnchor();
-		anchor.setCol1(cellNum);
-		anchor.setCol2(cellNum + defaultAnchorColSize);
+		anchor.setCol1(cellColIdx);
+		anchor.setCol2(cellColIdx + defaultAnchorColSize);
 		anchor.setRow1(row.getRowNum());
 		anchor.setRow2(row.getRowNum() + defaultAnchorRowSize);
 
@@ -133,22 +134,24 @@ public final class ExcelUtil {
 
 	private static <T> void writeRow(Row row, ExcelFields excelFields, T data) {
 		for (Map.Entry<Integer, ExcelField> entry : excelFields.entrySet()) {
-			int cellNum = entry.getKey();
+			int cellColIdx = entry.getKey();
 			ExcelField excelField = entry.getValue();
+
 			Field field = excelField.getField();
 			try {
-				Object obj = field.get(data);
-				if (obj == null) {
+				Object fieldValue = field.get(data);
+				if (fieldValue == null) {
 					continue;
 				}
 
-				String cellValue = switch (obj) {
+				String cellValue = switch (fieldValue) {
 					case Integer i -> Integer.toString(i);
 					case Boolean b -> BooleanUtils.toString(b, "Y", "N");
 					case ExcelValueProvider provider -> provider.getExcelCellValue();
-					default -> String.valueOf(obj);
+					default -> String.valueOf(fieldValue);
 				};
-				Cell cell = row.createCell(cellNum);
+
+				Cell cell = row.createCell(cellColIdx);
 				cell.setCellValue(cellValue);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -204,11 +207,9 @@ public final class ExcelUtil {
 		 String filePath,
 		 Class<T> clazz
 	) {
-		ServletContext servletContext = request.getServletContext();
-		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+		ApplicationContext ctx = getApplicationContext(request);
 
 		ExcelFields excelFields = ExcelFields.of(clazz, ctx);
-		ExcelModel excelModelAnnotation = excelFields.getExcelModelAnnotation();
 		try (FileInputStream fis = new FileInputStream(filePath);
 			 XSSFWorkbook workbook = new XSSFWorkbook(fis)
 		) {
@@ -219,14 +220,14 @@ public final class ExcelUtil {
 			}
 
 			ExcelSheet<T> excelSheet = ExcelSheet.create(lastRowNum);
-			int dataStartRowIndex = excelModelAnnotation.totalTitleRowCount();
-			for (int rowNum = dataStartRowIndex; rowNum <= lastRowNum; rowNum++) {
-				XSSFRow row = sheet.getRow(rowNum);
+			int titleRowCount = excelFields.getTotalTitleRowCount();
+			for (int rowIdx = titleRowCount; rowIdx <= lastRowNum; rowIdx++) {
+				XSSFRow row = sheet.getRow(rowIdx);
 				if (isBlankRow(excelFields, row)) {
 					continue;
 				}
 
-				ExcelRow<T> excelRow = new ExcelRow<>(rowNum, clazz);
+				ExcelRow<T> excelRow = new ExcelRow<>(rowIdx, clazz);
 				processRow(excelSheet, excelRow, excelFields, row);
 			}
 
@@ -234,6 +235,47 @@ public final class ExcelUtil {
 			return excelSheet;
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to read excel file.", e);
+		}
+	}
+
+	private static ApplicationContext getApplicationContext(HttpServletRequest request) {
+		ServletContext servletContext = request.getServletContext();
+		return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+	}
+
+	public static <T> ExcelSheet<T> readSAX(
+		 HttpServletRequest request,
+		 InputStream inputStream,
+		 Class<T> excelModelClass,
+		 String... excludeFieldName
+	) {
+		try (OPCPackage pkg = OPCPackage.open(inputStream)) {
+			ExcelSheet<T> excelSheet = ExcelSheet.create();
+			ExcelFields excelFields = ExcelFields.of(
+				 excelModelClass,
+				 getApplicationContext(request),
+				 excludeFieldName
+			);
+
+			XSSFReader xssfReader = new XSSFReader(pkg);
+			SharedStrings sst = xssfReader.getSharedStringsTable();
+			XMLReader parser = XMLHelper.newXMLReader();
+			parser.setContentHandler(new SaxXlsxSheetHandler<>(
+				 sst,
+				 excelModelClass,
+				 excelSheet,
+				 excelFields,
+				 ExcelUtil::processCell
+			));
+
+			Iterator<InputStream> sheets = xssfReader.getSheetsData();
+			while (sheets.hasNext()) {
+				InputStream sheet = sheets.next();
+				parser.parse(new InputSource(sheet));
+			}
+			return excelSheet;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -250,73 +292,49 @@ public final class ExcelUtil {
 		 ExcelFields excelFields,
 		 XSSFRow row
 	) {
-		int rowNum = excelRow.getRowNum();
-		boolean validRow = true;
+		int rowIdx = excelRow.getRowIdx();
 		for (Map.Entry<Integer, ExcelField> entry : excelFields.entrySet()) {
-			ExcelField excelField = entry.getValue();
-			Integer cellNum = entry.getKey();
-			String cellValue = getStringCellValue(row, cellNum);
-
-			if (shouldSkipValidation(excelField, cellValue)) {
-				continue;
-			}
-
-			excelRow.setFieldValue(excelField, cellValue);
-			if (isValidCell(excelField, cellValue)) {
-				List<ExcelBatchValidator> batchValidators = excelField.getBatchValidators();
-				boolean flushed = flushInvalidRowIfBufferFull(
-					 batchValidators,
-					 excelSheet,
-					 rowNum,
-					 cellValue
-				);
-				if (flushed) {
-					validRow = false;
-				}
-			} else {
-				excelSheet.addInvalidRow(rowNum, excelRow);
-				validRow = false;
-			}
+			Integer cellColIdx = entry.getKey();
+			ExcelField excelField = excelFields.getExcelField(cellColIdx);
+			String cellValue = getStringCellValue(row, cellColIdx);
+			processCell(excelSheet, excelRow, excelField, cellValue);
 		}
 
-		if (validRow) {
-			excelSheet.add(rowNum, excelRow);
-		}
+		excelSheet.add(rowIdx, excelRow);
 	}
 
-	private static boolean shouldSkipValidation(ExcelField excelField, String cellValue) {
-		boolean required = excelField.isRequired();
-		return !required && cellValue == null;
-	}
-
-	private static <T> boolean flushInvalidRowIfBufferFull(
-		 List<ExcelBatchValidator> batchValidators,
+	public static <T> void processCell(
 		 ExcelSheet<T> excelSheet,
-		 int rowNum,
+		 ExcelRow<T> excelRow,
+		 ExcelField excelField,
 		 String cellValue
 	) {
-		boolean result = false;
-		for (ExcelBatchValidator validator : batchValidators) {
-			validator.collect(rowNum, cellValue);
-			boolean flushed = validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
-			if (flushed) {
-				result = true;
-			}
-		}
-		return result;
-	}
+		excelRow.setFieldValue(excelField, cellValue);
 
-	private static boolean isValidCell(ExcelField excelField, String cellValue) {
-		return excelField.getValidators()
+		boolean shouldSkipValidation = !excelField.isRequired() && cellValue == null;
+		if (shouldSkipValidation) {
+			return;
+		}
+
+		boolean validCellValue = excelField.getValidators()
 			 .stream()
 			 .filter(validator -> !validator.isValid(cellValue))
-			 .peek(validator -> log.debug("[excel validation failed] validator: {}, {}: {}",
+			 .peek(validator -> log.warn("[excel validation failed] validator={}, {}={}",
 				  validator,
 				  excelField.getFieldName(),
 				  cellValue
 			 ))
 			 .findFirst()
 			 .isEmpty();
+
+		if (validCellValue) {
+			for (ExcelBatchValidator validator : excelField.getBatchValidators()) {
+				validator.collect(excelRow.getRowIdx(), cellValue);
+				validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
+			}
+		} else {
+			excelSheet.addInvalidRow(excelRow.getRowIdx(), excelRow);
+		}
 	}
 
 	private static boolean isBlankRow(ExcelFields excelFields, XSSFRow row) {
@@ -326,11 +344,11 @@ public final class ExcelUtil {
 			 .allMatch(StringUtils::isBlank);
 	}
 
-	private static String getStringCellValue(XSSFRow row, Integer cellNum) {
+	private static String getStringCellValue(XSSFRow row, Integer cellColIdx) {
 		if (row == null) {
 			return null;
 		}
-		XSSFCell cell = row.getCell(cellNum);
+		XSSFCell cell = row.getCell(cellColIdx);
 		return getStringCellValue(cell);
 	}
 
@@ -349,8 +367,8 @@ public final class ExcelUtil {
 					DataFormatter formatter = new DataFormatter();
 					// Date date = cell.getDateCellValue();
 					// LocalDateTime localDateTimeCellValue = cell.getLocalDateTimeCellValue();
-					yield formatter.formatCellValue(cell);
 					// yield localDateTimeCellValue.toString();
+					yield formatter.formatCellValue(cell);
 				}
 
 				double cellValue = cell.getNumericCellValue();

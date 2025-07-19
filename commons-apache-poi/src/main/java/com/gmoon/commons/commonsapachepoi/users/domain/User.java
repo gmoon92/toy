@@ -1,4 +1,4 @@
-package com.gmoon.commons.commonsapachepoi.users;
+package com.gmoon.commons.commonsapachepoi.users.domain;
 
 import java.io.Serial;
 import java.util.Collection;

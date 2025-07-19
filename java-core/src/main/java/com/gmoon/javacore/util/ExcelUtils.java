@@ -29,10 +29,10 @@ public class ExcelUtils {
 		Sheet sheet = wb.createSheet();
 
 		List<Field> columnFields = getFields(clazz);
-		for (int rowNum = 0; rowNum < datas.size(); rowNum++) {
-			Row row = sheet.createRow(rowNum);
+		for (int rowIdx = 0; rowIdx < datas.size(); rowIdx++) {
+			Row row = sheet.createRow(rowIdx);
 
-			T data = datas.get(rowNum);
+			T data = datas.get(rowIdx);
 			writeRow(columnFields, data, row);
 		}
 
@@ -50,13 +50,13 @@ public class ExcelUtils {
 	}
 
 	private static void writeRow(List<Field> excelColumnFields, Object data, Row row) {
-		int cellNum = 0;
+		int cellColIdx = 0;
 		for (Field field : excelColumnFields) {
 			try {
 				Object obj = field.get(data);
 				String cellValue = String.valueOf(obj);
 
-				Cell cell = row.createCell(cellNum++);
+				Cell cell = row.createCell(cellColIdx++);
 				cell.setCellValue(cellValue);
 			} catch (Exception e) {
 				throw new RuntimeException(e);

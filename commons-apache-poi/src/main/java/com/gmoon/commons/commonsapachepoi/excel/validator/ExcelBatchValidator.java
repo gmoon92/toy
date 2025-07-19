@@ -19,8 +19,8 @@ public abstract class ExcelBatchValidator implements ExcelValidator, ExcelFlusha
 
 	protected abstract List<String> getInvalidValues(List<String> cellValues);
 
-	public void collect(Integer rowNum, String cellValue) {
-		buffer.put(rowNum, cellValue);
+	public void collect(Integer rowIdx, String cellValue) {
+		buffer.put(rowIdx, cellValue);
 	}
 
 	@Override
@@ -40,22 +40,19 @@ public abstract class ExcelBatchValidator implements ExcelValidator, ExcelFlusha
 		for (Map.Entry<Integer, String> entry : buffer.entrySet()) {
 			String cellValue = entry.getValue();
 			if (invalidValues.contains(cellValue)) {
-				int rowNum = entry.getKey();
-				invalidRows.put(rowNum, cellValue);
+				int rowIdx = entry.getKey();
+				invalidRows.put(rowIdx, cellValue);
 				log.debug("[excel validation failed] batch validator: {}, invalid rows: {}", this, invalidRows);
 			}
 		}
 		return invalidRows;
 	}
 
-	public boolean flushBufferIfNeeded(Consumer<Map<Integer, String>> invalidRowHandler) {
+	public void flushBufferIfNeeded(Consumer<Map<Integer, String>> invalidRowHandler) {
 		boolean flushable = buffer.size() >= getChunkThreshold();
 		if (flushable && !isBufferValid()) {
 			flush(invalidRowHandler);
-			return true;
 		}
-
-		return false;
 	}
 
 	private boolean isBufferValid() {

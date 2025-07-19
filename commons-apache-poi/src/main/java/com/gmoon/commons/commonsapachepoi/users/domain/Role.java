@@ -1,4 +1,4 @@
-package com.gmoon.commons.commonsapachepoi.users;
+package com.gmoon.commons.commonsapachepoi.users.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 

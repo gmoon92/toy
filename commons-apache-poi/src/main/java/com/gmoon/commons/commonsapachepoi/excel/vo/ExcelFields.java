@@ -22,13 +22,13 @@ public class ExcelFields {
 	private final ExcelModel excelModelAnnotation;
 	private final Map<Integer, ExcelField> value;
 
-	private ExcelFields(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldNames) {
+	private ExcelFields(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
 		excelModelAnnotation = getExcelModelAnnotation(excelModelClass);
 		value = ReflectionUtil.getFieldMap(
 			 excelModelClass,
 			 field -> {
 				 ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-				 return annotation != null && !isExcludeField(field, excludeFieldNames);
+				 return annotation != null && !isExcludeField(field, excludeFieldName);
 			 },
 			 field -> new ExcelField(field, ctx)
 		);
@@ -40,8 +40,12 @@ public class ExcelFields {
 		}
 	}
 
-	public static ExcelFields of(Class<?> clazz, ApplicationContext ctx, String... excludeFieldNames) {
-		return new ExcelFields(clazz, ctx, excludeFieldNames);
+	public static ExcelFields of(Class<?> clazz, ApplicationContext ctx, String... excludeFieldName) {
+		return new ExcelFields(clazz, ctx, excludeFieldName);
+	}
+
+	public ExcelField getExcelField(int cellColIdx) {
+		return value.get(cellColIdx);
 	}
 
 	public List<ExcelBatchValidator> getAllBatchValidators() {
@@ -52,9 +56,9 @@ public class ExcelFields {
 			 .toList();
 	}
 
-	private boolean isExcludeField(Field field, String... excludeFieldNames) {
-		return excludeFieldNames != null && excludeFieldNames.length > 0
-			 && StringUtils.equalsAny(field.getName(), excludeFieldNames);
+	private boolean isExcludeField(Field field, String... excludeFieldName) {
+		return excludeFieldName != null && excludeFieldName.length > 0
+			 && StringUtils.equalsAny(field.getName(), excludeFieldName);
 	}
 
 	private ExcelModel getExcelModelAnnotation(Class<?> excelModelClass) {
@@ -68,8 +72,15 @@ public class ExcelFields {
 		return value.size();
 	}
 
+	public int getTotalTitleRowCount() {
+		return excelModelAnnotation.totalTitleRowCount();
+	}
+
+	public String getSheetName() {
+		return excelModelAnnotation.sheetName();
+	}
+
 	public Set<Map.Entry<Integer, ExcelField>> entrySet() {
 		return value.entrySet();
 	}
-
 }

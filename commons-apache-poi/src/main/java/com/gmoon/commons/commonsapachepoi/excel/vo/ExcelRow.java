@@ -11,12 +11,14 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ExcelRow<T> {
-	private final int rowNum;
+	private final int rowIdx;
 	private final T excelVO;
+	private boolean valid;
 
-	public ExcelRow(int rowNum, Class<T> clazz) {
-		this.rowNum = rowNum;
+	public ExcelRow(int rowIdx, Class<T> clazz) {
+		this.rowIdx = rowIdx;
 		this.excelVO = ReflectionUtil.newInstance(clazz);
+		this.valid = true;
 	}
 
 	public void setFieldValue(ExcelField excelField, String cellValue) {
@@ -27,5 +29,9 @@ public class ExcelRow<T> {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public void invalidate() {
+		this.valid = false;
 	}
 }
