@@ -10,12 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.gmoon.commons.commonsapachepoi.excel.provider.ExcelValueProvider;
 
-public abstract class BaseEnumConverter<T extends Enum<T> & ExcelValueProvider>
+public abstract class ExcelEnumConverter<T extends Enum<T> & ExcelValueProvider>
 	 implements ExcelConverter<T> {
-
 	private final Map<String, T> codes;
 
-	protected BaseEnumConverter(Class<T> enumClass) {
+	protected ExcelEnumConverter(Class<T> enumClass) {
 		this.codes = Arrays.stream(enumClass.getEnumConstants())
 			 .collect(Collectors.collectingAndThen(
 				  Collectors.toMap(ExcelValueProvider::getExcelCellValue, Function.identity()),

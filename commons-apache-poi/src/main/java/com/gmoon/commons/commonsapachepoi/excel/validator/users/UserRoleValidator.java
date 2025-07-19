@@ -1,10 +1,12 @@
 package com.gmoon.commons.commonsapachepoi.excel.validator.users;
 
 import com.gmoon.commons.commonsapachepoi.common.utils.SecurityUtil;
+import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelComponent;
 import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelEnumValidator;
 import com.gmoon.commons.commonsapachepoi.users.Role;
 import com.gmoon.commons.commonsapachepoi.users.User;
 
+@ExcelComponent
 public class UserRoleValidator extends ExcelEnumValidator<Role> {
 
 	protected UserRoleValidator() {

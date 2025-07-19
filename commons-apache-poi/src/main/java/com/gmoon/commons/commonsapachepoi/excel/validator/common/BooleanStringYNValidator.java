@@ -1,10 +1,9 @@
 package com.gmoon.commons.commonsapachepoi.excel.validator.common;
 
+import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelComponent;
 import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
+@ExcelComponent
 public class BooleanStringYNValidator implements ExcelValidator {
 
 	@Override

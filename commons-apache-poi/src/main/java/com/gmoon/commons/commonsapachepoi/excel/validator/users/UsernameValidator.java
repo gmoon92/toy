@@ -11,10 +11,9 @@ import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 
 @ExcelComponent
 public class UsernameValidator implements ExcelValidator {
-
 	private final Pattern pattern;
 
-	public UsernameValidator(@Value("${validation.regex.username}") String regex) {
+	public UsernameValidator(@Value("${service.validation.regex.username}") String regex) {
 		pattern = Pattern.compile(regex);
 	}
 

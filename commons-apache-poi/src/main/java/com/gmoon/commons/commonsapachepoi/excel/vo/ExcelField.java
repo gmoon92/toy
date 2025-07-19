@@ -26,8 +26,10 @@ public class ExcelField {
 	private final List<ExcelBatchValidator> batchValidators;
 	private final ExcelConverter<?> converter;
 
-	ExcelField(Field field, ExcelProperty annotation, ApplicationContext ctx) {
+	ExcelField(Field field, ApplicationContext ctx) {
 		this.field = field;
+
+		ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
 		this.required = annotation.required();
 		this.validators = getValidators(annotation, ctx, ExcelValidator.class);
 		this.batchValidators = getValidators(annotation, ctx, ExcelBatchValidator.class);

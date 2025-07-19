@@ -13,7 +13,7 @@ import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelValidator;
 public class UserEmailValidator implements ExcelValidator {
 	private final Pattern pattern;
 
-	public UserEmailValidator(@Value("${validation.regex.email}") String regex) {
+	public UserEmailValidator(@Value("${service.validation.regex.email}") String regex) {
 		pattern = Pattern.compile(regex);
 	}
 

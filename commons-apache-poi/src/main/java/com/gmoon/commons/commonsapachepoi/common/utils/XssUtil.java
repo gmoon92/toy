@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XssUtil {
-
 	private static final Policy policy;
 
 	static {

@@ -55,12 +55,12 @@ class ExcelUtilTest {
 	}
 
 	@Test
-	void download() {
-		Assertions.assertThatCode(() -> download(100, excelFilePath))
+	void write() {
+		Assertions.assertThatCode(() -> write(100, excelFilePath))
 			 .doesNotThrowAnyException();
 	}
 
-	private void download(int size, String excelFilePath) throws IOException {
+	private void write(int size, String excelFilePath) throws IOException {
 		RandomUtils randomUtils = RandomUtils.secure();
 		RandomStringUtils randomStringUtils = RandomStringUtils.secure();
 		List<ExcelUserVO> excelUsers = FixtureMonkey.builder()
@@ -75,22 +75,23 @@ class ExcelUtilTest {
 			 .sampleList(size);
 
 		try (OutputStream outputStream = Files.newOutputStream(Paths.get(excelFilePath))) {
-			ExcelUtil.download(request, outputStream, ExcelUserVO.class, excelUsers);
+			ExcelUtil.write(request, outputStream, ExcelUserVO.class, excelUsers);
 		}
 	}
 
 	@Test
-	void upload() throws IOException {
+	void read() throws IOException {
 		SecurityContext context = SecurityContextHolder.getContext();
 		User user = new User("admin", null, Role.ADMIN);
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 
 		int size = 10;
-		download(size, excelFilePath);
+		write(size, excelFilePath);
 
 		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(request, excelFilePath, ExcelUserVO.class);
 		assertThat(excelSheet.isValidSheet()).isTrue();
-		assertThat(excelSheet.getRows()).isNotEmpty()
+		assertThat(excelSheet.getRows())
+			 .isNotEmpty()
 			 .hasSize(size)
 			 .allSatisfy(
 				  vo -> {
@@ -99,20 +100,20 @@ class ExcelUtilTest {
 						   .as("username: 4~24자의 영문/숫자 조합이어야 한다. value: %S", vo.getUsername());
 
 					  assertThat(vo.getPassword())
-						   .isEqualTo("111111")
-						   .as("password: 엑셀 샘플의 비밀번호는 항상 '111111'이어야 한다. value: %S", vo.getPassword());
+						   .as("password: 엑셀 샘플의 비밀번호는 항상 '111111'이어야 한다. value: %S", vo.getPassword())
+						   .isEqualTo("111111");
 
 					  assertThat(vo.getRole())
-						   .isNotEqualTo(Role.ADMIN)
-						   .as("role: 사용자 역할은 ADMIN이 되면 안된다. value: %S", vo.getRole());
+						   .as("role: 사용자 역할은 ADMIN이 되면 안된다. value: %S", vo.getRole())
+						   .isNotEqualTo(Role.ADMIN);
 
 					  assertThat(vo.getUserFullname())
-						   .isNotNull()
-						   .as("userFullname: 사용자 이름은 비어 있으면 안된다.");
+						   .as("userFullname: 사용자 이름은 비어 있으면 안된다.")
+						   .isNotNull();
 
 					  assertThat(vo.getEmail())
 						   .as("email: 전체 사용자는 이메일 입력이 없어야 한다. value: %S", vo.getEmail())
-						   .isEmpty();
+						   .isNull();
 				  }
 			 );
 	}

@@ -3,9 +3,11 @@ package com.gmoon.commons.commonsapachepoi.common.utils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -27,22 +29,21 @@ public final class ReflectionUtil {
 		}
 	}
 
-	public static <T, A extends Annotation> Map<Integer, T> getDeclaredAnnotationFieldMap(
-		 Class<?> target,
-		 Class<A> annotationClass,
+	public static <T> Map<Integer, T> getFieldMap(
+		 Class<?> targetClass,
+		 Predicate<Field> filter,
 		 Function<Field, T> mapper
 	) {
 		Map<Integer, T> result = new LinkedHashMap<>();
 		int index = 0;
-		Field[] fields = target.getDeclaredFields();
+		Field[] fields = targetClass.getDeclaredFields();
 		for (Field field : fields) {
-			A annotation = field.getAnnotation(annotationClass);
-			if (annotation != null) {
+			if (filter.test(field)) {
 				field.setAccessible(true);
 				result.put(index++, mapper.apply(field));
 			}
 		}
-		return result;
+		return Collections.unmodifiableMap(result);
 	}
 
 	public static <T extends Annotation> T findAnnotation(Class<?> target, Class<T> annotationClass) {

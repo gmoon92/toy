@@ -2,8 +2,6 @@ package com.gmoon.commons.commonsapachepoi.excel.vo;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,52 +9,38 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.gmoon.commons.commonsapachepoi.common.utils.ReflectionUtil;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelModel;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelProperty;
 import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelBatchValidator;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 
 @Getter
 public class ExcelFields {
-	private final ExcelModel excelModel;
+	private final ExcelModel excelModelAnnotation;
 	private final Map<Integer, ExcelField> value;
 
 	private ExcelFields(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldNames) {
-		excelModel = getExcelModel(excelModelClass);
+		excelModelAnnotation = getExcelModelAnnotation(excelModelClass);
+		value = ReflectionUtil.getFieldMap(
+			 excelModelClass,
+			 field -> {
+				 ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
+				 return annotation != null && !isExcludeField(field, excludeFieldNames);
+			 },
+			 field -> new ExcelField(field, ctx)
+		);
 
-		Map<Integer, ExcelField> result = new HashMap<>();
-		int fieldNum = 0;
-		Field[] fields = excelModelClass.getDeclaredFields();
-		for (Field field : fields) {
-			ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-			if (annotation == null || isExcludeField(field, excludeFieldNames)) {
-				continue;
-			}
-
-			field.setAccessible(true);
-			result.put(fieldNum++, new ExcelField(field, annotation, ctx));
-		}
-
-		if (CollectionUtils.isEmpty(result.values())) {
+		if (value.isEmpty()) {
 			throw new UnsupportedOperationException(
 				 String.format("@ExcelProperty annotation not found in class %s", excelModelClass.getName())
 			);
 		}
-
-		value = Collections.unmodifiableMap(result);
 	}
 
-	public static ExcelFields of(Class<?> clazz, HttpServletRequest request, String... excludeFieldNames) {
-		ServletContext servletContext = request.getServletContext();
-		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-
+	public static ExcelFields of(Class<?> clazz, ApplicationContext ctx, String... excludeFieldNames) {
 		return new ExcelFields(clazz, ctx, excludeFieldNames);
 	}
 
@@ -73,10 +57,10 @@ public class ExcelFields {
 			 && StringUtils.equalsAny(field.getName(), excludeFieldNames);
 	}
 
-	private ExcelModel getExcelModel(Class<?> excelModelClass) {
+	private ExcelModel getExcelModelAnnotation(Class<?> excelModelClass) {
 		return Optional.ofNullable(ReflectionUtil.findAnnotation(excelModelClass, ExcelModel.class))
 			 .orElseThrow(() -> new UnsupportedOperationException(
-				  String.format("@ExcelAutoDetect annotation not found in class %s", excelModelClass.getName())
+				  String.format("@ExcelModel annotation not found in class %s", excelModelClass.getName())
 			 ));
 	}
 

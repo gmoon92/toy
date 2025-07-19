@@ -1,6 +1,5 @@
 package com.gmoon.commons.commonsapachepoi.excel.vo;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class ExcelSheet<T> {
 		rows.put(rowNum, row);
 	}
 
-	public void addInvalidData(int rowNum, ExcelRow<T> excelRow) {
+	public void addInvalidRow(int rowNum, ExcelRow<T> excelRow) {
 		invalidRows.put(rowNum, excelRow);
 	}
 
@@ -54,12 +53,15 @@ public class ExcelSheet<T> {
 			 .toList();
 	}
 
-	public int size() {
-		return totalRowNum;
+	public List<T> getInvalidRows() {
+		return invalidRows.values()
+			 .stream()
+			 .map(ExcelRow::getExcelVO)
+			 .toList();
 	}
 
-	public List<ExcelRow<T>> getInvalidRows() {
-		return new ArrayList<>(invalidRows.values());
+	public int size() {
+		return totalRowNum;
 	}
 
 	public boolean isValidSheet() {
