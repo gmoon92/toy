@@ -2,7 +2,23 @@ spring:
   application:
     name: commons-apache-poi
 
-validation:
-  regex:
-    username: "^[0-9a-zA-Z]{4,24}$"
-    email: "^[a-zA-Z0-9+._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:mysql://localhost:3306/spring_poi?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    url: jdbc:mysql://localhost:3306/spring_poi?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 111111
+
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
+
+service:
+  validation:
+    regex:
+      username: "^[0-9a-zA-Z]{4,24}$"
+      email: "^[a-zA-Z0-9+._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"

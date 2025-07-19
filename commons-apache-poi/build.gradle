@@ -15,14 +15,23 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    // persistence
+    implementation(libs.jdbc.mysql)
+    implementation(libs.querydsl.core)
+    implementation("${libs.querydsl.jpa.get()}:jakarta")
+
+    // apache poi
     implementation(libs.apache.poi)
     implementation(libs.apache.poi.examples)
     implementation(libs.apache.poi.ooxml)
 
-    implementation(libs.apache.commons.lang3)
-
+    // xss
     implementation(libs.antisamy)
+
+    // etc
+    implementation(libs.apache.commons.lang3)
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -31,3 +40,5 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation(libs.fixture.monkey.starter)
 }
+
+applyQuerydslQDomainCodeGen(project)
