@@ -1,5 +1,24 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 group = "com.gmoon.spring-event.spring-fcm"
 description = "spring-fcm"
+
+def expandVars = [
+        "project.basedir": project.projectDir.toString()
+]
+
+println "project.basedir = ${expandVars.'project.basedir'}"
+
+processResources {
+    filesMatching('application.yml') {
+        filter(ReplaceTokens, tokens: expandVars)
+    }
+}
+processTestResources {
+    filesMatching('application.yml') {
+        filter(ReplaceTokens, tokens: expandVars)
+    }
+}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
