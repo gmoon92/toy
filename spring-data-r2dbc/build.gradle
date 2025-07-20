@@ -22,12 +22,12 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 
     // mariadb
-    implementation("org.mariadb:r2dbc-mariadb:${versions.r2dbc_mariadb}")
-    implementation(libs.jdbc.mariadb)
+//    implementation("org.mariadb:r2dbc-mariadb:${versions.r2dbc_mariadb}")
+//    implementation(libs.jdbc.mariadb)
 
     // https://github.com/asyncer-io/r2dbc-mysql
     implementation("io.asyncer:r2dbc-mysql:${versions.r2dbc_mysql}")
-    implementation(libs.jdbc.mariadb)
+    implementation(libs.jdbc.mysql)
 
     // M1 netty issued https://github.com/netty/netty/issues/11020
     // group:artifact:version:classifier 순서로 :로 선언
