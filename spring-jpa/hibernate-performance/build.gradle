@@ -10,13 +10,13 @@ dependencies {
     implementation platform(libs.hibernate.core)
 
     implementation("org.springframework.boot:spring-boot-starter") {
-        // 기본값: logback 제외
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+//         기본값: logback 제외
+//        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     }
     // log4j2 설정
-    implementation("org.springframework.boot:spring-boot-starter-log4j2")
-    implementation("org.apache.logging.log4j:log4j-web:2.14.0")
-    implementation("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16")
+//    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+//    implementation("org.apache.logging.log4j:log4j-web:2.14.0")
+//    implementation("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16")
 
     implementation("org.springframework.boot:spring-boot-configuration-processor")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
