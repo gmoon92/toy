@@ -41,7 +41,7 @@ public class ExcelField {
 		 ApplicationContext ctx,
 		 Class<T> typeFilter
 	) {
-		return Arrays.stream(annotation.validators())
+		return Arrays.stream(annotation.validator())
 			 .filter(typeFilter::isAssignableFrom)
 			 .map(clazz -> AnnotationUtils.findAnnotation(clazz, ExcelComponent.class) == null
 				  ? ReflectionUtil.newInstance(clazz)

@@ -19,7 +19,7 @@ public @interface ExcelProperty {
 
 	boolean required() default false;
 
-	Class<? extends ExcelValidator>[] validators() default {};
+	Class<? extends ExcelValidator>[] validator() default {};
 
 	Class<? extends ExcelConverter<?>> converter() default StringXssSafeConverter.class;
 }

@@ -1,5 +1,7 @@
 package com.gmoon.commons.commonsapachepoi.excel.validator.users;
 
+import java.util.EnumSet;
+
 import com.gmoon.commons.commonsapachepoi.common.utils.SecurityUtil;
 import com.gmoon.commons.commonsapachepoi.excel.annotation.ExcelComponent;
 import com.gmoon.commons.commonsapachepoi.excel.validator.ExcelEnumValidator;
@@ -15,8 +17,12 @@ public class UserRoleValidator extends ExcelEnumValidator<Role> {
 
 	@Override
 	public boolean isValid(Role role) {
+		if (Role.ADMIN == role) {
+			return false;
+		}
+
 		User user = SecurityUtil.getCurrentUser();
 		return user.isAdmin()
-			 && Role.USER == role;
+			 && EnumSet.of(Role.MANAGER, Role.USER).contains(role);
 	}
 }

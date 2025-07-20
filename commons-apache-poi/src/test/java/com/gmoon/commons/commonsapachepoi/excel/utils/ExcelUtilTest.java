@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,38 +34,41 @@ class ExcelUtilTest {
 	@Autowired
 	private HttpServletRequest request;
 
-	private final String excelFilePath = "src/test/resources/sample/test.xlsx";
-
-	@AfterEach
-	void cleanupTestFiles() throws IOException {
-		Files.deleteIfExists(Paths.get(excelFilePath));
-	}
+	private final String fileDir = "src/test/resources/sample/";
 
 	@Test
-	void write() {
+	void write() throws IOException {
+		int size = 1;
+		String filePath = fileDir + "excel-user.xlsx";
+
 		List<ExcelUserVO> excelUsers = FixtureMonkey.builder()
 			 .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
 			 .build().giveMeBuilder(ExcelUserVO.class)
 			 .setLazy("username", () -> TestUtils.randomString("user", 10))
 			 .set("password", "111111")
 			 .set("userFullname", TestUtils.randomString(10))
-			 .set("role", Role.USER)
+			 .setLazy("gender", () -> TestUtils.getRandomInteger(0, 1))
+			 .setLazy("role", () -> TestUtils.pickRandom(Role.USER, Role.MANAGER))
 			 .setLazy("enabled", TestUtils::randomBoolean)
 			 .setNull("email")
-			 .sampleList(100);
+			 .sampleList(size);
 
-		Assertions.assertThatCode(() -> write(excelFilePath, excelUsers))
+		Assertions.assertThatCode(() -> write(excelUsers, filePath))
 			 .doesNotThrowAnyException();
+
+		Files.deleteIfExists(Paths.get(filePath));
 	}
 
-	private void write(String excelFilePath, List<ExcelUserVO> excelUsers) throws IOException {
-		try (OutputStream outputStream = Files.newOutputStream(Paths.get(excelFilePath))) {
+	private void write(List<ExcelUserVO> excelUsers, String filePath) throws IOException {
+		try (OutputStream outputStream = Files.newOutputStream(Paths.get(filePath))) {
 			ExcelUtil.write(request, outputStream, ExcelUserVO.class, excelUsers);
 		}
 	}
 
 	@Test
 	void read() throws IOException {
+		String filePath = fileDir + "excel-user.xlsx";
+
 		SecurityContext context = SecurityContextHolder.getContext();
 		User user = new User("admin", null, Role.ADMIN);
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
@@ -78,13 +80,14 @@ class ExcelUtilTest {
 			 .setLazy("username", () -> TestUtils.randomString("user", 10))
 			 .set("password", "111111")
 			 .set("userFullname", TestUtils.randomString(10))
-			 .set("role", Role.USER)
+			 .setLazy("gender", () -> TestUtils.getRandomInteger(0, 1))
+			 .setLazy("role", () -> TestUtils.pickRandom(Role.USER, Role.MANAGER))
 			 .setLazy("enabled", TestUtils::randomBoolean)
 			 .setNull("email")
 			 .sampleList(size);
-		write(excelFilePath, excelUsers);
+		write(excelUsers, filePath);
 
-		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(request, excelFilePath, ExcelUserVO.class);
+		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(request, filePath, ExcelUserVO.class);
 		assertThat(excelSheet.isValidSheet()).isTrue();
 		assertThat(excelSheet.getRows())
 			 .isNotEmpty()
@@ -112,6 +115,8 @@ class ExcelUtilTest {
 						   .isBlank();
 				  }
 			 );
+
+		Files.deleteIfExists(Paths.get(filePath));
 	}
 
 	@Test
@@ -124,12 +129,11 @@ class ExcelUtilTest {
 		// int dataSize = 100;
 		// int dataSize = 1_000;
 		// int dataSize = 10_000;
+		String filename = String.format("sample-%d.xlsx", dataSize);
 
 		ExcelSheet<ExcelUserVO> parse = ExcelUtil.readSAX(
 			 request,
-			 Files.newInputStream(
-				  Paths.get("src/test/resources/sample/sample-" + dataSize + ".xlsx")
-			 ),
+			 Files.newInputStream(Paths.get(fileDir, filename)),
 			 ExcelUserVO.class
 		);
 
