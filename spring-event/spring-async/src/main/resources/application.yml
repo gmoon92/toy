@@ -13,8 +13,8 @@ spring:
 #    port: 587
     host: smtp.naver.com
     port: 465
-    username: @mail.username@
-    password: @mail.password@
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       "[mail.smtp.auth]": true
       "[mail.smtp.starttls.enable]": true
