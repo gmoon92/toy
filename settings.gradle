@@ -1,7 +1,6 @@
 rootProject.name = 'toy'
 // https://docs.gradle.org/current/userguide/multi_project_builds.html#multi_project_builds
 include(
-        'commons-apache-poi',
         'google-spreadsheet',
         'java-core',
         'payment',
@@ -56,6 +55,8 @@ include(
         'spring-lock',
         'spring-lock:spring-jpa-lock',
         'spring-lock:spring-lock-redisson',
+
+        'spring-poi',
 
         'spring-mvc',
         'spring-mvc:spring-access-log',
