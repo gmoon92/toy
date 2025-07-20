@@ -1,34 +1,72 @@
-buildscript {
-    ext {
-        appStoreServerLibraryVersion = "3.2.0"
-        springCloudVersion = "2025.0.0"
-        mavenBuildTimestampFormat = "yyyy-MM-dd HH:mm:ss"
-        jenkinsBuildNumber = 0
-        // Gradle에서 빌드 타임스탬프 생성 (예시. 실제 Jenkins에서 넘기면 System.getenv()와 같이 받는 경우 있음)
-        jenkinsBuildTimestamp = new Date().format(mavenBuildTimestampFormat)
-
-        // filter resource
-        appstoreEnabled = ""
-        appstoreBundleId = ""
-        appstoreIssuerId = ""
-        appstoreAppAppleId = ""
-        appstorePrivateKeyId = ""
-    }
-}
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id "org.springframework.boot"
     id "io.spring.dependency-management"
+    id "org.jetbrains.kotlin.jvm" version "1.9.23"
 }
 
 group = "com.gmoon.payment"
 description = "payment"
 
+def expandVars = [
+        "project.version"        : project.findProperty('project.version') ?: "0.0.1-SNAPSHOT",
+        "jenkins.build.number"   : project.findProperty('jenkins.build.number') ?: "0",
+        // Gradle에서 빌드 타임스탬프 생성 (예시. 실제 Jenkins에서 넘기면 System.getenv()와 같이 받는 경우 있음)
+        "jenkins.build.timestamp": project.findProperty('jenkins.build.timestamp') ?: new Date().format("yyyy-MM-dd HH:mm:ss"),
+
+        "appstore.enabled"       : project.findProperty('appstore.enabled') ?: "false",
+        "appstore.bundle-id"     : project.findProperty('appstore.bundle-id') ?: "YOUR_BUNDLE_ID",
+        "appstore.issuer-id"     : project.findProperty('appstore.issuer-id') ?: "YOUR_ISSUER_ID",
+        "appstore.app-apple-id"  : project.findProperty('appstore.app-apple-id') ?: "YOUR_APPLE_APP_ID",
+        "appstore.private-key-id": project.findProperty('appstore.private-key-id') ?: "YOUR_PRIVATE_KEY_ID"
+]
+
+println "appstore.enabled = ${expandVars.'appstore.enabled'}"
+println "jenkins.build.timestamp = ${expandVars.'jenkins.build.timestamp'}"
+
+processResources {
+    filesMatching('application.yml') {
+        filter(ReplaceTokens, tokens: expandVars)
+    }
+}
+processTestResources {
+    filesMatching('application.yml') {
+        filter(ReplaceTokens, tokens: expandVars)
+    }
+}
+
+//Execution failed for task ':payment:bootJar'.
+//> Could not resolve all files for configuration ':payment:runtimeClasspath'.
+//   > Could not find org.jetbrains.kotlin:kotlin-stdlib-common:1.0.0-SNAPSHOT.
+//     Required by:
+//         project :payment > org.jetbrains.kotlin:kotlin-stdlib:1.9.23
+//   > Could not find org.jetbrains.kotlin:kotlin-stdlib-common:1.0.0-SNAPSHOT.
+//     Required by:
+//         project :payment > com.apple.itunes.storekit:app-store-server-library:3.5.0 > com.squareup.okhttp3:okhttp:4.12.0 > com.squareup.okio:okio:3.6.0 > com.squareup.okio:okio-jvm:3.6.0
+//
+//Possible solution:
+// - Declare repository providing the artifact, see the documentation at https://docs.gradle.org/current/userguide/declaring_repositories.html
+// Kotlin SNAPSHOT 의존성 문제 해결
+configurations.configureEach {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == "org.jetbrains.kotlin" &&
+                details.requested.version == "1.0.0-SNAPSHOT") {
+            details.useVersion "1.9.23"
+        }
+    }
+}
+
 dependencies {
-    implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+
+    // Kotlin 관련 의존성
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.23"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23"
 
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.apple.itunes.storekit:app-store-server-library:${appStoreServerLibraryVersion}")
+    implementation("com.apple.itunes.storekit:app-store-server-library:3.5.0")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
 
@@ -38,14 +76,15 @@ dependencies {
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 }
 
 springBoot {
     buildInfo {
         properties {
             additional = [
-                    "number": "${jenkinsBuildNumber}",
-                    "time"  : "${jenkinsBuildTimestamp}"
+                    "number": "${expandVars.'jenkins.build.number'}",
+                    "time"  : "${expandVars.'jenkins.build.timestamp'}"
             ]
         }
     }
