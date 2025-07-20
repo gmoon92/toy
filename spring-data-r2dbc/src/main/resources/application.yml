@@ -1,24 +1,34 @@
 #database-url: mariadb://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true
 #database-url: mariadb://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-database-url: mysql://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true
+#database-url: mysql://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true
+
+#https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-debugging-profiling.html
+database-url: mysql://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=9999
 spring:
-  data:
+  #  data:
 #    "[r2dbc.repositories.enabled]": false
+  data:
+    r2dbc:
+      repositories:
+        enabled: false
 
   datasource:
-#    driver-class-name: org.mariadb.jdbc.Driver
+    #    driver-class-name: org.mariadb.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:${database-url}
     username: root
     password: 111111
 
   jpa:
-    defer-datasource-initialization: true
     open-in-view: false
-#    database-platform: org.hibernate.dialect.MariaDBDialect
+    #    database-platform: org.hibernate.dialect.MariaDBDialect
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: &show-sql true
+    defer-datasource-initialization: true
     generate-ddl: true
+    hibernate:
+      #      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         "[hbm2ddl.auto]": update
