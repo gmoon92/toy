@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
+import com.gmoon.spreadsheet.config.GoogleSpreadSheetProperties;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
-
-import com.gmoon.spreadsheet.config.GoogleSpreadSheetProperties;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +31,8 @@ class GoogleApiServiceTest {
 		stopWatch.start();
 		GoogleSpreadSheetToXmlDataSet.generate("sample-data", "default-data");
 		stopWatch.stop();
-		StopWatch.TaskInfo task = stopWatch.getLastTaskInfo();
+		// StopWatch.TaskInfo task = stopWatch.getLastTaskInfo();
+		StopWatch.TaskInfo task = stopWatch.lastTaskInfo();
 		log.debug("{}", task.getTimeSeconds());
 	}
 
@@ -47,6 +47,5 @@ class GoogleApiServiceTest {
 		files.export(fileId, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 			 .executeMediaAndDownloadTo(
 				  new FileOutputStream(String.format("src/test/resources/google/%s.xlsx", fileName)));
-
 	}
 }
