@@ -1,0 +1,6 @@
+spring:
+  config:
+    import: classpath:aws.yml
+
+  main:
+    allow-bean-definition-overriding: true

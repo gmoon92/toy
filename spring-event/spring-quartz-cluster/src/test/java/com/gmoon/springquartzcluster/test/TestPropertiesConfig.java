@@ -10,16 +10,18 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.gmoon.springquartzcluster.config.PropertiesConfig;
 
 @Import(PropertiesConfig.class)
+@TestPropertySource(value = "classpath:quartz.yml", factory = YamlPropertySourceFactory.class)
 @Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
 @SpringJUnitConfig
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface TestPropertiesConfig {
 	@AliasFor(annotation = SpringJUnitConfig.class, attribute = "classes")
 	Class<?>[] value() default {};

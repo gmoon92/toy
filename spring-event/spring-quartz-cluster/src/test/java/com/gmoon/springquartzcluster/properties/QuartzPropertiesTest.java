@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @TestPropertiesConfig
 @RequiredArgsConstructor
 class QuartzPropertiesTest {
-	final QuartzProperties properties;
+	private final QuartzProperties properties;
 
 	@Test
 	@DisplayName("Quartz Job 프로퍼티 활성화 여부를 검증한다.")
