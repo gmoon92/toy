@@ -33,7 +33,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -46,8 +45,6 @@ import com.gmoon.springpoi.excel.vo.ExcelFields;
 import com.gmoon.springpoi.excel.vo.ExcelRow;
 import com.gmoon.springpoi.excel.vo.ExcelSheet;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,13 +54,11 @@ import lombok.extern.slf4j.Slf4j;
 public final class ExcelUtil {
 
 	public static <T> void write(
-		 HttpServletRequest request,
+		 ApplicationContext ctx,
 		 OutputStream out,
 		 Class<T> clazz,
 		 List<T> dataList
 	) {
-		ApplicationContext ctx = getApplicationContext(request);
-
 		ExcelFields excelFields = ExcelFields.of(clazz, ctx);
 		try (SXSSFWorkbook wb = new SXSSFWorkbook(1_000)) {
 			String sheetName = excelFields.getSheetName();
@@ -203,12 +198,10 @@ public final class ExcelUtil {
 	 * </ul>
 	 */
 	public static <T> ExcelSheet<T> read(
-		 HttpServletRequest request,
+		 ApplicationContext ctx,
 		 String filePath,
 		 Class<T> clazz
 	) {
-		ApplicationContext ctx = getApplicationContext(request);
-
 		ExcelFields excelFields = ExcelFields.of(clazz, ctx);
 		try (FileInputStream fis = new FileInputStream(filePath);
 			 XSSFWorkbook workbook = new XSSFWorkbook(fis)
@@ -238,14 +231,9 @@ public final class ExcelUtil {
 		}
 	}
 
-	private static ApplicationContext getApplicationContext(HttpServletRequest request) {
-		ServletContext servletContext = request.getServletContext();
-		return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-	}
-
 	public static <T> ExcelSheet<T> readSAX(
-		 HttpServletRequest request,
 		 InputStream inputStream,
+		 ApplicationContext ctx,
 		 Class<T> excelModelClass,
 		 String... excludeFieldName
 	) {
@@ -253,7 +241,7 @@ public final class ExcelUtil {
 			ExcelSheet<T> excelSheet = ExcelSheet.create();
 			ExcelFields excelFields = ExcelFields.of(
 				 excelModelClass,
-				 getApplicationContext(request),
+				 ctx,
 				 excludeFieldName
 			);
 

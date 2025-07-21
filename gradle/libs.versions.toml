@@ -17,6 +17,7 @@ quick-perf = "1.1.0"
 testcontainers = "1.21.3"
 fixturemonkey = "1.1.11"
 rest-assured = "5.5.5"
+openjdk-jmh = "1.37"
 
 [libraries]
 ####### persistence
@@ -136,3 +137,7 @@ fixture-monkey-jakarta-validation = { module = "com.navercorp.fixturemonkey:fixt
 mockito-inline = { module = "org.mockito:mockito-inline", version = "5.2.0" }
 
 localstack = { module = "cloud.localstack:localstack-utils", version = "0.2.21" }
+
+jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "openjdk-jmh" }
+jmh-generator-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "openjdk-jmh" }
+

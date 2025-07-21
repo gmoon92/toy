@@ -10,32 +10,39 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.quickperf.junit5.QuickPerfTest;
+import org.quickperf.jvm.annotations.MeasureHeapAllocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
 import com.gmoon.springpoi.excel.vo.ExcelSheet;
 import com.gmoon.springpoi.test.TestUtils;
 import com.gmoon.springpoi.users.domain.Role;
 import com.gmoon.springpoi.users.domain.User;
 import com.gmoon.springpoi.users.model.ExcelUserVO;
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@QuickPerfTest
 @SpringBootTest
 class ExcelUtilTest {
 
 	@Autowired
-	private HttpServletRequest request;
+	private ApplicationContext ctx;
 
 	private final String fileDir = "src/test/resources/sample/";
 
+	@MeasureHeapAllocation
 	@Test
 	void write() throws IOException {
 		int size = 1;
@@ -61,17 +68,18 @@ class ExcelUtilTest {
 
 	private void write(List<ExcelUserVO> excelUsers, String filePath) throws IOException {
 		try (OutputStream outputStream = Files.newOutputStream(Paths.get(filePath))) {
-			ExcelUtil.write(request, outputStream, ExcelUserVO.class, excelUsers);
+			ExcelUtil.write(ctx, outputStream, ExcelUserVO.class, excelUsers);
 		}
 	}
 
+	@MeasureHeapAllocation
 	@Test
 	void read() throws IOException {
-		String filePath = fileDir + "excel-user.xlsx";
-
 		SecurityContext context = SecurityContextHolder.getContext();
 		User user = new User("admin", null, Role.ADMIN);
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
+
+		String filePath = fileDir + "excel-user.xlsx";
 
 		int size = 10;
 		List<ExcelUserVO> excelUsers = FixtureMonkey.builder()
@@ -87,7 +95,7 @@ class ExcelUtilTest {
 			 .sampleList(size);
 		write(excelUsers, filePath);
 
-		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(request, filePath, ExcelUserVO.class);
+		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(ctx, filePath, ExcelUserVO.class);
 		assertThat(excelSheet.isValidSheet()).isTrue();
 		assertThat(excelSheet.getRows())
 			 .isNotEmpty()
@@ -119,25 +127,22 @@ class ExcelUtilTest {
 		Files.deleteIfExists(Paths.get(filePath));
 	}
 
-	@Test
-	void readSAX() throws Exception {
+	@ParameterizedTest
+	@ValueSource(ints = {1, 100, 1_000, 10_000})
+	void readSAX(int dataSize) throws Exception {
 		SecurityContext context = SecurityContextHolder.getContext();
 		User user = new User("admin", null, Role.ADMIN);
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 
-		int dataSize = 1;
-		// int dataSize = 100;
-		// int dataSize = 1_000;
-		// int dataSize = 10_000;
 		String filename = String.format("sample-%d.xlsx", dataSize);
 
 		ExcelSheet<ExcelUserVO> parse = ExcelUtil.readSAX(
-			 request,
 			 Files.newInputStream(Paths.get(fileDir, filename)),
+			 ctx,
 			 ExcelUserVO.class
 		);
 
-		assertThat(parse.getRows())
-			 .hasSize(dataSize);
+		assertThat(parse.isValidSheet()).isTrue();
+		assertThat(parse.getRows()).hasSize(dataSize);
 	}
 }

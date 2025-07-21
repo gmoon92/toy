@@ -173,14 +173,14 @@ class XSSFSaxTest {
 
 			if ("c".equals(name)) {
 				startCell = true;
-				cellColIdx = getcellColIdx(attributes);
+				cellColIdx = getCellColIdx(attributes);
 
 				// Figure out if the value is an index in the SST
 				cellType = attributes.getValue("t");
 			}
 		}
 
-		private int getcellColIdx(Attributes attributes) {
+		private int getCellColIdx(Attributes attributes) {
 			String cellReference = attributes.getValue("r");
 			String cellColIdx = cellReference.replaceAll("\\d", "");
 
