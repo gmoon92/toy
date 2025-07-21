@@ -15,15 +15,12 @@ import com.gmoon.springpoi.excel.annotation.ExcelModel;
 import com.gmoon.springpoi.excel.annotation.ExcelProperty;
 import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
 
-import lombok.Getter;
-
-@Getter
 public class ExcelFields {
-	private final ExcelModel excelModelAnnotation;
+	private final ExcelModel excelModel;
 	private final Map<Integer, ExcelField> value;
 
 	private ExcelFields(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
-		excelModelAnnotation = getExcelModelAnnotation(excelModelClass);
+		excelModel = getExcelModel(excelModelClass);
 		value = ReflectionUtil.getFieldMap(
 			 excelModelClass,
 			 field -> {
@@ -61,7 +58,7 @@ public class ExcelFields {
 			 && StringUtils.equalsAny(field.getName(), excludeFieldName);
 	}
 
-	private ExcelModel getExcelModelAnnotation(Class<?> excelModelClass) {
+	private ExcelModel getExcelModel(Class<?> excelModelClass) {
 		return Optional.ofNullable(ReflectionUtil.findAnnotation(excelModelClass, ExcelModel.class))
 			 .orElseThrow(() -> new UnsupportedOperationException(
 				  String.format("@ExcelModel annotation not found in class %s", excelModelClass.getName())
@@ -73,11 +70,11 @@ public class ExcelFields {
 	}
 
 	public int getTotalTitleRowCount() {
-		return excelModelAnnotation.totalTitleRowCount();
+		return excelModel.totalTitleRowCount();
 	}
 
 	public String getSheetName() {
-		return excelModelAnnotation.sheetName();
+		return excelModel.sheetName();
 	}
 
 	public Set<Map.Entry<Integer, ExcelField>> entrySet() {
