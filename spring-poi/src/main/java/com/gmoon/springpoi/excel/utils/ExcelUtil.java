@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -235,6 +236,7 @@ public final class ExcelUtil {
 		 InputStream inputStream,
 		 ApplicationContext ctx,
 		 Class<T> excelModelClass,
+		 Consumer<List<T>> rawCallback,
 		 String... excludeFieldName
 	) {
 		try (OPCPackage pkg = OPCPackage.open(inputStream)) {
@@ -253,13 +255,16 @@ public final class ExcelUtil {
 				 excelModelClass,
 				 excelSheet,
 				 excelFields,
-				 ExcelUtil::processCell
+				 rawCallback
 			));
 
 			Iterator<InputStream> sheets = xssfReader.getSheetsData();
 			while (sheets.hasNext()) {
 				InputStream sheet = sheets.next();
 				parser.parse(new InputSource(sheet));
+
+				postProcess(excelSheet, excelFields);
+				rawCallback.accept(excelSheet.getRows());
 			}
 			return excelSheet;
 		} catch (Exception e) {
@@ -285,44 +290,20 @@ public final class ExcelUtil {
 			Integer cellColIdx = entry.getKey();
 			ExcelField excelField = excelFields.getExcelField(cellColIdx);
 			String cellValue = getStringCellValue(row, cellColIdx);
-			processCell(excelSheet, excelRow, excelField, cellValue);
+
+			excelRow.setFieldValue(excelField, cellValue);
+
+			if (excelField.isValidCellValue(cellValue)) {
+				for (ExcelBatchValidator validator : excelField.getBatchValidators()) {
+					validator.collect(excelRow.getRowIdx(), cellValue);
+					validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
+				}
+			} else {
+				excelSheet.addInvalidRow(excelRow.getRowIdx(), excelRow);
+			}
 		}
 
 		excelSheet.add(rowIdx, excelRow);
-	}
-
-	public static <T> void processCell(
-		 ExcelSheet<T> excelSheet,
-		 ExcelRow<T> excelRow,
-		 ExcelField excelField,
-		 String cellValue
-	) {
-		excelRow.setFieldValue(excelField, cellValue);
-
-		boolean shouldSkipValidation = !excelField.isRequired() && cellValue == null;
-		if (shouldSkipValidation) {
-			return;
-		}
-
-		boolean validCellValue = excelField.getValidators()
-			 .stream()
-			 .filter(validator -> !validator.isValid(cellValue))
-			 .peek(validator -> log.warn("[excel validation failed] validator={}, {}={}",
-				  validator,
-				  excelField.getFieldName(),
-				  cellValue
-			 ))
-			 .findFirst()
-			 .isEmpty();
-
-		if (validCellValue) {
-			for (ExcelBatchValidator validator : excelField.getBatchValidators()) {
-				validator.collect(excelRow.getRowIdx(), cellValue);
-				validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
-			}
-		} else {
-			excelSheet.addInvalidRow(excelRow.getRowIdx(), excelRow);
-		}
 	}
 
 	private static boolean isBlankRow(ExcelFields excelFields, XSSFRow row) {

@@ -1,11 +1,13 @@
 
 package com.gmoon.springpoi.excel.sax.handler;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.apache.poi.xssf.model.SharedStrings;
-import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.gmoon.springpoi.excel.processor.ExcelCellProcessor;
+import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.excel.vo.ExcelField;
 import com.gmoon.springpoi.excel.vo.ExcelFields;
 import com.gmoon.springpoi.excel.vo.ExcelRow;
@@ -41,9 +43,9 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * 이벤트는 다음과 같은 순으로 동작된다.
  * <ul>
- *     <li>{@link SaxXlsxSheetHandler#startElement(String, String, String, Attributes)}</li>
- *     <li>{@link SaxXlsxSheetHandler#characters(char[], int, int)}</li>
- *     <li>{@link SaxXlsxSheetHandler#endElement(String, String, String)}</li>
+ *     <li>{@link SaxXlsxSheetHandler#startRow(int)}</li>
+ *     <li>{@link SaxXlsxSheetHandler#handleCell(int, int, String)}</li>
+ *     <li>{@link SaxXlsxSheetHandler#endRow(int)}</li>
  * </ul>
  * </p>
  *
@@ -51,23 +53,25 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
+	private static final int ACCESS_WINDOWS = 1_000;
+
 	private final Class<T> excelModelClass;
 	private final ExcelSheet<T> excelSheet;
 	private final ExcelFields excelFields;
-	private final ExcelCellProcessor<T> excelCellProcessor;
+	private final Consumer<List<T>> rawCallback;
 
 	public SaxXlsxSheetHandler(
 		 SharedStrings sst,
 		 Class<T> excelModelClass,
 		 ExcelSheet<T> excelSheet,
 		 ExcelFields excelFields,
-		 ExcelCellProcessor<T> excelCellProcessor
+		 Consumer<List<T>> rawCallback
 	) {
 		super(sst, excelFields.getTotalTitleRowCount());
 		this.excelModelClass = excelModelClass;
 		this.excelSheet = excelSheet;
 		this.excelFields = excelFields;
-		this.excelCellProcessor = excelCellProcessor;
+		this.rawCallback = rawCallback;
 	}
 
 	@Override
@@ -79,24 +83,42 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 	@Override
 	public void handleCell(int rowIdx, int cellColIdx, String cellValue) {
 		ExcelField excelField = excelFields.getExcelField(cellColIdx);
-		if (excelField == null) {
+		boolean invalidCellColIdx = excelField == null;
+		if (invalidCellColIdx) {
 			return;
 		}
 
-		ExcelRow<T> excelRow = excelSheet.getExcelRow(rowIdx);
-		if (excelRow == null) {
+		ExcelRow<T> excelRow = excelSheet.getRowOrInvalidRow(rowIdx);
+		excelRow.setFieldValue(excelField, cellValue);
+		boolean invalidRow = !excelRow.isValid();
+		if (invalidRow) {
 			return;
 		}
-		excelCellProcessor.process(excelSheet, excelRow, excelField, cellValue);
+
+		boolean invalidCellValue = !excelField.isValidCellValue(cellValue);
+		if (invalidCellValue) {
+			excelSheet.addInvalidRow(rowIdx, excelRow);
+		}
 	}
 
 	@Override
 	public void endRow(int rowIdx) {
 		if (isBlankRow()) {
 			excelSheet.remove(rowIdx);
-		} else {
-			ExcelRow<T> excelRow = excelSheet.getExcelRow(rowIdx);
-			excelSheet.add(rowIdx, excelRow);
+			return;
+		}
+
+		ExcelRow<T> excelRow = excelSheet.getRowOrInvalidRow(rowIdx);
+		excelSheet.add(rowIdx, excelRow);
+		List<T> rows = excelSheet.getRows();
+		if (rows.size() > ACCESS_WINDOWS) {
+			List<ExcelBatchValidator> allValidators = excelFields.getAllBatchValidators();
+			for (ExcelBatchValidator validator : allValidators) {
+				validator.flush(excelSheet::addInvalidRows);
+			}
+
+			rawCallback.accept(rows);
+			excelSheet.clearRows();
 		}
 	}
 }

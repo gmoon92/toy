@@ -17,7 +17,9 @@ import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.excel.validator.ExcelValidator;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public class ExcelField {
 	private final Field field;
@@ -55,6 +57,24 @@ public class ExcelField {
 		return AnnotationUtils.findAnnotation(clazz, ExcelComponent.class) == null
 			 ? ReflectionUtil.newInstance(clazz)
 			 : ctx.getBean(clazz);
+	}
+
+	public boolean isValidCellValue(String cellValue) {
+		boolean shouldSkipValidation = !isRequired() && cellValue == null;
+		if (shouldSkipValidation) {
+			return true;
+		}
+
+		return getValidators()
+			 .stream()
+			 .filter(validator -> !validator.isValid(cellValue))
+			 .peek(validator -> log.debug("[excel validation failed] validator={}, {}={}",
+				  validator,
+				  getFieldName(),
+				  cellValue
+			 ))
+			 .findFirst()
+			 .isEmpty();
 	}
 
 	public String getFieldName() {

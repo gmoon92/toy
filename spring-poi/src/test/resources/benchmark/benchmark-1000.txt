@@ -1,0 +1,1360 @@
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 0.00% complete, ETA 00:03:12
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 0.385 ops/ms
+# Warmup Iteration   2: 0.647 ops/ms
+# Warmup Iteration   3: 0.737 ops/ms
+Iteration   1: 0.811 ops/ms
+                 gc.alloc.rate:       1358.763 MB/sec
+                 gc.alloc.rate.norm:  2031952.862 B/op
+                 gc.count:            53.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 33.391 MB
+
+Iteration   2: 0.867 ops/ms
+                 gc.alloc.rate:       1453.873 MB/sec
+                 gc.alloc.rate.norm:  2029095.848 B/op
+                 gc.count:            65.000 counts
+                 gc.time:             96.000 ms
+                 heap.memory.used.mb: 58.476 MB
+
+Iteration   3: 0.885 ops/ms
+                 gc.alloc.rate:       1472.538 MB/sec
+                 gc.alloc.rate.norm:  2027734.477 B/op
+                 gc.count:            63.000 counts
+                 gc.time:             82.000 ms
+                 heap.memory.used.mb: 10.136 MB
+
+Iteration   4: 0.888 ops/ms
+                 gc.alloc.rate:       1519.379 MB/sec
+                 gc.alloc.rate.norm:  2027373.068 B/op
+                 gc.count:            61.000 counts
+                 gc.time:             68.000 ms
+                 heap.memory.used.mb: 20.388 MB
+
+Iteration   5: 0.899 ops/ms
+                 gc.alloc.rate:       1527.576 MB/sec
+                 gc.alloc.rate.norm:  2026917.978 B/op
+                 gc.count:            63.000 counts
+                 gc.time:             80.000 ms
+                 heap.memory.used.mb: 59.337 MB
+
+
+# Run progress: 8.33% complete, ETA 00:04:36
+# Fork: 1 of 1
+# Warmup Iteration   1: 0.419 ops/ms
+# Warmup Iteration   2: 0.722 ops/ms
+# Warmup Iteration   3: 0.859 ops/ms
+Iteration   1: 0.909 ops/ms
+                 gc.alloc.rate:       1577.104 MB/sec
+                 gc.alloc.rate.norm:  2090837.067 B/op
+                 gc.count:            64.000 counts
+                 gc.time:             89.000 ms
+                 heap.memory.used.mb: 23.266 MB
+
+Iteration   2: 0.916 ops/ms
+                 gc.alloc.rate:       1617.067 MB/sec
+                 gc.alloc.rate.norm:  2090125.554 B/op
+                 gc.count:            70.000 counts
+                 gc.time:             73.000 ms
+                 heap.memory.used.mb: 45.974 MB
+
+Iteration   3: 0.809 ops/ms
+                 gc.alloc.rate:       1415.254 MB/sec
+                 gc.alloc.rate.norm:  2094113.315 B/op
+                 gc.count:            61.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 66.091 MB
+
+Iteration   4: 0.850 ops/ms
+                 gc.alloc.rate:       1470.156 MB/sec
+                 gc.alloc.rate.norm:  2092207.380 B/op
+                 gc.count:            54.000 counts
+                 gc.time:             95.000 ms
+                 heap.memory.used.mb: 31.010 MB
+
+Iteration   5: 0.936 ops/ms
+                 gc.alloc.rate:       1648.618 MB/sec
+                 gc.alloc.rate.norm:  2089016.043 B/op
+                 gc.count:            59.000 counts
+                 gc.time:             66.000 ms
+                 heap.memory.used.mb: 62.670 MB
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom":
+  0.884 ±(99.9%) 0.203 ops/ms [Average]
+  (min, avg, max) = (0.809, 0.884, 0.936), stdev = 0.053
+  CI (99.9%): [0.681, 1.087] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate":
+  1545.640 ±(99.9%) 382.140 MB/sec [Average]
+  (min, avg, max) = (1415.254, 1545.640, 1648.618), stdev = 99.241
+  CI (99.9%): [1163.499, 1927.780] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate.norm":
+  2091259.872 ±(99.9%) 7589.804 B/op [Average]
+  (min, avg, max) = (2089016.043, 2091259.872, 2094113.315), stdev = 1971.048
+  CI (99.9%): [2083670.068, 2098849.676] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.count":
+  308.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (54.000, 61.600, 70.000), stdev = 5.941
+  CI (99.9%): [308.000, 308.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.time":
+  411.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (66.000, 82.200, 95.000), stdev = 12.153
+  CI (99.9%): [411.000, 411.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:heap.memory.used.mb":
+  45.802 ±(99.9%) 72.625 MB [Average]
+  (min, avg, max) = (23.266, 45.802, 66.091), stdev = 18.860
+  CI (99.9%): [≈ 0, 118.427] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 16.66% complete, ETA 00:04:12
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 1.092 ops/ms
+# Warmup Iteration   2: 1.807 ops/ms
+# Warmup Iteration   3: 1.950 ops/ms
+Iteration   1: 2.004 ops/ms
+                 gc.alloc.rate:       2281.327 MB/sec
+                 gc.alloc.rate.norm:  1367011.537 B/op
+                 gc.count:            74.000 counts
+                 gc.time:             89.000 ms
+                 heap.memory.used.mb: 47.900 MB
+
+Iteration   2: 1.969 ops/ms
+                 gc.alloc.rate:       2238.220 MB/sec
+                 gc.alloc.rate.norm:  1367147.185 B/op
+                 gc.count:            73.000 counts
+                 gc.time:             84.000 ms
+                 heap.memory.used.mb: 33.684 MB
+
+Iteration   3: 2.016 ops/ms
+                 gc.alloc.rate:       2285.226 MB/sec
+                 gc.alloc.rate.norm:  1366856.894 B/op
+                 gc.count:            74.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 68.938 MB
+
+Iteration   4: 2.013 ops/ms
+                 gc.alloc.rate:       2304.097 MB/sec
+                 gc.alloc.rate.norm:  1366801.743 B/op
+                 gc.count:            75.000 counts
+                 gc.time:             76.000 ms
+                 heap.memory.used.mb: 9.008 MB
+
+Iteration   5: 2.010 ops/ms
+                 gc.alloc.rate:       2283.787 MB/sec
+                 gc.alloc.rate.norm:  1366807.859 B/op
+                 gc.count:            76.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 60.309 MB
+
+
+# Run progress: 25.00% complete, ETA 00:03:46
+# Fork: 1 of 1
+# Warmup Iteration   1: 1.116 ops/ms
+# Warmup Iteration   2: 1.871 ops/ms
+# Warmup Iteration   3: 1.980 ops/ms
+Iteration   1: 2.061 ops/ms
+                 gc.alloc.rate:       2318.297 MB/sec
+                 gc.alloc.rate.norm:  1364123.219 B/op
+                 gc.count:            76.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 28.408 MB
+
+Iteration   2: 2.085 ops/ms
+                 gc.alloc.rate:       2370.843 MB/sec
+                 gc.alloc.rate.norm:  1363825.269 B/op
+                 gc.count:            77.000 counts
+                 gc.time:             90.000 ms
+                 heap.memory.used.mb: 25.711 MB
+
+Iteration   3: 2.068 ops/ms
+                 gc.alloc.rate:       2371.734 MB/sec
+                 gc.alloc.rate.norm:  1363950.979 B/op
+                 gc.count:            76.000 counts
+                 gc.time:             68.000 ms
+                 heap.memory.used.mb: 64.246 MB
+
+Iteration   4: 2.070 ops/ms
+                 gc.alloc.rate:       2347.240 MB/sec
+                 gc.alloc.rate.norm:  1363894.356 B/op
+                 gc.count:            77.000 counts
+                 gc.time:             91.000 ms
+                 heap.memory.used.mb: 65.109 MB
+
+Iteration   5: 2.087 ops/ms
+                 gc.alloc.rate:       2364.629 MB/sec
+                 gc.alloc.rate.norm:  1363780.816 B/op
+                 gc.count:            77.000 counts
+                 gc.time:             86.000 ms
+                 heap.memory.used.mb: 37.167 MB
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax":
+  2.074 ±(99.9%) 0.043 ops/ms [Average]
+  (min, avg, max) = (2.061, 2.074, 2.087), stdev = 0.011
+  CI (99.9%): [2.031, 2.117] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate":
+  2354.549 ±(99.9%) 86.748 MB/sec [Average]
+  (min, avg, max) = (2318.297, 2354.549, 2371.734), stdev = 22.528
+  CI (99.9%): [2267.801, 2441.297] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate.norm":
+  1363914.928 ±(99.9%) 513.498 B/op [Average]
+  (min, avg, max) = (1363780.816, 1363914.928, 1364123.219), stdev = 133.354
+  CI (99.9%): [1363401.430, 1364428.426] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.count":
+  383.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (76.000, 76.600, 77.000), stdev = 0.548
+  CI (99.9%): [383.000, 383.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.time":
+  422.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (68.000, 84.400, 91.000), stdev = 9.397
+  CI (99.9%): [422.000, 422.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:heap.memory.used.mb":
+  44.128 ±(99.9%) 74.061 MB [Average]
+  (min, avg, max) = (25.711, 44.128, 65.109), stdev = 19.233
+  CI (99.9%): [≈ 0, 118.189] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 33.33% complete, ETA 00:03:21
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 2.231 ms/op
+# Warmup Iteration   2: 1.259 ms/op
+# Warmup Iteration   3: 1.181 ms/op
+Iteration   1: 1.156 ms/op
+                 gc.alloc.rate:       1496.482 MB/sec
+                 gc.alloc.rate.norm:  2094769.365 B/op
+                 gc.count:            59.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 40.532 MB
+
+Iteration   2: 1.135 ms/op
+                 gc.alloc.rate:       1527.925 MB/sec
+                 gc.alloc.rate.norm:  2093725.130 B/op
+                 gc.count:            60.000 counts
+                 gc.time:             90.000 ms
+                 heap.memory.used.mb: 40.768 MB
+
+Iteration   3: 1.123 ms/op
+                 gc.alloc.rate:       1546.902 MB/sec
+                 gc.alloc.rate.norm:  2093218.208 B/op
+                 gc.count:            61.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 9.075 MB
+
+Iteration   4: 1.124 ms/op
+                 gc.alloc.rate:       1544.910 MB/sec
+                 gc.alloc.rate.norm:  2093075.805 B/op
+                 gc.count:            61.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 5.114 MB
+
+Iteration   5: 1.128 ms/op
+                 gc.alloc.rate:       1546.085 MB/sec
+                 gc.alloc.rate.norm:  2093046.898 B/op
+                 gc.count:            60.000 counts
+                 gc.time:             79.000 ms
+                 heap.memory.used.mb: 60.482 MB
+
+
+# Run progress: 41.66% complete, ETA 00:02:56
+# Fork: 1 of 1
+# Warmup Iteration   1: 2.330 ms/op
+# Warmup Iteration   2: 1.278 ms/op
+# Warmup Iteration   3: 1.178 ms/op
+Iteration   1: 1.145 ms/op
+                 gc.alloc.rate:       1507.441 MB/sec
+                 gc.alloc.rate.norm:  2093837.570 B/op
+                 gc.count:            79.000 counts
+                 gc.time:             106.000 ms
+                 heap.memory.used.mb: 52.575 MB
+
+Iteration   2: 1.104 ms/op
+                 gc.alloc.rate:       1568.730 MB/sec
+                 gc.alloc.rate.norm:  2092245.470 B/op
+                 gc.count:            65.000 counts
+                 gc.time:             92.000 ms
+                 heap.memory.used.mb: 60.529 MB
+
+Iteration   3: 1.102 ms/op
+                 gc.alloc.rate:       1575.903 MB/sec
+                 gc.alloc.rate.norm:  2091964.492 B/op
+                 gc.count:            68.000 counts
+                 gc.time:             92.000 ms
+                 heap.memory.used.mb: 24.257 MB
+
+Iteration   4: 1.092 ms/op
+                 gc.alloc.rate:       1596.691 MB/sec
+                 gc.alloc.rate.norm:  2091567.507 B/op
+                 gc.count:            66.000 counts
+                 gc.time:             90.000 ms
+                 heap.memory.used.mb: 36.614 MB
+
+Iteration   5: 1.087 ms/op
+                 gc.alloc.rate:       1625.185 MB/sec
+                 gc.alloc.rate.norm:  2091331.130 B/op
+                 gc.count:            66.000 counts
+                 gc.time:             67.000 ms
+                 heap.memory.used.mb: 54.621 MB
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom":
+  1.106 ±(99.9%) 0.088 ms/op [Average]
+  (min, avg, max) = (1.087, 1.106, 1.145), stdev = 0.023
+  CI (99.9%): [1.018, 1.194] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate":
+  1574.790 ±(99.9%) 167.770 MB/sec [Average]
+  (min, avg, max) = (1507.441, 1574.790, 1625.185), stdev = 43.569
+  CI (99.9%): [1407.020, 1742.560] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate.norm":
+  2092189.234 ±(99.9%) 3799.071 B/op [Average]
+  (min, avg, max) = (2091331.130, 2092189.234, 2093837.570), stdev = 986.607
+  CI (99.9%): [2088390.163, 2095988.304] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.count":
+  344.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (65.000, 68.800, 79.000), stdev = 5.805
+  CI (99.9%): [344.000, 344.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.time":
+  447.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (67.000, 89.400, 106.000), stdev = 14.064
+  CI (99.9%): [447.000, 447.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:heap.memory.used.mb":
+  45.719 ±(99.9%) 57.410 MB [Average]
+  (min, avg, max) = (24.257, 45.719, 60.529), stdev = 14.909
+  CI (99.9%): [≈ 0, 103.129] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 49.99% complete, ETA 00:02:31
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 1.003 ms/op
+# Warmup Iteration   2: 0.557 ms/op
+# Warmup Iteration   3: 0.516 ms/op
+Iteration   1: 0.499 ms/op
+                 gc.alloc.rate:       2260.704 MB/sec
+                 gc.alloc.rate.norm:  1366309.589 B/op
+                 gc.count:            74.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 43.423 MB
+
+Iteration   2: 0.494 ms/op
+                 gc.alloc.rate:       2284.770 MB/sec
+                 gc.alloc.rate.norm:  1365992.246 B/op
+                 gc.count:            75.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 49.036 MB
+
+Iteration   3: 0.493 ms/op
+                 gc.alloc.rate:       2312.088 MB/sec
+                 gc.alloc.rate.norm:  1365955.871 B/op
+                 gc.count:            77.000 counts
+                 gc.time:             83.000 ms
+                 heap.memory.used.mb: 37.990 MB
+
+Iteration   4: 0.492 ms/op
+                 gc.alloc.rate:       2318.930 MB/sec
+                 gc.alloc.rate.norm:  1365954.681 B/op
+                 gc.count:            76.000 counts
+                 gc.time:             81.000 ms
+                 heap.memory.used.mb: 6.912 MB
+
+Iteration   5: 0.491 ms/op
+                 gc.alloc.rate:       2313.305 MB/sec
+                 gc.alloc.rate.norm:  1365873.373 B/op
+                 gc.count:            76.000 counts
+                 gc.time:             83.000 ms
+                 heap.memory.used.mb: 36.965 MB
+
+
+# Run progress: 58.32% complete, ETA 00:02:05
+# Fork: 1 of 1
+# Warmup Iteration   1: 0.973 ms/op
+# Warmup Iteration   2: 0.568 ms/op
+# Warmup Iteration   3: 0.525 ms/op
+Iteration   1: 0.502 ms/op
+                 gc.alloc.rate:       2254.299 MB/sec
+                 gc.alloc.rate.norm:  1365276.422 B/op
+                 gc.count:            74.000 counts
+                 gc.time:             86.000 ms
+                 heap.memory.used.mb: 8.883 MB
+
+Iteration   2: 0.498 ms/op
+                 gc.alloc.rate:       2289.984 MB/sec
+                 gc.alloc.rate.norm:  1365102.793 B/op
+                 gc.count:            74.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 46.831 MB
+
+Iteration   3: 0.497 ms/op
+                 gc.alloc.rate:       2287.731 MB/sec
+                 gc.alloc.rate.norm:  1365102.379 B/op
+                 gc.count:            75.000 counts
+                 gc.time:             88.000 ms
+                 heap.memory.used.mb: 30.212 MB
+
+Iteration   4: 0.498 ms/op
+                 gc.alloc.rate:       2281.215 MB/sec
+                 gc.alloc.rate.norm:  1365063.614 B/op
+                 gc.count:            74.000 counts
+                 gc.time:             84.000 ms
+                 heap.memory.used.mb: 46.247 MB
+
+Iteration   5: 0.496 ms/op
+                 gc.alloc.rate:       2308.927 MB/sec
+                 gc.alloc.rate.norm:  1364994.645 B/op
+                 gc.count:            75.000 counts
+                 gc.time:             84.000 ms
+                 heap.memory.used.mb: 43.185 MB
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax":
+  0.498 ±(99.9%) 0.008 ms/op [Average]
+  (min, avg, max) = (0.496, 0.498, 0.502), stdev = 0.002
+  CI (99.9%): [0.490, 0.507] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate":
+  2284.431 ±(99.9%) 76.046 MB/sec [Average]
+  (min, avg, max) = (2254.299, 2284.431, 2308.927), stdev = 19.749
+  CI (99.9%): [2208.385, 2360.477] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate.norm":
+  1365107.971 ±(99.9%) 400.374 B/op [Average]
+  (min, avg, max) = (1364994.645, 1365107.971, 1365276.422), stdev = 103.976
+  CI (99.9%): [1364707.596, 1365508.345] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.count":
+  372.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (74.000, 74.400, 75.000), stdev = 0.548
+  CI (99.9%): [372.000, 372.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.time":
+  429.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (84.000, 85.800, 88.000), stdev = 1.789
+  CI (99.9%): [429.000, 429.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:heap.memory.used.mb":
+  35.072 ±(99.9%) 62.044 MB [Average]
+  (min, avg, max) = (8.883, 35.072, 46.831), stdev = 16.113
+  CI (99.9%): [≈ 0, 97.116] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 66.66% complete, ETA 00:01:40
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 2.273 ±(99.9%) 1.112 ms/op
+# Warmup Iteration   2: 1.326 ±(99.9%) 0.039 ms/op
+# Warmup Iteration   3: 1.254 ±(99.9%) 0.036 ms/op
+Iteration   1: 1.161 ±(99.9%) 0.020 ms/op
+                 gc.alloc.rate:       1488.057 MB/sec
+                 gc.alloc.rate.norm:  2094580.118 B/op
+                 gc.count:            54.000 counts
+                 gc.time:             86.000 ms
+                 heap.memory.used.mb: 11.177 MB
+                 p0.00:               1.011 ms/op
+                 p0.50:               1.094 ms/op
+                 p0.90:               1.283 ms/op
+                 p0.95:               1.441 ms/op
+                 p0.99:               2.233 ms/op
+                 p0.999:              4.652 ms/op
+                 p0.9999:             6.734 ms/op
+                 p1.00:               6.734 ms/op
+
+Iteration   2: 1.104 ±(99.9%) 0.020 ms/op
+                 gc.alloc.rate:       1556.913 MB/sec
+                 gc.alloc.rate.norm:  2092497.826 B/op
+                 gc.count:            67.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 56.890 MB
+                 p0.00:               0.977 ms/op
+                 p0.50:               1.051 ms/op
+                 p0.90:               1.139 ms/op
+                 p0.95:               1.276 ms/op
+                 p0.99:               2.294 ms/op
+                 p0.999:              4.722 ms/op
+                 p0.9999:             7.569 ms/op
+                 p1.00:               7.569 ms/op
+
+Iteration   3: 1.151 ±(99.9%) 0.031 ms/op
+                 gc.alloc.rate:       1532.832 MB/sec
+                 gc.alloc.rate.norm:  2093620.232 B/op
+                 gc.count:            63.000 counts
+                 gc.time:             73.000 ms
+                 heap.memory.used.mb: 48.512 MB
+                 p0.00:               0.998 ms/op
+                 p0.50:               1.059 ms/op
+                 p0.90:               1.262 ms/op
+                 p0.95:               1.581 ms/op
+                 p0.99:               2.614 ms/op
+                 p0.999:              7.015 ms/op
+                 p0.9999:             8.700 ms/op
+                 p1.00:               8.700 ms/op
+
+Iteration   4: 1.084 ±(99.9%) 0.011 ms/op
+                 gc.alloc.rate:       1627.330 MB/sec
+                 gc.alloc.rate.norm:  2091518.035 B/op
+                 gc.count:            48.000 counts
+                 gc.time:             54.000 ms
+                 heap.memory.used.mb: 7.513 MB
+                 p0.00:               0.965 ms/op
+                 p0.50:               1.046 ms/op
+                 p0.90:               1.139 ms/op
+                 p0.95:               1.231 ms/op
+                 p0.99:               1.926 ms/op
+                 p0.999:              2.550 ms/op
+                 p0.9999:             2.560 ms/op
+                 p1.00:               2.560 ms/op
+
+Iteration   5: 1.084 ±(99.9%) 0.016 ms/op
+                 gc.alloc.rate:       1601.977 MB/sec
+                 gc.alloc.rate.norm:  2091510.069 B/op
+                 gc.count:            62.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 58.801 MB
+                 p0.00:               0.954 ms/op
+                 p0.50:               1.044 ms/op
+                 p0.90:               1.120 ms/op
+                 p0.95:               1.199 ms/op
+                 p0.99:               1.976 ms/op
+                 p0.999:              4.387 ms/op
+                 p0.9999:             6.578 ms/op
+                 p1.00:               6.578 ms/op
+
+
+# Run progress: 74.99% complete, ETA 00:01:15
+# Fork: 1 of 1
+# Warmup Iteration   1: 2.454 ±(99.9%) 1.366 ms/op
+# Warmup Iteration   2: 1.336 ±(99.9%) 0.038 ms/op
+# Warmup Iteration   3: 1.304 ±(99.9%) 0.043 ms/op
+Iteration   1: 1.196 ±(99.9%) 0.030 ms/op
+                 gc.alloc.rate:       1432.479 MB/sec
+                 gc.alloc.rate.norm:  2095132.279 B/op
+                 gc.count:            52.000 counts
+                 gc.time:             84.000 ms
+                 heap.memory.used.mb: 69.963 MB
+                 p0.00:               0.995 ms/op
+                 p0.50:               1.104 ms/op
+                 p0.90:               1.352 ms/op
+                 p0.95:               1.649 ms/op
+                 p0.99:               2.512 ms/op
+                 p0.999:              6.978 ms/op
+                 p0.9999:             10.273 ms/op
+                 p1.00:               10.273 ms/op
+
+Iteration   2: 1.146 ±(99.9%) 0.021 ms/op
+                 gc.alloc.rate:       1517.949 MB/sec
+                 gc.alloc.rate.norm:  2093308.911 B/op
+                 gc.count:            60.000 counts
+                 gc.time:             77.000 ms
+                 heap.memory.used.mb: 15.669 MB
+                 p0.00:               0.979 ms/op
+                 p0.50:               1.084 ms/op
+                 p0.90:               1.249 ms/op
+                 p0.95:               1.433 ms/op
+                 p0.99:               2.234 ms/op
+                 p0.999:              4.825 ms/op
+                 p0.9999:             7.709 ms/op
+                 p1.00:               7.709 ms/op
+
+Iteration   3: 1.167 ±(99.9%) 0.023 ms/op
+                 gc.alloc.rate:       1475.182 MB/sec
+                 gc.alloc.rate.norm:  2093734.178 B/op
+                 gc.count:            59.000 counts
+                 gc.time:             80.000 ms
+                 heap.memory.used.mb: 29.065 MB
+                 p0.00:               1.016 ms/op
+                 p0.50:               1.104 ms/op
+                 p0.90:               1.285 ms/op
+                 p0.95:               1.512 ms/op
+                 p0.99:               2.550 ms/op
+                 p0.999:              5.276 ms/op
+                 p0.9999:             6.382 ms/op
+                 p1.00:               6.382 ms/op
+
+Iteration   4: 1.129 ±(99.9%) 0.022 ms/op
+                 gc.alloc.rate:       1556.132 MB/sec
+                 gc.alloc.rate.norm:  2092507.345 B/op
+                 gc.count:            59.000 counts
+                 gc.time:             74.000 ms
+                 heap.memory.used.mb: 6.763 MB
+                 p0.00:               0.968 ms/op
+                 p0.50:               1.059 ms/op
+                 p0.90:               1.249 ms/op
+                 p0.95:               1.400 ms/op
+                 p0.99:               2.307 ms/op
+                 p0.999:              6.459 ms/op
+                 p0.9999:             7.365 ms/op
+                 p1.00:               7.365 ms/op
+
+Iteration   5: 1.107 ±(99.9%) 0.022 ms/op
+                 gc.alloc.rate:       1571.303 MB/sec
+                 gc.alloc.rate.norm:  2091723.668 B/op
+                 gc.count:            62.000 counts
+                 gc.time:             86.000 ms
+                 heap.memory.used.mb: 9.160 MB
+                 p0.00:               0.972 ms/op
+                 p0.50:               1.047 ms/op
+                 p0.90:               1.155 ms/op
+                 p0.95:               1.298 ms/op
+                 p0.99:               2.235 ms/op
+                 p0.999:              6.471 ms/op
+                 p0.9999:             6.644 ms/op
+                 p1.00:               6.644 ms/op
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom":
+  N = 8720
+  mean =      1.148 ±(99.9%) 0.011 ms/op
+
+  Histogram, ms/op:
+    [ 0.000,  1.000) = 14 
+    [ 1.000,  2.000) = 8557 
+    [ 2.000,  3.000) = 116 
+    [ 3.000,  4.000) = 20 
+    [ 4.000,  5.000) = 5 
+    [ 5.000,  6.000) = 1 
+    [ 6.000,  7.000) = 4 
+    [ 7.000,  8.000) = 2 
+    [ 8.000,  9.000) = 0 
+    [ 9.000, 10.000) = 0 
+
+  Percentiles, ms/op:
+      p(0.0000) =      0.968 ms/op
+     p(50.0000) =      1.075 ms/op
+     p(90.0000) =      1.270 ms/op
+     p(95.0000) =      1.473 ms/op
+     p(99.0000) =      2.364 ms/op
+     p(99.9000) =      4.997 ms/op
+     p(99.9900) =     10.273 ms/op
+     p(99.9990) =     10.273 ms/op
+     p(99.9999) =     10.273 ms/op
+    p(100.0000) =     10.273 ms/op
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate":
+  1510.609 ±(99.9%) 220.946 MB/sec [Average]
+  (min, avg, max) = (1432.479, 1510.609, 1571.303), stdev = 57.379
+  CI (99.9%): [1289.663, 1731.555] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate.norm":
+  2093281.276 ±(99.9%) 4967.632 B/op [Average]
+  (min, avg, max) = (2091723.668, 2093281.276, 2095132.279), stdev = 1290.078
+  CI (99.9%): [2088313.644, 2098248.909] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.count":
+  292.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (52.000, 58.400, 62.000), stdev = 3.782
+  CI (99.9%): [292.000, 292.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.time":
+  401.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (74.000, 80.200, 86.000), stdev = 4.919
+  CI (99.9%): [401.000, 401.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:heap.memory.used.mb":
+  26.124 ±(99.9%) 100.088 MB [Average]
+  (min, avg, max) = (6.763, 26.124, 69.963), stdev = 25.993
+  CI (99.9%): [≈ 0, 126.212] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 83.32% complete, ETA 00:00:50
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 1.144 ±(99.9%) 0.472 ms/op
+# Warmup Iteration   2: 0.719 ±(99.9%) 0.030 ms/op
+# Warmup Iteration   3: 0.632 ±(99.9%) 0.032 ms/op
+Iteration   1: 0.590 ±(99.9%) 0.018 ms/op
+                 gc.alloc.rate:       1834.562 MB/sec
+                 gc.alloc.rate.norm:  1302458.247 B/op
+                 gc.count:            52.000 counts
+                 gc.time:             74.000 ms
+                 heap.memory.used.mb: 44.098 MB
+                 p0.00:               0.455 ms/op
+                 p0.50:               0.516 ms/op
+                 p0.90:               0.672 ms/op
+                 p0.95:               0.936 ms/op
+                 p0.99:               2.160 ms/op
+                 p0.999:              4.283 ms/op
+                 p0.9999:             5.898 ms/op
+                 p1.00:               5.898 ms/op
+
+Iteration   2: 0.526 ±(99.9%) 0.009 ms/op
+                 gc.alloc.rate:       2043.440 MB/sec
+                 gc.alloc.rate.norm:  1300235.656 B/op
+                 gc.count:            67.000 counts
+                 gc.time:             77.000 ms
+                 heap.memory.used.mb: 58.636 MB
+                 p0.00:               0.457 ms/op
+                 p0.50:               0.491 ms/op
+                 p0.90:               0.559 ms/op
+                 p0.95:               0.645 ms/op
+                 p0.99:               1.196 ms/op
+                 p0.999:              2.665 ms/op
+                 p0.9999:             5.612 ms/op
+                 p1.00:               5.612 ms/op
+
+Iteration   3: 0.512 ±(99.9%) 0.011 ms/op
+                 gc.alloc.rate:       2085.063 MB/sec
+                 gc.alloc.rate.norm:  1299553.394 B/op
+                 gc.count:            69.000 counts
+                 gc.time:             90.000 ms
+                 heap.memory.used.mb: 17.878 MB
+                 p0.00:               0.428 ms/op
+                 p0.50:               0.482 ms/op
+                 p0.90:               0.538 ms/op
+                 p0.95:               0.603 ms/op
+                 p0.99:               1.126 ms/op
+                 p0.999:              3.232 ms/op
+                 p0.9999:             8.520 ms/op
+                 p1.00:               8.520 ms/op
+
+Iteration   4: 0.486 ±(99.9%) 0.007 ms/op
+                 gc.alloc.rate:       2218.882 MB/sec
+                 gc.alloc.rate.norm:  1298674.365 B/op
+                 gc.count:            72.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 67.930 MB
+                 p0.00:               0.437 ms/op
+                 p0.50:               0.466 ms/op
+                 p0.90:               0.499 ms/op
+                 p0.95:               0.526 ms/op
+                 p0.99:               0.966 ms/op
+                 p0.999:              1.955 ms/op
+                 p0.9999:             5.874 ms/op
+                 p1.00:               5.874 ms/op
+
+Iteration   5: 0.484 ±(99.9%) 0.006 ms/op
+                 gc.alloc.rate:       2232.609 MB/sec
+                 gc.alloc.rate.norm:  1298545.754 B/op
+                 gc.count:            73.000 counts
+                 gc.time:             87.000 ms
+                 heap.memory.used.mb: 26.642 MB
+                 p0.00:               0.426 ms/op
+                 p0.50:               0.463 ms/op
+                 p0.90:               0.498 ms/op
+                 p0.95:               0.523 ms/op
+                 p0.99:               0.966 ms/op
+                 p0.999:              1.757 ms/op
+                 p0.9999:             5.349 ms/op
+                 p1.00:               5.349 ms/op
+
+
+# Run progress: 91.65% complete, ETA 00:00:25
+# Fork: 1 of 1
+# Warmup Iteration   1: 0.900 ±(99.9%) 0.398 ms/op
+# Warmup Iteration   2: 0.522 ±(99.9%) 0.009 ms/op
+# Warmup Iteration   3: 0.496 ±(99.9%) 0.008 ms/op
+Iteration   1: 0.483 ±(99.9%) 0.007 ms/op
+                 gc.alloc.rate:       2313.141 MB/sec
+                 gc.alloc.rate.norm:  1365159.735 B/op
+                 gc.count:            75.000 counts
+                 gc.time:             89.000 ms
+                 heap.memory.used.mb: 57.238 MB
+                 p0.00:               0.423 ms/op
+                 p0.50:               0.462 ms/op
+                 p0.90:               0.498 ms/op
+                 p0.95:               0.525 ms/op
+                 p0.99:               0.977 ms/op
+                 p0.999:              1.918 ms/op
+                 p0.9999:             5.767 ms/op
+                 p1.00:               5.767 ms/op
+
+Iteration   2: 0.487 ±(99.9%) 0.007 ms/op
+                 gc.alloc.rate:       2325.914 MB/sec
+                 gc.alloc.rate.norm:  1365206.382 B/op
+                 gc.count:            76.000 counts
+                 gc.time:             91.000 ms
+                 heap.memory.used.mb: 38.665 MB
+                 p0.00:               0.424 ms/op
+                 p0.50:               0.464 ms/op
+                 p0.90:               0.503 ms/op
+                 p0.95:               0.539 ms/op
+                 p0.99:               1.024 ms/op
+                 p0.999:              2.125 ms/op
+                 p0.9999:             5.317 ms/op
+                 p1.00:               5.317 ms/op
+
+Iteration   3: 0.562 ±(99.9%) 0.017 ms/op
+                 gc.alloc.rate:       2054.683 MB/sec
+                 gc.alloc.rate.norm:  1367392.740 B/op
+                 gc.count:            52.000 counts
+                 gc.time:             74.000 ms
+                 heap.memory.used.mb: 34.911 MB
+                 p0.00:               0.450 ms/op
+                 p0.50:               0.502 ms/op
+                 p0.90:               0.621 ms/op
+                 p0.95:               0.770 ms/op
+                 p0.99:               1.881 ms/op
+                 p0.999:              4.627 ms/op
+                 p0.9999:             10.240 ms/op
+                 p1.00:               10.240 ms/op
+
+Iteration   4: 1.013 ±(99.9%) 0.197 ms/op
+                 gc.alloc.rate:       1122.448 MB/sec
+                 gc.alloc.rate.norm:  1380416.126 B/op
+                 gc.count:            30.000 counts
+                 gc.time:             171.000 ms
+                 heap.memory.used.mb: 93.480 MB
+                 p0.00:               0.470 ms/op
+                 p0.50:               0.544 ms/op
+                 p0.90:               1.644 ms/op
+                 p0.95:               2.668 ms/op
+                 p0.99:               7.238 ms/op
+                 p0.999:              46.487 ms/op
+                 p0.9999:             80.347 ms/op
+                 p1.00:               80.347 ms/op
+
+Iteration   5: 0.649 ±(99.9%) 0.047 ms/op
+                 gc.alloc.rate:       1691.146 MB/sec
+                 gc.alloc.rate.norm:  1369880.377 B/op
+                 gc.count:            40.000 counts
+                 gc.time:             126.000 ms
+                 heap.memory.used.mb: 63.286 MB
+                 p0.00:               0.478 ms/op
+                 p0.50:               0.520 ms/op
+                 p0.90:               0.738 ms/op
+                 p0.95:               1.082 ms/op
+                 p0.99:               2.804 ms/op
+                 p0.999:              12.192 ms/op
+                 p0.9999:             28.213 ms/op
+                 p1.00:               28.213 ms/op
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax":
+  N = 16868
+  mean =      0.593 ±(99.9%) 0.025 ms/op
+
+  Histogram, ms/op:
+    [ 0.000,  5.000) = 16825 
+    [ 5.000, 10.000) = 24 
+    [10.000, 15.000) = 8 
+    [15.000, 20.000) = 3 
+    [20.000, 25.000) = 3 
+    [25.000, 30.000) = 2 
+    [30.000, 35.000) = 1 
+    [35.000, 40.000) = 0 
+    [40.000, 45.000) = 0 
+    [45.000, 50.000) = 1 
+    [50.000, 55.000) = 0 
+    [55.000, 60.000) = 0 
+    [60.000, 65.000) = 0 
+    [65.000, 70.000) = 0 
+    [70.000, 75.000) = 0 
+    [75.000, 80.000) = 0 
+    [80.000, 85.000) = 1 
+
+  Percentiles, ms/op:
+      p(0.0000) =      0.423 ms/op
+     p(50.0000) =      0.490 ms/op
+     p(90.0000) =      0.627 ms/op
+     p(95.0000) =      0.883 ms/op
+     p(99.0000) =      2.593 ms/op
+     p(99.9000) =     11.019 ms/op
+     p(99.9900) =     56.443 ms/op
+     p(99.9990) =     80.347 ms/op
+     p(99.9999) =     80.347 ms/op
+    p(100.0000) =     80.347 ms/op
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate":
+  1901.466 ±(99.9%) 1948.490 MB/sec [Average]
+  (min, avg, max) = (1122.448, 1901.466, 2325.914), stdev = 506.017
+  CI (99.9%): [≈ 0, 3849.956] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate.norm":
+  1369611.072 ±(99.9%) 24426.441 B/op [Average]
+  (min, avg, max) = (1365159.735, 1369611.072, 1380416.126), stdev = 6343.469
+  CI (99.9%): [1345184.631, 1394037.513] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.count":
+  273.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (30.000, 54.600, 76.000), stdev = 20.611
+  CI (99.9%): [273.000, 273.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.time":
+  551.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (74.000, 110.200, 171.000), stdev = 38.971
+  CI (99.9%): [551.000, 551.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:heap.memory.used.mb":
+  57.516 ±(99.9%) 90.165 MB [Average]
+  (min, avg, max) = (34.911, 57.516, 93.480), stdev = 23.416
+  CI (99.9%): [≈ 0, 147.681] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread
+# Benchmark mode: Single shot invocation time
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 99.98% complete, ETA 00:00:00
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 324.747 ms/op
+# Warmup Iteration   2: 15.576 ms/op
+# Warmup Iteration   3: 10.566 ms/op
+Iteration   1: 9.539 ms/op
+                 gc.alloc.rate:       132.954 MB/sec
+                 gc.alloc.rate.norm:  56335704.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             36.000 ms
+                 heap.memory.used.mb: 3.628 MB
+
+Iteration   2: 10.428 ms/op
+                 gc.alloc.rate:       173.487 MB/sec
+                 gc.alloc.rate.norm:  56319432.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             29.000 ms
+                 heap.memory.used.mb: 7.903 MB
+
+Iteration   3: 11.841 ms/op
+                 gc.alloc.rate:       119.672 MB/sec
+                 gc.alloc.rate.norm:  56310696.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             47.000 ms
+                 heap.memory.used.mb: 58.322 MB
+
+Iteration   4: 7.444 ms/op
+                 gc.alloc.rate:       195.987 MB/sec
+                 gc.alloc.rate.norm:  56225256.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             22.000 ms
+                 heap.memory.used.mb: 60.002 MB
+
+Iteration   5: 20.752 ms/op
+                 gc.alloc.rate:       116.367 MB/sec
+                 gc.alloc.rate.norm:  56616488.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             28.000 ms
+                 heap.memory.used.mb: 61.000 MB
+
+
+# Run progress: 99.99% complete, ETA 00:00:00
+# Fork: 1 of 1
+# Warmup Iteration   1: 341.256 ms/op
+# Warmup Iteration   2: 12.187 ms/op
+# Warmup Iteration   3: 9.592 ms/op
+Iteration   1: 11.847 ms/op
+                 gc.alloc.rate:       135.328 MB/sec
+                 gc.alloc.rate.norm:  57335616.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             46.000 ms
+                 heap.memory.used.mb: 4.976 MB
+
+Iteration   2: 9.696 ms/op
+                 gc.alloc.rate:       136.161 MB/sec
+                 gc.alloc.rate.norm:  56189856.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             46.000 ms
+                 heap.memory.used.mb: 59.002 MB
+
+Iteration   3: 8.296 ms/op
+                 gc.alloc.rate:       156.422 MB/sec
+                 gc.alloc.rate.norm:  56186320.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             47.000 ms
+                 heap.memory.used.mb: 59.000 MB
+
+Iteration   4: 6.705 ms/op
+                 gc.alloc.rate:       175.272 MB/sec
+                 gc.alloc.rate.norm:  56067024.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             44.000 ms
+                 heap.memory.used.mb: 60.002 MB
+
+Iteration   5: 6.583 ms/op
+                 gc.alloc.rate:       171.324 MB/sec
+                 gc.alloc.rate.norm:  55973664.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             44.000 ms
+                 heap.memory.used.mb: 60.002 MB
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom":
+  N = 5
+  mean =      8.625 ±(99.9%) 8.500 ms/op
+
+  Histogram, ms/op:
+    [ 6.000,  6.500) = 0 
+    [ 6.500,  7.000) = 2 
+    [ 7.000,  7.500) = 0 
+    [ 7.500,  8.000) = 0 
+    [ 8.000,  8.500) = 1 
+    [ 8.500,  9.000) = 0 
+    [ 9.000,  9.500) = 0 
+    [ 9.500, 10.000) = 1 
+    [10.000, 10.500) = 0 
+    [10.500, 11.000) = 0 
+    [11.000, 11.500) = 0 
+
+  Percentiles, ms/op:
+      p(0.0000) =      6.583 ms/op
+     p(50.0000) =      8.296 ms/op
+     p(90.0000) =     11.847 ms/op
+     p(95.0000) =     11.847 ms/op
+     p(99.0000) =     11.847 ms/op
+     p(99.9000) =     11.847 ms/op
+     p(99.9900) =     11.847 ms/op
+     p(99.9990) =     11.847 ms/op
+     p(99.9999) =     11.847 ms/op
+    p(100.0000) =     11.847 ms/op
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate":
+  154.901 ±(99.9%) 72.586 MB/sec [Average]
+  (min, avg, max) = (135.328, 154.901, 175.272), stdev = 18.850
+  CI (99.9%): [82.316, 227.487] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.alloc.rate.norm":
+  56350496.000 ±(99.9%) 2148765.508 B/op [Average]
+  (min, avg, max) = (55973664.000, 56350496.000, 57335616.000), stdev = 558027.579
+  CI (99.9%): [54201730.492, 58499261.508] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.count":
+  6.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (1.000, 1.200, 2.000), stdev = 0.447
+  CI (99.9%): [6.000, 6.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:gc.time":
+  227.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (44.000, 45.400, 47.000), stdev = 1.342
+  CI (99.9%): [227.000, 227.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readDom:heap.memory.used.mb":
+  48.596 ±(99.9%) 93.916 MB [Average]
+  (min, avg, max) = (4.976, 48.596, 60.002), stdev = 24.390
+  CI (99.9%): [≈ 0, 142.512] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS
+# VM invoker: /Library/Java/JavaVirtualMachines/zulu-21.jdk/Contents/Home/bin/java
+# VM options: -Dorg.gradle.internal.worker.tmpdir=/Users/gmoon/IdeaProjects/toy/spring-poi/build/tmp/test/work -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -ea
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread
+# Benchmark mode: Single shot invocation time
+# Benchmark: com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax
+# Parameters: (excelDataRowSize = 1)
+
+# Run progress: 99.99% complete, ETA 00:00:00
+# Warmup Fork: 1 of 1
+# Warmup Iteration   1: 249.237 ms/op
+# Warmup Iteration   2: 6.744 ms/op
+# Warmup Iteration   3: 6.200 ms/op
+Iteration   1: 7.922 ms/op
+                 gc.alloc.rate:       146.822 MB/sec
+                 gc.alloc.rate.norm:  57312728.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             45.000 ms
+                 heap.memory.used.mb: 7.417 MB
+
+Iteration   2: 5.625 ms/op
+                 gc.alloc.rate:       156.432 MB/sec
+                 gc.alloc.rate.norm:  57301432.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             47.000 ms
+                 heap.memory.used.mb: 3.802 MB
+
+Iteration   3: 4.821 ms/op
+                 gc.alloc.rate:       166.836 MB/sec
+                 gc.alloc.rate.norm:  57075304.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             45.000 ms
+                 heap.memory.used.mb: 7.819 MB
+
+Iteration   4: 4.529 ms/op
+                 gc.alloc.rate:       172.601 MB/sec
+                 gc.alloc.rate.norm:  56350016.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             45.000 ms
+                 heap.memory.used.mb: 59.002 MB
+
+Iteration   5: 5.854 ms/op
+                 gc.alloc.rate:       164.302 MB/sec
+                 gc.alloc.rate.norm:  56043560.000 B/op
+                 gc.count:            2.000 counts
+                 gc.time:             43.000 ms
+                 heap.memory.used.mb: 3.543 MB
+
+
+# Run progress: 100.00% complete, ETA 00:00:00
+# Fork: 1 of 1
+# Warmup Iteration   1: 255.757 ms/op
+# Warmup Iteration   2: 7.385 ms/op
+# Warmup Iteration   3: 6.124 ms/op
+Iteration   1: 5.276 ms/op
+                 gc.alloc.rate:       162.627 MB/sec
+                 gc.alloc.rate.norm:  55707320.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             45.000 ms
+                 heap.memory.used.mb: 58.002 MB
+
+Iteration   2: 5.647 ms/op
+                 gc.alloc.rate:       162.152 MB/sec
+                 gc.alloc.rate.norm:  55691336.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             43.000 ms
+                 heap.memory.used.mb: 60.002 MB
+
+Iteration   3: 4.610 ms/op
+                 gc.alloc.rate:       172.277 MB/sec
+                 gc.alloc.rate.norm:  55674168.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             42.000 ms
+                 heap.memory.used.mb: 59.502 MB
+
+Iteration   4: 4.536 ms/op
+                 gc.alloc.rate:       174.181 MB/sec
+                 gc.alloc.rate.norm:  55575464.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             42.000 ms
+                 heap.memory.used.mb: 60.000 MB
+
+Iteration   5: 4.478 ms/op
+                 gc.alloc.rate:       164.731 MB/sec
+                 gc.alloc.rate.norm:  55479600.000 B/op
+                 gc.count:            1.000 counts
+                 gc.time:             44.000 ms
+                 heap.memory.used.mb: 60.000 MB
+
+
+
+Result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax":
+  N = 5
+  mean =      4.909 ±(99.9%) 2.014 ms/op
+
+  Histogram, ms/op:
+    [4.000, 4.125) = 0 
+    [4.125, 4.250) = 0 
+    [4.250, 4.375) = 0 
+    [4.375, 4.500) = 1 
+    [4.500, 4.625) = 2 
+    [4.625, 4.750) = 0 
+    [4.750, 4.875) = 0 
+    [4.875, 5.000) = 0 
+    [5.000, 5.125) = 0 
+    [5.125, 5.250) = 0 
+    [5.250, 5.375) = 1 
+    [5.375, 5.500) = 0 
+    [5.500, 5.625) = 0 
+    [5.625, 5.750) = 1 
+    [5.750, 5.875) = 0 
+
+  Percentiles, ms/op:
+      p(0.0000) =      4.478 ms/op
+     p(50.0000) =      4.610 ms/op
+     p(90.0000) =      5.647 ms/op
+     p(95.0000) =      5.647 ms/op
+     p(99.0000) =      5.647 ms/op
+     p(99.9000) =      5.647 ms/op
+     p(99.9900) =      5.647 ms/op
+     p(99.9990) =      5.647 ms/op
+     p(99.9999) =      5.647 ms/op
+    p(100.0000) =      5.647 ms/op
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate":
+  167.194 ±(99.9%) 21.697 MB/sec [Average]
+  (min, avg, max) = (162.152, 167.194, 174.181), stdev = 5.635
+  CI (99.9%): [145.497, 188.890] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.alloc.rate.norm":
+  55625577.600 ±(99.9%) 371281.988 B/op [Average]
+  (min, avg, max) = (55479600.000, 55625577.600, 55707320.000), stdev = 96420.753
+  CI (99.9%): [55254295.612, 55996859.588] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.count":
+  5.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (1.000, 1.000, 1.000), stdev = 0.001
+  CI (99.9%): [5.000, 5.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:gc.time":
+  216.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (42.000, 43.200, 45.000), stdev = 1.304
+  CI (99.9%): [216.000, 216.000] (assumes normal distribution)
+
+Secondary result "com.gmoon.springpoi.benchmark.ExcelSAXBenchmark.readSax:heap.memory.used.mb":
+  59.501 ±(99.9%) 3.333 MB [Average]
+  (min, avg, max) = (58.002, 59.501, 60.002), stdev = 0.865
+  CI (99.9%): [56.169, 62.834] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:05:43
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                      (excelDataRowSize)    Mode    Cnt         Score         Error   Units
+ExcelSAXBenchmark.readDom                                       1   thrpt      5         0.884 ±       0.203  ops/ms
+ExcelSAXBenchmark.readDom:gc.alloc.rate                         1   thrpt      5      1545.640 ±     382.140  MB/sec
+ExcelSAXBenchmark.readDom:gc.alloc.rate.norm                    1   thrpt      5   2091259.872 ±    7589.804    B/op
+ExcelSAXBenchmark.readDom:gc.count                              1   thrpt      5       308.000                counts
+ExcelSAXBenchmark.readDom:gc.time                               1   thrpt      5       411.000                    ms
+ExcelSAXBenchmark.readDom:heap.memory.used.mb                   1   thrpt      5        45.802 ±      72.625      MB
+ExcelSAXBenchmark.readSax                                       1   thrpt      5         2.074 ±       0.043  ops/ms
+ExcelSAXBenchmark.readSax:gc.alloc.rate                         1   thrpt      5      2354.549 ±      86.748  MB/sec
+ExcelSAXBenchmark.readSax:gc.alloc.rate.norm                    1   thrpt      5   1363914.928 ±     513.498    B/op
+ExcelSAXBenchmark.readSax:gc.count                              1   thrpt      5       383.000                counts
+ExcelSAXBenchmark.readSax:gc.time                               1   thrpt      5       422.000                    ms
+ExcelSAXBenchmark.readSax:heap.memory.used.mb                   1   thrpt      5        44.128 ±      74.061      MB
+ExcelSAXBenchmark.readDom                                       1    avgt      5         1.106 ±       0.088   ms/op
+ExcelSAXBenchmark.readDom:gc.alloc.rate                         1    avgt      5      1574.790 ±     167.770  MB/sec
+ExcelSAXBenchmark.readDom:gc.alloc.rate.norm                    1    avgt      5   2092189.234 ±    3799.071    B/op
+ExcelSAXBenchmark.readDom:gc.count                              1    avgt      5       344.000                counts
+ExcelSAXBenchmark.readDom:gc.time                               1    avgt      5       447.000                    ms
+ExcelSAXBenchmark.readDom:heap.memory.used.mb                   1    avgt      5        45.719 ±      57.410      MB
+ExcelSAXBenchmark.readSax                                       1    avgt      5         0.498 ±       0.008   ms/op
+ExcelSAXBenchmark.readSax:gc.alloc.rate                         1    avgt      5      2284.431 ±      76.046  MB/sec
+ExcelSAXBenchmark.readSax:gc.alloc.rate.norm                    1    avgt      5   1365107.971 ±     400.374    B/op
+ExcelSAXBenchmark.readSax:gc.count                              1    avgt      5       372.000                counts
+ExcelSAXBenchmark.readSax:gc.time                               1    avgt      5       429.000                    ms
+ExcelSAXBenchmark.readSax:heap.memory.used.mb                   1    avgt      5        35.072 ±      62.044      MB
+ExcelSAXBenchmark.readDom                                       1  sample   8720         1.148 ±       0.011   ms/op
+ExcelSAXBenchmark.readDom:gc.alloc.rate                         1  sample      5      1510.609 ±     220.946  MB/sec
+ExcelSAXBenchmark.readDom:gc.alloc.rate.norm                    1  sample      5   2093281.276 ±    4967.632    B/op
+ExcelSAXBenchmark.readDom:gc.count                              1  sample      5       292.000                counts
+ExcelSAXBenchmark.readDom:gc.time                               1  sample      5       401.000                    ms
+ExcelSAXBenchmark.readDom:heap.memory.used.mb                   1  sample      5        26.124 ±     100.088      MB
+ExcelSAXBenchmark.readDom:p0.00                                 1  sample                0.968                 ms/op
+ExcelSAXBenchmark.readDom:p0.50                                 1  sample                1.075                 ms/op
+ExcelSAXBenchmark.readDom:p0.90                                 1  sample                1.270                 ms/op
+ExcelSAXBenchmark.readDom:p0.95                                 1  sample                1.473                 ms/op
+ExcelSAXBenchmark.readDom:p0.99                                 1  sample                2.364                 ms/op
+ExcelSAXBenchmark.readDom:p0.999                                1  sample                4.997                 ms/op
+ExcelSAXBenchmark.readDom:p0.9999                               1  sample               10.273                 ms/op
+ExcelSAXBenchmark.readDom:p1.00                                 1  sample               10.273                 ms/op
+ExcelSAXBenchmark.readSax                                       1  sample  16868         0.593 ±       0.025   ms/op
+ExcelSAXBenchmark.readSax:gc.alloc.rate                         1  sample      5      1901.466 ±    1948.490  MB/sec
+ExcelSAXBenchmark.readSax:gc.alloc.rate.norm                    1  sample      5   1369611.072 ±   24426.441    B/op
+ExcelSAXBenchmark.readSax:gc.count                              1  sample      5       273.000                counts
+ExcelSAXBenchmark.readSax:gc.time                               1  sample      5       551.000                    ms
+ExcelSAXBenchmark.readSax:heap.memory.used.mb                   1  sample      5        57.516 ±      90.165      MB
+ExcelSAXBenchmark.readSax:p0.00                                 1  sample                0.423                 ms/op
+ExcelSAXBenchmark.readSax:p0.50                                 1  sample                0.490                 ms/op
+ExcelSAXBenchmark.readSax:p0.90                                 1  sample                0.627                 ms/op
+ExcelSAXBenchmark.readSax:p0.95                                 1  sample                0.883                 ms/op
+ExcelSAXBenchmark.readSax:p0.99                                 1  sample                2.593                 ms/op
+ExcelSAXBenchmark.readSax:p0.999                                1  sample               11.019                 ms/op
+ExcelSAXBenchmark.readSax:p0.9999                               1  sample               56.443                 ms/op
+ExcelSAXBenchmark.readSax:p1.00                                 1  sample               80.347                 ms/op
+ExcelSAXBenchmark.readDom                                       1      ss      5         8.625 ±       8.500   ms/op
+ExcelSAXBenchmark.readDom:gc.alloc.rate                         1      ss      5       154.901 ±      72.586  MB/sec
+ExcelSAXBenchmark.readDom:gc.alloc.rate.norm                    1      ss      5  56350496.000 ± 2148765.508    B/op
+ExcelSAXBenchmark.readDom:gc.count                              1      ss      5         6.000                counts
+ExcelSAXBenchmark.readDom:gc.time                               1      ss      5       227.000                    ms
+ExcelSAXBenchmark.readDom:heap.memory.used.mb                   1      ss      5        48.596 ±      93.916      MB
+ExcelSAXBenchmark.readSax                                       1      ss      5         4.909 ±       2.014   ms/op
+ExcelSAXBenchmark.readSax:gc.alloc.rate                         1      ss      5       167.194 ±      21.697  MB/sec
+ExcelSAXBenchmark.readSax:gc.alloc.rate.norm                    1      ss      5  55625577.600 ±  371281.988    B/op
+ExcelSAXBenchmark.readSax:gc.count                              1      ss      5         5.000                counts
+ExcelSAXBenchmark.readSax:gc.time                               1      ss      5       216.000                    ms
+ExcelSAXBenchmark.readSax:heap.memory.used.mb                   1      ss      5        59.501 ±       3.333      MB

@@ -139,7 +139,8 @@ class ExcelUtilTest {
 		ExcelSheet<ExcelUserVO> parse = ExcelUtil.readSAX(
 			 Files.newInputStream(Paths.get(fileDir, filename)),
 			 ctx,
-			 ExcelUserVO.class
+			 ExcelUserVO.class,
+			 list -> {/* noop */}
 		);
 
 		assertThat(parse.isValidSheet()).isTrue();
