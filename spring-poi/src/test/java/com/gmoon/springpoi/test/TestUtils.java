@@ -22,13 +22,13 @@ public final class TestUtils {
 		return RANDOM.get().randomBoolean();
 	}
 
-	public static int getRandomInteger(int startInclusive, int endExclusive) {
+	public static int randomInteger(int startInclusive, int endExclusive) {
 		return RANDOM.get().randomInt(startInclusive, endExclusive);
 	}
 
 	@SafeVarargs
 	public static <T> T pickRandom(T... t) {
-		int random = getRandomInteger(0, t.length);
+		int random = randomInteger(0, t.length);
 		return t[random];
 	}
 }
