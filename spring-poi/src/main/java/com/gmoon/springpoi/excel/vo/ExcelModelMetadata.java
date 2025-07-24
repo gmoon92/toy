@@ -15,11 +15,11 @@ import com.gmoon.springpoi.excel.annotation.ExcelModel;
 import com.gmoon.springpoi.excel.annotation.ExcelProperty;
 import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
 
-public class ExcelFields {
+public class ExcelModelMetadata {
 	private final ExcelModel excelModel;
 	private final Map<Integer, ExcelField> value;
 
-	private ExcelFields(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
+	private ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
 		excelModel = getExcelModel(excelModelClass);
 		value = ReflectionUtil.getFieldMap(
 			 excelModelClass,
@@ -37,8 +37,8 @@ public class ExcelFields {
 		}
 	}
 
-	public static ExcelFields of(Class<?> clazz, ApplicationContext ctx, String... excludeFieldName) {
-		return new ExcelFields(clazz, ctx, excludeFieldName);
+	public static ExcelModelMetadata of(Class<?> clazz, ApplicationContext ctx, String... excludeFieldName) {
+		return new ExcelModelMetadata(clazz, ctx, excludeFieldName);
 	}
 
 	public ExcelField getExcelField(int cellColIdx) {

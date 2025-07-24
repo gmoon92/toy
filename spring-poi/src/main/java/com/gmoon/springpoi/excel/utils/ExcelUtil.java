@@ -42,7 +42,7 @@ import com.gmoon.springpoi.excel.provider.ExcelValueProvider;
 import com.gmoon.springpoi.excel.sax.handler.SaxXlsxSheetHandler;
 import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.excel.vo.ExcelField;
-import com.gmoon.springpoi.excel.vo.ExcelFields;
+import com.gmoon.springpoi.excel.vo.ExcelModelMetadata;
 import com.gmoon.springpoi.excel.vo.ExcelRow;
 import com.gmoon.springpoi.excel.vo.ExcelSheet;
 
@@ -60,13 +60,13 @@ public final class ExcelUtil {
 		 Class<T> clazz,
 		 List<T> dataList
 	) {
-		ExcelFields excelFields = ExcelFields.of(clazz, ctx);
+		ExcelModelMetadata metadata = ExcelModelMetadata.of(clazz, ctx);
 		try (SXSSFWorkbook wb = new SXSSFWorkbook(1_000)) {
-			String sheetName = excelFields.getSheetName();
+			String sheetName = metadata.getSheetName();
 			Sheet sheet = wb.createSheet(sheetName);
 
-			writeTitle(wb, sheet, excelFields);
-			writeData(sheet, excelFields, dataList);
+			writeTitle(wb, sheet, metadata);
+			writeData(sheet, metadata, dataList);
 
 			wb.write(out);
 			out.flush();
@@ -75,20 +75,20 @@ public final class ExcelUtil {
 		}
 	}
 
-	private static <T> void writeData(Sheet sheet, ExcelFields excelFields, List<T> dataList) {
-		int titleRowCount = excelFields.getTotalTitleRowCount();
+	private static <T> void writeData(Sheet sheet, ExcelModelMetadata metadata, List<T> dataList) {
+		int titleRowCount = metadata.getTotalTitleRowCount();
 		for (T data : dataList) {
 			Row row = sheet.createRow(titleRowCount++);
-			writeRow(row, excelFields, data);
+			writeRow(row, metadata, data);
 		}
 	}
 
-	private static void writeTitle(Workbook wb, Sheet sh, ExcelFields excelFields) {
+	private static void writeTitle(Workbook wb, Sheet sh, ExcelModelMetadata metadata) {
 		Row row = sh.createRow(0);
 		Drawing<?> drawing = sh.createDrawingPatriarch();
 		CreationHelper factory = wb.getCreationHelper();
 
-		for (Map.Entry<Integer, ExcelField> entry : excelFields.entrySet()) {
+		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
 			Integer cellColIdx = entry.getKey();
 			ExcelField excelField = entry.getValue();
 			Field field = excelField.getField();
@@ -128,8 +128,8 @@ public final class ExcelUtil {
 		return cellComment;
 	}
 
-	private static <T> void writeRow(Row row, ExcelFields excelFields, T data) {
-		for (Map.Entry<Integer, ExcelField> entry : excelFields.entrySet()) {
+	private static <T> void writeRow(Row row, ExcelModelMetadata metadata, T data) {
+		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
 			int cellColIdx = entry.getKey();
 			ExcelField excelField = entry.getValue();
 
@@ -203,7 +203,7 @@ public final class ExcelUtil {
 		 String filePath,
 		 Class<T> clazz
 	) {
-		ExcelFields excelFields = ExcelFields.of(clazz, ctx);
+		ExcelModelMetadata metadata = ExcelModelMetadata.of(clazz, ctx);
 		try (FileInputStream fis = new FileInputStream(filePath);
 			 XSSFWorkbook workbook = new XSSFWorkbook(fis)
 		) {
@@ -214,18 +214,18 @@ public final class ExcelUtil {
 			}
 
 			ExcelSheet<T> excelSheet = ExcelSheet.create(lastRowNum);
-			int titleRowCount = excelFields.getTotalTitleRowCount();
+			int titleRowCount = metadata.getTotalTitleRowCount();
 			for (int rowIdx = titleRowCount; rowIdx <= lastRowNum; rowIdx++) {
 				XSSFRow row = sheet.getRow(rowIdx);
-				if (isBlankRow(excelFields, row)) {
+				if (isBlankRow(metadata, row)) {
 					continue;
 				}
 
 				ExcelRow<T> excelRow = new ExcelRow<>(rowIdx, clazz);
-				processRow(excelSheet, excelRow, excelFields, row);
+				processRow(excelSheet, excelRow, metadata, row);
 			}
 
-			postProcess(excelSheet, excelFields);
+			postProcess(excelSheet, metadata);
 			return excelSheet;
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to read excel file.", e);
@@ -241,7 +241,7 @@ public final class ExcelUtil {
 	) {
 		try (OPCPackage pkg = OPCPackage.open(inputStream)) {
 			ExcelSheet<T> excelSheet = ExcelSheet.create();
-			ExcelFields excelFields = ExcelFields.of(
+			ExcelModelMetadata metadata = ExcelModelMetadata.of(
 				 excelModelClass,
 				 ctx,
 				 excludeFieldName
@@ -254,7 +254,7 @@ public final class ExcelUtil {
 				 sst,
 				 excelModelClass,
 				 excelSheet,
-				 excelFields,
+				 metadata,
 				 rawCallback
 			));
 
@@ -263,7 +263,7 @@ public final class ExcelUtil {
 				InputStream sheet = sheets.next();
 				parser.parse(new InputSource(sheet));
 
-				postProcess(excelSheet, excelFields);
+				postProcess(excelSheet, metadata);
 				rawCallback.accept(excelSheet.getRows());
 			}
 			return excelSheet;
@@ -272,8 +272,8 @@ public final class ExcelUtil {
 		}
 	}
 
-	private static <T> void postProcess(ExcelSheet<T> excelSheet, ExcelFields excelFields) {
-		List<ExcelBatchValidator> batchValidators = excelFields.getAllBatchValidators();
+	private static <T> void postProcess(ExcelSheet<T> excelSheet, ExcelModelMetadata metadata) {
+		List<ExcelBatchValidator> batchValidators = metadata.getAllBatchValidators();
 		for (ExcelBatchValidator validator : batchValidators) {
 			validator.flush(excelSheet::addInvalidRows);
 		}
@@ -282,13 +282,13 @@ public final class ExcelUtil {
 	private static <T> void processRow(
 		 ExcelSheet<T> excelSheet,
 		 ExcelRow<T> excelRow,
-		 ExcelFields excelFields,
+		 ExcelModelMetadata metadata,
 		 XSSFRow row
 	) {
 		int rowIdx = excelRow.getRowIdx();
-		for (Map.Entry<Integer, ExcelField> entry : excelFields.entrySet()) {
+		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
 			Integer cellColIdx = entry.getKey();
-			ExcelField excelField = excelFields.getExcelField(cellColIdx);
+			ExcelField excelField = metadata.getExcelField(cellColIdx);
 			String cellValue = getStringCellValue(row, cellColIdx);
 
 			excelRow.setFieldValue(excelField, cellValue);
@@ -306,8 +306,8 @@ public final class ExcelUtil {
 		excelSheet.add(rowIdx, excelRow);
 	}
 
-	private static boolean isBlankRow(ExcelFields excelFields, XSSFRow row) {
-		return excelFields.entrySet()
+	private static boolean isBlankRow(ExcelModelMetadata metadata, XSSFRow row) {
+		return metadata.entrySet()
 			 .stream()
 			 .map(entry -> getStringCellValue(row, entry.getKey()))
 			 .allMatch(StringUtils::isBlank);

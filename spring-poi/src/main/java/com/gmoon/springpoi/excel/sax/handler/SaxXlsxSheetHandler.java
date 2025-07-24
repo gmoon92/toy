@@ -9,7 +9,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.excel.vo.ExcelField;
-import com.gmoon.springpoi.excel.vo.ExcelFields;
+import com.gmoon.springpoi.excel.vo.ExcelModelMetadata;
 import com.gmoon.springpoi.excel.vo.ExcelRow;
 import com.gmoon.springpoi.excel.vo.ExcelSheet;
 
@@ -57,20 +57,20 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 
 	private final Class<T> excelModelClass;
 	private final ExcelSheet<T> excelSheet;
-	private final ExcelFields excelFields;
+	private final ExcelModelMetadata metadata;
 	private final Consumer<List<T>> rawCallback;
 
 	public SaxXlsxSheetHandler(
 		 SharedStrings sst,
 		 Class<T> excelModelClass,
 		 ExcelSheet<T> excelSheet,
-		 ExcelFields excelFields,
+		 ExcelModelMetadata metadata,
 		 Consumer<List<T>> rawCallback
 	) {
-		super(sst, excelFields.getTotalTitleRowCount());
+		super(sst, metadata.getTotalTitleRowCount());
 		this.excelModelClass = excelModelClass;
 		this.excelSheet = excelSheet;
-		this.excelFields = excelFields;
+		this.metadata = metadata;
 		this.rawCallback = rawCallback;
 	}
 
@@ -82,7 +82,7 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 
 	@Override
 	public void handleCell(int rowIdx, int cellColIdx, String cellValue) {
-		ExcelField excelField = excelFields.getExcelField(cellColIdx);
+		ExcelField excelField = metadata.getExcelField(cellColIdx);
 		boolean invalidCellColIdx = excelField == null;
 		if (invalidCellColIdx) {
 			return;
@@ -112,7 +112,7 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 		excelSheet.add(rowIdx, excelRow);
 		List<T> rows = excelSheet.getRows();
 		if (rows.size() > ACCESS_WINDOWS) {
-			List<ExcelBatchValidator> allValidators = excelFields.getAllBatchValidators();
+			List<ExcelBatchValidator> allValidators = metadata.getAllBatchValidators();
 			for (ExcelBatchValidator validator : allValidators) {
 				validator.flush(excelSheet::addInvalidRows);
 			}
