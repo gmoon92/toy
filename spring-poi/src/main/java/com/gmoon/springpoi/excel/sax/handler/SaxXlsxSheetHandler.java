@@ -2,6 +2,7 @@
 package com.gmoon.springpoi.excel.sax.handler;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import org.apache.poi.xssf.model.SharedStrings;
@@ -40,15 +41,6 @@ import lombok.extern.slf4j.Slf4j;
  * {@link DefaultHandler} 기반으로 row/cell/value 등의 태그 이벤트를 처리하며,
  * ExcelSheet<T> 및 ExcelFields 와 연동해 DTO 조립에 활용할 수 있다.
  *
- * <p>
- * 이벤트는 다음과 같은 순으로 동작된다.
- * <ul>
- *     <li>{@link SaxXlsxSheetHandler#startRow(int)}</li>
- *     <li>{@link SaxXlsxSheetHandler#handleCell(int, int, String)}</li>
- *     <li>{@link SaxXlsxSheetHandler#endRow(int)}</li>
- * </ul>
- * </p>
- *
  * @author gmoon
  */
 @Slf4j
@@ -67,7 +59,7 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 		 ExcelModelMetadata metadata,
 		 Consumer<List<T>> rawCallback
 	) {
-		super(sst, metadata.getTotalTitleRowCount());
+		super(sst, metadata);
 		this.excelModelClass = excelModelClass;
 		this.excelSheet = excelSheet;
 		this.metadata = metadata;
@@ -75,49 +67,28 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 	}
 
 	@Override
-	public void startRow(int rowIdx) {
-		ExcelRow<T> excelRow = new ExcelRow<>(rowIdx, excelModelClass);
-		excelSheet.add(rowIdx, excelRow);
-	}
+	public void handle(int rowIdx, Map<Integer, String> cellValues) {
+		ExcelRow<T> excelRow = excelSheet.createRow(rowIdx, excelModelClass);
 
-	@Override
-	public void handleCell(int rowIdx, int cellColIdx, String cellValue) {
-		ExcelField excelField = metadata.getExcelField(cellColIdx);
-		boolean invalidCellColIdx = excelField == null;
-		if (invalidCellColIdx) {
-			return;
+		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
+			ExcelField excelField = entry.getValue();
+			int cellColIdx = entry.getKey();
+			String cellValue = cellValues.get(cellColIdx);
+
+			if (excelField.isValidCellValue(cellValue)) {
+				excelRow.setFieldValue(excelField, cellValue);
+			} else {
+				excelSheet.addInvalidRow(rowIdx, excelRow);
+			}
 		}
 
-		ExcelRow<T> excelRow = excelSheet.getRowOrInvalidRow(rowIdx);
-		excelRow.setFieldValue(excelField, cellValue);
-		boolean invalidRow = !excelRow.isValid();
-		if (invalidRow) {
-			return;
-		}
-
-		boolean invalidCellValue = !excelField.isValidCellValue(cellValue);
-		if (invalidCellValue) {
-			excelSheet.addInvalidRow(rowIdx, excelRow);
-		}
-	}
-
-	@Override
-	public void endRow(int rowIdx) {
-		if (isBlankRow()) {
-			excelSheet.remove(rowIdx);
-			return;
-		}
-
-		ExcelRow<T> excelRow = excelSheet.getRowOrInvalidRow(rowIdx);
-		excelSheet.add(rowIdx, excelRow);
-		List<T> rows = excelSheet.getRows();
-		if (rows.size() > ACCESS_WINDOWS) {
+		if (excelSheet.getRowSize() > ACCESS_WINDOWS) {
 			List<ExcelBatchValidator> allValidators = metadata.getAllBatchValidators();
 			for (ExcelBatchValidator validator : allValidators) {
 				validator.flush(excelSheet::addInvalidRows);
 			}
 
-			rawCallback.accept(rows);
+			rawCallback.accept(excelSheet.getRows());
 			excelSheet.clearRows();
 		}
 	}

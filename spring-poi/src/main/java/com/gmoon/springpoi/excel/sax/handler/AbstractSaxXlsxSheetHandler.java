@@ -1,6 +1,7 @@
 
 package com.gmoon.springpoi.excel.sax.handler;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.gmoon.springpoi.excel.sax.SaxCell;
 import com.gmoon.springpoi.excel.sax.XlsxOoxml;
+import com.gmoon.springpoi.excel.vo.ExcelModelMetadata;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.EqualsAndHashCode;
@@ -55,11 +57,11 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private final LruCache<Integer, String> sharedStringCache = new LruCache<>(50);
 	private final SharedStrings sharedStringsTable;
+	private final ExcelModelMetadata metadata;
+	private final Map<Integer, String> cellValues;
 
 	private final StringBuilder textBuffer = new StringBuilder();
 	private String currentContents;
-
-	private final int dataRowStartIdx;
 
 	private boolean blankRow;
 	private int currentRowIdx;
@@ -67,16 +69,13 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private boolean cellOpen;
 	private SaxCell currentCell;
 
-	protected AbstractSaxXlsxSheetHandler(SharedStrings sst, int dataRowStartIdx) {
+	protected AbstractSaxXlsxSheetHandler(SharedStrings sst, ExcelModelMetadata metadata) {
 		this.sharedStringsTable = sst;
-		this.dataRowStartIdx = dataRowStartIdx;
+		this.metadata = metadata;
+		this.cellValues = new HashMap<>();
 	}
 
-	public abstract void startRow(int rowIdx);
-
-	public abstract void handleCell(int rowIdx, int cellColIdx, String cellValue);
-
-	public abstract void endRow(int rowIdx);
+	public abstract void handle(int rowIdx, Map<Integer, String> cellValues);
 
 	@Override
 	public void startElement(
@@ -102,9 +101,6 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private void handleRowStart(Attributes attributes, XlsxOoxml.Element element) {
 		blankRow = true;
 		currentRowIdx = getRowIndex(element, attributes);
-		if (isCurrentRowInDataArea()) {
-			startRow(currentRowIdx);
-		}
 		log.debug("======================[ROW START {}]======================", currentRowIdx);
 	}
 
@@ -196,9 +192,11 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 * 한 행의 끝. 필요 시 여기서 row-level 로직 처리
 	 */
 	private void handleRowEnd() {
-		if (isCurrentRowInDataArea()) {
-			endRow(currentRowIdx);
+		if (isCurrentRowInDataArea() && !blankRow) {
+			handle(currentRowIdx, cellValues);
 		}
+
+		cellValues.clear();
 		log.debug("======================[ROW END   {}]======================", currentRowIdx);
 	}
 
@@ -208,16 +206,13 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		}
 
 		if (isCurrentRowInDataArea()) {
-			handleCell(currentRowIdx, currentCell.getColIdx(), currentCell.getValue());
+			cellValues.put(currentCell.getColIdx(), currentCell.getValue());
 		}
 	}
 
 	private boolean isCurrentRowInDataArea() {
-		return currentRowIdx >= dataRowStartIdx;
-	}
-
-	protected boolean isBlankRow() {
-		return blankRow;
+		return currentRowIdx >= metadata.getHeaderRowTotalCount()
+			 && metadata.getFieldSize() > currentCell.getColIdx();
 	}
 
 	/**

@@ -11,5 +11,5 @@ public @interface ExcelModel {
 
 	String sheetName() default "sheet";
 
-	int totalTitleRowCount() default 1;
+	int headerRowTotalCount() default 1;
 }

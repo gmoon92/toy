@@ -65,12 +65,12 @@ public class ExcelModelMetadata {
 			 ));
 	}
 
-	public int size() {
+	public int getFieldSize() {
 		return value.size();
 	}
 
-	public int getTotalTitleRowCount() {
-		return excelModel.totalTitleRowCount();
+	public int getHeaderRowTotalCount() {
+		return excelModel.headerRowTotalCount();
 	}
 
 	public String getSheetName() {

@@ -17,6 +17,11 @@ spring:
 #      hibernate:
 #        dialect: org.hibernate.dialect.MySQLDialect
 
+logging:
+  level:
+    "[com.gmoon.springpoi.excel.validator]": DEBUG
+    "[com.gmoon.springpoi.excel.sax.handler]": WARN
+
 service:
   validation:
     regex:

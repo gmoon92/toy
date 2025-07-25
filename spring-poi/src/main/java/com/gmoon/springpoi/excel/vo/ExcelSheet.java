@@ -3,9 +3,11 @@ package com.gmoon.springpoi.excel.vo;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcelSheet<T> {
+	private final AtomicInteger parsedRowsCount;
+
 	private final Map<Integer, ExcelRow<T>> rows;
 	private final Map<Integer, ExcelRow<T>> invalidRows;
 
@@ -14,18 +16,15 @@ public class ExcelSheet<T> {
 	}
 
 	public ExcelSheet(int size) {
+		this.parsedRowsCount = new AtomicInteger(0);
 		this.rows = LinkedHashMap.newLinkedHashMap(size);
 		this.invalidRows = LinkedHashMap.newLinkedHashMap(size);
-	}
-
-	public ExcelRow<T> getRowOrInvalidRow(int rowIdx) {
-		return Optional.ofNullable(rows.get(rowIdx))
-			 .orElseGet(() -> invalidRows.get(rowIdx));
 	}
 
 	public ExcelRow<T> createRow(int rowIdx, Class<T> clazz) {
 		ExcelRow<T> excelRow = new ExcelRow<>(rowIdx, clazz);
 		rows.put(rowIdx, excelRow);
+		parsedRowsCount.incrementAndGet();
 		return excelRow;
 	}
 
@@ -44,27 +43,32 @@ public class ExcelSheet<T> {
 	}
 
 	public int size() {
-		return rows.size() + invalidRows.size();
+		return parsedRowsCount.get();
+	}
+
+	public int getRowSize() {
+		return rows.size();
 	}
 
 	public boolean isValidSheet() {
 		return invalidRows.isEmpty();
 	}
 
-	public void add(int rowIdx, ExcelRow<T> row) {
-		if (row == null) {
+	public void addInvalidRow(int rowIdx, ExcelRow<T> excelRow) {
+		if (excelRow == null || !excelRow.isValid()) {
 			return;
 		}
 
-		if (row.isValid()) {
-			rows.put(rowIdx, row);
-		}
-	}
-
-	public void addInvalidRow(int rowIdx, ExcelRow<T> excelRow) {
 		excelRow.invalidate();
 		invalidRows.put(rowIdx, excelRow);
-		rows.remove(rowIdx);
+		removeRow(rowIdx);
+	}
+
+	private void removeRow(int rowIdx) {
+		if (rows.containsKey(rowIdx)) {
+			rows.remove(rowIdx);
+			parsedRowsCount.decrementAndGet();
+		}
 	}
 
 	public void addInvalidRows(Map<Integer, String> invalidChunk) {
@@ -79,12 +83,7 @@ public class ExcelSheet<T> {
 		}
 	}
 
-	public void remove(int rowIdx) {
-		rows.remove(rowIdx);
-	}
-
 	public void clearRows() {
 		rows.clear();
 	}
-
 }

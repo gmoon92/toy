@@ -144,6 +144,6 @@ class ExcelUtilTest {
 		);
 
 		assertThat(parse.isValidSheet()).isTrue();
-		assertThat(parse.getRows()).hasSize(dataSize);
+		assertThat(parse.size()).isEqualTo(dataSize);
 	}
 }

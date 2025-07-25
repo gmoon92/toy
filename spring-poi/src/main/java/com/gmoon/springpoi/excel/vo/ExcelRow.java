@@ -15,7 +15,7 @@ public class ExcelRow<T> {
 	private final T excelVO;
 	private boolean valid;
 
-	public ExcelRow(int rowIdx, Class<T> clazz) {
+	ExcelRow(int rowIdx, Class<T> clazz) {
 		this.rowIdx = rowIdx;
 		this.excelVO = ReflectionUtil.newInstance(clazz);
 		this.valid = true;

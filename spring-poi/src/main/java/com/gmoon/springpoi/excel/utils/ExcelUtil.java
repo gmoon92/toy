@@ -76,9 +76,9 @@ public final class ExcelUtil {
 	}
 
 	private static <T> void writeData(Sheet sheet, ExcelModelMetadata metadata, List<T> dataList) {
-		int titleRowCount = metadata.getTotalTitleRowCount();
+		int headerRowCount = metadata.getHeaderRowTotalCount();
 		for (T data : dataList) {
-			Row row = sheet.createRow(titleRowCount++);
+			Row row = sheet.createRow(headerRowCount++);
 			writeRow(row, metadata, data);
 		}
 	}
@@ -214,8 +214,8 @@ public final class ExcelUtil {
 				return excelSheet;
 			}
 
-			int titleRowCount = metadata.getTotalTitleRowCount();
-			for (int rowIdx = titleRowCount; rowIdx <= lastRowNum; rowIdx++) {
+			int headerRowCount = metadata.getHeaderRowTotalCount();
+			for (int rowIdx = headerRowCount; rowIdx <= lastRowNum; rowIdx++) {
 				XSSFRow row = sheet.getRow(rowIdx);
 				if (isBlankRow(metadata, row)) {
 					continue;
@@ -265,6 +265,8 @@ public final class ExcelUtil {
 
 				postProcess(excelSheet, metadata);
 				rawCallback.accept(excelSheet.getRows());
+
+				excelSheet.clearRows();
 			}
 			return excelSheet;
 		} catch (Exception e) {
