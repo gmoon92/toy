@@ -9,26 +9,24 @@ public class ExcelSheet<T> {
 	private final Map<Integer, ExcelRow<T>> rows;
 	private final Map<Integer, ExcelRow<T>> invalidRows;
 
-	private ExcelSheet(int size) {
+	public ExcelSheet() {
+		this(1_000);
+	}
+
+	public ExcelSheet(int size) {
 		this.rows = LinkedHashMap.newLinkedHashMap(size);
 		this.invalidRows = LinkedHashMap.newLinkedHashMap(size);
-	}
-
-	public static <T> ExcelSheet<T> create() {
-		return new ExcelSheet<>(1_000);
-	}
-
-	public static <T> ExcelSheet<T> create(int totalRowCount) {
-		return new ExcelSheet<>(totalRowCount);
-	}
-
-	public static <T> ExcelSheet<T> empty() {
-		return new ExcelSheet<>(0);
 	}
 
 	public ExcelRow<T> getRowOrInvalidRow(int rowIdx) {
 		return Optional.ofNullable(rows.get(rowIdx))
 			 .orElseGet(() -> invalidRows.get(rowIdx));
+	}
+
+	public ExcelRow<T> createRow(int rowIdx, Class<T> clazz) {
+		ExcelRow<T> excelRow = new ExcelRow<>(rowIdx, clazz);
+		rows.put(rowIdx, excelRow);
+		return excelRow;
 	}
 
 	public List<T> getRows() {

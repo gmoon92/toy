@@ -209,11 +209,11 @@ public final class ExcelUtil {
 		) {
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			int lastRowNum = sheet.getLastRowNum();
+			ExcelSheet<T> excelSheet = new ExcelSheet<>(lastRowNum);
 			if (lastRowNum == 0) {
-				return ExcelSheet.empty();
+				return excelSheet;
 			}
 
-			ExcelSheet<T> excelSheet = ExcelSheet.create(lastRowNum);
 			int titleRowCount = metadata.getTotalTitleRowCount();
 			for (int rowIdx = titleRowCount; rowIdx <= lastRowNum; rowIdx++) {
 				XSSFRow row = sheet.getRow(rowIdx);
@@ -221,7 +221,7 @@ public final class ExcelUtil {
 					continue;
 				}
 
-				ExcelRow<T> excelRow = new ExcelRow<>(rowIdx, clazz);
+				ExcelRow<T> excelRow = excelSheet.createRow(rowIdx, clazz);
 				processRow(excelSheet, excelRow, metadata, row);
 			}
 
@@ -240,7 +240,7 @@ public final class ExcelUtil {
 		 String... excludeFieldName
 	) {
 		try (OPCPackage pkg = OPCPackage.open(inputStream)) {
-			ExcelSheet<T> excelSheet = ExcelSheet.create();
+			ExcelSheet<T> excelSheet = new ExcelSheet<>();
 			ExcelModelMetadata metadata = ExcelModelMetadata.of(
 				 excelModelClass,
 				 ctx,
@@ -285,15 +285,15 @@ public final class ExcelUtil {
 		 ExcelModelMetadata metadata,
 		 XSSFRow row
 	) {
-		int rowIdx = excelRow.getRowIdx();
 		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
 			Integer cellColIdx = entry.getKey();
 			ExcelField excelField = metadata.getExcelField(cellColIdx);
 			String cellValue = getStringCellValue(row, cellColIdx);
 
-			excelRow.setFieldValue(excelField, cellValue);
+			boolean validCellValue = excelField.isValidCellValue(cellValue);
+			if (validCellValue) {
+				excelRow.setFieldValue(excelField, cellValue);
 
-			if (excelField.isValidCellValue(cellValue)) {
 				for (ExcelBatchValidator validator : excelField.getBatchValidators()) {
 					validator.collect(excelRow.getRowIdx(), cellValue);
 					validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
@@ -302,8 +302,6 @@ public final class ExcelUtil {
 				excelSheet.addInvalidRow(excelRow.getRowIdx(), excelRow);
 			}
 		}
-
-		excelSheet.add(rowIdx, excelRow);
 	}
 
 	private static boolean isBlankRow(ExcelModelMetadata metadata, XSSFRow row) {
