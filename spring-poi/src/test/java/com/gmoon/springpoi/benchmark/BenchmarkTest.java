@@ -1,7 +1,8 @@
 package com.gmoon.springpoi.benchmark;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.profile.GCProfiler;
 import org.openjdk.jmh.runner.Runner;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class BenchmarkTest {
 
+	@Disabled
 	@Test
 	void excelSAX() throws Exception {
 		String outputFilepath = getOutputFilepath(ExcelSAXBenchmark.class);
@@ -24,6 +26,11 @@ class BenchmarkTest {
 			 .addProfiler(HeapMemoryProfiler.class)
 			 .shouldFailOnError(true)
 			 .shouldDoGC(true)
+			 .jvmArgs(
+				  "-Xmx1024m",
+				  "-XX:+HeapDumpOnOutOfMemoryError",
+				  "-XX:HeapDumpPath=./benchmark-heapdump.hprof"
+			 )
 			 .build())
 			 .run();
 	}
@@ -32,7 +39,10 @@ class BenchmarkTest {
 		return String.format("%s/%s/%s",
 			 System.getProperty("user.dir"),
 			 "src/test/resources/benchmark",
-			 String.format("benchmark-%s-%s.txt", clazz.getSimpleName(), Instant.now().toString())
+			 String.format("benchmark-%s-%s.txt",
+				  clazz.getSimpleName(),
+				  LocalDateTime.now()
+			 )
 		);
 	}
 }

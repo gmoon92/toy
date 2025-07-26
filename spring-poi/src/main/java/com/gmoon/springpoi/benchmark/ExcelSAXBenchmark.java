@@ -45,26 +45,18 @@ import com.gmoon.springpoi.users.model.ExcelUserVO;
  * @see <a href="https://medium.com/@python-javascript-php-html-css/managing-memory-accumulation-in-jmh-benchmarks-effectively-a6615a8f1007">Managing Memory Accumulation in JMH Benchmarks Effectively</a>
  */
 @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
-@Warmup(iterations = 3, time = 2)
-@Measurement(iterations = 5, time = 2)
+@Warmup(iterations = 1, time = 1)
+@Measurement(iterations = 5, time = 5)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-@Fork(
-	 value = 1,
-	 warmups = 1,
-	 jvmArgs = {
-		  "-Xmx1024m",
-		  "-XX:+HeapDumpOnOutOfMemoryError",
-		  "-XX:HeapDumpPath=./heapdump.hprof",
-		  "-XX:+PrintGCDetails",
-		  "-XX:+PrintGCTimeStamps"
-	 }
-)
+@Fork(value = 1, warmups = 1)
 public class ExcelSAXBenchmark {
 	private ApplicationContext ctx;
 
-	// @Param({"1", "100"})
-	@Param({"1"})
+	@Param({
+		 "1000",
+		 "10000"
+	})
 	public int excelDataRowSize;
 
 	@Setup(Level.Trial)
@@ -72,7 +64,9 @@ public class ExcelSAXBenchmark {
 		if (ctx == null) {
 			ctx = SpringApplication.run(
 				 SpringPoiApplication.class,
-				 "--server.port=9000"
+				 "--server.port=9000",
+				 "--logging.level.root=WARN",
+				 "--spring.main.banner-mode=off"
 			);
 		}
 
@@ -111,10 +105,9 @@ public class ExcelSAXBenchmark {
 	private String getFilePath() {
 		String filepath = String.format("%s/%s/%s",
 			 System.getProperty("user.dir"),
-			 "src/test/resources/sample/userimport",
-			 String.format("user-sample-%d.xlsx", excelDataRowSize)
+			 "src/test/resources/sample/",
+			 String.format("sample-%d.xlsx", excelDataRowSize)
 		);
-
 		return new File(filepath)
 			 .getAbsolutePath();
 	}
