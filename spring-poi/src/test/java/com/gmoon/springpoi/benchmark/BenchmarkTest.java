@@ -11,9 +11,9 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Disabled
 class BenchmarkTest {
 
-	@Disabled
 	@Test
 	void excelSAX() throws Exception {
 		String outputFilepath = getOutputFilepath(ExcelSAXBenchmark.class);
@@ -39,7 +39,7 @@ class BenchmarkTest {
 		return String.format("%s/%s/%s",
 			 System.getProperty("user.dir"),
 			 "src/test/resources/benchmark",
-			 String.format("benchmark-%s-%s.txt",
+			 String.format("%s-%s.txt",
 				  clazz.getSimpleName(),
 				  LocalDateTime.now()
 			 )

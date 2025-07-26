@@ -1,24 +1,38 @@
 package com.gmoon.springpoi.excel.vo;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.context.ApplicationContext;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ExcelSheet<T> {
-	private final AtomicInteger parsedRowsCount;
+
+	@Getter
+	private final ExcelModelMetadata metadata;
 
 	private final Map<Integer, ExcelRow<T>> rows;
-	private final Map<Integer, ExcelRow<T>> invalidRows;
+	private final Map<Integer, ExcelCell> invalidRows;
 
-	public ExcelSheet() {
-		this(1_000);
+	private final AtomicInteger parsedRowsCount;
+	private final AtomicInteger invalidRowsCount;
+
+	public ExcelSheet(ApplicationContext ctx, Class<T> clazz, String... excludeFieldName) {
+		this(ctx, clazz, 1_000, excludeFieldName);
 	}
 
-	public ExcelSheet(int size) {
+	public ExcelSheet(ApplicationContext ctx, Class<T> clazz, int size, String... excludeFieldName) {
+		this.metadata = new ExcelModelMetadata(clazz, ctx, excludeFieldName);
 		this.parsedRowsCount = new AtomicInteger(0);
-		this.rows = LinkedHashMap.newLinkedHashMap(size);
-		this.invalidRows = LinkedHashMap.newLinkedHashMap(size);
+		this.invalidRowsCount = new AtomicInteger(0);
+
+		this.rows = HashMap.newHashMap(size);
+		this.invalidRows = HashMap.newHashMap(0);
 	}
 
 	public ExcelRow<T> createRow(int rowIdx, Class<T> clazz) {
@@ -29,16 +43,19 @@ public class ExcelSheet<T> {
 	}
 
 	public List<T> getRows() {
-		return rows.values()
+		return rows.entrySet()
 			 .stream()
+			 .sorted(Map.Entry.comparingByKey())
+			 .map(Map.Entry::getValue)
 			 .map(ExcelRow::getExcelVO)
 			 .toList();
 	}
 
-	public List<T> getInvalidRows() {
-		return invalidRows.values()
+	public List<ExcelCell> getInvalidRows() {
+		return invalidRows.entrySet()
 			 .stream()
-			 .map(ExcelRow::getExcelVO)
+			 .sorted(Map.Entry.comparingByKey())
+			 .map(Map.Entry::getValue)
 			 .toList();
 	}
 
@@ -50,40 +67,36 @@ public class ExcelSheet<T> {
 		return rows.size();
 	}
 
+	public int getInvalidRowSize() {
+		return invalidRowsCount.get();
+	}
+
 	public boolean isValidSheet() {
-		return invalidRows.isEmpty();
+		return getInvalidRowSize() == 0;
 	}
 
-	public void addInvalidRow(int rowIdx, ExcelRow<T> excelRow) {
-		if (excelRow == null || !excelRow.isValid()) {
-			return;
+	public void addInvalidRow(int rowIdx, ExcelCell excelCell) {
+		if (invalidRows.putIfAbsent(rowIdx, excelCell) == null) {
+			invalidRowsCount.incrementAndGet();
 		}
 
-		excelRow.invalidate();
-		invalidRows.put(rowIdx, excelRow);
-		removeRow(rowIdx);
+		rows.remove(rowIdx);
 	}
 
-	private void removeRow(int rowIdx) {
-		if (rows.containsKey(rowIdx)) {
-			rows.remove(rowIdx);
-			parsedRowsCount.decrementAndGet();
-		}
-	}
-
-	public void addInvalidRows(Map<Integer, String> invalidChunk) {
+	public void addInvalidRows(Map<Integer, ExcelCell> invalidChunk) {
 		if (invalidChunk.isEmpty()) {
 			return;
 		}
 
-		for (Map.Entry<Integer, String> entry : invalidChunk.entrySet()) {
+		for (Map.Entry<Integer, ExcelCell> entry : invalidChunk.entrySet()) {
 			int rowIdx = entry.getKey();
-			ExcelRow<T> invalidRow = rows.get(rowIdx);
-			addInvalidRow(rowIdx, invalidRow);
+			ExcelCell excelCell = entry.getValue();
+			addInvalidRow(rowIdx, excelCell);
 		}
 	}
 
-	public void clearRows() {
+	public void clearAll() {
 		rows.clear();
+		invalidRows.clear();
 	}
 }

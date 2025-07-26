@@ -21,12 +21,13 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.gmoon.springpoi.SpringPoiApplication;
-import com.gmoon.springpoi.excel.utils.ExcelUtil;
+import com.gmoon.springpoi.excel.helper.ExcelHelper;
 import com.gmoon.springpoi.users.domain.Role;
 import com.gmoon.springpoi.users.domain.User;
 import com.gmoon.springpoi.users.model.ExcelUserVO;
@@ -52,22 +53,31 @@ import com.gmoon.springpoi.users.model.ExcelUserVO;
 @Fork(value = 1, warmups = 1)
 public class ExcelSAXBenchmark {
 	private ApplicationContext ctx;
+	private ExcelHelper helper;
 
 	@Param({
+		 "1",
+		 "100",
+		 "500",
 		 "1000",
-		 "10000"
+		 "5000",
+		 "10000",
+		 "15000",
+		 "100000",
+		 "150000"
 	})
 	public int excelDataRowSize;
 
 	@Setup(Level.Trial)
 	public void setup() {
 		if (ctx == null) {
-			ctx = SpringApplication.run(
+			ConfigurableApplicationContext context = SpringApplication.run(
 				 SpringPoiApplication.class,
 				 "--server.port=9000",
 				 "--logging.level.root=WARN",
 				 "--spring.main.banner-mode=off"
 			);
+			helper = context.getBean(ExcelHelper.class);
 		}
 
 		SecurityContext context = SecurityContextHolder.getContext();
@@ -85,18 +95,15 @@ public class ExcelSAXBenchmark {
 
 	@Benchmark
 	public void readSax() throws IOException {
-		ExcelUtil.readSAX(
+		helper.readSAX(
 			 Files.newInputStream(Paths.get(getFilePath())),
-			 ctx,
-			 ExcelUserVO.class,
-			 list -> {/* noop */}
+			 ExcelUserVO.class
 		);
 	}
 
 	@Benchmark
 	public void readDom() {
-		ExcelUtil.read(
-			 ctx,
+		helper.read(
 			 getFilePath(),
 			 ExcelUserVO.class
 		);
@@ -105,8 +112,8 @@ public class ExcelSAXBenchmark {
 	private String getFilePath() {
 		String filepath = String.format("%s/%s/%s",
 			 System.getProperty("user.dir"),
-			 "src/test/resources/sample/",
-			 String.format("sample-%d.xlsx", excelDataRowSize)
+			 "src/test/resources/benchmark/excel/",
+			 String.format("benchmark-%d.xlsx", excelDataRowSize)
 		);
 		return new File(filepath)
 			 .getAbsolutePath();

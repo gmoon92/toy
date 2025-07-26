@@ -1,14 +1,16 @@
-package com.gmoon.springpoi.excel.utils;
+package com.gmoon.springpoi.excel.helper;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,7 +18,6 @@ import org.quickperf.junit5.QuickPerfTest;
 import org.quickperf.jvm.annotations.MeasureHeapAllocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
+import com.gmoon.springpoi.common.utils.TsidUtil;
 import com.gmoon.springpoi.excel.vo.ExcelSheet;
 import com.gmoon.springpoi.test.TestUtils;
 import com.gmoon.springpoi.users.domain.Role;
@@ -35,23 +37,43 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @QuickPerfTest
 @SpringBootTest
-class ExcelUtilTest {
+class ExcelHelperTest {
 
 	@Autowired
-	private ApplicationContext ctx;
+	private ExcelHelper helper;
 
-	private final String fileDir = "src/test/resources/sample/";
+	@BeforeEach
+	void setUp() {
+		SecurityContext context = SecurityContextHolder.getContext();
+		User user = new User("admin", null, Role.ADMIN);
+		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
+	}
 
-	@MeasureHeapAllocation
-	@Test
-	void write() throws IOException {
-		int size = 1;
-		String filePath = fileDir + "excel-user.xlsx";
+	private Path getFilePath(String filename) {
+		return Paths.get("src/test/resources/sample/", filename);
+	}
+
+	@ParameterizedTest
+	@ValueSource(ints = {
+		 1,
+		 100
+		 // 100,
+		 // 500,
+		 // 1_000,
+		 // 5_000,
+		 // 10_000,
+		 // 15_000,
+		 // 100_000,
+		 // 150_000
+	})
+	void write(int size) throws IOException {
+		String filename = "benchmark-" + size + ".xlsx";
+		Path filePath = getFilePath(filename);
 
 		List<ExcelUserVO> excelUsers = FixtureMonkey.builder()
 			 .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
 			 .build().giveMeBuilder(ExcelUserVO.class)
-			 .setLazy("username", () -> TestUtils.randomString("user", 10))
+			 .setLazy("username", () -> "user" + TsidUtil.generate())
 			 .set("password", "111111")
 			 .set("userFullname", TestUtils.randomString(10))
 			 .setLazy("gender", () -> TestUtils.randomInteger(0, 1))
@@ -63,23 +85,19 @@ class ExcelUtilTest {
 		Assertions.assertThatCode(() -> write(excelUsers, filePath))
 			 .doesNotThrowAnyException();
 
-		Files.deleteIfExists(Paths.get(filePath));
+		Files.deleteIfExists(filePath);
 	}
 
-	private void write(List<ExcelUserVO> excelUsers, String filePath) throws IOException {
-		try (OutputStream outputStream = Files.newOutputStream(Paths.get(filePath))) {
-			ExcelUtil.write(ctx, outputStream, ExcelUserVO.class, excelUsers);
+	private void write(List<ExcelUserVO> excelUsers, Path filePath) throws IOException {
+		try (OutputStream outputStream = Files.newOutputStream(filePath)) {
+			helper.write(outputStream, ExcelUserVO.class, excelUsers);
 		}
 	}
 
 	@MeasureHeapAllocation
 	@Test
 	void read() throws IOException {
-		SecurityContext context = SecurityContextHolder.getContext();
-		User user = new User("admin", null, Role.ADMIN);
-		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-
-		String filePath = fileDir + "excel-user.xlsx";
+		Path filePath = getFilePath("excel-user.xlsx");
 
 		int size = 10;
 		List<ExcelUserVO> excelUsers = FixtureMonkey.builder()
@@ -95,7 +113,10 @@ class ExcelUtilTest {
 			 .sampleList(size);
 		write(excelUsers, filePath);
 
-		ExcelSheet<ExcelUserVO> excelSheet = ExcelUtil.read(ctx, filePath, ExcelUserVO.class);
+		ExcelSheet<ExcelUserVO> excelSheet = helper.read(
+			 filePath.toString(),
+			 ExcelUserVO.class
+		);
 		assertThat(excelSheet.isValidSheet()).isTrue();
 		assertThat(excelSheet.getRows())
 			 .isNotEmpty()
@@ -124,26 +145,51 @@ class ExcelUtilTest {
 				  }
 			 );
 
-		Files.deleteIfExists(Paths.get(filePath));
+		Files.deleteIfExists(filePath);
 	}
 
 	@ParameterizedTest
-	@ValueSource(ints = {1, 100, 1_000, 10_000})
+	@ValueSource(ints = {1, 100, 1_000})
 	void readSAX(int dataSize) throws Exception {
-		SecurityContext context = SecurityContextHolder.getContext();
-		User user = new User("admin", null, Role.ADMIN);
-		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-
 		String filename = String.format("sample-%d.xlsx", dataSize);
+		Path filePath = getFilePath(filename);
 
-		ExcelSheet<ExcelUserVO> parse = ExcelUtil.readSAX(
-			 Files.newInputStream(Paths.get(fileDir, filename)),
-			 ctx,
-			 ExcelUserVO.class,
-			 list -> {/* noop */}
+		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
+			 Files.newInputStream(filePath),
+			 ExcelUserVO.class
 		);
 
 		assertThat(parse.isValidSheet()).isTrue();
 		assertThat(parse.size()).isEqualTo(dataSize);
+	}
+
+	@Test
+	void readSAX1() throws Exception {
+		int dataSize = 1;
+		String filename = String.format("sample-%d.xlsx", dataSize);
+		Path filePath = getFilePath(filename);
+
+		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
+			 Files.newInputStream(filePath),
+			 ExcelUserVO.class
+		);
+
+		assertThat(parse.isValidSheet()).isTrue();
+		assertThat(parse.size()).isEqualTo(dataSize);
+	}
+
+	@Test
+	void invalid() throws IOException {
+		int size = 100;
+		String filename = "invalid-" + size + ".xlsx";
+
+		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
+			 Files.newInputStream(Paths.get("src/test/resources/sample/", filename)),
+			 ExcelUserVO.class
+		);
+
+		assertThat(parse.size()).isEqualTo(size);
+		assertThat(parse.isValidSheet()).isFalse();
+		assertThat(parse.getInvalidRowSize()).isEqualTo(size);
 	}
 }

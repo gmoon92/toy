@@ -19,7 +19,7 @@ public class ExcelModelMetadata {
 	private final ExcelModel excelModel;
 	private final Map<Integer, ExcelField> value;
 
-	private ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
+	ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
 		excelModel = getExcelModel(excelModelClass);
 		value = ReflectionUtil.getFieldMap(
 			 excelModelClass,
@@ -35,10 +35,6 @@ public class ExcelModelMetadata {
 				 String.format("@ExcelProperty annotation not found in class %s", excelModelClass.getName())
 			);
 		}
-	}
-
-	public static ExcelModelMetadata of(Class<?> clazz, ApplicationContext ctx, String... excludeFieldName) {
-		return new ExcelModelMetadata(clazz, ctx, excludeFieldName);
 	}
 
 	public ExcelField getExcelField(int cellColIdx) {

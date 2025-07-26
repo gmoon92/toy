@@ -1,14 +1,13 @@
 
 package com.gmoon.springpoi.excel.sax.handler;
 
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.apache.poi.xssf.model.SharedStrings;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.gmoon.springpoi.excel.validator.ExcelBatchValidator;
+import com.gmoon.springpoi.excel.processor.EventListener;
+import com.gmoon.springpoi.excel.vo.ExcelCell;
 import com.gmoon.springpoi.excel.vo.ExcelField;
 import com.gmoon.springpoi.excel.vo.ExcelModelMetadata;
 import com.gmoon.springpoi.excel.vo.ExcelRow;
@@ -49,27 +48,25 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 
 	private final Class<T> excelModelClass;
 	private final ExcelSheet<T> excelSheet;
-	private final ExcelModelMetadata metadata;
-	private final Consumer<List<T>> rawCallback;
+	private final EventListener eventListener;
 
 	public SaxXlsxSheetHandler(
 		 SharedStrings sst,
 		 Class<T> excelModelClass,
 		 ExcelSheet<T> excelSheet,
-		 ExcelModelMetadata metadata,
-		 Consumer<List<T>> rawCallback
+		 EventListener eventListener
 	) {
-		super(sst, metadata);
+		super(sst, excelSheet.getMetadata());
 		this.excelModelClass = excelModelClass;
 		this.excelSheet = excelSheet;
-		this.metadata = metadata;
-		this.rawCallback = rawCallback;
+		this.eventListener = eventListener;
 	}
 
 	@Override
 	public void handle(int rowIdx, Map<Integer, String> cellValues) {
 		ExcelRow<T> excelRow = excelSheet.createRow(rowIdx, excelModelClass);
 
+		ExcelModelMetadata metadata = excelSheet.getMetadata();
 		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
 			ExcelField excelField = entry.getValue();
 			int cellColIdx = entry.getKey();
@@ -78,18 +75,12 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 			if (excelField.isValidCellValue(cellValue)) {
 				excelRow.setFieldValue(excelField, cellValue);
 			} else {
-				excelSheet.addInvalidRow(rowIdx, excelRow);
+				excelSheet.addInvalidRow(rowIdx, new ExcelCell(cellColIdx, cellValue));
 			}
 		}
 
 		if (excelSheet.getRowSize() > ACCESS_WINDOWS) {
-			List<ExcelBatchValidator> allValidators = metadata.getAllBatchValidators();
-			for (ExcelBatchValidator validator : allValidators) {
-				validator.flush(excelSheet::addInvalidRows);
-			}
-
-			rawCallback.accept(excelSheet.getRows());
-			excelSheet.clearRows();
+			eventListener.onEvent(excelSheet);
 		}
 	}
 }

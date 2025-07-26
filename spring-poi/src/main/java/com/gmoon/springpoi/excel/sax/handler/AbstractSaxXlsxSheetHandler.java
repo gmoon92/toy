@@ -65,14 +65,13 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 
 	private boolean blankRow;
 	private int currentRowIdx;
-
-	private boolean cellOpen;
 	private SaxCell currentCell;
 
 	protected AbstractSaxXlsxSheetHandler(SharedStrings sst, ExcelModelMetadata metadata) {
 		this.sharedStringsTable = sst;
 		this.metadata = metadata;
 		this.cellValues = new HashMap<>();
+		this.currentCell = SaxCell.EMPTY;
 	}
 
 	public abstract void handle(int rowIdx, Map<Integer, String> cellValues);
@@ -90,7 +89,6 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		}
 
 		if (XlsxOoxml.Element.CELL == element) {
-			cellOpen = true;
 			currentCell = new SaxCell(
 				 getAttributeValue(attributes, XlsxOoxml.Attribute.TYPE),
 				 getCellColIdx(element, attributes)
@@ -101,7 +99,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private void handleRowStart(Attributes attributes, XlsxOoxml.Element element) {
 		blankRow = true;
 		currentRowIdx = getRowIndex(element, attributes);
-		log.debug("======================[ROW START {}]======================", currentRowIdx);
+		log.trace("======================[ROW START {}]======================", currentRowIdx);
 	}
 
 	private int getRowIndex(XlsxOoxml.Element element, Attributes attributes) {
@@ -173,8 +171,8 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		extractCellValue(element);
 
 		if (XlsxOoxml.Element.CELL == element) {
-			log.debug("[{}] type: {} value: {}",
-				 currentCell.getColIdx(),
+			log.trace("[{}] type: {} value: {}",
+				 currentCell.getColumnIndex(),
 				 currentCell.getType(),
 				 currentCell.getValue()
 			);
@@ -197,7 +195,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		}
 
 		cellValues.clear();
-		log.debug("======================[ROW END   {}]======================", currentRowIdx);
+		log.trace("======================[ROW END   {}]======================", currentRowIdx);
 	}
 
 	private void handleCellEnd() {
@@ -206,13 +204,13 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		}
 
 		if (isCurrentRowInDataArea()) {
-			cellValues.put(currentCell.getColIdx(), currentCell.getValue());
+			cellValues.put(currentCell.getColumnIndex(), currentCell.getValue());
 		}
 	}
 
 	private boolean isCurrentRowInDataArea() {
 		return currentRowIdx >= metadata.getHeaderRowTotalCount()
-			 && metadata.getFieldSize() > currentCell.getColIdx();
+			 && metadata.getFieldSize() > currentCell.getColumnIndex();
 	}
 
 	/**
@@ -244,7 +242,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 * @see XlsxOoxml
 	 */
 	private void extractCellValue(XlsxOoxml.Element element) {
-		if (!cellOpen) {
+		if (currentCell.isEmpty()) {
 			return;
 		}
 
@@ -269,7 +267,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		return contents;
 	}
 
-	protected String getAttributeValue(Attributes attributes, XlsxOoxml.Attribute attribute) {
+	private String getAttributeValue(Attributes attributes, XlsxOoxml.Attribute attribute) {
 		return attributes.getValue(attribute.value);
 	}
 
@@ -282,7 +280,6 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 * </p>
 	 */
 	private void resetCellContext() {
-		cellOpen = false;
 		currentCell = SaxCell.EMPTY;
 	}
 
