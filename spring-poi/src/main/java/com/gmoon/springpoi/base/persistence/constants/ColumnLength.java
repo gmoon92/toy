@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 public final class ColumnLength {
 
 	public static final int ID = 50;
+	public static final int USERNAME = 20;
+
 	public static final int SHA_256 = 64;
 	public static final int ENUM = 20;
+	public static final int PASSWORD_BCRYPT = 60;
 }
