@@ -31,6 +31,7 @@ dependencies {
 
     // etc
     implementation(libs.apache.commons.lang3)
+    implementation(libs.tsid.creator)
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
