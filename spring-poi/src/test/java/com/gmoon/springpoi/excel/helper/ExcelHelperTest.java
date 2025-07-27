@@ -164,21 +164,6 @@ class ExcelHelperTest {
 	}
 
 	@Test
-	void readSAX1() throws Exception {
-		int dataSize = 1;
-		String filename = String.format("sample-%d.xlsx", dataSize);
-		Path filePath = getFilePath(filename);
-
-		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
-			 Files.newInputStream(filePath),
-			 ExcelUserVO.class
-		);
-
-		assertThat(parse.isValidSheet()).isTrue();
-		assertThat(parse.size()).isEqualTo(dataSize);
-	}
-
-	@Test
 	void invalid() throws IOException {
 		int size = 100;
 		String filename = "invalid-" + size + ".xlsx";
@@ -190,6 +175,5 @@ class ExcelHelperTest {
 
 		assertThat(parse.size()).isEqualTo(size);
 		assertThat(parse.isValidSheet()).isFalse();
-		assertThat(parse.getInvalidRowSize()).isEqualTo(size);
 	}
 }

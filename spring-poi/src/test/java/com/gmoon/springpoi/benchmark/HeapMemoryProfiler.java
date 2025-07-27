@@ -16,14 +16,7 @@ public class HeapMemoryProfiler implements InternalProfiler {
 
 	@Override
 	public void beforeIteration(BenchmarkParams benchmarkParams, IterationParams iterationParams) {
-		try {
-			System.gc(); // force garbage collection
-			Thread.sleep(100);
-
-			beforeAllocated = getUsedMemory();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		beforeAllocated = getUsedMemory();
 	}
 
 	@Override
@@ -35,13 +28,6 @@ public class HeapMemoryProfiler implements InternalProfiler {
 		long afterAllocated = getUsedMemory();
 		long diff = afterAllocated - beforeAllocated;
 		double used = diff / 1024.0 / 1024.0;
-		System.out.printf("HeapMemoryProfiler: [%s] used: %.2f MB (%,d bytes) (start: %,d, end: %,d)\n%n",
-			 benchmarkParams.getBenchmark(),
-			 used,
-			 diff,
-			 beforeAllocated,
-			 afterAllocated
-		);
 
 		ScalarResult customResult = new ScalarResult(
 			 "heap.memory.used.mb",

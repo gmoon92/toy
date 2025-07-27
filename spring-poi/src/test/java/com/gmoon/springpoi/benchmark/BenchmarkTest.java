@@ -18,7 +18,6 @@ class BenchmarkTest {
 	void excelSAX() throws Exception {
 		String outputFilepath = getOutputFilepath(ExcelSAXBenchmark.class);
 
-		log.info("outputFilepath: {}", outputFilepath);
 		new Runner(new OptionsBuilder()
 			 .include(ExcelSAXBenchmark.class.getName() + ".*")
 			 .output(outputFilepath)
@@ -26,17 +25,18 @@ class BenchmarkTest {
 			 .addProfiler(HeapMemoryProfiler.class)
 			 .shouldFailOnError(true)
 			 .shouldDoGC(true)
+			 .jvmArgsAppend("-Dserver.port=9000")
 			 .jvmArgs(
 				  "-Xmx1024m",
 				  "-XX:+HeapDumpOnOutOfMemoryError",
-				  "-XX:HeapDumpPath=./benchmark-heapdump.hprof"
+				  "-XX:HeapDumpPath=./benchmark-sax-heapdump.hprof"
 			 )
 			 .build())
 			 .run();
 	}
 
 	private String getOutputFilepath(Class<?> clazz) {
-		return String.format("%s/%s/%s",
+		String outputFilepath = String.format("%s/%s/%s",
 			 System.getProperty("user.dir"),
 			 "src/test/resources/benchmark",
 			 String.format("%s-%s.txt",
@@ -44,5 +44,8 @@ class BenchmarkTest {
 				  LocalDateTime.now()
 			 )
 		);
+
+		log.info("\noutputFilepath: {}", outputFilepath);
+		return outputFilepath;
 	}
 }

@@ -79,7 +79,7 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 			}
 		}
 
-		if (excelSheet.getRowSize() > ACCESS_WINDOWS) {
+		if (rowIdx % ACCESS_WINDOWS == 0) {
 			eventListener.onEvent(excelSheet);
 		}
 	}

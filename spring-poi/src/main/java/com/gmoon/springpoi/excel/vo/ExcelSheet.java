@@ -63,16 +63,8 @@ public class ExcelSheet<T> {
 		return parsedRowsCount.get();
 	}
 
-	public int getRowSize() {
-		return rows.size();
-	}
-
-	public int getInvalidRowSize() {
-		return invalidRowsCount.get();
-	}
-
 	public boolean isValidSheet() {
-		return getInvalidRowSize() == 0;
+		return invalidRowsCount.get() == 0;
 	}
 
 	public void addInvalidRow(int rowIdx, ExcelCell excelCell) {

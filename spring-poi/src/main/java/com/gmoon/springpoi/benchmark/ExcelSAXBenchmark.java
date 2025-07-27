@@ -21,7 +21,6 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,10 +46,9 @@ import com.gmoon.springpoi.users.model.ExcelUserVO;
  */
 @BenchmarkMode({Mode.Throughput, Mode.AverageTime})
 @Warmup(iterations = 1, time = 1)
-@Measurement(iterations = 5, time = 5)
+@Measurement(iterations = 5, time = 2)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-@Fork(value = 1, warmups = 1)
 public class ExcelSAXBenchmark {
 	private ApplicationContext ctx;
 	private ExcelHelper helper;
@@ -71,13 +69,13 @@ public class ExcelSAXBenchmark {
 	@Setup(Level.Trial)
 	public void setup() {
 		if (ctx == null) {
-			ConfigurableApplicationContext context = SpringApplication.run(
+			ctx = SpringApplication.run(
 				 SpringPoiApplication.class,
-				 "--server.port=9000",
+				 // "--server.port=9000",
 				 "--logging.level.root=WARN",
 				 "--spring.main.banner-mode=off"
 			);
-			helper = context.getBean(ExcelHelper.class);
+			helper = ctx.getBean(ExcelHelper.class);
 		}
 
 		SecurityContext context = SecurityContextHolder.getContext();
@@ -93,6 +91,7 @@ public class ExcelSAXBenchmark {
 		}
 	}
 
+	@Fork(value = 1, warmups = 2)
 	@Benchmark
 	public void readSax() throws IOException {
 		helper.readSAX(
@@ -101,6 +100,7 @@ public class ExcelSAXBenchmark {
 		);
 	}
 
+	@Fork(value = 1, warmups = 2)
 	@Benchmark
 	public void readDom() {
 		helper.read(
