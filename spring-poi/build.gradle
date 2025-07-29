@@ -40,6 +40,10 @@ dependencies {
     testImplementation(libs.fixture.monkey.starter)
     testImplementation(libs.quickperf.junit5)
 
+    // https://mvnrepository.com/artifact/org.knowm.xchart/xchart
+    implementation("org.knowm.xchart:xchart:3.8.8")
+    implementation("org.knowm.xchart:xchart-demo:3.8.8")
+
 //    ./gradlew :spring-poi:jmh
 //    다중 모듈 프로젝트를 위한 플러그인 없는 JMH Gradle
 //    https://gist.github.com/mrbald/7bbb5113c3164d5243314da8c28649a1

@@ -1,9 +1,8 @@
 package com.gmoon.springpoi.benchmark;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -57,12 +56,13 @@ public class ExcelSAXBenchmark {
 		 "1",
 		 "100",
 		 "500",
-		 "1000",
-		 "5000",
-		 "10000",
-		 "15000",
-		 "100000",
-		 "150000"
+		 "1000"
+		 // "1000",
+		 // "5000",
+		 // "10000",
+		 // "15000",
+		 // "100000",
+		 // "150000"
 	})
 	public int excelDataRowSize;
 
@@ -95,7 +95,7 @@ public class ExcelSAXBenchmark {
 	@Benchmark
 	public void readSax() throws IOException {
 		helper.readSAX(
-			 Files.newInputStream(Paths.get(getFilePath())),
+			 Files.newInputStream(getFilePath()),
 			 ExcelUserVO.class
 		);
 	}
@@ -104,18 +104,17 @@ public class ExcelSAXBenchmark {
 	@Benchmark
 	public void readDom() {
 		helper.read(
-			 getFilePath(),
+			 getFilePath().toAbsolutePath().toString(),
 			 ExcelUserVO.class
 		);
 	}
 
-	private String getFilePath() {
-		String filepath = String.format("%s/%s/%s",
+	private Path getFilePath() {
+		return Path.of(
 			 System.getProperty("user.dir"),
-			 "src/test/resources/benchmark/excel/",
+			 "src/test/resources/benchmark",
+			 "excelsaxbenchmark/excel",
 			 String.format("benchmark-%d.xlsx", excelDataRowSize)
 		);
-		return new File(filepath)
-			 .getAbsolutePath();
 	}
 }
