@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.knowm.xchart.BitmapEncoder;
@@ -129,11 +130,13 @@ public final class BenchmarkRunner {
 							 .param(param)
 							 .build();
 
-						BenchmarkRecord record = benchmarkMap.get(key);
-						yValue.add(record.getScore());
+						double score = Optional.ofNullable(benchmarkMap.get(key))
+							 .map(BenchmarkRecord::getScore)
+							 .orElse(Double.NaN);
+						yValue.add(score);
 					}
 					double[] yData = yValue.stream()
-						 .mapToDouble(d -> d != null ? d : Double.NaN)
+						 .mapToDouble(Double::doubleValue)
 						 .toArray();
 
 					double[] xData = Arrays.stream(params)
