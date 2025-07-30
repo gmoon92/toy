@@ -245,7 +245,7 @@ public final class BenchmarkRunner {
 				 "score",
 				 xAxisParamName
 			);
-			benchmarkMap.put(metricKey, new BenchmarkRecord(primaryResult, params));
+			benchmarkMap.put(metricKey, new BenchmarkRecord(primaryResult));
 
 			Map<String, Result> secondaryResults = result.getSecondaryResults();
 			for (Map.Entry<String, Result> entry : secondaryResults.entrySet()) {
@@ -258,7 +258,7 @@ public final class BenchmarkRunner {
 					 xAxisParamName
 				);
 
-				benchmarkMap.put(secKey, new BenchmarkRecord(secondaryResult, params));
+				benchmarkMap.put(secKey, new BenchmarkRecord(secondaryResult));
 			}
 		}
 

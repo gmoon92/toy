@@ -1,6 +1,5 @@
 package com.gmoon.springpoi.benchmark.chart;
 
-import org.openjdk.jmh.infra.BenchmarkParams;
 import org.openjdk.jmh.results.Result;
 
 import lombok.EqualsAndHashCode;
@@ -17,7 +16,7 @@ public class BenchmarkRecord {
 	private final double error;
 	private final String unit;
 
-	public BenchmarkRecord(Result<?> result, BenchmarkParams params) {
+	public BenchmarkRecord(Result<?> result) {
 		this.benchmarkName = result.getLabel();
 		this.cnt = result.getSampleCount();
 		this.score = result.getScore();

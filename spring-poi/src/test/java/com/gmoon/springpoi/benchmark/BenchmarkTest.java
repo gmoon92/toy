@@ -1,11 +1,12 @@
 package com.gmoon.springpoi.benchmark;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-// @Disabled
+@Disabled
 class BenchmarkTest {
 
 	@Test
