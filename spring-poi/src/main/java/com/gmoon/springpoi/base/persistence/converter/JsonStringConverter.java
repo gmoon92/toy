@@ -10,7 +10,7 @@ public class JsonStringConverter implements AttributeConverter<JsonString, Strin
 
 	@Override
 	public String convertToDatabaseColumn(JsonString attribute) {
-		if (attribute.isEmpty()) {
+		if (attribute == null || attribute.isEmpty()) {
 			return null;
 		}
 

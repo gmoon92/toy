@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import com.gmoon.springpoi.common.utils.JsonUtil;
 
 import lombok.NoArgsConstructor;
@@ -24,7 +26,8 @@ public class JsonString implements Serializable {
 		if (jsonString == null || jsonString.isEmpty()) {
 			values = new HashMap<>();
 		} else {
-			values = JsonUtil.toMap(jsonString);
+			values = JsonUtil.toMap(jsonString, new TypeReference<>() {
+			});
 		}
 	}
 
@@ -41,6 +44,9 @@ public class JsonString implements Serializable {
 	}
 
 	public String toJsonString() {
+		if (values == null || values.isEmpty()) {
+			return null;
+		}
 		return JsonUtil.toString(values);
 	}
 }

@@ -25,12 +25,11 @@ public final class JsonUtil {
 		}
 	}
 
-	public static <K, V> Map<K, V> toMap(String jsonStr) {
+	public static <K, V> Map<K, V> toMap(String jsonStr, TypeReference<Map<K, V>> valueTypeRef) {
 		try {
 			return MAPPER.readValue(
 				 jsonStr,
-				 new TypeReference<>() {
-				 }
+				 valueTypeRef
 			);
 		} catch (Exception e) {
 			throw new JsonConvertException("Failed to deserialize JSON to Map. Input: ", jsonStr, e);
