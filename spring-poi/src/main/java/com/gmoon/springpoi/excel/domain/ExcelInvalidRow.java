@@ -46,7 +46,7 @@ public class ExcelInvalidRow {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private ExcelUploadRequest excelUploadRequest;
+	private ExcelUploadTask task;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = ColumnLength.ENUM, nullable = false)
@@ -62,8 +62,8 @@ public class ExcelInvalidRow {
 	@Column(nullable = false)
 	private Set<Integer> invalidColumnIndexes = new HashSet<>();
 
-	public ExcelInvalidRow(ExcelUploadRequest excelUploadRequest) {
-		this.excelUploadRequest = excelUploadRequest;
+	public ExcelInvalidRow(ExcelUploadTask task) {
+		this.task = task;
 		this.originCellValues = new JsonString();
 		this.invalidColumnIndexes = new HashSet<>();
 		this.type = ExcelInvalidRowType.VALIDATION;
