@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-import com.gmoon.springpoi.excel.converter.users.StringToRoleConverter;
-import com.gmoon.springpoi.excel.validator.common.UniqueCellValueValidator;
+import com.gmoon.springpoi.common.excel.converter.users.StringToRoleConverter;
+import com.gmoon.springpoi.common.excel.validator.common.UniqueCellValueValidator;
 
 @SpringBootTest
 class ExcelComponentTest {

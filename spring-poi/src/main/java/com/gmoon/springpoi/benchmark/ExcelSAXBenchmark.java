@@ -25,7 +25,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.gmoon.springpoi.SpringPoiApplication;
-import com.gmoon.springpoi.excel.helper.ExcelHelper;
+import com.gmoon.springpoi.common.excel.helper.ExcelHelper;
 import com.gmoon.springpoi.users.domain.Role;
 import com.gmoon.springpoi.users.domain.User;
 import com.gmoon.springpoi.users.model.ExcelUserVO;

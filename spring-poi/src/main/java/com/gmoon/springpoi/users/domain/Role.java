@@ -2,7 +2,7 @@ package com.gmoon.springpoi.users.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.gmoon.springpoi.excel.provider.ExcelValueProvider;
+import com.gmoon.springpoi.common.excel.provider.ExcelValueProvider;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
