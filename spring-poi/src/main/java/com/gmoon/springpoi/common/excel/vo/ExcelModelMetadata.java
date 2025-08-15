@@ -19,7 +19,7 @@ public class ExcelModelMetadata {
 	private final ExcelModel excelModel;
 	private final Map<Integer, ExcelField> value;
 
-	ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
+	public ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
 		excelModel = getExcelModel(excelModelClass);
 		value = ReflectionUtil.getFieldMap(
 			 excelModelClass,

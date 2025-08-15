@@ -50,21 +50,21 @@ public class ExcelUploadJob {
 	private List<ExcelUploadTask> tasks = new ArrayList<>();
 
 	@Column(nullable = false, updatable = false)
-	private int totalRows;
+	private long totalRows;
 
 	@Column(nullable = false)
-	private int processedRows;
+	private long processedRows;
 
 	@Column(nullable = false)
-	private int invalidRows;
+	private long invalidRows;
 
 	@Column(nullable = false, updatable = false)
 	private Instant createdAt;
 
-	public ExcelUploadJob(ExcelSheetType sheetType, int totalRows, int chunkSize) {
+	public ExcelUploadJob(ExcelSheetType sheetType, long totalRows, int chunkSize) {
 		this.signature = sheetType.signature;
 		this.sheetType = sheetType;
-		this.status = ExcelUploadJobStatus.REQUEST_RECEIVED;
+		this.status = ExcelUploadJobStatus.PREPARE;
 
 		this.totalRows = totalRows;
 		this.processedRows = 0;
@@ -74,11 +74,11 @@ public class ExcelUploadJob {
 		this.createdAt = Instant.now();
 	}
 
-	private List<ExcelUploadTask> getExcelUploadTasks(int totalRows, int chunkSize) {
-		int total = 0;
+	private List<ExcelUploadTask> getExcelUploadTasks(long totalRows, int chunkSize) {
+		long total = 0;
 		List<ExcelUploadTask> result = new ArrayList<>();
-		for (int start = 0; start < totalRows; start += chunkSize) {
-			int end = Math.min(start + chunkSize, totalRows); // exclusive
+		for (long start = 0; start < totalRows; start += chunkSize) {
+			long end = Math.min(start + chunkSize, totalRows); // exclusive
 			ExcelUploadTask task = new ExcelUploadTask(this, start, end);
 			result.add(task);
 

@@ -42,21 +42,21 @@ public class ExcelUploadTask {
 	private ExcelUploadTaskStatus status;
 
 	@Column(nullable = false, updatable = false)
-	private int startRow;
+	private long startRow;
 
 	@Column(nullable = false, updatable = false)
-	private int endRow;
+	private long endRow;
 
 	@Column(nullable = false, updatable = false)
-	private int totalRows;
+	private long totalRows;
 
 	@Column(nullable = false)
-	private int processedRows;
+	private long processedRows;
 
 	@Column(nullable = false)
-	private int invalidRows;
+	private long invalidRows;
 
-	public ExcelUploadTask(ExcelUploadJob job, int startRow, int endRow) {
+	public ExcelUploadTask(ExcelUploadJob job, long startRow, long endRow) {
 		this.job = job;
 		this.status = ExcelUploadTaskStatus.STARTING;
 		this.startRow = startRow;

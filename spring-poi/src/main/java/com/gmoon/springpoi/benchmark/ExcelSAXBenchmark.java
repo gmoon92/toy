@@ -1,7 +1,5 @@
 package com.gmoon.springpoi.benchmark;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
@@ -93,10 +91,11 @@ public class ExcelSAXBenchmark {
 
 	@Fork(value = 1, warmups = 2)
 	@Benchmark
-	public void readSax() throws IOException {
+	public void readSax() {
 		helper.readSAX(
-			 Files.newInputStream(getFilePath()),
-			 ExcelUserVO.class
+			 getFilePath(),
+			 ExcelUserVO.class,
+			 1_000
 		);
 	}
 
@@ -104,7 +103,7 @@ public class ExcelSAXBenchmark {
 	@Benchmark
 	public void readDom() {
 		helper.read(
-			 getFilePath().toAbsolutePath().toString(),
+			 getFilePath(),
 			 ExcelUserVO.class
 		);
 	}

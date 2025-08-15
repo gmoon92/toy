@@ -12,9 +12,11 @@ import com.gmoon.springpoi.users.model.ExcelUserVO;
 public enum ExcelSheetType {
 	USER(ExcelUserVO.class);
 
+	public final Class<?> excelModelClass;
 	public final String signature;
 
 	ExcelSheetType(Class<?> clazz) {
+		this.excelModelClass = clazz;
 		this.signature = generateSignature(clazz);
 	}
 

@@ -25,8 +25,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
+import com.gmoon.springpoi.common.excel.exception.SaxReadRangeOverflowException;
 import com.gmoon.springpoi.common.excel.vo.ExcelSheet;
 import com.gmoon.springpoi.common.utils.TsidUtil;
+import com.gmoon.springpoi.excels.domain.ExcelSheetType;
 import com.gmoon.springpoi.test.TestUtils;
 import com.gmoon.springpoi.users.domain.Role;
 import com.gmoon.springpoi.users.domain.User;
@@ -56,15 +58,16 @@ class ExcelHelperTest {
 	@ParameterizedTest
 	@ValueSource(ints = {
 		 1,
-		 100
-		 // 100,
-		 // 500,
-		 // 1_000,
-		 // 5_000,
-		 // 10_000,
-		 // 15_000,
-		 // 100_000,
-		 // 150_000
+		 // 100, 500, 1_000,
+		 // 1_500, 2_000, 2_500, 3_000,
+		 // 3_500, 4_000, 4_500, 5_000,
+		 // 5_500, 6_000, 6_500, 7_000,
+		 // 7_500, 8_000, 8_500, 9_000,
+		 // 9_500, 10_000, 10_500, 11_000,
+		 // 12_000, 13_000, 14_000, 15_000,
+		 // 16_000, 17_000, 18_000, 19_000,
+		 // 20_000, 30_000, 40_000, 50_000,
+		 // 100_000, 150_000
 	})
 	void write(int size) throws IOException {
 		String filename = "benchmark-" + size + ".xlsx";
@@ -88,33 +91,22 @@ class ExcelHelperTest {
 		Files.deleteIfExists(filePath);
 	}
 
-	private void write(List<ExcelUserVO> excelUsers, Path filePath) throws IOException {
+	private void write(List<ExcelUserVO> excelUsers, Path filePath) {
 		try (OutputStream outputStream = Files.newOutputStream(filePath)) {
 			helper.write(outputStream, ExcelUserVO.class, excelUsers);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	@MeasureHeapAllocation
 	@Test
-	void read() throws IOException {
-		Path filePath = getFilePath("excel-user.xlsx");
-
-		int size = 10;
-		List<ExcelUserVO> excelUsers = FixtureMonkey.builder()
-			 .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
-			 .build().giveMeBuilder(ExcelUserVO.class)
-			 .setLazy("username", () -> TestUtils.randomString("user", 10))
-			 .set("password", "111111")
-			 .set("userFullname", TestUtils.randomString(10))
-			 .setLazy("gender", () -> TestUtils.randomInteger(0, 1))
-			 .setLazy("role", () -> TestUtils.pickRandom(Role.USER, Role.MANAGER))
-			 .setLazy("enabled", TestUtils::randomBoolean)
-			 .setNull("email")
-			 .sampleList(size);
-		write(excelUsers, filePath);
+	void read() {
+		int size = 100;
+		Path filePath = getFilePath("excel-user-" + size + ".xlsx");
 
 		ExcelSheet<ExcelUserVO> excelSheet = helper.read(
-			 filePath.toString(),
+			 filePath,
 			 ExcelUserVO.class
 		);
 		assertThat(excelSheet.isValidSheet()).isTrue();
@@ -144,19 +136,21 @@ class ExcelHelperTest {
 						   .isBlank();
 				  }
 			 );
-
-		Files.deleteIfExists(filePath);
 	}
 
 	@ParameterizedTest
-	@ValueSource(ints = {1, 100, 1_000})
-	void readSAX(int dataSize) throws Exception {
-		String filename = String.format("sample-%d.xlsx", dataSize);
-		Path filePath = getFilePath(filename);
+	@ValueSource(ints = {
+		 1, 100, 500, 1_000,
+		 // 1_500, 2_000, 2_500, 3_000,
+		 // 3_500, 4_000, 4_500, 5_000
+	})
+	void readSAX(int dataSize) {
+		String filename = String.format("excel-user-%d.xlsx", dataSize);
 
 		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
-			 Files.newInputStream(filePath),
-			 ExcelUserVO.class
+			 getFilePath(filename),
+			 ExcelUserVO.class,
+			 dataSize
 		);
 
 		assertThat(parse.isValidSheet()).isTrue();
@@ -164,16 +158,40 @@ class ExcelHelperTest {
 	}
 
 	@Test
-	void invalid() throws IOException {
+	void invalid() {
 		int size = 100;
 		String filename = "invalid-" + size + ".xlsx";
 
 		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
-			 Files.newInputStream(Paths.get("src/test/resources/sample/", filename)),
-			 ExcelUserVO.class
+			 getFilePath(filename),
+			 ExcelUserVO.class,
+			 size
 		);
 
 		assertThat(parse.size()).isEqualTo(size);
 		assertThat(parse.isValidSheet()).isFalse();
+	}
+
+	@ParameterizedTest
+	@ValueSource(ints = {
+		 1, 100, 500, 1_000,
+		 // 1_500, 2_000, 2_500, 3_000,
+		 // 3_500, 4_000, 4_500, 5_000
+	})
+	void getDataRows(int dataSize) {
+		String filename = "excel-user-" + dataSize + ".xlsx";
+
+		assertThat(getRows(filename, dataSize)).isEqualTo(dataSize);
+		assertThat(getRows(filename, dataSize + 1)).isEqualTo(dataSize);
+		assertThatThrownBy(() -> getRows(filename, dataSize - 1))
+			 .isInstanceOf(SaxReadRangeOverflowException.class);
+	}
+
+	private long getRows(String filename, int dataSize) {
+		return helper.getDataRows(
+			 getFilePath(filename),
+			 ExcelSheetType.USER,
+			 dataSize
+		);
 	}
 }

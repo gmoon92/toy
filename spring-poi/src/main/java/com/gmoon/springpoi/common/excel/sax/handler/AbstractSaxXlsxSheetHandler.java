@@ -9,6 +9,8 @@ import org.apache.poi.xssf.model.SharedStrings;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.gmoon.springpoi.common.excel.exception.ExcelExceedRowLimitException;
+import com.gmoon.springpoi.common.excel.exception.SaxReadRangeOverflowException;
 import com.gmoon.springpoi.common.excel.sax.SaxCell;
 import com.gmoon.springpoi.common.excel.sax.XlsxOoxml;
 import com.gmoon.springpoi.common.excel.vo.ExcelModelMetadata;
@@ -55,6 +57,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
+	private static final long UNLIMITED_ROWS = -1;
+
 	private final LruCache<Integer, String> sharedStringCache = new LruCache<>(50);
 	private final SharedStrings sharedStringsTable;
 	private final ExcelModelMetadata metadata;
@@ -63,15 +67,30 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private final StringBuilder textBuffer = new StringBuilder();
 	private String currentContents;
 
+	private final long maxDataRows;
+	protected long dataRows;
+	protected long startRowIdx;
+	protected long endRowIdx;
+
 	private boolean blankRow;
 	private int currentRowIdx;
 	private SaxCell currentCell;
 
-	protected AbstractSaxXlsxSheetHandler(SharedStrings sst, ExcelModelMetadata metadata) {
+	protected AbstractSaxXlsxSheetHandler(
+		 SharedStrings sst,
+		 ExcelModelMetadata metadata,
+		 long maxDataRows,
+		 long startRowIdx,
+		 long endRowIdx
+	) {
 		this.sharedStringsTable = sst;
 		this.metadata = metadata;
 		this.cellValues = new HashMap<>();
 		this.currentCell = SaxCell.EMPTY;
+		this.dataRows = 0;
+		this.startRowIdx = startRowIdx;
+		this.endRowIdx = endRowIdx;
+		this.maxDataRows = maxDataRows;
 	}
 
 	public abstract void handle(int rowIdx, Map<Integer, String> cellValues);
@@ -90,7 +109,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 
 		if (XlsxOoxml.Element.CELL == element) {
 			currentCell = new SaxCell(
-				 getAttributeValue(attributes, XlsxOoxml.Attribute.TYPE),
+				 attributes.getValue(XlsxOoxml.Attribute.TYPE.value),
 				 getCellColIdx(element, attributes)
 			);
 		}
@@ -104,7 +123,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 
 	private int getRowIndex(XlsxOoxml.Element element, Attributes attributes) {
 		if (XlsxOoxml.Element.ROW == element) {
-			String rowReference = getAttributeValue(attributes, XlsxOoxml.Attribute.REFERENCE);
+			String rowReference = attributes.getValue(XlsxOoxml.Attribute.REFERENCE.value);
 			return Integer.parseInt(rowReference) - 1; // 0-based index
 		}
 
@@ -121,7 +140,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 */
 	private int getCellColIdx(XlsxOoxml.Element element, Attributes attributes) {
 		if (XlsxOoxml.Element.CELL == element) {
-			String cellReference = getAttributeValue(attributes, XlsxOoxml.Attribute.REFERENCE);
+			String cellReference = attributes.getValue(XlsxOoxml.Attribute.REFERENCE.value);
 			String cellColIndex = cellReference.replaceAll("\\d", "");
 
 			int index = 0;
@@ -191,9 +210,19 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 */
 	private void handleRowEnd() {
 		if (isCurrentRowInDataArea() && !blankRow) {
-			handle(currentRowIdx, cellValues);
+			if (startRowIdx <= dataRows && dataRows < endRowIdx) {
+				handle(currentRowIdx, cellValues);
+			} else {
+				throw new SaxReadRangeOverflowException(dataRows, startRowIdx, endRowIdx);
+			}
+			dataRows++;
 		}
 
+		boolean exceed = maxDataRows != UNLIMITED_ROWS
+			 && dataRows > maxDataRows;
+		if (exceed) {
+			throw new ExcelExceedRowLimitException(maxDataRows);
+		}
 		cellValues.clear();
 		log.trace("======================[ROW END   {}]======================", currentRowIdx);
 	}
@@ -265,10 +294,6 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 			);
 		}
 		return contents;
-	}
-
-	private String getAttributeValue(Attributes attributes, XlsxOoxml.Attribute attribute) {
-		return attributes.getValue(attribute.value);
 	}
 
 	/**

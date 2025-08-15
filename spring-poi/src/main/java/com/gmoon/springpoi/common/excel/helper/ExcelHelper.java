@@ -1,17 +1,21 @@
 package com.gmoon.springpoi.common.excel.helper;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -33,15 +37,19 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.context.ApplicationContext;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import com.gmoon.springpoi.common.excel.annotation.ExcelComponent;
 import com.gmoon.springpoi.common.excel.annotation.ExcelProperty;
+import com.gmoon.springpoi.common.excel.exception.ExcelInvalidFileException;
+import com.gmoon.springpoi.common.excel.exception.SaxParseException;
 import com.gmoon.springpoi.common.excel.processor.CompositeEventListener;
 import com.gmoon.springpoi.common.excel.processor.EventListener;
 import com.gmoon.springpoi.common.excel.processor.ExcelBatchPostListener;
 import com.gmoon.springpoi.common.excel.processor.SaxRowEventListener;
 import com.gmoon.springpoi.common.excel.provider.ExcelValueProvider;
+import com.gmoon.springpoi.common.excel.sax.handler.SaxDataRowHandler;
 import com.gmoon.springpoi.common.excel.sax.handler.SaxXlsxSheetHandler;
 import com.gmoon.springpoi.common.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.common.excel.vo.ExcelCell;
@@ -49,6 +57,8 @@ import com.gmoon.springpoi.common.excel.vo.ExcelField;
 import com.gmoon.springpoi.common.excel.vo.ExcelModelMetadata;
 import com.gmoon.springpoi.common.excel.vo.ExcelRow;
 import com.gmoon.springpoi.common.excel.vo.ExcelSheet;
+import com.gmoon.springpoi.common.utils.ReflectionUtil;
+import com.gmoon.springpoi.excels.domain.ExcelSheetType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,8 +85,8 @@ public class ExcelHelper {
 
 			wb.write(out);
 			out.flush();
-		} catch (IOException | NullPointerException ex) {
-			throw new RuntimeException("Excel download error because : ", ex);
+		} catch (IOException e) {
+			throw new ExcelInvalidFileException("Excel download error because : ", e);
 		}
 	}
 
@@ -139,24 +149,20 @@ public class ExcelHelper {
 			ExcelField excelField = entry.getValue();
 
 			Field field = excelField.getField();
-			try {
-				Object fieldValue = field.get(data);
-				if (fieldValue == null) {
-					continue;
-				}
-
-				String cellValue = switch (fieldValue) {
-					case Integer i -> Integer.toString(i);
-					case Boolean b -> BooleanUtils.toString(b, "Y", "N");
-					case ExcelValueProvider provider -> provider.getExcelCellValue();
-					default -> String.valueOf(fieldValue);
-				};
-
-				Cell cell = row.createCell(cellColIdx);
-				cell.setCellValue(cellValue);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+			Object fieldValue = ReflectionUtil.getFieldValue(data, field);
+			if (fieldValue == null) {
+				continue;
 			}
+
+			String cellValue = switch (fieldValue) {
+				case Integer i -> Integer.toString(i);
+				case Boolean b -> BooleanUtils.toString(b, "Y", "N");
+				case ExcelValueProvider provider -> provider.getExcelCellValue();
+				default -> String.valueOf(fieldValue);
+			};
+
+			Cell cell = row.createCell(cellColIdx);
+			cell.setCellValue(cellValue);
 		}
 	}
 
@@ -203,8 +209,9 @@ public class ExcelHelper {
 	 *   <li><a href="https://github.com/apache/poi/blob/trunk/poi-examples/src/main/java/org/apache/poi/examples/xssf/eventusermodel/FromHowTo.java">Apache POI - Streaming Sample</a></li>
 	 * </ul>
 	 */
-	public <T> ExcelSheet<T> read(String filePath, Class<T> clazz) {
-		try (FileInputStream fis = new FileInputStream(filePath);
+	public <T> ExcelSheet<T> read(Path filePath, Class<T> clazz) {
+		try (
+			 InputStream fis = Files.newInputStream(filePath);
 			 XSSFWorkbook workbook = new XSSFWorkbook(fis)
 		) {
 			XSSFSheet sheet = workbook.getSheetAt(0);
@@ -229,18 +236,22 @@ public class ExcelHelper {
 			EventListener eventListener = ctx.getBean(ExcelBatchPostListener.class);
 			eventListener.onEvent(excelSheet);
 			return excelSheet;
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to read excel file.", e);
+		} catch (IOException e) {
+			throw new ExcelInvalidFileException(filePath);
 		}
 	}
 
 	public <T> ExcelSheet<T> readSAX(
-		 InputStream inputStream,
+		 Path filePath,
 		 Class<T> excelModelClass,
+		 int maxDataRows,
 		 String... excludeFieldName
 	) {
 		ExcelSheet<T> excelSheet = new ExcelSheet<>(ctx, excelModelClass, excludeFieldName);
-		try (OPCPackage pkg = OPCPackage.open(inputStream)) {
+		try (
+			 InputStream fis = Files.newInputStream(filePath);
+			 OPCPackage pkg = OPCPackage.open(fis)
+		) {
 			XSSFReader xssfReader = new XSSFReader(pkg);
 
 			EventListener evenListener = new CompositeEventListener(
@@ -252,7 +263,8 @@ public class ExcelHelper {
 				 xssfReader.getSharedStringsTable(),
 				 excelModelClass,
 				 excelSheet,
-				 evenListener
+				 evenListener,
+				 maxDataRows
 			));
 
 			Iterator<InputStream> sheets = xssfReader.getSheetsData();
@@ -263,8 +275,45 @@ public class ExcelHelper {
 				evenListener.onEvent(excelSheet);
 			}
 			return excelSheet;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (IOException | ParserConfigurationException | OpenXML4JException e) {
+			throw new ExcelInvalidFileException(filePath);
+		} catch (SAXException e) {
+			throw new SaxParseException(filePath, e);
+		}
+	}
+
+	public long getDataRows(
+		 Path filePath,
+		 ExcelSheetType sheetType,
+		 int maxDataRows,
+		 String... excludeFieldName
+	) {
+		try (
+			 InputStream fis = Files.newInputStream(filePath);
+			 OPCPackage pkg = OPCPackage.open(fis)
+		) {
+			XSSFReader xssfReader = new XSSFReader(pkg);
+
+			Class<?> excelModelClass = sheetType.excelModelClass;
+			ExcelModelMetadata metadata = new ExcelModelMetadata(excelModelClass, ctx, excludeFieldName);
+			XMLReader parser = XMLHelper.newXMLReader();
+			SaxDataRowHandler handler = new SaxDataRowHandler(
+				 xssfReader.getSharedStringsTable(),
+				 metadata,
+				 maxDataRows
+			);
+			parser.setContentHandler(handler);
+
+			Iterator<InputStream> sheets = xssfReader.getSheetsData();
+			while (sheets.hasNext()) {
+				InputStream sheet = sheets.next();
+				parser.parse(new InputSource(sheet));
+			}
+			return handler.getDataRows();
+		} catch (IOException | ParserConfigurationException | OpenXML4JException e) {
+			throw new ExcelInvalidFileException(filePath);
+		} catch (SAXException e) {
+			throw new SaxParseException(filePath, e);
 		}
 	}
 

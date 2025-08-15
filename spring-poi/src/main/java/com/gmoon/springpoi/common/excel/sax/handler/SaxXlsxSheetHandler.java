@@ -54,9 +54,10 @@ public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
 		 SharedStrings sst,
 		 Class<T> excelModelClass,
 		 ExcelSheet<T> excelSheet,
-		 EventListener eventListener
+		 EventListener eventListener,
+		 int maxDataRows
 	) {
-		super(sst, excelSheet.getMetadata());
+		super(sst, excelSheet.getMetadata(), maxDataRows, 0, maxDataRows);
 		this.excelModelClass = excelModelClass;
 		this.excelSheet = excelSheet;
 		this.eventListener = eventListener;

@@ -44,7 +44,7 @@ class XSSFSaxTest {
 		int dataSize = 100;
 		// int dataSize = 1_000;
 		// int dataSize = 10_000;
-		excelFilePath = Paths.get("src/test/resources/sample/sample-" + dataSize + ".xlsx");
+		excelFilePath = Paths.get("src/test/resources/sample/excel-user-" + dataSize + ".xlsx");
 	}
 
 	@Test

@@ -22,7 +22,7 @@ class ExcelUploadJobTest {
 		assertThat(job.getSignature()).as("Signature 해시 길이는 %d.", ColumnLength.SHA_256).hasSize(ColumnLength.SHA_256);
 
 		assertThat(job.getSheetType()).as("SheetType 값 검증").isEqualTo(sheetType);
-		assertThat(job.getStatus()).as("초기 상태는 REQUEST_RECEIVED").isEqualTo(ExcelUploadJobStatus.REQUEST_RECEIVED);
+		assertThat(job.getStatus()).as("초기 상태는 PREPARE").isEqualTo(ExcelUploadJobStatus.PREPARE);
 		assertThat(job.getTotalRows()).as("총 행 수 검증").isEqualTo(totalRows);
 		assertThat(job.getProcessedRows()).as("초기 processedRows 값은 0이어야 함").isZero();
 		assertThat(job.getInvalidRows()).as("초기 invalidRows 값은 0이어야 함").isZero();

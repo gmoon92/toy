@@ -49,4 +49,15 @@ public final class ReflectionUtil {
 	public static <T extends Annotation> T findAnnotation(Class<?> target, Class<T> annotationClass) {
 		return AnnotationUtils.findAnnotation(target, annotationClass);
 	}
+
+	public static Object getFieldValue(Object target, Field field) {
+		try {
+			return field.get(target);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(String.format(
+				 "Failed to get field '%s' by reflection from class '%s'.",
+				 field.getName(), target.getClass().getName()
+			), e);
+		}
+	}
 }
