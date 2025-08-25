@@ -1,4 +1,4 @@
-package com.gmoon.springpoi.base.persistence.vo;
+package com.gmoon.springpoi.excels.domain.vo;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,13 +16,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 @Setter
-public class JsonString implements Serializable {
+public class ExcelCellValues implements Serializable {
+
 	@Serial
-	private static final long serialVersionUID = -6508262878304429668L;
+	private static final long serialVersionUID = -6828436071974441655L;
 
-	private Map<String, String> values = new HashMap<>();
+	private Map<Integer, String> values = new HashMap<>();
 
-	public JsonString(String jsonString) {
+	public ExcelCellValues(Map<Integer, String> values) {
+		this.values = values;
+	}
+
+	public ExcelCellValues(String jsonString) {
 		if (jsonString == null || jsonString.isEmpty()) {
 			values = new HashMap<>();
 		} else {
@@ -35,11 +40,11 @@ public class JsonString implements Serializable {
 		return values == null || values.isEmpty();
 	}
 
-	public String get(String key) {
+	public String get(int key) {
 		return values.get(key);
 	}
 
-	public void put(String key, String value) {
+	public void put(int key, String value) {
 		values.put(key, value);
 	}
 

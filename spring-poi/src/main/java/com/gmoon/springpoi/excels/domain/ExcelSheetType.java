@@ -1,30 +1,44 @@
 package com.gmoon.springpoi.excels.domain;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.gmoon.springpoi.common.excel.annotation.ExcelProperty;
+import com.gmoon.springpoi.common.excel.processor.ExcelRowProcessor;
+import com.gmoon.springpoi.common.excel.processor.UserExcelCreateService;
+import com.gmoon.springpoi.common.excel.vo.BaseExcelModel;
 import com.gmoon.springpoi.common.utils.DigestUtil;
 import com.gmoon.springpoi.common.utils.ReflectionUtil;
 import com.gmoon.springpoi.users.model.ExcelUserVO;
 
-public enum ExcelSheetType {
-	USER(ExcelUserVO.class);
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-	public final Class<?> excelModelClass;
-	public final String signature;
+@RequiredArgsConstructor
+@Getter
+public enum ExcelSheetType implements Serializable {
+	USER(ExcelUserVO.class, UserExcelCreateService.class);
 
-	ExcelSheetType(Class<?> clazz) {
-		this.excelModelClass = clazz;
-		this.signature = generateSignature(clazz);
+	private final Class<? extends BaseExcelModel> excelModelClass;
+	private final Class<? extends ExcelRowProcessor<?>> excelRowProcessorClass;
+	private final String signature;
+
+	<T extends BaseExcelModel> ExcelSheetType(
+		 Class<T> excelModelClass,
+		 Class<? extends ExcelRowProcessor<T>> excelRowProcessorClass
+	) {
+		this.excelModelClass = excelModelClass;
+		this.signature = generateSignature(excelModelClass);
+		this.excelRowProcessorClass = excelRowProcessorClass;
 	}
 
 	private String generateSignature(Class<?> clazz) {
 		String filedMetaString = ReflectionUtil.getFieldMap(
 				  clazz,
 				  field -> field.getAnnotation(ExcelProperty.class) != null,
-				  field -> {
+				  (idx, field) -> {
 					  ExcelProperty ann = field.getAnnotation(ExcelProperty.class);
 					  boolean required = ann.required();
 					  String title = ann.title();
