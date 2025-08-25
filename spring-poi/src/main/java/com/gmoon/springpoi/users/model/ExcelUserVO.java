@@ -1,5 +1,7 @@
 package com.gmoon.springpoi.users.model;
 
+import java.io.Serial;
+
 import com.gmoon.springpoi.common.excel.annotation.ExcelModel;
 import com.gmoon.springpoi.common.excel.annotation.ExcelProperty;
 import com.gmoon.springpoi.common.excel.converter.common.StringToIntegerConverter;
@@ -12,6 +14,7 @@ import com.gmoon.springpoi.common.excel.validator.users.UseGenderValidator;
 import com.gmoon.springpoi.common.excel.validator.users.UserEmailValidator;
 import com.gmoon.springpoi.common.excel.validator.users.UserRoleValidator;
 import com.gmoon.springpoi.common.excel.validator.users.UsernameValidator;
+import com.gmoon.springpoi.common.excel.vo.BaseExcelModel;
 import com.gmoon.springpoi.users.domain.Role;
 
 import lombok.Getter;
@@ -20,7 +23,10 @@ import lombok.ToString;
 @ExcelModel
 @Getter
 @ToString
-public class ExcelUserVO {
+public class ExcelUserVO extends BaseExcelModel {
+
+	@Serial
+	private static final long serialVersionUID = -4927708429575302180L;
 
 	@ExcelProperty(
 		 title = "사용자 아이디",

@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import org.springframework.core.annotation.AnnotationUtils;
@@ -32,7 +32,7 @@ public final class ReflectionUtil {
 	public static <T> Map<Integer, T> getFieldMap(
 		 Class<?> targetClass,
 		 Predicate<Field> filter,
-		 Function<Field, T> mapper
+		 BiFunction<Integer, Field, T> mapper
 	) {
 		Map<Integer, T> result = new LinkedHashMap<>();
 		int index = 0;
@@ -40,7 +40,8 @@ public final class ReflectionUtil {
 		for (Field field : fields) {
 			if (filter.test(field)) {
 				field.setAccessible(true);
-				result.put(index++, mapper.apply(field));
+				int fieldIndex = index++;
+				result.put(fieldIndex, mapper.apply(fieldIndex, field));
 			}
 		}
 		return Collections.unmodifiableMap(result);

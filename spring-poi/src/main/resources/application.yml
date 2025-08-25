@@ -4,24 +4,24 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: jdbc:mysql://localhost:3306/spring_poi?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
-    url: jdbc:mysql://localhost:3306/spring_poi?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/spring_poi?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    #    url: jdbc:mysql://localhost:3306/spring_poi?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 111111
 
   jpa:
     open-in-view: false
     generate-ddl: true
-#    HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-#    database-platform: org.hibernate.dialect.MySQLDialect
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.MySQLDialect
-
-logging:
-  level:
-    "[com.gmoon.springpoi.excel.validator]": DEBUG
-    "[com.gmoon.springpoi.excel.sax.handler]": WARN
+    show-sql: true
+    #    HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+    #    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        #        dialect: org.hibernate.dialect.MySQLDialect
+        #        use_sql_comments: true
+        #        format_sql: true
+        show_sql: true
+        highlight_sql: true
 
 service:
   validation:
@@ -31,5 +31,16 @@ service:
 
   excel:
     upload:
+      storage-path: "src/test/resources/excelupload"
       max-rows: 1_000
       chunk-size: 100
+
+logging:
+  level:
+    "[com.gmoon]": TRACE
+    "[com.gmoon.springpoi.common.excel.sax.handler.AbstractSaxXlsxSheetHandler]": WARN
+
+    "[org.hibernate.SQL]": DEBUG
+    "[org.hibernate.orm.jdbc.bind]": TRACE
+    #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    MYSQL: TRACE

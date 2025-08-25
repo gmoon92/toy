@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +18,7 @@ public class ExcelModelMetadata {
 	private final ExcelModel excelModel;
 	private final Map<Integer, ExcelField> value;
 
-	public ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
+	ExcelModelMetadata(Class<?> excelModelClass, ApplicationContext ctx, String... excludeFieldName) {
 		excelModel = getExcelModel(excelModelClass);
 		value = ReflectionUtil.getFieldMap(
 			 excelModelClass,
@@ -27,7 +26,7 @@ public class ExcelModelMetadata {
 				 ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
 				 return annotation != null && !isExcludeField(field, excludeFieldName);
 			 },
-			 field -> new ExcelField(field, ctx)
+			 (idx, field) -> new ExcelField(idx, field, ctx)
 		);
 
 		if (value.isEmpty()) {
@@ -35,10 +34,6 @@ public class ExcelModelMetadata {
 				 String.format("@ExcelProperty annotation not found in class %s", excelModelClass.getName())
 			);
 		}
-	}
-
-	public ExcelField getExcelField(int cellColIdx) {
-		return value.get(cellColIdx);
 	}
 
 	public List<ExcelBatchValidator> getAllBatchValidators() {
@@ -73,7 +68,7 @@ public class ExcelModelMetadata {
 		return excelModel.sheetName();
 	}
 
-	public Set<Map.Entry<Integer, ExcelField>> entrySet() {
-		return value.entrySet();
+	public Collection<ExcelField> getExcelFields() {
+		return value.values();
 	}
 }

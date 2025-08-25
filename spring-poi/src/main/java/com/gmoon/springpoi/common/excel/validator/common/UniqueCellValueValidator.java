@@ -7,6 +7,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import com.gmoon.springpoi.common.excel.annotation.ExcelComponent;
 import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
+import com.gmoon.springpoi.common.excel.vo.ExcelErrorMessage;
 
 @ExcelComponent(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
 public class UniqueCellValueValidator implements ExcelValidator {
@@ -20,5 +21,10 @@ public class UniqueCellValueValidator implements ExcelValidator {
 
 		values.add(cellValue);
 		return true;
+	}
+
+	@Override
+	public ExcelErrorMessage getErrorMessage() {
+		return new ExcelErrorMessage("사용자");
 	}
 }

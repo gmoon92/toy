@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class ExcelUploadProperty {
+	private final String storagePath;
 	private final int maxRows;
 	private final int chunkSize;
 }

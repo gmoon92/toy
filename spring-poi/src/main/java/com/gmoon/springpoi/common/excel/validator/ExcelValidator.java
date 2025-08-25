@@ -1,6 +1,5 @@
 package com.gmoon.springpoi.common.excel.validator;
 
-@FunctionalInterface
-public interface ExcelValidator {
+public interface ExcelValidator extends ExcelValidationErrorMessage {
 	boolean isValid(String cellValue);
 }

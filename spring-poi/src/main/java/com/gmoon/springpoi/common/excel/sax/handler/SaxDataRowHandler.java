@@ -1,4 +1,3 @@
-
 package com.gmoon.springpoi.common.excel.sax.handler;
 
 import java.util.Map;
@@ -13,15 +12,15 @@ public class SaxDataRowHandler extends AbstractSaxXlsxSheetHandler {
 		 ExcelModelMetadata metadata,
 		 long maxDataRows
 	) {
-		super(sst, metadata, maxDataRows, 0, maxDataRows);
+		super(sst, metadata, 0, maxDataRows);
 	}
 
 	@Override
-	public void handle(int rowIdx, Map<Integer, String> cellValues) {
+	public void handle(long rowIdx, Map<Integer, String> cellValues) {
 		/* noop */
 	}
 
 	public long getDataRows() {
-		return dataRows;
+		return dataRowIdx;
 	}
 }

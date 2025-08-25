@@ -16,11 +16,15 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Builder
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
@@ -44,10 +48,21 @@ public class User implements UserDetails {
 	@Column(length = ColumnLength.ENUM, nullable = false)
 	private Role role;
 
-	public User(String username, String password, Role role) {
-		this.username = username;
-		this.password = password;
-		this.role = role;
+	@Column(nullable = false)
+	private Integer gender;
+
+	@Column(length = ColumnLength.EMAIL, nullable = false)
+	private String email;
+
+	@Column(nullable = false)
+	private boolean enabled;
+
+	public static UserBuilder builder(String username, String password, Role role) {
+		return new UserBuilder()
+			 .username(username)
+			 .password(password)
+			 .role(role)
+			 .enabled(true);
 	}
 
 	public boolean isAdmin() {
@@ -57,5 +72,20 @@ public class User implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(role);
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return enabled;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return enabled;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return enabled;
 	}
 }

@@ -9,10 +9,10 @@ import lombok.Getter;
 
 @Getter
 public class ExcelRow<T> {
-	private final int rowIdx;
+	private final long rowIdx;
 	private final T excelVO;
 
-	ExcelRow(int rowIdx, Class<T> clazz) {
+	ExcelRow(long rowIdx, Class<T> clazz) {
 		this.rowIdx = rowIdx;
 		this.excelVO = ReflectionUtil.newInstance(clazz);
 	}

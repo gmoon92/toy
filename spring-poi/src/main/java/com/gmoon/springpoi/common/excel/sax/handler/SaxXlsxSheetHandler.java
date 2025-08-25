@@ -1,17 +1,22 @@
-
 package com.gmoon.springpoi.common.excel.sax.handler;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.xssf.model.SharedStrings;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.gmoon.springpoi.common.excel.processor.EventListener;
+import com.gmoon.springpoi.common.excel.validator.ExcelBatchValidator;
+import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
+import com.gmoon.springpoi.common.excel.vo.BaseExcelModel;
 import com.gmoon.springpoi.common.excel.vo.ExcelCell;
 import com.gmoon.springpoi.common.excel.vo.ExcelField;
+import com.gmoon.springpoi.common.excel.vo.ExcelInvalidRow;
 import com.gmoon.springpoi.common.excel.vo.ExcelModelMetadata;
 import com.gmoon.springpoi.common.excel.vo.ExcelRow;
 import com.gmoon.springpoi.common.excel.vo.ExcelSheet;
+import com.gmoon.springpoi.excels.domain.vo.ExcelCellValues;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,45 +48,63 @@ import lombok.extern.slf4j.Slf4j;
  * @author gmoon
  */
 @Slf4j
-public class SaxXlsxSheetHandler<T> extends AbstractSaxXlsxSheetHandler {
-	private static final int ACCESS_WINDOWS = 1_000;
-
-	private final Class<T> excelModelClass;
+public class SaxXlsxSheetHandler<T extends BaseExcelModel> extends AbstractSaxXlsxSheetHandler {
 	private final ExcelSheet<T> excelSheet;
-	private final EventListener eventListener;
+	private final RowCallbackHandler<T> rowCallbackHandler;
 
 	public SaxXlsxSheetHandler(
 		 SharedStrings sst,
-		 Class<T> excelModelClass,
 		 ExcelSheet<T> excelSheet,
-		 EventListener eventListener,
-		 int maxDataRows
+		 RowCallbackHandler<T> rowCallbackHandler,
+		 long startRowIdx,
+		 long endRowIdx
 	) {
-		super(sst, excelSheet.getMetadata(), maxDataRows, 0, maxDataRows);
-		this.excelModelClass = excelModelClass;
+		super(sst, excelSheet.getMetadata(), startRowIdx, endRowIdx);
 		this.excelSheet = excelSheet;
-		this.eventListener = eventListener;
+		this.rowCallbackHandler = rowCallbackHandler;
 	}
 
 	@Override
-	public void handle(int rowIdx, Map<Integer, String> cellValues) {
-		ExcelRow<T> excelRow = excelSheet.createRow(rowIdx, excelModelClass);
+	public void handle(long dataRowIdx, Map<Integer, String> cellValues) {
+		ExcelRow<T> excelRow = excelSheet.createRow(dataRowIdx);
 
 		ExcelModelMetadata metadata = excelSheet.getMetadata();
-		for (Map.Entry<Integer, ExcelField> entry : metadata.entrySet()) {
-			ExcelField excelField = entry.getValue();
-			int cellColIdx = entry.getKey();
+		for (ExcelField excelField : metadata.getExcelFields()) {
+			int cellColIdx = excelField.getCellColIndex();
 			String cellValue = cellValues.get(cellColIdx);
+			excelSheet.addOriginValue(dataRowIdx, cellColIdx, cellValue);
 
-			if (excelField.isValidCellValue(cellValue)) {
+			List<ExcelValidator> failedValidators = excelField.getFailedValidators(cellValue);
+			boolean validCellValue = failedValidators.isEmpty();
+			if (validCellValue) {
 				excelRow.setFieldValue(excelField, cellValue);
+
+				List<ExcelBatchValidator> batchValidators = excelField.getBatchValidators();
+				for (ExcelBatchValidator validator : batchValidators) {
+					validator.collect(dataRowIdx, cellColIdx, cellValue);
+					validator.flushBufferIfNeeded(excelSheet::addInvalidRows);
+				}
 			} else {
-				excelSheet.addInvalidRow(rowIdx, new ExcelCell(cellColIdx, cellValue));
+				excelSheet.addInvalidRow(dataRowIdx, new ExcelCell(cellColIdx, cellValue, failedValidators));
 			}
 		}
 
-		if (rowIdx % ACCESS_WINDOWS == 0) {
-			eventListener.onEvent(excelSheet);
+		if (isLastDataRow()) {
+			flushBatchValidation(excelSheet);
+
+			Map<Long, ExcelCellValues> originRows = excelSheet.getOriginRows();
+			Set<ExcelRow<T>> rows = excelSheet.getRows();
+			Set<ExcelInvalidRow> invalidRows = excelSheet.getInvalidRows();
+			rowCallbackHandler.handle(originRows, rows, invalidRows);
+		}
+	}
+
+	private void flushBatchValidation(ExcelSheet<T> excelSheet) {
+		ExcelModelMetadata metadata = excelSheet.getMetadata();
+
+		List<ExcelBatchValidator> allValidators = metadata.getAllBatchValidators();
+		for (ExcelBatchValidator validator : allValidators) {
+			validator.flush(excelSheet::addInvalidRows);
 		}
 	}
 }

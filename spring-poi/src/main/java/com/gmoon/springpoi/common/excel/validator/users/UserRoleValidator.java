@@ -4,9 +4,10 @@ import java.util.EnumSet;
 
 import com.gmoon.springpoi.common.excel.annotation.ExcelComponent;
 import com.gmoon.springpoi.common.excel.validator.ExcelEnumValidator;
-import com.gmoon.springpoi.common.utils.SecurityUtil;
+import com.gmoon.springpoi.common.excel.vo.ExcelErrorMessage;
+import com.gmoon.springpoi.common.excel.vo.ExcelUploadContext;
+import com.gmoon.springpoi.common.excel.vo.ExcelUploadContextHolder;
 import com.gmoon.springpoi.users.domain.Role;
-import com.gmoon.springpoi.users.domain.User;
 
 @ExcelComponent
 public class UserRoleValidator extends ExcelEnumValidator<Role> {
@@ -21,8 +22,13 @@ public class UserRoleValidator extends ExcelEnumValidator<Role> {
 			return false;
 		}
 
-		User user = SecurityUtil.getCurrentUser();
-		return user.isAdmin()
+		ExcelUploadContext context = ExcelUploadContextHolder.getContext();
+		return context.isAdminUser()
 			 && EnumSet.of(Role.MANAGER, Role.USER).contains(role);
+	}
+
+	@Override
+	public ExcelErrorMessage getErrorMessage() {
+		return new ExcelErrorMessage("사용자 역할이 잘못 입력됐습니다.");
 	}
 }

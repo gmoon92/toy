@@ -1,6 +1,6 @@
-
 package com.gmoon.springpoi.common.excel.sax.handler;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,7 +9,6 @@ import org.apache.poi.xssf.model.SharedStrings;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.gmoon.springpoi.common.excel.exception.ExcelExceedRowLimitException;
 import com.gmoon.springpoi.common.excel.exception.SaxReadRangeOverflowException;
 import com.gmoon.springpoi.common.excel.sax.SaxCell;
 import com.gmoon.springpoi.common.excel.sax.XlsxOoxml;
@@ -57,8 +56,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
-	private static final long UNLIMITED_ROWS = -1;
-
 	private final LruCache<Integer, String> sharedStringCache = new LruCache<>(50);
 	private final SharedStrings sharedStringsTable;
 	private final ExcelModelMetadata metadata;
@@ -67,8 +64,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private final StringBuilder textBuffer = new StringBuilder();
 	private String currentContents;
 
-	private final long maxDataRows;
-	protected long dataRows;
+	protected long dataRowIdx;
 	protected long startRowIdx;
 	protected long endRowIdx;
 
@@ -79,7 +75,6 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	protected AbstractSaxXlsxSheetHandler(
 		 SharedStrings sst,
 		 ExcelModelMetadata metadata,
-		 long maxDataRows,
 		 long startRowIdx,
 		 long endRowIdx
 	) {
@@ -87,13 +82,12 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 		this.metadata = metadata;
 		this.cellValues = new HashMap<>();
 		this.currentCell = SaxCell.EMPTY;
-		this.dataRows = 0;
+		this.dataRowIdx = 0;
 		this.startRowIdx = startRowIdx;
 		this.endRowIdx = endRowIdx;
-		this.maxDataRows = maxDataRows;
 	}
 
-	public abstract void handle(int rowIdx, Map<Integer, String> cellValues);
+	public abstract void handle(long rowIdx, Map<Integer, String> cellValues);
 
 	@Override
 	public void startElement(
@@ -210,21 +204,20 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 */
 	private void handleRowEnd() {
 		if (isCurrentRowInDataArea() && !blankRow) {
-			if (startRowIdx <= dataRows && dataRows < endRowIdx) {
-				handle(currentRowIdx, cellValues);
+			if (startRowIdx <= dataRowIdx && dataRowIdx < endRowIdx) {
+				handle(dataRowIdx, cellValues);
 			} else {
-				throw new SaxReadRangeOverflowException(dataRows, startRowIdx, endRowIdx);
+				throw new SaxReadRangeOverflowException(dataRowIdx, startRowIdx, endRowIdx);
 			}
-			dataRows++;
+			dataRowIdx++;
 		}
 
-		boolean exceed = maxDataRows != UNLIMITED_ROWS
-			 && dataRows > maxDataRows;
-		if (exceed) {
-			throw new ExcelExceedRowLimitException(maxDataRows);
-		}
 		cellValues.clear();
 		log.trace("======================[ROW END   {}]======================", currentRowIdx);
+	}
+
+	protected boolean isLastDataRow() {
+		return dataRowIdx == endRowIdx - 1;
 	}
 
 	private void handleCellEnd() {
@@ -318,6 +311,9 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	 */
 	@EqualsAndHashCode(of = "maxEntries", callSuper = false)
 	private static class LruCache<A, B> extends LinkedHashMap<A, B> {
+		@Serial
+		private static final long serialVersionUID = 8977516835965874861L;
+
 		private final int maxEntries;
 
 		public LruCache(final int maxEntries) {

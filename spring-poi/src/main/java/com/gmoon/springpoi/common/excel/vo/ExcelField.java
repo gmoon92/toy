@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -14,6 +15,7 @@ import com.gmoon.springpoi.common.excel.annotation.ExcelProperty;
 import com.gmoon.springpoi.common.excel.converter.ExcelConverter;
 import com.gmoon.springpoi.common.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
+import com.gmoon.springpoi.common.excel.validator.common.RequiredValueValidator;
 import com.gmoon.springpoi.common.utils.ReflectionUtil;
 
 import lombok.Getter;
@@ -22,13 +24,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class ExcelField {
+	private final int cellColIndex;
 	private final Field field;
 	private final boolean required;
 	private final List<ExcelValidator> validators;
 	private final List<ExcelBatchValidator> batchValidators;
 	private final ExcelConverter<?> converter;
 
-	ExcelField(Field field, ApplicationContext ctx) {
+	ExcelField(int cellColIndex, Field field, ApplicationContext ctx) {
+		this.cellColIndex = cellColIndex;
 		this.field = field;
 
 		ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
@@ -59,22 +63,27 @@ public class ExcelField {
 			 : ctx.getBean(clazz);
 	}
 
-	public boolean isValidCellValue(String cellValue) {
+	public List<ExcelValidator> getFailedValidators(String cellValue) {
 		boolean shouldSkipValidation = !isRequired() && cellValue == null;
 		if (shouldSkipValidation) {
-			return true;
+			return Collections.emptyList();
+		}
+
+		if (isRequired() && StringUtils.isBlank(cellValue)) {
+			return Collections.singletonList(RequiredValueValidator.INSTANCE);
 		}
 
 		return getValidators()
 			 .stream()
 			 .filter(validator -> !validator.isValid(cellValue))
-			 .peek(validator -> log.debug("[excel validation failed] validator={}, {}={}",
-				  validator,
-				  getFieldName(),
-				  cellValue
-			 ))
-			 .findFirst()
-			 .isEmpty();
+			 .peek(validator -> log.debug(
+					   "[excel validation failed] validator: {}, {}: {}",
+					   validator,
+					   getFieldName(),
+					   cellValue
+				  )
+			 )
+			 .toList();
 	}
 
 	public String getFieldName() {

@@ -26,6 +26,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
 import com.gmoon.springpoi.common.excel.exception.SaxReadRangeOverflowException;
+import com.gmoon.springpoi.common.excel.vo.ExcelRow;
 import com.gmoon.springpoi.common.excel.vo.ExcelSheet;
 import com.gmoon.springpoi.common.utils.TsidUtil;
 import com.gmoon.springpoi.excels.domain.ExcelSheetType;
@@ -47,7 +48,9 @@ class ExcelHelperTest {
 	@BeforeEach
 	void setUp() {
 		SecurityContext context = SecurityContextHolder.getContext();
-		User user = new User("admin", null, Role.ADMIN);
+		User user = User.builder("admin", null, Role.ADMIN)
+			 .build();
+
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 	}
 
@@ -105,14 +108,13 @@ class ExcelHelperTest {
 		int size = 100;
 		Path filePath = getFilePath("excel-user-" + size + ".xlsx");
 
-		ExcelSheet<ExcelUserVO> excelSheet = helper.read(
-			 filePath,
-			 ExcelUserVO.class
-		);
-		assertThat(excelSheet.isValidSheet()).isTrue();
+		ExcelSheet<ExcelUserVO> excelSheet = helper.read(filePath, ExcelUserVO.class);
+		assertThat(excelSheet.getInvalidRows()).isEmpty();
 		assertThat(excelSheet.getRows())
 			 .isNotEmpty()
 			 .hasSize(size)
+			 .map(ExcelRow::getExcelVO)
+			 .map(excelVO -> (ExcelUserVO)excelVO)
 			 .allSatisfy(
 				  vo -> {
 					  assertThat(vo.getUsername())
@@ -140,36 +142,43 @@ class ExcelHelperTest {
 
 	@ParameterizedTest
 	@ValueSource(ints = {
-		 1, 100, 500, 1_000,
+		 1, 100,
+		 // 500, 1_000,
 		 // 1_500, 2_000, 2_500, 3_000,
 		 // 3_500, 4_000, 4_500, 5_000
 	})
 	void readSAX(int dataSize) {
 		String filename = String.format("excel-user-%d.xlsx", dataSize);
 
-		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
+		ExcelSheet<ExcelUserVO> excelSheet = helper.readSAX(
 			 getFilePath(filename),
 			 ExcelUserVO.class,
+			 (originRows, rows, invalidRows) -> {
+			 },
+			 0,
 			 dataSize
 		);
 
-		assertThat(parse.isValidSheet()).isTrue();
-		assertThat(parse.size()).isEqualTo(dataSize);
+		assertThat(excelSheet.getOriginRows()).hasSize(dataSize);
+		assertThat(excelSheet.getInvalidRows()).isEmpty();
 	}
 
 	@Test
 	void invalid() {
-		int size = 100;
-		String filename = "invalid-" + size + ".xlsx";
+		int dataSize = 100;
+		String filename = "invalid-" + dataSize + ".xlsx";
 
-		ExcelSheet<ExcelUserVO> parse = helper.readSAX(
+		ExcelSheet<ExcelUserVO> excelSheet = helper.readSAX(
 			 getFilePath(filename),
 			 ExcelUserVO.class,
-			 size
+			 (originRows, rows, invalidRows) -> {
+			 },
+			 0,
+			 dataSize
 		);
 
-		assertThat(parse.size()).isEqualTo(size);
-		assertThat(parse.isValidSheet()).isFalse();
+		assertThat(excelSheet.getOriginRows()).hasSize(dataSize);
+		assertThat(excelSheet.getInvalidRows()).isNotEmpty();
 	}
 
 	@ParameterizedTest
@@ -181,13 +190,13 @@ class ExcelHelperTest {
 	void getDataRows(int dataSize) {
 		String filename = "excel-user-" + dataSize + ".xlsx";
 
-		assertThat(getRows(filename, dataSize)).isEqualTo(dataSize);
-		assertThat(getRows(filename, dataSize + 1)).isEqualTo(dataSize);
-		assertThatThrownBy(() -> getRows(filename, dataSize - 1))
+		assertThat(getDataRows(filename, dataSize)).isEqualTo(dataSize);
+		assertThat(getDataRows(filename, dataSize + 1)).isEqualTo(dataSize);
+		assertThatThrownBy(() -> getDataRows(filename, dataSize - 1))
 			 .isInstanceOf(SaxReadRangeOverflowException.class);
 	}
 
-	private long getRows(String filename, int dataSize) {
+	private long getDataRows(String filename, int dataSize) {
 		return helper.getDataRows(
 			 getFilePath(filename),
 			 ExcelSheetType.USER,

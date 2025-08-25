@@ -7,5 +7,5 @@ import com.gmoon.springpoi.common.excel.vo.ExcelCell;
 
 @FunctionalInterface
 public interface ExcelFlushable {
-	void flush(Consumer<Map<Integer, ExcelCell>> invalidRowHandler);
+	void flush(Consumer<Map<Long, ExcelCell>> invalidRowHandler);
 }

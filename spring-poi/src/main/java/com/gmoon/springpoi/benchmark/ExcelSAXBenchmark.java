@@ -77,7 +77,8 @@ public class ExcelSAXBenchmark {
 		}
 
 		SecurityContext context = SecurityContextHolder.getContext();
-		User user = new User("admin", null, Role.ADMIN);
+		User user = User.builder("admin", null, Role.ADMIN)
+			 .build();
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 	}
 
@@ -95,6 +96,9 @@ public class ExcelSAXBenchmark {
 		helper.readSAX(
 			 getFilePath(),
 			 ExcelUserVO.class,
+			 (originRows, rows, invalidRows) -> {
+			 },
+			 0,
 			 1_000
 		);
 	}

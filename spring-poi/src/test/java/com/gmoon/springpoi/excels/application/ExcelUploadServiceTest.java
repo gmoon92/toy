@@ -3,10 +3,17 @@ package com.gmoon.springpoi.excels.application;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,8 +22,11 @@ import com.gmoon.springpoi.common.excel.exception.NotFoundExcelFileException;
 import com.gmoon.springpoi.common.excel.exception.SaxReadRangeOverflowException;
 import com.gmoon.springpoi.common.exception.InvalidFileException;
 import com.gmoon.springpoi.excels.domain.ExcelSheetType;
-import com.gmoon.springpoi.excels.domain.ExcelUploadJob;
+import com.gmoon.springpoi.excels.domain.ExcelUploadTask;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @SpringBootTest
 class ExcelUploadServiceTest {
 
@@ -36,10 +46,10 @@ class ExcelUploadServiceTest {
 			String filename = "excel-user-" + dataSize + ".xlsx";
 			File excelFile = getUploadedFile(filename);
 
-			ExcelUploadJob upload = service.upload(excelFile, ExcelSheetType.USER);
+			ExcelUploadTask task = service.upload(excelFile, ExcelSheetType.USER, Locale.KOREA, "Asia/Seoul");
 
-			assertThat(upload.getSheetType()).isEqualTo(ExcelSheetType.USER);
-			assertThat(upload.getTasks()).isNotEmpty();
+			assertThat(task.getSheetType()).isEqualTo(ExcelSheetType.USER);
+			assertThat(task.getChunks()).isNotEmpty();
 		}
 
 		@DisplayName("빈 파일 케이스")
@@ -47,7 +57,7 @@ class ExcelUploadServiceTest {
 		void uploadEmptyFile() {
 			File emptyFile = getUploadedFile("excel-user-empty.xlsx");
 
-			assertThatThrownBy(() -> service.upload(emptyFile, ExcelSheetType.USER))
+			assertThatThrownBy(() -> service.upload(emptyFile, ExcelSheetType.USER, Locale.KOREA, "Asia/Seoul"))
 				 .isInstanceOf(ExcelEmptyDataRowException.class);
 		}
 
@@ -56,7 +66,7 @@ class ExcelUploadServiceTest {
 		void uploadNonExistingFile() {
 			File file = getUploadedFile("not-exist.xlsx");
 
-			assertThatThrownBy(() -> service.upload(file, ExcelSheetType.USER))
+			assertThatThrownBy(() -> service.upload(file, ExcelSheetType.USER, Locale.KOREA, "Asia/Seoul"))
 				 .isInstanceOf(NotFoundExcelFileException.class);
 		}
 
@@ -65,7 +75,7 @@ class ExcelUploadServiceTest {
 		void uploadNotExcelFile() {
 			File notExcel = getUploadedFile("fake.txt");
 
-			assertThatThrownBy(() -> service.upload(notExcel, ExcelSheetType.USER))
+			assertThatThrownBy(() -> service.upload(notExcel, ExcelSheetType.USER, Locale.KOREA, "Asia/Seoul"))
 				 .isInstanceOf(InvalidFileException.class);
 		}
 
@@ -74,7 +84,7 @@ class ExcelUploadServiceTest {
 		void uploadCorruptedFile() {
 			File corrupted = getUploadedFile("corrupted.xlsx");
 
-			assertThatThrownBy(() -> service.upload(corrupted, ExcelSheetType.USER))
+			assertThatThrownBy(() -> service.upload(corrupted, ExcelSheetType.USER, Locale.KOREA, "Asia/Seoul"))
 				 .isInstanceOf(InvalidFileException.class);
 		}
 
@@ -83,8 +93,76 @@ class ExcelUploadServiceTest {
 		void uploadFileWithTooManyRows() {
 			File file = getUploadedFile("excel-user-5000.xlsx");
 
-			assertThatThrownBy(() -> service.upload(file, ExcelSheetType.USER))
+			assertThatThrownBy(() -> service.upload(file, ExcelSheetType.USER, Locale.KOREA, "Asia/Seoul"))
 				 .isInstanceOf(SaxReadRangeOverflowException.class);
 		}
+	}
+
+	@Disabled
+	@ParameterizedTest
+	@ValueSource(ints = {
+		 100,
+		 // 500, 1000, 1500, 2000,
+		 // 100, 500, 1000, 1500, 2000,
+		 // 2500, 3500, 4000, 4500, 5000,
+		 // 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000,
+		 // 15000, 20000, 25000, 30000,
+		 // 35000, 40000, 45000, 50000,
+	})
+	void processExcelChunks(int dataRowCount) {
+		String filename = "excel-user-" + dataRowCount + ".xlsx";
+		Path excelFilePath = Paths.get("src/test/resources/sample/", filename);
+		File file = excelFilePath.toFile();
+
+		ExcelUploadTask task = processing(file, dataRowCount);
+
+		assertThat(task.getInvalidRowCount()).isZero();
+	}
+
+	private ExcelUploadTask processing(File file, int dataRowCount) {
+		ExcelUploadTask task = service.upload(
+			 file,
+			 ExcelSheetType.USER,
+			 Locale.KOREA,
+			 "Asia/Seoul"
+		);
+
+		CompletableFuture<Void> futures = CompletableFuture.allOf(
+			 task.getChunks()
+				  .stream()
+				  .map(chunk ->
+					   CompletableFuture.runAsync(() -> {
+								service.startProcessing(task.getId(), chunk.getId());
+
+								service.processing(chunk.getId());
+
+								ExcelUploadTask result = service.updateTaskSummary(chunk.getId());
+								log.info(
+									 "update summary task status: {}(completed {}), processed rows: {}, invalid rows: {}.",
+									 result.getStatus(),
+									 result.isCompleted(),
+									 result.getProcessedRowCount(),
+									 result.getInvalidRowCount()
+								);
+							}
+					   )
+				  )
+				  .toArray(CompletableFuture[]::new)
+		);
+		futures.join();
+
+		ExcelUploadTask result = service.getTask(task.getId());
+		log.info("task completed successfully.: {}, {}, {}",
+			 result.getId(),
+			 result.getProcessedRowCount(),
+			 result.getInvalidRowCount()
+		);
+		assertThat(result).isNotNull();
+		assertThat(result.getTotalRowCount()).isEqualTo(dataRowCount);
+		assertThat(result.getTotalRowCount()).isEqualTo(result.getProcessedRowCount() + result.getInvalidRowCount());
+		assertThat(result.getProcessedRowCount()).isGreaterThanOrEqualTo(0);
+		assertThat(result.getInvalidRowCount()).isGreaterThanOrEqualTo(0);
+		assertThat(result.isCompleted()).isTrue();
+		return result;
 	}
 }
