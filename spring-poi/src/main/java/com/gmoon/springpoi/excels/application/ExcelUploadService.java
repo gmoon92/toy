@@ -88,8 +88,7 @@ public class ExcelUploadService {
 	private void uploadExcelFile(ExcelUploadTask task, File originalFile) {
 		String filename = task.getFilename();
 		Path storagePath = Paths.get(property.getStoragePath());
-		Path excelUploadPath = task.getExcelUploadPath();
-		Path target = storagePath.resolve(excelUploadPath);
+		Path target = task.getExcelUploadPath(storagePath);
 		try {
 			Path parent = target.getParent();
 			Files.createDirectories(parent);
@@ -208,6 +207,22 @@ public class ExcelUploadService {
 	public ExcelUploadTask updateTaskSummary(String chunkId) {
 		ExcelUploadTaskChunk chunk = taskService.completeChunk(chunkId);
 
-		return taskService.updateTaskSummary(chunk.getTaskId());
+		ExcelUploadTask task = taskService.updateTaskSummary(chunk.getTaskId());
+		removeExcelFile(task);
+		return task;
+	}
+
+	private void removeExcelFile(ExcelUploadTask task) {
+		if (!task.isCompleted()) {
+			return;
+		}
+
+		try {
+			Path storagePath = Paths.get(property.getStoragePath());
+			Path excelUploadPath = task.getExcelUploadPath(storagePath);
+			Files.delete(excelUploadPath);
+		} catch (IOException e) {
+			log.error("Failed to delete excel file: {}", task.getFilename(), e);
+		}
 	}
 }

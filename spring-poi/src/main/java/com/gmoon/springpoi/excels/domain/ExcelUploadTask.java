@@ -216,9 +216,11 @@ public class ExcelUploadTask {
 		return Locale.of(language, country);
 	}
 
-	public Path getExcelUploadPath() {
+	public Path getExcelUploadPath(Path storagePath) {
 		LocalDate yyyyMMdd = LocalDate.ofInstant(createdAt, ZoneId.systemDefault());
 		String tmpPath = yyyyMMdd.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		return Path.of(tmpPath, filename);
+		Path excelUploadPath = Path.of(tmpPath, filename);
+
+		return storagePath.resolve(excelUploadPath);
 	}
 }
