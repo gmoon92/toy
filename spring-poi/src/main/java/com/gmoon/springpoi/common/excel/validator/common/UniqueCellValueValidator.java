@@ -3,13 +3,11 @@ package com.gmoon.springpoi.common.excel.validator.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-
 import com.gmoon.springpoi.common.excel.annotation.ExcelComponent;
 import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
 import com.gmoon.springpoi.common.excel.vo.ExcelErrorMessage;
 
-@ExcelComponent(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
+@ExcelComponent
 public class UniqueCellValueValidator implements ExcelValidator {
 	private final List<String> values = new ArrayList<>();
 

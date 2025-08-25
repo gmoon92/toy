@@ -16,7 +16,6 @@ import com.gmoon.springpoi.common.excel.converter.ExcelConverter;
 import com.gmoon.springpoi.common.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
 import com.gmoon.springpoi.common.excel.validator.common.RequiredValueValidator;
-import com.gmoon.springpoi.common.utils.ReflectionUtil;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,18 +48,19 @@ public class ExcelField {
 	) {
 		return Arrays.stream(annotation.validator())
 			 .filter(typeFilter::isAssignableFrom)
-			 .map(clazz -> AnnotationUtils.findAnnotation(clazz, ExcelComponent.class) == null
-				  ? ReflectionUtil.newInstance(clazz)
-				  : ctx.getBean(clazz))
+			 .filter(clazz -> AnnotationUtils.findAnnotation(clazz, ExcelComponent.class) != null)
+			 .map(ctx::getBean)
 			 .map(typeFilter::cast)
 			 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
 	}
 
 	private ExcelConverter<?> getConverter(ExcelProperty annotation, ApplicationContext ctx) {
 		Class<? extends ExcelConverter<?>> clazz = annotation.converter();
-		return AnnotationUtils.findAnnotation(clazz, ExcelComponent.class) == null
-			 ? ReflectionUtil.newInstance(clazz)
-			 : ctx.getBean(clazz);
+		if (AnnotationUtils.findAnnotation(clazz, ExcelComponent.class) == null) {
+			throw new RuntimeException("@ExcelComponent is required");
+		}
+
+		return ctx.getBean(clazz);
 	}
 
 	public List<ExcelValidator> getFailedValidators(String cellValue) {

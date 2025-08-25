@@ -21,7 +21,7 @@ public @interface ExcelComponent {
 	String value() default "";
 
 	@AliasFor(annotation = Scope.class, value = "scopeName")
-	String scopeName() default BeanDefinition.SCOPE_SINGLETON;
+	String scopeName() default BeanDefinition.SCOPE_PROTOTYPE;
 
 	@AliasFor(annotation = Scope.class)
 	ScopedProxyMode proxyMode() default ScopedProxyMode.DEFAULT;
