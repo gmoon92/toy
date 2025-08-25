@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.gmoon.springpoi.SpringPoiApplication;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import com.gmoon.springpoi.SpringPoiApplication;
 
 import jakarta.persistence.EntityManager;
 
