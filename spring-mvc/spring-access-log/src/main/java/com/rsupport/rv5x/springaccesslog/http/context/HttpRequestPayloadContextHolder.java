@@ -21,7 +21,7 @@ public final class HttpRequestPayloadContextHolder {
 	}
 
 	public static void setContext(HttpRequestPayload context) {
-		Assert.notNull(context, "Only non-null SecurityContext instances are permitted");
+		Assert.notNull(context, "Only non-null HttpRequestPayload instances are permitted");
 		HttpRequestPayloadContextHolder.context.set(() -> context);
 	}
 
