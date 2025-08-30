@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.poi.xssf.model.SharedStrings;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.gmoon.springpoi.common.excel.sax.RowCallback;
 import com.gmoon.springpoi.common.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
 import com.gmoon.springpoi.common.excel.vo.BaseExcelModel;
@@ -48,20 +49,20 @@ import lombok.extern.slf4j.Slf4j;
  * @author gmoon
  */
 @Slf4j
-public class SaxXlsxSheetHandler<T extends BaseExcelModel> extends AbstractSaxXlsxSheetHandler {
+public class SaxXlsxHandler<T extends BaseExcelModel> extends AbstractSaxXlsxHandler {
 	private final ExcelSheet<T> excelSheet;
-	private final RowCallbackHandler<T> rowCallbackHandler;
+	private final RowCallback<T> rowCallback;
 
-	public SaxXlsxSheetHandler(
+	public SaxXlsxHandler(
 		 SharedStrings sst,
 		 ExcelSheet<T> excelSheet,
-		 RowCallbackHandler<T> rowCallbackHandler,
+		 RowCallback<T> rowCallback,
 		 long startRowIdx,
 		 long endRowIdx
 	) {
 		super(sst, excelSheet.getMetadata(), startRowIdx, endRowIdx);
 		this.excelSheet = excelSheet;
-		this.rowCallbackHandler = rowCallbackHandler;
+		this.rowCallback = rowCallback;
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class SaxXlsxSheetHandler<T extends BaseExcelModel> extends AbstractSaxXl
 			Map<Long, ExcelCellValues> originRows = excelSheet.getOriginRows();
 			Set<ExcelRow<T>> rows = excelSheet.getRows();
 			Set<ExcelInvalidRow> invalidRows = excelSheet.getInvalidRows();
-			rowCallbackHandler.handle(originRows, rows, invalidRows);
+			rowCallback.accept(originRows, rows, invalidRows);
 		}
 	}
 

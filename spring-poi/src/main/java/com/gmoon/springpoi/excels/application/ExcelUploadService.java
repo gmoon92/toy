@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import com.gmoon.springpoi.common.excel.config.ExcelUploadProperty;
 import com.gmoon.springpoi.common.excel.exception.ExcelEmptyDataRowException;
 import com.gmoon.springpoi.common.excel.exception.NotFoundExcelFileException;
+import com.gmoon.springpoi.common.excel.handler.ExcelRowHandler;
 import com.gmoon.springpoi.common.excel.helper.ExcelHelper;
-import com.gmoon.springpoi.common.excel.processor.ExcelRowProcessor;
 import com.gmoon.springpoi.common.excel.vo.BaseExcelModel;
 import com.gmoon.springpoi.common.excel.vo.ExcelRow;
 import com.gmoon.springpoi.common.exception.InvalidFileException;
@@ -104,7 +104,7 @@ public class ExcelUploadService {
 		ExcelUploadTaskChunk chunk = taskService.getChunk(chunkId);
 		ExcelSheetType sheetType = chunk.getSheetType();
 		ExcelUploadTask task = chunk.getTask();
-		ExcelRowProcessor<?> processor = ctx.getBean(sheetType.getExcelRowProcessorClass());
+		ExcelRowHandler<?> processor = ctx.getBean(sheetType.getExcelRowProcessorClass());
 
 		try {
 			Path excelFilePath = getExcelFilePath(task);
@@ -186,10 +186,10 @@ public class ExcelUploadService {
 		 ExcelUploadTaskChunk chunk,
 		 Map<Long, ExcelCellValues> originRows,
 		 Set<? extends ExcelRow<? extends BaseExcelModel>> rows,
-		 ExcelRowProcessor<? extends BaseExcelModel> processor
+		 ExcelRowHandler<? extends BaseExcelModel> processor
 	) {
 		for (ExcelRow<? extends BaseExcelModel> row : rows) {
-			processor.doProcess(chunk.getId(), originRows, (ExcelRow)row);
+			processor.handle(chunk.getId(), originRows, (ExcelRow)row);
 		}
 	}
 

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gmoon.springpoi.users.domain.User;
 import com.gmoon.springpoi.users.infra.UserRepository;
-import com.gmoon.springpoi.users.model.ExcelUserVO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,20 +21,6 @@ public class UserService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userRepository.findByUsername(username)
 			 .orElseThrow(() -> new UsernameNotFoundException("Not found username"));
-	}
-
-	@Transactional
-	public void saveExcelUser(ExcelUserVO excelVO) {
-		User user = User.builder(
-				  excelVO.getUsername(),
-				  excelVO.getPassword(),
-				  excelVO.getRole()
-			 )
-			 .gender(excelVO.getGender())
-			 .email(excelVO.getEmail())
-			 .enabled(excelVO.isEnabled())
-			 .build();
-		userRepository.save(user);
 	}
 
 	public User get(String userId) {

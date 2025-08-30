@@ -46,16 +46,16 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * 이벤트는 다음과 같은 순으로 동작된다.
  * <ul>
- *     <li>{@link AbstractSaxXlsxSheetHandler#startElement(String, String, String, Attributes)}</li>
- *     <li>{@link AbstractSaxXlsxSheetHandler#characters(char[], int, int)}</li>
- *     <li>{@link AbstractSaxXlsxSheetHandler#endElement(String, String, String)}</li>
+ *     <li>{@link AbstractSaxXlsxHandler#startElement(String, String, String, Attributes)}</li>
+ *     <li>{@link AbstractSaxXlsxHandler#characters(char[], int, int)}</li>
+ *     <li>{@link AbstractSaxXlsxHandler#endElement(String, String, String)}</li>
  * </ul>
  * </p>
  *
  * @author gmoon
  */
 @Slf4j
-public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
+public abstract class AbstractSaxXlsxHandler extends DefaultHandler {
 	private final LruCache<Integer, String> sharedStringCache = new LruCache<>(50);
 	private final SharedStrings sharedStringsTable;
 	private final ExcelModelMetadata metadata;
@@ -72,7 +72,7 @@ public abstract class AbstractSaxXlsxSheetHandler extends DefaultHandler {
 	private int currentRowIdx;
 	private SaxCell currentCell;
 
-	protected AbstractSaxXlsxSheetHandler(
+	protected AbstractSaxXlsxHandler(
 		 SharedStrings sst,
 		 ExcelModelMetadata metadata,
 		 long startRowIdx,

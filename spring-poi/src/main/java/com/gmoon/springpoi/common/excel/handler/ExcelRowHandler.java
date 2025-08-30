@@ -1,4 +1,4 @@
-package com.gmoon.springpoi.common.excel.processor;
+package com.gmoon.springpoi.common.excel.handler;
 
 import java.util.Map;
 
@@ -7,6 +7,6 @@ import com.gmoon.springpoi.common.excel.vo.ExcelRow;
 import com.gmoon.springpoi.excels.domain.vo.ExcelCellValues;
 
 @FunctionalInterface
-public interface ExcelRowProcessor<T extends BaseExcelModel> {
-	void doProcess(String chunkId, Map<Long, ExcelCellValues> originRows, ExcelRow<T> row);
+public interface ExcelRowHandler<T extends BaseExcelModel> {
+	void handle(String chunkId, Map<Long, ExcelCellValues> originRows, ExcelRow<T> row);
 }

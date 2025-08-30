@@ -13,10 +13,11 @@ public abstract class ExcelEnumValidator<T extends Enum<T> & ExcelValueProvider>
 	public abstract boolean isValid(T enumValue);
 
 	@Override
-	public boolean isValid(String cellValue) {
+	public final boolean isValid(String cellValue) {
 		if (cellValue == null) {
 			return false;
 		}
+
 		T enumValue = convert(cellValue);
 		return enumValue != null
 			 && isValid(enumValue);

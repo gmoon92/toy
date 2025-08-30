@@ -45,9 +45,9 @@ import com.gmoon.springpoi.common.excel.exception.ExcelInvalidFileException;
 import com.gmoon.springpoi.common.excel.exception.SaxParseException;
 import com.gmoon.springpoi.common.excel.exception.SaxReadRangeOverflowException;
 import com.gmoon.springpoi.common.excel.provider.ExcelValueProvider;
-import com.gmoon.springpoi.common.excel.sax.handler.RowCallbackHandler;
-import com.gmoon.springpoi.common.excel.sax.handler.SaxDataRowHandler;
-import com.gmoon.springpoi.common.excel.sax.handler.SaxXlsxSheetHandler;
+import com.gmoon.springpoi.common.excel.sax.RowCallback;
+import com.gmoon.springpoi.common.excel.sax.handler.SaxDataRowCountHandler;
+import com.gmoon.springpoi.common.excel.sax.handler.SaxXlsxHandler;
 import com.gmoon.springpoi.common.excel.validator.ExcelBatchValidator;
 import com.gmoon.springpoi.common.excel.validator.ExcelValidator;
 import com.gmoon.springpoi.common.excel.vo.BaseExcelModel;
@@ -206,14 +206,18 @@ public class ExcelHelper {
 	 *   <li><a href="https://github.com/apache/poi/blob/trunk/poi-examples/src/main/java/org/apache/poi/examples/xssf/eventusermodel/FromHowTo.java">Apache POI - Streaming Sample</a></li>
 	 * </ul>
 	 */
-	public <T extends BaseExcelModel> ExcelSheet<T> read(Path filePath, Class<T> clazz) {
+	public <T extends BaseExcelModel> ExcelSheet<T> read(
+		 Path filePath,
+		 Class<T> clazz,
+		 String... excludeFieldName
+	) {
 		try (
 			 InputStream fis = Files.newInputStream(filePath);
 			 XSSFWorkbook workbook = new XSSFWorkbook(fis)
 		) {
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			int lastRowNum = sheet.getLastRowNum();
-			ExcelSheet<T> excelSheet = new ExcelSheet<>(ctx, clazz, lastRowNum);
+			ExcelSheet<T> excelSheet = new ExcelSheet<>(ctx, clazz, lastRowNum, excludeFieldName);
 			if (lastRowNum == 0) {
 				return excelSheet;
 			}
@@ -242,7 +246,7 @@ public class ExcelHelper {
 	public <T extends BaseExcelModel> ExcelSheet<T> readSAX(
 		 Path filePath,
 		 Class<T> excelModelClass,
-		 RowCallbackHandler<T> rowCallbackHandler,
+		 RowCallback<T> rowCallback,
 		 long startRowIdx,
 		 long endRowIdx,
 		 String... excludeFieldName
@@ -255,10 +259,10 @@ public class ExcelHelper {
 			XSSFReader xssfReader = new XSSFReader(pkg);
 
 			XMLReader parser = XMLHelper.newXMLReader();
-			parser.setContentHandler(new SaxXlsxSheetHandler<>(
+			parser.setContentHandler(new SaxXlsxHandler<>(
 				 xssfReader.getSharedStringsTable(),
 				 excelSheet,
-				 rowCallbackHandler,
+				 rowCallback,
 				 startRowIdx,
 				 endRowIdx
 			));
@@ -297,7 +301,7 @@ public class ExcelHelper {
 
 			XSSFReader xssfReader = new XSSFReader(pkg);
 			XMLReader parser = XMLHelper.newXMLReader();
-			SaxDataRowHandler handler = new SaxDataRowHandler(
+			SaxDataRowCountHandler handler = new SaxDataRowCountHandler(
 				 xssfReader.getSharedStringsTable(),
 				 excelSheet.getMetadata(),
 				 maxDataRows

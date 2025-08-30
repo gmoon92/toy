@@ -94,7 +94,7 @@ public class ExcelUploadTask {
 	@Column
 	private Instant completedAt;
 
-	@Column
+	@Column(updatable = false)
 	private Instant createdAt;
 
 	public ExcelUploadTask(ExcelSheetType sheetType, long totalRowCount, long chunkSize) {

@@ -6,8 +6,8 @@ import org.apache.poi.xssf.model.SharedStrings;
 
 import com.gmoon.springpoi.common.excel.vo.ExcelModelMetadata;
 
-public class SaxDataRowHandler extends AbstractSaxXlsxSheetHandler {
-	public SaxDataRowHandler(
+public class SaxDataRowCountHandler extends AbstractSaxXlsxHandler {
+	public SaxDataRowCountHandler(
 		 SharedStrings sst,
 		 ExcelModelMetadata metadata,
 		 long maxDataRows
