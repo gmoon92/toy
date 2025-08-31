@@ -39,6 +39,7 @@
     - [spring-jpa-lock](spring-lock/spring-jpa-lock/README.md)
     - [spring-lock-redisson](spring-lock/spring-lock-redisson/README.md)
 - [spring-properties](spring-properties/README.md)
+- [spring-poi](spring-poi/README.md)
 - spring-mvc
     - [spring-access-log](spring-mvc/spring-access-log/README.md)
     - [spring-web-converter](spring-mvc/spring-web-converter/README.md)
