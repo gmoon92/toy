@@ -16,6 +16,7 @@ public class HeapMemoryProfiler implements InternalProfiler {
 
 	@Override
 	public void beforeIteration(BenchmarkParams benchmarkParams, IterationParams iterationParams) {
+		System.gc();
 		beforeAllocated = getUsedMemory();
 	}
 

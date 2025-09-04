@@ -54,13 +54,12 @@ public class ExcelSAXBenchmark {
 		 "1",
 		 "100",
 		 "500",
-		 "1000"
-		 // "1000",
-		 // "5000",
-		 // "10000",
-		 // "15000",
-		 // "100000",
-		 // "150000"
+		 "1000",
+		 "5000",
+		 "10000",
+		 "15000",
+		 "100000",
+		 "150000"
 	})
 	public int excelDataRowSize;
 
@@ -90,7 +89,7 @@ public class ExcelSAXBenchmark {
 		}
 	}
 
-	@Fork(value = 1, warmups = 2)
+	@Fork(value = 1, warmups = 1)
 	@Benchmark
 	public void readSax() {
 		helper.readSAX(
@@ -103,7 +102,7 @@ public class ExcelSAXBenchmark {
 		);
 	}
 
-	@Fork(value = 1, warmups = 2)
+	@Fork(value = 1, warmups = 1)
 	@Benchmark
 	public void readDom() {
 		helper.read(
