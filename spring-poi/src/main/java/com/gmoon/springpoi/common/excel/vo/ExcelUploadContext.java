@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.NONE)
 @Getter
 public final class ExcelUploadContext {
-	private String userId;
-	private boolean adminUser;
+	private final String userId;
+	private final boolean adminUser;
 
 	public ExcelUploadContext(User user) {
 		userId = user.getId();
