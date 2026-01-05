@@ -22,7 +22,7 @@ public class ApiEventTrackingAspect {
 
 	private static final Map<Class<?>, Map<ApiRequestFieldName, Field>> cachedFields = new ConcurrentHashMap<>();
 
-	@AfterReturning("@annotation(com.rsupport.rv5x.springaccesslog.http.annotation.ApiEventTracking)")
+	@AfterReturning("@annotation(com.gmoon.springaccesslog.http.annotation.ApiEventTracking)")
 	public void monitoring(JoinPoint jp) {
 		Object[] args = jp.getArgs();
 		for (Object arg : args) {
