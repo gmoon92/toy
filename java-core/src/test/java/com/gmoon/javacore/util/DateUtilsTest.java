@@ -1,9 +1,6 @@
 package com.gmoon.javacore.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -14,7 +11,11 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.function.Function;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class DateUtilsTest {
@@ -149,5 +150,88 @@ class DateUtilsTest {
 
 	private LocalDateTime toString(Date dt1) {
 		return DateUtils.toLocalDateTime(dt1);
+	}
+
+	/**
+	 * DST(Daylight Saving Time) 전환 시점의 LocalDateTime vs Instant 계산 차이
+	 *
+	 * <pre>
+	 * ## 상황
+	 * 2025-11-02 일요일 새벽 2시: EDT(UTC-4) → EST(UTC-5) 전환
+	 * - 미국 뉴욕은 이 시점에 시계를 1시간 뒤로 되돌림
+	 * - 오전 2:00 → 오전 1:00으로 회귀
+	 * - 결과: 오전 1:37:57이 두 번 발생!
+	 *
+	 * ## 문제
+	 * source: 2025-11-02 01:37:57 EDT (GMT-04:00) = GMT 05:37:57
+	 * target: 2025-11-02 01:37:57 EST (GMT-05:00) = GMT 06:37:57
+	 * -> 벽시계로는 같은 시간이지만, 실제로는 1시간(60분) 차이!
+	 *
+	 * ## LocalDateTime 계산의 문제점
+	 * LocalDateTime.ofInstant()는 타임존 오프셋을 적용한 후 "벽시계 시간"만 비교
+	 * - source → 2025-11-02T01:37:57
+	 * - target → 2025-11-02T01:37:57
+	 * - 결과: 0분 차이 (잘못된 계산!)
+	 *
+	 * ## Instant 계산의 정확성
+	 * Instant는 UTC 절대 시간으로 계산
+	 * - source → 2025-11-02T05:37:57Z
+	 * - target → 2025-11-02T06:37:57Z
+	 * - 결과: 60분 차이 (정확한 계산!)
+	 *
+	 * ## 실무 영향
+	 * LocalDateTime 기반 시간 계산 사용 시:
+	 * - 사용자 활동 로그 시간 중복/누락
+	 * - 배치 작업 스케줄링 오류
+	 * - 세션 시간, 경과 시간 계산 부정확
+	 *
+	 * ## 권고사항
+	 * 타임존이 중요한 시스템에서는 반드시 Instant 또는 ZonedDateTime 사용!
+	 * </pre>
+	 */
+	@Test
+	void dstTransition_LocalDateTimeVsInstant_CalculationDifference() {
+		// Given: DST 전환 시점 (EDT → EST)
+		TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
+		ZoneId newYork = ZoneId.systemDefault();
+
+		// 2025-11-02 01:37:57 EDT (GMT-04:00)
+		// GMT: 2025-11-02 05:37:57
+		Date sourceEDT = new Date(1762061877000L);
+
+		// 2025-11-02 01:37:57 EST (GMT-05:00) - 1시간 후, 하지만 벽시계는 같은 시간!
+		// GMT: 2025-11-02 06:37:57
+		Date targetEST = new Date(1762065477000L);
+
+		// When: LocalDateTime 기반 시간 차이 계산 (벽시계 시간)
+		long diffByLocalDateTime = ChronoUnit.MINUTES.between(
+			 LocalDateTime.ofInstant(targetEST.toInstant(), newYork),
+			 LocalDateTime.ofInstant(sourceEDT.toInstant(), newYork)
+		);
+
+		// When: Instant 기반 시간 차이 계산 (UTC 절대 시간)
+		long diffByInstant = ChronoUnit.MINUTES.between(
+			 targetEST.toInstant(),
+			 sourceEDT.toInstant()
+		);
+
+		// Then: LocalDateTime은 DST를 고려하지 않아 0분 차이로 계산 (잘못됨)
+		assertThat(diffByLocalDateTime)
+			 .as("LocalDateTime은 벽시계 시간만 비교하여 DST 전환을 무시함")
+			 .isZero();
+
+		// Then: Instant는 UTC 기준으로 정확히 60분 차이 계산 (정확함)
+		assertThat(diffByInstant)
+			 .as("Instant는 UTC 절대 시간으로 계산하여 DST 전환을 정확히 반영함")
+			 .isEqualTo(-60L);
+
+		log.info("DST 전환 시점 시간 계산:");
+		log.info("  source(EDT): {} = {}", sourceEDT, LocalDateTime.ofInstant(sourceEDT.toInstant(), newYork));
+		log.info("  target(EST): {} = {}", targetEST, LocalDateTime.ofInstant(targetEST.toInstant(), newYork));
+		log.info("  LocalDateTime 차이: {}분 (잘못된 계산)", diffByLocalDateTime);
+		log.info("  Instant 차이: {}분 (정확한 계산)", diffByInstant);
+
+		// Cleanup: 테스트 종료 후 UTC로 복원
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 }
