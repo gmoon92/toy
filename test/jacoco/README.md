@@ -107,13 +107,13 @@ JaCoCo는 eclemma 팀에서 공개한 `Java` 기반 코드 커버리지 오픈 �
 
 ### Report Analysis
 
-![jacoco-analysis.png](./doc/jacoco-analysis.png)
+![jacoco-analysis.png](docs/jacoco-analysis.png)
 
 JaCoCo 는 3가지 메트릭을 제공한다.
 
 1. `Lines coverage`
   - 라인 커버리지는 테스트 코드에서 호출된 Java 바이트 코드 명령어 수를 기반으로 실행된 코드의 양을 반영한다.
-  - ![jacoco-analysis-line-coverage.png](./doc/jacoco-analysis-line-coverage.png)
+  - ![jacoco-analysis-line-coverage.png](docs/jacoco-analysis-line-coverage.png)
     - 녹색: 테스트 중에 모든 분기가 실행되었음을 의미한다.
     - 빨강: 테스트 단계에서 분기가 실행되지 않았음을 의미한다.
     - 노랑: 코드가 부분적으로 덮여 있음을 보여줍니다. 일부 분기는 실행되지 않았다.

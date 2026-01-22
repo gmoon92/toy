@@ -23,7 +23,7 @@
 
 스프링 배치는 세 가지 주요 계층으로 구성된 구조를 가지고 있다.
 
-![spring-batch-layers.png](doc/images/spring-batch-layers.png)
+![spring-batch-layers.png](docs/images/spring-batch-layers.png)
 
 - Application
     - 이 계층은 스프링 배치를 사용하는 개발자가 작성하는 배치 `Job`과 관련된 모든 커스텀 코드를 포함한다.

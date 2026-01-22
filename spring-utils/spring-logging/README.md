@@ -40,7 +40,7 @@ logging.level.gmoon=debug
 
 가능하면 커스텀 로깅 파일 이름은  `*-spring.xml` 을 권장한다.
 
-![logging-customization](img/logging-customization.png)
+![logging-customization](images/logging-customization.png)
 
 ## [1. Logback](http://logback.qos.ch/manual/configuration.html)
 
@@ -53,7 +53,7 @@ logging.level.gmoon=debug
             - ch.qos.logback
 ```
 
-![spring-boot-starter-logging](img/spring-boot-starter-logging.png)
+![spring-boot-starter-logging](images/spring-boot-starter-logging.png)
 
 Logback 설정 방법은 비교적 간단하다.
 
@@ -120,7 +120,7 @@ logging.config=classpath:custom-logback.xml
 
 **`Log4j2`** 는 성능적으로 보면 Logback 보다 더 효율적인 로깅 프레임워크다.
 
-![logging.apache.org](img/async-throughput-comparison.png)
+![logging.apache.org](images/async-throughput-comparison.png)
 
 > [참고 - logging.apache.org](https://logging.apache.org/log4j/log4j-2.12.1/performance.html)
 
@@ -164,7 +164,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 }
 ```
 
-![switching-system-to-log4j2](img/logging-application-listener.png)
+![switching-system-to-log4j2](images/logging-application-listener.png)
 
 ## 2.3. Log4j2 XML Configuration
 
@@ -207,7 +207,7 @@ properties 설정 방법도 있지만 XML 설정을 다룬다.
 
 그렇다면, `Spring boot` 는 Logback 이 Log4j2 가 효율적이라는걸 모르는걸까? 
 
-![switching-default-system-to-log4j2](img/github-spring-issued-switching-default-system-to-log4j2.png)
+![switching-default-system-to-log4j2](images/github-spring-issued-switching-default-system-to-log4j2.png)
 
 물론 아니다. [GitHub Spring issues](https://github.com/spring-projects/spring-boot/issues/22149) 에 보면 
 `Spring boot 3` 에선 Log4j2 가 기본 로깅 프레임워크로 교체될 예정으로 보인다.

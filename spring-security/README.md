@@ -18,7 +18,7 @@ Spring Security 는 Servlet 을 기반으로 동작한다.
 
 `Servlet Filter`를 확장한 여러 Security Filter 들은 Filter Chain 을 구성하여 순차적으로 단일 HTTP 요청에 대해 처리한다.
 
-![multi-securityfilterchain](img/multi-securityfilterchain.png)
+![multi-securityfilterchain](images/multi-securityfilterchain.png)
 
 1. Servlet Container 에 요청이 들어온다.
 2. `Spring Security` 엔 **`Servlet Filter`** 의 구현체 중 하나인 **`DelegatingFilterProxy`** 가 있다.

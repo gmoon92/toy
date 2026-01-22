@@ -84,7 +84,7 @@ https://gmoon.com
 
 자신의 출처와 요청한 출처가 다른 경우, 브라우저는 `추가 HTTP 헤더`를 사용하여 CORS 권한 여부를 판단한다.
 
-![browser-resource-policy](doc/img/browser-resource-policy.png)
+![browser-resource-policy](docs/images/browser-resource-policy.png)
 
 - [SOP: 같은 출처에 대한 요청](https://developer.mozilla.org/ko/docs/Web/Security/Same-origin_policy)
 - [CORP: 다른 출처에 대한 요청](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cross-Origin_Resource_Policy_(CORP))
@@ -107,7 +107,7 @@ preflight 는 비행기가 이륙하기 전 상태라는 사전적 의미를 가
 > preflight 요청은 `실제 요청`을 보내기전, 사전에 `OPTIONS` 메소드를 사용하여 요청을 보낸다. <br/> 
 > `OPTIONS`는 서버에서 추가 정보를 판별하는데 사용하는 HTTP/1.1 메서드다.
 
-![cors-preflight-request](doc/img/cors-preflight-request.png)
+![cors-preflight-request](docs/images/cors-preflight-request.png)
 
 1. [OPTIONS 요청 메서드](https://developer.mozilla.org/ko/docs/Web/HTTP/Methods/OPTIONS) 를 통해 사용하여 예비 요청한다.
 2. 서버는 요청 헤더의 `Origin` 을 통해 도메인의 정보를 구분하고, 서버에 설정된 CORS HTTP 요청과 관련된 `Access-Control-Allow-*` 헤더 정보를 응답한다.
@@ -123,7 +123,7 @@ preflight 는 비행기가 이륙하기 전 상태라는 사전적 의미를 가
 
 만약 CORS 를 위반한 요청이라면 브라우저는 해당 요청에 대해 block 처리하고 에러를 발생한다.
 
-![developer-tools-cors-policy-failure1](doc/img/developer-tools-cors-policy-failure1.png)
+![developer-tools-cors-policy-failure1](docs/images/developer-tools-cors-policy-failure1.png)
 
 ```text
 Access to script at 'http://localhost:9000/js/datepicker.min.js' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
@@ -131,7 +131,7 @@ Access to script at 'http://localhost:9000/js/datepicker.min.js' from origin 'ht
 Access to XMLHttpRequest at 'http://localhost:9000/bookmark' from origin 'http://localhost:8080' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
-![developer-tools-cors-policy-failure2](doc/img/developer-tools-cors-policy-failure2.png)
+![developer-tools-cors-policy-failure2](docs/images/developer-tools-cors-policy-failure2.png)
 
 > 서버는 `Access-Control-Allow-Origin: *` 응답 헤더 값으로 모든 요청(*) 으로 설정해놨다면, 브라우저는 해당 서버의 리소스를 마음껏 사용할 수 있다.
 
@@ -149,7 +149,7 @@ Access to XMLHttpRequest at 'http://localhost:9000/bookmark' from origin 'http:/
 
 예비 요청과 마찬가지로 브라우저가 CORS 권한 여부를 판단하는 시나리오는 동일하다. **단 차이점은 예비 요청의 존재 여부다.**
 
-![simple-request](doc/img/simple-request.png)
+![simple-request](docs/images/simple-request.png)
 
 단순 요청에 대한 조건은 까다롭다. 아래 조건이 모두 충족할 경우에만 단순 요청으로 판단한다.
 
@@ -208,7 +208,7 @@ java.lang.IllegalArgumentException: When allowCredentials is true, allowedOrigin
 
 ### CorsFilter#doFilterInternal
 
-![1_cors_filter-do_filterInternal](doc/img/1_cors_filter-do_filterInternal.png)
+![1_cors_filter-do_filterInternal](docs/images/1_cors_filter-do_filterInternal.png)
 
 ### DefaultCorsProcessor#handleInternal
 
@@ -218,7 +218,7 @@ CORS 관련 추가 헤더 값을 검증한다.
 - Access-Control-Allow-Methods
 - Access-Control-Allow-Headers
 
-![2_cors_processor_handleInternal](doc/img/2_cors_processor_handleInternal.png)
+![2_cors_processor_handleInternal](docs/images/2_cors_processor_handleInternal.png)
 
 ### CorsConfiguration#checkOrigin
 
@@ -237,7 +237,7 @@ public class CorsConfig {
 }
 ```
 
-![3_cors_configuration-check_origin](doc/img/3_cors_configuration-check_origin.png)
+![3_cors_configuration-check_origin](docs/images/3_cors_configuration-check_origin.png)
 
 > 주의: 허용 Origin에 대해 패턴 설정으로 와일드 카드로 설정했다면, Credential 요청에 대한 검증은 제외된다.
 
@@ -245,7 +245,7 @@ public class CorsConfig {
 
 검증 이후 응답 헤더 `Access-Control-Allow-*` 를 담아준다.
 
-![4_cors_processor_handleInternal](doc/img/4_cors_processor_handleInternal.png)
+![4_cors_processor_handleInternal](docs/images/4_cors_processor_handleInternal.png)
 
 ## Project Modules
 

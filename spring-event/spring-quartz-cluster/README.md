@@ -238,20 +238,20 @@ public class QuartzScheduleConfig {
 
 ## IntelliJ VM Config
 
-![spring-boot-server-port](doc/img/spring-boot-server-port.png)
+![spring-boot-server-port](docs/images/spring-boot-server-port.png)
 
 ## Run Application
 
 우선 9000 포트로 설정한 어플리케이션을 실행한다.
 
-![9000](doc/img/application9000.png)
+![9000](docs/images/application9000.png)
 
 - 스케쥴러가 정상적으로 동작된다.
 - 9001 포트 어플리케이션을 실행한다.
 
 다음으로 먼저 실행된 9000 포트 어플리케이션을 종료하자.
 
-![9001](doc/img/application9001.png)
+![9001](docs/images/application9001.png)
  
 Quartz 스케쥴러 클러스터링이 정상 동작됨을 확인해볼 수 있다.
 
