@@ -6,12 +6,17 @@ include(
         'payment',
         'spring-batch',
         'spring-beanio',
-        'spring-cache',
 
+        'spring-cache',
 //        ./gradlew :spring-cache:jpa-second-level-cache:dependencies --configuration runtimeClasspath
 //        ./gradlew :spring-cache:jpa-second-level-cache:dependencies --configuration testCompileClasspath
         'spring-cache:jpa-second-level-cache',
         'spring-cache:spring-data-redis',
+
+        'spring-cloud',
+        'spring-cloud:spring-configserver',
+        'spring-cloud:spring-configserver:spring-configserver-server',
+        'spring-cloud:spring-configserver:spring-configserver-client',
 
         'spring-data-r2dbc',
 

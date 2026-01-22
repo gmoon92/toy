@@ -1,0 +1,18 @@
+# Production 환경 전용 설정
+
+app:
+  message: "Welcome to Real Environment Config Server! (PROD)"
+  version: "real 1.0.0"
+  feature:
+    enabled: false
+    max-retry: 3
+    timeout-seconds: 30
+
+database:
+  pool:
+    min-size: 10
+    max-size: 50
+    connection-timeout: 10000
+
+logging:
+  level: INFO

@@ -1,0 +1,13 @@
+### 설정 확인
+GET http://localhost:8080/config
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 설정 갱신
+POST http://localhost:8080/actuator/refresh
+Accept: application/json
+Content-Type: application/json

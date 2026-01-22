@@ -1,0 +1,77 @@
+# https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_quick_start
+## | 엔드포인트 패턴                               | 설명                                          |
+## |----------------------------------------|---------------------------------------------|
+## | `/{application}/{profile}`             | 특정 애플리케이션의 프로파일별 설정 데이터 (쉼표로 여러 프로파일 지정 가능) |
+## | `/{application}/{profile}/{label}`     | Git 라벨(브랜치/태그)을 포함한 설정 데이터                  |
+## | `/{label}/{application}-{profile}.yml` | 환경별 설정 파일을 직접 조회                            |
+
+# /{application}/{profile}[/{label}]
+# /{application}-{profile}.yml
+# /{label}/{application}-{profile}.yml
+# /{application}-{profile}.properties
+# /{label}/{application}-{profile}.properties
+
+### 기본 프로파일 설정 조회 - config-repo/application.yml 없으므로
+GET http://localhost:8888/client/default
+
+> {%
+    client.log("response body: \n" + response.body);
+    // 매칭된 설정 파일이 없을 경우 아래와 같이 응답.
+    // {"name":"client","profiles":["default"],"label":null,"version":null,"state":null,"propertySources":[]}
+%}
+
+### 1. '/{application}/{profile}/{label}' label=alpha, propfile=default
+GET http://localhost:8888/client/default/alpha
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 2. '/{application}/{profile}/{label}' label=alpha, propfile=dev
+GET http://localhost:8888/client/dev/alpha
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 3. '/{application}/{profile}/{label}' label=alpha, propfile=prod
+GET http://localhost:8888/client/prod/alpha
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 4. '/{application}/{profile1,profile2}/{label}' label=alpha, propfile=dev,prod
+GET http://localhost:8888/client/dev,prod/alpha
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 개발 환경 설정 파일 직접 조회 `/{label}/{application}-{profile}.yml`
+GET http://localhost:8888/alpha/client-default.yml
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 개발 환경 설정 파일 직접 조회 `/{label}/{application}-{profile}.yml`
+GET http://localhost:8888/alpha/client-dev.yml
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### 운영 환경 설정 조회
+GET http://localhost:8888/client/prod/real
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
+
+### YAML 파일 직접 조회
+GET http://localhost:8888/master/client-dev.yml
+
+> {%
+    client.log("response body: \n" + response.body);
+%}
