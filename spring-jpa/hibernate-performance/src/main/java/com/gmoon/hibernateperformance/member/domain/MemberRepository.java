@@ -18,7 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 	 * 이름을 정한 EntityGraph 정보를 이용하여 호출함으로
 	 * lazy가 아닌 eager로 로드 함
 	 *
-	 * @see
 	 * @see org.springframework.data.jpa.repository.EntityGraph.EntityGraphType
 	 */
 	//    https://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#jpa.entity-graph
