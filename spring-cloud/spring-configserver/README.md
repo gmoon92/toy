@@ -119,7 +119,7 @@ curl http://localhost:8080/config
     spring.config.import="optional:configserver:http://localhost:8888"
   
     # Spring Boot Actuator의 refresh 엔드포인트 활성화
-    management.endpoints.web.exposure.include= health,info,refresh
+    management.endpoints.web.exposure.include= refresh
     ```
 - `/actuator/refresh` 엔드포인트를 통한 런타임 설정 갱신
 - `@RefreshScope` + `@ConfigurationProperties` 조합으로 런타임 갱신 지원
