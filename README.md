@@ -13,6 +13,7 @@
     - [jpa-second-level-cache](spring-cache/jpa-second-level-cache/README.md)
     - [spring-data-redis](spring-cache/spring-data-redis/README.md)
 - [spring-cloud](spring-cloud/README.md)
+  - [spring-cloud-bus](spring-cloud/spring-cloud-bus/README.md)
   - [spring-configserver](spring-cloud/spring-configserver/README.md)
 - [spring-integration](spring-integration/README.md)
     - [spring-integration-amqp](spring-integration/spring-integration-amqp/README.md)

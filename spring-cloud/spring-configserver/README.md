@@ -289,7 +289,7 @@ Config Server는 설정이 변경되더라도 이를 클라이언트에게 자�
 - Spring Cloud Bus + Message Broker (RabbitMQ/Kafka)
 - `/actuator/busrefresh` 한 번 호출로 전체 인스턴스 갱신
 
-자세한 내용은 [Spring Cloud Bus 문서](docs/spring-cloud-bus.md)를 참고하자.
+자세한 내용은 [Spring Cloud Bus 문서](../spring-cloud-bus/README.md)를 참고하자.
 
 ### 3. Refresh Hook 구현
 

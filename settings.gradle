@@ -14,6 +14,10 @@ include(
         'spring-cache:spring-data-redis',
 
         'spring-cloud',
+        'spring-cloud:spring-cloud-bus',
+        'spring-cloud:spring-cloud-bus:spring-cloud-bus-client',
+        'spring-cloud:spring-cloud-bus:spring-cloud-bus-server',
+
         'spring-cloud:spring-configserver',
         'spring-cloud:spring-configserver:spring-configserver-server',
         'spring-cloud:spring-configserver:spring-configserver-client',

@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: spring-cloud-bus-client
+
+  # Config Server connection optional for testing
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  # Disable Cloud Config for test
+  cloud:
+    config:
+      enabled: false
