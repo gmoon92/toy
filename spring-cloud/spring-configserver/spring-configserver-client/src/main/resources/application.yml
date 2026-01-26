@@ -18,7 +18,8 @@ spring:
       # alpha, real
       label: alpha
 
-# Actuat√or 설정
+# Actuator 설정
+# https://docs.spring.io/spring-boot/reference/actuator/endpoints.html
 management:
   endpoints:
     web:
