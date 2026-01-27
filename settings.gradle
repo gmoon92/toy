@@ -1,6 +1,8 @@
 rootProject.name = 'toy'
 // https://docs.gradle.org/current/userguide/multi_project_builds.html#multi_project_builds
 include(
+        'ai',
+
         'google-spreadsheet',
         'java-core',
         'payment',
@@ -15,6 +17,7 @@ include(
 
         'spring-cloud',
         'spring-cloud:spring-cloud-bus',
+        'spring-cloud:spring-cloud-bus:spring-cloud-bus-common',
         'spring-cloud:spring-cloud-bus:spring-cloud-bus-client',
         'spring-cloud:spring-cloud-bus:spring-cloud-bus-server',
 

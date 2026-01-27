@@ -24,7 +24,7 @@ Spring의 `Environment`와 `PropertySource` 추상화와 동일하게 매핑되�
 ./gradlew :spring-cloud:spring-configserver:spring-configserver-server:bootRun
 
 # 2. Config Client 실행 (Port 8080)
-./gradlew :spring-cloud:spring-configserver:client:bootRun
+./gradlew :spring-cloud:spring-configserver:spring-configserver-client:bootRun
 
 # 3. 현재 설정 확인
 curl http://localhost:8080/config

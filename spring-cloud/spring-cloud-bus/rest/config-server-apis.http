@@ -1,0 +1,181 @@
+###############################################################################
+# Spring Cloud Config Server APIs
+#
+# Config Server를 통한 설정 조회 및 Bus 이벤트 트리거
+# Port: 8888
+#
+# 엔드포인트 패턴:
+# - /{application}/{profile}             : 특정 애플리케이션의 프로파일별 설정 데이터
+# - /{application}/{profile}/{label}     : Git 라벨(브랜치/태그)을 포함한 설정 데이터
+# - /{label}/{application}-{profile}.yml : 환경별 설정 파일을 직접 조회
+#
+# Reference: https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_quick_start
+###############################################################################
+
+###############################################################################
+# Spring Cloud Bus - Refresh All Instances
+###############################################################################
+
+### 1. 모든 인스턴스 일괄 갱신 (Bus Refresh)
+# Config Server를 통해 연결된 모든 클라이언트 인스턴스의 설정을 한 번에 갱신
+POST http://localhost:8888/actuator/busrefresh
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.log("=== Bus Refresh Triggered ===");
+    client.log("All instances will receive RefreshRemoteApplicationEvent");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 2. 특정 서비스의 모든 인스턴스 갱신
+# /{destination} 패턴 사용 (예: config-client:** = config-client 서비스의 모든 인스턴스)
+POST http://localhost:8888/actuator/busrefresh/config-client:**
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.log("=== Targeted Bus Refresh (config-client service) ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+###############################################################################
+# Spring Cloud Bus - Custom Events
+###############################################################################
+
+### 3. 커스텀 이벤트 발행 - UserLoginEvent
+# 모든 클라이언트 인스턴스에 사용자 로그인 이벤트 브로드캐스트
+POST http://localhost:8888/events/logins
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "john.doe",
+  "ipAddress": "192.168.1.100"
+}
+
+> {%
+    client.log("=== UserLoginEvent Published ===");
+    client.log("Event will be broadcasted to all instances via RabbitMQ");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 4. 커스텀 이벤트 발행 - 여러 사용자 로그인
+POST http://localhost:8888/events/logins
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "ipAddress": "192.168.1.200"
+}
+
+> {%
+    client.log("=== UserLoginEvent Published (alice) ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+###############################################################################
+# Config Server - Configuration Query APIs
+###############################################################################
+
+### 5. 기본 프로파일 설정 조회
+# config-repo 루트에 application.yml이 없으므로 빈 응답
+# 주의: application name은 "client" (config-repo/{label}/client.yml)
+GET http://localhost:8888/client/default
+Accept: application/json
+
+> {%
+    client.log("=== Default Profile (No Match) ===");
+    client.log(JSON.stringify(response.body, null, 2));
+    // 매칭된 설정 파일이 없을 경우:
+    // {"name":"client","profiles":["default"],"label":null,"version":null,"state":null,"propertySources":[]}
+%}
+
+### 6. label=alpha, profile=default
+# /{application}/{profile}/{label}
+# 설정 파일: config-repo/alpha/client.yml
+GET http://localhost:8888/client/default/alpha
+Accept: application/json
+
+> {%
+    client.log("=== Alpha Label, Default Profile ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 7. label=alpha, profile=dev
+# 설정 파일: config-repo/alpha/client.yml + client-dev.yml
+GET http://localhost:8888/client/dev/alpha
+Accept: application/json
+
+> {%
+    client.log("=== Alpha Label, Dev Profile ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 8. label=alpha, profile=prod
+# 설정 파일: config-repo/alpha/client.yml + client-prod.yml
+GET http://localhost:8888/client/prod/alpha
+Accept: application/json
+
+> {%
+    client.log("=== Alpha Label, Prod Profile ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 9. 여러 프로파일 동시 조회 (dev, prod)
+GET http://localhost:8888/client/dev,prod/alpha
+Accept: application/json
+
+> {%
+    client.log("=== Multiple Profiles (dev,prod) ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 10. YAML 파일 직접 조회 - client.yml (alpha label)
+# /{label}/{application}-{profile}.yml
+GET http://localhost:8888/alpha/client.yml
+Accept: application/x-yaml
+
+> {%
+    client.log("=== Direct YAML File Access (client.yml) ===");
+    client.log(response.body);
+%}
+
+### 11. YAML 파일 직접 조회 - client-dev.yml (alpha label)
+GET http://localhost:8888/alpha/client-dev.yml
+Accept: application/x-yaml
+
+> {%
+    client.log("=== Direct YAML File Access (client-dev.yml) ===");
+    client.log(response.body);
+%}
+
+### 12. YAML 파일 직접 조회 - client-prod.yml (alpha label)
+GET http://localhost:8888/alpha/client-prod.yml
+Accept: application/x-yaml
+
+> {%
+    client.log("=== Direct YAML File Access (client-prod.yml) ===");
+    client.log(response.body);
+%}
+
+### 13. label=real, profile=dev
+# 설정 파일: config-repo/real/client.yml + client-dev.yml
+GET http://localhost:8888/client/dev/real
+Accept: application/json
+
+> {%
+    client.log("=== Real Label, Dev Profile ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 14. label=real, profile=prod
+# 설정 파일: config-repo/real/client.yml + client-prod.yml
+GET http://localhost:8888/client/prod/real
+Accept: application/json
+
+> {%
+    client.log("=== Real Label, Prod Profile ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}

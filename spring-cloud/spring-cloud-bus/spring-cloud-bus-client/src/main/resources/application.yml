@@ -1,12 +1,74 @@
+server:
+  port: 8080
+
 spring:
   application:
-    name: spring-cloud-bus-client
+    name: config-client
 
-  # Config Server connection optional for testing
+  # Config Server 연결 시작 시 Config Server로부터 설정을 가져옴
   config:
     import: optional:configserver:http://localhost:8888
 
-  # Disable Cloud Config for test
+  # 클라우드 설정
   cloud:
+    # Config Client 설정
     config:
-      enabled: false
+      enabled: true
+      uri: http://localhost:8888
+      fail-fast: false # Config Server를 사용할 수 없으면 빠르게 실패
+      profile: dev # 조회할 프로파일 (설정 파일명과 일치: client-dev.yml)
+      label: alpha # Config Server의 label (디렉토리 이름: config-repo/alpha/)
+
+    # Cloud Bus 설정
+    bus:
+      enabled: true # Spring Cloud Bus 활성화
+      destination: springCloudBus # 버스 이벤트용 토픽명 (Config Server와 일치해야 함)
+      trace:
+        enabled: true # 버스 이벤트 추적 활성화
+
+      # 이 인스턴스의 고유 서비스 ID
+      # 형식: app:port:randomId
+      id: ${spring.application.name}:${server.port}:${random.value}
+
+  # 메시지 버스용 RabbitMQ 설정
+  # Config Server의 RabbitMQ 설정과 일치해야 함
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Actuator 설정
+# https://docs.spring.io/spring-boot/reference/actuator/endpoints.html
+# 수동 갱신 및 헬스 체크를 위한 엔드포인트 노출
+management:
+  endpoints:
+    web:
+      exposure:
+        # 수동 인스턴스 갱신을 위한 refresh 엔드포인트 노출
+        # 참고: busrefresh는 클라이언트가 아닌 Config Server에서 호출해야 함
+        include: refresh
+
+database:
+  pool:
+    min-size: 5
+    max-size: 20
+    connection-timeout: 5000
+
+# 애플리케이션별 설정 값들은 Config Server에 의해 재정의될 수 있음
+app:
+  message: "Hello from local configuration"
+  version: "local 1.0.0"
+  # Config Server 업데이트를 통해 증가시킬 수 있는 카운터.
+  # 설정 갱신 주기를 추적하는데 활용.
+  refresh-count: 0
+  feature:
+    enabled: true
+    max-retry: 3
+    timeout: 30s
+
+logging:
+  level:
+    com.gmoon.springcloudbus: DEBUG
+    org.springframework.cloud.bus: DEBUG
+    org.springframework.cloud.config: DEBUG

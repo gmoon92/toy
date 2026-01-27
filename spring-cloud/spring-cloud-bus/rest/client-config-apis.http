@@ -1,0 +1,85 @@
+###############################################################################
+# Spring Cloud Bus Client APIs
+#
+# Config Client 인스턴스별 설정 확인 및 갱신 API
+# Port: 8080, 8081, 8082
+###############################################################################
+
+### 1. 현재 설정 확인 - Instance :8080
+GET http://localhost:8080/config
+Accept: application/json
+
+> {%
+    client.log("=== Instance :8080 Configuration ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 2. 현재 설정 확인 - Instance :8081
+GET http://localhost:8081/config
+Accept: application/json
+
+> {%
+    client.log("=== Instance :8081 Configuration ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 3. 현재 설정 확인 - Instance :8082
+GET http://localhost:8082/config
+Accept: application/json
+
+> {%
+    client.log("=== Instance :8082 Configuration ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 4. 단일 인스턴스만 갱신 (:8080만 갱신)
+# 주의: 이 방식은 한 번에 한 인스턴스만 갱신합니다.
+# 모든 인스턴스를 갱신하려면 Config Server의 /actuator/busrefresh를 사용하세요.
+POST http://localhost:8080/actuator/refresh
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.log("=== Refresh Response (Single Instance) ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+###############################################################################
+# Custom Bus Event APIs - Login History
+###############################################################################
+
+### 5. 로그인 이력 조회 - Instance :8080
+GET http://localhost:8080/events/logins
+Accept: application/json
+
+> {%
+    client.log("=== Login History :8080 ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 6. 로그인 이력 조회 - Instance :8081
+GET http://localhost:8081/events/logins
+Accept: application/json
+
+> {%
+    client.log("=== Login History :8081 ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 7. 로그인 이력 조회 - Instance :8082
+GET http://localhost:8082/events/logins
+Accept: application/json
+
+> {%
+    client.log("=== Login History :8082 ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}
+
+### 8. 로그인 통계 조회 - Instance :8080
+GET http://localhost:8080/events/logins/stats
+Accept: application/json
+
+> {%
+    client.log("=== Login Statistics :8080 ===");
+    client.log(JSON.stringify(response.body, null, 2));
+%}

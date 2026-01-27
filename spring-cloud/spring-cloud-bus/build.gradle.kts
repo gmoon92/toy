@@ -1,4 +1,5 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -11,13 +12,8 @@ group = "com.gmoon.springcloud.spring-cloud-bus"
 description = "spring-cloud-bus"
 
 tasks {
-    named<BootJar>("bootJar") {
-        enabled = false
-    }
-
-    named<Jar>("jar") {
-        enabled = false
-    }
+    named<BootJar>("bootJar") { enabled = false }
+    named<Jar>("jar") { enabled = false }
 
     // 집합 모듈의 빌드 태스크가 모든 하위 프로젝트의 빌드에 의존
     listOf("build", "clean")
@@ -51,6 +47,13 @@ subprojects {
     dependencies {
         implementation("org.springframework.boot:spring-boot-starter-web")
 
+        implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp")
+
+        compileOnly("org.projectlombok:lombok")
+        testCompileOnly("org.projectlombok:lombok")
+        annotationProcessor("org.projectlombok:lombok")
+        testAnnotationProcessor("org.projectlombok:lombok")
+
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     }
@@ -60,14 +63,23 @@ subprojects {
     }
 }
 
+project(":spring-cloud:spring-cloud-bus:spring-cloud-bus-common") {
+    description = "spring-cloud-bus-common"
+
+    tasks {
+        named<BootJar>("bootJar") { enabled = false }
+        named<Jar>("jar") { enabled = true }
+    }
+}
+
 project(":spring-cloud:spring-cloud-bus:spring-cloud-bus-client") {
     description = "spring-cloud-bus-client"
 
     dependencies {
+        implementation(project(":spring-cloud:spring-cloud-bus:spring-cloud-bus-common"))
+
         implementation("org.springframework.cloud:spring-cloud-starter-config")
         implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-        implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp")
     }
 }
 
@@ -75,9 +87,10 @@ project(":spring-cloud:spring-cloud-bus:spring-cloud-bus-server") {
     description = "spring-cloud-bus-server"
 
     dependencies {
-        implementation("org.springframework.cloud:spring-cloud-config-server")
+        implementation(project(":spring-cloud:spring-cloud-bus:spring-cloud-bus-common"))
 
-        implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp")
+        implementation("org.springframework.cloud:spring-cloud-config-server")
+        implementation("org.springframework.boot:spring-boot-starter-actuator")
     }
 
     project.afterEvaluate {
@@ -91,7 +104,14 @@ project(":spring-cloud:spring-cloud-bus:spring-cloud-bus-server") {
     tasks {
         withType<ProcessResources> {
             filesMatching("**/application.yml") {
-                expand(project.properties)
+                filter(
+                    ReplaceTokens::class,
+                    mapOf(
+                        "tokens" to project.properties.mapValues { it.value.toString() },
+                        "beginToken" to "@",
+                        "endToken" to "@"
+                    )
+                )
             }
         }
     }

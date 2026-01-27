@@ -1,0 +1,18 @@
+# Dev 환경 전용 설정
+
+app:
+  message: "Welcome to Real Environment Config Server! (DEV)"
+  version: "real 1.0.0-dev"
+  feature:
+    enabled: true
+    max-retry: 5
+    timeout-seconds: 60
+
+database:
+  pool:
+    min-size: 2
+    max-size: 10
+    connection-timeout: 3000
+
+logging:
+  level: DEBUG
