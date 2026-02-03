@@ -29,6 +29,8 @@ Automates commit message generation following project conventions.
 - **[PROCESS.md](PROCESS.md)** - Detailed execution process (Step 1-5)
 - **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Auto-split commit process
 - **[RULES.md](RULES.md)** - Commit message format rules
+- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation strategy and algorithms
+- **[UI_TEMPLATES.md](UI_TEMPLATES.md)** - User option templates for each process step
 - **[EXAMPLES.md](EXAMPLES.md)** - Commit examples and patterns
 - **[UI_UX.md](UI_UX.md)** - Message selection UI/UX design
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Error handling guide
@@ -117,6 +119,8 @@ See [PROCESS.md](PROCESS.md) for detailed step-by-step execution.
 - [PROCESS.md](PROCESS.md) - Complete execution process
 - [AUTO_SPLIT.md](AUTO_SPLIT.md) - Auto-split commit workflow
 - [RULES.md](RULES.md) - Commit message conventions
+- [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) - Message generation algorithms
+- [UI_TEMPLATES.md](UI_TEMPLATES.md) - User interaction templates
 - [EXAMPLES.md](EXAMPLES.md) - Commit examples
 - [UI_UX.md](UI_UX.md) - Message selection UI design
 - [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Problem solving

@@ -198,6 +198,18 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 `<type>(module|filename): <간단한 설명>`
 
+### 5개 메시지 생성 전략
+
+각 그룹마다 **5개의 커밋 메시지**를 생성합니다.
+
+1. **Message 1 (추천)**: 최적의 scope + 명확한 표현
+2. **Message 2**: Scope 변형 (모듈명 ↔ 파일명)
+3. **Message 3**: Message 표현 변형 (간결/상세/다른 관점)
+4. **Message 4**: Body 상세도 조정 (추가/제거/변경)
+5. **Message 5**: Type 대안 제시 (다른 타입으로 해석)
+
+**상세한 생성 알고리즘:** [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) 참고
+
 ### Scope 선택
 
 - 모듈명: `feat(spring-security-jwt): JWT 인증 필터 추가`
@@ -222,62 +234,201 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 본문 작성 가이드는 [RULES.md](RULES.md#body-guidelines) 참고
 
-### 메시지 제안
+### 메시지 제안 (AskUserQuestion 사용)
 
-**UI/UX Design: Compact Headers with Preview**
+**중요:** AskUserQuestion 도구는 자동으로 **"Other" 옵션을 추가**합니다.
+- 사용자가 4개 메시지 중 선택
+- 또는 "Other" 선택 → 직접 입력 가능
 
-See [UI_UX.md](UI_UX.md) for complete design.
+**정형화된 템플릿:** [UI_TEMPLATES.md](UI_TEMPLATES.md#템플릿-3-커밋-메시지-선택) 참고
 
-**Display format:**
+**AskUserQuestion 호출:**
+
+```json
+{
+  "questions": [{
+    "question": "커밋 메시지를 선택하세요",
+    "header": "메시지 선택",
+    "multiSelect": false,
+    "options": [
+      {
+        "label": "메시지 1 (추천)",
+        "description": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가\n\n- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드"
+      },
+      {
+        "label": "메시지 2",
+        "description": "docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가\n\n- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드"
+      },
+      {
+        "label": "메시지 3",
+        "description": "docs(commit-skill): 커밋 스킬 문서 추가\n\n- 커밋 자동화 스킬 문서\n- 메시지 형식 규칙 정의"
+      },
+      {
+        "label": "메시지 4",
+        "description": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가"
+      }
+    ]
+  }]
+}
+```
+
+**자동 추가되는 옵션:**
+```
+5. Other (직접 입력)
+```
+
+**화면 출력 예시:**
 
 ```
-📝 커밋 메시지를 선택하세요 (↑↓: 이동, ←→: 본문 보기):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 커밋 메시지를 선택하세요
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  3. feat(commit-skill): 자동 커밋 메시지 생성기
-  4. docs(claude-skills): commit 스킬 구현
-  5. 직접 입력
+1. 메시지 1 (추천)
+   docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
-[↑↓: 선택 이동 | ←→: 본문 펼침/접음 | Enter: 선택]
-```
+   - SKILL.md: 스킬 실행 프로세스 정의
+   - RULES.md: 커밋 메시지 형식 규칙
+   - EXAMPLES.md: 실제 사용 예시
+   - TROUBLESHOOTING.md: 문제 해결 가이드
 
-**Interactive preview (→ arrow on selected):**
+2. 메시지 2
+   docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가
+   ...
 
-```
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천) ▼
+3. 메시지 3
+   docs(commit-skill): 커밋 스킬 문서 추가
+   ...
 
-     - SKILL.md: 스킬 실행 프로세스 정의
-     - RULES.md: 커밋 메시지 형식 규칙
-     - EXAMPLES.md: 실제 사용 예시
-     - TROUBLESHOOTING.md: 문제 해결 가이드
+4. 메시지 4
+   docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  ...
+5. Other (직접 입력)
+
+선택:
 ```
 
 **요구사항:**
-1. **추천 메시지 우선**: 가장 논리적인 메시지를 1번에 배치, "(추천)" 표시
-2. **헤더 기본 표시**: 빠른 스캔을 위해 헤더만 표시
-3. **본문 토글**: 좌우 화살표로 본문 펼침/접음
-4. **전체 메시지 표시**: 각 제안은 완전한 메시지 포함 (본문 있으면 반드시)
+1. **전체 메시지 표시**: 각 옵션의 description에 완전한 메시지 포함 (헤더 + 본문)
+2. **추천 표시**: 첫 번째 메시지에 "(추천)" 표시
+3. **Other 옵션**: 자동으로 추가됨 (사용자 직접 입력 가능)
 
 ---
 
 ## Step 4: 사용자 승인 받기
 
-### AskUserQuestion 도구 사용
+### 4-1: 사용자 선택 처리
 
-사용자에게 질문할 때 반드시 한글로 표시:
+**Step 3에서 받은 선택:**
+- 메시지 1-4 중 하나 선택 → 최종 확인으로 진행
+- "Other" 선택 → 직접 입력 플로우로 진행
 
-- **질문**: "이 커밋 메시지로 진행하시겠습니까?"
-- **옵션 1 (승인)**: "승인 - 커밋 실행"
-- **옵션 2 (수정)**: "수정 - 메시지 수정"
-- **옵션 3 (취소)**: "취소 - 프로세스 종료"
+### 4-2: 직접 입력 플로우 (Other 선택 시)
 
-### 최종 확인 - 전체 메시지 표시
+**정형화된 템플릿:** [UI_TEMPLATES.md](UI_TEMPLATES.md#템플릿-5-메시지-수정-직접-입력) 참고
+
+**1단계: 입력 안내**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✏️ 커밋 메시지 직접 입력
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+형식: <type>(scope): <message>
+
+본문을 추가하려면 빈 줄 후 작성하세요.
+예시:
+  docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+
+  - SKILL.md: 스킬 실행 프로세스 정의
+  - RULES.md: 커밋 메시지 형식 규칙
+
+입력하세요:
+```
+
+**2단계: 텍스트 입력 받기**
+- 사용자가 완전한 커밋 메시지 입력 (헤더 + 본문)
+- 멀티라인 입력 지원
+
+**3단계: 형식 검증**
+```bash
+# 정규식 검증
+pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
+
+if [[ ! $message =~ $pattern ]]; then
+  echo "❌ 형식 검증 실패"
+  # 재입력 요청
+fi
+```
+
+**검증 항목:**
+- Type: 7가지 중 하나 (feat, fix, refactor, test, docs, style, chore)
+- Scope: 영숫자 + `.`, `-`, `_`만 포함
+- Message: 비어있지 않음
+- 공백 블록: 최대 2개
+
+**검증 실패 시:**
+```
+❌ 형식 검증 실패
+
+오류: 커밋 타입이 잘못되었습니다
+입력: "feature(commit-skill): ..."
+허용: feat, fix, refactor, test, docs, style, chore
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+다시 입력하세요:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 다시 입력
+   커밋 메시지를 다시 작성합니다
+
+2. 메시지 선택으로 돌아가기
+   제안된 메시지 중 선택합니다
+
+3. 취소
+   커밋 프로세스를 종료합니다
+
+선택:
+```
+
+**4단계: 검증 통과 시**
+```
+✅ 형식 검증 통과
+```
+→ 최종 확인 단계로 진행
+
+### 4-3: 최종 확인 (AskUserQuestion 사용)
+
+**정형화된 템플릿:** [UI_TEMPLATES.md](UI_TEMPLATES.md#템플릿-4-최종-확인-커밋-직전) 참고
 
 **CRITICAL: 사용자가 선택한 후 반드시 전체 메시지를 다시 표시**
+
+**AskUserQuestion 호출:**
+
+```json
+{
+  "questions": [{
+    "question": "이 메시지로 커밋하시겠습니까?",
+    "header": "커밋 확인",
+    "multiSelect": false,
+    "options": [
+      {
+        "label": "승인 - 커밋 실행",
+        "description": "이 메시지로 git commit을 실행합니다"
+      },
+      {
+        "label": "수정",
+        "description": "다른 메시지를 선택하거나 직접 입력합니다"
+      },
+      {
+        "label": "취소",
+        "description": "커밋 프로세스를 종료합니다"
+      }
+    ]
+  }]
+}
+```
+
+**화면 출력:**
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -292,6 +443,19 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 이 메시지로 커밋하시겠습니까?
+
+1. 승인 - 커밋 실행
+   이 메시지로 git commit을 실행합니다
+
+2. 수정
+   다른 메시지를 선택하거나 직접 입력합니다
+
+3. 취소
+   커밋 프로세스를 종료합니다
+
+4. Other (직접 입력)
+
+선택:
 ```
 
 **Why show full message again:**
@@ -299,45 +463,13 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 - Final safety check before commit
 - Clear visibility of complete message (header + body + footer)
 
-### 수정 선택 시
+### 4-4: 수정 선택 시
 
-**CRITICAL: 대안 메시지도 반드시 전체 메시지(헤더 + 본문)로 표시**
+**옵션:**
+1. Step 3으로 돌아가기 (메시지 선택)
+2. 직접 입력 (Other 선택과 동일)
 
-```
-📝 대안 커밋 메시지 (다른 스타일):
-
-1. docs(commit-skill): Git 커밋 자동화 스킬 문서 추가
-
-   - 스킬 프로세스 자동화 가이드
-   - 메시지 생성 규칙 정의
-   - 사용 예시 및 문제 해결
-
-   (다른 표현 방식)
-
-2. feat(commit-skill): 자동 커밋 메시지 생성 기능 구현
-
-   - 스킬 프로세스 자동화
-   - 메시지 형식 검증
-   - Tidy First 원칙 적용
-
-   (타입 변경: docs → feat)
-
-3. docs(.claude): 커밋 스킬 설정 및 문서화
-
-   (scope 변경)
-
-4. docs(commit-skill): 커밋 메시지 규칙 및 예시 추가
-
-   (더 간결 - 본문 축소)
-
-5. 이전 메시지로 돌아가기
-6. 직접 입력
-```
-
-**요구사항:**
-- 각 대안은 완전한 메시지로 표시
-- 변경 사유를 괄호로 설명
-- 본문이 있으면 반드시 포함
+→ 사용자 선택에 따라 Step 3 또는 4-2로 이동
 
 ---
 
