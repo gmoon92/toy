@@ -17,20 +17,56 @@ The commit skill follows a 5-step process to ensure quality commits that follow 
 - Steps 2-5 read from metadata (67% token savings)
 - See [METADATA.md](METADATA.md) for details
 
+**Important:** All policies (Tidy First, Logical Independence, User Communication, etc.) are defined in [SKILL.md Core Principles](SKILL.md#core-principles).
+
 ---
 
 ## Step 1: 사전 검증 및 컨텍스트 수집 (Heavy Analysis)
 
-### 스테이징된 변경사항 검증
+### 변경사항 수집 및 검증 (IDE-like behavior)
 
-- 스테이징된 파일 존재 확인 (없으면 `git add` 실행 안내 후 종료)
+**Collect all changes:**
+
+IDE 기본 동작과 동일하게, 명시적으로 스테이징하지 않은 수정된 파일(modified files)도 자동으로 커밋 대상에 포함합니다.
+
+```bash
+# Collect both staged and modified files
+git diff --cached --name-only  # Staged files
+git diff --name-only           # Modified files (unstaged)
+```
+
+**Auto-stage all modified files:**
+
+```bash
+# Stage all modified files automatically (IDE behavior)
+git add -u
+```
+
+**Check if any changes exist:**
+
+```bash
+git diff --cached --stat
+```
+
+If no changes after staging → exit with message:
+```
+변경사항이 없습니다. 먼저 파일을 수정하세요.
+```
+
+**Note:**
+- Untracked files (new files) are NOT automatically staged
+- Only modified files are auto-staged for commit
+
+**Additional checks:**
 - main/master 브랜치에 있으면 경고 (브랜치 생성 권장)
 
 ### 변경 컨텍스트 수집 (병렬 실행)
 
-- 스테이징된 파일 목록 가져오기
-- 변경 통계 가져오기
-- 상세 diff 가져오기
+After auto-staging all modified files:
+
+- 변경된 파일 목록 가져오기 (`git diff --cached --name-only`)
+- 변경 통계 가져오기 (`git diff --cached --stat`)
+- 상세 diff 가져오기 (`git diff --cached`)
 - 주요 모듈 또는 수정된 파일 식별
 
 ### Scope 결정
@@ -94,12 +130,12 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 구조적 변경(refactor)과 동작 변경(feat/fix)이 섞여 있을 경우:
 
-- AskUserQuestion 도구를 사용하여 경고하고 질문 (반드시 한글로):
-  - 어떤 파일이 refactor이고 어떤 파일이 feat/fix인지 명확히 설명
-  - 여러 커밋으로 분리할 것을 권장하는 이유 설명
-  - **질문**: "Tidy First 원칙 위반이 감지되었습니다. 어떻게 하시겠습니까?"
-  - **옵션 1**: "리셋 후 분리 - 변경사항을 unstage하고 별도 커밋으로 분리"
-  - **옵션 2**: "그대로 진행 - 혼합된 상태로 커밋 (권장하지 않음)"
+**Template:** [ui/template-1-tidy-first.md](ui/template-1-tidy-first.md)
+
+**Actions:**
+- 어떤 파일이 refactor이고 어떤 파일이 feat/fix인지 명확히 설명
+- 여러 커밋으로 분리할 것을 권장하는 이유 설명
+- AskUserQuestion 도구를 사용하여 경고하고 질문 (template-1 참조)
 - 리셋 선택 시: `git reset HEAD` 실행, 분리 방법 안내 후 종료
 - 진행 선택 시: 지배적인 타입으로 계속 진행 (경고 메시지 표시)
 
@@ -130,58 +166,17 @@ Commit 2: docs(claude-api): Claude API 문서 번역 추가
 2. 논리적으로 독립적인 그룹 식별
 3. 10개 이상 파일 또는 서로 다른 최상위 디렉토리면 경고
 
-**사용자에게 질문 (한글로):**
+**Template:** [ui/template-2-logical-independence.md](ui/template-2-logical-independence.md)
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ 논리적으로 독립적인 변경사항 감지!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-감지된 그룹:
-  그룹 1: .claude/skills/commit/ (4개 파일)
-  그룹 2: ai/docs/claude/ (70개 파일)
-  그룹 3: .claude/agents/ (8개 파일)
-
-총 82개 파일이 3개의 독립적인 컨텍스트로 나뉩니다.
-
-💡 도움말:
-   통합 커밋은 전체 롤백과 코드 리뷰가 어려워질 수 있습니다.
-   기본 정책(자동 분리)을 따르는 것을 권장합니다.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 커밋 전략을 선택하세요:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-> 1. 자동 분리 커밋 (기본 정책)
-     각 그룹을 독립적으로 커밋합니다.
-     ✅ 명확한 히스토리, 쉬운 리뷰, 선택적 롤백
-     ✅ git bisect/revert/cherry-pick 용이
-     ⚠️ 커밋 수 증가, 프로세스 시간 소요
-
-  2. 통합 커밋
-     모든 변경을 하나로 통합합니다.
-     ⚠️ 롤백/리뷰 어려움, 버그 추적 어려움
-     ✅ 빠른 커밋, 간단한 히스토리
-
-  3. 취소
-     커밋 프로세스를 종료합니다.
-
-[↑↓: 이동 | →: 상세 정보 보기 | Enter: 선택]
-```
-
+**Actions:**
 - 각 그룹을 명확히 설명 (디렉토리, 파일 수, 목적)
-- **도움말**: 통합 커밋의 위험성을 간결하게 경고
-- **옵션 1**: "자동 분리 커밋 (기본 정책)" - 논리적으로 독립적인 커밋으로 분리
-- **옵션 2**: "하나의 커밋으로 통합" - 통합 커밋으로 진행
-- **옵션 3**: "취소" - 프로세스 종료
+- 통합 커밋의 위험성을 간결하게 경고
+- AskUserQuestion 도구를 사용하여 질문 (template-2 참조)
 
-**옵션 1 선택 시:**
-→ **[AUTO_SPLIT.md](AUTO_SPLIT.md)** 참고 (자동 분리 커밋 프로세스)
-
-**옵션 2 선택 시 (그대로 진행):**
-1. 경고 메시지 표시
-2. 재확인 요청
-3. Step 3으로 진행 (커밋 메시지 생성)
+**User Actions:**
+- "자동 분리" 선택 → **[AUTO_SPLIT.md](AUTO_SPLIT.md)** 참고 (자동 분리 커밋 프로세스)
+- "통합 커밋" 선택 → 경고 메시지 표시, 재확인 요청, Step 3으로 진행
+- "취소" 선택 → 프로세스 종료
 
 ---
 
@@ -236,82 +231,16 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 ### 메시지 제안 (AskUserQuestion 사용)
 
-**중요:** AskUserQuestion 도구는 자동으로 **"Other" 옵션을 추가**합니다.
-- 사용자가 4개 메시지 중 선택
-- 또는 "Other" 선택 → 직접 입력 가능
+**Template:** [ui/template-3-message-selection.md](ui/template-3-message-selection.md)
 
-**정형화된 템플릿:** [UI_TEMPLATES.md](UI_TEMPLATES.md#템플릿-3-커밋-메시지-선택) 참고
-
-**AskUserQuestion 호출:**
-
-```json
-{
-  "questions": [{
-    "question": "커밋 메시지를 선택하세요",
-    "header": "메시지 선택",
-    "multiSelect": false,
-    "options": [
-      {
-        "label": "메시지 1 (추천)",
-        "description": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가\n\n- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드"
-      },
-      {
-        "label": "메시지 2",
-        "description": "docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가\n\n- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드"
-      },
-      {
-        "label": "메시지 3",
-        "description": "docs(commit-skill): 커밋 스킬 문서 추가\n\n- 커밋 자동화 스킬 문서\n- 메시지 형식 규칙 정의"
-      },
-      {
-        "label": "메시지 4",
-        "description": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가"
-      }
-    ]
-  }]
-}
-```
-
-**자동 추가되는 옵션:**
-```
-5. Other (직접 입력)
-```
-
-**화면 출력 예시:**
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 커밋 메시지를 선택하세요
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. 메시지 1 (추천)
-   docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-   - SKILL.md: 스킬 실행 프로세스 정의
-   - RULES.md: 커밋 메시지 형식 규칙
-   - EXAMPLES.md: 실제 사용 예시
-   - TROUBLESHOOTING.md: 문제 해결 가이드
-
-2. 메시지 2
-   docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가
-   ...
-
-3. 메시지 3
-   docs(commit-skill): 커밋 스킬 문서 추가
-   ...
-
-4. 메시지 4
-   docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-5. Other (직접 입력)
-
-선택:
-```
-
-**요구사항:**
+**Requirements:**
 1. **전체 메시지 표시**: 각 옵션의 description에 완전한 메시지 포함 (헤더 + 본문)
 2. **추천 표시**: 첫 번째 메시지에 "(추천)" 표시
 3. **Other 옵션**: 자동으로 추가됨 (사용자 직접 입력 가능)
+
+**User Actions:**
+- "메시지 1-4" 선택 → template-4 (최종 확인)으로 진행
+- "Other" 선택 → template-5 (직접 입력)으로 진행
 
 ---
 
@@ -325,143 +254,30 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 ### 4-2: 직접 입력 플로우 (Other 선택 시)
 
-**정형화된 템플릿:** [UI_TEMPLATES.md](UI_TEMPLATES.md#템플릿-5-메시지-수정-직접-입력) 참고
+**Template:** [ui/template-5-direct-input.md](ui/template-5-direct-input.md)
 
-**1단계: 입력 안내**
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✏️ 커밋 메시지 직접 입력
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-형식: <type>(scope): <message>
-
-본문을 추가하려면 빈 줄 후 작성하세요.
-예시:
-  docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-  - SKILL.md: 스킬 실행 프로세스 정의
-  - RULES.md: 커밋 메시지 형식 규칙
-
-입력하세요:
-```
-
-**2단계: 텍스트 입력 받기**
-- 사용자가 완전한 커밋 메시지 입력 (헤더 + 본문)
-- 멀티라인 입력 지원
-
-**3단계: 형식 검증**
-```bash
-# 정규식 검증
-pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
-
-if [[ ! $message =~ $pattern ]]; then
-  echo "❌ 형식 검증 실패"
-  # 재입력 요청
-fi
-```
-
-**검증 항목:**
-- Type: 7가지 중 하나 (feat, fix, refactor, test, docs, style, chore)
-- Scope: 영숫자 + `.`, `-`, `_`만 포함
-- Message: 비어있지 않음
-- 공백 블록: 최대 2개
-
-**검증 실패 시:**
-```
-❌ 형식 검증 실패
-
-오류: 커밋 타입이 잘못되었습니다
-입력: "feature(commit-skill): ..."
-허용: feat, fix, refactor, test, docs, style, chore
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-다시 입력하세요:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. 다시 입력
-   커밋 메시지를 다시 작성합니다
-
-2. 메시지 선택으로 돌아가기
-   제안된 메시지 중 선택합니다
-
-3. 취소
-   커밋 프로세스를 종료합니다
-
-선택:
-```
-
-**4단계: 검증 통과 시**
-```
-✅ 형식 검증 통과
-```
-→ 최종 확인 단계로 진행
+**Process:**
+1. 입력 안내 표시
+2. 사용자가 완전한 커밋 메시지 입력 (헤더 + 본문, 멀티라인 지원)
+3. 형식 검증 (Type, Scope, Message, 공백 블록)
+4. 검증 통과 → template-4 (최종 확인)으로 진행
+5. 검증 실패 → 재입력 옵션 제공 (template-5 참조)
 
 ### 4-3: 최종 확인 (AskUserQuestion 사용)
 
-**정형화된 템플릿:** [UI_TEMPLATES.md](UI_TEMPLATES.md#템플릿-4-최종-확인-커밋-직전) 참고
+**Template:** [ui/template-4-final-confirmation.md](ui/template-4-final-confirmation.md)
 
 **CRITICAL: 사용자가 선택한 후 반드시 전체 메시지를 다시 표시**
-
-**AskUserQuestion 호출:**
-
-```json
-{
-  "questions": [{
-    "question": "이 메시지로 커밋하시겠습니까?",
-    "header": "커밋 확인",
-    "multiSelect": false,
-    "options": [
-      {
-        "label": "승인 - 커밋 실행",
-        "description": "이 메시지로 git commit을 실행합니다"
-      },
-      {
-        "label": "수정",
-        "description": "다른 메시지를 선택하거나 직접 입력합니다"
-      },
-      {
-        "label": "취소",
-        "description": "커밋 프로세스를 종료합니다"
-      }
-    ]
-  }]
-}
-```
-
-**화면 출력:**
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 최종 커밋 메시지:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- SKILL.md: 스킬 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙
-- EXAMPLES.md: 실제 사용 예시
-- TROUBLESHOOTING.md: 문제 해결 가이드
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-이 메시지로 커밋하시겠습니까?
-
-1. 승인 - 커밋 실행
-   이 메시지로 git commit을 실행합니다
-
-2. 수정
-   다른 메시지를 선택하거나 직접 입력합니다
-
-3. 취소
-   커밋 프로세스를 종료합니다
-
-4. Other (직접 입력)
-
-선택:
-```
 
 **Why show full message again:**
 - User may have only seen header in list view
 - Final safety check before commit
 - Clear visibility of complete message (header + body + footer)
+
+**User Actions:**
+- "승인" 선택 → Step 5 (커밋 실행)으로 진행
+- "수정" 선택 → template-3 (메시지 선택)으로 돌아가기
+- "취소" 선택 → 프로세스 종료
 
 ### 4-4: 수정 선택 시
 

@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Analyzes staged git changes and generates commit messages following project conventions (format, Tidy First principles, module/file-based scope). Validates changes, detects mixed refactor/feat commits, and executes git commit after user approval. Use when creating commits, writing commit messages, or when user mentions staged changes.
+description: Analyzes all git changes (staged + modified) and generates commit messages following project conventions. Auto-stages modified files (IDE-like behavior). Validates Tidy First principles, detects logical independence, and executes git commit after user approval. Use when creating commits or when user mentions changes.
 disable-model-invocation: false
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
@@ -11,7 +11,8 @@ allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
 Automates commit message generation following project conventions.
 
 **Core Functions:**
-- Analyzes staged changes and identifies scope (module/file)
+- **Auto-stages all modified files** (IDE-like behavior, no user confirmation needed)
+- Analyzes all changes (staged + modified) and identifies scope (module/file)
 - Validates Tidy First principles (structural vs behavioral separation)
 - Detects logical independence (multiple independent groups)
 - **Generates 5 complete commit messages (header + body) for user preview**
@@ -19,10 +20,12 @@ Automates commit message generation following project conventions.
 - Executes git commit after user approval
 
 **Scope:**
-- ✅ Analyze staged changes and generate commit messages
+- ✅ Auto-stage modified files (IDE behavior)
+- ✅ Analyze all changes (staged + modified)
 - ✅ Validate Tidy First and logical independence
 - ✅ Execute `git commit` (with user approval)
-- ❌ Never: `git add`, `git push`, or destructive commands without approval
+- ❌ Never: `git push` or destructive commands without approval
+- ❌ Never: Stage untracked files (only modified files)
 
 ## Document Structure
 
@@ -61,6 +64,11 @@ Automates commit message generation following project conventions.
 **5. Git Hook Failures**
 - Show error verbatim, skip failed group
 - Continue to next group, keep successful commits
+
+**6. User Communication (Korean)**
+- All user-facing messages MUST be in Korean
+- This includes: AskUserQuestion, status messages, analysis results, error messages
+- Internal documentation and process descriptions can be in English for token efficiency
 
 ## Quick Reference
 
