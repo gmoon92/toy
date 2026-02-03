@@ -4,6 +4,8 @@
 
 ## TOC
 
+- AI
+  - [Claude API](ai/docs/claude/README.md)
 - [google-spreadsheet](google-spreadsheet/README.md)
 - [java-core](java-core/README.md)
 - [payment](payment/README.md)
