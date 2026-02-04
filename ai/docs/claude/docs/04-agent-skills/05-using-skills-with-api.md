@@ -8,8 +8,8 @@ API를 통해 에이전트 스킬을 사용하여 Claude의 기능을 확장하�
 
 
 > 요청/응답 스키마 및 모든 매개변수를 포함한 전체 API 참조는 다음을 참조하세요:
-> - [스킬 관리 API 참조](/docs/en/api/skills/list-skills) - 스킬의 CRUD 작업
-> - [스킬 버전 API 참조](/docs/en/api/skills/list-skill-versions) - 버전 관리
+> - [스킬 관리 API 참조](https://platform.claude.com/docs/en/api/skills/list-skills) - 스킬의 CRUD 작업
+> - [스킬 버전 API 참조](https://platform.claude.com/docs/en/api/skills/list-skill-versions) - 버전 관리
 
 
 ## 빠른 링크
@@ -42,10 +42,10 @@ API를 통해 에이전트 스킬을 사용하여 Claude의 기능을 확장하�
 | **Type 값** | `anthropic` | `custom` |
 | **스킬 ID** | 짧은 이름: `pptx`, `xlsx`, `docx`, `pdf` | 생성된 ID: `skill_01AbCdEfGhIjKlMnOpQrStUv` |
 | **버전 형식** | 날짜 기반: `20251013` 또는 `latest` | Epoch 타임스탬프: `1759178010641129` 또는 `latest` |
-| **관리** | Anthropic에서 사전 구축 및 유지 관리 | [Skills API](/docs/en/api/skills/create-skill)를 통해 업로드 및 관리 |
+| **관리** | Anthropic에서 사전 구축 및 유지 관리 | [Skills API](https://platform.claude.com/docs/en/api/skills/create-skill)를 통해 업로드 및 관리 |
 | **가용성** | 모든 사용자에게 제공 | 워크스페이스 내 비공개 |
 
-두 스킬 출처 모두 [List Skills 엔드포인트](/docs/en/api/skills/list-skills)에서 반환됩니다(`source` 매개변수를 사용하여 필터링). 통합 형태와 실행 환경은 동일하며, 유일한 차이점은 스킬의 출처와 관리 방법입니다.
+두 스킬 출처 모두 [List Skills 엔드포인트](https://platform.claude.com/docs/en/api/skills/list-skills)에서 반환됩니다(`source` 매개변수를 사용하여 필터링). 통합 형태와 실행 환경은 동일하며, 유일한 차이점은 스킬의 출처와 관리 방법입니다.
 
 ### 사전 요구 사항
 
@@ -387,7 +387,7 @@ curl -X DELETE "https://api.anthropic.com/v1/files/$FILE_ID" \
 </CodeGroup>
 
 
-> Files API에 대한 자세한 내용은 [Files API 문서](/docs/en/api/files-content)를 참조하세요.
+> Files API에 대한 자세한 내용은 [Files API 문서](https://platform.claude.com/docs/en/api/files-content)를 참조하세요.
 
 
 ### 다중 턴 대화
@@ -838,7 +838,7 @@ curl -X POST "https://api.anthropic.com/v1/skills" \
   - `name`: 최대 64자, 소문자/숫자/하이픈만 사용, XML 태그 없음, 예약어("anthropic", "claude") 사용 불가
   - `description`: 최대 1024자, 비어있지 않음, XML 태그 없음
 
-전체 요청/응답 스키마는 [Create Skill API 참조](/docs/en/api/skills/create-skill)를 참조하세요.
+전체 요청/응답 스키마는 [Create Skill API 참조](https://platform.claude.com/docs/en/api/skills/create-skill)를 참조하세요.
 
 ### 스킬 목록 조회하기
 
@@ -893,7 +893,7 @@ curl "https://api.anthropic.com/v1/skills?source=custom" \
 ```
 </CodeGroup>
 
-페이지네이션 및 필터링 옵션은 [List Skills API 참조](/docs/en/api/skills/list-skills)를 참조하세요.
+페이지네이션 및 필터링 옵션은 [List Skills API 참조](https://platform.claude.com/docs/en/api/skills/list-skills)를 참조하세요.
 
 ### 스킬 상세 조회하기
 
@@ -1146,7 +1146,7 @@ curl https://api.anthropic.com/v1/messages \
 ```
 </CodeGroup>
 
-자세한 내용은 [Create Skill Version API 참조](/docs/en/api/skills/create-skill-version)를 참조하세요.
+자세한 내용은 [Create Skill Version API 참조](https://platform.claude.com/docs/en/api/skills/create-skill-version)를 참조하세요.
 
 ---
 

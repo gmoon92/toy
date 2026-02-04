@@ -56,6 +56,6 @@ Claude와 상호작용할 때는, Claude를 (기억상실증을 가진) 매우 �
 
 ## 관련 자료
 
-- **프롬프트 라이브러리**: 다양한 작업 및 사용 사례를 위해 선별된 프롬프트 모음에서 영감을 얻으세요. [바로가기](/docs/en/resources/prompt-library/library)
+- **프롬프트 라이브러리**: 다양한 작업 및 사용 사례를 위해 선별된 프롬프트 모음에서 영감을 얻으세요. [바로가기](https://platform.claude.com/docs/en/resources/prompt-library/library)
 - **GitHub 프롬프팅 튜토리얼**: 문서에서 찾을 수 있는 프롬프트 엔지니어링 개념을 다루는 예시로 가득한 튜토리얼입니다. [바로가기](https://github.com/anthropics/prompt-eng-interactive-tutorial)
 - **Google Sheets 프롬프팅 튜토리얼**: 대화형 스프레드시트를 통한 보다 가벼운 버전의 프롬프트 엔지니어링 튜토리얼입니다. [바로가기](https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8)

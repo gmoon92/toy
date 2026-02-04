@@ -10,7 +10,7 @@ Extended thinking은 다음 모델에서 지원됩니다:
 
 - Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`)
 - Claude Sonnet 4 (`claude-sonnet-4-20250514`)
-- Claude Sonnet 3.7 (`claude-3-7-sonnet-20250219`) ([deprecated](/docs/en/about-claude/model-deprecations))
+- Claude Sonnet 3.7 (`claude-3-7-sonnet-20250219`) ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations))
 - Claude Haiku 4.5 (`claude-haiku-4-5-20251001`)
 - Claude Opus 4.5 (`claude-opus-4-5-20251101`)
 - Claude Opus 4.1 (`claude-opus-4-1-20250805`)
@@ -46,7 +46,7 @@ API 응답에는 `thinking` 콘텐츠 블록이 포함되고 그 뒤에 `text` �
 }
 ```
 
-Extended thinking의 응답 형식에 대한 자세한 내용은 [Messages API Reference](/docs/en/api/messages)를 참조하세요.
+Extended thinking의 응답 형식에 대한 자세한 내용은 [Messages API Reference](https://platform.claude.com/docs/en/api/messages)를 참조하세요.
 
 ## Extended thinking 사용 방법
 
@@ -757,7 +757,7 @@ Claude 4 모델의 도구 사용과 함께 extended thinking은 인터리브 thi
 - 중간에 추론 단계를 포함하여 여러 도구 호출을 연결합니다
 - 중간 결과를 기반으로 보다 미묘한 결정을 내립니다
 
-인터리브 thinking을 활성화하려면 API 요청에 [베타 헤더](/docs/en/api/beta-headers) `interleaved-thinking-2025-05-14`를 추가하세요.
+인터리브 thinking을 활성화하려면 API 요청에 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers) `interleaved-thinking-2025-05-14`를 추가하세요.
 
 인터리브 thinking에 대한 몇 가지 중요한 고려 사항은 다음과 같습니다:
 - 인터리브 thinking을 사용하면 `budget_tokens`가 하나의 어시스턴트 턴 내의 모든 thinking 블록에 걸쳐 총 예산을 나타내므로 `max_tokens` 매개변수를 초과할 수 있습니다.
@@ -1041,7 +1041,7 @@ Claude Opus 4.5는 새로운 기본 동작을 도입합니다: **이전 어시�
 
 ## 가격
 
-기본 요금, 캐시 쓰기, 캐시 히트 및 출력 토큰을 포함한 전체 가격 정보는 [가격 페이지](/docs/en/about-claude/pricing)를 참조하세요.
+기본 요금, 캐시 쓰기, 캐시 히트 및 출력 토큰을 포함한 전체 가격 정보는 [가격 페이지](https://platform.claude.com/docs/en/about-claude/pricing)를 참조하세요.
 
 thinking 프로세스는 다음에 대한 요금이 부과됩니다:
 - thinking 중에 사용된 토큰 (출력 토큰)

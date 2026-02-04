@@ -1108,16 +1108,16 @@ Claude가 병렬 도구 호출을 하는 경우, 각 결과가 자체 `tool_resu
 | Claude Opus 4            | `auto`, `none`<hr />`any`, `tool`   | 346 토큰<hr />313 토큰 |
 | Claude Sonnet 4.5          | `auto`, `none`<hr />`any`, `tool`   | 346 토큰<hr />313 토큰 |
 | Claude Sonnet 4          | `auto`, `none`<hr />`any`, `tool`   | 346 토큰<hr />313 토큰 |
-| Claude Sonnet 3.7 ([더 이상 사용되지 않음](/docs/en/about-claude/model-deprecations))        | `auto`, `none`<hr />`any`, `tool`   | 346 토큰<hr />313 토큰 |
+| Claude Sonnet 3.7 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))        | `auto`, `none`<hr />`any`, `tool`   | 346 토큰<hr />313 토큰 |
 | Claude Haiku 4.5         | `auto`, `none`<hr />`any`, `tool`   | 346 토큰<hr />313 토큰 |
 | Claude Haiku 3.5         | `auto`, `none`<hr />`any`, `tool`   | 264 토큰<hr />340 토큰 |
-| Claude Opus 3 ([더 이상 사용되지 않음](/docs/en/about-claude/model-deprecations))            | `auto`, `none`<hr />`any`, `tool`   | 530 토큰<hr />281 토큰 |
+| Claude Opus 3 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))            | `auto`, `none`<hr />`any`, `tool`   | 530 토큰<hr />281 토큰 |
 | Claude Sonnet 3          | `auto`, `none`<hr />`any`, `tool`   | 159 토큰<hr />235 토큰 |
 | Claude Haiku 3           | `auto`, `none`<hr />`any`, `tool`   | 264 토큰<hr />340 토큰 |
 
 이러한 토큰 수는 요청의 총 비용을 계산하기 위해 일반 입력 및 출력 토큰에 추가됩니다.
 
-현재 모델별 가격은 [모델 개요 테이블](/docs/en/about-claude/models/overview#latest-models-comparison)을 참조하세요.
+현재 모델별 가격은 [모델 개요 테이블](https://platform.claude.com/docs/en/about-claude/models/overview#latest-models-comparison)을 참조하세요.
 
 도구 사용 프롬프트를 보낼 때 다른 API 요청과 마찬가지로 응답은 보고된 `usage` 메트릭의 일부로 입력 및 출력 토큰 수를 모두 출력합니다.
 

@@ -4,11 +4,11 @@
 
 이 가이드는 Claude의 확장 사고 기능을 최대한 활용하기 위한 고급 전략과 기법을 제공합니다. 확장 사고를 통해 Claude는 복잡한 문제를 단계별로 처리하여 어려운 작업의 성능을 향상시킬 수 있습니다.
 
-확장 사고를 언제 사용할지 결정하는 방법은 [확장 사고 모델](/docs/en/about-claude/models/extended-thinking-models)을 참조하세요.
+확장 사고를 언제 사용할지 결정하는 방법은 [확장 사고 모델](https://platform.claude.com/docs/en/about-claude/models/extended-thinking-models)을 참조하세요.
 
 ## 시작하기 전에
 
-이 가이드는 여러분이 이미 확장 사고 모드를 사용하기로 결정했고, [확장 사고 모델 시작하기](/docs/en/about-claude/models/extended-thinking-models#getting-started-with-extended-thinking-models)에 대한 기본 단계와 [확장 사고 구현 가이드](../02-capabilities/03-extended-thinking.md)를 검토했다고 가정합니다.
+이 가이드는 여러분이 이미 확장 사고 모드를 사용하기로 결정했고, [확장 사고 모델 시작하기](https://platform.claude.com/docs/en/about-claude/models/extended-thinking-models#getting-started-with-extended-thinking-models)에 대한 기본 단계와 [확장 사고 구현 가이드](../02-capabilities/03-extended-thinking.md)를 검토했다고 가정합니다.
 
 ### 확장 사고의 기술적 고려사항
 

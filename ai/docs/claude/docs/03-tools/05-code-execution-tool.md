@@ -9,7 +9,7 @@ Claude는 API 대화 내에서 직접 데이터를 분석하고, 시각화를 �
 
 > 코드 실행 도구는 현재 공개 베타 상태입니다.
 >
-> 이 기능을 사용하려면 API 요청에 `"code-execution-2025-08-25"` [베타 헤더](/docs/en/api/beta-headers)를 추가해야 합니다.
+> 이 기능을 사용하려면 API 요청에 `"code-execution-2025-08-25"` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 추가해야 합니다.
 >
 > 이 기능에 대한 피드백은 [피드백 양식](https://forms.gle/LTAU6Xn2puCJMi1n6)을 통해 공유해 주세요.
 
@@ -25,9 +25,9 @@ Claude는 API 대화 내에서 직접 데이터를 분석하고, 시각화를 �
 | Claude Opus 4 (`claude-opus-4-20250514`) | `code_execution_20250825` |
 | Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`) | `code_execution_20250825` |
 | Claude Sonnet 4 (`claude-sonnet-4-20250514`) | `code_execution_20250825` |
-| Claude Sonnet 3.7 (`claude-3-7-sonnet-20250219`) ([지원 종료됨](/docs/en/about-claude/model-deprecations)) | `code_execution_20250825` |
+| Claude Sonnet 3.7 (`claude-3-7-sonnet-20250219`) ([지원 종료됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `code_execution_20250825` |
 | Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) | `code_execution_20250825` |
-| Claude Haiku 3.5 (`claude-3-5-haiku-latest`) ([지원 종료됨](/docs/en/about-claude/model-deprecations)) | `code_execution_20250825` |
+| Claude Haiku 3.5 (`claude-3-5-haiku-latest`) ([지원 종료됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `code_execution_20250825` |
 
 
 > 현재 버전인 `code_execution_20250825`는 Bash 명령과 파일 작업을 지원합니다. 레거시 버전인 `code_execution_20250522`(Python만 지원)도 여전히 사용할 수 있습니다. 마이그레이션 세부 사항은 [최신 도구 버전으로 업그레이드](#upgrade-to-latest-tool-version)를 참조하세요.
@@ -264,7 +264,7 @@ Python 환경은 Files API를 통해 업로드된 다양한 파일 형식을 처
 
 #### 파일 업로드 및 분석
 
-1. [Files API](/docs/en/build-with-claude/files)를 사용하여 **파일을 업로드**합니다
+1. [Files API](https://platform.claude.com/docs/en/build-with-claude/files)를 사용하여 **파일을 업로드**합니다
 2. `container_upload` 콘텐츠 블록을 사용하여 메시지에서 **파일을 참조**합니다
 3. API 요청에 **코드 실행 도구를 포함**합니다
 
@@ -764,7 +764,7 @@ const response = await anthropic.beta.messages.create({
 - **외부 연결**: 아웃바운드 네트워크 요청이 허용되지 않음
 - **샌드박스 격리**: 호스트 시스템 및 다른 컨테이너와 완전히 격리됨
 - **파일 액세스**: 작업 공간 디렉터리로만 제한됨
-- **작업 공간 범위**: [Files](/docs/en/build-with-claude/files)와 마찬가지로 컨테이너는 API 키의 작업 공간으로 범위가 지정됨
+- **작업 공간 범위**: [Files](https://platform.claude.com/docs/en/build-with-claude/files)와 마찬가지로 컨테이너는 API 키의 작업 공간으로 범위가 지정됨
 - **만료**: 컨테이너는 생성 후 30일 후에 만료됨
 
 ### 사전 설치된 라이브러리
@@ -939,7 +939,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "cod
 
 ## 배치 요청
 
-[Messages Batches API](/docs/en/build-with-claude/batch-processing)에 코드 실행 도구를 포함할 수 있습니다. Messages Batches API를 통한 코드 실행 도구 호출은 일반 Messages API 요청과 동일한 가격으로 청구됩니다.
+[Messages Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing)에 코드 실행 도구를 포함할 수 있습니다. Messages Batches API를 통한 코드 실행 도구 호출은 일반 Messages API 요청과 동일한 가격으로 청구됩니다.
 
 ## 사용량 및 가격
 
@@ -988,7 +988,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "cod
 
 ## 프로그래밍 방식 도구 호출
 
-코드 실행 도구는 [프로그래밍 방식 도구 호출](/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)을 지원하며, 이를 통해 Claude가 실행 컨테이너 내에서 프로그래밍 방식으로 사용자 정의 도구를 호출하는 코드를 작성할 수 있습니다. 이를 통해 효율적인 다중 도구 워크플로우, Claude의 컨텍스트에 도달하기 전에 데이터 필터링 및 복잡한 조건부 로직이 가능합니다.
+코드 실행 도구는 [프로그래밍 방식 도구 호출](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)을 지원하며, 이를 통해 Claude가 실행 컨테이너 내에서 프로그래밍 방식으로 사용자 정의 도구를 호출하는 코드를 작성할 수 있습니다. 이를 통해 효율적인 다중 도구 워크플로우, Claude의 컨텍스트에 도달하기 전에 데이터 필터링 및 복잡한 조건부 로직이 가능합니다.
 
 <CodeGroup>
 ```python Python
@@ -1017,10 +1017,10 @@ response = client.beta.messages.create(
 ```
 </CodeGroup>
 
-자세한 내용은 [프로그래밍 방식 도구 호출 문서](/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)를 참조하세요.
+자세한 내용은 [프로그래밍 방식 도구 호출 문서](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)를 참조하세요.
 
 ## Agent Skills와 함께 코드 실행 사용
 
-코드 실행 도구를 사용하면 Claude가 [Agent Skills](/docs/en/agents-and-tools/agent-skills/overview)를 사용할 수 있습니다. Skills는 Claude의 기능을 확장하는 지침, 스크립트 및 리소스로 구성된 모듈식 기능입니다.
+코드 실행 도구를 사용하면 Claude가 [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)를 사용할 수 있습니다. Skills는 Claude의 기능을 확장하는 지침, 스크립트 및 리소스로 구성된 모듈식 기능입니다.
 
-자세한 내용은 [Agent Skills 문서](/docs/en/agents-and-tools/agent-skills/overview) 및 [Agent Skills API 가이드](/docs/en/build-with-claude/skills-guide)를 참조하세요.
+자세한 내용은 [Agent Skills 문서](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) 및 [Agent Skills API 가이드](https://platform.claude.com/docs/en/build-with-claude/skills-guide)를 참조하세요.

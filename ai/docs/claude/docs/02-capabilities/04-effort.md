@@ -9,7 +9,7 @@ effort 매개변수를 사용하면 Claude가 요청에 응답할 때 토큰을 
 
 > effort 매개변수는 현재 베타 버전이며 Claude Opus 4.5에서만 지원됩니다.
 >
-> 이 기능을 사용할 때 [베타 헤더](/docs/en/api/beta-headers) `effort-2025-11-24`를 포함해야 합니다.
+> 이 기능을 사용할 때 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers) `effort-2025-11-24`를 포함해야 합니다.
 
 
 ## Effort 작동 방식

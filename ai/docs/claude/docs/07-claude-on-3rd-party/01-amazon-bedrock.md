@@ -20,7 +20,7 @@ aws sts get-caller-identity
 
 ## Bedrock 액세스를 위한 SDK 설치
 
-Anthropic의 [클라이언트 SDK](/docs/en/api/client-sdks)는 Bedrock을 지원합니다. 또한 `boto3`와 같은 AWS SDK를 직접 사용할 수도 있습니다.
+Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)는 Bedrock을 지원합니다. 또한 `boto3`와 같은 AWS SDK를 직접 사용할 수도 있습니다.
 
 <CodeGroup>
   ```python Python
@@ -156,7 +156,7 @@ Anthropic의 [클라이언트 SDK](/docs/en/api/client-sdks)는 Bedrock을 지�
   ```
 </CodeGroup>
 
-자세한 내용은 [클라이언트 SDK](/docs/en/api/client-sdks)를 참조하고, 공식 Bedrock 문서는 [여기](https://docs.aws.amazon.com/bedrock/)에서 확인할 수 있습니다.
+자세한 내용은 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)를 참조하고, 공식 Bedrock 문서는 [여기](https://docs.aws.amazon.com/bedrock/)에서 확인할 수 있습니다.
 
 ## 활동 로깅
 
@@ -169,7 +169,7 @@ Anthropic은 활동을 이해하고 잠재적인 오용을 조사하기 위해 �
 
 
 ## 기능 지원
-Bedrock에서 현재 지원되는 모든 기능은 [여기](/docs/en/api/overview)에서 확인할 수 있습니다.
+Bedrock에서 현재 지원되는 모든 기능은 [여기](https://platform.claude.com/docs/en/api/overview)에서 확인할 수 있습니다.
 
 ### Bedrock의 PDF 지원
 
@@ -290,4 +290,4 @@ const message = await client.messages.create({
 - **AWS Bedrock 가격:** [aws.amazon.com/bedrock/pricing](https://aws.amazon.com/bedrock/pricing/)
 - **AWS 가격 문서:** [Bedrock 가격 가이드](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-pricing.html)
 - **AWS 블로그 포스트:** [Amazon Bedrock에서 Claude Sonnet 4.5 소개](https://aws.amazon.com/blogs/aws/introducing-claude-sonnet-4-5-in-amazon-bedrock-anthropics-most-intelligent-model-best-for-coding-and-complex-agents/)
-- **Anthropic 가격 세부 정보:** [가격 문서](/docs/en/about-claude/pricing#third-party-platform-pricing)
+- **Anthropic 가격 세부 정보:** [가격 문서](https://platform.claude.com/docs/en/about-claude/pricing#third-party-platform-pricing)

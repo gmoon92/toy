@@ -134,6 +134,6 @@ Output only the chosen article title, without any additional text or explanation
 
 ## 다음 단계
 
-- **프롬프트 라이브러리**: 다양한 작업을 위한 예시 프롬프트에서 영감을 얻으세요. [자세히 보기](/docs/en/resources/prompt-library/library)
+- **프롬프트 라이브러리**: 다양한 작업을 위한 예시 프롬프트에서 영감을 얻으세요. [자세히 보기](https://platform.claude.com/docs/en/resources/prompt-library/library)
 - **GitHub 프롬프팅 튜토리얼**: 인터랙티브 튜토리얼로 프롬프팅 모범 사례를 배우세요. [자세히 보기](https://github.com/anthropics/prompt-eng-interactive-tutorial)
 - **프롬프트 테스트하기**: 평가 도구를 사용하여 개선된 프롬프트를 테스트하세요. [자세히 보기](../09-test-evaluate/03-eval-tool.md)

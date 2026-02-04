@@ -66,7 +66,7 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
     | **Grep** | 정규식으로 파일 내용 검색 |
     | **WebSearch** | 최신 정보를 위한 웹 검색 |
     | **WebFetch** | 웹 페이지 콘텐츠 가져오기 및 파싱 |
-    | **[AskUserQuestion](/docs/en/agent-sdk/user-input#handle-clarifying-questions)** | 사용자에게 다중 선택 옵션으로 명확화 질문하기 |
+    | **[AskUserQuestion](https://platform.claude.com/docs/en/agent-sdk/user-input#handle-clarifying-questions)** | 사용자에게 다중 선택 옵션으로 명확화 질문하기 |
 
     다음 예제는 코드베이스에서 TODO 주석을 검색하는 에이전트를 생성합니다:
 
@@ -158,7 +158,7 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
     ```
     </CodeGroup>
 
-    [훅에 대해 자세히 알아보기 →](/docs/en/agent-sdk/hooks)
+    [훅에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/hooks)
   </Tab>
   <Tab title="서브에이전트">
     특정 하위 작업을 처리할 전문화된 에이전트를 생성합니다. 메인 에이전트가 작업을 위임하고, 서브에이전트가 결과를 보고합니다.
@@ -213,7 +213,7 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     서브에이전트의 컨텍스트 내에서 발생한 메시지에는 `parent_tool_use_id` 필드가 포함되어 있어, 어떤 메시지가 어떤 서브에이전트 실행에 속하는지 추적할 수 있습니다.
 
-    [서브에이전트에 대해 자세히 알아보기 →](/docs/en/agent-sdk/subagents)
+    [서브에이전트에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/subagents)
   </Tab>
   <Tab title="MCP">
     Model Context Protocol을 통해 외부 시스템에 연결하세요: 데이터베이스, 브라우저, API 및 [수백 가지 이상](https://github.com/modelcontextprotocol/servers)의 서비스.
@@ -256,13 +256,13 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
     ```
     </CodeGroup>
 
-    [MCP에 대해 자세히 알아보기 →](/docs/en/agent-sdk/mcp)
+    [MCP에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/mcp)
   </Tab>
   <Tab title="권한">
     에이전트가 사용할 수 있는 도구를 정확하게 제어합니다. 안전한 작업은 허용하고, 위험한 작업은 차단하거나, 민감한 작업에 대해 승인을 요구할 수 있습니다.
 
     
-> 대화형 승인 프롬프트 및 `AskUserQuestion` 도구에 대해서는 [승인 및 사용자 입력 처리](/docs/en/agent-sdk/user-input)를 참조하세요.
+> 대화형 승인 프롬프트 및 `AskUserQuestion` 도구에 대해서는 [승인 및 사용자 입력 처리](https://platform.claude.com/docs/en/agent-sdk/user-input)를 참조하세요.
 
 
     다음 예제는 코드를 분석할 수 있지만 수정할 수 없는 읽기 전용 에이전트를 생성합니다:
@@ -301,7 +301,7 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
     ```
     </CodeGroup>
 
-    [권한에 대해 자세히 알아보기 →](/docs/en/agent-sdk/permissions)
+    [권한에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/permissions)
   </Tab>
   <Tab title="세션">
     여러 교환에 걸쳐 컨텍스트를 유지합니다. Claude는 읽은 파일, 수행한 분석, 대화 기록을 기억합니다. 나중에 세션을 재개하거나, 포크하여 다른 접근 방식을 탐색할 수 있습니다.
@@ -360,7 +360,7 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
     ```
     </CodeGroup>
 
-    [세션에 대해 자세히 알아보기 →](/docs/en/agent-sdk/sessions)
+    [세션에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/sessions)
   </Tab>
 </Tabs>
 
@@ -370,10 +370,10 @@ SDK는 Claude Code의 파일 시스템 기반 구성도 지원합니다. 이러�
 
 | 기능 | 설명 | 위치 |
 |------|------|------|
-| [스킬](/docs/en/agent-sdk/skills) | 마크다운으로 정의된 전문화된 기능 | `.claude/skills/SKILL.md` |
-| [슬래시 커맨드](/docs/en/agent-sdk/slash-commands) | 일반적인 작업을 위한 커스텀 명령 | `.claude/commands/*.md` |
-| [메모리](/docs/en/agent-sdk/modifying-system-prompts) | 프로젝트 컨텍스트 및 지시사항 | `CLAUDE.md` 또는 `.claude/CLAUDE.md` |
-| [플러그인](/docs/en/agent-sdk/plugins) | 커스텀 명령, 에이전트, MCP 서버로 확장 | `plugins` 옵션을 통한 프로그래밍 방식 |
+| [스킬](https://platform.claude.com/docs/en/agent-sdk/skills) | 마크다운으로 정의된 전문화된 기능 | `.claude/skills/SKILL.md` |
+| [슬래시 커맨드](https://platform.claude.com/docs/en/agent-sdk/slash-commands) | 일반적인 작업을 위한 커스텀 명령 | `.claude/commands/*.md` |
+| [메모리](https://platform.claude.com/docs/en/agent-sdk/modifying-system-prompts) | 프로젝트 컨텍스트 및 지시사항 | `CLAUDE.md` 또는 `.claude/CLAUDE.md` |
+| [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins) | 커스텀 명령, 에이전트, MCP 서버로 확장 | `plugins` 옵션을 통한 프로그래밍 방식 |
 
 ## 시작하기
 
@@ -472,7 +472,7 @@ Claude 플랫폼은 Claude로 빌드하는 여러 방법을 제공합니다. Age
 
 <Tabs>
   <Tab title="Agent SDK vs Client SDK">
-    [Anthropic Client SDK](/docs/en/api/client-sdks)는 직접 API 액세스를 제공합니다: 프롬프트를 보내고 도구 실행을 직접 구현합니다. **Agent SDK**는 내장 도구 실행이 포함된 Claude를 제공합니다.
+    [Anthropic Client SDK](https://platform.claude.com/docs/en/api/client-sdks)는 직접 API 액세스를 제공합니다: 프롬프트를 보내고 도구 실행을 직접 구현합니다. **Agent SDK**는 내장 도구 실행이 포함된 Claude를 제공합니다.
 
     Client SDK로는 도구 루프를 구현해야 합니다. Agent SDK로는 Claude가 처리합니다:
 

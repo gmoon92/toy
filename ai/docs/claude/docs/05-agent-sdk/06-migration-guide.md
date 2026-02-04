@@ -327,4 +327,4 @@ Claude Code SDK는 원래 코딩 작업을 위해 설계되었지만, 모든 유
 - [Agent SDK 개요](../05-agent-sdk/01-overview.md)에서 사용 가능한 기능 살펴보기
 - [TypeScript SDK 레퍼런스](../05-agent-sdk/03-typescript.md)에서 상세한 API 문서 확인
 - [Python SDK 레퍼런스](../05-agent-sdk/05-python.md)에서 Python 관련 문서 확인
-- [커스텀 도구](/docs/en/agent-sdk/custom-tools) 및 [MCP 통합](/docs/en/agent-sdk/mcp)에 대해 학습
+- [커스텀 도구](https://platform.claude.com/docs/en/agent-sdk/custom-tools) 및 [MCP 통합](https://platform.claude.com/docs/en/agent-sdk/mcp)에 대해 학습

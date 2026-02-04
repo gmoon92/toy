@@ -22,7 +22,7 @@ Azure 네이티브 엔드포인트와 인증을 통해 Microsoft Foundry에서 C
 
 ## SDK 설치
 
-Anthropic의 [클라이언트 SDK](/docs/en/api/client-sdks)는 플랫폼별 패키지를 통해 Foundry를 지원합니다.
+Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)는 플랫폼별 패키지를 통해 Foundry를 지원합니다.
 
 <Tabs>
 <Tab title="Python">
@@ -260,7 +260,7 @@ Foundry의 Claude는 Claude의 강력한 기능 대부분을 지원합니다. �
 
 ## API 응답
 
-Foundry의 Claude API 응답은 표준 [Claude API 응답 형식](/docs/en/api/messages)을 따릅니다. 여기에는 응답 본문의 `usage` 객체가 포함되며, 요청에 대한 자세한 토큰 소비 정보를 제공합니다. `usage` 객체는 모든 플랫폼(자체 API, Foundry, Amazon Bedrock, Google Vertex AI)에서 일관됩니다.
+Foundry의 Claude API 응답은 표준 [Claude API 응답 형식](https://platform.claude.com/docs/en/api/messages)을 따릅니다. 여기에는 응답 본문의 `usage` 객체가 포함되며, 요청에 대한 자세한 토큰 소비 정보를 제공합니다. `usage` 객체는 모든 플랫폼(자체 API, Foundry, Amazon Bedrock, Google Vertex AI)에서 일관됩니다.
 
 Foundry에만 해당하는 응답 헤더에 대한 자세한 내용은 [상관 관계 요청 ID 섹션](#correlation-request-ids)을 참조하세요.
 
@@ -330,6 +330,6 @@ Foundry는 응답에 Anthropic의 표준 속도 제한 헤더(`anthropic-ratelim
 
 - **Foundry 문서**: [ai.azure.com/catalog](https://ai.azure.com/catalog/publishers/anthropic)
 - **Azure 가격**: [azure.microsoft.com/en-us/pricing](https://azure.microsoft.com/en-us/pricing/)
-- **Anthropic 가격 세부정보**: [가격 문서](/docs/en/about-claude/pricing#third-party-platform-pricing)
+- **Anthropic 가격 세부정보**: [가격 문서](https://platform.claude.com/docs/en/about-claude/pricing#third-party-platform-pricing)
 - **인증 가이드**: 위의 [인증 섹션](#authentication) 참조
 - **Azure 포털**: [portal.azure.com](https://portal.azure.com/)

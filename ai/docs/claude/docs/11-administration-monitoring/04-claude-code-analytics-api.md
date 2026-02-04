@@ -58,7 +58,7 @@ limit=20" \
 - **커서 기반 페이지네이션**: 불투명한 커서를 사용하여 대용량 데이터셋을 안정적으로 페이지네이션합니다
 - **데이터 신선도**: 일관성을 위해 최대 1시간 지연으로 지표를 사용할 수 있습니다
 
-전체 매개변수 세부 정보 및 응답 스키마는 [Claude Code Analytics API 참조](/docs/en/api/admin-api/claude-code/get-claude-code-usage-report)를 참조하세요.
+전체 매개변수 세부 정보 및 응답 스키마는 [Claude Code Analytics API 참조](https://platform.claude.com/docs/en/api/admin-api/claude-code/get-claude-code-usage-report)를 참조하세요.
 
 ### 기본 예제
 
@@ -248,7 +248,7 @@ Claude Code Analytics API는 Admin API에 접근할 수 있는 모든 조직에 
 Claude Code Analytics API는 팀의 개발 워크플로를 이해하고 최적화하는 데 도움이 됩니다. 관련 기능에 대해 자세히 알아보세요:
 
 - [Admin API 개요](../11-administration-monitoring/01-admin-api-overview.md)
-- [Admin API 참조](/docs/en/api/admin)
+- [Admin API 참조](https://platform.claude.com/docs/en/api/admin)
 - [Claude Code Analytics 대시보드](/claude-code)
 - [Usage and Cost API](../11-administration-monitoring/03-usage-cost-api.md) - 모든 Anthropic 서비스에서 API 사용량 추적
 - [Identity and access management](https://code.claude.com/docs/en/iam)

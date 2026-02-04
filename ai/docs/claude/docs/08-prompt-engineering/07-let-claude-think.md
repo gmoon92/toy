@@ -79,6 +79,6 @@
 
 ## 관련 자료
 
-- [프롬프트 라이브러리](/docs/en/resources/prompt-library/library): 다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요.
+- [프롬프트 라이브러리](https://platform.claude.com/docs/en/resources/prompt-library/library): 다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요.
 - [GitHub 프롬프팅 튜토리얼](https://github.com/anthropics/prompt-eng-interactive-tutorial): 문서에서 찾을 수 있는 프롬프트 엔지니어링 개념을 다루는 예제가 가득한 튜토리얼입니다.
 - [Google Sheets 프롬프팅 튜토리얼](https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8): 대화형 스프레드시트를 통한 가벼운 버전의 프롬프트 엔지니어링 튜토리얼입니다.

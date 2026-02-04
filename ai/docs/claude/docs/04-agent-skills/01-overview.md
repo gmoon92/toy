@@ -181,7 +181,7 @@ Claude Code의 사용자 정의 스킬은 파일시스템 기반이며 API 업�
 
 SDK의 스킬은 SDK가 실행될 때 자동으로 발견됩니다.
 
-자세한 내용은 [SDK의 에이전트 스킬](/docs/en/agent-sdk/skills)을 참조하세요.
+자세한 내용은 [SDK의 에이전트 스킬](https://platform.claude.com/docs/en/agent-sdk/skills)을 참조하세요.
 
 ### Claude.ai
 

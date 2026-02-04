@@ -10,7 +10,7 @@
 
 ## 메시지 토큰 카운트 방법
 
-[토큰 카운팅](/docs/en/api/messages-count-tokens) 엔드포인트는 메시지 생성을 위한 구조화된 입력 목록과 동일한 형식을 허용하며, 시스템 프롬프트, [도구](../03-tools/01-overview.md), [이미지](../02-capabilities/11-vision.md), [PDF](../02-capabilities/12-pdf-support.md)를 지원합니다. 응답에는 총 입력 토큰 수가 포함됩니다.
+[토큰 카운팅](https://platform.claude.com/docs/en/api/messages-count-tokens) 엔드포인트는 메시지 생성을 위한 구조화된 입력 목록과 동일한 형식을 허용하며, 시스템 프롬프트, [도구](../03-tools/01-overview.md), [이미지](../02-capabilities/11-vision.md), [PDF](../02-capabilities/12-pdf-support.md)를 지원합니다. 응답에는 총 입력 토큰 수가 포함됩니다.
 
 
 > 토큰 카운트는 **추정치**로 간주되어야 합니다. 일부 경우에는 메시지 생성 시 사용되는 실제 입력 토큰 수가 소량 차이날 수 있습니다.
@@ -19,7 +19,7 @@
 
 
 ### 지원 모델
-모든 [활성 모델](/docs/en/about-claude/models/overview)이 토큰 카운팅을 지원합니다.
+모든 [활성 모델](https://platform.claude.com/docs/en/about-claude/models/overview)이 토큰 카운팅을 지원합니다.
 
 ### 기본 메시지의 토큰 카운트
 
@@ -743,7 +743,7 @@ public class CountTokensPdfExample {
 
 ## 가격 및 요청 제한
 
-토큰 카운팅은 **무료로 사용**할 수 있지만, [사용 등급](/docs/en/api/rate-limits#rate-limits)에 따라 분당 요청 수 제한이 적용됩니다. 더 높은 제한이 필요한 경우 [Claude Console](/settings/limits)을 통해 영업팀에 문의하세요.
+토큰 카운팅은 **무료로 사용**할 수 있지만, [사용 등급](https://platform.claude.com/docs/en/api/rate-limits#rate-limits)에 따라 분당 요청 수 제한이 적용됩니다. 더 높은 제한이 필요한 경우 [Claude Console](/settings/limits)을 통해 영업팀에 문의하세요.
 
 | 사용 등급 | 분당 요청 수(RPM) |
 |-----------|-------------------|

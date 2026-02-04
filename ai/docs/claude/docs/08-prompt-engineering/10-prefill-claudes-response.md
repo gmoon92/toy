@@ -78,7 +78,7 @@ response = client.messages.create(
 
 ## 관련 자료
 
-- **메시지 작업하기**: 미리 채우기와 기타 Messages API 패턴의 더 많은 예제를 확인하세요. [바로가기](/docs/en/build-with-claude/working-with-messages)
-- **프롬프트 라이브러리**: 다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요. [바로가기](/docs/en/resources/prompt-library/library)
+- **메시지 작업하기**: 미리 채우기와 기타 Messages API 패턴의 더 많은 예제를 확인하세요. [바로가기](https://platform.claude.com/docs/en/build-with-claude/working-with-messages)
+- **프롬프트 라이브러리**: 다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요. [바로가기](https://platform.claude.com/docs/en/resources/prompt-library/library)
 - **GitHub 프롬프팅 튜토리얼**: 문서에서 다루는 프롬프트 엔지니어링 개념을 다루는 예제가 풍부한 튜토리얼입니다. [바로가기](https://github.com/anthropics/prompt-eng-interactive-tutorial)
 - **Google Sheets 프롬프팅 튜토리얼**: 대화형 스프레드시트를 통한 가벼운 버전의 프롬프트 엔지니어링 튜토리얼입니다. [바로가기](https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8)

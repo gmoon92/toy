@@ -253,7 +253,7 @@ class ClaudeSDKClient:
 | `receive_messages()`            | Claude의 모든 메시지를 비동기 이터레이터로 수신                        |
 | `receive_response()`            | ResultMessage까지 포함하여 메시지 수신                                |
 | `interrupt()`                   | 중단 신호 전송 (스트리밍 모드에서만 작동)                              |
-| `rewind_files(user_message_uuid)` | 지정된 사용자 메시지의 상태로 파일 복원. `enable_file_checkpointing=True` 필요. [파일 체크포인팅](/docs/en/agent-sdk/file-checkpointing) 참조 |
+| `rewind_files(user_message_uuid)` | 지정된 사용자 메시지의 상태로 파일 복원. `enable_file_checkpointing=True` 필요. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조 |
 | `disconnect()`                  | Claude 연결 해제                                                    |
 
 #### 컨텍스트 매니저 지원
@@ -499,11 +499,11 @@ class ClaudeAgentOptions:
 | `max_turns`                   | `int \| None`                                 | `None`               | 최대 대화 턴                                                                                                                                                                            |
 | `max_budget_usd`              | `float \| None`                               | `None`               | 세션의 최대 예산(USD)                                                                                                                                                                   |
 | `disallowed_tools`            | `list[str]`                                   | `[]`                 | 허용되지 않는 도구 이름 목록                                                                                                                                                            |
-| `enable_file_checkpointing`   | `bool`                                        | `False`              | 되감기를 위한 파일 변경 추적 활성화. [파일 체크포인팅](/docs/en/agent-sdk/file-checkpointing) 참조                                                                                       |
+| `enable_file_checkpointing`   | `bool`                                        | `False`              | 되감기를 위한 파일 변경 추적 활성화. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조                                                                                       |
 | `model`                       | `str \| None`                                 | `None`               | 사용할 Claude 모델                                                                                                                                                                      |
 | `fallback_model`              | `str \| None`                                 | `None`               | 기본 모델이 실패할 경우 사용할 대체 모델                                                                                                                                                 |
 | `betas`                       | `list[SdkBeta]`                               | `[]`                 | 활성화할 베타 기능. 사용 가능한 옵션은 [`SdkBeta`](#sdkbeta) 참조                                                                                                                        |
-| `output_format`               | [`OutputFormat`](#outputformat) ` \| None`    | `None`               | 에이전트 결과의 출력 형식 정의. 자세한 내용은 [구조화된 출력](/docs/en/agent-sdk/structured-outputs) 참조                                                                                |
+| `output_format`               | [`OutputFormat`](#outputformat) ` \| None`    | `None`               | 에이전트 결과의 출력 형식 정의. 자세한 내용은 [구조화된 출력](https://platform.claude.com/docs/en/agent-sdk/structured-outputs) 참조                                                                                |
 | `permission_prompt_tool_name` | `str \| None`                                 | `None`               | 권한 프롬프트를 위한 MCP 도구 이름                                                                                                                                                       |
 | `cwd`                         | `str \| Path \| None`                         | `None`               | 현재 작업 디렉토리                                                                                                                                                                      |
 | `cli_path`                    | `str \| Path \| None`                         | `None`               | Claude Code CLI 실행 파일의 커스텀 경로                                                                                                                                                  |
@@ -520,7 +520,7 @@ class ClaudeAgentOptions:
 | `include_partial_messages`    | `bool`                                        | `False`              | 부분 메시지 스트리밍 이벤트 포함. 활성화되면 [`StreamEvent`](#streamevent) 메시지가 생성됨                                                                                               |
 | `fork_session`                | `bool`                                        | `False`              | `resume`으로 재개할 때, 원래 세션을 계속하는 대신 새 세션 ID로 분기                                                                                                                       |
 | `agents`                      | `dict[str, AgentDefinition] \| None`          | `None`               | 프로그래밍 방식으로 정의된 서브에이전트                                                                                                                                                  |
-| `plugins`                     | `list[SdkPluginConfig]`                       | `[]`                 | 로컬 경로에서 커스텀 플러그인 로드. 자세한 내용은 [플러그인](/docs/en/agent-sdk/plugins) 참조                                                                                             |
+| `plugins`                     | `list[SdkPluginConfig]`                       | `[]`                 | 로컬 경로에서 커스텀 플러그인 로드. 자세한 내용은 [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins) 참조                                                                                             |
 | `sandbox`                     | [`SandboxSettings`](#sandboxsettings) ` \| None` | `None`             | 프로그래밍 방식으로 샌드박스 동작 구성. 자세한 내용은 [샌드박스 설정](#sandboxsettings) 참조                                                                                             |
 | `setting_sources`             | `list[SettingSource] \| None`                 | `None` (설정 없음)   | 로드할 파일 시스템 설정 제어. 생략하면 설정이 로드되지 않음. **참고:** CLAUDE.md 파일을 로드하려면 `"project"` 포함 필요                                                                  |
 | `max_thinking_tokens`         | `int \| None`                                 | `None`               | 사고 블록의 최대 토큰                                                                                                                                                                   |
@@ -886,7 +886,7 @@ plugins=[
 ]
 ```
 
-플러그인 생성 및 사용에 대한 전체 정보는 [플러그인](/docs/en/agent-sdk/plugins)을 참조하세요.
+플러그인 생성 및 사용에 대한 전체 정보는 [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins)을 참조하세요.
 
 ## 메시지 타입
 
@@ -1087,7 +1087,7 @@ class CLIJSONDecodeError(ClaudeSDKError):
 
 ## 훅 타입
 
-예제와 일반적인 패턴이 포함된 훅 사용에 대한 포괄적인 가이드는 [훅 가이드](/docs/en/agent-sdk/hooks)를 참조하세요.
+예제와 일반적인 패턴이 포함된 훅 사용에 대한 포괄적인 가이드는 [훅 가이드](https://platform.claude.com/docs/en/agent-sdk/hooks)를 참조하세요.
 
 ### `HookEvent`
 
@@ -1117,7 +1117,7 @@ HookCallback = Callable[
 
 매개변수:
 
-- `input_data`: 훅 특정 입력 데이터 ([훅 가이드](/docs/en/agent-sdk/hooks#input-data) 참조)
+- `input_data`: 훅 특정 입력 데이터 ([훅 가이드](https://platform.claude.com/docs/en/agent-sdk/hooks#input-data) 참조)
 - `tool_use_id`: 선택적 도구 사용 식별자 (도구 관련 훅용)
 - `context`: 추가 정보가 있는 훅 컨텍스트
 
@@ -1414,7 +1414,7 @@ async for message in query(
 
 **도구 이름:** `AskUserQuestion`
 
-실행 중 사용자에게 명확화 질문을 합니다. 사용법 세부 정보는 [승인 및 사용자 입력 처리](/docs/en/agent-sdk/user-input#handle-clarifying-questions)를 참조하세요.
+실행 중 사용자에게 명확화 질문을 합니다. 사용법 세부 정보는 [승인 및 사용자 입력 처리](https://platform.claude.com/docs/en/agent-sdk/user-input#handle-clarifying-questions)를 참조하세요.
 
 **입력:**
 

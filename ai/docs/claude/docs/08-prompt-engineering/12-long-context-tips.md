@@ -72,7 +72,7 @@ Claude의 확장된 컨텍스트 윈도우(Claude 3 모델의 경우 200K 토큰
 
 ## 관련 리소스
 
-- **프롬프트 라이브러리**: 다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요. [바로가기](/docs/en/resources/prompt-library/library)
+- **프롬프트 라이브러리**: 다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요. [바로가기](https://platform.claude.com/docs/en/resources/prompt-library/library)
 
 - **GitHub 프롬프팅 튜토리얼**: 우리 문서에서 찾을 수 있는 프롬프트 엔지니어링 개념을 다루는 예시가 풍부한 튜토리얼입니다. [바로가기](https://github.com/anthropics/prompt-eng-interactive-tutorial)
 

@@ -191,7 +191,7 @@ for await (const message of query({
 루프 내의 메시지 처리는 사람이 읽을 수 있는 출력을 필터링합니다. 필터링 없이는 시스템 초기화 및 내부 상태를 포함한 원시 메시지 객체를 보게 되며, 이는 디버깅에는 유용하지만 그렇지 않으면 노이즈가 많습니다.
 
 
-> 이 예제는 실시간으로 진행 상황을 표시하기 위해 스트리밍을 사용합니다. 라이브 출력이 필요하지 않은 경우(예: 백그라운드 작업 또는 CI 파이프라인), 모든 메시지를 한 번에 수집할 수 있습니다. 자세한 내용은 [스트리밍 vs. 단일 턴 모드](/docs/en/agent-sdk/streaming-vs-single-mode)를 참조하세요.
+> 이 예제는 실시간으로 진행 상황을 표시하기 위해 스트리밍을 사용합니다. 라이브 출력이 필요하지 않은 경우(예: 백그라운드 작업 또는 CI 파이프라인), 모든 메시지를 한 번에 수집할 수 있습니다. 자세한 내용은 [스트리밍 vs. 단일 턴 모드](https://platform.claude.com/docs/en/agent-sdk/streaming-vs-single-mode)를 참조하세요.
 
 
 ### 에이전트 실행
@@ -311,15 +311,15 @@ options: {
 | `bypassPermissions` | 프롬프트 없이 실행 | CI/CD 파이프라인, 자동화 |
 | `default` | 승인을 처리하기 위한 `canUseTool` 콜백 필요 | 커스텀 승인 플로우 |
 
-위의 예제는 `acceptEdits` 모드를 사용하며, 에이전트가 대화형 프롬프트 없이 실행될 수 있도록 파일 작업을 자동 승인합니다. 사용자에게 승인을 요청하려면 `default` 모드를 사용하고 사용자 입력을 수집하는 [`canUseTool` 콜백](/docs/en/agent-sdk/user-input)을 제공하세요. 더 많은 제어를 원하면 [권한](/docs/en/agent-sdk/permissions)을 참조하세요.
+위의 예제는 `acceptEdits` 모드를 사용하며, 에이전트가 대화형 프롬프트 없이 실행될 수 있도록 파일 작업을 자동 승인합니다. 사용자에게 승인을 요청하려면 `default` 모드를 사용하고 사용자 입력을 수집하는 [`canUseTool` 콜백](https://platform.claude.com/docs/en/agent-sdk/user-input)을 제공하세요. 더 많은 제어를 원하면 [권한](https://platform.claude.com/docs/en/agent-sdk/permissions)을 참조하세요.
 
 ## 다음 단계
 
 첫 번째 에이전트를 만들었으니 이제 기능을 확장하고 사용 사례에 맞게 조정하는 방법을 배우세요:
 
-- **[권한](/docs/en/agent-sdk/permissions)**: 에이전트가 할 수 있는 작업과 승인이 필요한 시기를 제어
-- **[훅](/docs/en/agent-sdk/hooks)**: 도구 호출 전후에 커스텀 코드 실행
-- **[세션](/docs/en/agent-sdk/sessions)**: 컨텍스트를 유지하는 멀티턴 에이전트 구축
-- **[MCP 서버](/docs/en/agent-sdk/mcp)**: 데이터베이스, 브라우저, API 및 기타 외부 시스템에 연결
-- **[호스팅](/docs/en/agent-sdk/hosting)**: Docker, 클라우드 및 CI/CD에 에이전트 배포
+- **[권한](https://platform.claude.com/docs/en/agent-sdk/permissions)**: 에이전트가 할 수 있는 작업과 승인이 필요한 시기를 제어
+- **[훅](https://platform.claude.com/docs/en/agent-sdk/hooks)**: 도구 호출 전후에 커스텀 코드 실행
+- **[세션](https://platform.claude.com/docs/en/agent-sdk/sessions)**: 컨텍스트를 유지하는 멀티턴 에이전트 구축
+- **[MCP 서버](https://platform.claude.com/docs/en/agent-sdk/mcp)**: 데이터베이스, 브라우저, API 및 기타 외부 시스템에 연결
+- **[호스팅](https://platform.claude.com/docs/en/agent-sdk/hosting)**: Docker, 클라우드 및 CI/CD에 에이전트 배포
 - **[예제 에이전트](https://github.com/anthropics/claude-agent-sdk-demos)**: 이메일 어시스턴트, 리서치 에이전트 등 완전한 예제 확인

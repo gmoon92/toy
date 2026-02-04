@@ -62,4 +62,4 @@ Claude는 강력한 다국어 기능을 보여주며, 특히 여러 언어에 �
 ## 관련 리소스
 
 - [프롬프트 엔지니어링 가이드](../08-prompt-engineering/01-overview.md): Claude를 최대한 활용하기 위한 프롬프트 작성 기술을 마스터하세요.
-- [프롬프트 라이브러리](/docs/en/resources/prompt-library): 다양한 작업과 산업을 위해 미리 작성된 프롬프트를 찾아보세요. 영감을 얻거나 빠르게 시작하기에 완벽합니다.
+- [프롬프트 라이브러리](https://platform.claude.com/docs/en/resources/prompt-library): 다양한 작업과 산업을 위해 미리 작성된 프롬프트를 찾아보세요. 영감을 얻거나 빠르게 시작하기에 완벽합니다.

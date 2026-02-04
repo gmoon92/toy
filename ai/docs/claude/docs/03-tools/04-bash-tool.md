@@ -16,7 +16,7 @@ bash 도구는 Claude에게 다음을 제공합니다:
 
 | 모델 | 도구 버전 |
 |-------|--------------|
-| Claude 4 모델 및 Sonnet 3.7 ([지원 중단됨](/docs/en/about-claude/model-deprecations)) | `bash_20250124` |
+| Claude 4 모델 및 Sonnet 3.7 ([지원 중단됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `bash_20250124` |
 
 
 > 이전 도구 버전은 최신 모델과의 하위 호환성이 보장되지 않습니다. 항상 모델 버전에 해당하는 도구 버전을 사용하세요.

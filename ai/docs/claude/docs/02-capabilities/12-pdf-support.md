@@ -27,7 +27,7 @@ PDF 지원은 Claude의 비전 기능에 의존하므로, 다른 비전 작업�
 
 ### 지원 플랫폼 및 모델
 
-PDF 지원은 현재 직접 API 액세스 및 Google Vertex AI를 통해 지원됩니다. 모든 [활성 모델](/docs/en/about-claude/models/overview)이 PDF 처리를 지원합니다.
+PDF 지원은 현재 직접 API 액세스 및 Google Vertex AI를 통해 지원됩니다. 모든 [활성 모델](https://platform.claude.com/docs/en/about-claude/models/overview)이 PDF 처리를 지원합니다.
 
 PDF 지원은 이제 Amazon Bedrock에서 다음 고려 사항과 함께 사용할 수 있습니다.
 

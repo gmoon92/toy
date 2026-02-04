@@ -165,7 +165,7 @@
 
 
 > 세밀한 스트리밍은 버퍼링이나 JSON 검증 없이 매개변수를 전송하기 때문에, 결과 스트림이 유효한 JSON 문자열로 완성된다는 보장이 없습니다.
-> 특히 [중지 이유](/docs/en/build-with-claude/handling-stop-reasons) `max_tokens`에 도달하면 스트림이 매개변수 중간에 끝나고 불완전할 수 있습니다. 일반적으로 `max_tokens`에 도달했을 때를 처리하기 위한 특정 지원을 작성해야 합니다.
+> 특히 [중지 이유](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons) `max_tokens`에 도달하면 스트림이 매개변수 중간에 끝나고 불완전할 수 있습니다. 일반적으로 `max_tokens`에 도달했을 때를 처리하기 위한 특정 지원을 작성해야 합니다.
 
 
 ## 도구 응답에서 유효하지 않은 JSON 처리

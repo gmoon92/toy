@@ -24,7 +24,7 @@ Claude를 사용할 때 `system` 매개변수를 사용하여 역할을 부여�
 
 ## Claude에게 역할을 부여하는 방법
 
-[Messages API](/docs/en/api/messages)에서 `system` 매개변수를 사용하여 Claude의 역할을 설정하세요:
+[Messages API](https://platform.claude.com/docs/en/api/messages)에서 `system` 매개변수를 사용하여 Claude의 역할을 설정하세요:
 
 ```python
 import anthropic

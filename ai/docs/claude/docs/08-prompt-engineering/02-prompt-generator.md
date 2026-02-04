@@ -32,7 +32,7 @@
 
   다양한 작업과 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요.
 
-  [프롬프트 라이브러리](/docs/en/resources/prompt-library/library)
+  [프롬프트 라이브러리](https://platform.claude.com/docs/en/resources/prompt-library/library)
 
 - **GitHub 프롬프팅 튜토리얼**
 

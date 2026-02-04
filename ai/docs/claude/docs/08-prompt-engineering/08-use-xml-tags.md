@@ -54,6 +54,6 @@ XML 태그가 없으면 Claude의 분석은 체계적이지 않고 핵심 포인
 
 ## 관련 리소스
 
-- [프롬프트 라이브러리](/docs/en/resources/prompt-library/library) - 다양한 작업 및 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요.
+- [프롬프트 라이브러리](https://platform.claude.com/docs/en/resources/prompt-library/library) - 다양한 작업 및 사용 사례를 위한 엄선된 프롬프트 모음에서 영감을 얻으세요.
 - [GitHub 프롬프팅 튜토리얼](https://github.com/anthropics/prompt-eng-interactive-tutorial) - 문서에서 다루는 프롬프트 엔지니어링 개념을 다루는 예시 중심 튜토리얼입니다.
 - [Google Sheets 프롬프팅 튜토리얼](https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8) - 대화형 스프레드시트를 통한 프롬프트 엔지니어링 튜토리얼의 경량 버전입니다.

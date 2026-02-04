@@ -6,7 +6,7 @@
 > **Admin API는 개인 계정에서는 사용할 수 없습니다.** 팀원과 협업하고 멤버를 추가하려면 **Console → Settings → Organization**에서 조직을 설정하세요.
 
 
-[Admin API](/docs/en/api/admin)를 사용하면 조직 멤버, 워크스페이스, API 키를 포함한 조직의 리소스를 프로그래밍 방식으로 관리할 수 있습니다. 이를 통해 [Claude Console](/)에서 수동으로 구성해야 하는 관리 작업을 프로그래밍 방식으로 제어할 수 있습니다.
+[Admin API](https://platform.claude.com/docs/en/api/admin)를 사용하면 조직 멤버, 워크스페이스, API 키를 포함한 조직의 리소스를 프로그래밍 방식으로 관리할 수 있습니다. 이를 통해 [Claude Console](/)에서 수동으로 구성해야 하는 관리 작업을 프로그래밍 방식으로 제어할 수 있습니다.
 
 <Check>
   **Admin API는 특별한 액세스 권한이 필요합니다**
@@ -46,7 +46,7 @@ Admin API를 사용하는 방법:
 
 ### 조직 멤버
 
-[조직 멤버](/docs/en/api/admin-api/users/get-user)를 조회하고, 멤버 역할을 업데이트하고, 멤버를 제거할 수 있습니다.
+[조직 멤버](https://platform.claude.com/docs/en/api/admin-api/users/get-user)를 조회하고, 멤버 역할을 업데이트하고, 멤버를 제거할 수 있습니다.
 
 <CodeGroup>
 ```bash Shell
@@ -71,7 +71,7 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/users/{user_id
 
 ### 조직 초대
 
-조직에 사용자를 초대하고 해당 [초대](/docs/en/api/admin-api/invites/get-invite)를 관리할 수 있습니다.
+조직에 사용자를 초대하고 해당 [초대](https://platform.claude.com/docs/en/api/admin-api/invites/get-invite)를 관리할 수 있습니다.
 
 <CodeGroup>
 
@@ -102,7 +102,7 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/invites/{invit
 
 워크스페이스에 대한 종합적인 가이드는 [Workspaces](../11-administration-monitoring/02-workspaces.md)를 참조하세요.
 
-리소스를 구성하기 위해 [워크스페이스](/docs/en/api/admin-api/workspaces/get-workspace)([콘솔](/settings/workspaces))를 생성하고 관리합니다:
+리소스를 구성하기 위해 [워크스페이스](https://platform.claude.com/docs/en/api/admin-api/workspaces/get-workspace)([콘솔](/settings/workspaces))를 생성하고 관리합니다:
 
 <CodeGroup>
 
@@ -128,7 +128,7 @@ curl --request POST "https://api.anthropic.com/v1/organizations/workspaces/{work
 
 ### 워크스페이스 멤버
 
-[특정 워크스페이스에 대한 사용자 액세스](/docs/en/api/admin-api/workspace_members/get-workspace-member)를 관리합니다:
+[특정 워크스페이스에 대한 사용자 액세스](https://platform.claude.com/docs/en/api/admin-api/workspace_members/get-workspace-member)를 관리합니다:
 
 <CodeGroup>
 
@@ -165,7 +165,7 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/workspaces/{wo
 
 ### API 키
 
-[API 키](/docs/en/api/admin-api/apikeys/get-api-key)를 모니터링하고 관리합니다:
+[API 키](https://platform.claude.com/docs/en/api/admin-api/apikeys/get-api-key)를 모니터링하고 관리합니다:
 
 <CodeGroup>
 
@@ -209,7 +209,7 @@ curl "https://api.anthropic.com/v1/organizations/me" \
 
 이 엔드포인트는 Admin API 키가 속한 조직을 프로그래밍 방식으로 확인할 때 유용합니다.
 
-전체 매개변수 세부정보 및 응답 스키마는 [Organization Info API 참조](/docs/en/api/admin-api/organization/get-me)를 확인하세요.
+전체 매개변수 세부정보 및 응답 스키마는 [Organization Info API 참조](https://platform.claude.com/docs/en/api/admin-api/organization/get-me)를 확인하세요.
 
 ## 사용량 및 비용 보고서 액세스
 

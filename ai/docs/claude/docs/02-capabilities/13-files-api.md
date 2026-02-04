@@ -2,7 +2,7 @@
 
 ---
 
-Files API를 사용하면 매 요청마다 콘텐츠를 다시 업로드하지 않고도 Claude API와 함께 사용할 파일을 업로드하고 관리할 수 있습니다. 특히 [코드 실행 도구](../03-tools/05-code-execution-tool.md)를 사용하여 입력(예: 데이터셋 및 문서)을 제공하고 출력(예: 차트)을 다운로드할 때 유용합니다. 또한 Files API를 사용하여 여러 API 호출에서 자주 사용되는 문서와 이미지를 반복해서 업로드하지 않아도 됩니다. 이 가이드 외에도 [API 레퍼런스를 직접 탐색](/docs/en/api/files-create)할 수 있습니다.
+Files API를 사용하면 매 요청마다 콘텐츠를 다시 업로드하지 않고도 Claude API와 함께 사용할 파일을 업로드하고 관리할 수 있습니다. 특히 [코드 실행 도구](../03-tools/05-code-execution-tool.md)를 사용하여 입력(예: 데이터셋 및 문서)을 제공하고 출력(예: 차트)을 다운로드할 때 유용합니다. 또한 Files API를 사용하여 여러 API 호출에서 자주 사용되는 문서와 이미지를 반복해서 업로드하지 않아도 됩니다. 이 가이드 외에도 [API 레퍼런스를 직접 탐색](https://platform.claude.com/docs/en/api/files-create)할 수 있습니다.
 
 
 > Files API는 현재 베타 버전입니다. Files API 사용 경험을 [피드백 양식](https://forms.gle/tisHyierGwgN4DUE9)을 통해 공유해 주세요.
@@ -20,7 +20,7 @@ Files API는 파일 작업을 위한 간단한 한 번 생성, 여러 번 사용
 
 - **파일 업로드**: 안전한 저장소에 파일을 업로드하고 고유한 `file_id`를 받습니다
 - **파일 다운로드**: 스킬이나 코드 실행 도구로 생성된 파일을 다운로드합니다
-- **파일 참조**: 콘텐츠를 다시 업로드하는 대신 `file_id`를 사용하여 [Messages](/docs/en/api/messages) 요청에서 파일을 참조합니다
+- **파일 참조**: 콘텐츠를 다시 업로드하는 대신 `file_id`를 사용하여 [Messages](https://platform.claude.com/docs/en/api/messages) 요청에서 파일을 참조합니다
 - **파일 관리**: 목록 조회, 검색 및 삭제 작업으로 파일을 관리합니다
 
 ## Files API 사용 방법

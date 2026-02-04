@@ -15,9 +15,9 @@ Message Batches API는 이 패턴의 첫 번째 구현입니다.
 
 # Message Batches API
 
-Message Batches API는 대량의 [Messages](/docs/en/api/messages) 요청을 비동기적으로 처리할 수 있는 강력하고 비용 효율적인 방법입니다. 이 접근 방식은 즉각적인 응답이 필요하지 않은 작업에 적합하며, 대부분의 배치는 1시간 이내에 완료되면서 비용은 50% 절감하고 처리량은 증가시킵니다.
+Message Batches API는 대량의 [Messages](https://platform.claude.com/docs/en/api/messages) 요청을 비동기적으로 처리할 수 있는 강력하고 비용 효율적인 방법입니다. 이 접근 방식은 즉각적인 응답이 필요하지 않은 작업에 적합하며, 대부분의 배치는 1시간 이내에 완료되면서 비용은 50% 절감하고 처리량은 증가시킵니다.
 
-이 가이드 외에도 [API 레퍼런스를 직접 탐색](/docs/en/api/creating-message-batches)할 수 있습니다.
+이 가이드 외에도 [API 레퍼런스를 직접 탐색](https://platform.claude.com/docs/en/api/creating-message-batches)할 수 있습니다.
 
 ## Message Batches API 작동 방식
 
@@ -38,12 +38,12 @@ Message Batches API에 요청을 보내면:
 - 각 배치는 가능한 한 빠르게 처리되며, 대부분의 배치는 1시간 이내에 완료됩니다. 모든 메시지가 완료되거나 24시간이 지난 후 배치 결과에 액세스할 수 있습니다. 처리가 24시간 이내에 완료되지 않으면 배치가 만료됩니다.
 - 배치 결과는 생성 후 29일 동안 사용할 수 있습니다. 그 이후에도 배치를 볼 수 있지만 결과는 더 이상 다운로드할 수 없습니다.
 - 배치는 [Workspace](/settings/workspaces)로 범위가 지정됩니다. API 키가 속한 Workspace 내에서 생성된 모든 배치와 그 결과를 볼 수 있습니다.
-- Batches API HTTP 요청과 처리 대기 중인 배치 내 요청 수 모두에 속도 제한이 적용됩니다. [Message Batches API 속도 제한](/docs/en/api/rate-limits#message-batches-api)을 참조하세요. 또한 현재 수요와 요청 볼륨에 따라 처리 속도가 느려질 수 있습니다. 이 경우 24시간 후 만료되는 요청이 더 많아질 수 있습니다.
+- Batches API HTTP 요청과 처리 대기 중인 배치 내 요청 수 모두에 속도 제한이 적용됩니다. [Message Batches API 속도 제한](https://platform.claude.com/docs/en/api/rate-limits#message-batches-api)을 참조하세요. 또한 현재 수요와 요청 볼륨에 따라 처리 속도가 느려질 수 있습니다. 이 경우 24시간 후 만료되는 요청이 더 많아질 수 있습니다.
 - 높은 처리량과 동시 처리로 인해 배치가 Workspace에 구성된 [지출 제한](/settings/limits)을 약간 초과할 수 있습니다.
 
 ### 지원 모델
 
-모든 [활성 모델](/docs/en/about-claude/models/overview)이 Message Batches API를 지원합니다.
+모든 [활성 모델](https://platform.claude.com/docs/en/about-claude/models/overview)이 Message Batches API를 지원합니다.
 
 ### 배치 가능한 항목
 Messages API에 만들 수 있는 모든 요청을 배치에 포함할 수 있습니다. 여기에는 다음이 포함됩니다:
@@ -72,10 +72,10 @@ Batches API는 상당한 비용 절감 효과를 제공합니다. 모든 사용�
 | Claude Opus 4     | $7.50 / MTok     | $37.50 / MTok   |
 | Claude Sonnet 4.5   | $1.50 / MTok     | $7.50 / MTok    |
 | Claude Sonnet 4   | $1.50 / MTok     | $7.50 / MTok    |
-| Claude Sonnet 3.7 ([지원 중단](/docs/en/about-claude/model-deprecations)) | $1.50 / MTok     | $7.50 / MTok    |
+| Claude Sonnet 3.7 ([지원 중단](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $1.50 / MTok     | $7.50 / MTok    |
 | Claude Haiku 4.5  | $0.50 / MTok     | $2.50 / MTok    |
 | Claude Haiku 3.5  | $0.40 / MTok     | $2 / MTok       |
-| Claude Opus 3 ([지원 중단](/docs/en/about-claude/model-deprecations))  | $7.50 / MTok     | $37.50 / MTok   |
+| Claude Opus 3 ([지원 중단](https://platform.claude.com/docs/en/about-claude/model-deprecations))  | $7.50 / MTok     | $37.50 / MTok   |
 | Claude Haiku 3    | $0.125 / MTok    | $0.625 / MTok   |
 
 ---
@@ -85,9 +85,9 @@ Batches API는 상당한 비용 절감 효과를 제공합니다. 모든 사용�
 
 Message Batch는 Message를 생성하기 위한 요청 목록으로 구성됩니다. 개별 요청의 구조는 다음으로 구성됩니다:
 - Messages 요청을 식별하기 위한 고유한 `custom_id`
-- 표준 [Messages API](/docs/en/api/messages) 매개변수를 포함하는 `params` 객체
+- 표준 [Messages API](https://platform.claude.com/docs/en/api/messages) 매개변수를 포함하는 `params` 객체
 
-이 목록을 `requests` 매개변수에 전달하여 [배치를 생성](/docs/en/api/creating-message-batches)할 수 있습니다:
+이 목록을 `requests` 매개변수에 전달하여 [배치를 생성](https://platform.claude.com/docs/en/api/creating-message-batches)할 수 있습니다:
 
 <CodeGroup>
 
@@ -233,7 +233,7 @@ public class BatchExample {
 
 > **Messages API로 배치 요청 테스트**
 >
-> 각 메시지 요청에 대한 `params` 객체의 유효성 검사는 비동기적으로 수행되며, 유효성 검사 오류는 전체 배치 처리가 완료되면 반환됩니다. 먼저 [Messages API](/docs/en/api/messages)로 요청 형식을 확인하여 입력을 올바르게 구성하고 있는지 확인할 수 있습니다.
+> 각 메시지 요청에 대한 `params` 객체의 유효성 검사는 비동기적으로 수행되며, 유효성 검사 오류는 전체 배치 처리가 완료되면 반환됩니다. 먼저 [Messages API](https://platform.claude.com/docs/en/api/messages)로 요청 형식을 확인하여 입력을 올바르게 구성하고 있는지 확인할 수 있습니다.
 
 
 배치가 처음 생성되면 응답의 처리 상태는 `in_progress`가 됩니다.
@@ -260,7 +260,7 @@ public class BatchExample {
 
 ### 배치 추적
 
-Message Batch의 `processing_status` 필드는 배치가 처리 중인 단계를 나타냅니다. `in_progress`로 시작하여 배치의 모든 요청이 처리를 완료하고 결과가 준비되면 `ended`로 업데이트됩니다. [Console](/settings/workspaces/default/batches)을 방문하거나 [검색 엔드포인트](/docs/en/api/retrieving-message-batches)를 사용하여 배치 상태를 모니터링할 수 있습니다.
+Message Batch의 `processing_status` 필드는 배치가 처리 중인 단계를 나타냅니다. `in_progress`로 시작하여 배치의 모든 요청이 처리를 완료하고 결과가 준비되면 `ended`로 업데이트됩니다. [Console](/settings/workspaces/default/batches)을 방문하거나 [검색 엔드포인트](https://platform.claude.com/docs/en/api/retrieving-message-batches)를 사용하여 배치 상태를 모니터링할 수 있습니다.
 
 #### Message Batch 완료 폴링
 
@@ -324,7 +324,7 @@ echo "Batch $MESSAGE_BATCH_ID has finished processing"
 
 ### 모든 Message Batch 나열
 
-[목록 엔드포인트](/docs/en/api/listing-message-batches)를 사용하여 Workspace의 모든 Message Batch를 나열할 수 있습니다. API는 페이지네이션을 지원하며 필요에 따라 추가 페이지를 자동으로 가져옵니다:
+[목록 엔드포인트](https://platform.claude.com/docs/en/api/listing-message-batches)를 사용하여 Workspace의 모든 Message Batch를 나열할 수 있습니다. API는 페이지네이션을 지원하며 필요에 따라 추가 페이지를 자동으로 가져옵니다:
 
 <CodeGroup>
 ```python Python
@@ -423,7 +423,7 @@ public class BatchListExample {
 
 배치의 `request_counts`를 통해 결과 개요를 확인할 수 있으며, 이는 각 네 가지 상태에 도달한 요청 수를 보여줍니다.
 
-배치 결과는 Message Batch의 `results_url` 속성에서 다운로드할 수 있으며, 조직 권한이 허용하는 경우 Console에서도 다운로드할 수 있습니다. 결과가 잠재적으로 클 수 있으므로 한 번에 모두 다운로드하는 대신 [결과를 스트리밍](/docs/en/api/retrieving-message-batch-results)하는 것이 좋습니다.
+배치 결과는 Message Batch의 `results_url` 속성에서 다운로드할 수 있으며, 조직 권한이 허용하는 경우 Console에서도 다운로드할 수 있습니다. 결과가 잠재적으로 클 수 있으므로 한 번에 모두 다운로드하는 대신 [결과를 스트리밍](https://platform.claude.com/docs/en/api/retrieving-message-batch-results)하는 것이 좋습니다.
 
 <CodeGroup>
 
@@ -567,7 +567,7 @@ public class BatchResultsExample {
 {"custom_id":"my-first-request","result":{"type":"succeeded","message":{"id":"msg_01FqfsLoHwgeFbguDgpz48m7","type":"message","role":"assistant","model":"claude-sonnet-4-5-20250929","content":[{"type":"text","text":"Hello! How can I assist you today? Feel free to ask me any questions or let me know if there's anything you'd like to chat about."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":10,"output_tokens":34}}}}
 ```
 
-결과에 오류가 있는 경우 `result.error`가 표준 [오류 형식](/docs/en/api/errors#error-shapes)으로 설정됩니다.
+결과에 오류가 있는 경우 `result.error`가 표준 [오류 형식](https://platform.claude.com/docs/en/api/errors#error-shapes)으로 설정됩니다.
 
 
 > **배치 결과는 입력 순서와 일치하지 않을 수 있습니다**
@@ -577,7 +577,7 @@ public class BatchResultsExample {
 
 ### Message Batch 취소
 
-[취소 엔드포인트](/docs/en/api/canceling-message-batches)를 사용하여 현재 처리 중인 Message Batch를 취소할 수 있습니다. 취소 직후 배치의 `processing_status`는 `canceling`이 됩니다. 위에서 설명한 것과 동일한 폴링 기술을 사용하여 취소가 완료될 때까지 기다릴 수 있습니다. 취소된 배치는 `ended` 상태로 끝나며 취소 전에 처리된 요청에 대한 부분 결과를 포함할 수 있습니다.
+[취소 엔드포인트](https://platform.claude.com/docs/en/api/canceling-message-batches)를 사용하여 현재 처리 중인 Message Batch를 취소할 수 있습니다. 취소 직후 배치의 `processing_status`는 `canceling`이 됩니다. 위에서 설명한 것과 동일한 폴링 기술을 사용하여 취소가 완료될 때까지 기다릴 수 있습니다. 취소된 배치는 `ended` 상태로 끝나며 취소 전에 처리된 요청에 대한 부분 결과를 포함할 수 있습니다.
 
 <CodeGroup>
 ```python Python
@@ -951,13 +951,13 @@ Message Batches API는 표준 API 가격에 비해 모든 사용량에 대해 50
   <details>
 <summary>Message Batches API 속도 제한이 있으며 Messages API 속도 제한과 어떻게 상호 작용하나요?</summary>
 
-Message Batches API에는 HTTP 요청 기반 속도 제한과 처리 대기 중인 요청 수 제한이 있습니다. [Message Batches API 속도 제한](/docs/en/api/rate-limits#message-batches-api)을 참조하세요. Batches API 사용은 Messages API의 속도 제한에 영향을 미치지 않습니다.
+Message Batches API에는 HTTP 요청 기반 속도 제한과 처리 대기 중인 요청 수 제한이 있습니다. [Message Batches API 속도 제한](https://platform.claude.com/docs/en/api/rate-limits#message-batches-api)을 참조하세요. Batches API 사용은 Messages API의 속도 제한에 영향을 미치지 않습니다.
 </details>
 
   <details>
 <summary>배치 요청의 오류를 어떻게 처리하나요?</summary>
 
-결과를 검색하면 각 요청에 `succeeded`, `errored`, `canceled` 또는 `expired` 여부를 나타내는 `result` 필드가 있습니다. `errored` 결과의 경우 추가 오류 정보가 제공됩니다. [API 레퍼런스](/docs/en/api/creating-message-batches)에서 오류 응답 객체를 확인하세요.
+결과를 검색하면 각 요청에 `succeeded`, `errored`, `canceled` 또는 `expired` 여부를 나타내는 `result` 필드가 있습니다. `errored` 결과의 경우 추가 오류 정보가 제공됩니다. [API 레퍼런스](https://platform.claude.com/docs/en/api/creating-message-batches)에서 오류 응답 객체를 확인하세요.
 </details>
 
   <details>

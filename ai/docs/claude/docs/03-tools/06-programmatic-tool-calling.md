@@ -7,7 +7,7 @@
 
 > 프로그래밍 방식의 도구 호출은 현재 공개 베타 단계입니다.
 >
-> 이 기능을 사용하려면 API 요청에 `"advanced-tool-use-2025-11-20"` [베타 헤더](/docs/en/api/beta-headers)를 추가하세요.
+> 이 기능을 사용하려면 API 요청에 `"advanced-tool-use-2025-11-20"` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 추가하세요.
 >
 > 이 기능을 사용하려면 코드 실행 도구가 활성화되어 있어야 합니다.
 >

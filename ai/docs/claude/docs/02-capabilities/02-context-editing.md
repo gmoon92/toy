@@ -11,7 +11,7 @@
 | 접근 방식 | 실행 위치 | 전략 | 작동 방식 |
 |----------|---------------|------------|--------------|
 | **서버 측** | API | 도구 결과 지우기 (`clear_tool_uses_20250919`)<br/>Thinking 블록 지우기 (`clear_thinking_20251015`) | 프롬프트가 Claude에 도달하기 전에 적용됩니다. 대화 기록에서 특정 콘텐츠를 지웁니다. 각 전략은 독립적으로 구성할 수 있습니다. |
-| **클라이언트 측** | SDK | 압축(Compaction) | [`tool_runner`](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](/docs/en/api/client-sdks)에서 사용 가능합니다. 요약을 생성하고 전체 대화 기록을 대체합니다. 아래 [압축](#client-side-compaction-sdk)을 참조하세요. |
+| **클라이언트 측** | SDK | 압축(Compaction) | [`tool_runner`](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](https://platform.claude.com/docs/en/api/client-sdks)에서 사용 가능합니다. 요약을 생성하고 전체 대화 기록을 대체합니다. 아래 [압축](#client-side-compaction-sdk)을 참조하세요. |
 
 ## 서버 측 전략
 
@@ -768,7 +768,7 @@ const response = await anthropic.beta.messages.create({
 ## 클라이언트 측 압축 (SDK)
 
 
-> 압축은 [`tool_runner` 메서드](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](/docs/en/api/client-sdks)에서 사용할 수 있습니다.
+> 압축은 [`tool_runner` 메서드](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](https://platform.claude.com/docs/en/api/client-sdks)에서 사용할 수 있습니다.
 
 
 압축은 토큰 사용량이 너무 커질 때 요약을 생성하여 대화 컨텍스트를 자동으로 관리하는 SDK 기능입니다. 콘텐츠를 지우는 서버 측 컨텍스트 편집 전략과 달리 압축은 Claude에게 대화 기록을 요약하도록 지시한 다음 전체 기록을 해당 요약으로 대체합니다. 이를 통해 Claude는 그렇지 않으면 [컨텍스트 윈도우](./01-build-with-claude-02-context-windows.md)를 초과할 장기 실행 작업을 계속할 수 있습니다.

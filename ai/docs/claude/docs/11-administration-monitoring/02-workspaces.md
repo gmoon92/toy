@@ -138,7 +138,7 @@ curl --request POST "https://api.anthropic.com/v1/organizations/workspaces/{work
   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"
 ```
 
-전체 매개변수 세부 정보 및 응답 스키마는 [Workspaces API reference](/docs/en/api/admin-api/workspaces/get-workspace)를 참조하세요.
+전체 매개변수 세부 정보 및 응답 스키마는 [Workspaces API reference](https://platform.claude.com/docs/en/api/admin-api/workspaces/get-workspace)를 참조하세요.
 
 ### 워크스페이스 멤버 관리
 
@@ -166,7 +166,7 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/workspaces/{wo
   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"
 ```
 
-전체 매개변수 세부 정보는 [Workspace Members API reference](/docs/en/api/admin-api/workspace_members/get-workspace-member)를 참조하세요.
+전체 매개변수 세부 정보는 [Workspace Members API reference](https://platform.claude.com/docs/en/api/admin-api/workspace_members/get-workspace-member)를 참조하세요.
 
 ## API 키 및 리소스 범위 지정
 
@@ -182,7 +182,7 @@ API 키는 특정 워크스페이스로 범위가 지정됩니다. 워크스페�
 
 
 
-> 조직의 워크스페이스 ID를 검색하려면 [List Workspaces](/docs/en/api/admin-api/workspaces/list-workspaces) 엔드포인트를 사용하거나 [Claude Console](/settings/workspaces)에서 찾을 수 있습니다.
+> 조직의 워크스페이스 ID를 검색하려면 [List Workspaces](https://platform.claude.com/docs/en/api/admin-api/workspaces/list-workspaces) 엔드포인트를 사용하거나 [Claude Console](/settings/workspaces)에서 찾을 수 있습니다.
 
 
 ## 워크스페이스 제한
@@ -202,7 +202,7 @@ API 키는 특정 워크스페이스로 범위가 지정됩니다. 워크스페�
 > - 워크스페이스 제한의 합계가 더 많더라도 조직 전체 제한이 항상 적용됩니다
 
 
-속도 제한 및 작동 방식에 대한 자세한 내용은 [Rate limits](/docs/en/api/rate-limits)를 참조하세요.
+속도 제한 및 작동 방식에 대한 자세한 내용은 [Rate limits](https://platform.claude.com/docs/en/api/rate-limits)를 참조하세요.
 
 ## 사용량 및 비용 추적
 
@@ -312,6 +312,6 @@ API 키는 개별 사용자가 아닌 조직 및 워크스페이스로 범위가
 ## 참고 자료
 
 - [Admin API overview](../11-administration-monitoring/01-admin-api-overview.md)
-- [Admin API reference](/docs/en/api/admin)
-- [Rate limits](/docs/en/api/rate-limits)
+- [Admin API reference](https://platform.claude.com/docs/en/api/admin)
+- [Rate limits](https://platform.claude.com/docs/en/api/rate-limits)
 - [Usage and Cost API](../11-administration-monitoring/03-usage-cost-api.md)

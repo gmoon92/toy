@@ -4,7 +4,7 @@
 
 Claude는 문서에 대한 질문에 답변할 때 상세한 인용을 제공할 수 있으며, 이를 통해 응답의 정보 출처를 추적하고 검증할 수 있습니다.
 
-Haiku 3를 제외한 모든 [활성 모델](/docs/en/about-claude/models/overview)이 인용을 지원합니다.
+Haiku 3를 제외한 모든 [활성 모델](https://platform.claude.com/docs/en/about-claude/models/overview)이 인용을 지원합니다.
 
 
 > *Claude Sonnet 3.7의 인용*

@@ -12,7 +12,7 @@ Tool search tool은 Claude가 수백 또는 수천 개의 도구를 동적으로
 이것은 서버 측 도구로 제공되지만, 클라이언트 측 도구 검색 기능을 직접 구현할 수도 있습니다. 자세한 내용은 [커스텀 도구 검색 구현](#custom-tool-search-implementation)을 참조하세요.
 
 
-> Tool search tool은 현재 공개 베타 버전입니다. 제공자에 맞는 적절한 [베타 헤더](/docs/en/api/beta-headers)를 포함하세요:
+> Tool search tool은 현재 공개 베타 버전입니다. 제공자에 맞는 적절한 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 포함하세요:
 >
 > | 제공자                 | 베타 헤더                    | 지원 모델                       |
 > | ------------------------ | ------------------------------ | -------------------------------------- |
@@ -352,7 +352,7 @@ Claude가 tool search tool을 사용하면 응답에 새로운 블록 타입이 
 
 ## MCP 통합
 
-Tool search tool은 [MCP 서버](./06-mcp-in-api-01-mcp-connector.md)와 함께 작동합니다. API 요청에 `"mcp-client-2025-11-20"` [베타 헤더](/docs/en/api/beta-headers)를 추가한 다음, `default_config`와 함께 `mcp_toolset`을 사용하여 MCP 도구 로딩을 지연시킵니다:
+Tool search tool은 [MCP 서버](./06-mcp-in-api-01-mcp-connector.md)와 함께 작동합니다. API 요청에 `"mcp-client-2025-11-20"` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 추가한 다음, `default_config`와 함께 `mcp_toolset`을 사용하여 MCP 도구 로딩을 지연시킵니다:
 
 <CodeGroup>
 ```bash Shell

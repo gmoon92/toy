@@ -4,18 +4,18 @@ Anthropic의 Claude 모델은 이제 [Vertex AI](https://cloud.google.com/vertex
 
 ---
 
-Claude에 접근하기 위한 Vertex API는 [Messages API](/docs/en/api/messages)와 거의 동일하며 동일한 옵션을 모두 지원하지만, 두 가지 주요 차이점이 있습니다:
+Claude에 접근하기 위한 Vertex API는 [Messages API](https://platform.claude.com/docs/en/api/messages)와 거의 동일하며 동일한 옵션을 모두 지원하지만, 두 가지 주요 차이점이 있습니다:
 
 * Vertex에서 `model`은 요청 본문에 전달되지 않습니다. 대신 Google Cloud 엔드포인트 URL에 지정됩니다.
 * Vertex에서 `anthropic_version`은 (헤더가 아닌) 요청 본문에 전달되며, `vertex-2023-10-16` 값으로 설정해야 합니다.
 
-Vertex는 Anthropic의 공식 [클라이언트 SDK](/docs/en/api/client-sdks)에서도 지원됩니다. 이 가이드는 Python 또는 TypeScript에서 Vertex AI의 Claude에 요청하는 과정을 안내합니다.
+Vertex는 Anthropic의 공식 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)에서도 지원됩니다. 이 가이드는 Python 또는 TypeScript에서 Vertex AI의 Claude에 요청하는 과정을 안내합니다.
 
 이 가이드는 Vertex AI를 사용할 수 있는 GCP 프로젝트가 이미 있다고 가정합니다. 필요한 설정 및 전체 안내에 대한 자세한 내용은 [Anthropic의 Claude 3 모델 사용하기](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude)를 참조하세요.
 
 ## Vertex AI 접근을 위한 SDK 설치
 
-먼저, 선택한 언어에 맞는 Anthropic의 [클라이언트 SDK](/docs/en/api/client-sdks)를 설치합니다.
+먼저, 선택한 언어에 맞는 Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)를 설치합니다.
 
 <CodeGroup>
   ```python Python
@@ -125,7 +125,7 @@ Anthropic 모델 가용성은 지역에 따라 다릅니다. 최신 정보는 [V
   ```
 </CodeGroup>
 
-자세한 내용은 [클라이언트 SDK](/docs/en/api/client-sdks) 및 공식 [Vertex AI 문서](https://cloud.google.com/vertex-ai/docs)를 참조하세요.
+자세한 내용은 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks) 및 공식 [Vertex AI 문서](https://cloud.google.com/vertex-ai/docs)를 참조하세요.
 
 ## 활동 로깅
 
@@ -138,7 +138,7 @@ Anthropic은 활동을 이해하고 잠재적인 오용을 조사하기 위해 �
 
 
 ## 기능 지원
-Vertex에서 현재 지원되는 모든 기능은 [여기](/docs/en/api/overview)에서 찾을 수 있습니다.
+Vertex에서 현재 지원되는 모든 기능은 [여기](https://platform.claude.com/docs/en/api/overview)에서 찾을 수 있습니다.
 
 ## 글로벌 vs 지역 엔드포인트
 
@@ -275,4 +275,4 @@ const result = await client.messages.create({
 - **Google Vertex AI 가격:** [cloud.google.com/vertex-ai/generative-ai/pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing)
 - **Claude 모델 문서:** [Vertex AI의 Claude](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/claude)
 - **Google 블로그 게시물:** [Claude 모델을 위한 글로벌 엔드포인트](https://cloud.google.com/blog/products/ai-machine-learning/global-endpoint-for-claude-models-generally-available-on-vertex-ai)
-- **Anthropic 가격 세부정보:** [가격 문서](/docs/en/about-claude/pricing#third-party-platform-pricing)
+- **Anthropic 가격 세부정보:** [가격 문서](https://platform.claude.com/docs/en/about-claude/pricing#third-party-platform-pricing)

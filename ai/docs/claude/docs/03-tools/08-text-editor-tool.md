@@ -9,10 +9,10 @@ Claude는 Anthropic이 정의한 텍스트 에디터 도구를 사용하여 텍�
 | 모델 | 도구 버전 |
 |-------|--------------|
 | Claude 4.x 모델 | `text_editor_20250728` |
-| Claude Sonnet 3.7 ([더 이상 사용되지 않음](/docs/en/about-claude/model-deprecations)) | `text_editor_20250124` |
+| Claude Sonnet 3.7 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `text_editor_20250124` |
 
 
-> Claude 4 모델용 `text_editor_20250728` 도구는 `undo_edit` 명령을 포함하지 않습니다. 이 기능이 필요한 경우 Claude Sonnet 3.7([더 이상 사용되지 않음](/docs/en/about-claude/model-deprecations))을 사용해야 합니다.
+> Claude 4 모델용 `text_editor_20250728` 도구는 `undo_edit` 명령을 포함하지 않습니다. 이 기능이 필요한 경우 Claude Sonnet 3.7([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))을 사용해야 합니다.
 
 
 
@@ -405,7 +405,7 @@ public class TextEditorToolExample {
 `undo_edit` 명령을 사용하면 Claude가 파일에 대한 마지막 편집을 되돌릴 수 있습니다.
 
 
-> 이 명령은 Claude Sonnet 3.7([더 이상 사용되지 않음](/docs/en/about-claude/model-deprecations))에서만 사용할 수 있습니다. `text_editor_20250728`을 사용하는 Claude 4 모델에서는 지원되지 않습니다.
+> 이 명령은 Claude Sonnet 3.7([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))에서만 사용할 수 있습니다. `text_editor_20250728`을 사용하는 Claude 4 모델에서는 지원되지 않습니다.
 
 
 매개변수:
@@ -1240,7 +1240,7 @@ def verify_changes(file_path):
 | 도구 | 추가 입력 토큰 |
 | ----------------------------------------- | --------------------------------------- |
 | `text_editor_20250429` (Claude 4.x) | 700 토큰 |
-| `text_editor_20250124` (Claude Sonnet 3.7 ([더 이상 사용되지 않음](/docs/en/about-claude/model-deprecations))) | 700 토큰 |
+| `text_editor_20250124` (Claude Sonnet 3.7 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))) | 700 토큰 |
 
 도구 가격에 대한 자세한 내용은 [도구 사용 가격](../03-tools/01-overview.md)을 참조하세요.
 
@@ -1257,7 +1257,7 @@ def verify_changes(file_path):
 | 2025년 7월 28일 | `text_editor_20250728` | 일부 문제를 수정하고 선택적 `max_characters` 매개변수를 추가한 업데이트된 텍스트 에디터 도구 릴리스. 그 외에는 `text_editor_20250429`와 동일합니다. |
 | 2025년 4월 29일 | `text_editor_20250429` | Claude 4용 텍스트 에디터 도구 릴리스. 이 버전은 `undo_edit` 명령을 제거하지만 다른 모든 기능은 유지합니다. 도구 이름은 str_replace 기반 아키텍처를 반영하도록 업데이트되었습니다. |
 | 2025년 3월 13일 | `text_editor_20250124` | 독립형 텍스트 에디터 도구 문서 도입. 이 버전은 Claude Sonnet 3.7에 최적화되어 있지만 이전 버전과 동일한 기능을 가지고 있습니다. |
-| 2024년 10월 22일 | `text_editor_20241022` | Claude Sonnet 3.5([사용 중단](/docs/en/about-claude/model-deprecations))와 함께 텍스트 에디터 도구의 초기 릴리스. `view`, `create`, `str_replace`, `insert` 및 `undo_edit` 명령을 통해 파일을 보고, 생성하고, 편집하는 기능을 제공합니다. |
+| 2024년 10월 22일 | `text_editor_20241022` | Claude Sonnet 3.5([사용 중단](https://platform.claude.com/docs/en/about-claude/model-deprecations))와 함께 텍스트 에디터 도구의 초기 릴리스. `view`, `create`, `str_replace`, `insert` 및 `undo_edit` 명령을 통해 파일을 보고, 생성하고, 편집하는 기능을 제공합니다. |
 
 ## 다음 단계
 

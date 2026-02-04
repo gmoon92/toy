@@ -101,7 +101,7 @@ function createSdkMcpServer(options: {
 | `continue` | `boolean` | `false` | 가장 최근 대화 계속하기 |
 | `cwd` | `string` | `process.cwd()` | 현재 작업 디렉터리 |
 | `disallowedTools` | `string[]` | `[]` | 허용되지 않는 도구 이름 목록 |
-| `enableFileCheckpointing` | `boolean` | `false` | 되감기를 위한 파일 변경 추적 활성화. [파일 체크포인팅](/docs/en/agent-sdk/file-checkpointing) 참조 |
+| `enableFileCheckpointing` | `boolean` | `false` | 되감기를 위한 파일 변경 추적 활성화. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조 |
 | `env` | `Dict<string>` | `process.env` | 환경 변수 |
 | `executable` | `'bun' \| 'deno' \| 'node'` | 자동 감지 | 사용할 JavaScript 런타임 |
 | `executableArgs` | `string[]` | `[]` | 실행 파일에 전달할 인수 |
@@ -115,11 +115,11 @@ function createSdkMcpServer(options: {
 | `maxTurns` | `number` | `undefined` | 최대 대화 턴 수 |
 | `mcpServers` | `Record<string, [`McpServerConfig`](#mcpserverconfig)>` | `{}` | MCP 서버 설정 |
 | `model` | `string` | CLI 기본값 | 사용할 Claude 모델 |
-| `outputFormat` | `{ type: 'json_schema', schema: JSONSchema }` | `undefined` | 에이전트 결과의 출력 형식 정의. 자세한 내용은 [구조화된 출력](/docs/en/agent-sdk/structured-outputs) 참조 |
+| `outputFormat` | `{ type: 'json_schema', schema: JSONSchema }` | `undefined` | 에이전트 결과의 출력 형식 정의. 자세한 내용은 [구조화된 출력](https://platform.claude.com/docs/en/agent-sdk/structured-outputs) 참조 |
 | `pathToClaudeCodeExecutable` | `string` | 내장 실행 파일 사용 | Claude Code 실행 파일 경로 |
 | `permissionMode` | [`PermissionMode`](#permissionmode) | `'default'` | 세션의 권한 모드 |
 | `permissionPromptToolName` | `string` | `undefined` | 권한 프롬프트를 위한 MCP 도구 이름 |
-| `plugins` | [`SdkPluginConfig`](#sdkpluginconfig)`[]` | `[]` | 로컬 경로에서 사용자 정의 플러그인 로드. 자세한 내용은 [플러그인](/docs/en/agent-sdk/plugins) 참조 |
+| `plugins` | [`SdkPluginConfig`](#sdkpluginconfig)`[]` | `[]` | 로컬 경로에서 사용자 정의 플러그인 로드. 자세한 내용은 [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins) 참조 |
 | `resume` | `string` | `undefined` | 재개할 세션 ID |
 | `resumeSessionAt` | `string` | `undefined` | 특정 메시지 UUID에서 세션 재개 |
 | `sandbox` | [`SandboxSettings`](#sandboxsettings) | `undefined` | 프로그래밍 방식으로 샌드박스 동작 구성. 자세한 내용은 [샌드박스 설정](#sandboxsettings) 참조 |
@@ -152,7 +152,7 @@ interface Query extends AsyncGenerator<SDKMessage, void> {
 | 메서드 | 설명 |
 | :----- | :---------- |
 | `interrupt()` | 쿼리 중단(스트리밍 입력 모드에서만 사용 가능) |
-| `rewindFiles(userMessageUuid)` | 지정된 사용자 메시지의 상태로 파일 복원. `enableFileCheckpointing: true` 필요. [파일 체크포인팅](/docs/en/agent-sdk/file-checkpointing) 참조 |
+| `rewindFiles(userMessageUuid)` | 지정된 사용자 메시지의 상태로 파일 복원. `enableFileCheckpointing: true` 필요. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조 |
 | `setPermissionMode()` | 권한 모드 변경(스트리밍 입력 모드에서만 사용 가능) |
 | `setModel()` | 모델 변경(스트리밍 입력 모드에서만 사용 가능) |
 | `setMaxThinkingTokens()` | 최대 사고 토큰 수 변경(스트리밍 입력 모드에서만 사용 가능) |
@@ -395,7 +395,7 @@ plugins: [
 ]
 ```
 
-플러그인 생성 및 사용에 대한 완전한 정보는 [플러그인](/docs/en/agent-sdk/plugins)을 참조하세요.
+플러그인 생성 및 사용에 대한 완전한 정보는 [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins)을 참조하세요.
 
 ## 메시지 타입
 
@@ -568,7 +568,7 @@ type SDKPermissionDenial = {
 
 ## 훅 타입
 
-예제와 일반적인 패턴이 포함된 훅 사용에 대한 포괄적인 가이드는 [훅 가이드](/docs/en/agent-sdk/hooks)를 참조하세요.
+예제와 일반적인 패턴이 포함된 훅 사용에 대한 포괄적인 가이드는 [훅 가이드](https://platform.claude.com/docs/en/agent-sdk/hooks)를 참조하세요.
 
 ### `HookEvent`
 
@@ -914,7 +914,7 @@ interface AskUserQuestionInput {
 }
 ```
 
-실행 중 사용자에게 명확한 질문을 합니다. 사용 세부 정보는 [승인 및 사용자 입력 처리](/docs/en/agent-sdk/user-input#handle-clarifying-questions)를 참조하세요.
+실행 중 사용자에게 명확한 질문을 합니다. 사용 세부 정보는 [승인 및 사용자 입력 처리](https://platform.claude.com/docs/en/agent-sdk/user-input#handle-clarifying-questions)를 참조하세요.
 
 ### Bash
 
@@ -1890,7 +1890,7 @@ type ApiKeySource = 'user' | 'project' | 'org' | 'temporary';
 
 ### `SdkBeta`
 
-`betas` 옵션을 통해 활성화할 수 있는 사용 가능한 베타 기능입니다. 자세한 내용은 [베타 헤더](/docs/en/api/beta-headers)를 참조하세요.
+`betas` 옵션을 통해 활성화할 수 있는 사용 가능한 베타 기능입니다. 자세한 내용은 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 참조하세요.
 
 ```typescript
 type SdkBeta = 'context-1m-2025-08-07';

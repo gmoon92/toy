@@ -15,7 +15,7 @@
 * **정확한 사용량 추적:** 응답 토큰 카운팅에만 의존하는 대신 정확한 토큰 수와 사용 패턴을 얻을 수 있습니다
 * **비용 조정:** 재무 및 회계 팀을 위해 내부 기록과 Anthropic 청구서를 일치시킬 수 있습니다
 * **제품 성능 및 개선:** 시스템 변경이 성능을 개선했는지 측정하면서 제품 성능을 모니터링하거나 알림을 설정할 수 있습니다
-* **[속도 제한](/docs/en/api/rate-limits) 및 [우선순위 티어](/docs/en/api/service-tiers#get-started-with-priority-tier) 최적화:** [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md) 또는 특정 프롬프트와 같은 기능을 최적화하여 할당된 용량을 최대한 활용하거나 전용 용량을 구매할 수 있습니다
+* **[속도 제한](https://platform.claude.com/docs/en/api/rate-limits) 및 [우선순위 티어](https://platform.claude.com/docs/en/api/service-tiers#get-started-with-priority-tier) 최적화:** [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md) 또는 특정 프롬프트와 같은 기능을 최적화하여 할당된 용량을 최대한 활용하거나 전용 용량을 구매할 수 있습니다
 * **고급 분석:** Console에서 제공되는 것보다 더 깊은 데이터 분석을 수행할 수 있습니다
 
 <Check>
@@ -79,7 +79,7 @@ bucket_width=1d" \
 - **필터링 및 그룹화**: API 키, 워크스페이스, 모델, 서비스 티어 또는 컨텍스트 윈도우별로 필터링하고 이러한 차원으로 결과를 그룹화합니다
 - **서버 도구 사용량**: 웹 검색과 같은 서버측 도구의 사용량을 추적합니다
 
-전체 매개변수 세부 정보 및 응답 스키마는 [사용량 API 참조](/docs/en/api/admin-api/usage-cost/get-messages-usage-report)를 참조하세요.
+전체 매개변수 세부 정보 및 응답 스키마는 [사용량 API 참조](https://platform.claude.com/docs/en/api/admin-api/usage-cost/get-messages-usage-report)를 참조하세요.
 
 ### 기본 예제
 
@@ -125,9 +125,9 @@ bucket_width=1d" \
 ```
 
 
-> 조직의 API 키 ID를 검색하려면 [List API Keys](/docs/en/api/admin-api/apikeys/list-api-keys) 엔드포인트를 사용하세요.
+> 조직의 API 키 ID를 검색하려면 [List API Keys](https://platform.claude.com/docs/en/api/admin-api/apikeys/list-api-keys) 엔드포인트를 사용하세요.
 >
-> 조직의 워크스페이스 ID를 검색하려면 [List Workspaces](/docs/en/api/admin-api/workspaces/list-workspaces) 엔드포인트를 사용하거나 Anthropic Console에서 조직의 워크스페이스 ID를 찾으세요.
+> 조직의 워크스페이스 ID를 검색하려면 [List Workspaces](https://platform.claude.com/docs/en/api/admin-api/workspaces/list-workspaces) 엔드포인트를 사용하거나 Anthropic Console에서 조직의 워크스페이스 ID를 찾으세요.
 
 
 ### 시간 세분성 제한
@@ -149,7 +149,7 @@ bucket_width=1d" \
 - **그룹화**: 세부적인 분석을 위해 워크스페이스 또는 설명별로 비용을 그룹화합니다
 - **시간 버킷**: 일일 세분성만 가능(`1d`)
 
-전체 매개변수 세부 정보 및 응답 스키마는 [비용 API 참조](/docs/en/api/admin-api/usage-cost/get-cost-report)를 참조하세요.
+전체 매개변수 세부 정보 및 응답 스키마는 [비용 API 참조](https://platform.claude.com/docs/en/api/admin-api/usage-cost/get-cost-report)를 참조하세요.
 
 
 > 우선순위 티어 비용은 다른 청구 모델을 사용하며 비용 엔드포인트에 포함되지 않습니다. 대신 사용량 엔드포인트를 통해 우선순위 티어 사용량을 추적하세요.
@@ -234,8 +234,8 @@ Workbench의 API 사용량은 API 키와 연결되지 않으므로 해당 차원
 사용량 및 비용 API를 사용하여 사용자에게 더 나은 경험을 제공하고, 비용을 관리하고, 속도 제한을 유지할 수 있습니다. 다음과 같은 다른 기능에 대해 자세히 알아보세요:
 
 - [관리자 API 개요](../11-administration-monitoring/01-admin-api-overview.md)
-- [관리자 API 참조](/docs/en/api/admin)
-- [가격 정책](/docs/en/about-claude/pricing)
+- [관리자 API 참조](https://platform.claude.com/docs/en/api/admin)
+- [가격 정책](https://platform.claude.com/docs/en/about-claude/pricing)
 - [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md) - 캐싱을 통한 비용 최적화
 - [배치 처리](../02-capabilities/06-batch-processing.md) - 배치 요청에 대한 50% 할인
-- [속도 제한](/docs/en/api/rate-limits) - 사용량 티어 이해하기
+- [속도 제한](https://platform.claude.com/docs/en/api/rate-limits) - 사용량 티어 이해하기

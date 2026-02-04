@@ -5,9 +5,9 @@
 Claude는 컴퓨터 사용 도구를 통해 컴퓨터 환경과 상호작용할 수 있으며, 이 도구는 자율적인 데스크톱 상호작용을 위한 스크린샷 기능과 마우스/키보드 제어 기능을 제공합니다.
 
 
-> 컴퓨터 사용은 현재 베타 버전이며 [베타 헤더](/docs/en/api/beta-headers)가 필요합니다:
+> 컴퓨터 사용은 현재 베타 버전이며 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)가 필요합니다:
 > - Claude Opus 4.5의 경우 `"computer-use-2025-11-24"`
-> - Claude Sonnet 4.5, Haiku 4.5, Opus 4.1, Sonnet 4, Opus 4, Sonnet 3.7([지원 중단](/docs/en/about-claude/model-deprecations))의 경우 `"computer-use-2025-01-24"`
+> - Claude Sonnet 4.5, Haiku 4.5, Opus 4.1, Sonnet 4, Opus 4, Sonnet 3.7([지원 중단](https://platform.claude.com/docs/en/about-claude/model-deprecations))의 경우 `"computer-use-2025-01-24"`
 >
 > 이 기능에 대한 피드백을 [피드백 양식](https://forms.gle/H6UFuXaaLywri9hz6)을 통해 공유해 주시기 바랍니다.
 
@@ -1007,7 +1007,7 @@ def log_action(action_type, params, result):
 | 모델 | 도구 정의당 입력 토큰 |
 | ----- | -------------------------------- |
 | Claude 4.x 모델 | 735개 토큰 |
-| Claude Sonnet 3.7 ([지원 중단](/docs/en/about-claude/model-deprecations)) | 735개 토큰 |
+| Claude Sonnet 3.7 ([지원 중단](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | 735개 토큰 |
 
 **추가 토큰 소비**:
 - 스크린샷 이미지 ([Vision 가격](../02-capabilities/11-vision.md) 참조)
