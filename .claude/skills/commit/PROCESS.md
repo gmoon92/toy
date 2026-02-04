@@ -219,6 +219,8 @@ Generate **5 commit messages** for each group.
 
 ### Body Format
 
+**CRITICAL: Each body line MUST start with `-` (dash + space) and be on separate lines**
+
 ```
 <type>(scope): <간단한 설명>
 
@@ -227,7 +229,15 @@ Generate **5 commit messages** for each group.
 - 주요 변경사항 3
 ```
 
-See [RULES.md](RULES.md#body-guidelines) for body writing guide
+**Mandatory rules:**
+- Each line starts with `- ` (dash + space)
+- Each item on a new line (no comma-separated items)
+- 5 lines or less
+- File-based or feature-based grouping
+
+**For detailed format rules and examples:**
+- [MESSAGE_GENERATION.md - Body Generation Criteria](MESSAGE_GENERATION.md#body-generation-criteria) - Complete format rules with correct/wrong examples
+- [RULES.md - Body Guidelines](RULES.md#body-guidelines) - Validation rules
 
 ### Suggest Messages (Using AskUserQuestion)
 

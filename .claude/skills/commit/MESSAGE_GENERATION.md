@@ -311,6 +311,8 @@ Add body if any of the following applies:
 
 ### Format
 
+**CRITICAL: Body must follow this exact format for readability:**
+
 ```
 - 주요 변경사항 1
 - 주요 변경사항 2
@@ -318,11 +320,37 @@ Add body if any of the following applies:
 - ...
 ```
 
-**Rules:**
-- Keep each line concise (1-2 lines)
-- Limit to 5 lines or less
-- Group by file or feature
-- Focus on "what" rather than "why"
+**Mandatory Rules:**
+- **Each line MUST start with `-` (dash + space)**: This is non-negotiable
+- **Each line MUST be on a new line**: No comma-separated items
+- **Keep each line concise**: 1-2 lines per item
+- **Limit to 5 lines or less**: Avoid overwhelming the user
+- **Group by file or feature**: Logical organization
+- **Focus on "what" rather than "why"**: Action-oriented descriptions
+
+**Example (Correct):**
+```
+docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+
+- SKILL.md: 스킬 실행 프로세스 정의
+- RULES.md: 커밋 메시지 형식 규칙
+- EXAMPLES.md: 실제 사용 예시
+```
+
+**Example (Wrong - No dashes):**
+```
+docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+
+SKILL.md: 스킬 실행 프로세스 정의
+RULES.md: 커밋 메시지 형식 규칙
+```
+
+**Example (Wrong - Comma-separated):**
+```
+docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+
+- SKILL.md: 스킬 실행 프로세스 정의, RULES.md: 커밋 메시지 형식 규칙
+```
 
 ### Style Options
 

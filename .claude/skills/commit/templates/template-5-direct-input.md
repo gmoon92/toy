@@ -22,11 +22,30 @@ User selection: "Other"
 형식: <type>(scope): <message>
 
 본문을 추가하려면 빈 줄 후 작성하세요.
-예시:
+
+⚠️ 본문 형식 규칙 (MANDATORY):
+  - 각 줄은 반드시 "- "(대시 + 공백)으로 시작
+  - 각 항목은 반드시 개행으로 구분 (쉼표로 연결 금지)
+  - 5줄 이하로 작성
+  - 파일별 또는 기능별로 그룹화
+
+예시 (올바른 형식):
   docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
   - SKILL.md: 스킬 실행 프로세스 정의
   - RULES.md: 커밋 메시지 형식 규칙
+  - EXAMPLES.md: 실제 사용 예시
+
+잘못된 형식 (대시 없음):
+  docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+
+  SKILL.md: 스킬 실행 프로세스 정의
+  RULES.md: 커밋 메시지 형식 규칙
+
+잘못된 형식 (쉼표로 연결):
+  docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+
+  - SKILL.md: 스킬 실행 프로세스 정의, RULES.md: 커밋 메시지 형식 규칙
 
 입력하세요:
 ```
