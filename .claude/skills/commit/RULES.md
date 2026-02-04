@@ -83,14 +83,15 @@ Add body when:
 - Complex logic requires explanation
 - Multiple related changes
 
-**Format:**
+**MANDATORY Format Rules:**
 
-- Separate from title with one blank line
-- Use `-` for bullet points
-- Keep to 5 lines or less
-- Focus on "why" and context
+- **Separate from title with one blank line**
+- **Each line MUST start with `- ` (dash + space)**: This is non-negotiable
+- **Each item MUST be on a new line**: No comma-separated items
+- **Keep to 5 lines or less**: Avoid overwhelming readers
+- **Focus on "what" changed**: Action-oriented descriptions
 
-**Example:**
+**Example (Correct):**
 
 ```
 feat(spring-security-jwt): JWT 인증 필터 구현
@@ -99,6 +100,26 @@ feat(spring-security-jwt): JWT 인증 필터 구현
 - SecurityConfig에 JWT 필터 통합
 - 토큰 만료 시간 30분 설정
 ```
+
+**Example (Wrong - No dashes):**
+
+```
+feat(spring-security-jwt): JWT 인증 필터 구현
+
+토큰 생성 및 검증 로직 추가
+SecurityConfig에 JWT 필터 통합
+```
+
+**Example (Wrong - Comma-separated):**
+
+```
+feat(spring-security-jwt): JWT 인증 필터 구현
+
+- 토큰 생성 및 검증 로직 추가, SecurityConfig에 JWT 필터 통합
+```
+
+**For detailed format specifications, see:**
+- [MESSAGE_GENERATION.md - Body Generation Criteria](MESSAGE_GENERATION.md#body-generation-criteria) - Complete format rules
 
 ### Footer
 
