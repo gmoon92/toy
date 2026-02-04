@@ -218,36 +218,14 @@ chore(.claude): commit 스킬 설정 추가
 - Scope: commit-skill (module name) or SKILL.md (main file)
 - Lines: 500+ lines added
 
-**Generated 5 messages:**
+**Generated messages follow the 5 strategies:**
+1. **Optimal**: Module scope + informative body
+2. **Scope variation**: Filename scope instead
+3. **Message variation**: Concise expression
+4. **Body variation**: Header only
+5. **Type alternative**: feat interpretation
 
-```
-1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-
-   - SKILL.md: 스킬 실행 프로세스 정의
-   - RULES.md: 커밋 메시지 형식 규칙
-   - EXAMPLES.md: 실제 사용 예시
-   - TROUBLESHOOTING.md: 문제 해결 가이드
-
-2. docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가
-
-   - SKILL.md: 스킬 실행 프로세스 정의
-   - RULES.md: 커밋 메시지 형식 규칙
-   - EXAMPLES.md: 실제 사용 예시
-   - TROUBLESHOOTING.md: 문제 해결 가이드
-
-3. docs(commit-skill): 커밋 스킬 문서 추가
-
-   - 커밋 자동화 스킬 문서
-   - 메시지 형식 규칙 정의
-
-4. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-5. feat(commit-skill): 자동 커밋 메시지 생성 기능 구현
-
-   - 스킬 프로세스 자동화
-   - 메시지 형식 검증
-   - Tidy First 원칙 적용
-```
+For complete examples, see [EXAMPLES.md](EXAMPLES.md).
 
 ---
 
@@ -373,74 +351,9 @@ Add body if any of the following applies:
 
 ## Metadata JSON Structure
 
-### suggestedMessages Schema
+The complete JSON schema and field descriptions are documented in [METADATA.md](METADATA.md).
 
-```json
-{
-  "groups": [
-    {
-      "id": 1,
-      "directory": ".claude/skills/commit/",
-      "fileCount": 4,
-      "scope": "commit-skill",
-      "type": "docs",
-      "suggestedMessages": [
-        {
-          "rank": 1,
-          "strategy": "optimal",
-          "header": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가",
-          "body": "- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드",
-          "footer": null,
-          "reasoning": "주요 디렉토리 모듈명 사용, 명확한 목적 표현, 파일별 상세 설명"
-        },
-        {
-          "rank": 2,
-          "strategy": "scope-variation",
-          "header": "docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가",
-          "body": "- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드",
-          "footer": null,
-          "reasoning": "파일명으로 scope 변경"
-        },
-        {
-          "rank": 3,
-          "strategy": "message-variation",
-          "header": "docs(commit-skill): 커밋 스킬 문서 추가",
-          "body": "- 커밋 자동화 스킬 문서\n- 메시지 형식 규칙 정의",
-          "footer": null,
-          "reasoning": "더 간결한 표현, body 요약"
-        },
-        {
-          "rank": 4,
-          "strategy": "body-variation",
-          "header": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가",
-          "body": null,
-          "footer": null,
-          "reasoning": "헤더만 사용 (body 제거)"
-        },
-        {
-          "rank": 5,
-          "strategy": "type-alternative",
-          "header": "feat(commit-skill): 자동 커밋 메시지 생성 기능 구현",
-          "body": "- 스킬 프로세스 자동화\n- 메시지 형식 검증\n- Tidy First 원칙 적용",
-          "footer": null,
-          "reasoning": "docs 대신 feat로 해석 (새로운 기능 관점)"
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Field Descriptions
-
-| Field | Type | Description |
-|------|------|------|
-| `rank` | number | Rank (1=recommended) |
-| `strategy` | string | Generation strategy (`optimal`, `scope-variation`, `message-variation`, `body-variation`, `type-alternative`) |
-| `header` | string | Commit header (`<type>(scope): <message>`) |
-| `body` | string \| null | Commit body (null if none) |
-| `footer` | string \| null | Commit footer (null if none) |
-| `reasoning` | string | Reason for generating this message (for debugging/audit) |
+Each group includes a `suggestedMessages` array with 5 pre-generated messages following the strategies above.
 
 ---
 
@@ -495,7 +408,15 @@ Regex validation:
 
 ## Related Documents
 
-- [RULES.md](RULES.md) - Commit message format rules
-- [EXAMPLES.md](EXAMPLES.md) - Commit message examples
-- [METADATA.md](METADATA.md) - Session metadata structure
-- [templates/README.md](templates/README.md) - User option templates
+- **[RULES.md](RULES.md)** - Commit message format rules
+  - Validation rules and format specifications
+  - Tidy First and Logical Independence principles
+- **[EXAMPLES.md](EXAMPLES.md)** - Complete commit message examples
+  - All 7 commit types with real examples
+  - Advanced scenarios and common mistakes
+- **[METADATA.md](METADATA.md)** - Session metadata structure
+  - Complete JSON schema and field descriptions
+  - File lifecycle and cleanup procedures
+- **[templates/README.md](templates/README.md)** - User interaction templates
+  - AskUserQuestion tool structure
+  - Template usage patterns

@@ -259,4 +259,15 @@ fix(spring-jpa): UserRepository null 체크       # Should use filename
 
 ---
 
-For detailed rules, see [RULES.md](RULES.md)
+## Related Documents
+
+- **[RULES.md](RULES.md)** - Commit message format rules
+  - Complete validation rules and specifications
+  - Tidy First and Logical Independence principles
+- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation strategies
+  - How to generate messages following these patterns
+  - Scope selection and body generation algorithms
+- **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Auto-split commit examples
+  - How to properly separate independent changes
+- **[PROCESS.md](PROCESS.md)** - Execution process
+  - Where examples are used in the workflow

@@ -448,8 +448,21 @@ Start
 ## Related Documents
 
 - **[SKILL.md](SKILL.md)** - Overview and quick reference
-- **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Auto-split commit process
-- **[RULES.md](RULES.md)** - Commit message format rules
-- **[EXAMPLES.md](EXAMPLES.md)** - Commit examples
+  - Core principles and quick start guide
+- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation algorithm
+  - 5 generation strategies and scope extraction
+  - Complete generation patterns
 - **[METADATA.md](METADATA.md)** - Token optimization strategy
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Error handling
+  - Session metadata structure and lifecycle
+  - 67% token savings through metadata reuse
+- **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Auto-split commit process
+  - Policy selection and sequential commits
+  - Error handling and rollback
+- **[RULES.md](RULES.md)** - Commit message format rules
+  - Validation rules and format specifications
+  - Tidy First and Logical Independence principles
+- **[EXAMPLES.md](EXAMPLES.md)** - Complete commit message examples
+  - All 7 commit types with real examples
+- **[templates/README.md](templates/README.md)** - User interaction templates
+  - 5 template files for different user interactions
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Error handling and hook failures

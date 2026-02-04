@@ -403,7 +403,12 @@ find .claude/temp -name "commit-execution-*.json" -mtime +1 -delete
 
 ## Related Documents
 
-- [PROCESS.md](PROCESS.md) - Update with metadata flow
-- [SKILL.md](SKILL.md) - Note optimization strategy
-- [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) - suggestedMessages generation algorithm
-- [templates/README.md](templates/README.md) - User interaction templates
+- **[PROCESS.md](PROCESS.md)** - Execution process with metadata flow
+  - Step-by-step metadata read/write operations
+  - Metadata lifecycle in each phase
+- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation algorithm
+  - suggestedMessages generation strategies
+  - How messages are pre-generated and stored
+- **[templates/README.md](templates/README.md)** - User interaction templates
+  - How templates consume metadata
+  - Token efficiency through template separation

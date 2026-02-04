@@ -168,69 +168,30 @@ Related: something
 
 ## Tidy First Principles
 
-### Structural Changes (refactor)
+**Core Rule:** NEVER mix structural changes (refactor) and behavioral changes (feat/fix) in one commit.
 
-Changes that don't affect behavior:
+### Quick Guide
 
-- Method extraction
-- Variable/function renaming
-- Code reorganization
-- Import reordering
-- Formatting improvements
+**Structural changes (refactor):**
+- Method extraction, variable renaming, code reorganization
+- Import reordering, formatting improvements
+- No behavior change
 
-**Examples:**
-
-- `refactor(CacheService.java): 메서드 추출`
-- `refactor(spring-batch): 변수명을 명확하게 개선`
-- `style(spring-security): 코드 포맷팅 정리`
-
-### Behavioral Changes (feat/fix)
-
-Changes that affect functionality:
-
-- New features
-- Bug fixes
-- API changes
-- Logic modifications
-
-**Examples:**
-
-- `feat(spring-cloud-bus): 커스텀 이벤트 발행 기능 추가`
-- `fix(spring-data-redis): 연결 풀 설정 버그 수정`
-
-### Separation Rule
-
-**NEVER mix structural and behavioral changes in one commit.**
-
-**Bad (mixed):**
-
-```
-feat(spring-batch): 배치 재시도 기능 구현 및 리팩토링
-
-Changes:
-- BatchJobConfig 메서드 추출 (refactor)
-- 배치 재시도 로직 추가 (feat)
-- 변수명 개선 (refactor)
-```
-
-**Good (separated):**
-
-```
-Commit 1:
-refactor(spring-batch): BatchJobConfig 메서드 추출 및 변수명 개선
-
-Commit 2:
-feat(spring-batch): 배치 재시도 로직 추가
-```
+**Behavioral changes (feat/fix):**
+- New features, bug fixes, API changes, logic modifications
+- Affects functionality
 
 ### Why Separate?
 
-1. **Easier code review**: Reviewers can focus on one type of change
-2. **Clearer git history**: Each commit has single purpose
-3. **Safer rollback**: Can revert behavior change without losing refactoring
-4. **Better debugging**: `git bisect` identifies exact change that caused issue
-5. **Logical independence**: Each commit represents one logical unit of work
-6. **Better traceability**: Easy to understand what changed and why
+Separating structural and behavioral changes enables:
+- Easier code review (focus on one type)
+- Safer rollback (revert behavior without losing refactoring)
+- Better debugging with `git bisect`
+- Clearer git history
+
+**For detailed examples and detection process, see:**
+- [templates/template-1-tidy-first.md](templates/template-1-tidy-first.md) - Detection and user guidance
+- [EXAMPLES.md](EXAMPLES.md) - Correct vs incorrect commit examples
 
 ## Toy Project Conventions
 
@@ -277,49 +238,27 @@ Bad: fix(java-core): DST 미처리 문제 수정
 
 ### Logical Independence Rule
 
-**같은 타입이더라도 논리적으로 독립적이면 분리:**
+**Core Rule:** Separate logically independent changes even if they're the same type.
 
-커밋을 분리해야 하는 경우:
+### When to Separate
 
-1. **서로 다른 목적**: 같은 docs 타입이어도 다른 문서 작성
-2. **독립적인 리뷰**: 각각 독립적으로 검토 가능
-3. **다른 컨텍스트**: 서로 다른 프로젝트/모듈/기능
+Separate commits when changes have:
+1. **Different purposes**: Different documents, features, or goals
+2. **Independent review**: Can be reviewed separately
+3. **Different contexts**: Different projects/modules/features
 
-**예시:**
+### Quick Decision Criteria
 
-❌ **잘못된 통합 커밋:**
+Consider separating if:
+- 10+ files changed
+- Different top-level directories
+- Each part can be explained independently
+- Not appropriate for one PR review
 
-```
-docs(project): 여러 문서 추가
-
-- 커밋 스킬 문서 추가 (.claude/skills/commit/)
-- Claude API 문서 번역 추가 (ai/docs/claude/)
-- 에이전트 설정 추가 (.claude/agents/)
-```
-
-→ 각각 다른 목적과 컨텍스트
-
-✅ **올바른 분리 커밋:**
-
-```
-Commit 1:
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-Commit 2:
-docs(claude-api): Claude API 문서 번역 추가
-
-Commit 3:
-docs(korean-translator): 기술 문서 번역 에이전트 추가
-```
-
-**판단 기준:**
-
-- 10개 이상의 파일이 변경되었는가?
-- 서로 다른 최상위 디렉토리의 파일들인가?
-- 각 부분이 독립적으로 설명 가능한가?
-- 하나의 PR 리뷰에 모두 포함하기 적절한가?
-
-위 질문 중 하나라도 "아니오"면 분리를 고려하세요.
+**For detailed examples and auto-split process, see:**
+- [templates/template-2-logical-independence.md](templates/template-2-logical-independence.md) - Detection and user guidance
+- [AUTO_SPLIT.md](AUTO_SPLIT.md) - Automatic commit splitting process
+- [EXAMPLES.md](EXAMPLES.md) - Correct vs incorrect commit examples
 
 ## Common Mistakes
 
@@ -397,7 +336,16 @@ Is it formatting only? → style
 Is it build/config? → chore
 ```
 
-## Reference
+## Related Documents
 
-For examples, see [EXAMPLES.md](EXAMPLES.md)
-For hook failures, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- **[EXAMPLES.md](EXAMPLES.md)** - Complete commit message examples
+  - All 7 commit types with real examples
+  - Advanced scenarios (auto-split, Tidy First violations)
+  - Common mistakes and correct patterns
+- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation strategies
+  - 5 generation strategies explained
+  - Scope selection and body generation algorithms
+- **[templates/template-1-tidy-first.md](templates/template-1-tidy-first.md)** - Tidy First violation detection
+- **[templates/template-2-logical-independence.md](templates/template-2-logical-independence.md)** - Logical independence detection
+- **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Automatic commit splitting
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Error handling and hook failures

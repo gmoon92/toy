@@ -500,6 +500,14 @@ All templates use the `AskUserQuestion` tool with the following structure:
 ## Related Documents
 
 - **[../PROCESS.md](../PROCESS.md)** - Execution process with template references
-- **[../SKILL.md](../SKILL.md)** - Overview and core principles
-- **[../METADATA.md](../METADATA.md)** - Message generation and storage
-- **[../EXAMPLES.md](../EXAMPLES.md)** - Message examples
+  - When and how each template is used
+  - Step-by-step template invocation
+- **[../MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md)** - Message generation strategies
+  - How suggested messages are generated for template-3
+- **[../METADATA.md](../METADATA.md)** - Message storage and retrieval
+  - How templates consume pre-generated metadata
+  - Token efficiency through metadata reuse
+- **[../RULES.md](../RULES.md)** - Validation rules
+  - Format validation in template-5 (direct input)
+- **[../EXAMPLES.md](../EXAMPLES.md)** - Complete message examples
+  - Real examples shown in templates
