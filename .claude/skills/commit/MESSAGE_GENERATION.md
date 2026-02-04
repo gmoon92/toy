@@ -1,44 +1,44 @@
 # Commit Message Generation Strategy
 
-메시지 생성 알고리즘을 규약화하여 다른 클라이언트에서도 일관된 템플릿을 제공합니다.
+Standardize message generation algorithms to provide consistent templates across different clients.
 
 ---
 
 ## Overview
 
-각 그룹(독립적인 변경사항)마다 **5개의 커밋 메시지**를 생성합니다.
+Generate **5 commit messages** for each group (independent change set).
 
-- **Message 1**: 추천 메시지 (최적의 scope + 명확한 표현)
-- **Message 2**: Scope 변형
-- **Message 3**: Message 표현 변형
-- **Message 4**: Body 상세도 조정
-- **Message 5**: Type 대안 제시
+- **Message 1**: Recommended message (optimal scope + clear expression)
+- **Message 2**: Scope variation
+- **Message 3**: Message expression variation
+- **Message 4**: Body detail adjustment
+- **Message 5**: Type alternative
 
-사용자는 5개 중 선택하거나, "Other" 옵션으로 직접 입력 가능.
+User can select from 5 options or enter directly via "Other" option.
 
 ---
 
-## 생성 전략
+## Generation Strategies
 
-### Message 1: 추천 메시지 (Optimal)
+### Message 1: Recommended Message (Optimal)
 
-**목표:** 가장 논리적이고 명확한 메시지
+**Goal:** Most logical and clear message
 
-**Scope 선택:**
-1. **모듈명 우선**: 여러 관련 파일이 변경된 경우
-   - 예: `spring-batch`, `spring-security-jwt`, `commit-skill`
-2. **파일명 사용**: 단일 파일 변경인 경우
-   - 예: `DateUtils.java`, `README.md`, `build.gradle`
+**Scope selection:**
+1. **Prefer module name**: When multiple related files changed
+   - Example: `spring-batch`, `spring-security-jwt`, `commit-skill`
+2. **Use filename**: When single file changed
+   - Example: `DateUtils.java`, `README.md`, `build.gradle`
 
-**Message 작성:**
-- 변경 목적을 명확히 표현
-- 동사 + 목적어 구조
-- 한글 또는 영어 모두 가능
+**Message writing:**
+- Clearly express change purpose
+- Verb + object structure
+- Korean or English both acceptable
 
-**Body 작성:**
-- 5개 이상 파일 변경 시 추가
-- 주요 변경사항을 `-` 불릿으로 나열
-- 5줄 이하로 제한
+**Body writing:**
+- Add when 5+ files changed
+- List major changes with `-` bullets
+- Limit to 5 lines or less
 
 **예시:**
 ```
@@ -50,23 +50,23 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 - TROUBLESHOOTING.md: 문제 해결 가이드
 ```
 
-**Scoring 기준:**
-- Scope 정확도: 40점 (주요 디렉토리와 매칭)
-- Type 정확도: 30점 (변경 성격과 매칭)
-- Body 완성도: 20점 (정보성)
-- 상세도 적절성: 10점 (변경 크기와 매칭)
+**Scoring criteria:**
+- Scope accuracy: 40 points (match with main directory)
+- Type accuracy: 30 points (match with change nature)
+- Body completeness: 20 points (informativeness)
+- Detail appropriateness: 10 points (match with change size)
 
 ---
 
-### Message 2: Scope 변형
+### Message 2: Scope Variation
 
-**목표:** Scope를 다른 레벨로 변경
+**Goal:** Change scope to different level
 
-**전략:**
-1. Message 1이 모듈명이면 → 파일명으로 변경
-2. Message 1이 파일명이면 → 상위 모듈명으로 변경
+**Strategy:**
+1. If Message 1 uses module name → Change to filename
+2. If Message 1 uses filename → Change to parent module name
 
-**예시:**
+**Examples:**
 
 **Message 1:**
 ```
@@ -83,22 +83,22 @@ docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가
 docs(.claude): 커밋 메시지 자동 생성 스킬 추가
 ```
 
-**언제 유용한가:**
-- 리뷰어가 특정 파일에 집중하고 싶을 때
-- 더 넓은 컨텍스트로 변경을 이해하고 싶을 때
+**When useful:**
+- When reviewer wants to focus on specific file
+- When wanting to understand change in broader context
 
 ---
 
-### Message 3: Message 표현 변형
+### Message 3: Message Expression Variation
 
-**목표:** 헤더 메시지 표현을 다르게
+**Goal:** Vary header message expression
 
-**전략:**
-1. **간결 버전**: 핵심만 남김
-2. **상세 버전**: 더 많은 컨텍스트 추가
-3. **다른 표현**: 동의어, 다른 관점
+**Strategy:**
+1. **Concise version**: Keep only essentials
+2. **Detailed version**: Add more context
+3. **Alternative expression**: Synonyms, different perspective
 
-**예시:**
+**Examples:**
 
 **Message 1:**
 ```
@@ -122,16 +122,16 @@ docs(commit-skill): 자동 커밋 메시지 생성 프로세스 정의
 
 ---
 
-### Message 4: Body 상세도 조정
+### Message 4: Body Detail Adjustment
 
-**목표:** Body 유무 또는 상세도 변경
+**Goal:** Adjust body presence or detail level
 
-**전략:**
-1. Body 있으면 → 제거 (헤더만)
-2. Body 없으면 → 추가 (상세 설명)
-3. Body 있으면 → 더 간결하게 또는 더 상세하게
+**Strategy:**
+1. If has body → Remove (header only)
+2. If no body → Add (detailed description)
+3. If has body → More concise or more detailed
 
-**예시:**
+**Examples:**
 
 **Message 1 (Body 있음):**
 ```
@@ -168,18 +168,18 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
 ---
 
-### Message 5: Type 대안 제시
+### Message 5: Type Alternative
 
-**목표:** 다른 타입으로 해석 가능한 경우 대안 제시
+**Goal:** Suggest alternative if interpretable as different type
 
-**전략:**
-변경사항을 다른 관점에서 해석:
-- `docs` ↔ `feat` (문서인가 기능인가)
-- `feat` ↔ `refactor` (새 기능인가 개선인가)
-- `chore` ↔ `feat` (설정인가 기능인가)
-- `style` ↔ `refactor` (포맷팅인가 구조 개선인가)
+**Strategy:**
+Interpret changes from different perspective:
+- `docs` ↔ `feat` (documentation or feature)
+- `feat` ↔ `refactor` (new feature or improvement)
+- `chore` ↔ `feat` (configuration or feature)
+- `style` ↔ `refactor` (formatting or structural improvement)
 
-**예시:**
+**Examples:**
 
 **Message 1 (docs):**
 ```
@@ -202,23 +202,23 @@ chore(.claude): commit 스킬 설정 추가
 ```
 (스킬 설정 파일로 볼 수도 있음)
 
-**언제 유용한가:**
-- 변경사항의 성격이 애매할 때
-- 팀 컨벤션에 따라 다르게 해석 가능할 때
+**When useful:**
+- When change nature is ambiguous
+- When interpretable differently based on team conventions
 
 ---
 
-## 실제 적용 예시
+## Real Application Example
 
-### 시나리오: 4개 파일 추가 (.claude/skills/commit/)
+### Scenario: 4 files added (.claude/skills/commit/)
 
-**분석:**
-- 파일: SKILL.md, RULES.md, EXAMPLES.md, TROUBLESHOOTING.md
-- 타입: docs (문서 추가)
-- Scope: commit-skill (모듈명) 또는 SKILL.md (주요 파일)
-- 줄 수: 500+ 줄 추가
+**Analysis:**
+- Files: SKILL.md, RULES.md, EXAMPLES.md, TROUBLESHOOTING.md
+- Type: docs (documentation added)
+- Scope: commit-skill (module name) or SKILL.md (main file)
+- Lines: 500+ lines added
 
-**생성된 5개 메시지:**
+**Generated 5 messages:**
 
 ```
 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
@@ -251,50 +251,50 @@ chore(.claude): commit 스킬 설정 추가
 
 ---
 
-## Scope 추출 알고리즘
+## Scope Extraction Algorithm
 
-### 모듈명 추출
+### Extract Module Name
 
-**입력:** 파일 경로 리스트
+**Input:** File path list
 ```
 .claude/skills/commit/SKILL.md
 .claude/skills/commit/RULES.md
 .claude/skills/commit/EXAMPLES.md
 ```
 
-**알고리즘:**
-1. 공통 디렉토리 추출: `.claude/skills/commit/`
-2. 마지막 디렉토리명을 모듈명으로 사용: `commit`
-3. 컨텍스트 추가 (필요시): `commit-skill`
+**Algorithm:**
+1. Extract common directory: `.claude/skills/commit/`
+2. Use last directory name as module name: `commit`
+3. Add context if needed: `commit-skill`
 
-**예시:**
+**Examples:**
 - `spring-batch/src/main/java/...` → `spring-batch`
-- `ai/docs/claude/...` → `claude-api` (컨텍스트 추가)
+- `ai/docs/claude/...` → `claude-api` (context added)
 - `.claude/agents/korean-translator/...` → `korean-translator`
 
-### 파일명 추출
+### Extract Filename
 
-**입력:** 변경된 파일이 1개인 경우
+**Input:** When only 1 file changed
 ```
 src/main/java/com/example/utils/DateUtils.java
 ```
 
-**알고리즘:**
-1. 파일명만 추출: `DateUtils.java`
-2. 또는 전체 경로 사용: `utils/DateUtils.java`
+**Algorithm:**
+1. Extract filename only: `DateUtils.java`
+2. Or use full path: `utils/DateUtils.java`
 
-**예시:**
-- 단일 파일 변경: `DateUtils.java`
-- README 변경: `README.md`
-- 설정 파일: `application.yml`
+**Examples:**
+- Single file change: `DateUtils.java`
+- README change: `README.md`
+- Config file: `application.yml`
 
 ---
 
-## Message 생성 패턴
+## Message Generation Patterns
 
-### 동사 선택
+### Verb Selection
 
-| Type | 선호 동사 (한글) | 선호 동사 (영문) |
+| Type | Preferred verbs (Korean) | Preferred verbs (English) |
 |------|------------------|------------------|
 | feat | 추가, 구현, 도입 | add, implement, introduce |
 | fix | 수정, 해결 | fix, resolve, correct |
@@ -304,34 +304,34 @@ src/main/java/com/example/utils/DateUtils.java
 | style | 정리, 적용 | format, apply |
 | chore | 업데이트, 추가, 변경 | update, add, change |
 
-### 목적어 구조
+### Object Structure
 
-**패턴:** `동사 + 목적어`
+**Pattern:** `verb + object`
 
-**좋은 예시:**
+**Good examples:**
 - `JWT 인증 필터 추가`
 - `배치 재시도 로직 구현`
 - `변수명 명확화`
 - `테스트 커버리지 개선`
 
-**나쁜 예시:**
-- `추가` (목적어 없음)
-- `코드 수정` (너무 모호)
-- `버그 수정` (어떤 버그?)
+**Bad examples:**
+- `추가` (no object)
+- `코드 수정` (too vague)
+- `버그 수정` (which bug?)
 
 ---
 
-## Body 생성 기준
+## Body Generation Criteria
 
-### 추가 조건
+### Addition Conditions
 
-다음 중 하나라도 해당하면 Body 추가:
-1. **파일 5개 이상** 변경
-2. **100줄 이상** 변경
-3. **복잡한 로직** 변경 (판단 필요)
-4. **여러 관련 변경** (컨텍스트 필요)
+Add body if any of the following applies:
+1. **5+ files** changed
+2. **100+ lines** changed
+3. **Complex logic** changes (judgment needed)
+4. **Multiple related changes** (context needed)
 
-### 형식
+### Format
 
 ```
 - 주요 변경사항 1
@@ -340,29 +340,29 @@ src/main/java/com/example/utils/DateUtils.java
 - ...
 ```
 
-**규칙:**
-- 각 줄은 간결하게 (1-2줄)
-- 5줄 이하로 제한
-- 파일별 또는 기능별로 그룹화
-- "why"보다 "what"에 집중
+**Rules:**
+- Keep each line concise (1-2 lines)
+- Limit to 5 lines or less
+- Group by file or feature
+- Focus on "what" rather than "why"
 
-### 스타일 옵션
+### Style Options
 
-**스타일 1: 파일별 나열**
+**Style 1: List by file**
 ```
 - SKILL.md: 스킬 실행 프로세스 정의
 - RULES.md: 커밋 메시지 형식 규칙
 - EXAMPLES.md: 실제 사용 예시
 ```
 
-**스타일 2: 기능별 그룹**
+**Style 2: Group by feature**
 ```
 - 스킬 프로세스 자동화
 - 메시지 형식 검증
 - Tidy First 원칙 적용
 ```
 
-**스타일 3: 계층적 구조**
+**Style 3: Hierarchical structure**
 ```
 - JWT 인증 구현:
   - 토큰 생성 및 검증 로직
@@ -371,9 +371,9 @@ src/main/java/com/example/utils/DateUtils.java
 
 ---
 
-## 메타데이터 JSON 구조
+## Metadata JSON Structure
 
-### suggestedMessages 스키마
+### suggestedMessages Schema
 
 ```json
 {
@@ -431,62 +431,62 @@ src/main/java/com/example/utils/DateUtils.java
 }
 ```
 
-### 필드 설명
+### Field Descriptions
 
-| 필드 | 타입 | 설명 |
+| Field | Type | Description |
 |------|------|------|
-| `rank` | number | 순위 (1=추천) |
-| `strategy` | string | 생성 전략 (`optimal`, `scope-variation`, `message-variation`, `body-variation`, `type-alternative`) |
-| `header` | string | 커밋 헤더 (`<type>(scope): <message>`) |
-| `body` | string \| null | 커밋 본문 (없으면 null) |
-| `footer` | string \| null | 커밋 푸터 (없으면 null) |
-| `reasoning` | string | 이 메시지를 생성한 이유 (디버깅/감사용) |
+| `rank` | number | Rank (1=recommended) |
+| `strategy` | string | Generation strategy (`optimal`, `scope-variation`, `message-variation`, `body-variation`, `type-alternative`) |
+| `header` | string | Commit header (`<type>(scope): <message>`) |
+| `body` | string \| null | Commit body (null if none) |
+| `footer` | string \| null | Commit footer (null if none) |
+| `reasoning` | string | Reason for generating this message (for debugging/audit) |
 
 ---
 
-## 다른 클라이언트 구현 가이드
+## Implementation Guide for Other Clients
 
-### 최소 요구사항
+### Minimum Requirements
 
-1. **Scope 추출** 구현
-   - 파일 경로 → 모듈명 추출
-   - 단일 파일 → 파일명 추출
+1. **Implement Scope extraction**
+   - File path → Extract module name
+   - Single file → Extract filename
 
-2. **5개 메시지 생성** 구현
-   - 전략 1-5 적용
-   - JSON 스키마 준수
+2. **Implement 5 message generation**
+   - Apply strategies 1-5
+   - Follow JSON schema
 
-3. **Body 생성 조건** 구현
-   - 파일 5개 이상 또는 100줄 이상
+3. **Implement Body generation conditions**
+   - 5+ files or 100+ lines
 
-### 선택 구현
+### Optional Implementations
 
-1. **Scoring 알고리즘**
-   - 최적 메시지 자동 선택
+1. **Scoring algorithm**
+   - Auto-select optimal message
 
-2. **컨텍스트 추가**
-   - 프로젝트별 컨벤션 적용
-   - 디렉토리 구조 학습
+2. **Context addition**
+   - Apply project-specific conventions
+   - Learn directory structure
 
-3. **사용자 선호도 학습**
-   - 과거 선택 패턴 분석
-   - 개인화된 추천
+3. **User preference learning**
+   - Analyze past selection patterns
+   - Personalized recommendations
 
 ---
 
-## 검증 체크리스트
+## Validation Checklist
 
-생성된 메시지가 다음을 만족하는지 확인:
+Verify generated messages satisfy:
 
-- [ ] 형식: `<type>(scope): <message>` 패턴 준수
-- [ ] Type: 7가지 중 하나 (feat, fix, refactor, test, docs, style, chore)
-- [ ] Scope: 영숫자 + `.`, `-`, `_`만 포함
-- [ ] Message: 소문자 시작, 마침표 없음
-- [ ] Body: 있으면 빈 줄로 구분, 5줄 이하
-- [ ] Footer: 있으면 빈 줄로 구분
-- [ ] 공백 블록: 최대 2개 (header-body, body-footer)
+- [ ] Format: Follows `<type>(scope): <message>` pattern
+- [ ] Type: One of 7 types (feat, fix, refactor, test, docs, style, chore)
+- [ ] Scope: Contains only alphanumeric + `.`, `-`, `_`
+- [ ] Message: Start with lowercase, no period
+- [ ] Body: If present, separated by blank line, 5 lines or less
+- [ ] Footer: If present, separated by blank line
+- [ ] Blank blocks: Maximum 2 (header-body, body-footer)
 
-정규식 검증:
+Regex validation:
 ```regex
 ^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$
 ```
@@ -498,4 +498,4 @@ src/main/java/com/example/utils/DateUtils.java
 - [RULES.md](RULES.md) - Commit message format rules
 - [EXAMPLES.md](EXAMPLES.md) - Commit message examples
 - [METADATA.md](METADATA.md) - Session metadata structure
-- [UI_TEMPLATES.md](UI_TEMPLATES.md) - User option templates
+- [templates/README.md](templates/README.md) - User option templates

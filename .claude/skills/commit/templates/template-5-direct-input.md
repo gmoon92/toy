@@ -1,18 +1,18 @@
-# 템플릿 5: 메시지 수정 (직접 입력)
+# Template 5: Message Modification (Direct Input)
 
 ## Situation
 
-사용자가 "Other" 옵션을 선택하여 직접 입력
+User selected "Other" option for direct input
 
 ## Process
 
-### 1단계: Other 선택 감지
+### Step 1: Detect Other Selection
 
 ```
-사용자 선택: "Other"
+User selection: "Other"
 ```
 
-### 2단계: 입력 안내
+### Step 2: Show Input Instructions
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -31,7 +31,7 @@
 입력하세요:
 ```
 
-### 3단계: 입력받은 메시지 검증
+### Step 3: Validate Input Message
 
 ```
 입력된 메시지:
@@ -44,7 +44,7 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 ✅ 형식 검증 통과
 ```
 
-### 4단계: 최종 확인 (template-4 재사용)
+### Step 4: Final Confirmation (Reuse template-4)
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -67,7 +67,7 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
 ## Validation
 
-### 검증 항목
+### Validation Items
 
 ```bash
 # 정규식 검증
@@ -79,7 +79,7 @@ pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
 - Message: 비어있지 않음
 - 공백 블록: 최대 2개
 
-### 검증 실패 시
+### On Validation Failure
 
 ```
 ❌ 형식 검증 실패

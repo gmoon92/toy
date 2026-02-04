@@ -21,13 +21,13 @@ The commit skill follows a 5-step process to ensure quality commits that follow 
 
 ---
 
-## Step 1: 사전 검증 및 컨텍스트 수집 (Heavy Analysis)
+## Step 1: Pre-validation and Context Collection (Heavy Analysis)
 
-### 변경사항 수집 및 검증 (IDE-like behavior)
+### Collect and Verify Changes (IDE-like behavior)
 
 **Collect all changes:**
 
-IDE 기본 동작과 동일하게, 명시적으로 스테이징하지 않은 수정된 파일(modified files)도 자동으로 커밋 대상에 포함합니다.
+Similar to IDE default behavior, automatically include modified files that haven't been explicitly staged for commit.
 
 ```bash
 # Collect both staged and modified files
@@ -58,26 +58,26 @@ If no changes after staging → exit with message:
 - Only modified files are auto-staged for commit
 
 **Additional checks:**
-- main/master 브랜치에 있으면 경고 (브랜치 생성 권장)
+- Warn if on main/master branch (recommend creating feature branch)
 
-### 변경 컨텍스트 수집 (병렬 실행)
+### Collect Change Context (Parallel Execution)
 
 After auto-staging all modified files:
 
-- 변경된 파일 목록 가져오기 (`git diff --cached --name-only`)
-- 변경 통계 가져오기 (`git diff --cached --stat`)
-- 상세 diff 가져오기 (`git diff --cached`)
-- 주요 모듈 또는 수정된 파일 식별
+- Get list of changed files (`git diff --cached --name-only`)
+- Get change statistics (`git diff --cached --stat`)
+- Get detailed diff (`git diff --cached`)
+- Identify primary module or modified files
 
-### Scope 결정
+### Determine Scope
 
-- 논리적 모듈의 변경사항인 경우 (예: `spring-batch`, `spring-security`), 모듈명 사용
-- 단일 파일이거나 관련 파일인 경우, 주요 파일명 사용
-- 관련 없는 여러 파일인 경우, 가장 중요한 파일 선택
+- Use module name if changes are in logical module (e.g., `spring-batch`, `spring-security`)
+- Use primary filename if single file or related files
+- Choose most important file if multiple unrelated files
 
-### **메타데이터 파일 생성 (중요)**
+### **Generate Metadata File (Important)**
 
-분석 결과를 `.claude/temp/commit-execution-{executionId}.json`에 저장:
+Save analysis results to `.claude/temp/commit-execution-{executionId}.json`:
 
 ```bash
 mkdir -p .claude/temp
@@ -96,59 +96,59 @@ cat > .claude/temp/commit-execution-${EXECUTION_ID}.json <<EOF
 EOF
 ```
 
-**중요:** executionId는 CLI 세션 ID가 아닌 /commit 실행 ID입니다.
-- 같은 CLI 세션에서 여러 번 /commit 실행 가능
-- 각 실행마다 새로운 executionId 생성
+**Important:** executionId is the /commit execution ID, not CLI session ID.
+- Multiple /commit executions possible in same CLI session
+- Each execution generates new executionId
 
-이후 모든 단계는 이 파일을 읽어서 사용 (토큰 절약)
+All subsequent steps read from this file (token savings)
 
-효율성을 위해 병렬 bash 명령 사용
+Use parallel bash commands for efficiency
 
 ---
 
-## Step 2: 변경사항 분석 및 위반 감지 (Read Metadata)
+## Step 2: Analyze Changes and Detect Violations (Read Metadata)
 
-**메타데이터 읽기:**
+**Read metadata:**
 ```bash
 # Read pre-analyzed data using executionId
 cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 ```
 
-### 커밋 타입 결정
+### Determine Commit Type
 
-| 변경 유형 | 타입 |
+| Change Type | Type |
 |----------|------|
-| 새로운 기능 | feat |
-| 버그/오류 수정 | fix |
-| 메서드 추출, 이름 변경 (동작 변경 없음) | refactor |
-| 테스트 코드 | test |
-| 문서화 | docs |
-| 코드 포맷팅만 | style |
-| 빌드 설정, 의존성 | chore |
+| New feature | feat |
+| Bug/error fix | fix |
+| Method extraction, renaming (no behavior change) | refactor |
+| Test code | test |
+| Documentation | docs |
+| Code formatting only | style |
+| Build config, dependencies | chore |
 
-### Tidy First 위반 감지
+### Detect Tidy First Violation
 
-구조적 변경(refactor)과 동작 변경(feat/fix)이 섞여 있을 경우:
+When structural changes (refactor) and behavioral changes (feat/fix) are mixed:
 
-**Template:** [ui/template-1-tidy-first.md](ui/template-1-tidy-first.md)
+**Template:** [templates/template-1-tidy-first.md](templates/template-1-tidy-first.md)
 
 **Actions:**
-- 어떤 파일이 refactor이고 어떤 파일이 feat/fix인지 명확히 설명
-- 여러 커밋으로 분리할 것을 권장하는 이유 설명
-- AskUserQuestion 도구를 사용하여 경고하고 질문 (template-1 참조)
-- 리셋 선택 시: `git reset HEAD` 실행, 분리 방법 안내 후 종료
-- 진행 선택 시: 지배적인 타입으로 계속 진행 (경고 메시지 표시)
+1. Display the "Screen Output" section from template (warning message with detected mixed changes)
+2. Call AskUserQuestion tool with "Template" JSON from template
+3. Process user selection:
+   - If reset selected: Execute `git reset HEAD`, guide separation method, and exit
+   - If proceed selected: Continue with dominant type (show warning message)
 
-### 논리적 독립성 검증 (중요)
+### Verify Logical Independence (Important)
 
-같은 타입이더라도 논리적으로 독립적인 변경사항은 분리:
+Separate logically independent changes even if same type:
 
-**분리가 필요한 경우:**
-- 서로 다른 목적의 변경사항
-- 독립적으로 리뷰 가능한 변경사항
-- 서로 다른 컨텍스트의 파일들
+**When separation is needed:**
+- Changes with different purposes
+- Changes that can be reviewed independently
+- Files in different contexts
 
-**예시:**
+**Example:**
 ```
 ❌ 한 커밋에 통합 (잘못됨):
 docs(claude): Claude API 문서 및 커밋 스킬 추가
@@ -161,41 +161,41 @@ Commit 1: docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 Commit 2: docs(claude-api): Claude API 문서 번역 추가
 ```
 
-**검증 절차:**
-1. 변경된 파일들의 디렉토리 구조 분석
-2. 논리적으로 독립적인 그룹 식별
-3. 10개 이상 파일 또는 서로 다른 최상위 디렉토리면 경고
+**Verification procedure:**
+1. Analyze directory structure of changed files
+2. Identify logically independent groups
+3. Warn if 10+ files or different top-level directories
 
-**Template:** [ui/template-2-logical-independence.md](ui/template-2-logical-independence.md)
+**Template:** [templates/template-2-logical-independence.md](templates/template-2-logical-independence.md)
 
 **Actions:**
-- 각 그룹을 명확히 설명 (디렉토리, 파일 수, 목적)
-- 통합 커밋의 위험성을 간결하게 경고
-- AskUserQuestion 도구를 사용하여 질문 (template-2 참조)
+1. Display the "Screen Output" section from template (detected groups with details and warning)
+2. Call AskUserQuestion tool with "Template" JSON from template
+3. Process user selection (see User Actions below)
 
 **User Actions:**
-- "자동 분리" 선택 → **[AUTO_SPLIT.md](AUTO_SPLIT.md)** 참고 (자동 분리 커밋 프로세스)
-- "통합 커밋" 선택 → 경고 메시지 표시, 재확인 요청, Step 3으로 진행
-- "취소" 선택 → 프로세스 종료
+- Select "Auto-split" → See **[AUTO_SPLIT.md](AUTO_SPLIT.md)** (auto-split commit process)
+- Select "Unified commit" → Show warning, request confirmation, proceed to Step 3
+- Select "Cancel" → Exit process
 
 ---
 
-## Step 3: 커밋 메시지 생성 (Read Metadata)
+## Step 3: Generate Commit Message (Read Metadata)
 
-**메타데이터 읽기:**
+**Read metadata:**
 ```bash
 # Read pre-generated messages
 cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 # Use groups[].suggestedMessages
 ```
 
-### 형식
+### Format
 
-`<type>(module|filename): <간단한 설명>`
+`<type>(module|filename): <brief description>`
 
-### 5개 메시지 생성 전략
+### 5 Message Generation Strategy
 
-각 그룹마다 **5개의 커밋 메시지**를 생성합니다.
+Generate **5 commit messages** for each group.
 
 1. **Message 1 (추천)**: 최적의 scope + 명확한 표현
 2. **Message 2**: Scope 변형 (모듈명 ↔ 파일명)
@@ -203,21 +203,21 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 4. **Message 4**: Body 상세도 조정 (추가/제거/변경)
 5. **Message 5**: Type 대안 제시 (다른 타입으로 해석)
 
-**상세한 생성 알고리즘:** [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) 참고
+**Detailed generation algorithm:** See [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)
 
-### Scope 선택
+### Scope Selection
 
-- 모듈명: `feat(spring-security-jwt): JWT 인증 필터 추가`
-- 파일명: `fix(DateUtils.java): DST 미처리 문제 수정`
-- 다중 파일 모듈: `refactor(spring-batch): 배치 재시도 로직 개선`
+- Module name: `feat(spring-security-jwt): JWT 인증 필터 추가`
+- Filename: `fix(DateUtils.java): DST 미처리 문제 수정`
+- Multi-file module: `refactor(spring-batch): 배치 재시도 로직 개선`
 
-### 본문 추가 기준
+### Body Addition Criteria
 
-- 5개 이상의 파일이 변경됨
-- 100줄 이상 변경됨
-- 복잡한 로직 변경
+- 5+ files changed
+- 100+ lines changed
+- Complex logic changes
 
-### 본문 형식
+### Body Format
 
 ```
 <type>(scope): <간단한 설명>
@@ -227,11 +227,17 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 - 주요 변경사항 3
 ```
 
-본문 작성 가이드는 [RULES.md](RULES.md#body-guidelines) 참고
+See [RULES.md](RULES.md#body-guidelines) for body writing guide
 
-### 메시지 제안 (AskUserQuestion 사용)
+### Suggest Messages (Using AskUserQuestion)
 
-**Template:** [ui/template-3-message-selection.md](ui/template-3-message-selection.md)
+**Template:** [templates/template-3-message-selection.md](templates/template-3-message-selection.md)
+
+**Actions:**
+1. Call AskUserQuestion tool with "Template" JSON from template
+   - Each option's description contains full commit message (header + body)
+   - First message labeled "(추천)"
+   - "Other" option automatically added by tool
 
 **Requirements:**
 1. **전체 메시지 표시**: 각 옵션의 description에 완전한 메시지 포함 (헤더 + 본문)
@@ -239,35 +245,44 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 3. **Other 옵션**: 자동으로 추가됨 (사용자 직접 입력 가능)
 
 **User Actions:**
-- "메시지 1-4" 선택 → template-4 (최종 확인)으로 진행
-- "Other" 선택 → template-5 (직접 입력)으로 진행
+- Select "Message 1-4" → Proceed to template-4 (final confirmation)
+- Select "Other" → Proceed to template-5 (direct input)
 
 ---
 
-## Step 4: 사용자 승인 받기
+## Step 4: Get User Approval
 
-### 4-1: 사용자 선택 처리
+### 4-1: Process User Selection
 
-**Step 3에서 받은 선택:**
-- 메시지 1-4 중 하나 선택 → 최종 확인으로 진행
-- "Other" 선택 → 직접 입력 플로우로 진행
+**Selection from Step 3:**
+- Select one of messages 1-4 → Proceed to final confirmation
+- Select "Other" → Proceed to direct input flow
 
-### 4-2: 직접 입력 플로우 (Other 선택 시)
+### 4-2: Direct Input Flow (When Other Selected)
 
-**Template:** [ui/template-5-direct-input.md](ui/template-5-direct-input.md)
+**Template:** [templates/template-5-direct-input.md](templates/template-5-direct-input.md)
 
 **Process:**
-1. 입력 안내 표시
-2. 사용자가 완전한 커밋 메시지 입력 (헤더 + 본문, 멀티라인 지원)
-3. 형식 검증 (Type, Scope, Message, 공백 블록)
-4. 검증 통과 → template-4 (최종 확인)으로 진행
-5. 검증 실패 → 재입력 옵션 제공 (template-5 참조)
+1. Display input instructions (see template "Step 2: Show Input Instructions")
+2. User enters complete commit message (header + body, multiline supported)
+3. Validate format using criteria in template "Validation" section:
+   - Type: One of 7 types (feat, fix, refactor, test, docs, style, chore)
+   - Scope: Alphanumeric + `.`, `-`, `_` only
+   - Message: Not empty
+   - Blank blocks: Maximum 2
+4. If validation passes → Proceed to template-4 (final confirmation)
+5. If validation fails → Display error and call AskUserQuestion with retry JSON (see template "On Validation Failure")
 
-### 4-3: 최종 확인 (AskUserQuestion 사용)
+### 4-3: Final Confirmation (Using AskUserQuestion)
 
-**Template:** [ui/template-4-final-confirmation.md](ui/template-4-final-confirmation.md)
+**Template:** [templates/template-4-final-confirmation.md](templates/template-4-final-confirmation.md)
 
 **CRITICAL: 사용자가 선택한 후 반드시 전체 메시지를 다시 표시**
+
+**Actions:**
+1. Display the "Screen Output" section from template (show full commit message in box)
+2. Call AskUserQuestion tool with "Template" JSON from template
+3. Process user selection (see User Actions below)
 
 **Why show full message again:**
 - User may have only seen header in list view
@@ -275,25 +290,25 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 - Clear visibility of complete message (header + body + footer)
 
 **User Actions:**
-- "승인" 선택 → Step 5 (커밋 실행)으로 진행
-- "수정" 선택 → template-3 (메시지 선택)으로 돌아가기
-- "취소" 선택 → 프로세스 종료
+- Select "Approve" → Proceed to Step 5 (execute commit)
+- Select "Modify" → Return to template-3 (message selection)
+- Select "Cancel" → Exit process
 
-### 4-4: 수정 선택 시
+### 4-4: When Modify Selected
 
-**옵션:**
-1. Step 3으로 돌아가기 (메시지 선택)
-2. 직접 입력 (Other 선택과 동일)
+**Options:**
+1. Return to Step 3 (message selection)
+2. Direct input (same as Other selection)
 
-→ 사용자 선택에 따라 Step 3 또는 4-2로 이동
+→ Go to Step 3 or 4-2 based on user choice
 
 ---
 
-## Step 5: 커밋 실행 및 검증 (Read + Cleanup)
+## Step 5: Execute and Verify Commit (Read + Cleanup)
 
-### 커밋 실행
+### Execute Commit
 
-HEREDOC 형식을 사용하여 멀티라인 처리:
+Use HEREDOC format for multiline handling:
 
 ```bash
 git commit -m "$(cat <<'EOF'
@@ -306,11 +321,15 @@ EOF
 )"
 ```
 
-### 커밋 후 즉시 검증
+**Important:**
+- DO NOT add "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>" footer
+- Keep commit messages clean without AI attribution watermarks
 
-- 커밋 생성 확인: `git log -1 --oneline`
-- 형식 검증: `<type>(scope): <message>` 패턴 일치 확인
-- 사용자에게 결과 보고 (한글로):
+### Verify Immediately After Commit
+
+- Confirm commit created: `git log -1 --oneline`
+- Validate format: Check `<type>(scope): <message>` pattern match
+- Report result to user (in Korean):
 
 ```
 ✅ 커밋이 성공적으로 생성되었습니다!
@@ -318,19 +337,19 @@ EOF
 메시지: feat(spring-cloud-bus): 커스텀 이벤트 핸들러 구현
 ```
 
-### 커밋 실패 시
+### When Commit Fails
 
-- 에러 메시지를 한글로 설명
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) 참고 안내
-- 가능한 해결 방법 제시
+- Explain error message in Korean
+- Guide to refer to [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- Suggest possible solutions
 
-### Git Hook 실패 처리
+### Handle Git Hook Failures
 
-**실패 감지:**
-- pre-commit hook이나 commit-msg hook 실패 감지
-- 에러 메시지를 그대로(verbatim) 표시
+**Detect failure:**
+- Detect pre-commit or commit-msg hook failure
+- Display error message verbatim
 
-**사용자에게 제공:**
+**Provide to user:**
 ```
 ❌ 커밋 실패
 
@@ -347,28 +366,28 @@ EOF
    $ /commit
 ```
 
-### 메타데이터 정리 (중요)
+### Cleanup Metadata (Important)
 
-**성공 시:**
+**On success:**
 ```bash
 # 메타데이터 파일 삭제 (현재 실행의 파일만)
 rm .claude/temp/commit-execution-${EXECUTION_ID}.json
 ```
 
-**실패/취소 시:**
+**On failure/cancellation:**
 ```bash
-# 메타데이터 파일 삭제 (다음 /commit 실행 시 새로 생성)
+# Delete metadata file (will be recreated on next /commit execution)
 rm .claude/temp/commit-execution-${EXECUTION_ID}.json
 ```
 
-**자동 분리 커밋 시:**
-- 모든 그룹 처리 완료 후 정리
-- 중간 실패 시에도 최종 단계에서 정리
+**During auto-split commit:**
+- Cleanup after all groups processed
+- Cleanup in final step even if intermediate failures
 
-**중요:**
-- 각 `/commit` 실행은 독립적
-- 이전 실행의 메타데이터 파일과 무관
-- 같은 CLI 세션에서 여러 번 `/commit` 가능
+**Important:**
+- Each `/commit` execution is independent
+- Not related to previous execution's metadata files
+- Multiple `/commit` executions possible in same CLI session
 
 ---
 
@@ -378,47 +397,47 @@ rm .claude/temp/commit-execution-${EXECUTION_ID}.json
 Start
   ↓
 ┌─────────────────────────────────────┐
-│ Step 1: 사전 검증 및 컨텍스트 수집   │
-│ - 스테이징된 파일 확인               │
-│ - 변경 컨텍스트 수집                 │
-│ - Scope 결정                        │
+│ Step 1: Pre-validation & Context    │
+│ - Check staged files                │
+│ - Collect change context            │
+│ - Determine scope                   │
 └─────────────┬───────────────────────┘
               ↓
 ┌─────────────────────────────────────┐
-│ Step 2: 변경사항 분석 및 위반 감지   │
-│ - 커밋 타입 결정                     │
-│ - Tidy First 검증                   │
-│ - 논리적 독립성 검증                 │
+│ Step 2: Analyze & Detect Violations │
+│ - Determine commit type             │
+│ - Validate Tidy First               │
+│ - Verify logical independence       │
 └─────┬───────────────────────┬───────┘
       │                       │
-      ├─ 위반 감지? ──┬─ Yes → 사용자 질문
-      │               │        ├─ 자동 분리 → AUTO_SPLIT.md
-      │               │        ├─ 통합 커밋 → 경고 후 Step 3
-      │               │        └─ 취소 → End
+      ├─ Violation? ──┬─ Yes → Ask user
+      │               │        ├─ Auto-split → AUTO_SPLIT.md
+      │               │        ├─ Unified → Warn, then Step 3
+      │               │        └─ Cancel → End
       │               │
       └─ No ──────────┘
       ↓
 ┌─────────────────────────────────────┐
-│ Step 3: 커밋 메시지 생성             │
-│ - 형식에 맞춰 생성                   │
-│ - 5개 제안 제공                      │
-│ - 본문 추가 (필요시)                 │
+│ Step 3: Generate Commit Message     │
+│ - Generate with format              │
+│ - Provide 5 suggestions             │
+│ - Add body (if needed)              │
 └─────────────┬───────────────────────┘
               ↓
 ┌─────────────────────────────────────┐
-│ Step 4: 사용자 승인 받기             │
-│ - 메시지 표시                        │
-│ - 승인/수정/취소 선택                │
+│ Step 4: Get User Approval           │
+│ - Display message                   │
+│ - Approve/Modify/Cancel             │
 └─────┬─────────┬─────────┬───────────┘
       │         │         │
-      ├─ 승인  ─┤         └─ 취소 → End
+      ├─ Approve ┤        └─ Cancel → End
       │         │
-      │         └─ 수정 → 대안 제공 → Step 4
+      │         └─ Modify → Alternatives → Step 4
       ↓
 ┌─────────────────────────────────────┐
-│ Step 5: 커밋 실행 및 검증            │
-│ - git commit 실행                    │
-│ - 검증 및 결과 보고                  │
+│ Step 5: Execute & Verify Commit     │
+│ - Execute git commit                │
+│ - Verify and report                 │
 └─────────────┬───────────────────────┘
               ↓
              End

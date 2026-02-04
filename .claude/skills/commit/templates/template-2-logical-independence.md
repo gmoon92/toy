@@ -1,8 +1,8 @@
-# 템플릿 2: 논리적 독립성 감지
+# Template 2: Logical Independence Detection
 
 ## Situation
 
-10개 이상 파일이 서로 다른 컨텍스트로 변경됨
+10+ files changed in different contexts
 
 ## Template
 
@@ -32,7 +32,9 @@
 }
 ```
 
-## 화면 출력 (한글)
+## Screen Output (Korean for users)
+
+Display this message before calling AskUserQuestion:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -54,26 +56,9 @@
 💡 도움말:
    통합 커밋은 전체 롤백과 코드 리뷰가 어려워질 수 있습니다.
    기본 정책(자동 분리)을 따르는 것을 권장합니다.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-커밋 전략을 선택하세요
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. 자동 분리 (기본 정책)
-   각 그룹을 독립적인 커밋으로 분리합니다.
-   명확한 히스토리, 쉬운 리뷰, 선택적 롤백이 가능합니다.
-
-2. 통합 커밋
-   모든 변경을 하나의 커밋으로 통합합니다.
-   전체 롤백 시 모든 변경이 함께 되돌려집니다.
-
-3. 취소
-   커밋 프로세스를 종료합니다
-
-4. Other (직접 입력)
-
-선택:
 ```
+
+Then call AskUserQuestion with Template JSON (tool will display question and options automatically).
 
 ## User Action
 

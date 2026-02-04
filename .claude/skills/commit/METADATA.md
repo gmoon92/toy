@@ -406,4 +406,4 @@ find .claude/temp -name "commit-execution-*.json" -mtime +1 -delete
 - [PROCESS.md](PROCESS.md) - Update with metadata flow
 - [SKILL.md](SKILL.md) - Note optimization strategy
 - [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) - suggestedMessages generation algorithm
-- [UI_TEMPLATES.md](UI_TEMPLATES.md) - User interaction templates
+- [templates/README.md](templates/README.md) - User interaction templates

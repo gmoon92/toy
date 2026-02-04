@@ -1,8 +1,8 @@
-# 템플릿 4: 최종 확인 (커밋 직전)
+# Template 4: Final Confirmation (Before Commit)
 
 ## Situation
 
-선택한 메시지로 커밋 직전 최종 확인
+Final confirmation before committing with selected message
 
 ## Template
 
@@ -32,7 +32,9 @@
 }
 ```
 
-## 화면 출력 (한글)
+## Screen Output (Korean for users)
+
+Display the final commit message before calling AskUserQuestion:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -45,22 +47,9 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 - EXAMPLES.md: 실제 사용 예시
 - TROUBLESHOOTING.md: 문제 해결 가이드
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-이 메시지로 커밋하시겠습니까?
-
-1. 승인 - 커밋 실행
-   이 메시지로 git commit을 실행합니다
-
-2. 수정
-   다른 메시지를 선택하거나 직접 입력합니다
-
-3. 취소
-   커밋 프로세스를 종료합니다
-
-4. Other (직접 입력)
-
-선택:
 ```
+
+Then call AskUserQuestion with Template JSON (tool will display question and options automatically).
 
 ## User Action
 
