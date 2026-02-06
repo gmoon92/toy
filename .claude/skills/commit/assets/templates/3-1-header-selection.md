@@ -236,7 +236,7 @@ This helps user understand why certain headers are suggested.
 
 ## Related Templates
 
-- **[template-3-2-body-selection.md](template-3-2-body-selection.md)** - Next stage after header selection
-- **[template-3-3-footer-selection.md](template-3-3-footer-selection.md)** - Final stage
-- **[template-4-final-confirmation.md](template-4-final-confirmation.md)** - Approval before commit
-- **[template-5-direct-input.md](template-5-direct-input.md)** - Direct input fallback (deprecated, use "Other" option instead)
+- **[3-2-body-selection.md](3-2-body-selection.md)** - Next stage after header selection
+- **[3-3-footer-selection.md](3-3-footer-selection.md)** - Final stage
+- **[4-final-confirmation.md](4-final-confirmation.md)** - Approval before commit
+- **[5-direct-input.md](5-direct-input.md)** - Direct input fallback (deprecated, use "Other" option instead)

@@ -111,12 +111,12 @@ Step 2: Analyze & Detect Violations
   └─ OK → Continue
   ↓
 Step 3: 3-Stage Message Composition
-  ├─ Stage 1: Header Selection (5 messages: 추천 2 + 일반 3) → [assets/templates/template-3-1-header-selection.md](assets/templates/template-3-1-header-selection.md)
-  ├─ Stage 2: Body Items Selection (multi-select) → [assets/templates/template-3-2-body-selection.md](assets/templates/template-3-2-body-selection.md)
-  ├─ Stage 3: Footer Selection → [assets/templates/template-3-3-footer-selection.md](assets/templates/template-3-3-footer-selection.md)
+  ├─ Stage 1: Header Selection (5 messages: 추천 2 + 일반 3) → [assets/templates/3-1-header-selection.md](assets/templates/3-1-header-selection.md)
+  ├─ Stage 2: Body Items Selection (multi-select) → [assets/templates/3-2-body-selection.md](assets/templates/3-2-body-selection.md)
+  ├─ Stage 3: Footer Selection → [assets/templates/3-3-footer-selection.md](assets/templates/3-3-footer-selection.md)
   └─ Assemble final message from user selections
   ↓
-Step 4: User Approval (approve/modify/cancel) → [assets/templates/template-4-final-confirmation.md](assets/templates/template-4-final-confirmation.md)
+Step 4: User Approval (approve/modify/cancel) → [assets/templates/4-final-confirmation.md](assets/templates/4-final-confirmation.md)
   ↓
 Step 5: Execute & Verify Commit
   ↓

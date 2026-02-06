@@ -182,7 +182,7 @@ Final report shows:
 - **[rules.md](RULES.md)** - Logical Independence principle
   - When and why to separate commits
   - Decision criteria
-- **[../assets/templates/template-2-logical-independence.md](../assets/templates/template-2-logical-independence.md)** - User interaction template
+- **[../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)** - User interaction template
   - Policy selection UI
   - Screen output and user actions
 - **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation per group

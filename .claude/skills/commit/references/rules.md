@@ -211,7 +211,7 @@ Separating structural and behavioral changes enables:
 - Clearer git history
 
 **For detailed examples and detection process, see:**
-- [../assets/templates/template-1-tidy-first.md](../assets/templates/template-1-tidy-first.md) - Detection and user guidance
+- [../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md) - Detection and user guidance
 - [examples.md](EXAMPLES.md) - Correct vs incorrect commit examples
 
 ## Toy Project Conventions
@@ -277,7 +277,7 @@ Consider separating if:
 - Not appropriate for one PR review
 
 **For detailed examples and auto-split process, see:**
-- [../assets/templates/template-2-logical-independence.md](../assets/templates/template-2-logical-independence.md) - Detection and user guidance
+- [../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md) - Detection and user guidance
 - [auto-split.md](AUTO_SPLIT.md) - Automatic commit splitting process
 - [examples.md](EXAMPLES.md) - Correct vs incorrect commit examples
 
@@ -366,7 +366,7 @@ Is it build/config? → chore
 - **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation strategies
   - 5 generation strategies explained
   - Scope selection and body generation algorithms
-- **[../assets/templates/template-1-tidy-first.md](../assets/templates/template-1-tidy-first.md)** - Tidy First violation detection
-- **[../assets/templates/template-2-logical-independence.md](../assets/templates/template-2-logical-independence.md)** - Logical independence detection
+- **[../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md)** - Tidy First violation detection
+- **[../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)** - Logical independence detection
 - **[auto-split.md](AUTO_SPLIT.md)** - Automatic commit splitting
 - **[troubleshooting.md](TROUBLESHOOTING.md)** - Error handling and hook failures

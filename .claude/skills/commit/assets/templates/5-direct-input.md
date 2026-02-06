@@ -63,7 +63,7 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 ✅ 형식 검증 통과
 ```
 
-### Step 4: Final Confirmation (Reuse template-4)
+### Step 4: Final Confirmation (Reuse 4-final-confirmation)
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -181,8 +181,8 @@ pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
 
 ## User Action
 
-- Validation passes → Proceed to template-4 (final confirmation)
+- Validation passes → Proceed to 4-final-confirmation (final confirmation)
 - Validation fails → Show error and retry options
 - "다시 입력" → Repeat direct input
-- "메시지 선택으로 돌아가기" → Return to template-3
+- "메시지 선택으로 돌아가기" → Return to 3-1-header-selection
 - "취소" → Exit process

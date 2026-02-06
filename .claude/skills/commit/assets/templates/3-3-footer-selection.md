@@ -122,9 +122,9 @@ AskUserQuestion tool will display the options automatically.
 ## User Action
 
 **Selection scenarios:**
-1. **"푸터 없음" selected** → Generate final message without footer, proceed to template-4 (final confirmation)
-2. **"Issue reference" selected** → Prompt for issue numbers, add footer, proceed to template-4
-3. **"Breaking Change" selected** → Prompt for breaking change description, add footer, proceed to template-4
+1. **"푸터 없음" selected** → Generate final message without footer, proceed to 4-final-confirmation (final confirmation)
+2. **"Issue reference" selected** → Prompt for issue numbers, add footer, proceed to 4-final-confirmation
+3. **"Breaking Change" selected** → Prompt for breaking change description, add footer, proceed to 4-final-confirmation
 
 ## Footer Format
 
@@ -189,7 +189,7 @@ After footer selection, display preview:
 다음 단계: 최종 확인
 ```
 
-Then proceed to template-4 (final confirmation).
+Then proceed to 4-final-confirmation (final confirmation).
 
 ## Message Assembly
 
@@ -206,15 +206,15 @@ Then proceed to template-4 (final confirmation).
 
 **Components:**
 1. **Header**: `{type}({scope}): {message}`
-   - Type: Selected from template-3-1
+   - Type: Selected from 3-1-header-selection-1
    - Scope: Detected from changed files
    - Message: Auto-generated based on type + scope + body items
 
-2. **Body** (optional): Selected items from template-3-2
+2. **Body** (optional): Selected items from 3-1-header-selection-2
    - Format: Each line starts with `- `
    - Blank line separates header and body
 
-3. **Footer** (optional): Selected from template-3-3
+3. **Footer** (optional): Selected from 3-1-header-selection-3
    - Blank line separates body and footer
 
 ## Header Message Generation
@@ -240,7 +240,7 @@ function generateHeaderMessage(type, scope, bodyItems) {
 
 **User can modify:**
 - After preview, user can edit header message if needed
-- Use template-5 (direct input) pattern for edits
+- Use 5-direct-input (direct input) pattern for edits
 
 ## Notes
 

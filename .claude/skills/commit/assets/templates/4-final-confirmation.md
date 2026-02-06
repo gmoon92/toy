@@ -97,7 +97,7 @@ Then call AskUserQuestion with Template JSON (tool will display question and opt
 ## User Action
 
 - "승인" selected → Proceed to Step 5 (execute commit)
-- "수정" selected → Return to template-3 (message selection)
+- "수정" selected → Return to 3-1-header-selection (message selection)
 - "취소" selected → Exit process
 
 ## Why show full message again

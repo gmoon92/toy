@@ -130,7 +130,7 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 When structural changes (refactor) and behavioral changes (feat/fix) are mixed:
 
-**Template:** [../assets/templates/template-1-tidy-first.md](../assets/templates/template-1-tidy-first.md)
+**Template:** [../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md)
 
 **Actions:**
 1. Display the "Screen Output" section from template (warning message with detected mixed changes)
@@ -166,7 +166,7 @@ Commit 2: docs(claude-api): Claude API 문서 번역 추가
 2. Identify logically independent groups
 3. Warn if 10+ files or different top-level directories
 
-**Template:** [../assets/templates/template-2-logical-independence.md](../assets/templates/template-2-logical-independence.md)
+**Template:** [../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)
 
 **Actions:**
 1. Display the "Screen Output" section from template (detected groups with details and warning)
@@ -209,7 +209,7 @@ Guide user through 3 stages to build the commit message:
 
 ### Stage 1: Header Message Selection
 
-**Template:** [../assets/templates/template-3-1-header-selection.md](../assets/templates/template-3-1-header-selection.md)
+**Template:** [../assets/templates/3-1-header-selection.md](../assets/templates/3-1-header-selection.md)
 
 **Generate 5 header messages:**
 - **추천 2개** (fixed): Best matches based on analysis
@@ -271,7 +271,7 @@ function generate5Headers(changes) {
 
 **User has selected header, now select body items.**
 
-**Template:** [../assets/templates/template-3-2-body-selection.md](../assets/templates/template-3-2-body-selection.md)
+**Template:** [../assets/templates/3-2-body-selection.md](../assets/templates/3-2-body-selection.md)
 
 **Core Principle:**
 - ❌ 파일명 나열 (git log에 이미 있음)
@@ -369,7 +369,7 @@ Page 1 (1-3) → [다음] → Page 2 (4-6) → [다음] → Page 3 (7-9)
 
 ### Stage 3: Footer Selection
 
-**Template:** [../assets/templates/template-3-3-footer-selection.md](../assets/templates/template-3-3-footer-selection.md)
+**Template:** [../assets/templates/3-3-footer-selection.md](../assets/templates/3-3-footer-selection.md)
 
 **Screen Output:**
 ```
@@ -506,10 +506,10 @@ Then proceed to Step 4 (final confirmation).
 ### User Actions Summary
 
 **From Stage 3:**
-- Complete 3 stages → Proceed to Step 4 (final confirmation with template-4)
+- Complete 3 stages → Proceed to Step 4 (final confirmation with 4-final-confirmation)
 
 **Alternative: Direct Input** (from any stage):
-- User can select "Other" at any stage → Proceed to template-5 (direct input)
+- User can select "Other" at any stage → Proceed to 5-direct-input (direct input)
 - Useful if user wants to write message from scratch
 
 ---
@@ -524,7 +524,7 @@ Then proceed to Step 4 (final confirmation).
 
 ### 4-2: Direct Input Flow (When Other Selected)
 
-**Template:** [../assets/templates/template-5-direct-input.md](../assets/templates/template-5-direct-input.md)
+**Template:** [../assets/templates/5-direct-input.md](../assets/templates/5-direct-input.md)
 
 **Process:**
 1. Display input instructions (see template "Step 2: Show Input Instructions")
@@ -534,12 +534,12 @@ Then proceed to Step 4 (final confirmation).
    - Scope: Alphanumeric + `.`, `-`, `_` only
    - Message: Not empty
    - Blank blocks: Maximum 2
-4. If validation passes → Proceed to template-4 (final confirmation)
+4. If validation passes → Proceed to 4-final-confirmation (final confirmation)
 5. If validation fails → Display error and call AskUserQuestion with retry JSON (see template "On Validation Failure")
 
 ### 4-3: Final Confirmation (Using AskUserQuestion)
 
-**Template:** [../assets/templates/template-4-final-confirmation.md](../assets/templates/template-4-final-confirmation.md)
+**Template:** [../assets/templates/4-final-confirmation.md](../assets/templates/4-final-confirmation.md)
 
 **CRITICAL: 사용자가 선택한 후 반드시 전체 메시지를 다시 표시**
 
@@ -555,7 +555,7 @@ Then proceed to Step 4 (final confirmation).
 
 **User Actions:**
 - Select "Approve" → Proceed to Step 5 (execute commit)
-- Select "Modify" → Return to template-3 (message selection)
+- Select "Modify" → Return to 3-1-header-selection (message selection)
 - Select "Cancel" → Exit process
 
 ### 4-4: When Modify Selected

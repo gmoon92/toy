@@ -10,13 +10,13 @@ This directory contains individual UI templates for user interactions during the
 
 Each template is separated into its own file for efficient context loading:
 
-- **[template-1-tidy-first.md](template-1-tidy-first.md)** - Tidy First 위반 감지
-- **[template-2-logical-independence.md](template-2-logical-independence.md)** - 논리적 독립성 감지
-- **[template-3-1-header-selection.md](template-3-1-header-selection.md)** - Stage 1: 헤더 메시지 선택 (추천 2 + 일반 3)
-- **[template-3-2-body-selection.md](template-3-2-body-selection.md)** - Stage 2: 바디 항목 다중 선택
-- **[template-3-3-footer-selection.md](template-3-3-footer-selection.md)** - Stage 3: 푸터 선택
-- **[template-4-final-confirmation.md](template-4-final-confirmation.md)** - 최종 확인
-- **[template-5-direct-input.md](template-5-direct-input.md)** - 메시지 수정 (직접 입력)
+- **[../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md)** - Tidy First 위반 감지
+- **[../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)** - 논리적 독립성 감지
+- **[../assets/templates/3-1-header-selection.md](../assets/templates/3-1-header-selection.md)** - Stage 1: 헤더 메시지 선택 (추천 2 + 일반 3)
+- **[../assets/templates/3-2-body-selection.md](../assets/templates/3-2-body-selection.md)** - Stage 2: 바디 항목 다중 선택
+- **[../assets/templates/3-3-footer-selection.md](../assets/templates/3-3-footer-selection.md)** - Stage 3: 푸터 선택
+- **[../assets/templates/4-final-confirmation.md](../assets/templates/4-final-confirmation.md)** - 최종 확인
+- **[../assets/templates/5-direct-input.md](../assets/templates/5-direct-input.md)** - 메시지 수정 (직접 입력)
 
 ### Token Efficiency
 - **Selective loading**: Only load templates when needed
@@ -50,7 +50,7 @@ Each template is separated into its own file for efficient context loading:
 
 ### Stage 1: Header Message Selection
 
-**Template:** [template-3-1-header-selection.md](template-3-1-header-selection.md)
+**Template:** [../assets/templates/3-1-header-selection.md](../assets/templates/3-1-header-selection.md)
 
 **Screen:**
 ```
@@ -80,7 +80,7 @@ Each template is separated into its own file for efficient context loading:
 
 ### Stage 2: Body Items Selection (Multi-Select with Pagination) ⭐ Core Feature
 
-**Template:** [template-3-2-body-selection.md](template-3-2-body-selection.md)
+**Template:** [../assets/templates/3-2-body-selection.md](../assets/templates/3-2-body-selection.md)
 
 **Core Principle:**
 - ❌ 파일명 나열 (git log에 이미 표시)
@@ -155,7 +155,7 @@ Example: [95⭐] 사용자 인증 로직 구현
 
 ### Stage 3: Footer Selection
 
-**Template:** [template-3-3-footer-selection.md](template-3-3-footer-selection.md)
+**Template:** [../assets/templates/3-3-footer-selection.md](../assets/templates/3-3-footer-selection.md)
 
 **Screen:**
 ```
@@ -245,13 +245,13 @@ Closes #123
 다음 단계: 최종 확인
 ```
 
-Then proceed to template-4 (final confirmation).
+Then proceed to 4-final-confirmation (final confirmation).
 
 ---
 
 ## Final Confirmation
 
-**Template:** [template-4-final-confirmation.md](template-4-final-confirmation.md)
+**Template:** [../assets/templates/4-final-confirmation.md](../assets/templates/4-final-confirmation.md)
 
 **Screen:**
 ```
@@ -274,14 +274,14 @@ feat(spring-security-jwt): JWT 인증 필터 추가
 
 **User Actions:**
 - **Approve** → Execute git commit
-- **Modify** → Return to Stage 1 or direct input (template-5)
+- **Modify** → Return to Stage 1 or direct input (5-direct-input)
 - **Cancel** → Exit process
 
 ---
 
 ## Policy Selection UI (Logical Independence Detected)
 
-**Template:** [template-2-logical-independence.md](template-2-logical-independence.md)
+**Template:** [../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)
 
 When multiple independent groups are detected:
 
@@ -459,13 +459,13 @@ Show context from previous stages:
 
 ```bash
 # Stage 1: Type selection
-cat .claude/skills/commit/../assets/templates/template-3-1-type-selection.md
+cat .claude/skills/commit/../assets/templates/3-1-type-selection.md
 
 # Stage 2: Body selection
-cat .claude/skills/commit/../assets/templates/template-3-2-body-selection.md
+cat .claude/skills/commit/../assets/templates/3-2-body-selection.md
 
 # Stage 3: Footer selection
-cat .claude/skills/commit/../assets/templates/template-3-3-footer-selection.md
+cat .claude/skills/commit/../assets/templates/3-3-footer-selection.md
 ```
 
 **Load only when needed:**
@@ -478,9 +478,9 @@ cat .claude/skills/commit/../assets/templates/template-3-3-footer-selection.md
 ## Related Documents
 
 - **[../PROCESS.md](../PROCESS.md)** - Step 3 uses 3-stage selection
-  - Stage 1: template-3-1 (type)
-  - Stage 2: template-3-2 (body)
-  - Stage 3: template-3-3 (footer)
+  - Stage 1: 3-1-header-selection-1 (type)
+  - Stage 2: 3-1-header-selection-2 (body)
+  - Stage 3: 3-1-header-selection-3 (footer)
 - **[../MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md)** - Generation algorithms
   - Type detection algorithm
   - Body item generation (file-based, feature-based, hybrid)
