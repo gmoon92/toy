@@ -15,7 +15,7 @@ The commit skill follows a 5-step process to ensure quality commits that follow 
 **Token Optimization:**
 - Step 1 analyzes once and writes `.claude/temp/commit-{timestamp}.json`
 - Steps 2-5 read from metadata (67% token savings)
-- See [METADATA.md](METADATA.md) for details
+- See [metadata.md](METADATA.md) for details
 
 **Important:** All policies (Tidy First, Logical Independence, User Communication, etc.) are defined in [SKILL.md Core Principles](SKILL.md#core-principles).
 
@@ -130,7 +130,7 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 When structural changes (refactor) and behavioral changes (feat/fix) are mixed:
 
-**Template:** [templates/template-1-tidy-first.md](templates/template-1-tidy-first.md)
+**Template:** [../assets/templates/template-1-tidy-first.md](../assets/templates/template-1-tidy-first.md)
 
 **Actions:**
 1. Display the "Screen Output" section from template (warning message with detected mixed changes)
@@ -166,7 +166,7 @@ Commit 2: docs(claude-api): Claude API 문서 번역 추가
 2. Identify logically independent groups
 3. Warn if 10+ files or different top-level directories
 
-**Template:** [templates/template-2-logical-independence.md](templates/template-2-logical-independence.md)
+**Template:** [../assets/templates/template-2-logical-independence.md](../assets/templates/template-2-logical-independence.md)
 
 **Actions:**
 1. Display the "Screen Output" section from template (detected groups with details and warning)
@@ -174,7 +174,7 @@ Commit 2: docs(claude-api): Claude API 문서 번역 추가
 3. Process user selection (see User Actions below)
 
 **User Actions:**
-- Select "Auto-split" → See **[AUTO_SPLIT.md](AUTO_SPLIT.md)** (auto-split commit process)
+- Select "Auto-split" → See **[auto-split.md](AUTO_SPLIT.md)** (auto-split commit process)
 - Select "Unified commit" → Show warning, request confirmation, proceed to Step 3
 - Select "Cancel" → Exit process
 
@@ -203,13 +203,13 @@ Guide user through 3 stages to build the commit message:
 - Refresh mechanism provides flexibility
 - Direct input available as fallback
 
-**Detailed algorithms:** See [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)
+**Detailed algorithms:** See [message-generation.md](MESSAGE_GENERATION.md)
 
 ---
 
 ### Stage 1: Header Message Selection
 
-**Template:** [templates/template-3-1-header-selection.md](templates/template-3-1-header-selection.md)
+**Template:** [../assets/templates/template-3-1-header-selection.md](../assets/templates/template-3-1-header-selection.md)
 
 **Generate 5 header messages:**
 - **추천 2개** (fixed): Best matches based on analysis
@@ -271,7 +271,7 @@ function generate5Headers(changes) {
 
 **User has selected header, now select body items.**
 
-**Template:** [templates/template-3-2-body-selection.md](templates/template-3-2-body-selection.md)
+**Template:** [../assets/templates/template-3-2-body-selection.md](../assets/templates/template-3-2-body-selection.md)
 
 **Core Principle:**
 - ❌ 파일명 나열 (git log에 이미 있음)
@@ -369,7 +369,7 @@ Page 1 (1-3) → [다음] → Page 2 (4-6) → [다음] → Page 3 (7-9)
 
 ### Stage 3: Footer Selection
 
-**Template:** [templates/template-3-3-footer-selection.md](templates/template-3-3-footer-selection.md)
+**Template:** [../assets/templates/template-3-3-footer-selection.md](../assets/templates/template-3-3-footer-selection.md)
 
 **Screen Output:**
 ```
@@ -498,7 +498,7 @@ Then proceed to Step 4 (final confirmation).
 - File-based or feature-based grouping
 
 **For detailed format rules and examples:**
-- [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) - Complete generation algorithms and strategies
+- [message-generation.md](MESSAGE_GENERATION.md) - Complete generation algorithms and strategies
 - [RULES.md - Body Guidelines](RULES.md#body-guidelines) - Validation rules
 
 ---
@@ -524,7 +524,7 @@ Then proceed to Step 4 (final confirmation).
 
 ### 4-2: Direct Input Flow (When Other Selected)
 
-**Template:** [templates/template-5-direct-input.md](templates/template-5-direct-input.md)
+**Template:** [../assets/templates/template-5-direct-input.md](../assets/templates/template-5-direct-input.md)
 
 **Process:**
 1. Display input instructions (see template "Step 2: Show Input Instructions")
@@ -539,7 +539,7 @@ Then proceed to Step 4 (final confirmation).
 
 ### 4-3: Final Confirmation (Using AskUserQuestion)
 
-**Template:** [templates/template-4-final-confirmation.md](templates/template-4-final-confirmation.md)
+**Template:** [../assets/templates/template-4-final-confirmation.md](../assets/templates/template-4-final-confirmation.md)
 
 **CRITICAL: 사용자가 선택한 후 반드시 전체 메시지를 다시 표시**
 
@@ -604,7 +604,7 @@ EOF
 ### When Commit Fails
 
 - Explain error message in Korean
-- Guide to refer to [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- Guide to refer to [troubleshooting.md](TROUBLESHOOTING.md)
 - Suggest possible solutions
 
 ### Handle Git Hook Failures
@@ -711,22 +711,22 @@ Start
 
 ## Related Documents
 
-- **[SKILL.md](SKILL.md)** - Overview and quick reference
+- **[../SKILL.md](SKILL.md)** - Overview and quick reference
   - Core principles and quick start guide
-- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation algorithm
+- **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation algorithm
   - 5 generation strategies and scope extraction
   - Complete generation patterns
-- **[METADATA.md](METADATA.md)** - Token optimization strategy
+- **[metadata.md](METADATA.md)** - Token optimization strategy
   - Session metadata structure and lifecycle
   - 67% token savings through metadata reuse
-- **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Auto-split commit process
+- **[auto-split.md](AUTO_SPLIT.md)** - Auto-split commit process
   - Policy selection and sequential commits
   - Error handling and rollback
-- **[RULES.md](RULES.md)** - Commit message format rules
+- **[rules.md](RULES.md)** - Commit message format rules
   - Validation rules and format specifications
   - Tidy First and Logical Independence principles
-- **[EXAMPLES.md](EXAMPLES.md)** - Complete commit message examples
+- **[examples.md](EXAMPLES.md)** - Complete commit message examples
   - All 7 commit types with real examples
-- **[templates/README.md](templates/README.md)** - User interaction templates
+- **[ui-design.md](ui-design.md)** - User interaction templates
   - 5 template files for different user interactions
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Error handling and hook failures
+- **[troubleshooting.md](TROUBLESHOOTING.md)** - Error handling and hook failures

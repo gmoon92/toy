@@ -176,16 +176,16 @@ Final report shows:
 
 ## Related Documents
 
-- **[PROCESS.md](PROCESS.md)** - Complete execution workflow
+- **[process.md](PROCESS.md)** - Complete execution workflow
   - Step 2: How logical independence is detected
   - Integration with auto-split process
-- **[RULES.md](RULES.md)** - Logical Independence principle
+- **[rules.md](RULES.md)** - Logical Independence principle
   - When and why to separate commits
   - Decision criteria
-- **[templates/template-2-logical-independence.md](templates/template-2-logical-independence.md)** - User interaction template
+- **[../assets/templates/template-2-logical-independence.md](../assets/templates/template-2-logical-independence.md)** - User interaction template
   - Policy selection UI
   - Screen output and user actions
-- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation per group
+- **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation per group
   - How 5 messages are generated for each split group
-- **[METADATA.md](METADATA.md)** - Group metadata structure
+- **[metadata.md](METADATA.md)** - Group metadata structure
   - How groups are stored and tracked during auto-split

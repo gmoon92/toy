@@ -28,16 +28,22 @@ Automates commit message generation following project conventions.
 - ❌ Never: `git push` or destructive commands without approval
 - ❌ Never: Stage untracked files (only modified files)
 
-## Document Structure
+## Bundled Resources
 
-- **[PROCESS.md](PROCESS.md)** - Detailed execution process (Step 1-5)
-- **[AUTO_SPLIT.md](AUTO_SPLIT.md)** - Auto-split commit process
-- **[RULES.md](RULES.md)** - Commit message format rules
-- **[MESSAGE_GENERATION.md](MESSAGE_GENERATION.md)** - Message generation strategy and algorithms
-- **[templates/README.md](templates/README.md)** - UI/UX design and user interaction templates
-- **[EXAMPLES.md](EXAMPLES.md)** - Commit examples and patterns
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Error handling guide
-- **[METADATA.md](METADATA.md)** - Token optimization via session state
+### References (load as needed)
+
+- **[references/process.md](references/process.md)** - Detailed execution process (Step 1-5)
+- **[references/auto-split.md](references/auto-split.md)** - Auto-split commit process
+- **[references/rules.md](references/rules.md)** - Commit message format rules
+- **[references/message-generation.md](references/message-generation.md)** - Message generation strategy and algorithms
+- **[references/ui-design.md](references/ui-design.md)** - UI/UX design and user interaction templates
+- **[references/examples.md](references/examples.md)** - Commit examples and patterns
+- **[references/troubleshooting.md](references/troubleshooting.md)** - Error handling guide
+- **[references/metadata.md](references/metadata.md)** - Token optimization via session state
+
+### Assets (output templates)
+
+- **[assets/templates/](assets/templates/)** - UI interaction templates (7 files)
 
 ## Core Principles
 
@@ -96,28 +102,28 @@ Automates commit message generation following project conventions.
 ```
 Start
   ↓
-Step 1: Validate & Gather Context → [PROCESS.md](PROCESS.md)
+Step 1: Validate & Gather Context → [references/process.md](references/process.md)
   ↓
 Step 2: Analyze & Detect Violations
   ↓
   ├─ Tidy First violation? → Warn & suggest separation
-  ├─ Logical independence? → [AUTO_SPLIT.md](AUTO_SPLIT.md)
+  ├─ Logical independence? → [references/auto-split.md](references/auto-split.md)
   └─ OK → Continue
   ↓
 Step 3: 3-Stage Message Composition
-  ├─ Stage 1: Header Selection (5 messages: 추천 2 + 일반 3) → [template-3-1](templates/template-3-1-header-selection.md)
-  ├─ Stage 2: Body Items Selection (multi-select) → [template-3-2](templates/template-3-2-body-selection.md)
-  ├─ Stage 3: Footer Selection → [template-3-3](templates/template-3-3-footer-selection.md)
+  ├─ Stage 1: Header Selection (5 messages: 추천 2 + 일반 3) → [assets/templates/template-3-1-header-selection.md](assets/templates/template-3-1-header-selection.md)
+  ├─ Stage 2: Body Items Selection (multi-select) → [assets/templates/template-3-2-body-selection.md](assets/templates/template-3-2-body-selection.md)
+  ├─ Stage 3: Footer Selection → [assets/templates/template-3-3-footer-selection.md](assets/templates/template-3-3-footer-selection.md)
   └─ Assemble final message from user selections
   ↓
-Step 4: User Approval (approve/modify/cancel) → [template-4](templates/template-4-final-confirmation.md)
+Step 4: User Approval (approve/modify/cancel) → [assets/templates/template-4-final-confirmation.md](assets/templates/template-4-final-confirmation.md)
   ↓
 Step 5: Execute & Verify Commit
   ↓
 Done
 ```
 
-See [PROCESS.md](PROCESS.md) for detailed step-by-step execution.
+See [references/process.md](references/process.md) for detailed step-by-step execution.
 
 ## Usage
 
@@ -135,10 +141,10 @@ See [PROCESS.md](PROCESS.md) for detailed step-by-step execution.
 
 ## Related Documents
 
-- [PROCESS.md](PROCESS.md) - Complete execution process
-- [AUTO_SPLIT.md](AUTO_SPLIT.md) - Auto-split commit workflow
-- [RULES.md](RULES.md) - Commit message conventions
-- [MESSAGE_GENERATION.md](MESSAGE_GENERATION.md) - Message generation algorithms
-- [templates/README.md](templates/README.md) - UI/UX design and user interaction templates
-- [EXAMPLES.md](EXAMPLES.md) - Commit examples
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Problem solving
+- [references/process.md](references/process.md) - Complete execution process
+- [references/auto-split.md](references/auto-split.md) - Auto-split commit workflow
+- [references/rules.md](references/rules.md) - Commit message conventions
+- [references/message-generation.md](references/message-generation.md) - Message generation algorithms
+- [references/ui-design.md](references/ui-design.md) - UI/UX design and user interaction templates
+- [references/examples.md](references/examples.md) - Commit examples
+- [references/troubleshooting.md](references/troubleshooting.md) - Problem solving

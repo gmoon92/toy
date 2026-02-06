@@ -308,7 +308,7 @@ function calculateScore(feature) {
 }
 ```
 
-See [template-3-2-body-selection.md](templates/template-3-2-body-selection.md) for detailed algorithm.
+See [template-3-2-body-selection.md](../assets/templates/template-3-2-body-selection.md) for detailed algorithm.
 
 **Example candidates:**
 ```
@@ -350,7 +350,7 @@ Simple selection, no refresh needed:
 - Issue reference
 - Breaking Change
 
-See [template-3-3-footer-selection.md](templates/template-3-3-footer-selection.md).
+See [template-3-3-footer-selection.md](../assets/templates/template-3-3-footer-selection.md).
 
 ---
 
@@ -536,9 +536,9 @@ Files:
 - .claude/skills/commit/MESSAGE_GENERATION.md (860 lines changed)
 - .claude/skills/commit/PROCESS.md (289 lines changed)
 - .claude/skills/commit/SKILL.md (22 lines changed)
-- .claude/skills/commit/templates/template-3-1-header-selection.md (new file)
-- .claude/skills/commit/templates/template-3-2-body-selection.md (163 lines added)
-- .claude/skills/commit/templates/template-3-3-footer-selection.md (192 lines added)
+- .claude/skills/commit/../assets/templates/template-3-1-header-selection.md (new file)
+- .claude/skills/commit/../assets/templates/template-3-2-body-selection.md (163 lines added)
+- .claude/skills/commit/../assets/templates/template-3-3-footer-selection.md (192 lines added)
 ```
 
 ### Generated Headers (5개)
@@ -605,10 +605,10 @@ docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변�
 
 ## Related Documents
 
-- **[PROCESS.md](PROCESS.md)** - Step 3 execution with 3 stages
-- **[templates/template-3-1-header-selection.md](templates/template-3-1-header-selection.md)** - Stage 1
-- **[templates/template-3-2-body-selection.md](templates/template-3-2-body-selection.md)** - Stage 2
-- **[templates/template-3-3-footer-selection.md](templates/template-3-3-footer-selection.md)** - Stage 3
-- **[METADATA.md](METADATA.md)** - Metadata structure
-- **[RULES.md](RULES.md)** - Validation rules
-- **[EXAMPLES.md](EXAMPLES.md)** - Complete examples
+- **[process.md](PROCESS.md)** - Step 3 execution with 3 stages
+- **[../assets/templates/template-3-1-header-selection.md](../assets/templates/template-3-1-header-selection.md)** - Stage 1
+- **[../assets/templates/template-3-2-body-selection.md](../assets/templates/template-3-2-body-selection.md)** - Stage 2
+- **[../assets/templates/template-3-3-footer-selection.md](../assets/templates/template-3-3-footer-selection.md)** - Stage 3
+- **[metadata.md](METADATA.md)** - Metadata structure
+- **[rules.md](RULES.md)** - Validation rules
+- **[examples.md](EXAMPLES.md)** - Complete examples

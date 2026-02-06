@@ -459,13 +459,13 @@ Show context from previous stages:
 
 ```bash
 # Stage 1: Type selection
-cat .claude/skills/commit/templates/template-3-1-type-selection.md
+cat .claude/skills/commit/../assets/templates/template-3-1-type-selection.md
 
 # Stage 2: Body selection
-cat .claude/skills/commit/templates/template-3-2-body-selection.md
+cat .claude/skills/commit/../assets/templates/template-3-2-body-selection.md
 
 # Stage 3: Footer selection
-cat .claude/skills/commit/templates/template-3-3-footer-selection.md
+cat .claude/skills/commit/../assets/templates/template-3-3-footer-selection.md
 ```
 
 **Load only when needed:**

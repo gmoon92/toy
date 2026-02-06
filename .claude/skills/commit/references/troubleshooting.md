@@ -105,7 +105,7 @@ Commit-msg hooks run **after** message is provided but **before** commit is crea
 - `style` - Formatting
 - `chore` - Build/config
 
-See [RULES.md](RULES.md) for details.
+See [rules.md](RULES.md) for details.
 
 ### Excessive Blank Lines
 
@@ -330,6 +330,6 @@ When stuck, follow this checklist:
 
 ## Additional Resources
 
-- [RULES.md](RULES.md) - Commit message format rules
-- [EXAMPLES.md](EXAMPLES.md) - Commit examples
-- [SKILL.md](SKILL.md) - Skill overview
+- [rules.md](RULES.md) - Commit message format rules
+- [examples.md](EXAMPLES.md) - Commit examples
+- [../SKILL.md](SKILL.md) - Skill overview
