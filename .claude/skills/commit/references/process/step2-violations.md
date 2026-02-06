@@ -22,7 +22,7 @@ cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 
 When structural changes (refactor) and behavioral changes (feat/fix) are mixed:
 
-**Template:** [../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md)
+**Template:** [1-tidy-first.md](../../templates/1-tidy-first.md)
 
 **Actions:**
 1. Display the "Screen Output" section from template (warning message with detected mixed changes)
@@ -58,7 +58,7 @@ Commit 2: docs(claude-api): Claude API 문서 번역 추가
 2. Identify logically independent groups
 3. Warn if 10+ files or different top-level directories
 
-**Template:** [../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)
+**Template:** [2-logical-independence.md](../../templates/2-logical-independence.md)
 
 **Actions:**
 1. Display the "Screen Output" section from template (detected groups with details and warning)

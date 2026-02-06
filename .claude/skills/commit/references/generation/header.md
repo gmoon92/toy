@@ -9,16 +9,16 @@ User builds commit message through 3 stages: header selection → body selection
 **3-Stage Selection Process:**
 
 1. **Stage 1: Header Selection** - User selects from 5 pre-generated header messages
-   - 추천 2개 (fixed, best matches)
-   - 일반 3개 (refreshable alternatives)
+   - Recommended 2 (fixed, best matches)
+   - General 3 (refreshable alternatives)
 
 2. **Stage 2: Body Selection** - User selects body items (multi-select)
    - Auto-generated 4-10 body item candidates
-   - "바디 없음" for header-only commits
-   - "다른 추천 리스트 보기" to regenerate
+   - "No body" for header-only commits
+   - "Show other recommendations" to regenerate
 
 3. **Stage 3: Footer Selection** - User selects footer option
-   - 푸터 없음 (recommended)
+   - No footer (recommended)
    - Issue reference
    - Breaking Change
 
@@ -35,10 +35,10 @@ User builds commit message through 3 stages: header selection → body selection
 ### Generate 5 Header Messages
 
 **Strategy:**
-- **추천 2개** (Recommended, fixed): Always shown, best matches
-- **일반 3개** (General, refreshable): Alternatives, can be regenerated
+- **Recommended 2** (fixed): Always shown, best matches
+- **General 3** (refreshable): Alternatives, can be regenerated
 
-### Recommended Message 1 (최우선 추천)
+### Recommended Message 1 (Top Priority)
 
 **Goal:** Most accurate and appropriate header
 
@@ -69,10 +69,10 @@ function generateRecommended1(changes) {
 
 **Example:**
 ```
-docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경
+docs(commit-skill): change commit message generation to 3-stage selection
 ```
 
-### Recommended Message 2 (차선 추천)
+### Recommended Message 2 (Second Priority)
 
 **Goal:** Strong alternative with different emphasis
 
@@ -91,10 +91,10 @@ docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변�
 
 **Example:**
 ```
-refactor(commit-skill): 메시지 생성 프로세스를 사용자 선택 기반으로 재구성
+refactor(commit-skill): restructure message generation process to user selection-based
 ```
 
-### General Messages 3-5 (일반 메시지)
+### General Messages 3-5
 
 These are alternatives shown initially, but can be refreshed to show different options.
 
@@ -111,7 +111,7 @@ function generateMessage3(changes, recommended) {
 
 **Example:**
 ```
-docs(generation/header.md): 3단계 선택 알고리즘으로 재작성
+docs(generation/header.md): rewrite with 3-stage selection algorithm
 ```
 
 **Message 4: Expression Variation**
@@ -130,7 +130,7 @@ function generateMessage4(changes, recommended) {
 
 **Example:**
 ```
-docs(commit-skill): 헤더 선택 기반 3단계 커밋 프로세스 도입
+docs(commit-skill): introduce 3-stage commit process with header selection
 ```
 
 **Message 5: Type Alternative**
@@ -150,17 +150,17 @@ function generateMessage5(changes) {
 
 **Example:**
 ```
-refactor(.claude/skills): 커밋 스킬 문서 및 프로세스 개선
+refactor(.claude/skills): improve commit skill documentation and process
 ```
 
-### Refresh Logic (다른 추천 리스트 보기)
+### Refresh Logic (Show Other Recommendations)
 
-When user requests refresh, regenerate **일반 3개** while keeping **추천 2개** fixed.
+When user requests refresh, regenerate **General 3** while keeping **Recommended 2** fixed.
 
 **Algorithm:**
 ```javascript
 function refreshHeaderMessages(fixedRecommended, allCandidates, shownIndices) {
-  // Keep 추천 2개 unchanged
+  // Keep Recommended 2 unchanged
   const recommended = fixedRecommended; // [msg1, msg2]
 
   // Get next 3 candidates not yet shown
@@ -232,14 +232,14 @@ function generateAllHeaderCandidates(changes) {
   "analysis": {
     "headerCandidates": {
       "recommended": [
-        "docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경",
-        "refactor(commit-skill): 메시지 생성 프로세스 재구성"
+        "docs(commit-skill): change commit message generation to 3-stage selection",
+        "refactor(commit-skill): restructure message generation process"
       ],
       "general": [
-        "docs(generation/header.md): 3단계 선택 알고리즘으로 재작성",
-        "docs(.claude/skills): commit 스킬 문서 업데이트",
-        "refactor(commit): 커밋 메시지 작성 프로세스 개선",
-        "feat(commit-skill): 사용자 선택 기반 메시지 생성 기능 추가",
+        "docs(generation/header.md): rewrite with 3-stage selection algorithm",
+        "docs(.claude/skills): update commit skill documentation",
+        "refactor(commit): improve commit message creation process",
+        "feat(commit-skill): add user selection-based message generation feature",
         "...more candidates..."
       ],
       "shownIndices": [0, 1, 2]

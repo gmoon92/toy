@@ -78,7 +78,7 @@ Execute skill in phases. Load only required references per phase for maximum tok
   - Usage: `python3 scripts/validate_message.py --message <file> --json`
 
 ### Assets (not loaded into context)
-- **UI templates**: [assets/templates/](assets/templates/) - Output templates for user interaction (7 files)
+- **UI templates**: [templates](templates/) - Output templates for user interaction (7 files)
 
 ## Core Principles
 

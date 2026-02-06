@@ -8,7 +8,7 @@
 
 ### 4-2: Direct Input Flow (When Other Selected)
 
-**Template:** [../assets/templates/5-direct-input.md](../assets/templates/5-direct-input.md)
+**Template:** [5-direct-input.md](../../templates/5-direct-input.md)
 
 **Process:**
 1. Display input instructions (see template "Step 2: Show Input Instructions")
@@ -23,7 +23,7 @@
 
 ### 4-3: Final Confirmation (Using AskUserQuestion)
 
-**Template:** [../assets/templates/4-final-confirmation.md](../assets/templates/4-final-confirmation.md)
+**Template:** [4-final-confirmation.md](../../templates/4-final-confirmation.md)
 
 **CRITICAL: 사용자가 선택한 후 반드시 전체 메시지를 다시 표시**
 

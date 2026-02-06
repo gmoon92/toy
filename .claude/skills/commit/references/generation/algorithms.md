@@ -180,9 +180,9 @@ Files:
 - .claude/skills/commit/generation/header.md (860 lines changed)
 - .claude/skills/commit/process/step3-message.md (289 lines changed)
 - .claude/skills/commit/SKILL.md (22 lines changed)
-- .claude/skills/commit/../assets/templates/3-1-header-selection.md (new file)
-- .claude/skills/commit/../assets/templates/3-2-body-selection.md (163 lines added)
-- .claude/skills/commit/../assets/templates/3-3-footer-selection.md (192 lines added)
+- .claude/skills/commit/../templates/3-1-header-selection.md (new file)
+- .claude/skills/commit/../templates/3-2-body-selection.md (163 lines added)
+- .claude/skills/commit/../templates/3-3-footer-selection.md (192 lines added)
 ```
 
 ### Generated Headers (5개)

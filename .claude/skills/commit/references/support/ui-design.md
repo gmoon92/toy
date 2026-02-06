@@ -10,13 +10,13 @@ This directory contains individual UI templates for user interactions during the
 
 Each template is separated into its own file for efficient context loading:
 
-- **[../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md)** - Tidy First 위반 감지
-- **[../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)** - 논리적 독립성 감지
-- **[../assets/templates/3-1-header-selection.md](../assets/templates/3-1-header-selection.md)** - Stage 1: 헤더 메시지 선택 (추천 2 + 일반 3)
-- **[../assets/templates/3-2-body-selection.md](../assets/templates/3-2-body-selection.md)** - Stage 2: 바디 항목 다중 선택
-- **[../assets/templates/3-3-footer-selection.md](../assets/templates/3-3-footer-selection.md)** - Stage 3: 푸터 선택
-- **[../assets/templates/4-final-confirmation.md](../assets/templates/4-final-confirmation.md)** - 최종 확인
-- **[../assets/templates/5-direct-input.md](../assets/templates/5-direct-input.md)** - 메시지 수정 (직접 입력)
+- **[1-tidy-first.md](../../templates/1-tidy-first.md)** - Tidy First violation detection
+- **[2-logical-independence.md](../../templates/2-logical-independence.md)** - Logical independence detection
+- **[3-1-header-selection.md](../../templates/3-1-header-selection.md)** - Stage 1: Header message selection (Recommended 2 + General 3)
+- **[3-2-body-selection.md](../../templates/3-2-body-selection.md)** - Stage 2: Body item multi-select
+- **[3-3-footer-selection.md](../../templates/3-3-footer-selection.md)** - Stage 3: Footer selection
+- **[4-final-confirmation.md](../../templates/4-final-confirmation.md)** - Final confirmation
+- **[5-direct-input.md](../../templates/5-direct-input.md)** - Message editing (direct input)
 
 ### Token Efficiency
 - **Selective loading**: Only load templates when needed
@@ -36,7 +36,7 @@ Each template is separated into its own file for efficient context loading:
 
 **User builds commit message through 3 stages:**
 
-1. **Stage 1**: Select commit header from 5 pre-generated messages (추천 2 + 일반 3)
+1. **Stage 1**: Select commit header from 5 pre-generated messages (Recommended 2 + General 3)
 2. **Stage 2**: Select body items (multi-select from auto-generated candidates)
 3. **Stage 3**: Select footer (none, issue reference, or breaking change)
 
@@ -50,133 +50,133 @@ Each template is separated into its own file for efficient context loading:
 
 ### Stage 1: Header Message Selection
 
-**Template:** [../assets/templates/3-1-header-selection.md](../assets/templates/3-1-header-selection.md)
+**Template:** [../templates/3-1-header-selection.md](../../templates/3-1-header-selection.md)
 
 **Screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 1/3: 헤더 메시지 선택
+📝 Step 1/3: Select Header Message
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-커밋 헤더로 사용할 메시지를 선택하세요.
-(추천 메시지는 변경사항을 가장 잘 설명합니다)
+Select a commit header message.
+(Recommended messages best describe the changes)
 
-○ docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 (추천)
-○ refactor(commit-skill): 메시지 생성 프로세스 재구성 (추천)
-○ docs(generation/header.md): 헤더 5개 생성 전략으로 재작성
-○ docs(.claude/skills): commit 스킬 문서 업데이트
+○ docs(commit-skill): change commit message generation to 3-stage selection (Recommended)
+○ refactor(commit-skill): restructure message generation process (Recommended)
+○ docs(generation/header.md): rewrite with 5 header generation strategy
+○ docs(.claude/skills): update commit skill documentation
 ```
 
 **User Actions:**
 - Select one of 4 headers → Proceed to Stage 2
-- Select "다른 추천 리스트 보기" → Regenerate 일반 3개, show again
-- Select "Other" (직접 입력) → Manual header input, proceed to Stage 2
+- Select "Show other recommendations" → Regenerate General 3, show again
+- Select "Other" (direct input) → Manual header input, proceed to Stage 2
 
 **Generation strategy:**
-- **추천 2개** (fixed): Best matches, always shown
-- **일반 3개** (refreshable): Alternatives, rotate on refresh
+- **Recommended 2** (fixed): Best matches, always shown
+- **General 3** (refreshable): Alternatives, rotate on refresh
 
 ---
 
 ### Stage 2: Body Items Selection (Multi-Select with Pagination) ⭐ Core Feature
 
-**Template:** [../assets/templates/3-2-body-selection.md](../assets/templates/3-2-body-selection.md)
+**Template:** [../templates/3-2-body-selection.md](../../templates/3-2-body-selection.md)
 
 **Core Principle:**
-- ❌ 파일명 나열 (git log에 이미 표시)
-- ✅ 작업 내용 설명 (무엇을 했는지)
+- ❌ List filenames (already shown in git log)
+- ✅ Describe work done (what was accomplished)
 
 **System automatically generates 10-15 feature-based candidates** with score:
 
 **Example screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 2/3: 바디 항목 선택 [페이지 1/3]
+📝 Step 2/3: Select Body Items [Page 1/3]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-변경된 파일 (10개, 참고용):
+Modified files (10 files, for reference):
   [95⭐] UserService.java          (+152, -23)
   [90⭐] LoginController.java      (+87, -5)
   [85⭐] SecurityConfig.java       (+45, -12)
   ...
 
-💡 Score: 변경량(40%) + 중요도(30%) + 관련성(30%)
-   ⭐ = Score 80 이상 (중요)
+💡 Score: Changes(40%) + Importance(30%) + Relevance(30%)
+   ⭐ = Score 80+ (Important)
 
-현재 선택: 0개
+Currently selected: 0 items
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-작업 내용 선택 (1-3번):
+Select work items (1-3):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-◯ [95⭐] 사용자 인증 로직 구현
-◯ [90⭐] 로그인 API 엔드포인트 추가
-◯ [85⭐] Spring Security 필터 체인 구성
-◯ [다음 페이지]
+◯ [95⭐] Implement user authentication logic
+◯ [90⭐] Add login API endpoint
+◯ [85⭐] Configure Spring Security filter chain
+◯ [Next Page]
 ```
 
 **Item Generation Strategy:**
 
-**Feature-based (권장, 기본 전략):**
+**Feature-based (recommended, default strategy):**
 ```
-[{score}⭐] {작업 내용 설명}
-Example: [95⭐] 사용자 인증 로직 구현
+[{score}⭐] {work description}
+Example: [95⭐] Implement user authentication logic
 ```
 
-**Score 계산:**
-- 변경 라인 수 (40%)
-- 파일 중요도 (30%): src/main > config > test
-- 커밋 타입 관련성 (30%)
+**Score calculation:**
+- Lines changed (40%)
+- File importance (30%): src/main > config > test
+- Commit type relevance (30%)
 
 **Pagination:**
-- 10-15개 후보 생성
-- 페이지당 3개 항목 표시
-- Navigation: [다음 페이지], [이전 페이지], [선택 완료]
-- 선택 항목은 페이지 간 누적
+- Generate 10-15 candidates
+- Show 3 items per page
+- Navigation: [Next Page], [Previous Page], [Done]
+- Selections accumulate across pages
 
 **User Actions:**
 - Select 1+ items → Add to selection, continue pagination
-- Select "[다음 페이지]" → Show next page
-- Select "[이전 페이지]" → Show previous page
-- Select "[선택 완료]" → Proceed to Stage 3
-- Select "바디 없음" → Header-only commit, proceed to Stage 3
-- Select "Other" (직접 입력) → Manual body input, proceed to Stage 3
+- Select "[Next Page]" → Show next page
+- Select "[Previous Page]" → Show previous page
+- Select "[Done]" → Proceed to Stage 3
+- Select "No body" → Header-only commit, proceed to Stage 3
+- Select "Other" (direct input) → Manual body input, proceed to Stage 3
 
 **Assembled body format:**
 ```
-- 사용자 인증 로직 구현
-- 로그인 API 엔드포인트 추가
-- Spring Security 필터 체인 구성
+- Implement user authentication logic
+- Add login API endpoint
+- Configure Spring Security filter chain
 ```
 
-**Note:** 파일명은 git log에서 확인 가능, body는 작업 내용에 집중
+**Note:** Filenames are visible in git log; body focuses on work description
 
 ---
 
 ### Stage 3: Footer Selection
 
-**Template:** [../assets/templates/3-3-footer-selection.md](../assets/templates/3-3-footer-selection.md)
+**Template:** [../templates/3-3-footer-selection.md](../../templates/3-3-footer-selection.md)
 
 **Screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 3/3: 푸터 선택
+📝 Step 3/3: Select Footer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-선택한 타입: feat
-선택한 스코프: spring-security-jwt
-선택한 바디 항목: 3개
+Selected type: feat
+Detected scope: spring-security-jwt
+Selected body items: 3 items
 
-푸터를 추가할지 선택하세요.
-대부분의 경우 푸터가 필요하지 않습니다.
+Choose whether to add a footer.
+In most cases, a footer is not needed.
 
-○ 푸터 없음 (추천)
-○ Issue reference 추가
+○ No footer (recommended)
+○ Add issue reference
 ○ Breaking Change
 ```
 
 **User Action:**
-- Select "푸터 없음" → No footer, proceed to final confirmation
+- Select "No footer" → No footer, proceed to final confirmation
 - Select "Issue reference" → Prompt for issue numbers → Proceed to final confirmation
 - Select "Breaking Change" → Prompt for description → Proceed to final confirmation
 
@@ -184,7 +184,7 @@ Example: [95⭐] 사용자 인증 로직 구현
 ```
 Closes #123, #456
 Fixes #789
-BREAKING CHANGE: API 응답 형식 변경
+BREAKING CHANGE: API response format changed
 ```
 
 ---
@@ -203,13 +203,13 @@ function assembleFinalMessage(selections) {
 
   // Format body
   let body = '';
-  if (bodyItems.length > 0 && bodyItems[0] !== '바디 없음') {
+  if (bodyItems.length > 0 && bodyItems[0] !== 'No body') {
     body = '\n\n' + bodyItems.map(item => `- ${item.label}`).join('\n');
   }
 
   // Add footer
   let footerSection = '';
-  if (footer && footer !== '푸터 없음') {
+  if (footer && footer !== 'No footer') {
     footerSection = '\n\n' + footer;
   }
 
@@ -219,11 +219,11 @@ function assembleFinalMessage(selections) {
 
 **Example assembled message:**
 ```
-feat(spring-security-jwt): JWT 인증 필터 추가
+feat(spring-security-jwt): add JWT authentication filter
 
-- UserService.java: 사용자 인증 로직 추가
-- LoginController.java: 로그인 API 엔드포인트 구현
-- SecurityConfig.java: Spring Security 설정
+- UserService.java: add user authentication logic
+- LoginController.java: implement login API endpoint
+- SecurityConfig.java: configure Spring Security
 
 Closes #123
 ```
@@ -231,18 +231,18 @@ Closes #123
 **Message preview:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 생성된 커밋 메시지 미리보기:
+📝 Generated Commit Message Preview:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-feat(spring-security-jwt): JWT 인증 필터 추가
+feat(spring-security-jwt): add JWT authentication filter
 
-- UserService.java: 사용자 인증 로직 추가
-- LoginController.java: 로그인 API 엔드포인트 구현
-- SecurityConfig.java: Spring Security 설정
+- UserService.java: add user authentication logic
+- LoginController.java: implement login API endpoint
+- SecurityConfig.java: configure Spring Security
 
 Closes #123
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-다음 단계: 최종 확인
+Next step: Final confirmation
 ```
 
 Then proceed to 4-final-confirmation (final confirmation).
@@ -251,25 +251,25 @@ Then proceed to 4-final-confirmation (final confirmation).
 
 ## Final Confirmation
 
-**Template:** [../assets/templates/4-final-confirmation.md](../assets/templates/4-final-confirmation.md)
+**Template:** [../templates/4-final-confirmation.md](../../templates/4-final-confirmation.md)
 
 **Screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 최종 커밋 메시지:
+📝 Final Commit Message:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-feat(spring-security-jwt): JWT 인증 필터 추가
+feat(spring-security-jwt): add JWT authentication filter
 
-- UserService.java: 사용자 인증 로직 추가
-- LoginController.java: 로그인 API 엔드포인트 구현
-- SecurityConfig.java: Spring Security 설정
+- UserService.java: add user authentication logic
+- LoginController.java: implement login API endpoint
+- SecurityConfig.java: configure Spring Security
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-이 메시지로 커밋하시겠습니까?
+Do you want to commit with this message?
 
-1. 승인 - 커밋 실행
-2. 수정 - 메시지 수정
-3. 취소 - 프로세스 종료
+1. Approve - Execute commit
+2. Modify - Edit message
+3. Cancel - Exit process
 ```
 
 **User Actions:**
@@ -281,40 +281,40 @@ feat(spring-security-jwt): JWT 인증 필터 추가
 
 ## Policy Selection UI (Logical Independence Detected)
 
-**Template:** [../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)
+**Template:** [../templates/2-logical-independence.md](../../templates/2-logical-independence.md)
 
 When multiple independent groups are detected:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ 논리적으로 독립적인 변경사항 감지!
+⚠️ Logically Independent Changes Detected!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-감지된 그룹:
-  그룹 1: .claude/skills/commit/ (4개 파일)
-  그룹 2: ai/docs/claude/ (70개 파일)
-  그룹 3: .claude/agents/ (8개 파일)
+Detected groups:
+  Group 1: .claude/skills/commit/ (4 files)
+  Group 2: ai/docs/claude/ (70 files)
+  Group 3: .claude/agents/ (8 files)
 
-총 82개 파일이 3개의 독립적인 컨텍스트로 나뉩니다.
+Total 82 files divided into 3 independent contexts.
 
-💡 도움말:
-   통합 커밋은 전체 롤백과 코드 리뷰가 어려워질 수 있습니다.
-   기본 정책(자동 분리)을 따르는 것을 권장합니다.
+💡 Help:
+   Unified commits can make full rollback and code review difficult.
+   Following the default policy (auto-split) is recommended.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 커밋 전략을 선택하세요:
+📋 Select Commit Strategy:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-> 1. 자동 분리 커밋 (기본 정책)
-     각 그룹을 독립적으로 커밋합니다.
-     ✅ 명확한 히스토리, 쉬운 리뷰, 선택적 롤백
+> 1. Auto-split commits (default policy)
+     Commit each group independently.
+     ✅ Clear history, easy review, selective rollback
 
-  2. 통합 커밋
-     모든 변경을 하나로 통합합니다.
-     ⚠️ 롤백/리뷰 어려움, 버그 추적 어려움
+  2. Unified commit
+     Integrate all changes into one commit.
+     ⚠️ Difficult rollback/review, hard to track bugs
 
-  3. 취소
-     커밋 프로세스를 종료합니다.
+  3. Cancel
+     Exit commit process.
 ```
 
 **User Actions:**
@@ -330,14 +330,14 @@ For auto-split commits, apply 3-stage process per group:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[1/3] 그룹 1 커밋: .claude/skills/commit/
+[1/3] Group 1 Commit: .claude/skills/commit/
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📝 Step 1/3: 커밋 타입 선택
+📝 Step 1/3: Select Commit Type
 
-○ feat - 새로운 기능 추가
-○ fix - 버그 수정
-○ docs - 문서
+○ feat - Add new feature
+○ fix - Bug fix
+○ docs - Documentation
 ...
 ```
 
@@ -376,7 +376,7 @@ Then proceed through Stages 2-3 and final confirmation for that group.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 1/3: 커밋 타입 선택
+📝 Step 1/3: Select Commit Type
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -389,9 +389,9 @@ Then proceed through Stages 2-3 and final confirmation for that group.
 Show context from previous stages:
 
 ```
-선택한 타입: feat
-감지된 스코프: spring-security-jwt
-선택한 바디 항목: 3개
+Selected type: feat
+Detected scope: spring-security-jwt
+Selected body items: 3 items
 ```
 
 - Helps user maintain context
@@ -402,7 +402,7 @@ Show context from previous stages:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 최종 커밋 메시지:
+📝 Final Commit Message:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 {complete message}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -427,13 +427,13 @@ Show context from previous stages:
 ```json
 {
   "questions": [{
-    "question": "질문 내용",
-    "header": "12자 이하 헤더",
+    "question": "Question text",
+    "header": "12 char header",
     "multiSelect": true,  // Stage 2 only
     "options": [
       {
-        "label": "항목 레이블",
-        "description": "상세 설명"
+        "label": "Item label",
+        "description": "Detailed description"
       }
     ]
   }]
@@ -444,7 +444,7 @@ Show context from previous stages:
 
 **Display to user in Stage 2:**
 ```
-감지된 스코프: {detectedScope}
+Detected scope: {detectedScope}
 ```
 
 - Shows what system detected
@@ -459,13 +459,13 @@ Show context from previous stages:
 
 ```bash
 # Stage 1: Type selection
-cat .claude/skills/commit/../assets/templates/3-1-type-selection.md
+cat .claude/skills/commit/../templates/3-1-type-selection.md
 
 # Stage 2: Body selection
-cat .claude/skills/commit/../assets/templates/3-2-body-selection.md
+cat .claude/skills/commit/../templates/3-2-body-selection.md
 
 # Stage 3: Footer selection
-cat .claude/skills/commit/../assets/templates/3-3-footer-selection.md
+cat .claude/skills/commit/../templates/3-3-footer-selection.md
 ```
 
 **Load only when needed:**

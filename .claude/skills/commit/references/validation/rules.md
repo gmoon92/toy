@@ -211,7 +211,7 @@ Separating structural and behavioral changes enables:
 - Clearer git history
 
 **For detailed examples and detection process, see:**
-- [../assets/templates/1-tidy-first.md](../assets/templates/1-tidy-first.md) - Detection and user guidance
+- [../templates/1-tidy-first.md](../../templates/1-tidy-first.md) - Detection and user guidance
 - [examples.md](../support/examples.md) - Correct vs incorrect commit examples
 
 ## Toy Project Conventions
@@ -277,7 +277,7 @@ Consider separating if:
 - Not appropriate for one PR review
 
 **For detailed examples and auto-split process, see:**
-- [../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md) - Detection and user guidance
+- [2-logical-independence.md](../../templates/2-logical-independence.md) - Detection and user guidance
 - [logical-independence.md](logical-independence.md) - Automatic commit splitting process
 - [examples.md](../support/examples.md) - Correct vs incorrect commit examples
 
