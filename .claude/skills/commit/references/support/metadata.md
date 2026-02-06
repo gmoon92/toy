@@ -67,7 +67,7 @@ user> /commit
       "count": 82,
       "list": [
         ".claude/skills/commit/SKILL.md",
-        ".claude/skills/commit/RULES.md",
+        ".claude/skills/commit/references/validation/rules.md",
         "ai/docs/claude/docs/01-build-with-claude/01-features-overview.md"
       ]
     },
@@ -89,15 +89,15 @@ user> /commit
         "type": "docs",
         "files": [
           ".claude/skills/commit/SKILL.md",
-          ".claude/skills/commit/RULES.md",
-          ".claude/skills/commit/EXAMPLES.md",
-          ".claude/skills/commit/TROUBLESHOOTING.md"
+          ".claude/skills/commit/references/validation/rules.md",
+          ".claude/skills/commit/references/support/examples.md",
+          ".claude/skills/commit/references/support/troubleshooting.md"
         ],
         "suggestedMessages": [
           {
             "rank": 1,
             "header": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가",
-            "body": "- SKILL.md: 스킬 실행 프로세스 정의\n- RULES.md: 커밋 메시지 형식 규칙\n- EXAMPLES.md: 실제 사용 예시\n- TROUBLESHOOTING.md: 문제 해결 가이드",
+            "body": "- SKILL.md: 스킬 실행 프로세스 정의\n- references/validation/rules.md: 커밋 메시지 형식 규칙\n- references/support/examples.md: 실제 사용 예시\n- references/support/troubleshooting.md: 문제 해결 가이드",
             "footer": null
           },
           {
@@ -403,12 +403,11 @@ find .claude/temp -name "commit-execution-*.json" -mtime +1 -delete
 
 ## Related Documents
 
-- **[process.md](PROCESS.md)** - Execution process with metadata flow
-  - Step-by-step metadata read/write operations
-  - Metadata lifecycle in each phase
-- **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation algorithm
-  - suggestedMessages generation strategies
-  - How messages are pre-generated and stored
-- **[ui-design.md](ui-design.md)** - User interaction templates
-  - How templates consume metadata
-  - Token efficiency through template separation
+- **[process/step1-analysis.md](../process/step1-analysis.md)** - Metadata creation (Step 1)
+  - How metadata file is initially created
+  - What analysis results are stored
+- **[process/step2-violations.md](../process/step2-violations.md)** - Metadata read (Step 2+)
+  - How subsequent steps read from metadata
+  - Token savings through metadata reuse
+- **[process/step5-execute.md](../process/step5-execute.md)** - Metadata cleanup
+  - Deletion after commit completion

@@ -66,7 +66,7 @@ Commit 2: docs(claude-api): Claude API 문서 번역 추가
 3. Process user selection (see User Actions below)
 
 **User Actions:**
-- Select "Auto-split" → See **[auto-split.md](AUTO_SPLIT.md)** (auto-split commit process)
+- Select "Auto-split" → See **[logical-independence.md](../validation/logical-independence.md)** (auto-split commit process)
 - Select "Unified commit" → Show warning, request confirmation, proceed to Step 3
 - Select "Cancel" → Exit process
 

@@ -21,7 +21,7 @@ Guide user through 3 stages to build the commit message:
 - Refresh mechanism provides flexibility
 - Direct input available as fallback
 
-**Detailed algorithms:** See [message-generation.md](MESSAGE_GENERATION.md)
+**Detailed algorithms:** See [generation/](../generation/) (header.md, body.md, footer.md, algorithms.md)
 
 ---
 
@@ -77,7 +77,7 @@ function generate5Headers(changes) {
 ```
 1. docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 (추천)
 2. refactor(commit-skill): 메시지 생성 프로세스 재구성 (추천)
-3. docs(MESSAGE_GENERATION.md): 헤더 5개 생성 전략으로 재작성
+3. docs(generation/header.md): 헤더 5개 생성 전략으로 재작성
 4. docs(.claude/skills): commit 스킬 문서 업데이트
 ```
 
@@ -102,7 +102,7 @@ Use metadata `analysis.bodyItemCandidates` (pre-generated in Step 1).
 ```javascript
 function generateBodyItems(files, diff) {
   // Strategy: Feature-based (작업/기능 중심, 파일명 X)
-  // See MESSAGE_GENERATION.md for detailed algorithm
+  // See generation/algorithms.md for detailed algorithm
 
   // 1. Analyze and group by feature/purpose
   const features = analyzeFeatures(files, diff);
@@ -316,8 +316,11 @@ Then proceed to Step 4 (final confirmation).
 - File-based or feature-based grouping
 
 **For detailed format rules and examples:**
-- [message-generation.md](MESSAGE_GENERATION.md) - Complete generation algorithms and strategies
-- [RULES.md - Body Guidelines](RULES.md#body-guidelines) - Validation rules
+- [generation/header.md](../generation/header.md) - Header generation algorithm
+- [generation/body.md](../generation/body.md) - Body generation strategies
+- [generation/footer.md](../generation/footer.md) - Footer options
+- [generation/algorithms.md](../generation/algorithms.md) - Complete algorithms
+- [validation/rules.md](../validation/rules.md) - Validation rules including body guidelines
 
 ---
 

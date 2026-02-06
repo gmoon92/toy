@@ -63,7 +63,7 @@ Each template is separated into its own file for efficient context loading:
 
 ○ docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 (추천)
 ○ refactor(commit-skill): 메시지 생성 프로세스 재구성 (추천)
-○ docs(MESSAGE_GENERATION.md): 헤더 5개 생성 전략으로 재작성
+○ docs(generation/header.md): 헤더 5개 생성 전략으로 재작성
 ○ docs(.claude/skills): commit 스킬 문서 업데이트
 ```
 
@@ -477,19 +477,19 @@ cat .claude/skills/commit/../assets/templates/3-3-footer-selection.md
 
 ## Related Documents
 
-- **[../PROCESS.md](../PROCESS.md)** - Step 3 uses 3-stage selection
-  - Stage 1: 3-1-header-selection-1 (type)
-  - Stage 2: 3-1-header-selection-2 (body)
-  - Stage 3: 3-1-header-selection-3 (footer)
-- **[../MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md)** - Generation algorithms
-  - Type detection algorithm
-  - Body item generation (file-based, feature-based, hybrid)
-  - Scope extraction algorithm
-  - Header message generation
-- **[../METADATA.md](../METADATA.md)** - Metadata structure
+- **[process/step3-message.md](../process/step3-message.md)** - 3-stage message composition
+  - How UI templates are used in Step 3
+  - Template loading sequence
+- **[generation/header.md](../generation/header.md)** - Header generation for Stage 1
+  - Algorithm used in header selection template
+- **[generation/body.md](../generation/body.md)** - Body generation for Stage 2
+  - Feature-based candidates in body selection template
+- **[generation/footer.md](../generation/footer.md)** - Footer options for Stage 3
+  - Footer selection template design
+- **[metadata.md](metadata.md)** - Metadata structure
   - Pre-generated body candidates
   - User selections storage
-- **[../RULES.md](../RULES.md)** - Validation rules
+- **[validation/rules.md](../validation/rules.md)** - Validation rules
   - Format validation
-- **[../EXAMPLES.md](../EXAMPLES.md)** - Complete examples
+- **[examples.md](examples.md)** - Complete examples
   - Real commit message examples

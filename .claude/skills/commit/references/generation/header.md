@@ -103,7 +103,7 @@ These are alternatives shown initially, but can be refreshed to show different o
 function generateMessage3(changes, recommended) {
   // Try different scope level
   const alternativeScope = findAlternativeScope(changes.files);
-  // e.g., "MESSAGE_GENERATION.md" (file) vs "commit-skill" (module)
+  // e.g., "generation/header.md" (file) vs "commit-skill" (module)
 
   return `${recommended.type}(${alternativeScope}): ${recommended.message}`;
 }
@@ -111,7 +111,7 @@ function generateMessage3(changes, recommended) {
 
 **Example:**
 ```
-docs(MESSAGE_GENERATION.md): 3단계 선택 알고리즘으로 재작성
+docs(generation/header.md): 3단계 선택 알고리즘으로 재작성
 ```
 
 **Message 4: Expression Variation**
@@ -195,7 +195,7 @@ function generateAllHeaderCandidates(changes) {
   // Generate variations
   const scopes = [
     detectModuleScope(changes.files),      // commit-skill
-    detectFileScope(changes.files),        // MESSAGE_GENERATION.md
+    detectFileScope(changes.files),        // generation/header.md
     detectParentScope(changes.files),      // .claude/skills
     detectSubdirScope(changes.files)       // commit/templates
   ];
@@ -236,7 +236,7 @@ function generateAllHeaderCandidates(changes) {
         "refactor(commit-skill): 메시지 생성 프로세스 재구성"
       ],
       "general": [
-        "docs(MESSAGE_GENERATION.md): 3단계 선택 알고리즘으로 재작성",
+        "docs(generation/header.md): 3단계 선택 알고리즘으로 재작성",
         "docs(.claude/skills): commit 스킬 문서 업데이트",
         "refactor(commit): 커밋 메시지 작성 프로세스 개선",
         "feat(commit-skill): 사용자 선택 기반 메시지 생성 기능 추가",

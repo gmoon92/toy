@@ -100,8 +100,8 @@ For each group in order:
 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
    - SKILL.md: 스킬 실행 프로세스 정의
-   - RULES.md: 커밋 메시지 형식 규칙
-   - EXAMPLES.md: 실제 사용 예시
+   - references/validation/rules.md: 커밋 메시지 형식 규칙
+   - references/support/examples.md: 실제 사용 예시
 
 2. docs(commit-skill): 커밋 스킬 문서 추가
 ...
@@ -176,16 +176,17 @@ Final report shows:
 
 ## Related Documents
 
-- **[process.md](PROCESS.md)** - Complete execution workflow
-  - Step 2: How logical independence is detected
+- **[process/step2-violations.md](../process/step2-violations.md)** - Violation detection
+  - How logical independence is detected
   - Integration with auto-split process
-- **[rules.md](RULES.md)** - Logical Independence principle
+- **[rules.md](rules.md)** - Logical Independence principle
   - When and why to separate commits
   - Decision criteria
-- **[../assets/templates/2-logical-independence.md](../assets/templates/2-logical-independence.md)** - User interaction template
-  - Policy selection UI
-  - Screen output and user actions
-- **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation per group
-  - How 5 messages are generated for each split group
-- **[metadata.md](METADATA.md)** - Group metadata structure
+- **[support/examples.md](../support/examples.md)** - Auto-split examples
+  - Real-world scenarios of independent changes
+- **[generation/header.md](../generation/header.md)** - Header generation per group
+  - How 5 header messages are generated for each split group
+- **[generation/body.md](../generation/body.md)** - Body generation per group
+  - Feature-based body items for each group
+- **[support/metadata.md](../support/metadata.md)** - Group metadata structure
   - How groups are stored and tracked during auto-split

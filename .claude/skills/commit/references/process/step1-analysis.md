@@ -15,7 +15,7 @@ The commit skill follows a 5-step process to ensure quality commits that follow 
 **Token Optimization:**
 - Step 1 analyzes once and writes `.claude/temp/commit-{timestamp}.json`
 - Steps 2-5 read from metadata (67% token savings)
-- See [metadata.md](METADATA.md) for details
+- See [metadata.md](../support/metadata.md) for details
 
 **Important:** All policies (Tidy First, Logical Independence, User Communication, etc.) are defined in [SKILL.md Core Principles](SKILL.md#core-principles).
 

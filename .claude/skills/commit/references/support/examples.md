@@ -120,9 +120,9 @@ chore(spring-cloud-bus): 프로젝트 초기화
 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
    - SKILL.md: 스킬 실행 프로세스 정의
-   - RULES.md: 커밋 메시지 형식 규칙
-   - EXAMPLES.md: 실제 사용 예시
-   - TROUBLESHOOTING.md: 문제 해결 가이드
+   - references/validation/rules.md: 커밋 메시지 형식 규칙
+   - references/support/examples.md: 실제 사용 예시
+   - references/support/troubleshooting.md: 문제 해결 가이드
 
 2. docs(commit-skill): 커밋 스킬 문서 추가
 
@@ -261,13 +261,15 @@ fix(spring-jpa): UserRepository null 체크       # Should use filename
 
 ## Related Documents
 
-- **[rules.md](RULES.md)** - Commit message format rules
+- **[validation/rules.md](../validation/rules.md)** - Commit message format rules
   - Complete validation rules and specifications
-  - Tidy First and Logical Independence principles
-- **[message-generation.md](MESSAGE_GENERATION.md)** - Message generation strategies
-  - How to generate messages following these patterns
-  - Scope selection and body generation algorithms
-- **[auto-split.md](AUTO_SPLIT.md)** - Auto-split commit examples
+  - Why these patterns are recommended
+- **[generation/header.md](../generation/header.md)** - Header generation algorithm
+  - How to generate 5 header message candidates
+- **[generation/body.md](../generation/body.md)** - Body generation strategy
+  - Feature-based body item candidate generation
+- **[validation/logical-independence.md](../validation/logical-independence.md)** - Auto-split examples
   - How to properly separate independent changes
-- **[process.md](PROCESS.md)** - Execution process
+- **[process/step3-message.md](../process/step3-message.md)** - 3-stage composition
+  - How examples are used in message generation
   - Where examples are used in the workflow

@@ -10,7 +10,7 @@
 
 **Module name:**
 ```
-Input: .claude/skills/commit/SKILL.md, PROCESS.md, MESSAGE_GENERATION.md
+Input: .claude/skills/commit/SKILL.md, process/step3-message.md, generation/header.md
 Output: "commit-skill"
 ```
 
@@ -177,8 +177,8 @@ function extractPrimaryObject(changes) {
 
 ```
 Files:
-- .claude/skills/commit/MESSAGE_GENERATION.md (860 lines changed)
-- .claude/skills/commit/PROCESS.md (289 lines changed)
+- .claude/skills/commit/generation/header.md (860 lines changed)
+- .claude/skills/commit/process/step3-message.md (289 lines changed)
 - .claude/skills/commit/SKILL.md (22 lines changed)
 - .claude/skills/commit/../assets/templates/3-1-header-selection.md (new file)
 - .claude/skills/commit/../assets/templates/3-2-body-selection.md (163 lines added)
@@ -195,7 +195,7 @@ Files:
 
 **일반 3개 (새로고침 가능):**
 ```
-3. docs(MESSAGE_GENERATION.md): 헤더 5개 생성 전략으로 재작성
+3. docs(generation/header.md): 헤더 5개 생성 전략으로 재작성
 4. docs(.claude/skills): commit 스킬 문서 및 템플릿 업데이트
 5. feat(commit-skill): 사용자 선택 기반 메시지 생성 기능 추가
 ```
@@ -203,8 +203,8 @@ Files:
 ### Generated Body Items
 
 ```
-- MESSAGE_GENERATION.md: 헤더 5개 생성 전략으로 재작성
-- PROCESS.md: Step 3을 3단계 선택 프로세스로 변경
+- generation/header.md: 헤더 5개 생성 전략으로 재작성
+- process/step3-message.md: Step 3을 3단계 선택 프로세스로 변경
 - templates: 3개 새 템플릿 추가 (header, body, footer selection)
 - SKILL.md: 코어 프롬프트를 헤더 선택 방식으로 업데이트
 - 바디 없음 (헤더만 사용)
@@ -221,8 +221,8 @@ Files:
 ```
 docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경
 
-- MESSAGE_GENERATION.md: 헤더 5개 생성 전략으로 재작성
-- PROCESS.md: Step 3을 3단계 선택 프로세스로 변경
+- generation/header.md: 헤더 5개 생성 전략으로 재작성
+- process/step3-message.md: Step 3을 3단계 선택 프로세스로 변경
 - templates: 3개 새 템플릿 추가 (header, body, footer selection)
 ```
 
@@ -249,10 +249,11 @@ docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변�
 
 ## Related Documents
 
-- **[process.md](PROCESS.md)** - Step 3 execution with 3 stages
-- **[../assets/templates/3-1-header-selection.md](../assets/templates/3-1-header-selection.md)** - Stage 1
-- **[../assets/templates/3-2-body-selection.md](../assets/templates/3-2-body-selection.md)** - Stage 2
-- **[../assets/templates/3-3-footer-selection.md](../assets/templates/3-3-footer-selection.md)** - Stage 3
-- **[metadata.md](METADATA.md)** - Metadata structure
-- **[rules.md](RULES.md)** - Validation rules
-- **[examples.md](EXAMPLES.md)** - Complete examples
+- **[header.md](header.md)** - Header generation using these algorithms
+  - How scope/type detection is applied
+- **[body.md](body.md)** - Body generation using these algorithms
+  - Feature-based candidate generation
+- **[validation/rules.md](../validation/rules.md)** - Rules validated by algorithms
+  - Type and scope validation rules
+- **[support/examples.md](../support/examples.md)** - Algorithm application examples
+  - Real-world scope and type detection scenarios
