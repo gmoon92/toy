@@ -1,450 +1,556 @@
-# Commit Message Generation Strategy
+# Commit Message Generation Strategy (3-Stage User Selection)
 
-Standardize message generation algorithms to provide consistent templates across different clients.
+User builds commit message through 3 stages: header selection → body selection → footer selection.
 
 ---
 
 ## Overview
 
-Generate **5 commit messages** for each group (independent change set).
+**3-Stage Selection Process:**
 
-- **Message 1**: Recommended message (optimal scope + clear expression)
-- **Message 2**: Scope variation
-- **Message 3**: Message expression variation
-- **Message 4**: Body detail adjustment
-- **Message 5**: Type alternative
+1. **Stage 1: Header Selection** - User selects from 5 pre-generated header messages
+   - 추천 2개 (fixed, best matches)
+   - 일반 3개 (refreshable alternatives)
 
-User can select from 5 options or enter directly via "Other" option.
+2. **Stage 2: Body Selection** - User selects body items (multi-select)
+   - Auto-generated 4-10 body item candidates
+   - "바디 없음" for header-only commits
+   - "다른 추천 리스트 보기" to regenerate
 
----
+3. **Stage 3: Footer Selection** - User selects footer option
+   - 푸터 없음 (recommended)
+   - Issue reference
+   - Breaking Change
 
-## Generation Strategies
-
-### Message 1: Recommended Message (Optimal)
-
-**Goal:** Most logical and clear message
-
-**Scope selection:**
-1. **Prefer module name**: When multiple related files changed
-   - Example: `spring-batch`, `spring-security-jwt`, `commit-skill`
-2. **Use filename**: When single file changed
-   - Example: `DateUtils.java`, `README.md`, `build.gradle`
-
-**Message writing:**
-- Clearly express change purpose
-- Verb + object structure
-- Korean or English both acceptable
-
-**Body writing:**
-- Add when 5+ files changed
-- List major changes with `-` bullets
-- Limit to 5 lines or less
-
-**예시:**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- SKILL.md: 스킬 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙
-- EXAMPLES.md: 실제 사용 예시
-- TROUBLESHOOTING.md: 문제 해결 가이드
-```
-
-**Scoring criteria:**
-- Scope accuracy: 40 points (match with main directory)
-- Type accuracy: 30 points (match with change nature)
-- Body completeness: 20 points (informativeness)
-- Detail appropriateness: 10 points (match with change size)
+**Benefits:**
+- User has full control through selection
+- Pre-generated options ensure quality
+- Refresh mechanism provides flexibility
+- Direct input available as fallback
 
 ---
 
-### Message 2: Scope Variation
+## Stage 1: Header Message Generation
 
-**Goal:** Change scope to different level
+### Generate 5 Header Messages
 
 **Strategy:**
-1. If Message 1 uses module name → Change to filename
-2. If Message 1 uses filename → Change to parent module name
+- **추천 2개** (Recommended, fixed): Always shown, best matches
+- **일반 3개** (General, refreshable): Alternatives, can be regenerated
 
-**Examples:**
+### Recommended Message 1 (최우선 추천)
 
-**Message 1:**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+**Goal:** Most accurate and appropriate header
+
+**Selection criteria:**
+- **Scope accuracy** (40 points): Best matches main directory/module
+- **Type correctness** (30 points): Matches primary change nature
+- **Clarity** (20 points): Clear, concise expression
+- **Convention** (10 points): Follows project naming patterns
+
+**Algorithm:**
+```javascript
+function generateRecommended1(changes) {
+  // Detect optimal scope
+  const scope = detectOptimalScope(changes.files);
+  // Module name preferred: "commit-skill", "spring-batch"
+
+  // Detect primary type
+  const type = detectPrimaryType(changes.diff);
+  // Analyze: new features, bug fixes, refactoring, docs
+
+  // Generate clear message
+  const message = generateClearMessage(type, scope, changes);
+  // Format: "{primary action} {brief description}"
+
+  return `${type}(${scope}): ${message}`;
+}
 ```
 
-**Message 2 (파일명으로 변경):**
+**Example:**
 ```
-docs(SKILL.md): 커밋 메시지 자동 생성 스킬 추가
-```
-
-**또는 (상위 디렉토리로 변경):**
-```
-docs(.claude): 커밋 메시지 자동 생성 스킬 추가
+docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경
 ```
 
-**When useful:**
-- When reviewer wants to focus on specific file
-- When wanting to understand change in broader context
+### Recommended Message 2 (차선 추천)
+
+**Goal:** Strong alternative with different emphasis
+
+**Variation strategies:**
+1. **Different scope level**:
+   - If #1 uses module → Use filename
+   - If #1 uses filename → Use parent module
+
+2. **Different type interpretation**:
+   - If #1 is `docs` → Try `refactor` (structural change perspective)
+   - If #1 is `feat` → Try `refactor` (improvement perspective)
+
+3. **Different message angle**:
+   - If #1 focuses on "what" → Focus on "why"
+   - If #1 is general → Be more specific
+
+**Example:**
+```
+refactor(commit-skill): 메시지 생성 프로세스를 사용자 선택 기반으로 재구성
+```
+
+### General Messages 3-5 (일반 메시지)
+
+These are alternatives shown initially, but can be refreshed to show different options.
+
+**Message 3: Scope Variation**
+```javascript
+function generateMessage3(changes, recommended) {
+  // Try different scope level
+  const alternativeScope = findAlternativeScope(changes.files);
+  // e.g., "MESSAGE_GENERATION.md" (file) vs "commit-skill" (module)
+
+  return `${recommended.type}(${alternativeScope}): ${recommended.message}`;
+}
+```
+
+**Example:**
+```
+docs(MESSAGE_GENERATION.md): 3단계 선택 알고리즘으로 재작성
+```
+
+**Message 4: Expression Variation**
+```javascript
+function generateMessage4(changes, recommended) {
+  // Try different message expression
+  const variations = [
+    generateConciseMessage(changes),  // More brief
+    generateDetailedMessage(changes), // More descriptive
+    generateActionMessage(changes)    // Action-oriented
+  ];
+
+  return `${recommended.type}(${recommended.scope}): ${pickBestVariation(variations)}`;
+}
+```
+
+**Example:**
+```
+docs(commit-skill): 헤더 선택 기반 3단계 커밋 프로세스 도입
+```
+
+**Message 5: Type Alternative**
+```javascript
+function generateMessage5(changes) {
+  // Interpret from different angle
+  const alternativeType = findAlternativeType(changes);
+
+  // Examples:
+  // docs ↔ refactor (documentation vs structure)
+  // feat ↔ refactor (new feature vs improvement)
+  // chore ↔ feat (configuration vs feature)
+
+  return `${alternativeType}(${scope}): ${generateMessage(alternativeType, changes)}`;
+}
+```
+
+**Example:**
+```
+refactor(.claude/skills): 커밋 스킬 문서 및 프로세스 개선
+```
+
+### Refresh Logic (다른 추천 리스트 보기)
+
+When user requests refresh, regenerate **일반 3개** while keeping **추천 2개** fixed.
+
+**Algorithm:**
+```javascript
+function refreshHeaderMessages(fixedRecommended, allCandidates, shownIndices) {
+  // Keep 추천 2개 unchanged
+  const recommended = fixedRecommended; // [msg1, msg2]
+
+  // Get next 3 candidates not yet shown
+  const availableIndices = allCandidates
+    .map((_, i) => i)
+    .filter(i => !shownIndices.includes(i));
+
+  // Pick next 3
+  const nextIndices = availableIndices.slice(0, 3);
+  const newGeneral = nextIndices.map(i => allCandidates[i]);
+
+  // Update shown indices
+  shownIndices.push(...nextIndices);
+
+  // If all shown, wrap around
+  if (availableIndices.length < 3) {
+    shownIndices = []; // Reset
+  }
+
+  return {
+    messages: [...recommended, ...newGeneral],
+    shownIndices
+  };
+}
+```
+
+**Generate candidate pool in Step 1:**
+```javascript
+function generateAllHeaderCandidates(changes) {
+  const candidates = [];
+
+  // Generate variations
+  const scopes = [
+    detectModuleScope(changes.files),      // commit-skill
+    detectFileScope(changes.files),        // MESSAGE_GENERATION.md
+    detectParentScope(changes.files),      // .claude/skills
+    detectSubdirScope(changes.files)       // commit/templates
+  ];
+
+  const types = ['docs', 'refactor', 'feat', 'chore'];
+
+  const messages = [
+    generatePrimaryMessage(changes),
+    generateAlternativeMessage1(changes),
+    generateAlternativeMessage2(changes),
+    generateAlternativeMessage3(changes)
+  ];
+
+  // Combine to create 10-15 candidates
+  scopes.forEach(scope => {
+    types.forEach(type => {
+      messages.forEach(message => {
+        candidates.push(`${type}(${scope}): ${message}`);
+      });
+    });
+  });
+
+  // Score and rank
+  candidates.forEach(c => c.score = scoreMessage(c, changes));
+  candidates.sort((a, b) => b.score - a.score);
+
+  return candidates.slice(0, 15); // Keep top 15
+}
+```
+
+**Store in metadata:**
+```json
+{
+  "analysis": {
+    "headerCandidates": {
+      "recommended": [
+        "docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경",
+        "refactor(commit-skill): 메시지 생성 프로세스 재구성"
+      ],
+      "general": [
+        "docs(MESSAGE_GENERATION.md): 3단계 선택 알고리즘으로 재작성",
+        "docs(.claude/skills): commit 스킬 문서 업데이트",
+        "refactor(commit): 커밋 메시지 작성 프로세스 개선",
+        "feat(commit-skill): 사용자 선택 기반 메시지 생성 기능 추가",
+        "...more candidates..."
+      ],
+      "shownIndices": [0, 1, 2]
+    }
+  }
+}
+```
 
 ---
 
-### Message 3: Message Expression Variation
+## Stage 2: Body Item Generation
 
-**Goal:** Vary header message expression
+### Generate 4-10 Body Item Candidates
 
-**Strategy:**
-1. **Concise version**: Keep only essentials
-2. **Detailed version**: Add more context
-3. **Alternative expression**: Synonyms, different perspective
+**Strategies:**
 
-**Examples:**
+1. **File-based** (1-3 files changed)
+2. **Feature-based** (4+ files changed)
+3. **Hybrid** (mix of both)
 
-**Message 1:**
+See [template-3-2-body-selection.md](templates/template-3-2-body-selection.md) for detailed algorithm.
+
+**Example candidates:**
 ```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-```
-
-**Message 3 옵션 1 (간결):**
-```
-docs(commit-skill): 커밋 스킬 문서 추가
-```
-
-**Message 3 옵션 2 (상세):**
-```
-docs(commit-skill): Git 커밋 자동화 스킬 문서 및 규칙 추가
+- MESSAGE_GENERATION.md: 헤더 5개 생성 전략으로 재작성
+- PROCESS.md: Step 3을 3단계 선택 프로세스로 변경
+- templates: 3개 새 템플릿 추가 (header, body, footer selection)
+- SKILL.md: 코어 프롬프트를 헤더 선택 방식으로 업데이트
 ```
 
-**Message 3 옵션 3 (다른 관점):**
-```
-docs(commit-skill): 자동 커밋 메시지 생성 프로세스 정의
-```
+### Refresh Logic (다른 추천 리스트 보기)
 
----
+Rotate between different grouping strategies:
 
-### Message 4: Body Detail Adjustment
+```javascript
+function refreshBodyItems(files, diff, currentStrategy) {
+  const strategies = ['file-based', 'feature-based', 'hybrid'];
+  const nextStrategy = strategies[(strategies.indexOf(currentStrategy) + 1) % 3];
 
-**Goal:** Adjust body presence or detail level
-
-**Strategy:**
-1. If has body → Remove (header only)
-2. If no body → Add (detailed description)
-3. If has body → More concise or more detailed
-
-**Examples:**
-
-**Message 1 (Body 있음):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- SKILL.md: 스킬 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙
-- EXAMPLES.md: 실제 사용 예시
-- TROUBLESHOOTING.md: 문제 해결 가이드
-```
-
-**Message 4 옵션 1 (Body 제거):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-```
-
-**Message 4 옵션 2 (Body 간결):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- 스킬 실행 프로세스 및 규칙 문서화
-```
-
-**Message 4 옵션 3 (Body 상세):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- SKILL.md: 스킬 개요 및 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙 및 검증 규칙
-- EXAMPLES.md: 타입별 실제 사용 예시
-- TROUBLESHOOTING.md: Git hook 실패 시 문제 해결 가이드
-- PROCESS.md: 5단계 실행 프로세스 상세 설명
+  return generateBodyItems(files, diff, nextStrategy);
+}
 ```
 
 ---
 
-### Message 5: Type Alternative
+## Stage 3: Footer Selection
 
-**Goal:** Suggest alternative if interpretable as different type
+Simple selection, no refresh needed:
+- 푸터 없음 (recommended)
+- Issue reference
+- Breaking Change
 
-**Strategy:**
-Interpret changes from different perspective:
-- `docs` ↔ `feat` (documentation or feature)
-- `feat` ↔ `refactor` (new feature or improvement)
-- `chore` ↔ `feat` (configuration or feature)
-- `style` ↔ `refactor` (formatting or structural improvement)
-
-**Examples:**
-
-**Message 1 (docs):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-```
-
-**Message 5 옵션 1 (feat로 해석):**
-```
-feat(commit-skill): 자동 커밋 메시지 생성 기능 구현
-
-- 스킬 프로세스 자동화
-- 메시지 형식 검증
-- Tidy First 원칙 적용
-```
-(새로운 기능으로 볼 수도 있음)
-
-**Message 5 옵션 2 (chore로 해석):**
-```
-chore(.claude): commit 스킬 설정 추가
-```
-(스킬 설정 파일로 볼 수도 있음)
-
-**When useful:**
-- When change nature is ambiguous
-- When interpretable differently based on team conventions
-
----
-
-## Real Application Example
-
-### Scenario: 4 files added (.claude/skills/commit/)
-
-**Analysis:**
-- Files: SKILL.md, RULES.md, EXAMPLES.md, TROUBLESHOOTING.md
-- Type: docs (documentation added)
-- Scope: commit-skill (module name) or SKILL.md (main file)
-- Lines: 500+ lines added
-
-**Generated messages follow the 5 strategies:**
-1. **Optimal**: Module scope + informative body
-2. **Scope variation**: Filename scope instead
-3. **Message variation**: Concise expression
-4. **Body variation**: Header only
-5. **Type alternative**: feat interpretation
-
-For complete examples, see [EXAMPLES.md](EXAMPLES.md).
+See [template-3-3-footer-selection.md](templates/template-3-3-footer-selection.md).
 
 ---
 
 ## Scope Extraction Algorithm
 
-### Extract Module Name
+### Priority Order
 
-**Input:** File path list
+1. **Module name** (preferred for multi-file changes)
+2. **Filename** (for single file or small changes)
+3. **Directory name** (fallback)
+
+### Examples
+
+**Module name:**
 ```
-.claude/skills/commit/SKILL.md
-.claude/skills/commit/RULES.md
-.claude/skills/commit/EXAMPLES.md
-```
-
-**Algorithm:**
-1. Extract common directory: `.claude/skills/commit/`
-2. Use last directory name as module name: `commit`
-3. Add context if needed: `commit-skill`
-
-**Examples:**
-- `spring-batch/src/main/java/...` → `spring-batch`
-- `ai/docs/claude/...` → `claude-api` (context added)
-- `.claude/agents/korean-translator/...` → `korean-translator`
-
-### Extract Filename
-
-**Input:** When only 1 file changed
-```
-src/main/java/com/example/utils/DateUtils.java
+Input: .claude/skills/commit/SKILL.md, PROCESS.md, MESSAGE_GENERATION.md
+Output: "commit-skill"
 ```
 
-**Algorithm:**
-1. Extract filename only: `DateUtils.java`
-2. Or use full path: `utils/DateUtils.java`
+**Filename:**
+```
+Input: src/main/java/utils/DateUtils.java
+Output: "DateUtils.java"
+```
 
-**Examples:**
-- Single file change: `DateUtils.java`
-- README change: `README.md`
-- Config file: `application.yml`
+**Directory name:**
+```
+Input: src/auth/UserService.java, src/auth/LoginController.java
+Output: "auth"
+```
+
+### Algorithm
+
+```javascript
+function detectOptimalScope(files) {
+  // Single file
+  if (files.length === 1) {
+    return path.basename(files[0]);
+  }
+
+  // Find common directory
+  const commonDir = findCommonDirectory(files);
+  const dirName = path.basename(commonDir);
+
+  // Enhance with context
+  const enhancedScope = enhanceScope(dirName, files);
+
+  return enhancedScope;
+}
+
+function enhanceScope(baseName, files) {
+  // Common patterns
+  const patterns = {
+    'commit': 'commit-skill',
+    'auth': 'spring-security' // if Spring project
+  };
+
+  return patterns[baseName] || baseName;
+}
+```
 
 ---
 
-## Message Generation Patterns
+## Type Detection Algorithm
 
-### Verb Selection
+### Priority Order
 
-| Type | Preferred verbs (Korean) | Preferred verbs (English) |
-|------|------------------|------------------|
+1. **Test files only** → `test`
+2. **Docs files only** → `docs`
+3. **Bug fix patterns** → `fix`
+4. **New feature patterns** → `feat`
+5. **Refactoring patterns** → `refactor`
+6. **Default** → `chore`
+
+### Algorithm
+
+```javascript
+function detectPrimaryType(changes) {
+  const { files, diff } = changes;
+
+  // Check file types
+  if (files.every(f => f.includes('test'))) return 'test';
+  if (files.every(f => f.endsWith('.md'))) return 'docs';
+
+  // Analyze diff content
+  if (hasBugFixPatterns(diff)) return 'fix';
+  if (hasNewFeaturePatterns(diff)) return 'feat';
+  if (hasRefactoringPatterns(diff)) return 'refactor';
+
+  return 'chore';
+}
+
+function hasBugFixPatterns(diff) {
+  const patterns = [
+    /fix\s+(bug|error|issue)/i,
+    /resolve\s+#\d+/i,
+    /patch\s+/i
+  ];
+
+  return patterns.some(p => p.test(diff));
+}
+
+function hasNewFeaturePatterns(diff) {
+  const patterns = [
+    /add\s+new/i,
+    /implement\s+/i,
+    /introduce\s+/i,
+    /create\s+.*class/i
+  ];
+
+  return patterns.some(p => p.test(diff));
+}
+
+function hasRefactoringPatterns(diff) {
+  const patterns = [
+    /extract\s+(method|class)/i,
+    /rename\s+/i,
+    /move\s+.*to/i,
+    /restructure/i
+  ];
+
+  return patterns.some(p => p.test(diff));
+}
+```
+
+---
+
+## Message Expression Generation
+
+### Type-Specific Verbs
+
+| Type | Korean Verbs | English Verbs |
+|------|--------------|---------------|
 | feat | 추가, 구현, 도입 | add, implement, introduce |
-| fix | 수정, 해결 | fix, resolve, correct |
-| refactor | 개선, 추출, 분리 | improve, extract, separate |
+| fix | 수정, 해결 | fix, resolve |
+| refactor | 개선, 재구성, 분리 | improve, restructure, extract |
 | test | 추가, 개선 | add, improve |
-| docs | 추가, 수정, 개선 | add, update, improve |
+| docs | 추가, 수정, 업데이트 | add, update, modify |
 | style | 정리, 적용 | format, apply |
-| chore | 업데이트, 추가, 변경 | update, add, change |
+| chore | 업데이트, 변경 | update, change |
 
-### Object Structure
+### Pattern: Verb + Object
 
-**Pattern:** `verb + object`
+**Algorithm:**
+```javascript
+function generateClearMessage(type, scope, changes) {
+  const verb = selectVerb(type);
+  const object = extractPrimaryObject(changes);
 
-**Good examples:**
-- `JWT 인증 필터 추가`
-- `배치 재시도 로직 구현`
-- `변수명 명확화`
-- `테스트 커버리지 개선`
+  return `${object} ${verb}`;
+}
 
-**Bad examples:**
-- `추가` (no object)
-- `코드 수정` (too vague)
-- `버그 수정` (which bug?)
+function selectVerb(type) {
+  const verbs = {
+    feat: ['추가', '구현', '도입'],
+    fix: ['수정', '해결'],
+    refactor: ['개선', '재구성', '분리'],
+    docs: ['추가', '수정', '업데이트']
+  };
 
----
+  return verbs[type][0]; // Pick first as default
+}
 
-## Body Generation Criteria
+function extractPrimaryObject(changes) {
+  // Analyze changed files to determine main subject
+  // Examples:
+  // - "JWT 인증 필터"
+  // - "배치 재시도 로직"
+  // - "커밋 메시지 생성 방식"
 
-### Addition Conditions
-
-Add body if any of the following applies:
-1. **5+ files** changed
-2. **100+ lines** changed
-3. **Complex logic** changes (judgment needed)
-4. **Multiple related changes** (context needed)
-
-### Format
-
-**CRITICAL: Body must follow this exact format for readability:**
-
-```
-- 주요 변경사항 1
-- 주요 변경사항 2
-- 주요 변경사항 3
-- ...
-```
-
-**Mandatory Rules:**
-- **Each line MUST start with `-` (dash + space)**: This is non-negotiable
-- **Each line MUST be on a new line**: No comma-separated items
-- **Keep each line concise**: 1-2 lines per item
-- **Limit to 5 lines or less**: Avoid overwhelming the user
-- **Group by file or feature**: Logical organization
-- **Focus on "what" rather than "why"**: Action-oriented descriptions
-
-**Example (Correct):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- SKILL.md: 스킬 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙
-- EXAMPLES.md: 실제 사용 예시
-```
-
-**Example (Wrong - No dashes):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-SKILL.md: 스킬 실행 프로세스 정의
-RULES.md: 커밋 메시지 형식 규칙
-```
-
-**Example (Wrong - Comma-separated):**
-```
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
-
-- SKILL.md: 스킬 실행 프로세스 정의, RULES.md: 커밋 메시지 형식 규칙
-```
-
-### Style Options
-
-**Style 1: List by file**
-```
-- SKILL.md: 스킬 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙
-- EXAMPLES.md: 실제 사용 예시
-```
-
-**Style 2: Group by feature**
-```
-- 스킬 프로세스 자동화
-- 메시지 형식 검증
-- Tidy First 원칙 적용
-```
-
-**Style 3: Hierarchical structure**
-```
-- JWT 인증 구현:
-  - 토큰 생성 및 검증 로직
-  - SecurityConfig 통합
+  return analyzeChanges(changes);
+}
 ```
 
 ---
 
-## Metadata JSON Structure
+## Complete Example
 
-The complete JSON schema and field descriptions are documented in [METADATA.md](METADATA.md).
+### Input (Changes)
 
-Each group includes a `suggestedMessages` array with 5 pre-generated messages following the strategies above.
+```
+Files:
+- .claude/skills/commit/MESSAGE_GENERATION.md (860 lines changed)
+- .claude/skills/commit/PROCESS.md (289 lines changed)
+- .claude/skills/commit/SKILL.md (22 lines changed)
+- .claude/skills/commit/templates/template-3-1-header-selection.md (new file)
+- .claude/skills/commit/templates/template-3-2-body-selection.md (163 lines added)
+- .claude/skills/commit/templates/template-3-3-footer-selection.md (192 lines added)
+```
+
+### Generated Headers (5개)
+
+**추천 2개 (고정):**
+```
+1. docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 (추천)
+2. refactor(commit-skill): 메시지 생성 프로세스를 사용자 선택 기반으로 재구성 (추천)
+```
+
+**일반 3개 (새로고침 가능):**
+```
+3. docs(MESSAGE_GENERATION.md): 헤더 5개 생성 전략으로 재작성
+4. docs(.claude/skills): commit 스킬 문서 및 템플릿 업데이트
+5. feat(commit-skill): 사용자 선택 기반 메시지 생성 기능 추가
+```
+
+### Generated Body Items
+
+```
+- MESSAGE_GENERATION.md: 헤더 5개 생성 전략으로 재작성
+- PROCESS.md: Step 3을 3단계 선택 프로세스로 변경
+- templates: 3개 새 템플릿 추가 (header, body, footer selection)
+- SKILL.md: 코어 프롬프트를 헤더 선택 방식으로 업데이트
+- 바디 없음 (헤더만 사용)
+```
+
+### Final Message (User Selections)
+
+**Selected:**
+- Header: #1 (docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경)
+- Body: Items 1, 2, 3
+- Footer: 푸터 없음
+
+**Assembled:**
+```
+docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경
+
+- MESSAGE_GENERATION.md: 헤더 5개 생성 전략으로 재작성
+- PROCESS.md: Step 3을 3단계 선택 프로세스로 변경
+- templates: 3개 새 템플릿 추가 (header, body, footer selection)
+```
 
 ---
 
-## Implementation Guide for Other Clients
+## Validation Rules
 
-### Minimum Requirements
-
-1. **Implement Scope extraction**
-   - File path → Extract module name
-   - Single file → Extract filename
-
-2. **Implement 5 message generation**
-   - Apply strategies 1-5
-   - Follow JSON schema
-
-3. **Implement Body generation conditions**
-   - 5+ files or 100+ lines
-
-### Optional Implementations
-
-1. **Scoring algorithm**
-   - Auto-select optimal message
-
-2. **Context addition**
-   - Apply project-specific conventions
-   - Learn directory structure
-
-3. **User preference learning**
-   - Analyze past selection patterns
-   - Personalized recommendations
-
----
-
-## Validation Checklist
-
-Verify generated messages satisfy:
-
-- [ ] Format: Follows `<type>(scope): <message>` pattern
-- [ ] Type: One of 7 types (feat, fix, refactor, test, docs, style, chore)
-- [ ] Scope: Contains only alphanumeric + `.`, `-`, `_`
-- [ ] Message: Start with lowercase, no period
-- [ ] Body: If present, separated by blank line, 5 lines or less
-- [ ] Footer: If present, separated by blank line
-- [ ] Blank blocks: Maximum 2 (header-body, body-footer)
-
-Regex validation:
+**Header format:**
 ```regex
 ^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$
 ```
+
+**Body format:**
+- Each line starts with `- ` (dash + space)
+- Maximum 5 lines
+- Each line 1-2 lines long
+
+**Footer format:**
+- `Closes #\d+(, #\d+)*`
+- `Fixes #\d+(, #\d+)*`
+- `BREAKING CHANGE: .+`
 
 ---
 
 ## Related Documents
 
-- **[RULES.md](RULES.md)** - Commit message format rules
-  - Validation rules and format specifications
-  - Tidy First and Logical Independence principles
-- **[EXAMPLES.md](EXAMPLES.md)** - Complete commit message examples
-  - All 7 commit types with real examples
-  - Advanced scenarios and common mistakes
-- **[METADATA.md](METADATA.md)** - Session metadata structure
-  - Complete JSON schema and field descriptions
-  - File lifecycle and cleanup procedures
-- **[templates/README.md](templates/README.md)** - User interaction templates
-  - AskUserQuestion tool structure
-  - Template usage patterns
+- **[PROCESS.md](PROCESS.md)** - Step 3 execution with 3 stages
+- **[templates/template-3-1-header-selection.md](templates/template-3-1-header-selection.md)** - Stage 1
+- **[templates/template-3-2-body-selection.md](templates/template-3-2-body-selection.md)** - Stage 2
+- **[templates/template-3-3-footer-selection.md](templates/template-3-3-footer-selection.md)** - Stage 3
+- **[METADATA.md](METADATA.md)** - Metadata structure
+- **[RULES.md](RULES.md)** - Validation rules
+- **[EXAMPLES.md](EXAMPLES.md)** - Complete examples

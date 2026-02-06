@@ -1,6 +1,6 @@
 # Commit Message UI/UX Design
 
-User-friendly message selection with preview and confirmation.
+User-friendly 3-stage message composition with clear guidance and confirmation.
 
 This directory contains individual UI templates for user interactions during the commit process, along with comprehensive UI/UX design guidelines.
 
@@ -12,13 +12,15 @@ Each template is separated into its own file for efficient context loading:
 
 - **[template-1-tidy-first.md](template-1-tidy-first.md)** - Tidy First 위반 감지
 - **[template-2-logical-independence.md](template-2-logical-independence.md)** - 논리적 독립성 감지
-- **[template-3-message-selection.md](template-3-message-selection.md)** - 커밋 메시지 선택
+- **[template-3-1-header-selection.md](template-3-1-header-selection.md)** - Stage 1: 헤더 메시지 선택 (추천 2 + 일반 3)
+- **[template-3-2-body-selection.md](template-3-2-body-selection.md)** - Stage 2: 바디 항목 다중 선택
+- **[template-3-3-footer-selection.md](template-3-3-footer-selection.md)** - Stage 3: 푸터 선택
 - **[template-4-final-confirmation.md](template-4-final-confirmation.md)** - 최종 확인
 - **[template-5-direct-input.md](template-5-direct-input.md)** - 메시지 수정 (직접 입력)
 
 ### Token Efficiency
 - **Selective loading**: Only load templates when needed
-- **75-90% token savings**: Load ~50-100 lines instead of entire combined file (~800 lines)
+- **75-90% token savings**: Load ~50-100 lines instead of entire combined file
 - **Scalability**: Easy to add new templates without affecting others
 
 ### Maintainability
@@ -28,212 +30,242 @@ Each template is separated into its own file for efficient context loading:
 
 ---
 
-## Message Selection Flow
+## NEW: 3-Stage Message Composition Flow
 
-### Step 1: Compact List View (Headers Only)
+### Overview
 
-Show headers only for quick scanning:
+**User builds commit message through 3 stages:**
 
-```
-📝 커밋 메시지를 선택하세요 (↑↓: 이동, ←→: 본문 보기):
+1. **Stage 1**: Select commit header from 5 pre-generated messages (추천 2 + 일반 3)
+2. **Stage 2**: Select body items (multi-select from auto-generated candidates)
+3. **Stage 3**: Select footer (none, issue reference, or breaking change)
 
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  3. feat(commit-skill): 자동 커밋 메시지 생성기
-  4. docs(claude-skills): commit 스킬 구현
-  5. 직접 입력
-
-[↑↓: 선택 이동 | ←→: 본문 펼침/접음 | Enter: 선택 | Esc: 취소]
-```
-
-**Design principles:**
-- **Recommended message always at #1**: Most logical choice based on analysis
-- **Compact by default**: Headers only for quick scanning
-- **Interactive preview**: Expand body on demand
+**Benefits:**
+- **User control**: Full transparency over each component
+- **Educational**: Learn what goes into each part
+- **Flexible**: Can skip stages or use direct input
+- **Efficient**: No need to generate 5 complete messages
 
 ---
 
-### Step 2: Body Preview (Toggle with Arrow Keys)
+### Stage 1: Header Message Selection
 
-**Press → (right arrow) on selected item:**
+**Template:** [template-3-1-header-selection.md](template-3-1-header-selection.md)
 
+**Screen:**
 ```
-📝 커밋 메시지를 선택하세요:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 Step 1/3: 헤더 메시지 선택
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천) ▼
+커밋 헤더로 사용할 메시지를 선택하세요.
+(추천 메시지는 변경사항을 가장 잘 설명합니다)
 
-     - SKILL.md: 스킬 실행 프로세스 정의
-     - RULES.md: 커밋 메시지 형식 규칙
-     - EXAMPLES.md: 실제 사용 예시
-     - TROUBLESHOOTING.md: 문제 해결 가이드
-
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  3. feat(commit-skill): 자동 커밋 메시지 생성기
-  4. docs(claude-skills): commit 스킬 구현
-  5. 직접 입력
-
-[↑↓: 선택 이동 | ←: 본문 접기 | Enter: 선택]
+○ docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 (추천)
+○ refactor(commit-skill): 메시지 생성 프로세스 재구성 (추천)
+○ docs(MESSAGE_GENERATION.md): 헤더 5개 생성 전략으로 재작성
+○ docs(.claude/skills): commit 스킬 문서 업데이트
 ```
 
-**Press ← (left arrow) to collapse:**
+**User Actions:**
+- Select one of 4 headers → Proceed to Stage 2
+- Select "다른 추천 리스트 보기" → Regenerate 일반 3개, show again
+- Select "Other" (직접 입력) → Manual header input, proceed to Stage 2
 
+**Generation strategy:**
+- **추천 2개** (fixed): Best matches, always shown
+- **일반 3개** (refreshable): Alternatives, rotate on refresh
+
+---
+
+### Stage 2: Body Items Selection (Multi-Select) ⭐ Core Feature
+
+**Template:** [template-3-2-body-selection.md](template-3-2-body-selection.md)
+
+**System automatically generates 4-10 body item candidates** by analyzing changed files:
+
+**Example candidates:**
 ```
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  ...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 Step 2/3: 바디 항목 선택
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+선택한 타입: feat
+감지된 스코프: spring-security-jwt
+
+커밋 본문에 포함할 작업 내용을 선택하세요.
+- 스페이스바로 복수 선택 가능
+- 간단한 변경이면 "바디 없음" 선택
+
+◯ UserService.java: 사용자 인증 로직 추가
+◯ LoginController.java: 로그인 API 엔드포인트 구현
+◯ application.yml: 데이터베이스 설정 변경
+◯ SecurityConfig.java: Spring Security 설정
+◯ 바디 없음 (헤더만 사용)
 ```
 
-**User can preview multiple messages:**
+**Item Generation Strategy:**
 
+**File-based (1-3 files):**
 ```
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천) ▼
-     - SKILL.md: 스킬 실행 프로세스 정의
-     - RULES.md: 커밋 메시지 형식 규칙
-     ...
+{filename}: {action}
+Example: UserService.java: 사용자 인증 로직 추가
+```
 
-  2. docs(commit-skill): 커밋 스킬 문서 추가 ▼
-     - 커밋 자동화 스킬 문서
-     - 메시지 형식 규칙 정의
+**Feature-based (4+ files):**
+```
+{feature description}
+Example: JWT 토큰 생성 및 검증 로직 구현
+```
 
-  3. feat(commit-skill): 자동 커밋 메시지 생성기
-  ...
+**Hybrid (recommended):**
+- Mix both strategies based on importance
+- Maximum 10 candidates
+
+**User Actions:**
+- Select 0+ items (multi-select) → Proceed to Stage 3
+- Select "바디 없음" → Header-only commit, proceed to Stage 3
+- Select "다른 추천 리스트 보기" → Regenerate body items, show again
+- Select "Other" (직접 입력) → Manual body input, proceed to Stage 3
+
+**Assembled body format:**
+```
+- UserService.java: 사용자 인증 로직 추가
+- LoginController.java: 로그인 API 엔드포인트 구현
+- SecurityConfig.java: Spring Security 설정
 ```
 
 ---
 
-### Step 3: Final Confirmation (Full Message Display)
+### Stage 3: Footer Selection
 
-**After user presses Enter on selection:**
+**Template:** [template-3-3-footer-selection.md](template-3-3-footer-selection.md)
 
+**Screen:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 Step 3/3: 푸터 선택
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+선택한 타입: feat
+선택한 스코프: spring-security-jwt
+선택한 바디 항목: 3개
+
+푸터를 추가할지 선택하세요.
+대부분의 경우 푸터가 필요하지 않습니다.
+
+○ 푸터 없음 (추천)
+○ Issue reference 추가
+○ Breaking Change
+```
+
+**User Action:**
+- Select "푸터 없음" → No footer, proceed to final confirmation
+- Select "Issue reference" → Prompt for issue numbers → Proceed to final confirmation
+- Select "Breaking Change" → Prompt for description → Proceed to final confirmation
+
+**Footer formats:**
+```
+Closes #123, #456
+Fixes #789
+BREAKING CHANGE: API 응답 형식 변경
+```
+
+---
+
+### Final Message Assembly
+
+**System assembles complete message from 3 stages:**
+
+```javascript
+function assembleFinalMessage(selections) {
+  const { type, scope, bodyItems, footer } = selections;
+
+  // Generate header
+  const headerMsg = generateHeaderMessage(type, scope, bodyItems);
+  const header = `${type}(${scope}): ${headerMsg}`;
+
+  // Format body
+  let body = '';
+  if (bodyItems.length > 0 && bodyItems[0] !== '바디 없음') {
+    body = '\n\n' + bodyItems.map(item => `- ${item.label}`).join('\n');
+  }
+
+  // Add footer
+  let footerSection = '';
+  if (footer && footer !== '푸터 없음') {
+    footerSection = '\n\n' + footer;
+  }
+
+  return header + body + footerSection;
+}
+```
+
+**Example assembled message:**
+```
+feat(spring-security-jwt): JWT 인증 필터 추가
+
+- UserService.java: 사용자 인증 로직 추가
+- LoginController.java: 로그인 API 엔드포인트 구현
+- SecurityConfig.java: Spring Security 설정
+
+Closes #123
+```
+
+**Message preview:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 생성된 커밋 메시지 미리보기:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+feat(spring-security-jwt): JWT 인증 필터 추가
+
+- UserService.java: 사용자 인증 로직 추가
+- LoginController.java: 로그인 API 엔드포인트 구현
+- SecurityConfig.java: Spring Security 설정
+
+Closes #123
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+다음 단계: 최종 확인
+```
+
+Then proceed to template-4 (final confirmation).
+
+---
+
+## Final Confirmation
+
+**Template:** [template-4-final-confirmation.md](template-4-final-confirmation.md)
+
+**Screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📝 최종 커밋 메시지:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
+feat(spring-security-jwt): JWT 인증 필터 추가
 
-- SKILL.md: 스킬 실행 프로세스 정의
-- RULES.md: 커밋 메시지 형식 규칙
-- EXAMPLES.md: 실제 사용 예시
-- TROUBLESHOOTING.md: 문제 해결 가이드
+- UserService.java: 사용자 인증 로직 추가
+- LoginController.java: 로그인 API 엔드포인트 구현
+- SecurityConfig.java: Spring Security 설정
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 이 메시지로 커밋하시겠습니까?
 
 1. 승인 - 커밋 실행
-2. 수정 - 다른 메시지 선택
+2. 수정 - 메시지 수정
 3. 취소 - 프로세스 종료
 ```
 
-**Key point:** User sees **complete message** (header + body + footer) before approval.
-
----
-
-## Keyboard Controls
-
-### Message List Screen
-
-| Key | Action |
-|-----|--------|
-| ↑ | 이전 항목으로 이동 |
-| ↓ | 다음 항목으로 이동 |
-| → | 선택된 항목의 본문 펼치기 |
-| ← | 선택된 항목의 본문 접기 |
-| Enter | 선택한 메시지로 최종 확인 화면 이동 |
-| Esc | 취소하고 나가기 |
-
-### Final Confirmation Screen
-
-| Key | Action |
-|-----|--------|
-| 1 | 승인 - 커밋 실행 |
-| 2 | 수정 - 메시지 목록으로 돌아가기 |
-| 3 | 취소 - 프로세스 종료 |
-| Esc | 메시지 목록으로 돌아가기 |
-
----
-
-## Recommendation Logic
-
-### How #1 (Recommended) is Determined
-
-The recommended message is selected based on:
-
-1. **Scope accuracy**: Best matches the changed files
-2. **Type correctness**: Matches the nature of changes
-3. **Body completeness**: Has most informative body
-4. **Commit size**: Appropriate detail for change size
-
-**Example scoring:**
-
-```javascript
-function scoreMessage(message, analysis) {
-  let score = 0;
-
-  // Scope match (40 points)
-  if (matchesMainDirectory(message.scope, analysis.mainDir)) {
-    score += 40;
-  }
-
-  // Type correctness (30 points)
-  if (matchesChangeType(message.type, analysis.changeType)) {
-    score += 30;
-  }
-
-  // Body quality (20 points)
-  if (hasInformativeBody(message.body, analysis.files)) {
-    score += 20;
-  }
-
-  // Appropriate detail (10 points)
-  if (matchesChangeSize(message, analysis.stats)) {
-    score += 10;
-  }
-
-  return score;
-}
-
-// Sort by score, highest first
-messages.sort((a, b) => b.score - a.score);
-messages[0].label = "(추천)";
-```
-
----
-
-## Visual Design
-
-### Color/Style Indicators
-
-```
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-  ^                                                      ^^^^^^^
-  |                                                      |
-  Selected indicator                                    Recommendation badge
-```
-
-### Expansion Indicator
-
-```
-Without body:
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-
-With body expanded:
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천) ▼
-     - SKILL.md: ...
-```
-
-### Final Confirmation Box
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 최종 커밋 메시지:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{full message}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+**User Actions:**
+- **Approve** → Execute git commit
+- **Modify** → Return to Stage 1 or direct input (template-5)
+- **Cancel** → Exit process
 
 ---
 
 ## Policy Selection UI (Logical Independence Detected)
+
+**Template:** [template-2-logical-independence.md](template-2-logical-independence.md)
 
 When multiple independent groups are detected:
 
@@ -260,160 +292,109 @@ When multiple independent groups are detected:
 > 1. 자동 분리 커밋 (기본 정책)
      각 그룹을 독립적으로 커밋합니다.
      ✅ 명확한 히스토리, 쉬운 리뷰, 선택적 롤백
-     ✅ git bisect/revert/cherry-pick 용이
-     ⚠️ 커밋 수 증가, 프로세스 시간 소요
 
   2. 통합 커밋
      모든 변경을 하나로 통합합니다.
      ⚠️ 롤백/리뷰 어려움, 버그 추적 어려움
-     ✅ 빠른 커밋, 간단한 히스토리
 
   3. 취소
      커밋 프로세스를 종료합니다.
-
-[↑↓: 이동 | →: 상세 정보 보기 | Enter: 선택]
 ```
 
-**Design principles:**
-- **Concise descriptions**: No redundancy, clear pros/cons
-- **Tooltip always visible**: Warning about unified commit risks
-- **Balanced information**: Show both advantages and disadvantages
-- **Git workflow alignment**: Follows atomic commit principles
-
-### Option Details (Expand with → arrow)
-
-**Option 1 expanded:**
-
-```
-> 1. 자동 분리 커밋 (기본 정책) ▼
-
-   각 그룹을 독립적인 커밋으로 분리합니다.
-
-   ✅ 이것이 기본 정책인 이유:
-   - 명확한 커밋 목적 (한 커밋 = 한 변경)
-   - 쉬운 코드 리뷰 (그룹별 독립 검토)
-   - 선택적 롤백/revert 가능 (문제 있는 부분만)
-   - git bisect로 버그 도입 시점 빠르게 추적
-   - cherry-pick으로 특정 변경만 이동 가능
-   - git blame으로 변경 이유 명확히 추적
-   - merge conflict 발생 시 범위가 작아 해결 쉬움
-   - CI/CD 실패 시 원인 파악 빠름
-
-   ⚠️ 알아두어야 할 사항:
-   - 각 그룹별로 커밋 메시지 작성 필요 (총 3번)
-   - 각 그룹별로 승인 과정 진행
-   - Hook 실패 시 일부 그룹만 커밋될 수 있음
-   - 프로세스 시간이 더 소요됨
-   - git log가 길어질 수 있음
-
-  2. 통합 커밋
-  3. 취소
-```
-
-**Option 2 expanded:**
-
-```
-  1. 자동 분리 커밋 (기본 정책)
-
-> 2. 통합 커밋 ▼
-
-   모든 변경을 하나로 통합합니다.
-
-   ⚠️ 위험 사항:
-   - 커밋 목적 불명확: 무엇을 위한 커밋인지 파악 어려움
-   - 코드 리뷰 어려움: 82개 파일을 한 번에 검토해야 함
-   - 부분 롤백/revert 불가능: 문제 있어도 전체 되돌려야 함
-   - git bisect 비효율: 버그 추적 시 범위가 너무 큼
-   - cherry-pick 어려움: 특정 변경만 선택 불가능
-   - git blame 혼란: 변경 이유 추적 어려움
-   - merge conflict 해결 어려움: 범위가 커서 복잡
-   - CI/CD 문제: 빌드/테스트 실패 시 원인 파악 어려움
-
-   ✅ 장점:
-   - 빠른 커밋: 한 번에 완료
-   - 간단한 히스토리: git log가 짧음
-   - 하나의 승인 과정
-
-   ℹ️ 이 옵션을 선택해야 하는 경우:
-   - 모든 변경이 하나의 기능을 위한 것
-   - 변경사항이 강하게 결합되어 분리 불가능
-   - 각 그룹이 독립적으로 작동하지 않음
-   - squash merge 워크플로우 사용
-
-   ⚠️ 주의: 선택 시 재확인 과정이 있습니다.
-
-  3. 취소
-```
-
-### Unified Commit Re-confirmation
-
-If user selects option 2, show additional warning:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ 통합 커밋 경고
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-기본 정책(자동 분리)을 따르지 않고 통합 커밋을 선택하셨습니다.
-
-다시 한번 확인해주세요:
-- 82개 파일이 하나의 커밋에 포함됩니다
-- 커밋 목적이 불명확해질 수 있습니다
-- 코드 리뷰가 매우 어려워집니다
-- 부분 롤백이 불가능합니다
-- git bisect/cherry-pick/blame 활용 어려움
-
-💡 도움말:
-   통합 커밋은 전체 롤백과 코드 리뷰가 어려워질 수 있습니다.
-   기본 정책(자동 분리)을 따르는 것을 권장합니다.
-
-정말로 통합 커밋으로 진행하시겠습니까?
-
-1. 아니오 - 자동 분리로 돌아가기 (권장)
-2. 예 - 통합 커밋으로 진행
-3. 취소
-```
+**User Actions:**
+- **Auto-split** → Each group goes through 3-stage process independently
+- **Unified commit** → All changes in one commit (with warning)
+- **Cancel** → Exit
 
 ---
 
 ## Auto-Split Commit UI
 
-For auto-split commits, apply same pattern per group:
+For auto-split commits, apply 3-stage process per group:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[1/3] 그룹 1 커밋
+[1/3] 그룹 1 커밋: .claude/skills/commit/
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📝 커밋 메시지를 선택하세요:
+📝 Step 1/3: 커밋 타입 선택
 
-> 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  3. feat(commit-skill): 자동 커밋 메시지 생성기
-  4. 직접 입력
-
-[↑↓: 이동 | ←→: 본문 보기 | Enter: 선택]
+○ feat - 새로운 기능 추가
+○ fix - 버그 수정
+○ docs - 문서
+...
 ```
 
-Then final confirmation for that group.
+Then proceed through Stages 2-3 and final confirmation for that group.
 
 ---
 
-## Benefits
+## Benefits of 3-Stage Approach
 
 ### User Experience
 
-1. **Quick scanning**: Headers only by default
-2. **Informed decision**: Preview any message body on demand
-3. **Clear recommendation**: #1 always best choice
-4. **Safety**: Full message review before commit
-5. **Flexibility**: Easy navigation and comparison
+1. **Full control**: User decides every component
+2. **Transparency**: Understand what goes into each part
+3. **Educational**: Learn commit message best practices
+4. **Flexible**: Can skip body/footer or use direct input
+5. **Clear guidance**: Step-by-step with explanations
 
 ### Token Efficiency
 
-1. **Compact display**: Less screen clutter
-2. **On-demand detail**: Body shown only when needed
-3. **Pre-generated**: All messages ready in metadata
+1. **No 5-message generation**: Save ~60% tokens
+2. **Pre-generate candidates once**: Reuse in metadata
+3. **Load templates on-demand**: Only load needed stage
+
+### Code Quality
+
+1. **Better body content**: User selects relevant changes
+2. **Appropriate detail**: User controls verbosity
+3. **Accurate scope**: System detects, user confirms
+4. **Proper footer**: Only add when truly needed
+
+---
+
+## Visual Design Principles
+
+### Stage Headers
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 Step 1/3: 커밋 타입 선택
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+- Clear progress indicator (1/3, 2/3, 3/3)
+- Emoji for visual distinction
+- Horizontal lines for separation
+
+### Selection Summary
+
+Show context from previous stages:
+
+```
+선택한 타입: feat
+감지된 스코프: spring-security-jwt
+선택한 바디 항목: 3개
+```
+
+- Helps user maintain context
+- Allows quick verification
+- Enables informed decisions
+
+### Final Confirmation Box
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 최종 커밋 메시지:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{complete message}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+- Prominent display
+- Complete message visible
+- Safety check before commit
 
 ---
 
@@ -421,71 +402,21 @@ Then final confirmation for that group.
 
 ### AskUserQuestion Tool
 
-Claude Code uses `AskUserQuestion` tool, which may not support:
-- Arrow key navigation
-- Dynamic expand/collapse
-- Real-time preview
+**Single-select vs Multi-select:**
+- Stage 1 (Type): `multiSelect: false`
+- Stage 2 (Body): `multiSelect: true` ⭐
+- Stage 3 (Footer): `multiSelect: false`
 
-**Workaround:**
-Use numbered list with explicit preview options:
-
-```
-📝 커밋 메시지를 선택하세요:
-
-메시지 (헤더만):
-  1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가 (추천)
-  2. docs(commit-skill): 커밋 스킬 문서 추가
-  3. feat(commit-skill): 자동 커밋 메시지 생성기
-  4. docs(claude-skills): commit 스킬 구현
-
-본문 미리보기:
-  11. 1번 메시지 본문 보기
-  12. 2번 메시지 본문 보기
-  13. 3번 메시지 본문 보기
-  14. 4번 메시지 본문 보기
-
-선택:
-  1-4: 해당 메시지로 진행
-  11-14: 해당 메시지 본문 미리보기
-  5: 직접 입력
-```
-
-**OR** simpler approach - always show full messages (current behavior):
-- Less interaction complexity
-- All info visible upfront
-- User can scroll to compare
-
-**Recommendation:**
-- Start with **full messages shown** (current template design)
-- Add compact view as future enhancement when UI framework supports it
-
----
-
-## Usage in PROCESS.md
-
-When a specific situation is detected, read only the relevant template:
-
-```bash
-# Example: Tidy First violation detected
-# Read only template-1-tidy-first.md (not all templates)
-cat .claude/skills/commit/templates/template-1-tidy-first.md
-```
-
----
-
-## AskUserQuestion Tool Structure
-
-All templates use the `AskUserQuestion` tool with the following structure:
-
+**Structure:**
 ```json
 {
   "questions": [{
     "question": "질문 내용",
     "header": "12자 이하 헤더",
-    "multiSelect": false,
+    "multiSelect": true,  // Stage 2 only
     "options": [
       {
-        "label": "옵션 레이블",
+        "label": "항목 레이블",
         "description": "상세 설명"
       }
     ]
@@ -493,21 +424,56 @@ All templates use the `AskUserQuestion` tool with the following structure:
 }
 ```
 
-**Note**: The tool automatically adds an "Other" option for direct user input.
+### Scope Detection
+
+**Display to user in Stage 2:**
+```
+감지된 스코프: {detectedScope}
+```
+
+- Shows what system detected
+- User can modify in final confirmation if needed
+- Transparent process
+
+---
+
+## Usage in PROCESS.md
+
+**Step 3 now uses 3 templates:**
+
+```bash
+# Stage 1: Type selection
+cat .claude/skills/commit/templates/template-3-1-type-selection.md
+
+# Stage 2: Body selection
+cat .claude/skills/commit/templates/template-3-2-body-selection.md
+
+# Stage 3: Footer selection
+cat .claude/skills/commit/templates/template-3-3-footer-selection.md
+```
+
+**Load only when needed:**
+- Token efficient
+- Clear separation of concerns
+- Easy to maintain
 
 ---
 
 ## Related Documents
 
-- **[../PROCESS.md](../PROCESS.md)** - Execution process with template references
-  - When and how each template is used
-  - Step-by-step template invocation
-- **[../MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md)** - Message generation strategies
-  - How suggested messages are generated for template-3
-- **[../METADATA.md](../METADATA.md)** - Message storage and retrieval
-  - How templates consume pre-generated metadata
-  - Token efficiency through metadata reuse
+- **[../PROCESS.md](../PROCESS.md)** - Step 3 uses 3-stage selection
+  - Stage 1: template-3-1 (type)
+  - Stage 2: template-3-2 (body)
+  - Stage 3: template-3-3 (footer)
+- **[../MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md)** - Generation algorithms
+  - Type detection algorithm
+  - Body item generation (file-based, feature-based, hybrid)
+  - Scope extraction algorithm
+  - Header message generation
+- **[../METADATA.md](../METADATA.md)** - Metadata structure
+  - Pre-generated body candidates
+  - User selections storage
 - **[../RULES.md](../RULES.md)** - Validation rules
-  - Format validation in template-5 (direct input)
-- **[../EXAMPLES.md](../EXAMPLES.md)** - Complete message examples
-  - Real examples shown in templates
+  - Format validation
+- **[../EXAMPLES.md](../EXAMPLES.md)** - Complete examples
+  - Real commit message examples

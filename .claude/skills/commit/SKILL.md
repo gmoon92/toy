@@ -15,7 +15,8 @@ Automates commit message generation following project conventions.
 - Analyzes all changes (staged + modified) and identifies scope (module/file)
 - Validates Tidy First principles (structural vs behavioral separation)
 - Detects logical independence (multiple independent groups)
-- **Generates 5 complete commit messages (header + body) for user preview**
+- **Guides user through 3-stage message composition** (type → body items → footer)
+- Auto-generates body item candidates from changed files
 - Supports auto-split commit for logically independent changes
 - Executes git commit after user approval
 
@@ -54,11 +55,13 @@ Automates commit message generation following project conventions.
 - Alternative: Unified commit (with warning and tooltip)
 - Tooltip always shown: "모든 변경사항을 하나의 커밋으로 진행하면 전체 롤백이나 코드 리뷰/수정이 어려울 수 있습니다"
 
-**4. Message Format**
-- `<type>(scope): <message>`
-- Types: feat, fix, refactor, test, docs, style, chore
-- **ALWAYS show full message (header + body) in suggestions**
-- Provide 5 complete suggestions, allow modifications
+**4. Message Composition (3-Stage Selection)**
+- Stage 1: User selects header from 5 pre-generated messages (추천 2 + 일반 3)
+- Stage 2: User selects body items (multi-select from auto-generated candidates)
+- Stage 3: User selects footer (none/issue reference/breaking change)
+- **Refresh mechanism**: "다른 추천 리스트 보기" to see different options
+- **Direct input**: Available at each stage as fallback
+- Format: `<type>(scope): <message>` with optional body and footer
 
 **5. Git Hook Failures**
 - Show error verbatim, skip failed group
@@ -101,9 +104,13 @@ Step 2: Analyze & Detect Violations
   ├─ Logical independence? → [AUTO_SPLIT.md](AUTO_SPLIT.md)
   └─ OK → Continue
   ↓
-Step 3: Generate Commit Message (5 suggestions)
+Step 3: 3-Stage Message Composition
+  ├─ Stage 1: Header Selection (5 messages: 추천 2 + 일반 3) → [template-3-1](templates/template-3-1-header-selection.md)
+  ├─ Stage 2: Body Items Selection (multi-select) → [template-3-2](templates/template-3-2-body-selection.md)
+  ├─ Stage 3: Footer Selection → [template-3-3](templates/template-3-3-footer-selection.md)
+  └─ Assemble final message from user selections
   ↓
-Step 4: User Approval (approve/modify/cancel)
+Step 4: User Approval (approve/modify/cancel) → [template-4](templates/template-4-final-confirmation.md)
   ↓
 Step 5: Execute & Verify Commit
   ↓
