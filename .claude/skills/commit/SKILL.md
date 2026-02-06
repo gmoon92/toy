@@ -59,8 +59,10 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 5: Execution
 - **Load**: [process/step5-execute.md](references/process/step5-execute.md)
-- **Purpose**: Execute git commit and verify
+- **Execute**: [scripts/validate_message.py](scripts/validate_message.py) (deterministic validation)
+- **Purpose**: Validate message format and execute git commit
 - **When**: After user approval
+- **Token efficiency**: Validation script runs via bash (0 context tokens consumed)
 
 ### Support Resources (load as needed)
 - **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md)
@@ -68,6 +70,12 @@ Execute skill in phases. Load only required references per phase for maximum tok
 - **Token optimization**: [support/metadata.md](references/support/metadata.md)
 - **UI design**: [support/ui-design.md](references/support/ui-design.md)
 - **Algorithms**: [generation/algorithms.md](references/generation/algorithms.md) for scope/type detection
+
+### Scripts (executed via bash, not loaded into context)
+- **validate_message.py**: Deterministic message validation (0 tokens consumed)
+  - Validates format, detects forbidden patterns (Co-Authored-By)
+  - Exit code 0 (valid) or 1 (invalid)
+  - Usage: `python3 scripts/validate_message.py --message <file> --json`
 
 ### Assets (not loaded into context)
 - **UI templates**: [assets/templates/](assets/templates/) - Output templates for user interaction (7 files)
