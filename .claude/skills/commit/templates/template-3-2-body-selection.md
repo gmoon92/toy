@@ -29,8 +29,60 @@ Step 2 of 3-stage message creation: User selects body items (multi-select)
 - Focus on "what" rather than "why"
 - Sort by importance/impact
 
-## Template
+## Template (형식 명세)
 
+```json
+{
+  "questions": [
+    {
+      "question": "커밋에 포함할 작업 내용을 선택하세요 (복수 선택 가능)",
+      "header": "바디 선택",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "<filename>: <action_description>",
+          "description": "<detailed_description>"
+        },
+        {
+          "label": "<filename>: <action_description>",
+          "description": "<detailed_description>"
+        },
+        {
+          "label": "<feature_description>",
+          "description": "<related_files_info>"
+        },
+        {
+          "label": "바디 없음 (헤더만 사용)",
+          "description": "간단한 변경이므로 헤더만으로 충분합니다"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**형식 설명:**
+
+**파일 기반 항목 (1-3개 파일):**
+- `<filename>`: 변경된 파일명
+- `: `: 콜론 + 공백 1개
+- `<action_description>`: 해당 파일의 주요 작업 설명
+- `<detailed_description>`: 구체적인 변경 내용 또는 기술적 세부사항
+
+**기능 기반 항목 (4+ 파일):**
+- `<feature_description>`: 기능 중심의 설명
+- `<related_files_info>`: 관련 파일 정보 (예: "관련 파일: X, Y, Z")
+
+**정적 요소:**
+- "바디 없음 (헤더만 사용)" 옵션 (항상 제공)
+- 콜론 `:`, 공백
+
+**동적 요소:**
+- 파일명, 작업 설명, 상세 설명
+
+## Example (구체적 예시)
+
+**파일 기반 예시 (1-3개 파일):**
 ```json
 {
   "questions": [
@@ -48,10 +100,6 @@ Step 2 of 3-stage message creation: User selects body items (multi-select)
           "description": "/api/auth/login POST 엔드포인트 추가"
         },
         {
-          "label": "application.yml: 데이터베이스 설정 변경",
-          "description": "PostgreSQL 연결 정보 및 JPA 설정 추가"
-        },
-        {
           "label": "SecurityConfig.java: Spring Security 설정",
           "description": "JWT 필터 체인 및 인증 매니저 설정"
         },
@@ -65,9 +113,40 @@ Step 2 of 3-stage message creation: User selects body items (multi-select)
 }
 ```
 
+**기능 기반 예시 (4+ 파일):**
+```json
+{
+  "questions": [
+    {
+      "question": "커밋에 포함할 작업 내용을 선택하세요 (복수 선택 가능)",
+      "header": "바디 선택",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "JWT 토큰 생성 및 검증 로직 구현",
+          "description": "관련 파일: JwtUtil.java, TokenProvider.java, JwtFilter.java"
+        },
+        {
+          "label": "사용자 인증 API 엔드포인트 추가",
+          "description": "관련 파일: AuthController.java, AuthService.java, AuthDto.java"
+        },
+        {
+          "label": "Spring Security 설정 및 필터 체인 구성",
+          "description": "관련 파일: SecurityConfig.java, CorsConfig.java"
+        },
+        {
+          "label": "바디 없음 (헤더만 사용)",
+          "description": "간단한 변경이므로 헤더만으로 충분합니다"
+        }
+      ]
+    }
+  ]
+}
+```
+
 **Important:**
-- First 4-8 options are auto-generated body item candidates
-- "바디 없음 (헤더만 사용)" option for header-only commits
+- First 3-8 options are auto-generated body item candidates
+- "바디 없음 (헤더만 사용)" option for header-only commits (always included)
 - "다른 추천 리스트 보기" option to regenerate candidates
 - "Other" option (automatically added) for direct input
 

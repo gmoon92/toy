@@ -4,7 +4,7 @@
 
 10+ files changed in different contexts
 
-## Template
+## Template (형식 명세)
 
 ```json
 {
@@ -15,7 +15,7 @@
       "multiSelect": false,
       "options": [
         {
-          "label": "자동 분리 (기본 정책)",
+          "label": "자동 분리 [기본 정책]",
           "description": "각 그룹을 독립적인 커밋으로 분리합니다. 명확한 히스토리, 쉬운 리뷰, 선택적 롤백이 가능합니다."
         },
         {
@@ -31,6 +31,51 @@
   ]
 }
 ```
+
+**형식 설명:**
+
+이 템플릿은 **완전히 정적**입니다:
+- 논리적 독립성 감지 시 항상 동일한 옵션 제공
+- 동적 요소 없음
+
+**정적 요소 (모든 세션 동일):**
+- question: "커밋 전략을 선택하세요"
+- header: "전략 선택"
+- 3개 옵션 레이블: "자동 분리 [기본 정책]", "통합 커밋", "취소"
+- 모든 description
+
+**동적 요소:**
+- 없음 (Screen Output에서 감지된 그룹 정보는 동적)
+
+## Example (구체적 예시)
+
+```json
+{
+  "questions": [
+    {
+      "question": "커밋 전략을 선택하세요",
+      "header": "전략 선택",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "자동 분리 [기본 정책]",
+          "description": "각 그룹을 독립적인 커밋으로 분리합니다. 명확한 히스토리, 쉬운 리뷰, 선택적 롤백이 가능합니다."
+        },
+        {
+          "label": "통합 커밋",
+          "description": "모든 변경을 하나의 커밋으로 통합합니다. 전체 롤백 시 모든 변경이 함께 되돌려집니다."
+        },
+        {
+          "label": "취소",
+          "description": "커밋 프로세스를 종료합니다"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Note:** Template과 Example이 동일합니다 (완전히 정적이므로).
 
 ## Screen Output (Korean for users)
 

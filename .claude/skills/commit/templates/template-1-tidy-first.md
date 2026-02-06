@@ -4,7 +4,7 @@
 
 Mixed structural changes (refactor) and behavioral changes (feat/fix)
 
-## Template
+## Template (형식 명세)
 
 ```json
 {
@@ -15,7 +15,7 @@ Mixed structural changes (refactor) and behavioral changes (feat/fix)
       "multiSelect": false,
       "options": [
         {
-          "label": "리셋 후 분리 (권장)",
+          "label": "리셋 후 분리 [권장]",
           "description": "변경사항을 unstage하고 refactor와 feat/fix를 별도 커밋으로 분리합니다. git reset HEAD를 실행합니다."
         },
         {
@@ -27,6 +27,47 @@ Mixed structural changes (refactor) and behavioral changes (feat/fix)
   ]
 }
 ```
+
+**형식 설명:**
+
+이 템플릿은 **완전히 정적**입니다:
+- Tidy First 위반 감지 시 항상 동일한 옵션 제공
+- 동적 요소 없음
+
+**정적 요소 (모든 세션 동일):**
+- question: "Tidy First 원칙 위반이 감지되었습니다. 어떻게 하시겠습니까?"
+- header: "Tidy First"
+- 2개 옵션 레이블: "리셋 후 분리 [권장]", "그대로 진행"
+- 모든 description
+
+**동적 요소:**
+- 없음 (Screen Output에서 감지된 변경사항 표시는 동적)
+
+## Example (구체적 예시)
+
+```json
+{
+  "questions": [
+    {
+      "question": "Tidy First 원칙 위반이 감지되었습니다. 어떻게 하시겠습니까?",
+      "header": "Tidy First",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "리셋 후 분리 [권장]",
+          "description": "변경사항을 unstage하고 refactor와 feat/fix를 별도 커밋으로 분리합니다. git reset HEAD를 실행합니다."
+        },
+        {
+          "label": "그대로 진행",
+          "description": "혼합된 상태로 커밋합니다. 롤백과 리뷰가 어려워질 수 있습니다."
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Note:** Template과 Example이 동일합니다 (완전히 정적이므로).
 
 ## Screen Output (Korean for users)
 

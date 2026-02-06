@@ -110,7 +110,7 @@ pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
 다시 입력하세요:
 ```
 
-**Template for retry:**
+**Template for retry (형식 명세):**
 
 ```json
 {
@@ -137,6 +137,47 @@ pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
   ]
 }
 ```
+
+**형식 설명:**
+
+이 템플릿은 **완전히 정적**입니다:
+- 검증 실패 시 항상 동일한 옵션 제공
+- 동적 요소 없음
+
+**정적 요소:**
+- question: "다시 입력하세요:"
+- header: "검증 실패"
+- 3개 옵션 레이블 및 설명 (모두 고정)
+
+**Example (구체적 예시):**
+
+```json
+{
+  "questions": [
+    {
+      "question": "다시 입력하세요:",
+      "header": "검증 실패",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "다시 입력",
+          "description": "커밋 메시지를 다시 작성합니다"
+        },
+        {
+          "label": "메시지 선택으로 돌아가기",
+          "description": "제안된 메시지 중 선택합니다"
+        },
+        {
+          "label": "취소",
+          "description": "커밋 프로세스를 종료합니다"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Note:** Template과 Example이 동일합니다 (완전히 정적이므로).
 
 ## User Action
 

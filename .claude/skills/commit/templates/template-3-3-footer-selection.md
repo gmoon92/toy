@@ -4,7 +4,7 @@
 
 Step 3 of 3-stage message creation: User selects footer (optional)
 
-## Template
+## Template (형식 명세)
 
 ```json
 {
@@ -15,21 +15,89 @@ Step 3 of 3-stage message creation: User selects footer (optional)
       "multiSelect": false,
       "options": [
         {
-          "label": "푸터 없음 (추천)",
-          "description": "대부분의 경우 푸터가 필요하지 않습니다.\n간결한 커밋 메시지를 유지합니다."
+          "label": "푸터 없음 [추천]",
+          "description": "대부분의 경우 푸터가 필요하지 않습니다. 간결한 커밋 메시지를 유지합니다."
         },
         {
           "label": "Issue reference 추가",
-          "description": "이슈 트래커 참조를 추가합니다.\n예: Closes #123, Fixes #456, Refs #789"
+          "description": "이슈 트래커 참조를 추가합니다. 형식: Closes #<number>, Fixes #<number>, Refs #<number>"
         },
         {
           "label": "Breaking Change",
-          "description": "호환성을 깨는 변경사항을 명시합니다.\n예: BREAKING CHANGE: API 응답 형식 변경"
+          "description": "호환성을 깨는 변경사항을 명시합니다. 형식: BREAKING CHANGE: <description>"
         }
       ]
     }
   ]
 }
+```
+
+**형식 설명:**
+
+**푸터 없음:**
+- 형식: (empty)
+- 대부분의 커밋에 사용
+
+**Issue reference:**
+- 형식: `Closes #<number>` 또는 `Fixes #<number>` 또는 `Refs #<number>`
+- Multiple: `Closes #123, #456`
+- `<number>`: 이슈 번호
+
+**Breaking Change:**
+- 형식: `BREAKING CHANGE: <description>`
+- `<description>`: 호환성을 깨는 변경사항 설명
+
+**정적 요소:**
+- "푸터 없음 [추천]" 옵션 레이블
+- Keywords: `Closes`, `Fixes`, `Refs`, `BREAKING CHANGE:`
+- 콜론 `:`, 해시 `#`, 쉼표 `,`, 공백
+
+**동적 요소:**
+- `<number>`: 이슈 번호
+- `<description>`: 변경사항 설명
+
+## Example (구체적 예시)
+
+```json
+{
+  "questions": [
+    {
+      "question": "커밋 푸터를 선택하세요",
+      "header": "푸터 선택",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "푸터 없음 [추천]",
+          "description": "대부분의 경우 푸터가 필요하지 않습니다. 간결한 커밋 메시지를 유지합니다."
+        },
+        {
+          "label": "Issue reference 추가",
+          "description": "이슈 트래커 참조를 추가합니다. 형식: Closes #<number>, Fixes #<number>, Refs #<number>"
+        },
+        {
+          "label": "Breaking Change",
+          "description": "호환성을 깨는 변경사항을 명시합니다. 형식: BREAKING CHANGE: <description>"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**실제 푸터 예시:**
+
+Issue reference 선택 후:
+```
+Closes #123
+Closes #123, #456
+Fixes #789
+Refs #100, #200
+```
+
+Breaking Change 선택 후:
+```
+BREAKING CHANGE: API 응답 형식이 JSON에서 XML로 변경됨
+BREAKING CHANGE: 사용자 인증 방식 변경 (세션 → JWT)
 ```
 
 ## Screen Output (Korean for users)

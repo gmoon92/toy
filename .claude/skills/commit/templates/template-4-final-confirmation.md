@@ -4,7 +4,7 @@
 
 Final confirmation before committing with selected message
 
-## Template
+## Template (형식 명세)
 
 ```json
 {
@@ -31,6 +31,49 @@ Final confirmation before committing with selected message
   ]
 }
 ```
+
+**형식 설명:**
+
+이 템플릿은 **완전히 정적**입니다:
+- 모든 옵션 레이블과 설명이 고정
+- 세션마다 동일하게 표시
+- 동적 요소 없음
+
+**정적 요소 (모든 세션 동일):**
+- question: "이 메시지로 커밋하시겠습니까?"
+- header: "커밋 확인"
+- 3개 옵션: 승인, 수정, 취소
+- 모든 description
+
+## Example (구체적 예시)
+
+```json
+{
+  "questions": [
+    {
+      "question": "이 메시지로 커밋하시겠습니까?",
+      "header": "커밋 확인",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "승인 - 커밋 실행",
+          "description": "이 메시지로 git commit을 실행합니다"
+        },
+        {
+          "label": "수정",
+          "description": "다른 메시지를 선택하거나 직접 입력합니다"
+        },
+        {
+          "label": "취소",
+          "description": "커밋 프로세스를 종료합니다"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Note:** Template과 Example이 동일합니다 (완전히 정적이므로).
 
 ## Screen Output (Korean for users)
 

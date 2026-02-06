@@ -8,7 +8,7 @@ Stage 1 of 3-stage message composition: User selects commit header from 5 pre-ge
 
 Generate **5 header messages**:
 - **추천 2개** (fixed, always shown): Most appropriate headers based on analysis
-- **일반 3개** (refreshable): Alternative headers, can be regenerated
+- **일반 2개** (refreshable): Alternative headers, can be regenerated
 
 ### Recommended Messages (2개, 고정)
 
@@ -29,12 +29,9 @@ Generate **5 header messages**:
 **Message 4:**
 - Message expression variation (more concise or more detailed)
 
-**Message 5:**
-- Type alternative (if interpretable as different type)
-
 **Generation algorithm:** See [MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md#header-message-generation)
 
-## Template
+## Template (형식 명세)
 
 ```json
 {
@@ -45,20 +42,65 @@ Generate **5 header messages**:
       "multiSelect": false,
       "options": [
         {
-          "label": "docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 (추천)",
-          "description": "가장 적절한 scope와 표현을 사용한 메시지"
+          "label": "<type>(scope): <message> [추천]",
+          "description": "분석 결과 기반 최우선 추천"
         },
         {
-          "label": "refactor(commit-skill): 메시지 생성 방식 재구성 (추천)",
-          "description": "타입을 refactor로 해석한 대안 메시지"
+          "label": "<type>(scope): <message> [추천]",
+          "description": "대안적 해석 기반 차선 추천"
+        },
+        {
+          "label": "<type>(scope): <message>",
+          "description": "일반 대안 1 (scope 또는 표현 변형)"
+        },
+        {
+          "label": "<type>(scope): <message>",
+          "description": "일반 대안 2 (type 또는 관점 변형)"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**형식 설명:**
+- `<type>`: 커밋 타입 (feat, fix, refactor, test, docs, style, chore)
+- `(scope)`: 괄호로 감싼 스코프 (모듈명, 파일명, 디렉토리명)
+- `: `: 콜론 + 공백 1개
+- `<message>`: 커밋 메시지 (소문자 시작, 간결하게)
+- `[추천]`: 정적 마커 (추천 2개에만 표시)
+
+**정적 요소 (모든 세션 동일):**
+- 괄호 `()`, 콜론 `:`, 공백, `[추천]` 마커
+
+**동적 요소 (세션마다 추론):**
+- `<type>`, `<scope>`, `<message>` 내용
+
+## Example (구체적 예시)
+
+```json
+{
+  "questions": [
+    {
+      "question": "커밋 헤더 메시지를 선택하세요",
+      "header": "헤더 선택",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "docs(commit-skill): 커밋 메시지 생성 방식을 3단계 선택으로 변경 [추천]",
+          "description": "분석 결과 기반 최우선 추천"
+        },
+        {
+          "label": "refactor(commit-skill): 메시지 생성 프로세스 재구성 [추천]",
+          "description": "대안적 해석 기반 차선 추천"
         },
         {
           "label": "docs(MESSAGE_GENERATION.md): 3단계 선택 알고리즘으로 재작성",
-          "description": "파일 scope로 변경한 메시지"
+          "description": "일반 대안 1 (scope 또는 표현 변형)"
         },
         {
           "label": "docs(.claude/skills): commit 스킬 문서 업데이트",
-          "description": "상위 디렉토리 scope로 변경한 메시지"
+          "description": "일반 대안 2 (type 또는 관점 변형)"
         }
       ]
     }
