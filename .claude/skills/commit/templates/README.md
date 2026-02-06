@@ -78,62 +78,78 @@ Each template is separated into its own file for efficient context loading:
 
 ---
 
-### Stage 2: Body Items Selection (Multi-Select) ⭐ Core Feature
+### Stage 2: Body Items Selection (Multi-Select with Pagination) ⭐ Core Feature
 
 **Template:** [template-3-2-body-selection.md](template-3-2-body-selection.md)
 
-**System automatically generates 4-10 body item candidates** by analyzing changed files:
+**Core Principle:**
+- ❌ 파일명 나열 (git log에 이미 표시)
+- ✅ 작업 내용 설명 (무엇을 했는지)
 
-**Example candidates:**
+**System automatically generates 10-15 feature-based candidates** with score:
+
+**Example screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 2/3: 바디 항목 선택
+📝 Step 2/3: 바디 항목 선택 [페이지 1/3]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-선택한 타입: feat
-감지된 스코프: spring-security-jwt
+변경된 파일 (10개, 참고용):
+  [95⭐] UserService.java          (+152, -23)
+  [90⭐] LoginController.java      (+87, -5)
+  [85⭐] SecurityConfig.java       (+45, -12)
+  ...
 
-커밋 본문에 포함할 작업 내용을 선택하세요.
-- 스페이스바로 복수 선택 가능
-- 간단한 변경이면 "바디 없음" 선택
+💡 Score: 변경량(40%) + 중요도(30%) + 관련성(30%)
+   ⭐ = Score 80 이상 (중요)
 
-◯ UserService.java: 사용자 인증 로직 추가
-◯ LoginController.java: 로그인 API 엔드포인트 구현
-◯ application.yml: 데이터베이스 설정 변경
-◯ SecurityConfig.java: Spring Security 설정
-◯ 바디 없음 (헤더만 사용)
+현재 선택: 0개
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+작업 내용 선택 (1-3번):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+◯ [95⭐] 사용자 인증 로직 구현
+◯ [90⭐] 로그인 API 엔드포인트 추가
+◯ [85⭐] Spring Security 필터 체인 구성
+◯ [다음 페이지]
 ```
 
 **Item Generation Strategy:**
 
-**File-based (1-3 files):**
+**Feature-based (권장, 기본 전략):**
 ```
-{filename}: {action}
-Example: UserService.java: 사용자 인증 로직 추가
-```
-
-**Feature-based (4+ files):**
-```
-{feature description}
-Example: JWT 토큰 생성 및 검증 로직 구현
+[{score}⭐] {작업 내용 설명}
+Example: [95⭐] 사용자 인증 로직 구현
 ```
 
-**Hybrid (recommended):**
-- Mix both strategies based on importance
-- Maximum 10 candidates
+**Score 계산:**
+- 변경 라인 수 (40%)
+- 파일 중요도 (30%): src/main > config > test
+- 커밋 타입 관련성 (30%)
+
+**Pagination:**
+- 10-15개 후보 생성
+- 페이지당 3개 항목 표시
+- Navigation: [다음 페이지], [이전 페이지], [선택 완료]
+- 선택 항목은 페이지 간 누적
 
 **User Actions:**
-- Select 0+ items (multi-select) → Proceed to Stage 3
+- Select 1+ items → Add to selection, continue pagination
+- Select "[다음 페이지]" → Show next page
+- Select "[이전 페이지]" → Show previous page
+- Select "[선택 완료]" → Proceed to Stage 3
 - Select "바디 없음" → Header-only commit, proceed to Stage 3
-- Select "다른 추천 리스트 보기" → Regenerate body items, show again
 - Select "Other" (직접 입력) → Manual body input, proceed to Stage 3
 
 **Assembled body format:**
 ```
-- UserService.java: 사용자 인증 로직 추가
-- LoginController.java: 로그인 API 엔드포인트 구현
-- SecurityConfig.java: Spring Security 설정
+- 사용자 인증 로직 구현
+- 로그인 API 엔드포인트 추가
+- Spring Security 필터 체인 구성
 ```
+
+**Note:** 파일명은 git log에서 확인 가능, body는 작업 내용에 집중
 
 ---
 

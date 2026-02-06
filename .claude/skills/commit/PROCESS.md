@@ -267,94 +267,102 @@ function generate5Headers(changes) {
 
 ---
 
-### Stage 2: Body Items Selection (Multi-Select)
+### Stage 2: Body Items Selection (Multi-Select with Pagination)
 
 **User has selected header, now select body items.**
 
 **Template:** [templates/template-3-2-body-selection.md](templates/template-3-2-body-selection.md)
 
+**Core Principle:**
+- ❌ 파일명 나열 (git log에 이미 있음)
+- ✅ 작업 내용 설명 (무엇을 했는지)
+
 **Generate body item candidates:**
 
 Use metadata `analysis.bodyItemCandidates` (pre-generated in Step 1).
 
-If not available, generate on-the-fly:
-
 ```javascript
 function generateBodyItems(files, diff) {
-  // Strategy: File-based (1-3 files) or Feature-based (4+ files)
+  // Strategy: Feature-based (작업/기능 중심, 파일명 X)
   // See MESSAGE_GENERATION.md for detailed algorithm
 
-  const items = [];
+  // 1. Analyze and group by feature/purpose
+  const features = analyzeFeatures(files, diff);
 
-  if (files.length <= 3) {
-    // File-based: "{filename}: {action}"
-    files.forEach(file => {
-      items.push({
-        label: `${file.name}: ${extractAction(file, diff)}`,
-        description: `...`
-      });
-    });
-  } else {
-    // Feature-based: "{feature description}"
-    const features = groupByFeature(files, diff);
-    features.forEach(feature => {
-      items.push({
-        label: feature.description,
-        description: `관련 파일: ${feature.files.join(', ')}`
-      });
-    });
-  }
+  // 2. Generate items with score
+  const items = features.map(feature => ({
+    label: feature.description,        // 작업 내용 (파일명 X)
+    description: feature.details,      // 상세 설명
+    score: calculateScore(feature),    // 0-100
+    relatedFiles: feature.files        // 참고용 (optional)
+  }));
 
-  // Add "바디 없음" option
-  items.push({
-    label: "바디 없음 (헤더만 사용)",
-    description: "간단한 변경이므로 헤더만으로 충분합니다"
-  });
-
-  return items;
+  // 3. Sort by score (high to low)
+  return items.sort((a, b) => b.score - a.score);
 }
 ```
 
-**Extract and display scope:**
+**Score calculation:**
+- 변경 라인 수 (40%)
+- 파일 중요도 (30%): src/main > config > test
+- 커밋 타입 관련성 (30%)
 
-```javascript
-function extractScope(files) {
-  if (files.length === 1) {
-    return path.basename(files[0]); // "UserService.java"
-  } else {
-    const commonDir = findCommonDirectory(files);
-    return enhanceScope(path.basename(commonDir)); // "spring-security-jwt"
-  }
-}
-```
-
-**Screen Output:**
+**Screen Output (with file reference):**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 2/3: 바디 항목 선택
+📝 Step 2/3: 바디 항목 선택 [페이지 1/3]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-선택한 타입: {selectedType}
-감지된 스코프: {detectedScope}
+변경된 파일 (10개, 참고용):
+  [95⭐] UserService.java          (+152, -23)
+  [90⭐] LoginController.java      (+87, -5)
+  [85⭐] SecurityConfig.java       (+45, -12)
+  [80] JwtUtil.java                (+120, -0)
+  ...
+
+💡 Score: 변경량(40%) + 중요도(30%) + 관련성(30%)
+   ⭐ = Score 80 이상 (중요)
+
+현재 선택: 0개
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+작업 내용 선택 (1-3번):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 커밋 본문에 포함할 작업 내용을 선택하세요.
 - 스페이스바로 복수 선택 가능
-- 간단한 변경이면 "바디 없음" 선택
-- 변경사항이 5개 이상이면 바디 추가 권장
+- Score가 높을수록 중요한 작업
 ```
 
 **Actions:**
-1. Display screen output with detected scope
-2. Call AskUserQuestion with template JSON (multi-select enabled)
-   - Options: 4-10 body item candidates + "바디 없음"
-3. User selects 0+ items (multi-select)
-4. Store `selectedBodyItems` and `detectedScope` in memory for Stage 3
+1. Display file list with scores (참고용)
+2. Show current page (3 items per page)
+3. Call AskUserQuestion with pagination:
+   - Options: 3 items + navigation ([다음 페이지]/[이전 페이지]/[선택 완료])
+   - Multi-select enabled
+4. Accumulate selections across pages
+5. Store `selectedBodyItems` in memory for Stage 3
 
-**Item format examples:**
+**Pagination flow:**
 ```
-- UserService.java: 사용자 인증 로직 추가
-- LoginController.java: 로그인 API 엔드포인트 구현
-- JWT 토큰 생성 및 검증 로직 구현
+Page 1 (1-3) → [다음] → Page 2 (4-6) → [다음] → Page 3 (7-9)
+                ↑                       ↑                ↓
+             [이전] ←─────────────── [이전]      [선택 완료]
+```
+
+**Item format examples (Feature-based):**
+```
+[95⭐] 사용자 인증 로직 구현
+[90⭐] 로그인 API 엔드포인트 추가
+[85⭐] Spring Security 필터 체인 구성
+[80] JWT 토큰 생성 및 검증 로직
+```
+
+**Final body output:**
+```
+- 사용자 인증 로직 구현
+- 로그인 API 엔드포인트 추가
+- Spring Security 필터 체인 구성
 ```
 
 ---
