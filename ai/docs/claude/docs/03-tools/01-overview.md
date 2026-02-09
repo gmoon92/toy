@@ -18,9 +18,10 @@ Claude는 도구와 함수와 상호작용할 수 있어, Claude의 기능을 �
 
 다음은 Messages API를 사용하여 Claude에게 도구를 제공하는 방법의 예시입니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -53,117 +54,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "name": "get_weather",
-            "description": "Get the current weather in a given location",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    }
-                },
-                "required": ["location"],
-            },
-        }
-    ],
-    messages=[{"role": "user", "content": "What's the weather like in San Francisco?"}],
-)
-print(response)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
-async function main() {
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
-    max_tokens: 1024,
-    tools: [{
-      name: "get_weather",
-      description: "Get the current weather in a given location",
-      input_schema: {
-        type: "object",
-        properties: {
-          location: {
-            type: "string",
-            description: "The city and state, e.g. San Francisco, CA"
-          }
-        },
-        required: ["location"]
-      }
-    }],
-    messages: [{
-      role: "user",
-      content: "Tell me the weather in San Francisco."
-    }]
-  });
-
-  console.log(response);
-}
-
-main().catch(console.error);
-```
-
-```java Java
-import java.util.List;
-import java.util.Map;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.core.JsonValue;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.Tool;
-import com.anthropic.models.messages.Tool.InputSchema;
-
-public class GetWeatherExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        InputSchema schema = InputSchema.builder()
-                .properties(JsonValue.from(Map.of(
-                        "location",
-                        Map.of(
-                                "type", "string",
-                                "description", "The city and state, e.g. San Francisco, CA"))))
-                .putAdditionalProperty("required", JsonValue.from(List.of("location")))
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_OPUS_4_0)
-                .maxTokens(1024)
-                .addTool(Tool.builder()
-                        .name("get_weather")
-                        .description("Get the current weather in a given location")
-                        .inputSchema(schema)
-                        .build())
-                .addUserMessage("What's the weather like in San Francisco?")
-                .build();
-
-        Message message = client.messages().create(params);
-        System.out.println(message);
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 ---
 
@@ -238,8 +129,10 @@ Claude는 두 가지 유형의 도구를 지원합니다:
 
 MCP 클라이언트를 구축하고 MCP 서버에서 `list_tools()`를 호출하면 `inputSchema` 필드가 있는 도구 정의를 받게 됩니다. 이러한 도구를 Claude와 함께 사용하려면 Claude의 형식으로 변환하세요:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from mcp import ClientSession
 
 async def get_claude_tools(mcp_session: ClientSession):
@@ -257,26 +150,14 @@ async def get_claude_tools(mcp_session: ClientSession):
     return claude_tools
 ```
 
-```typescript TypeScript
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-
-async function getClaudeTools(mcpClient: Client) {
-  // Convert MCP tools to Claude's tool format
-  const mcpTools = await mcpClient.listTools();
-
-  return mcpTools.tools.map((tool) => ({
-    name: tool.name,
-    description: tool.description ?? "",
-    input_schema: tool.inputSchema, // Rename inputSchema to input_schema
-  }));
-}
-```
-</CodeGroup>
+</details>
 
 그런 다음 변환된 도구를 Claude에게 전달합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -290,20 +171,7 @@ response = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic();
-const claudeTools = await getClaudeTools(mcpClient);
-
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: claudeTools,
-  messages: [{ role: "user", content: "What tools do you have available?" }],
-});
-```
-</CodeGroup>
+</details>
 
 Claude가 `tool_use` 블록으로 응답하면, MCP 서버에서 `call_tool()`을 사용하여 도구를 실행하고 `tool_result` 블록으로 결과를 Claude에게 반환합니다.
 
@@ -318,9 +186,11 @@ MCP 클라이언트 구축에 대한 완전한 가이드는 [MCP 클라이언트
 <details>
 <summary>단일 도구 예제</summary>
 
-<CodeGroup>
-    ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
          --header "x-api-key: $ANTHROPIC_API_KEY" \
          --header "anthropic-version: 2023-06-01" \
          --header "content-type: application/json" \
@@ -349,93 +219,9 @@ MCP 클라이언트 구축에 대한 완전한 가이드는 [MCP 클라이언트
         }],
         "messages": [{"role": "user", "content": "What is the weather like in San Francisco?"}]
     }'
-    ```
+```
 
-    ```python Python
-    import anthropic
-    client = anthropic.Anthropic()
-
-    response = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        tools=[
-            {
-                "name": "get_weather",
-                "description": "Get the current weather in a given location",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA"
-                        },
-                        "unit": {
-                            "type": "string",
-                            "enum": ["celsius", "fahrenheit"],
-                            "description": "The unit of temperature, either \"celsius\" or \"fahrenheit\""
-                        }
-                    },
-                    "required": ["location"]
-                }
-            }
-        ],
-        messages=[{"role": "user", "content": "What is the weather like in San Francisco?"}]
-    )
-
-    print(response)
-    ```
-
-    ```java Java
-    import java.util.List;
-    import java.util.Map;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.core.JsonValue;
-    import com.anthropic.models.messages.Message;
-    import com.anthropic.models.messages.MessageCreateParams;
-    import com.anthropic.models.messages.Model;
-    import com.anthropic.models.messages.Tool;
-    import com.anthropic.models.messages.Tool.InputSchema;
-
-    public class WeatherToolExample {
-
-        public static void main(String[] args) {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            InputSchema schema = InputSchema.builder()
-                    .properties(JsonValue.from(Map.of(
-                            "location", Map.of(
-                                    "type", "string",
-                                    "description", "The city and state, e.g. San Francisco, CA"
-                            ),
-                            "unit", Map.of(
-                                    "type", "string",
-                                    "enum", List.of("celsius", "fahrenheit"),
-                                    "description", "The unit of temperature, either \"celsius\" or \"fahrenheit\""
-                            )
-                    )))
-                    .putAdditionalProperty("required", JsonValue.from(List.of("location")))
-                    .build();
-
-            MessageCreateParams params = MessageCreateParams.builder()
-                    .model(Model.CLAUDE_OPUS_4_0)
-                    .maxTokens(1024)
-                    .addTool(Tool.builder()
-                            .name("get_weather")
-                            .description("Get the current weather in a given location")
-                            .inputSchema(schema)
-                            .build())
-                    .addUserMessage("What is the weather like in San Francisco?")
-                    .build();
-
-            Message message = client.messages().create(params);
-            System.out.println(message);
-        }
-    }
-    ```
-
-</CodeGroup>
+</details>
 
 Claude는 다음과 유사한 응답을 반환합니다:
 
@@ -462,9 +248,11 @@ Claude는 다음과 유사한 응답을 반환합니다:
 
 그런 다음 제공된 입력으로 `get_weather` 함수를 실행하고 새 `user` 메시지로 결과를 반환해야 합니다:
 
-<CodeGroup>
-    ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
          --header "x-api-key: $ANTHROPIC_API_KEY" \
          --header "anthropic-version: 2023-06-01" \
          --header "content-type: application/json" \
@@ -528,144 +316,9 @@ Claude는 다음과 유사한 응답을 반환합니다:
             }
         ]
     }'
-    ```
+```
 
-    ```python Python
-    response = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        tools=[
-            {
-                "name": "get_weather",
-                "description": "Get the current weather in a given location",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA"
-                        },
-                        "unit": {
-                            "type": "string",
-                            "enum": ["celsius", "fahrenheit"],
-                            "description": "The unit of temperature, either 'celsius' or 'fahrenheit'"
-                        }
-                    },
-                    "required": ["location"]
-                }
-            }
-        ],
-        messages=[
-            {
-                "role": "user",
-                "content": "What's the weather like in San Francisco?"
-            },
-            {
-                "role": "assistant",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "I'll check the current weather in San Francisco for you."
-                    },
-                    {
-                        "type": "tool_use",
-                        "id": "toolu_01A09q90qw90lq917835lq9",
-                        "name": "get_weather",
-                        "input": {"location": "San Francisco, CA", "unit": "celsius"}
-                    }
-                ]
-            },
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "tool_result",
-                        "tool_use_id": "toolu_01A09q90qw90lq917835lq9", # from the API response
-                        "content": "65 degrees" # from running your tool
-                    }
-                ]
-            }
-        ]
-    )
-
-    print(response)
-    ```
-
-   ```java Java
-    import java.util.List;
-    import java.util.Map;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.core.JsonValue;
-    import com.anthropic.models.messages.*;
-    import com.anthropic.models.messages.Tool.InputSchema;
-
-    public class ToolConversationExample {
-
-        public static void main(String[] args) {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            InputSchema schema = InputSchema.builder()
-                    .properties(JsonValue.from(Map.of(
-                            "location", Map.of(
-                                    "type", "string",
-                                    "description", "The city and state, e.g. San Francisco, CA"
-                            ),
-                            "unit", Map.of(
-                                    "type", "string",
-                                    "enum", List.of("celsius", "fahrenheit"),
-                                    "description", "The unit of temperature, either \"celsius\" or \"fahrenheit\""
-                            )
-                    )))
-                    .putAdditionalProperty("required", JsonValue.from(List.of("location")))
-                    .build();
-
-            MessageCreateParams params = MessageCreateParams.builder()
-                    .model(Model.CLAUDE_OPUS_4_0)
-                    .maxTokens(1024)
-                    .addTool(Tool.builder()
-                            .name("get_weather")
-                            .description("Get the current weather in a given location")
-                            .inputSchema(schema)
-                            .build())
-                    .addUserMessage("What is the weather like in San Francisco?")
-                    .addAssistantMessageOfBlockParams(
-                            List.of(
-                                    ContentBlockParam.ofText(
-                                            TextBlockParam.builder()
-                                                    .text("I'll check the current weather in San Francisco for you.")
-                                                    .build()
-                                    ),
-                                    ContentBlockParam.ofToolUse(
-                                            ToolUseBlockParam.builder()
-                                                    .id("toolu_01A09q90qw90lq917835lq9")
-                                                    .name("get_weather")
-                                                    .input(JsonValue.from(Map.of(
-                                                            "location", "San Francisco, CA",
-                                                            "unit", "celsius"
-                                                    )))
-                                                    .build()
-                                    )
-                            )
-                    )
-                    .addUserMessageOfBlockParams(List.of(
-                            ContentBlockParam.ofToolResult(
-                                    ToolResultBlockParam.builder()
-                                            .toolUseId("toolu_01A09q90qw90lq917835lq9")
-                                            .content("15 degrees")
-                                            .build()
-                            )
-                    ))
-                    .build();
-
-            Message message = client.messages().create(params);
-            System.out.println(message);
-        }
-    }
-   ```
-
-</CodeGroup>
+</details>
 이는 날씨 데이터를 통합한 Claude의 최종 응답을 출력합니다:
 
 ```json JSON
@@ -699,9 +352,11 @@ Claude는 단일 응답 내에서 여러 도구를 병렬로 호출할 수 있�
 
 단일 요청에서 Claude에게 선택할 수 있는 여러 도구를 제공할 수 있습니다. 다음은 `get_weather` 및 `get_time` 도구를 모두 포함하고 두 가지를 모두 요청하는 사용자 쿼리의 예입니다.
 
-<CodeGroup>
-    ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
          --header "x-api-key: $ANTHROPIC_API_KEY" \
          --header "anthropic-version: 2023-06-01" \
          --header "content-type: application/json" \
@@ -747,128 +402,9 @@ Claude는 단일 응답 내에서 여러 도구를 병렬로 호출할 수 있�
             "content": "What is the weather like right now in New York? Also what time is it there?"
         }]
     }'
-    ```
+```
 
-    ```python Python
-    import anthropic
-    client = anthropic.Anthropic()
-
-    response = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        tools=[
-            {
-                "name": "get_weather",
-                "description": "Get the current weather in a given location",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA"
-                        },
-                        "unit": {
-                            "type": "string",
-                            "enum": ["celsius", "fahrenheit"],
-                            "description": "The unit of temperature, either 'celsius' or 'fahrenheit'"
-                        }
-                    },
-                    "required": ["location"]
-                }
-            },
-            {
-                "name": "get_time",
-                "description": "Get the current time in a given time zone",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "timezone": {
-                            "type": "string",
-                            "description": "The IANA time zone name, e.g. America/Los_Angeles"
-                        }
-                    },
-                    "required": ["timezone"]
-                }
-            }
-        ],
-        messages=[
-            {
-                "role": "user",
-                "content": "What is the weather like right now in New York? Also what time is it there?"
-            }
-        ]
-    )
-    print(response)
-    ```
-
-    ```java Java
-    import java.util.List;
-    import java.util.Map;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.core.JsonValue;
-    import com.anthropic.models.messages.Message;
-    import com.anthropic.models.messages.MessageCreateParams;
-    import com.anthropic.models.messages.Model;
-    import com.anthropic.models.messages.Tool;
-    import com.anthropic.models.messages.Tool.InputSchema;
-
-    public class MultipleToolsExample {
-
-        public static void main(String[] args) {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            // Weather tool schema
-            InputSchema weatherSchema = InputSchema.builder()
-                    .properties(JsonValue.from(Map.of(
-                            "location", Map.of(
-                                    "type", "string",
-                                    "description", "The city and state, e.g. San Francisco, CA"
-                            ),
-                            "unit", Map.of(
-                                    "type", "string",
-                                    "enum", List.of("celsius", "fahrenheit"),
-                                    "description", "The unit of temperature, either \"celsius\" or \"fahrenheit\""
-                            )
-                    )))
-                    .putAdditionalProperty("required", JsonValue.from(List.of("location")))
-                    .build();
-
-            // Time tool schema
-            InputSchema timeSchema = InputSchema.builder()
-                    .properties(JsonValue.from(Map.of(
-                            "timezone", Map.of(
-                                    "type", "string",
-                                    "description", "The IANA time zone name, e.g. America/Los_Angeles"
-                            )
-                    )))
-                    .putAdditionalProperty("required", JsonValue.from(List.of("timezone")))
-                    .build();
-
-            MessageCreateParams params = MessageCreateParams.builder()
-                    .model(Model.CLAUDE_OPUS_4_0)
-                    .maxTokens(1024)
-                    .addTool(Tool.builder()
-                            .name("get_weather")
-                            .description("Get the current weather in a given location")
-                            .inputSchema(weatherSchema)
-                            .build())
-                    .addTool(Tool.builder()
-                            .name("get_time")
-                            .description("Get the current time in a given time zone")
-                            .inputSchema(timeSchema)
-                            .build())
-                    .addUserMessage("What is the weather like right now in New York? Also what time is it there?")
-                    .build();
-
-            Message message = client.messages().create(params);
-            System.out.println(message);
-        }
-    }
-    ```
-
-</CodeGroup>
+</details>
 
 이 경우 Claude는 다음 중 하나를 수행할 수 있습니다:
 - 순차적으로 도구 사용 (한 번에 하나씩) — 먼저 `get_weather`를 호출한 다음 날씨 결과를 받은 후 `get_time`을 호출
@@ -901,9 +437,11 @@ Claude가 병렬 도구 호출을 하는 경우, 각 결과가 자체 `tool_resu
 
 다음은 `get_location` 도구를 사용하여 사용자의 위치를 가져온 다음 해당 위치를 `get_weather` 도구에 전달하는 예입니다:
 
-<CodeGroup>
-    ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
          --header "x-api-key: $ANTHROPIC_API_KEY" \
          --header "anthropic-version: 2023-06-01" \
          --header "content-type: application/json" \
@@ -945,110 +483,9 @@ Claude가 병렬 도구 호출을 하는 경우, 각 결과가 자체 `tool_resu
             "content": "What is the weather like where I am?"
         }]
     }'
-    ```
+```
 
-    ```python Python
-    response = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        tools=[
-            {
-                "name": "get_location",
-                "description": "Get the current user location based on their IP address. This tool has no parameters or arguments.",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {}
-                }
-            },
-            {
-                "name": "get_weather",
-                "description": "Get the current weather in a given location",
-                "input_schema": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA"
-                        },
-                        "unit": {
-                            "type": "string",
-                            "enum": ["celsius", "fahrenheit"],
-                            "description": "The unit of temperature, either 'celsius' or 'fahrenheit'"
-                        }
-                    },
-                    "required": ["location"]
-                }
-            }
-        ],
-        messages=[{
-       		  "role": "user",
-        	  "content": "What's the weather like where I am?"
-        }]
-    )
-    ```
-
-    ```java Java
-    import java.util.List;
-    import java.util.Map;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.core.JsonValue;
-    import com.anthropic.models.messages.Message;
-    import com.anthropic.models.messages.MessageCreateParams;
-    import com.anthropic.models.messages.Model;
-    import com.anthropic.models.messages.Tool;
-    import com.anthropic.models.messages.Tool.InputSchema;
-
-    public class EmptySchemaToolExample {
-
-        public static void main(String[] args) {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            // Empty schema for location tool
-            InputSchema locationSchema = InputSchema.builder()
-                    .properties(JsonValue.from(Map.of()))
-                    .build();
-
-            // Weather tool schema
-            InputSchema weatherSchema = InputSchema.builder()
-                    .properties(JsonValue.from(Map.of(
-                            "location", Map.of(
-                                    "type", "string",
-                                    "description", "The city and state, e.g. San Francisco, CA"
-                            ),
-                            "unit", Map.of(
-                                    "type", "string",
-                                    "enum", List.of("celsius", "fahrenheit"),
-                                    "description", "The unit of temperature, either \"celsius\" or \"fahrenheit\""
-                            )
-                    )))
-                    .putAdditionalProperty("required", JsonValue.from(List.of("location")))
-                    .build();
-
-            MessageCreateParams params = MessageCreateParams.builder()
-                    .model(Model.CLAUDE_OPUS_4_0)
-                    .maxTokens(1024)
-                    .addTool(Tool.builder()
-                            .name("get_location")
-                            .description("Get the current user location based on their IP address. This tool has no parameters or arguments.")
-                            .inputSchema(locationSchema)
-                            .build())
-                    .addTool(Tool.builder()
-                            .name("get_weather")
-                            .description("Get the current weather in a given location")
-                            .inputSchema(weatherSchema)
-                            .build())
-                    .addUserMessage("What is the weather like where I am?")
-                    .build();
-
-            Message message = client.messages().create(params);
-            System.out.println(message);
-        }
-    }
-    ```
-
-</CodeGroup>
+</details>
 
 이 경우 Claude는 먼저 `get_location` 도구를 호출하여 사용자의 위치를 가져옵니다. `tool_result`로 위치를 반환한 후, Claude는 해당 위치로 `get_weather`를 호출하여 최종 답변을 얻습니다.
 

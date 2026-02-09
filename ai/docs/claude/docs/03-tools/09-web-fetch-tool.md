@@ -51,8 +51,10 @@ API 요청에 웹 가져오기 도구를 추가하면:
 
 API 요청에 웹 가져오기 도구를 제공합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -75,63 +77,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": "Please analyze the content at https://example.com/article"
-        }
-    ],
-    tools=[{
-        "type": "web_fetch_20250910",
-        "name": "web_fetch",
-        "max_uses": 5
-    }],
-    extra_headers={
-        "anthropic-beta": "web-fetch-2025-09-10"
-    }
-)
-print(response)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
-    max_tokens: 1024,
-    messages: [
-      {
-        role: "user",
-        content: "Please analyze the content at https://example.com/article"
-      }
-    ],
-    tools: [{
-      type: "web_fetch_20250910",
-      name: "web_fetch",
-      max_uses: 5
-    }],
-    headers: {
-      "anthropic-beta": "web-fetch-2025-09-10"
-    }
-  });
-
-  console.log(response);
-}
-
-main().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 ### 도구 정의
 

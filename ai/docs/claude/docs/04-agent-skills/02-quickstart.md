@@ -29,45 +29,17 @@
 
 먼저, 어떤 Skills를 사용할 수 있는지 확인해 보겠습니다. Skills API를 사용하여 Anthropic이 관리하는 모든 Skills 목록을 가져옵니다:
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-# Anthropic 관리 Skills 목록
-skills = client.beta.skills.list(
-    source="anthropic",
-    betas=["skills-2025-10-02"]
-)
-
-for skill in skills.data:
-    print(f"{skill.id}: {skill.display_title}")
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-// Anthropic 관리 Skills 목록
-const skills = await client.beta.skills.list({
-  source: 'anthropic',
-  betas: ['skills-2025-10-02']
-});
-
-for (const skill of skills.data) {
-  console.log(`${skill.id}: ${skill.display_title}`);
-}
-```
-
-```bash Shell
+```bash
 curl "https://api.anthropic.com/v1/skills?source=anthropic" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: skills-2025-10-02"
 ```
-</CodeGroup>
+
+</details>
 
 다음과 같은 Skills를 확인할 수 있습니다: `pptx`, `xlsx`, `docx`, `pdf`.
 
@@ -77,72 +49,10 @@ curl "https://api.anthropic.com/v1/skills?source=anthropic" \
 
 이제 PowerPoint Skill을 사용하여 재생 에너지에 관한 프레젠테이션을 만들어 보겠습니다. Messages API의 `container` 매개변수를 사용하여 Skills를 지정합니다:
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-# PowerPoint Skill을 사용하여 메시지 생성
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {
-                "type": "anthropic",
-                "skill_id": "pptx",
-                "version": "latest"
-            }
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Create a presentation about renewable energy with 5 slides"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-
-print(response.content)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-// PowerPoint Skill을 사용하여 메시지 생성
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {
-        type: 'anthropic',
-        skill_id: 'pptx',
-        version: 'latest'
-      }
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Create a presentation about renewable energy with 5 slides'
-  }],
-  tools: [{
-    type: 'code_execution_20250825',
-    name: 'code_execution'
-  }]
-});
-
-console.log(response.content);
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -170,7 +80,8 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 각 부분이 무엇을 하는지 살펴보겠습니다:
 
@@ -187,62 +98,10 @@ curl https://api.anthropic.com/v1/messages \
 
 프레젠테이션은 코드 실행 컨테이너에 생성되어 파일로 저장되었습니다. 응답에는 파일 ID가 포함된 파일 참조가 포함됩니다. 파일 ID를 추출하고 Files API를 사용하여 다운로드합니다:
 
-<CodeGroup>
-```python Python
-# 응답에서 파일 ID 추출
-file_id = None
-for block in response.content:
-    if block.type == 'tool_use' and block.name == 'code_execution':
-        # 파일 ID는 tool result에 있음
-        for result_block in block.content:
-            if hasattr(result_block, 'file_id'):
-                file_id = result_block.file_id
-                break
+<details>
+<summary>REST API 예시</summary>
 
-if file_id:
-    # 파일 다운로드
-    file_content = client.beta.files.download(
-        file_id=file_id,
-        betas=["files-api-2025-04-14"]
-    )
-
-    # 디스크에 저장
-    with open("renewable_energy.pptx", "wb") as f:
-        file_content.write_to_file(f.name)
-
-    print(f"Presentation saved to renewable_energy.pptx")
-```
-
-```typescript TypeScript
-// 응답에서 파일 ID 추출
-let fileId: string | null = null;
-for (const block of response.content) {
-  if (block.type === 'tool_use' && block.name === 'code_execution') {
-    // 파일 ID는 tool result에 있음
-    for (const resultBlock of block.content) {
-      if ('file_id' in resultBlock) {
-        fileId = resultBlock.file_id;
-        break;
-      }
-    }
-  }
-}
-
-if (fileId) {
-  // 파일 다운로드
-  const fileContent = await client.beta.files.download(fileId, {
-    betas: ['files-api-2025-04-14']
-  });
-
-  // 디스크에 저장
-  const fs = require('fs');
-  fs.writeFileSync('renewable_energy.pptx', Buffer.from(await fileContent.arrayBuffer()));
-
-  console.log('Presentation saved to renewable_energy.pptx');
-}
-```
-
-```bash Shell
+```bash
 # 응답에서 file_id 추출 (jq 사용)
 FILE_ID=$(echo "$RESPONSE" | jq -r '.content[] | select(.type=="tool_use" and .name=="code_execution") | .content[] | select(.file_id) | .file_id')
 
@@ -255,7 +114,8 @@ curl "https://api.anthropic.com/v1/files/$FILE_ID/content" \
 
 echo "Presentation saved to renewable_energy.pptx"
 ```
-</CodeGroup>
+
+</details>
 
 
 > 생성된 파일 작업에 대한 자세한 내용은 [코드 실행 도구 문서](../03-tools/05-code-execution-tool.md)를 참조하세요.
@@ -267,58 +127,10 @@ Skills를 사용하여 첫 문서를 만들었으니, 이제 다음 변형을 �
 
 ### 스프레드시트 만들기
 
-<CodeGroup>
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {
-                "type": "anthropic",
-                "skill_id": "xlsx",
-                "version": "latest"
-            }
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Create a quarterly sales tracking spreadsheet with sample data"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
+<details>
+<summary>REST API 예시</summary>
 
-```typescript TypeScript
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {
-        type: 'anthropic',
-        skill_id: 'xlsx',
-        version: 'latest'
-      }
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Create a quarterly sales tracking spreadsheet with sample data'
-  }],
-  tools: [{
-    type: 'code_execution_20250825',
-    name: 'code_execution'
-  }]
-});
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -346,62 +158,15 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 ### Word 문서 만들기
 
-<CodeGroup>
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {
-                "type": "anthropic",
-                "skill_id": "docx",
-                "version": "latest"
-            }
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Write a 2-page report on the benefits of renewable energy"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
+<details>
+<summary>REST API 예시</summary>
 
-```typescript TypeScript
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {
-        type: 'anthropic',
-        skill_id: 'docx',
-        version: 'latest'
-      }
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Write a 2-page report on the benefits of renewable energy'
-  }],
-  tools: [{
-    type: 'code_execution_20250825',
-    name: 'code_execution'
-  }]
-});
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -429,62 +194,15 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 ### PDF 생성하기
 
-<CodeGroup>
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {
-                "type": "anthropic",
-                "skill_id": "pdf",
-                "version": "latest"
-            }
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Generate a PDF invoice template"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
+<details>
+<summary>REST API 예시</summary>
 
-```typescript TypeScript
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {
-        type: 'anthropic',
-        skill_id: 'pdf',
-        version: 'latest'
-      }
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Generate a PDF invoice template'
-  }],
-  tools: [{
-    type: 'code_execution_20250825',
-    name: 'code_execution'
-  }]
-});
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -512,7 +230,8 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 ## 다음 단계
 

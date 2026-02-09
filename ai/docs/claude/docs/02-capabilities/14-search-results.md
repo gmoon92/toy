@@ -81,8 +81,10 @@
 
 ### 예제: 지식 베이스 도구
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from anthropic import Anthropic
 from anthropic.types import (
     MessageParam,
@@ -178,97 +180,7 @@ if response.content[0].type == "tool_use":
     )
 ```
 
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-// 지식 베이스 검색 도구 정의
-const knowledgeBaseTool = {
-  name: "search_knowledge_base",
-  description: "Search the company knowledge base for information",
-  input_schema: {
-    type: "object",
-    properties: {
-      query: {
-        type: "string",
-        description: "The search query"
-      }
-    },
-    required: ["query"]
-  }
-};
-
-// 도구 호출을 처리하는 함수
-function searchKnowledgeBase(query: string) {
-  // 여기에 검색 로직 작성
-  // 올바른 형식으로 검색 결과 반환
-  return [
-    {
-      type: "search_result" as const,
-      source: "https://docs.company.com/product-guide",
-      title: "Product Configuration Guide",
-      content: [
-        {
-          type: "text" as const,
-          text: "To configure the product, navigate to Settings > Configuration. The default timeout is 30 seconds, but can be adjusted between 10-120 seconds based on your needs."
-        }
-      ],
-      citations: { enabled: true }
-    },
-    {
-      type: "search_result" as const,
-      source: "https://docs.company.com/troubleshooting",
-      title: "Troubleshooting Guide",
-      content: [
-        {
-          type: "text" as const,
-          text: "If you encounter timeout errors, first check the configuration settings. Common causes include network latency and incorrect timeout values."
-        }
-      ],
-      citations: { enabled: true }
-    }
-  ];
-}
-
-// 도구를 사용하여 메시지 생성
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5", // 지원되는 모든 모델에서 작동
-  max_tokens: 1024,
-  tools: [knowledgeBaseTool],
-  messages: [
-    {
-      role: "user",
-      content: "How do I configure the timeout settings?"
-    }
-  ]
-});
-
-// 도구 사용 처리 및 결과 제공
-if (response.content[0].type === "tool_use") {
-  const toolResult = searchKnowledgeBase(response.content[0].input.query);
-
-  const finalResponse = await anthropic.messages.create({
-    model: "claude-sonnet-4-5", // 지원되는 모든 모델에서 작동
-    max_tokens: 1024,
-      messages: [
-      { role: "user", content: "How do I configure the timeout settings?" },
-      { role: "assistant", content: response.content },
-      {
-        role: "user",
-        content: [
-          {
-            type: "tool_result" as const,
-            tool_use_id: response.content[0].id,
-            content: toolResult  // 검색 결과가 여기에 들어감
-          }
-        ]
-      }
-    ]
-  });
-}
-```
-</CodeGroup>
+</details>
 
 ## 방법 2: 최상위 콘텐츠로서의 검색 결과
 
@@ -280,111 +192,10 @@ if (response.content[0].type === "tool_use") {
 
 ### 예제: 직접 검색 결과
 
-<CodeGroup>
-```python Python
-from anthropic import Anthropic
-from anthropic.types import (
-    MessageParam,
-    TextBlockParam,
-    SearchResultBlockParam
-)
+<details>
+<summary>REST API 예시</summary>
 
-client = Anthropic()
-
-# 사용자 메시지에 검색 결과를 직접 제공
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        MessageParam(
-            role="user",
-            content=[
-                SearchResultBlockParam(
-                    type="search_result",
-                    source="https://docs.company.com/api-reference",
-                    title="API Reference - Authentication",
-                    content=[
-                        TextBlockParam(
-                            type="text",
-                            text="All API requests must include an API key in the Authorization header. Keys can be generated from the dashboard. Rate limits: 1000 requests per hour for standard tier, 10000 for premium."
-                        )
-                    ],
-                    citations={"enabled": True}
-                ),
-                SearchResultBlockParam(
-                    type="search_result",
-                    source="https://docs.company.com/quickstart",
-                    title="Getting Started Guide",
-                    content=[
-                        TextBlockParam(
-                            type="text",
-                            text="To get started: 1) Sign up for an account, 2) Generate an API key from the dashboard, 3) Install our SDK using pip install company-sdk, 4) Initialize the client with your API key."
-                        )
-                    ],
-                    citations={"enabled": True}
-                ),
-                TextBlockParam(
-                    type="text",
-                    text="Based on these search results, how do I authenticate API requests and what are the rate limits?"
-                )
-            ]
-        )
-    ]
-)
-
-print(response.model_dump_json(indent=2))
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-// 사용자 메시지에 검색 결과를 직접 제공
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: [
-        {
-          type: "search_result" as const,
-          source: "https://docs.company.com/api-reference",
-          title: "API Reference - Authentication",
-          content: [
-            {
-              type: "text" as const,
-              text: "All API requests must include an API key in the Authorization header. Keys can be generated from the dashboard. Rate limits: 1000 requests per hour for standard tier, 10000 for premium."
-            }
-          ],
-          citations: { enabled: true }
-        },
-        {
-          type: "search_result" as const,
-          source: "https://docs.company.com/quickstart",
-          title: "Getting Started Guide",
-          content: [
-            {
-              type: "text" as const,
-              text: "To get started: 1) Sign up for an account, 2) Generate an API key from the dashboard, 3) Install our SDK using pip install company-sdk, 4) Initialize the client with your API key."
-            }
-          ],
-          citations: { enabled: true }
-        },
-        {
-          type: "text" as const,
-          text: "Based on these search results, how do I authenticate API requests and what are the rate limits?"
-        }
-      ]
-    }
-  ]
-});
-
-console.log(response);
-```
-
-```bash Shell
+```bash
 #!/bin/sh
 curl https://api.anthropic.com/v1/messages \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
@@ -435,7 +246,8 @@ curl https://api.anthropic.com/v1/messages \
     ]
 }'
 ```
-</CodeGroup>
+
+</details>
 
 ## 인용이 포함된 Claude의 응답
 

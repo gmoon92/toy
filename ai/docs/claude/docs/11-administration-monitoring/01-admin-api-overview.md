@@ -48,8 +48,10 @@ Admin API를 사용하는 방법:
 
 [조직 멤버](https://platform.claude.com/docs/en/api/admin-api/users/get-user)를 조회하고, 멤버 역할을 업데이트하고, 멤버를 제거할 수 있습니다.
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # 조직 멤버 조회
 curl "https://api.anthropic.com/v1/organizations/users?limit=10" \
   --header "anthropic-version: 2023-06-01" \
@@ -67,15 +69,16 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/users/{user_id
   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"
 ```
 
-</CodeGroup>
+</details>
 
 ### 조직 초대
 
 조직에 사용자를 초대하고 해당 [초대](https://platform.claude.com/docs/en/api/admin-api/invites/get-invite)를 관리할 수 있습니다.
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 # 초대 생성
 curl --request POST "https://api.anthropic.com/v1/organizations/invites" \
   --header "anthropic-version: 2023-06-01" \
@@ -96,7 +99,7 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/invites/{invit
   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"
 ```
 
-</CodeGroup>
+</details>
 
 ### 워크스페이스
 
@@ -104,9 +107,10 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/invites/{invit
 
 리소스를 구성하기 위해 [워크스페이스](https://platform.claude.com/docs/en/api/admin-api/workspaces/get-workspace)([콘솔](/settings/workspaces))를 생성하고 관리합니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 # 워크스페이스 생성
 curl --request POST "https://api.anthropic.com/v1/organizations/workspaces" \
   --header "anthropic-version: 2023-06-01" \
@@ -124,15 +128,16 @@ curl --request POST "https://api.anthropic.com/v1/organizations/workspaces/{work
   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"
 ```
 
-</CodeGroup>
+</details>
 
 ### 워크스페이스 멤버
 
 [특정 워크스페이스에 대한 사용자 액세스](https://platform.claude.com/docs/en/api/admin-api/workspace_members/get-workspace-member)를 관리합니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 # 워크스페이스에 멤버 추가
 curl --request POST "https://api.anthropic.com/v1/organizations/workspaces/{workspace_id}/members" \
   --header "anthropic-version: 2023-06-01" \
@@ -161,15 +166,16 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/workspaces/{wo
   --header "x-api-key: $ANTHROPIC_ADMIN_KEY"
 ```
 
-</CodeGroup>
+</details>
 
 ### API 키
 
 [API 키](https://platform.claude.com/docs/en/api/admin-api/apikeys/get-api-key)를 모니터링하고 관리합니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 # API 키 목록 조회
 curl "https://api.anthropic.com/v1/organizations/api_keys?limit=10&status=active&workspace_id=wrkspc_xxx" \
   --header "anthropic-version: 2023-06-01" \
@@ -185,7 +191,7 @@ curl --request POST "https://api.anthropic.com/v1/organizations/api_keys/{api_ke
   }'
 ```
 
-</CodeGroup>
+</details>
 
 ## 조직 정보 액세스
 

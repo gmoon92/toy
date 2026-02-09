@@ -22,19 +22,14 @@ aws sts get-caller-identity
 
 Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)는 Bedrock을 지원합니다. 또한 `boto3`와 같은 AWS SDK를 직접 사용할 수도 있습니다.
 
-<CodeGroup>
-  ```python Python
-  pip install -U "anthropic[bedrock]"
-  ```
+<details>
+<summary>Python 예시</summary>
 
-  ```typescript TypeScript
-  npm install @anthropic-ai/bedrock-sdk
-  ```
+```python
+pip install -U "anthropic[bedrock]"
+```
 
-  ```python Boto3 (Python)
-  pip install boto3>=1.28.59
-  ```
-</CodeGroup>
+</details>
 
 ## Bedrock 액세스
 
@@ -62,29 +57,25 @@ Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/clien
 
 다음 예제는 Bedrock을 통해 사용 가능한 모든 Claude 모델 목록을 출력하는 방법을 보여줍니다.
 
-<CodeGroup>
-  ```bash AWS CLI
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+CLI
   aws bedrock list-foundation-models --region=us-west-2 --by-provider anthropic --query "modelSummaries[*].modelId"
-  ```
+```
 
-  ```python Boto3 (Python)
-  import boto3
-
-  bedrock = boto3.client(service_name="bedrock")
-  response = bedrock.list_foundation_models(byProvider="anthropic")
-
-  for summary in response["modelSummaries"]:
-      print(summary["modelId"])
-  ```
-</CodeGroup>
+</details>
 
 ### 요청 보내기
 
 다음 예제는 Bedrock에서 Claude를 사용하여 텍스트를 생성하는 방법을 보여줍니다.
 
-<CodeGroup>
-  ```python Python
-  from anthropic import AnthropicBedrock
+<details>
+<summary>Python 예시</summary>
+
+```python
+from anthropic import AnthropicBedrock
 
   client = AnthropicBedrock(
       # 아래 키를 제공하여 인증하거나 ~/.aws/credentials 사용 또는
@@ -106,55 +97,9 @@ Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/clien
       messages=[{"role": "user", "content": "Hello, world"}]
   )
   print(message.content)
-  ```
+```
 
-  ```typescript TypeScript
-  import AnthropicBedrock from '@anthropic-ai/bedrock-sdk';
-
-  const client = new AnthropicBedrock({
-    // 아래 키를 제공하여 인증하거나 ~/.aws/credentials 사용 또는
-    // "AWS_SECRET_ACCESS_KEY" 및 "AWS_ACCESS_KEY_ID" 환경 변수와 같은
-    // 기본 AWS 자격 증명 공급자를 사용합니다.
-    awsAccessKey: '<access key>',
-    awsSecretKey: '<secret key>',
-
-    // awsSessionToken을 사용하여 임시 자격 증명을 사용할 수 있습니다.
-    // 자세한 내용은 https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html을 참조하세요.
-    awsSessionToken: '<session_token>',
-
-    // awsRegion은 요청이 전송되는 AWS 리전을 변경합니다. 기본적으로 AWS_REGION을 읽으며,
-    // 없는 경우 us-east-1을 기본값으로 사용합니다. ~/.aws/config에서 리전을 읽지 않습니다.
-    awsRegion: 'us-west-2',
-  });
-
-  async function main() {
-    const message = await client.messages.create({
-      model: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
-      max_tokens: 256,
-      messages: [{"role": "user", "content": "Hello, world"}]
-    });
-    console.log(message);
-  }
-  main().catch(console.error);
-  ```
-
-  ```python Boto3 (Python)
-  import boto3
-  import json
-
-  bedrock = boto3.client(service_name="bedrock-runtime")
-  body = json.dumps({
-    "max_tokens": 256,
-    "messages": [{"role": "user", "content": "Hello, world"}],
-    "anthropic_version": "bedrock-2023-05-31"
-  })
-
-  response = bedrock.invoke_model(body=body, modelId="global.anthropic.claude-sonnet-4-5-20250929-v1:0")
-
-  response_body = json.loads(response.get("body").read())
-  print(response_body.get("content"))
-  ```
-</CodeGroup>
+</details>
 
 자세한 내용은 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)를 참조하고, 공식 Bedrock 문서는 [여기](https://docs.aws.amazon.com/bedrock/)에서 확인할 수 있습니다.
 
@@ -223,8 +168,10 @@ Claude Sonnet 4 및 4.5는 Amazon Bedrock에서 [1M 토큰 컨텍스트 윈도�
 
 Claude Sonnet 4.5 및 4의 모델 ID는 이미 `global.` 접두사를 포함합니다.
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from anthropic import AnthropicBedrock
 
 client = AnthropicBedrock(aws_region="us-west-2")
@@ -236,27 +183,16 @@ message = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-import AnthropicBedrock from '@anthropic-ai/bedrock-sdk';
-
-const client = new AnthropicBedrock({
-  awsRegion: 'us-west-2',
-});
-
-const message = await client.messages.create({
-  model: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
-  max_tokens: 256,
-  messages: [{role: "user", content: "Hello, world"}]
-});
-```
-</CodeGroup>
+</details>
 
 **리전별 엔드포인트 사용(CRIS):**
 
 리전별 엔드포인트를 사용하려면 모델 ID에서 `global.` 접두사를 제거합니다.
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from anthropic import AnthropicBedrock
 
 client = AnthropicBedrock(aws_region="us-west-2")
@@ -269,21 +205,7 @@ message = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-import AnthropicBedrock from '@anthropic-ai/bedrock-sdk';
-
-const client = new AnthropicBedrock({
-  awsRegion: 'us-west-2',
-});
-
-// US 리전별 엔드포인트(CRIS) 사용
-const message = await client.messages.create({
-  model: 'anthropic.claude-sonnet-4-5-20250929-v1:0',  // global. 접두사 없음
-  max_tokens: 256,
-  messages: [{role: "user", content: "Hello, world"}]
-});
-```
-</CodeGroup>
+</details>
 
 ### 추가 리소스
 

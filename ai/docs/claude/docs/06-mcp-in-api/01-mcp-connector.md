@@ -36,8 +36,10 @@ MCP 커넥터는 두 가지 구성 요소를 사용합니다:
 
 이 예제는 기본 구성으로 MCP 서버의 모든 도구를 활성화합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "Content-Type: application/json" \
   -H "X-API-Key: $ANTHROPIC_API_KEY" \
@@ -64,64 +66,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1000,
-  messages: [
-    {
-      role: "user",
-      content: "What tools do you have available?",
-    },
-  ],
-  mcp_servers: [
-    {
-      type: "url",
-      url: "https://example-server.modelcontextprotocol.io/sse",
-      name: "example-mcp",
-      authorization_token: "YOUR_TOKEN",
-    },
-  ],
-  tools: [
-    {
-      type: "mcp_toolset",
-      mcp_server_name: "example-mcp",
-    },
-  ],
-  betas: ["mcp-client-2025-11-20"],
-});
-```
-
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1000,
-    messages=[{
-        "role": "user",
-        "content": "What tools do you have available?"
-    }],
-    mcp_servers=[{
-        "type": "url",
-        "url": "https://mcp.example.com/sse",
-        "name": "example-mcp",
-        "authorization_token": "YOUR_TOKEN"
-    }],
-    tools=[{
-        "type": "mcp_toolset",
-        "mcp_server_name": "example-mcp"
-    }],
-    betas=["mcp-client-2025-11-20"]
-)
-```
-</CodeGroup>
+</details>
 
 ## MCP 서버 구성
 
@@ -387,6 +332,7 @@ Claude가 MCP 도구를 사용할 때 응답에는 두 가지 새로운 콘텐�
 ## 인증
 
 OAuth 인증이 필요한 MCP 서버의 경우 액세스 토큰을 얻어야 합니다. MCP 커넥터 베타는 MCP 서버 정의에서 `authorization_token` 매개변수 전달을 지원합니다.
+
 API 소비자는 API 호출을 하기 전에 OAuth 흐름을 처리하고 액세스 토큰을 얻어야 하며, 필요에 따라 토큰을 갱신해야 합니다.
 
 ### 테스트용 액세스 토큰 얻기

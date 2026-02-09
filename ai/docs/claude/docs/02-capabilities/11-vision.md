@@ -94,9 +94,11 @@ Claude에 이미지를 제공할 때 최상의 결과를 얻으려면 다음 사
 
 base64 예제 프롬프트는 다음 변수를 사용합니다:
 
-<CodeGroup>
-```bash Shell
-    # URL 기반 이미지의 경우, JSON 요청에서 URL을 직접 사용할 수 있습니다
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+# URL 기반 이미지의 경우, JSON 요청에서 URL을 직접 사용할 수 있습니다
 
     # base64로 인코딩된 이미지의 경우, 먼저 이미지를 인코딩해야 합니다
     # bash에서 이미지를 base64로 인코딩하는 방법 예시:
@@ -105,78 +107,17 @@ base64 예제 프롬프트는 다음 변수를 사용합니다:
     # 인코딩된 데이터를 이제 API 호출에서 사용할 수 있습니다
 ```
 
-```python Python
-import base64
-import httpx
-
-# base64로 인코딩된 이미지의 경우
-image1_url = "https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg"
-image1_media_type = "image/jpeg"
-image1_data = base64.standard_b64encode(httpx.get(image1_url).content).decode("utf-8")
-
-image2_url = "https://upload.wikimedia.org/wikipedia/commons/b/b5/Iridescent.green.sweat.bee1.jpg"
-image2_media_type = "image/jpeg"
-image2_data = base64.standard_b64encode(httpx.get(image2_url).content).decode("utf-8")
-
-# URL 기반 이미지의 경우, 요청에서 URL을 직접 사용할 수 있습니다
-```
-
-```typescript TypeScript
-import axios from 'axios';
-
-// base64로 인코딩된 이미지의 경우
-async function getBase64Image(url: string): Promise<string> {
-  const response = await axios.get(url, { responseType: 'arraybuffer' });
-  return Buffer.from(response.data, 'binary').toString('base64');
-}
-
-// 사용법
-async function prepareImages() {
-  const imageData = await getBase64Image('https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg');
-  // 이제 API 호출에서 imageData를 사용할 수 있습니다
-}
-
-// URL 기반 이미지의 경우, 요청에서 URL을 직접 사용할 수 있습니다
-```
-
-```java Java
-import java.io.IOException;
-import java.util.Base64;
-import java.io.InputStream;
-import java.net.URL;
-
-public class ImageHandlingExample {
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        // base64로 인코딩된 이미지의 경우
-        String image1Url = "https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg";
-        String image1MediaType = "image/jpeg";
-        String image1Data = downloadAndEncodeImage(image1Url);
-
-        String image2Url = "https://upload.wikimedia.org/wikipedia/commons/b/b5/Iridescent.green.sweat.bee1.jpg";
-        String image2MediaType = "image/jpeg";
-        String image2Data = downloadAndEncodeImage(image2Url);
-
-        // URL 기반 이미지의 경우, 요청에서 URL을 직접 사용할 수 있습니다
-    }
-
-    private static String downloadAndEncodeImage(String imageUrl) throws IOException {
-        try (InputStream inputStream = new URL(imageUrl).openStream()) {
-            return Base64.getEncoder().encodeToString(inputStream.readAllBytes());
-        }
-    }
-
-}
-```
-</CodeGroup>
+</details>
 
 다음은 base64로 인코딩된 이미지와 URL 참조를 사용하여 Messages API 요청에 이미지를 포함하는 방법의 예시입니다:
 
 ### Base64로 인코딩된 이미지 예제
 
-<CodeGroup>
-    ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
       -H "x-api-key: $ANTHROPIC_API_KEY" \
       -H "anthropic-version: 2023-06-01" \
       -H "content-type: application/json" \
@@ -203,118 +144,17 @@ public class ImageHandlingExample {
           }
         ]
       }'
-    ```
-    ```python Python
-    import anthropic
+```
 
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            "media_type": image1_media_type,
-                            "data": image1_data,
-                        },
-                    },
-                    {
-                        "type": "text",
-                        "text": "Describe this image."
-                    }
-                ],
-            }
-        ],
-    )
-    print(message)
-    ```
-    ```typescript TypeScript
-    import Anthropic from '@anthropic-ai/sdk';
-
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
-
-    async function main() {
-      const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
-        max_tokens: 1024,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "image",
-                source: {
-                  type: "base64",
-                  media_type: "image/jpeg",
-                  data: imageData, // 문자열로 된 Base64 인코딩 이미지 데이터
-                }
-              },
-              {
-                type: "text",
-                text: "Describe this image."
-              }
-            ]
-          }
-        ]
-      });
-
-      console.log(message);
-    }
-
-    main();
-    ```
-
-    ```java Java
-    import java.io.IOException;
-    import java.util.List;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.models.messages.*;
-
-    public class VisionExample {
-        public static void main(String[] args) throws IOException, InterruptedException {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-            String imageData = ""; // 문자열로 된 Base64 인코딩 이미지 데이터
-
-            List<ContentBlockParam> contentBlockParams = List.of(
-                    ContentBlockParam.ofImage(
-                            ImageBlockParam.builder()
-                                    .source(Base64ImageSource.builder()
-                                            .data(imageData)
-                                            .build())
-                                    .build()
-                    ),
-                    ContentBlockParam.ofText(TextBlockParam.builder()
-                            .text("Describe this image.")
-                            .build())
-            );
-            Message message = client.messages().create(
-                    MessageCreateParams.builder()
-                            .model(Model.CLAUDE_SONNET_4_5_LATEST)
-                            .maxTokens(1024)
-                            .addUserMessageOfBlockParams(contentBlockParams)
-                            .build()
-            );
-
-            System.out.println(message);
-        }
-    }
-    ```
-</CodeGroup>
+</details>
 
 ### URL 기반 이미지 예제
 
-<CodeGroup>
-    ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
       -H "x-api-key: $ANTHROPIC_API_KEY" \
       -H "anthropic-version: 2023-06-01" \
       -H "content-type: application/json" \
@@ -340,115 +180,18 @@ public class ImageHandlingExample {
           }
         ]
       }'
-    ```
-    ```python Python
-    import anthropic
+```
 
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "url",
-                            "url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg",
-                        },
-                    },
-                    {
-                        "type": "text",
-                        "text": "Describe this image."
-                    }
-                ],
-            }
-        ],
-    )
-    print(message)
-    ```
-    ```typescript TypeScript
-    import Anthropic from '@anthropic-ai/sdk';
-
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
-
-    async function main() {
-      const message = await anthropic.messages.create({
-        model: "claude-sonnet-4-5",
-        max_tokens: 1024,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "image",
-                source: {
-                  type: "url",
-                  url: "https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg"
-                }
-              },
-              {
-                type: "text",
-                text: "Describe this image."
-              }
-            ]
-          }
-        ]
-      });
-
-      console.log(message);
-    }
-
-    main();
-    ```
-    ```java Java
-    import java.io.IOException;
-    import java.util.List;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.models.messages.*;
-
-    public class VisionExample {
-
-        public static void main(String[] args) throws IOException, InterruptedException {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            List<ContentBlockParam> contentBlockParams = List.of(
-                    ContentBlockParam.ofImage(
-                            ImageBlockParam.builder()
-                                    .source(UrlImageSource.builder()
-                                            .url("https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg")
-                                            .build())
-                                    .build()
-                    ),
-                    ContentBlockParam.ofText(TextBlockParam.builder()
-                            .text("Describe this image.")
-                            .build())
-            );
-            Message message = client.messages().create(
-                    MessageCreateParams.builder()
-                            .model(Model.CLAUDE_SONNET_4_5_LATEST)
-                            .maxTokens(1024)
-                            .addUserMessageOfBlockParams(contentBlockParams)
-                            .build()
-            );
-            System.out.println(message);
-        }
-    }
-    ```
-</CodeGroup>
+</details>
 
 ### Files API 이미지 예제
 
 반복적으로 사용할 이미지나 인코딩 오버헤드를 피하고 싶을 때는 [Files API](../02-capabilities/13-files-api.md)를 사용하세요:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # 먼저 Files API에 이미지를 업로드합니다
 curl -X POST https://api.anthropic.com/v1/files \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -486,135 +229,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-# 이미지 파일 업로드
-with open("image.jpg", "rb") as f:
-    file_upload = client.beta.files.upload(file=("image.jpg", f, "image/jpeg"))
-
-# 업로드된 파일을 메시지에서 사용
-message = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    betas=["files-api-2025-04-14"],
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "image",
-                    "source": {
-                        "type": "file",
-                        "file_id": file_upload.id
-                    }
-                },
-                {
-                    "type": "text",
-                    "text": "Describe this image."
-                }
-            ]
-        }
-    ],
-)
-
-print(message.content)
-```
-
-```typescript TypeScript
-import { Anthropic, toFile } from '@anthropic-ai/sdk';
-import fs from 'fs';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  // 이미지 파일 업로드
-  const fileUpload = await anthropic.beta.files.upload({
-    file: toFile(fs.createReadStream('image.jpg'), undefined, { type: "image/jpeg" })
-  }, {
-    betas: ['files-api-2025-04-14']
-  });
-
-  // 업로드된 파일을 메시지에서 사용
-  const response = await anthropic.beta.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 1024,
-    betas: ['files-api-2025-04-14'],
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: {
-              type: 'file',
-              file_id: fileUpload.id
-            }
-          },
-          {
-            type: 'text',
-            text: 'Describe this image.'
-          }
-        ]
-      }
-    ]
-  });
-
-  console.log(response);
-}
-
-main();
-```
-
-```java Java
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.File;
-import com.anthropic.models.files.FileUploadParams;
-import com.anthropic.models.messages.*;
-
-public class ImageFilesExample {
-    public static void main(String[] args) throws IOException {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        // 이미지 파일 업로드
-        File file = client.beta().files().upload(FileUploadParams.builder()
-                .file(Files.newInputStream(Path.of("image.jpg")))
-                .build());
-
-        // 업로드된 파일을 메시지에서 사용
-        ImageBlockParam imageParam = ImageBlockParam.builder()
-                .fileSource(file.id())
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_SONNET_4_5_LATEST)
-                .maxTokens(1024)
-                .addUserMessageOfBlockParams(
-                        List.of(
-                                ContentBlockParam.ofImage(imageParam),
-                                ContentBlockParam.ofText(
-                                        TextBlockParam.builder()
-                                                .text("Describe this image.")
-                                                .build()
-                                )
-                        )
-                )
-                .build();
-
-        Message message = client.messages().create(params);
-        System.out.println(message.content());
-    }
-}
-```
-</CodeGroup>
+</details>
 
 더 많은 예제 코드와 매개변수 세부 정보는 [Messages API 예제](https://platform.claude.com/docs/en/api/messages)를 참조하세요.
 
@@ -933,7 +548,9 @@ Claude는 현재 JPEG, PNG, GIF 및 WebP 이미지 형식을 지원합니다. �
 <summary>Claude가 이미지 URL을 읽을 수 있나요?</summary>
 
 예, Claude는 이제 API의 URL 이미지 소스 블록을 통해 URL에서 이미지를 처리할 수 있습니다.
+
   API 요청에서 "base64" 대신 "url" 소스 타입을 사용하기만 하면 됩니다.
+
   예시:
   ```json
   {

@@ -117,9 +117,10 @@ Memory 도구를 사용하려면:
 
 ## 기본 사용법
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash cURL
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -131,63 +132,10 @@ curl https://api.anthropic.com/v1/messages \
         "messages": [
             {
                 "role": "user",
-                "content": "I'\''m working on a Python web scraper that keeps crashing with a timeout error. Here'\''s the problematic function:\n\n```python\ndef fetch_page(url, retries=3):\n    for i in range(retries):\n        try:\n            response = requests.get(url, timeout=5)\n            return response.text\n        except requests.exceptions.Timeout:\n            if i == retries - 1:\n                raise\n            time.sleep(1)\n```\n\nPlease help me debug this."
-            }
-        ],
-        "tools": [{
-            "type": "memory_20250818",
-            "name": "memory"
-        }]
-    }'
+                "content": "I'\''m working on a Python web scraper that keeps crashing with a timeout error. Here'\''s the problematic function:\n\n
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-message = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=2048,
-    messages=[
-        {
-            "role": "user",
-            "content": "I'm working on a Python web scraper that keeps crashing with a timeout error. Here's the problematic function:\n\n```python\ndef fetch_page(url, retries=3):\n    for i in range(retries):\n        try:\n            response = requests.get(url, timeout=5)\n            return response.text\n        except requests.exceptions.Timeout:\n            if i == retries - 1:\n                raise\n            time.sleep(1)\n```\n\nPlease help me debug this."
-        }
-    ],
-    tools=[{
-        "type": "memory_20250818",
-        "name": "memory"
-    }],
-    betas=["context-management-2025-06-27"]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const message = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 2048,
-  messages: [
-    {
-      role: "user",
-      content: "I'm working on a Python web scraper that keeps crashing with a timeout error. Here's the problematic function:\n\n```python\ndef fetch_page(url, retries=3):\n    for i in range(retries):\n        try:\n            response = requests.get(url, timeout=5)\n            return response.text\n        except requests.exceptions.Timeout:\n            if i == retries - 1:\n                raise\n            time.sleep(1)\n```\n\nPlease help me debug this."
-    }
-  ],
-  tools: [{
-    type: "memory_20250818",
-    name: "memory"
-  }],
-  betas: ["context-management-2025-06-27"]
-});
-```
-
-</CodeGroup>
+</details>
 
 ## 도구 명령
 
@@ -440,9 +388,10 @@ Context editing이 활성화되고 대화가 지우기 임계값에 접근하면
 
 두 기능을 함께 사용하려면:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 response = client.beta.messages.create(
     model="claude-sonnet-4-5",
     max_tokens=4096,
@@ -473,50 +422,14 @@ response = client.beta.messages.create(
 )
 ```
 
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 4096,
-  messages: [...],
-  tools: [
-    {
-      type: "memory_20250818",
-      name: "memory"
-    },
-    // Your other tools
-  ],
-  betas: ["context-management-2025-06-27"],
-  context_management: {
-    edits: [
-      {
-        type: "clear_tool_uses_20250919",
-        trigger: {
-          type: "input_tokens",
-          value: 100000
-        },
-        keep: {
-          type: "tool_uses",
-          value: 3
-        }
-      }
-    ]
-  }
-});
-```
-
-</CodeGroup>
+</details>
 
 또한 Claude가 항상 최근 메모리 작업에 액세스할 수 있도록 memory 도구 호출이 지워지지 않도록 제외할 수 있습니다:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 context_management={
     "edits": [
         {
@@ -527,15 +440,4 @@ context_management={
 }
 ```
 
-```typescript TypeScript
-context_management: {
-  edits: [
-    {
-      type: "clear_tool_uses_20250919",
-      exclude_tools: ["memory"]
-    }
-  ]
-}
-```
-
-</CodeGroup>
+</details>

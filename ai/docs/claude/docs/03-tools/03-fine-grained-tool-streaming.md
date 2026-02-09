@@ -22,10 +22,11 @@
 
 다음은 API에서 세밀한 도구 스트리밍을 사용하는 예시입니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-  ```bash Shell
-  curl https://api.anthropic.com/v1/messages \
+```bash
+curl https://api.anthropic.com/v1/messages \
     -H "content-type: application/json" \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
@@ -61,80 +62,9 @@
       ],
       "stream": true
     }' | jq '.usage'
-  ```
+```
 
-  ```python Python
-  import anthropic
-
-  client = anthropic.Anthropic()
-
-  response = client.beta.messages.stream(
-      max_tokens=65536,
-      model="claude-sonnet-4-5",
-      tools=[{
-        "name": "make_file",
-        "description": "Write text to a file",
-        "input_schema": {
-          "type": "object",
-          "properties": {
-            "filename": {
-              "type": "string",
-              "description": "The filename to write text to"
-            },
-            "lines_of_text": {
-              "type": "array",
-              "description": "An array of lines of text to write to the file"
-            }
-          },
-          "required": ["filename", "lines_of_text"]
-        }
-      }],
-      messages=[{
-        "role": "user",
-        "content": "Can you write a long poem and make a file called poem.txt?"
-      }],
-      betas=["fine-grained-tool-streaming-2025-05-14"]
-  )
-
-  print(response.usage)
-  ```
-
-  ```typescript TypeScript
-  import Anthropic from '@anthropic-ai/sdk';
-
-  const anthropic = new Anthropic();
-
-  const message = await anthropic.beta.messages.stream({
-    model: "claude-sonnet-4-5",
-    max_tokens: 65536,
-    tools: [{
-      "name": "make_file",
-      "description": "Write text to a file",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "filename": {
-            "type": "string",
-            "description": "The filename to write text to"
-          },
-          "lines_of_text": {
-            "type": "array",
-            "description": "An array of lines of text to write to the file"
-          }
-        },
-        "required": ["filename", "lines_of_text"]
-      }
-    }],
-    messages: [{
-      role: "user",
-      content: "Can you write a long poem and make a file called poem.txt?"
-    }],
-    betas: ["fine-grained-tool-streaming-2025-05-14"]
-  });
-
-  console.log(message.usage);
-  ```
-</CodeGroup>
+</details>
 
 이 예시에서 세밀한 도구 스트리밍은 Claude가 `lines_of_text` 매개변수가 유효한 JSON인지 검증하기 위해 버퍼링하지 않고도 긴 시의 줄들을 `make_file` 도구 호출로 스트리밍할 수 있게 합니다. 이는 전체 매개변수가 버퍼링되고 검증될 때까지 기다릴 필요 없이, 매개변수가 도착하는 대로 스트림을 볼 수 있음을 의미합니다.
 

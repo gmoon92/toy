@@ -41,50 +41,10 @@ effort 매개변수는 응답의 **모든 토큰**에 영향을 줍니다. 여�
 
 ## 기본 사용법
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-opus-4-5-20251101",
-    betas=["effort-2025-11-24"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "마이크로서비스와 모놀리식 아키텍처 간의 트레이드오프를 분석하세요"
-    }],
-    output_config={
-        "effort": "medium"
-    }
-)
-
-print(response.content[0].text)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-const response = await client.beta.messages.create({
-  model: "claude-opus-4-5-20251101",
-  betas: ["effort-2025-11-24"],
-  max_tokens: 4096,
-  messages: [{
-    role: "user",
-    content: "마이크로서비스와 모놀리식 아키텍처 간의 트레이드오프를 분석하세요"
-  }],
-  output_config: {
-    effort: "medium"
-  }
-});
-
-console.log(response.content[0].text);
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -103,7 +63,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-</CodeGroup>
+</details>
 
 ## Effort 매개변수를 조정해야 하는 경우는 언제인가요?
 

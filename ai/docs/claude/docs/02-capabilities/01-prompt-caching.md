@@ -2,52 +2,42 @@
 
 ---
 
-프롬프트 캐싱은 프롬프트의 특정 접두사(prefix)에서 재개할 수 있도록 하여 API 사용을 최적화하는 강력한 기능입니다.
+프롬프트 캐싱은 프롬프트의 특정 접두사(prefix)에서 재개할 수 있도록 하여 API 사용을 최적화하는 강력한 기능입니다.<br/>
 이 접근 방식은 반복적인 작업이나 일관된 요소가 있는 프롬프트에서 처리 시간과 비용을 크게 줄여줍니다.
 
 <details>
-
 <summary>다음은 `cache_control` 블록을 사용하여 Messages API로 프롬프트 캐싱을 구현하는 예제입니다:</summary>
 
-```java Java
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.CacheControlEphemeral;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.TextBlockParam;
-
-public class PromptCachingExample {
-
-	public static void main(String[] args) {
-		AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-		MessageCreateParams params = MessageCreateParams.builder()
-		  .model(Model.CLAUDE_OPUS_4_20250514)
-		  .maxTokens(1024)
-		  .systemOfTextBlockParams(List.of(
-			TextBlockParam.builder()
-			  .text(
-				"You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n")
-			  .build(),
-			TextBlockParam.builder()
-			  .text("<the entire contents of 'Pride and Prejudice'>")
-			  .cacheControl(CacheControlEphemeral.builder().build())
-			  .build()
-		  ))
-		  .addUserMessage("Analyze the major themes in 'Pride and Prejudice'.")
-		  .build();
-
-		Message message = client.messages().create(params);
-		System.out.println(message.usage());
-	}
-}
+```bash REST API
+curl https://api.anthropic.com/v1/messages \
+     --header "x-api-key: $ANTHROPIC_API_KEY" \
+     --header "anthropic-version: 2023-06-01" \
+     --header "content-type: application/json" \
+     --data \
+'{
+    "model": "claude-opus-4-20250514",
+    "max_tokens": 1024,
+    "system": [
+        {
+            "type": "text",
+            "text": "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n"
+        },
+        {
+            "type": "text",
+            "text": "<the entire contents of '\''Pride and Prejudice'\''>",
+            "cache_control": {"type": "ephemeral"}
+        }
+    ],
+    "messages": [
+        {
+            "role": "user",
+            "content": "Analyze the major themes in '\''Pride and Prejudice'\''."
+        }
+    ]
+}'
 ```
 
-```json JSON
+```json Response
 {
   "cache_creation_input_tokens": 188086,
   "cache_read_input_tokens": 0,
@@ -64,8 +54,8 @@ public class PromptCachingExample {
 
 </details>
 
-이 예제에서는 "오만과 편견"의 전체 텍스트가 `cache_control` 매개변수를 사용하여 캐시됩니다.
-이를 통해 매번 재처리하지 않고 여러 API 호출에서 이 큰 텍스트를 재사용할 수 있습니다.
+이 예제에서는 "오만과 편견"의 전체 텍스트가 `cache_control` 매개변수를 사용하여 캐시됩니다.<br/>
+이를 통해 매번 재처리하지 않고 여러 API 호출에서 이 큰 텍스트를 재사용할 수 있습니다.<br/>
 사용자 메시지만 변경하면 캐시된 콘텐츠를 활용하면서 책에 대해 다양한 질문을 할 수 있어 더 빠른 응답과 향상된 효율성을 얻을 수 있습니다.
 
 ---
@@ -85,7 +75,8 @@ public class PromptCachingExample {
 - 일관된 지침이 있는 반복 작업
 - 긴 다회전 대화
 
-기본적으로 캐시의 수명은 5분입니다. 캐시된 콘텐츠가 사용될 때마다 추가 비용 없이 캐시가 갱신됩니다.
+기본적으로 캐시의 수명은 5분입니다.<br/>
+캐시된 콘텐츠가 사용될 때마다 추가 비용 없이 캐시가 갱신됩니다.
 
 > **프롬프트 캐싱은 전체 접두사를 캐시합니다**<br/>
 > 프롬프트 캐싱은 `cache_control`로 지정된 블록까지 포함하여 전체 프롬프트 - `tools`, `system`, `messages` (이 순서대로) - 를 참조합니다.<br/>
@@ -96,7 +87,9 @@ public class PromptCachingExample {
 
 ## 가격
 
-프롬프트 캐싱은 새로운 가격 구조를 도입합니다. 아래 표는 지원되는 각 모델의 백만 토큰당 가격을 보여줍니다:
+프롬프트 캐싱은 새로운 가격 구조를 도입합니다.
+
+아래 표는 지원되는 각 모델의 백만 토큰당 가격을 보여줍니다:
 
 | 모델                                                                                                    | 기본 입력 토큰     | 5분 캐시 쓰기      | 1시간 캐시 쓰기    | 캐시 히트 & 갱신   | 출력 토큰        |
 |-------------------------------------------------------------------------------------------------------|--------------|---------------|--------------|--------------|--------------|
@@ -137,14 +130,17 @@ public class PromptCachingExample {
 ### 프롬프트 구조화
 
 정적 콘텐츠(도구 정의, 시스템 지침, 컨텍스트, 예제)를 프롬프트 시작 부분에 배치하세요.
+
 `cache_control` 매개변수를 사용하여 캐싱을 위한 재사용 가능한 콘텐츠의 끝을 표시합니다.
 
 캐시 접두사는 `tools`, `system`, 그 다음 `messages` 순서로 생성됩니다.
+
 이 순서는 각 레벨이 이전 레벨을 기반으로 구축되는 계층 구조를 형성합니다.
 
 #### 자동 접두사 검사 작동 방식
 
 정적 콘텐츠의 끝에 하나의 캐시 중단점만 사용할 수 있으며, 시스템은 캐시된 블록의 가장 긴 일치 시퀀스를 자동으로 찾습니다.
+
 이것이 어떻게 작동하는지 이해하면 캐싱 전략을 최적화하는 데 도움이 됩니다.
 
 **세 가지 핵심 원칙:**
@@ -208,13 +204,13 @@ public class PromptCachingExample {
     - Claude Sonnet 4
     - Claude Sonnet 3.7
 
-더 짧은 프롬프트는 `cache_control`로 표시되어 있어도 캐시될 수 없습니다.
-이 토큰 수보다 적은 수를 캐시하려는 모든 요청은 캐싱 없이 처리됩니다.
-프롬프트가 캐시되었는지 확인하려면 응답 사용량 [필드](../02-capabilities/01-prompt-caching.md)를 참조하세요.
+더 짧은 프롬프트는 `cache_control`로 표시되어 있어도 캐시될 수 없습니다.<br/>
+이 토큰 수보다 적은 수를 캐시하려는 모든 요청은 캐싱 없이 처리됩니다.<br/>
+프롬프트가 캐시되었는지 확인하려면 응답 사용량 [필드](#캐시-성능-추적)를 참조하세요.
 
 동시 요청의 경우, 첫 번째 응답이 시작된 후에만 캐시 항목을 사용할 수 있다는 점에 유의하세요.
 
-병렬 요청에 대한 캐시 히트가 필요한 경우, 후속 요청을 보내기 전에 첫 번째 응답을 기다리세요.
+병렬 요청에 대한 캐시 히트가 필요한 경우, 후속 요청을 보내기 전에 첫 번째 응답을 기다리세요.<br/>
 현재 "ephemeral"이 유일하게 지원되는 캐시 유형이며, 기본적으로 5분의 수명을 가집니다.
 
 ### 캐시 중단점 비용 이해
@@ -249,8 +245,10 @@ public class PromptCachingExample {
 - Thinking 블록은 `cache_control`로 직접 캐시할 수 없습니다.
 - 그러나 thinking 블록은 이전 어시스턴트 턴에 나타날 때 다른 콘텐츠와 함께 캐시될 수 있습니다.
 - 이런 식으로 캐시되면 캐시에서 읽을 때 입력 토큰으로 계산됩니다.
-- 하위 콘텐츠 블록([citations](../02-capabilities/07-citations.md)과 같은)은 직접 캐시할 수 없습니다. 대신 최상위 블록을 캐시하세요.
-  인용의 경우, 인용의 소스 자료 역할을 하는 최상위 문서 콘텐츠 블록을 캐시할 수 있습니다. 이를 통해 인용이 참조할 문서를 캐싱함으로써 인용과 함께 프롬프트 캐싱을 효과적으로 사용할 수 있습니다.
+- 하위 콘텐츠 블록([citations](#../07-citations.md)과 같은)은 직접 캐시할 수 없습니다.<br/>
+  대신 최상위 블록을 캐시하세요.<br/>
+  인용의 경우, 인용의 소스 자료 역할을 하는 최상위 문서 콘텐츠 블록을 캐시할 수 있습니다.<br/>
+  이를 통해 인용이 참조할 문서를 캐싱함으로써 인용과 함께 프롬프트 캐싱을 효과적으로 사용할 수 있습니다.
 - 빈 텍스트 블록은 캐시할 수 없습니다.
 
 ### 캐시를 무효화하는 것
@@ -258,6 +256,7 @@ public class PromptCachingExample {
 캐시된 콘텐츠를 수정하면 캐시의 일부 또는 전체가 무효화될 수 있습니다.
 
 [프롬프트 구조화](#프롬프트-구조화)에서 설명한 것처럼, 캐시는 `tools` → `system` → `messages` 계층 구조를 따릅니다.
+
 각 레벨의 변경 사항은 해당 레벨과 모든 후속 레벨을 무효화합니다.
 
 다음 표는 다양한 유형의 변경으로 인해 캐시의 어떤 부분이 무효화되는지 보여줍니다.
@@ -276,8 +275,7 @@ _✘는 캐시가 무효화됨을 나타내고 ✓는 캐시가 유효함을 나
 
 ### 캐시 성능 추적
 
-응답의 `usage` 내(또는 [스트리밍](../02-capabilities/05-streaming-messages.md) 시 `message_start` 이벤트)에 있는 다음 API 응답 필드를 사용하여 캐시
-성능을 모니터링하세요:
+응답의 `usage` 내(또는 [스트리밍](#../05-streaming-messages.md) 시 `message_start` 이벤트)에 있는 다음 API 응답 필드를 사용하여 캐시 성능을 모니터링하세요:
 
 - `cache_creation_input_tokens`: 새 캐시 항목을 만들 때 캐시에 작성된 토큰 수입니다.
 - `cache_read_input_tokens`: 이 요청에 대해 캐시에서 검색된 토큰 수입니다.
@@ -346,7 +344,7 @@ _✘는 캐시가 무효화됨을 나타내고 ✓는 캐시가 유효함을 나
 
 ### Thinking 블록과 캐싱
 
-[extended thinking](../02-capabilities/03-extended-thinking.md)을 프롬프트 캐싱과 함께 사용할 때, thinking 블록은 특별한 동작을 합니다:
+[extended thinking](#../03-extended-thinking.md)을 프롬프트 캐싱과 함께 사용할 때, thinking 블록은 특별한 동작을 합니다:
 
 **다른 콘텐츠와 함께 자동 캐싱**: thinking 블록은 `cache_control`로 명시적으로 표시할 수 없지만, 도구 결과와 함께 후속 API 호출을 할 때 요청 콘텐츠의 일부로 캐시됩니다.
 이는 일반적으로 대화를 계속하기 위해 thinking 블록을 다시 전달할 때 도구 사용 중에 발생합니다.
@@ -387,7 +385,7 @@ _✘는 캐시가 무효화됨을 나타내고 ✓는 캐시가 유효함을 나
 
 도구 결과가 아닌 사용자 블록이 포함되면 새 어시스턴트 루프가 지정되고 이전의 모든 thinking 블록이 컨텍스트에서 제거됩니다.
 
-자세한 내용은 [extended thinking 문서](../02-capabilities/03-extended-thinking.md)를 참조하세요.
+자세한 내용은 [extended thinking 문서](#../03-extended-thinking.md)를 참조하세요.
 
 ---
 
@@ -395,7 +393,8 @@ _✘는 캐시가 무효화됨을 나타내고 ✓는 캐시가 유효함을 나
 
 - **조직 격리**: 캐시는 조직 간에 격리됩니다. 다른 조직은 동일한 프롬프트를 사용하더라도 캐시를 공유하지 않습니다.
 - **정확한 일치**: 캐시 히트는 캐시 컨트롤로 표시된 블록까지 포함하여 모든 텍스트 및 이미지를 포함한 100% 동일한 프롬프트 세그먼트가 필요합니다.
-- **출력 토큰 생성**: 프롬프트 캐싱은 출력 토큰 생성에 영향을 주지 않습니다. 받게 될 응답은 프롬프트 캐싱을 사용하지 않았을 때와 동일합니다.
+- **출력 토큰 생성**: 프롬프트 캐싱은 출력 토큰 생성에 영향을 주지 않습니다.<br/>
+  받게 될 응답은 프롬프트 캐싱을 사용하지 않았을 때와 동일합니다.
 
 > 2026년 2월 5일부터 프롬프트 캐싱은 조직 레벨 격리 대신 워크스페이스 레벨 격리를 사용합니다.<br/>
 > 캐시는 워크스페이스별로 격리되어 동일한 조직 내의 워크스페이스 간 데이터 분리를 보장합니다.<br/>
@@ -469,7 +468,9 @@ TTL을 혼합할 때, 프롬프트에서 세 가지 청구 위치를 결정합�
 3. `(C - B)`에 대한 5분 캐시 쓰기 토큰.
 
 다음은 3가지 예제입니다.
+
 이는 3개의 요청의 입력 토큰을 나타내며, 각각 다른 캐시 히트와 캐시 미스가 있습니다.
+
 각각은 결과적으로 색상 상자에 표시된 대로 다른 계산된 가격을 갖습니다.
 
 ![Mixing TTLs Diagram](../../images/prompt-cache-mixed-ttl.svg)
@@ -481,6 +482,7 @@ TTL을 혼합할 때, 프롬프트에서 세 가지 청구 위치를 결정합�
 준비했습니다.
 
 아래에는 다양한 프롬프트 캐싱 패턴을 보여주는 여러 코드 스니펫이 포함되어 있습니다.
+
 이러한 예제는 다양한 시나리오에서 캐싱을 구현하는 방법을 보여주어 이 기능의 실제 응용 프로그램을 이해하는 데 도움이 됩니다:
 
 <details>
@@ -665,10 +667,13 @@ curl https://api.anthropic.com/v1/messages \
 이 예제에서는 다회전 대화에서 프롬프트 캐싱을 사용하는 방법을 보여줍니다.
 
 각 턴 동안 최종 메시지의 최종 블록을 `cache_control`로 표시하여 대화를 점진적으로 캐시할 수 있습니다.
+
 시스템은 자동으로 후속 메시지에 대해 이전에 캐시된 블록의 가장 긴 시퀀스를 조회하고 사용합니다.
+
 즉, 이전에 `cache_control` 블록으로 표시된 블록은 나중에 이것으로 표시되지 않지만, 5분 이내에 히트되면 여전히 캐시 히트(및 캐시 갱신!)로 간주됩니다.
 
 또한 `cache_control` 매개변수가 시스템 메시지에 배치된다는 점에 유의하세요.
+
 이는 캐시에서 제거되는 경우(5분 이상 사용되지 않은 후), 다음 요청에서 캐시에 다시 추가되도록 하기 위한 것입니다.
 
 이 접근 방식은 동일한 정보를 반복적으로 처리하지 않고 진행 중인 대화의 컨텍스트를 유지하는 데 유용합니다.
@@ -685,6 +690,7 @@ curl https://api.anthropic.com/v1/messages \
 <summary>모두 합치기: 여러 캐시 중단점</summary>
 
 여기서 코드가 너무 길어서 축약하겠습니다.
+
 이 예제는 사용 가능한 4개의 캐시 중단점을 모두 사용하여 프롬프트의 여러 부분을 최적화하는 방법을 보여줍니다:
 
 1. **도구 캐시** (캐시 중단점 1): 마지막 도구 정의의 `cache_control` 매개변수는 모든 도구 정의를 캐시합니다.
@@ -809,12 +815,12 @@ Claude Haiku 3에서만 사용할 수 있습니다.
 <summary>extended thinking과 프롬프트 캐싱은 어떻게 작동하나요?</summary>
 
 thinking 매개변수가 변경될 때 캐시된 시스템 프롬프트와 도구가 재사용됩니다.
+
 그러나 thinking 변경(활성화/비활성화 또는 예산 변경)은 메시지 콘텐츠가 있는 이전에 캐시된 프롬프트 접두사를 무효화합니다.
 
 캐시 무효화에 대한 자세한 내용은 [캐시를 무효화하는 것](#캐시를-무효화하는-것)을 참조하세요.
 
-도구 사용 및 프롬프트 캐싱과의 상호 작용을 포함한 extended thinking에 대한 자세한
-내용은 [extended thinking 문서](../02-capabilities/03-extended-thinking.md)를 참조하세요.
+도구 사용 및 프롬프트 캐싱과의 상호 작용을 포함한 extended thinking에 대한 자세한 내용은 [extended thinking 문서](#../03-extended-thinking.md)를 참조하세요.
 
 </details>
 
@@ -828,6 +834,7 @@ thinking 매개변수가 변경될 때 캐시된 시스템 프롬프트와 도�
 <summary>다른 API 기능과 함께 프롬프트 캐싱을 사용할 수 있나요?</summary>
 
 예, 프롬프트 캐싱은 도구 사용 및 비전 기능과 같은 다른 API 기능과 함께 사용할 수 있습니다.
+
 그러나 프롬프트에 이미지가 있는지 여부를 변경하거나 도구 사용 설정을 수정하면 캐시가 깨집니다.
 
 캐시 무효화에 대한 자세한 내용은 [캐시를 무효화하는 것](#캐시를-무효화하는-것)을 참조하세요.
@@ -873,31 +880,37 @@ API 응답의 `cache_creation_input_tokens` 및 `cache_read_input_tokens` 필드
 이러한 조치는 프롬프트 캐싱이 성능 이점을 제공하면서 데이터 개인 정보 보호 및 보안을 유지하도록 보장합니다.
 
 참고: 2026년 2월 5일부터 캐시는 조직 레벨 격리 대신 워크스페이스 레벨 격리를 사용합니다.
+
 캐시는 워크스페이스별로 격리되어 동일한 조직 내의 워크스페이스 간 데이터 분리를 보장합니다. 이 변경 사항은 Claude API 및 Azure에 적용됩니다.
+
 자세한 내용은 [캐시 저장 및 공유](#cache-storage-and-sharing)를 참조하세요.
 </details>
 
 <details>
 <summary>Batches API와 함께 프롬프트 캐싱을 사용할 수 있나요?</summary>
 
-예, [Batches API](../02-capabilities/06-batch-processing.md) 요청과 함께 프롬프트 캐싱을 사용할 수 있습니다.
+예, [Batches API](#../06-batch-processing.md) 요청과 함께 프롬프트 캐싱을 사용할 수 있습니다.<br/>
 그러나 비동기 배치 요청은 동시에 그리고 순서에 관계없이 처리될 수 있으므로 캐시 히트는 최선의 노력으로 제공됩니다.
 
-[1시간 캐시](#1시간-캐시-기간)는 캐시 히트를 개선하는 데 도움이 될 수 있습니다. 가장 비용 효율적인 사용 방법은 다음과 같습니다:
+[1시간 캐시](#1시간-캐시-기간)는 캐시 히트를 개선하는 데 도움이 될 수 있습니다.<br/>
+가장 비용 효율적인 사용 방법은 다음과 같습니다:
 
 - 공유 접두사가 있는 메시지 요청 세트를 수집합니다.
-- 이 공유 접두사가 있고 1시간 캐시 블록이 있는 단일 요청만 있는 배치 요청을 보냅니다. 이것이 1시간 캐시에 작성됩니다.
-- 완료되는 즉시 나머지 요청을 제출합니다. 작업을 모니터링하여 완료 시기를 알아야 합니다.
+- 이 공유 접두사가 있고 1시간 캐시 블록이 있는 단일 요청만 있는 배치 요청을 보냅니다.<br/>
+  이것이 1시간 캐시에 작성됩니다.
+- 완료되는 즉시 나머지 요청을 제출합니다.<br/>
+  작업을 모니터링하여 완료 시기를 알아야 합니다.
 
-이는 일반적으로 배치 요청이 완료되는 데 5분에서 1시간 사이가 걸리는 것이 일반적이기 때문에 5분 캐시를 사용하는 것보다 낫습니다. 이러한 캐시 히트율을 개선하고 이 프로세스를 더 간단하게 만드는 방법을 고려하고
-있습니다.
+이는 일반적으로 배치 요청이 완료되는 데 5분에서 1시간 사이가 걸리는 것이 일반적이기 때문에 5분 캐시를 사용하는 것보다 낫습니다.<br/>
+이러한 캐시 히트율을 개선하고 이 프로세스를 더 간단하게 만드는 방법을 고려하고 있습니다.
 </details>
 
 <details>
 <summary>Python에서 `AttributeError: 'Beta' object has no attribute 'prompt_caching'` 오류가 표시되는 이유는 무엇인가요?</summary>
 
-이 오류는 일반적으로 SDK를 업그레이드했거나 오래된 코드 예제를 사용하고 있을 때 나타납니다.
-프롬프트 캐싱은 이제 일반적으로 사용 가능하므로 더 이상 베타 접두사가 필요하지 않습니다. 다음 대신:
+이 오류는 일반적으로 SDK를 업그레이드했거나 오래된 코드 예제를 사용하고 있을 때 나타납니다.<br/>
+프롬프트 캐싱은 이제 일반적으로 사용 가능하므로 더 이상 베타 접두사가 필요하지 않습니다.<br/>
+다음 대신:
 
 ```python Python
 python client.beta.prompt_caching.messages.create(...)
@@ -914,8 +927,9 @@ python client.messages.create(...)
 <details>
 <summary>'TypeError: Cannot read properties of undefined (reading 'messages')'가 표시되는 이유는 무엇인가요?</summary>
 
-이 오류는 일반적으로 SDK를 업그레이드했거나 오래된 코드 예제를 사용하고 있을 때 나타납니다.
-프롬프트 캐싱은 이제 일반적으로 사용 가능하므로 더 이상 베타 접두사가 필요하지 않습니다. 다음 대신:
+이 오류는 일반적으로 SDK를 업그레이드했거나 오래된 코드 예제를 사용하고 있을 때 나타납니다.<br/>
+프롬프트 캐싱은 이제 일반적으로 사용 가능하므로 더 이상 베타 접두사가 필요하지 않습니다.<br/>
+다음 대신:
 
 ```typescript TypeScript
 client.beta.promptCaching.messages.create(...)

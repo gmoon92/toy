@@ -31,8 +31,10 @@
 
 다음은 Claude가 프로그래밍 방식으로 데이터베이스를 여러 번 쿼리하고 결과를 집계하는 간단한 예시입니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -71,90 +73,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["advanced-tool-use-2025-11-20"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "서부, 동부, 중부 지역의 판매 데이터를 쿼리한 다음 어느 지역이 가장 높은 수익을 올렸는지 알려줘"
-    }],
-    tools=[
-        {
-            "type": "code_execution_20250825",
-            "name": "code_execution"
-        },
-        {
-            "name": "query_database",
-            "description": "판매 데이터베이스에 대해 SQL 쿼리를 실행합니다. JSON 객체로 행 목록을 반환합니다.",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "sql": {
-                        "type": "string",
-                        "description": "실행할 SQL 쿼리"
-                    }
-                },
-                "required": ["sql"]
-            },
-            "allowed_callers": ["code_execution_20250825"]
-        }
-    ]
-)
-
-print(response)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  const response = await anthropic.beta.messages.create({
-    model: "claude-sonnet-4-5",
-    betas: ["advanced-tool-use-2025-11-20"],
-    max_tokens: 4096,
-    messages: [
-      {
-        role: "user",
-        content: "서부, 동부, 중부 지역의 판매 데이터를 쿼리한 다음 어느 지역이 가장 높은 수익을 올렸는지 알려줘"
-      }
-    ],
-    tools: [
-      {
-        type: "code_execution_20250825",
-        name: "code_execution"
-      },
-      {
-        name: "query_database",
-        description: "판매 데이터베이스에 대해 SQL 쿼리를 실행합니다. JSON 객체로 행 목록을 반환합니다.",
-        input_schema: {
-          type: "object",
-          properties: {
-            sql: {
-              type: "string",
-              description: "실행할 SQL 쿼리"
-            }
-          },
-          required: ["sql"]
-        },
-        allowed_callers: ["code_execution_20250825"]
-      }
-    ]
-  });
-
-  console.log(response);
-}
-
-main().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 ## 프로그래밍 방식의 도구 호출 작동 원리
 
@@ -257,8 +176,10 @@ main().catch(console.error);
 > 도구 설명에 도구의 출력 형식에 대한 자세한 설명을 제공하세요. 도구가 JSON을 반환한다고 지정하면 Claude는 코드에서 결과를 역직렬화하고 처리하려고 시도합니다. 출력 스키마에 대해 더 자세히 제공할수록 Claude가 응답을 프로그래밍 방식으로 더 잘 처리할 수 있습니다.
 
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 response = client.beta.messages.create(
     model="claude-sonnet-4-5",
     betas=["advanced-tool-use-2025-11-20"],
@@ -282,30 +203,7 @@ response = client.beta.messages.create(
 )
 ```
 
-```typescript TypeScript
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  betas: ["advanced-tool-use-2025-11-20"],
-  max_tokens: 4096,
-  messages: [{
-    role: "user",
-    content: "지난 분기의 고객 구매 이력을 쿼리하고 수익 기준으로 상위 5명의 고객을 식별해줘"
-  }],
-  tools: [
-    {
-      type: "code_execution_20250825",
-      name: "code_execution"
-    },
-    {
-      name: "query_database",
-      description: "판매 데이터베이스에 대해 SQL 쿼리를 실행합니다. JSON 객체로 행 목록을 반환합니다.",
-      input_schema: {...},
-      allowed_callers: ["code_execution_20250825"]
-    }
-  ]
-});
-```
-</CodeGroup>
+</details>
 
 ### 2단계: 도구 호출이 포함된 API 응답
 
@@ -350,8 +248,10 @@ Claude가 도구를 호출하는 코드를 작성합니다. API가 일시 중지
 
 전체 대화 기록과 도구 결과를 포함합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 response = client.beta.messages.create(
     model="claude-sonnet-4-5",
     betas=["advanced-tool-use-2025-11-20"],
@@ -396,51 +296,7 @@ response = client.beta.messages.create(
 )
 ```
 
-```typescript TypeScript
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  betas: ["advanced-tool-use-2025-11-20"],
-  max_tokens: 4096,
-  container: "container_xyz789",  // 컨테이너 재사용
-  messages: [
-    { role: "user", content: "지난 분기의 고객 구매 이력을 쿼리하고 수익 기준으로 상위 5명의 고객을 식별해줘" },
-    {
-      role: "assistant",
-      content: [
-        { type: "text", text: "구매 이력을 쿼리하고 결과를 분석하겠습니다." },
-        {
-          type: "server_tool_use",
-          id: "srvtoolu_abc123",
-          name: "code_execution",
-          input: { code: "..." }
-        },
-        {
-          type: "tool_use",
-          id: "toolu_def456",
-          name: "query_database",
-          input: { sql: "<sql>" },
-          caller: {
-            type: "code_execution_20250825",
-            tool_id: "srvtoolu_abc123"
-          }
-        }
-      ]
-    },
-    {
-      role: "user",
-      content: [
-        {
-          type: "tool_result",
-          tool_use_id: "toolu_def456",
-          content: "[{\"customer_id\": \"C1\", \"revenue\": 45000}, {\"customer_id\": \"C2\", \"revenue\": 38000}, ...]"
-        }
-      ]
-    }
-  ],
-  tools: [...]
-});
-```
-</CodeGroup>
+</details>
 
 ### 4단계: 다음 도구 호출 또는 완료
 

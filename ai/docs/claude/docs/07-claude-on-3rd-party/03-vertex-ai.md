@@ -17,15 +17,14 @@ Vertex는 Anthropic의 공식 [클라이언트 SDK](https://platform.claude.com/
 
 먼저, 선택한 언어에 맞는 Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)를 설치합니다.
 
-<CodeGroup>
-  ```python Python
-  pip install -U google-cloud-aiplatform "anthropic[vertex]"
-  ```
+<details>
+<summary>Python 예시</summary>
 
-  ```typescript TypeScript
-  npm install @anthropic-ai/vertex-sdk
-  ```
-</CodeGroup>
+```python
+pip install -U google-cloud-aiplatform "anthropic[vertex]"
+```
+
+</details>
 
 ## Vertex AI 접근하기
 
@@ -52,60 +51,11 @@ Anthropic 모델 가용성은 지역에 따라 다릅니다. 최신 정보는 [V
 요청을 실행하기 전에 GCP로 인증하려면 `gcloud auth application-default login`을 실행해야 할 수 있습니다.
 
 다음 예제는 Vertex AI에서 Claude로부터 텍스트를 생성하는 방법을 보여줍니다:
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-  ```python Python
-  from anthropic import AnthropicVertex
-
-  project_id = "MY_PROJECT_ID"
-  region = "global"
-
-  client = AnthropicVertex(project_id=project_id, region=region)
-
-  message = client.messages.create(
-      model="claude-sonnet-4-5@20250929",
-      max_tokens=100,
-      messages=[
-          {
-              "role": "user",
-              "content": "Hey Claude!",
-          }
-      ],
-  )
-  print(message)
-  ```
-
-  ```typescript TypeScript
-  import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
-
-  const projectId = 'MY_PROJECT_ID';
-  const region = 'global';
-
-  // 표준 `google-auth-library` 플로우를 거칩니다.
-  const client = new AnthropicVertex({
-    projectId,
-    region,
-  });
-
-  async function main() {
-    const result = await client.messages.create({
-      model: 'claude-sonnet-4-5@20250929',
-      max_tokens: 100,
-      messages: [
-        {
-          role: 'user',
-          content: 'Hey Claude!',
-        },
-      ],
-    });
-    console.log(JSON.stringify(result, null, 2));
-  }
-
-  main();
-  ```
-
-  ```bash Shell
-  MODEL_ID=claude-sonnet-4-5@20250929
+```bash
+MODEL_ID=claude-sonnet-4-5@20250929
   LOCATION=global
   PROJECT_ID=MY_PROJECT_ID
 
@@ -122,8 +72,9 @@ Anthropic 모델 가용성은 지역에 따라 다릅니다. 최신 정보는 [V
     }],
     "max_tokens": 100,
   }'
-  ```
-</CodeGroup>
+```
+
+</details>
 
 자세한 내용은 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks) 및 공식 [Vertex AI 문서](https://cloud.google.com/vertex-ai/docs)를 참조하세요.
 
@@ -174,8 +125,10 @@ Vertex에서 현재 지원되는 모든 기능은 [여기](https://platform.clau
 
 클라이언트를 초기화할 때 `region` 매개변수를 `"global"`로 설정합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from anthropic import AnthropicVertex
 
 project_id = "MY_PROJECT_ID"
@@ -196,36 +149,16 @@ message = client.messages.create(
 print(message)
 ```
 
-```typescript TypeScript
-import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
-
-const projectId = 'MY_PROJECT_ID';
-const region = 'global';
-
-const client = new AnthropicVertex({
-  projectId,
-  region,
-});
-
-const result = await client.messages.create({
-  model: 'claude-sonnet-4-5@20250929',
-  max_tokens: 100,
-  messages: [
-    {
-      role: 'user',
-      content: 'Hey Claude!',
-    },
-  ],
-});
-```
-</CodeGroup>
+</details>
 
 **지역 엔드포인트 사용:**
 
 `"us-east1"` 또는 `"europe-west1"`과 같은 특정 지역을 지정합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from anthropic import AnthropicVertex
 
 project_id = "MY_PROJECT_ID"
@@ -246,29 +179,7 @@ message = client.messages.create(
 print(message)
 ```
 
-```typescript TypeScript
-import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
-
-const projectId = 'MY_PROJECT_ID';
-const region = 'us-east1';  // 특정 지역 지정
-
-const client = new AnthropicVertex({
-  projectId,
-  region,
-});
-
-const result = await client.messages.create({
-  model: 'claude-sonnet-4-5@20250929',
-  max_tokens: 100,
-  messages: [
-    {
-      role: 'user',
-      content: 'Hey Claude!',
-    },
-  ],
-});
-```
-</CodeGroup>
+</details>
 
 ### 추가 리소스
 

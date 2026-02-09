@@ -89,9 +89,10 @@ Message Batch는 Message를 생성하기 위한 요청 목록으로 구성됩니
 
 이 목록을 `requests` 매개변수에 전달하여 [배치를 생성](https://platform.claude.com/docs/en/api/creating-message-batches)할 수 있습니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages/batches \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -123,110 +124,7 @@ curl https://api.anthropic.com/v1/messages/batches \
 }'
 ```
 
-```python Python
-import anthropic
-from anthropic.types.message_create_params import MessageCreateParamsNonStreaming
-from anthropic.types.messages.batch_create_params import Request
-
-client = anthropic.Anthropic()
-
-message_batch = client.messages.batches.create(
-    requests=[
-        Request(
-            custom_id="my-first-request",
-            params=MessageCreateParamsNonStreaming(
-                model="claude-sonnet-4-5",
-                max_tokens=1024,
-                messages=[{
-                    "role": "user",
-                    "content": "Hello, world",
-                }]
-            )
-        ),
-        Request(
-            custom_id="my-second-request",
-            params=MessageCreateParamsNonStreaming(
-                model="claude-sonnet-4-5",
-                max_tokens=1024,
-                messages=[{
-                    "role": "user",
-                    "content": "Hi again, friend",
-                }]
-            )
-        )
-    ]
-)
-
-print(message_batch)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const messageBatch = await anthropic.messages.batches.create({
-  requests: [{
-    custom_id: "my-first-request",
-    params: {
-      model: "claude-sonnet-4-5",
-      max_tokens: 1024,
-      messages: [
-        {"role": "user", "content": "Hello, world"}
-      ]
-    }
-  }, {
-    custom_id: "my-second-request",
-    params: {
-      model: "claude-sonnet-4-5",
-      max_tokens: 1024,
-      messages: [
-        {"role": "user", "content": "Hi again, friend"}
-      ]
-    }
-  }]
-});
-
-console.log(messageBatch)
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.batches.*;
-
-public class BatchExample {
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        BatchCreateParams params = BatchCreateParams.builder()
-            .addRequest(BatchCreateParams.Request.builder()
-                .customId("my-first-request")
-                .params(BatchCreateParams.Request.Params.builder()
-                    .model(Model.CLAUDE_OPUS_4_0)
-                    .maxTokens(1024)
-                    .addUserMessage("Hello, world")
-                    .build())
-                .build())
-            .addRequest(BatchCreateParams.Request.builder()
-                .customId("my-second-request")
-                .params(BatchCreateParams.Request.Params.builder()
-                    .model(Model.CLAUDE_OPUS_4_0)
-                    .maxTokens(1024)
-                    .addUserMessage("Hi again, friend")
-                    .build())
-                .build())
-            .build();
-
-        MessageBatch messageBatch = client.messages().batches().create(params);
-
-        System.out.println(messageBatch);
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 이 예제에서는 두 개의 개별 요청이 비동기 처리를 위해 함께 배치됩니다. 각 요청에는 고유한 `custom_id`가 있으며 Messages API 호출에 사용할 표준 매개변수가 포함되어 있습니다.
 
@@ -266,47 +164,10 @@ Message Batch의 `processing_status` 필드는 배치가 처리 중인 단계를
 
 Message Batch를 폴링하려면 배치를 생성할 때 또는 배치를 나열하여 제공되는 `id`가 필요합니다. 처리가 완료될 때까지 주기적으로 배치 상태를 확인하는 폴링 루프를 구현할 수 있습니다:
 
-<CodeGroup>
-```python Python
-import anthropic
-import time
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-message_batch = None
-while True:
-    message_batch = client.messages.batches.retrieve(
-        MESSAGE_BATCH_ID
-    )
-    if message_batch.processing_status == "ended":
-        break
-
-    print(f"Batch {MESSAGE_BATCH_ID} is still processing...")
-    time.sleep(60)
-print(message_batch)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-let messageBatch;
-while (true) {
-  messageBatch = await anthropic.messages.batches.retrieve(
-    MESSAGE_BATCH_ID
-  );
-  if (messageBatch.processing_status === 'ended') {
-    break;
-  }
-
-  console.log(`Batch ${messageBatch} is still processing... waiting`);
-  await new Promise(resolve => setTimeout(resolve, 60_000));
-}
-console.log(messageBatch);
-```
-
-```bash Shell
+```bash
 #!/bin/sh
 
 until [[ $(curl -s "https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID" \
@@ -320,39 +181,17 @@ done
 
 echo "Batch $MESSAGE_BATCH_ID has finished processing"
 ```
-</CodeGroup>
+
+</details>
 
 ### 모든 Message Batch 나열
 
 [목록 엔드포인트](https://platform.claude.com/docs/en/api/listing-message-batches)를 사용하여 Workspace의 모든 Message Batch를 나열할 수 있습니다. API는 페이지네이션을 지원하며 필요에 따라 추가 페이지를 자동으로 가져옵니다:
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-# 필요에 따라 추가 페이지를 자동으로 가져옵니다.
-for message_batch in client.messages.batches.list(
-    limit=20
-):
-    print(message_batch)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-// 필요에 따라 추가 페이지를 자동으로 가져옵니다.
-for await (const messageBatch of anthropic.messages.batches.list({
-  limit: 20
-})) {
-  console.log(messageBatch);
-}
-```
-
-```bash Shell
+```bash
 #!/bin/sh
 
 if ! command -v jq &> /dev/null; then
@@ -388,27 +227,7 @@ while [ "$has_more" = true ]; do
 done
 ```
 
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.batches.*;
-
-public class BatchListExample {
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        // 필요에 따라 추가 페이지를 자동으로 가져옵니다
-        for (MessageBatch messageBatch : client.messages().batches().list(
-                BatchListParams.builder()
-                        .limit(20)
-                        .build()
-        )) {
-            System.out.println(messageBatch);
-        }
-    }
-}
-```
-</CodeGroup>
+</details>
 
 ### 배치 결과 검색
 
@@ -425,9 +244,10 @@ public class BatchListExample {
 
 배치 결과는 Message Batch의 `results_url` 속성에서 다운로드할 수 있으며, 조직 권한이 허용하는 경우 Console에서도 다운로드할 수 있습니다. 결과가 잠재적으로 클 수 있으므로 한 번에 모두 다운로드하는 대신 [결과를 스트리밍](https://platform.claude.com/docs/en/api/retrieving-message-batch-results)하는 것이 좋습니다.
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 #!/bin/sh
 curl "https://api.anthropic.com/v1/messages/batches/msgbatch_01HkcTjaV5uDC8jWR4ZsDV8d" \
   --header "anthropic-version: 2023-06-01" \
@@ -464,101 +284,9 @@ curl "https://api.anthropic.com/v1/messages/batches/msgbatch_01HkcTjaV5uDC8jWR4Z
       esac
     done
   done
-
-```
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-# 메모리 효율적인 청크로 결과 파일을 스트리밍하여 한 번에 하나씩 처리합니다
-for result in client.messages.batches.results(
-    "msgbatch_01HkcTjaV5uDC8jWR4ZsDV8d",
-):
-    match result.result.type:
-        case "succeeded":
-            print(f"Success! {result.custom_id}")
-        case "errored":
-            if result.result.error.type == "invalid_request":
-                # 요청을 다시 보내기 전에 요청 본문을 수정해야 합니다
-                print(f"Validation error {result.custom_id}")
-            else:
-                # 요청을 직접 재시도할 수 있습니다
-                print(f"Server error {result.custom_id}")
-        case "expired":
-            print(f"Request expired {result.custom_id}")
 ```
 
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-// 메모리 효율적인 청크로 결과 파일을 스트리밍하여 한 번에 하나씩 처리합니다
-for await (const result of await anthropic.messages.batches.results(
-    "msgbatch_01HkcTjaV5uDC8jWR4ZsDV8d"
-)) {
-  switch (result.result.type) {
-    case 'succeeded':
-      console.log(`Success! ${result.custom_id}`);
-      break;
-    case 'errored':
-      if (result.result.error.type == "invalid_request") {
-        // 요청을 다시 보내기 전에 요청 본문을 수정해야 합니다
-        console.log(`Validation error: ${result.custom_id}`);
-      } else {
-        // 요청을 직접 재시도할 수 있습니다
-        console.log(`Server error: ${result.custom_id}`);
-      }
-      break;
-    case 'expired':
-      console.log(`Request expired: ${result.custom_id}`);
-      break;
-  }
-}
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.core.http.StreamResponse;
-import com.anthropic.models.messages.batches.MessageBatchIndividualResponse;
-import com.anthropic.models.messages.batches.BatchResultsParams;
-
-public class BatchResultsExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        // 메모리 효율적인 청크로 결과 파일을 스트리밍하여 한 번에 하나씩 처리합니다
-        try (StreamResponse<MessageBatchIndividualResponse> streamResponse = client.messages()
-                .batches()
-                .resultsStreaming(
-                        BatchResultsParams.builder()
-                                .messageBatchId("msgbatch_01HkcTjaV5uDC8jWR4ZsDV8d")
-                                .build())) {
-
-            streamResponse.stream().forEach(result -> {
-                if (result.result().isSucceeded()) {
-                    System.out.println("Success! " + result.customId());
-                } else if (result.result().isErrored()) {
-                    if (result.result().asErrored().error().error().isInvalidRequestError()) {
-                        // 요청을 다시 보내기 전에 요청 본문을 수정해야 합니다
-                        System.out.println("Validation error: " + result.customId());
-                    } else {
-                        // 요청을 직접 재시도할 수 있습니다
-                        System.out.println("Server error: " + result.customId());
-                    }
-                } else if (result.result().isExpired()) {
-                    System.out.println("Request expired: " + result.customId());
-                }
-            });
-        }
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 결과는 `.jsonl` 형식이며, 각 줄은 Message Batch의 단일 요청 결과를 나타내는 유효한 JSON 객체입니다. 각 스트리밍된 결과에 대해 `custom_id`와 결과 유형에 따라 다른 작업을 수행할 수 있습니다. 다음은 결과 세트의 예입니다:
 
@@ -579,55 +307,17 @@ public class BatchResultsExample {
 
 [취소 엔드포인트](https://platform.claude.com/docs/en/api/canceling-message-batches)를 사용하여 현재 처리 중인 Message Batch를 취소할 수 있습니다. 취소 직후 배치의 `processing_status`는 `canceling`이 됩니다. 위에서 설명한 것과 동일한 폴링 기술을 사용하여 취소가 완료될 때까지 기다릴 수 있습니다. 취소된 배치는 `ended` 상태로 끝나며 취소 전에 처리된 요청에 대한 부분 결과를 포함할 수 있습니다.
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-message_batch = client.messages.batches.cancel(
-    MESSAGE_BATCH_ID,
-)
-print(message_batch)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const messageBatch = await anthropic.messages.batches.cancel(
-    MESSAGE_BATCH_ID
-);
-console.log(messageBatch);
-```
-
-```bash Shell
+```bash
 #!/bin/sh
 curl --request POST https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID/cancel \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01"
 ```
 
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.batches.*;
-
-public class BatchCancelExample {
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        MessageBatch messageBatch = client.messages().batches().cancel(
-                BatchCancelParams.builder()
-                        .messageBatchId(MESSAGE_BATCH_ID)
-                        .build()
-        );
-        System.out.println(messageBatch);
-    }
-}
-```
-</CodeGroup>
+</details>
 
 응답은 `canceling` 상태의 배치를 보여줍니다:
 
@@ -663,9 +353,10 @@ Message Batches API는 프롬프트 캐싱을 지원하여 배치 요청의 비�
 
 배치에서 프롬프트 캐싱을 구현하는 예:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages/batches \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -719,171 +410,7 @@ curl https://api.anthropic.com/v1/messages/batches \
 }'
 ```
 
-```python Python
-import anthropic
-from anthropic.types.message_create_params import MessageCreateParamsNonStreaming
-from anthropic.types.messages.batch_create_params import Request
-
-client = anthropic.Anthropic()
-
-message_batch = client.messages.batches.create(
-    requests=[
-        Request(
-            custom_id="my-first-request",
-            params=MessageCreateParamsNonStreaming(
-                model="claude-sonnet-4-5",
-                max_tokens=1024,
-                system=[
-                    {
-                        "type": "text",
-                        "text": "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n"
-                    },
-                    {
-                        "type": "text",
-                        "text": "<the entire contents of Pride and Prejudice>",
-                        "cache_control": {"type": "ephemeral"}
-                    }
-                ],
-                messages=[{
-                    "role": "user",
-                    "content": "Analyze the major themes in Pride and Prejudice."
-                }]
-            )
-        ),
-        Request(
-            custom_id="my-second-request",
-            params=MessageCreateParamsNonStreaming(
-                model="claude-sonnet-4-5",
-                max_tokens=1024,
-                system=[
-                    {
-                        "type": "text",
-                        "text": "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n"
-                    },
-                    {
-                        "type": "text",
-                        "text": "<the entire contents of Pride and Prejudice>",
-                        "cache_control": {"type": "ephemeral"}
-                    }
-                ],
-                messages=[{
-                    "role": "user",
-                    "content": "Write a summary of Pride and Prejudice."
-                }]
-            )
-        )
-    ]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const messageBatch = await anthropic.messages.batches.create({
-  requests: [{
-    custom_id: "my-first-request",
-    params: {
-      model: "claude-sonnet-4-5",
-      max_tokens: 1024,
-      system: [
-        {
-          type: "text",
-          text: "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n"
-        },
-        {
-          type: "text",
-          text: "<the entire contents of Pride and Prejudice>",
-          cache_control: {type: "ephemeral"}
-        }
-      ],
-      messages: [
-        {"role": "user", "content": "Analyze the major themes in Pride and Prejudice."}
-      ]
-    }
-  }, {
-    custom_id: "my-second-request",
-    params: {
-      model: "claude-sonnet-4-5",
-      max_tokens: 1024,
-      system: [
-        {
-          type: "text",
-          text: "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n"
-        },
-        {
-          type: "text",
-          text: "<the entire contents of Pride and Prejudice>",
-          cache_control: {type: "ephemeral"}
-        }
-      ],
-      messages: [
-        {"role": "user", "content": "Write a summary of Pride and Prejudice."}
-      ]
-    }
-  }]
-});
-```
-
-```java Java
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.CacheControlEphemeral;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.TextBlockParam;
-import com.anthropic.models.messages.batches.*;
-
-public class BatchExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        BatchCreateParams createParams = BatchCreateParams.builder()
-                .addRequest(BatchCreateParams.Request.builder()
-                        .customId("my-first-request")
-                        .params(BatchCreateParams.Request.Params.builder()
-                                .model(Model.CLAUDE_OPUS_4_0)
-                                .maxTokens(1024)
-                                .systemOfTextBlockParams(List.of(
-                                        TextBlockParam.builder()
-                                                .text("You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n")
-                                                .build(),
-                                        TextBlockParam.builder()
-                                                .text("<the entire contents of Pride and Prejudice>")
-                                                .cacheControl(CacheControlEphemeral.builder().build())
-                                                .build()
-                                ))
-                                .addUserMessage("Analyze the major themes in Pride and Prejudice.")
-                                .build())
-                        .build())
-                .addRequest(BatchCreateParams.Request.builder()
-                        .customId("my-second-request")
-                        .params(BatchCreateParams.Request.Params.builder()
-                                .model(Model.CLAUDE_OPUS_4_0)
-                                .maxTokens(1024)
-                                .systemOfTextBlockParams(List.of(
-                                        TextBlockParam.builder()
-                                                .text("You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.\n")
-                                                .build(),
-                                        TextBlockParam.builder()
-                                                .text("<the entire contents of Pride and Prejudice>")
-                                                .cacheControl(CacheControlEphemeral.builder().build())
-                                                .build()
-                                ))
-                                .addUserMessage("Write a summary of Pride and Prejudice.")
-                                .build())
-                        .build())
-                .build();
-
-        MessageBatch messageBatch = client.messages().batches().create(createParams);
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 이 예제에서 배치의 두 요청 모두 동일한 시스템 메시지와 `cache_control`로 표시된 Pride and Prejudice의 전체 텍스트를 포함하여 캐시 적중 가능성을 높입니다.
 

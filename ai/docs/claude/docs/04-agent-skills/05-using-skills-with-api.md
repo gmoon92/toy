@@ -68,66 +68,10 @@ API를 통해 에이전트 스킬을 사용하여 Claude의 기능을 확장하�
 
 구조는 Anthropic 스킬과 사용자 정의 스킬 모두 동일합니다. 필수 `type`과 `skill_id`를 지정하고, 선택적으로 `version`을 포함하여 특정 버전으로 고정할 수 있습니다:
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {
-                "type": "anthropic",
-                "skill_id": "pptx",
-                "version": "latest"
-            }
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Create a presentation about renewable energy"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {
-        type: 'anthropic',
-        skill_id: 'pptx',
-        version: 'latest'
-      }
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Create a presentation about renewable energy'
-  }],
-  tools: [{
-    type: 'code_execution_20250825',
-    name: 'code_execution'
-  }]
-});
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -155,7 +99,8 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 ### 생성된 파일 다운로드하기
 
@@ -169,114 +114,10 @@ curl https://api.anthropic.com/v1/messages \
 
 **예제: Excel 파일 생성 및 다운로드**
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-# 1단계: 스킬을 사용하여 파일 생성
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {"type": "anthropic", "skill_id": "xlsx", "version": "latest"}
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Create an Excel file with a simple budget spreadsheet"
-    }],
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
-
-# 2단계: 응답에서 file ID 추출
-def extract_file_ids(response):
-    file_ids = []
-    for item in response.content:
-        if item.type == 'bash_code_execution_tool_result':
-            content_item = item.content
-            if content_item.type == 'bash_code_execution_result':
-                for file in content_item.content:
-                    if hasattr(file, 'file_id'):
-                        file_ids.append(file.file_id)
-    return file_ids
-
-# 3단계: Files API를 사용하여 파일 다운로드
-for file_id in extract_file_ids(response):
-    file_metadata = client.beta.files.retrieve_metadata(
-        file_id=file_id,
-        betas=["files-api-2025-04-14"]
-    )
-    file_content = client.beta.files.download(
-        file_id=file_id,
-        betas=["files-api-2025-04-14"]
-    )
-
-    # 4단계: 디스크에 저장
-    file_content.write_to_file(file_metadata.filename)
-    print(f"Downloaded: {file_metadata.filename}")
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-// 1단계: 스킬을 사용하여 파일 생성
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {type: 'anthropic', skill_id: 'xlsx', version: 'latest'}
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Create an Excel file with a simple budget spreadsheet'
-  }],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-
-// 2단계: 응답에서 file ID 추출
-function extractFileIds(response: any): string[] {
-  const fileIds: string[] = [];
-  for (const item of response.content) {
-    if (item.type === 'bash_code_execution_tool_result') {
-      const contentItem = item.content;
-      if (contentItem.type === 'bash_code_execution_result') {
-        for (const file of contentItem.content) {
-          if ('file_id' in file) {
-            fileIds.push(file.file_id);
-          }
-        }
-      }
-    }
-  }
-  return fileIds;
-}
-
-// 3단계: Files API를 사용하여 파일 다운로드
-const fs = require('fs');
-for (const fileId of extractFileIds(response)) {
-  const fileMetadata = await client.beta.files.retrieve_metadata(fileId, {
-    betas: ['files-api-2025-04-14']
-  });
-  const fileContent = await client.beta.files.download(fileId, {
-    betas: ['files-api-2025-04-14']
-  });
-
-  // 4단계: 디스크에 저장
-  fs.writeFileSync(fileMetadata.filename, Buffer.from(await fileContent.arrayBuffer()));
-  console.log(`Downloaded: ${fileMetadata.filename}`);
-}
-```
-
-```bash Shell
+```bash
 # 1단계: 스킬을 사용하여 파일 생성
 RESPONSE=$(curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -319,53 +160,15 @@ curl "https://api.anthropic.com/v1/files/$FILE_ID/content" \
 
 echo "Downloaded: $FILENAME"
 ```
-</CodeGroup>
+
+</details>
 
 **추가 Files API 작업:**
 
-<CodeGroup>
-```python Python
-# 파일 메타데이터 가져오기
-file_info = client.beta.files.retrieve_metadata(
-    file_id=file_id,
-    betas=["files-api-2025-04-14"]
-)
-print(f"Filename: {file_info.filename}, Size: {file_info.size_bytes} bytes")
+<details>
+<summary>REST API 예시</summary>
 
-# 모든 파일 목록 조회
-files = client.beta.files.list(betas=["files-api-2025-04-14"])
-for file in files.data:
-    print(f"{file.filename} - {file.created_at}")
-
-# 파일 삭제
-client.beta.files.delete(
-    file_id=file_id,
-    betas=["files-api-2025-04-14"]
-)
-```
-
-```typescript TypeScript
-// 파일 메타데이터 가져오기
-const fileInfo = await client.beta.files.retrieve_metadata(fileId, {
-  betas: ['files-api-2025-04-14']
-});
-console.log(`Filename: ${fileInfo.filename}, Size: ${fileInfo.size_bytes} bytes`);
-
-// 모든 파일 목록 조회
-const files = await client.beta.files.list({
-  betas: ['files-api-2025-04-14']
-});
-for (const file of files.data) {
-  console.log(`${file.filename} - ${file.created_at}`);
-}
-
-// 파일 삭제
-await client.beta.files.delete(fileId, {
-  betas: ['files-api-2025-04-14']
-});
-```
-
-```bash Shell
+```bash
 # 파일 메타데이터 가져오기
 curl "https://api.anthropic.com/v1/files/$FILE_ID" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -384,7 +187,8 @@ curl -X DELETE "https://api.anthropic.com/v1/files/$FILE_ID" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: files-api-2025-04-14"
 ```
-</CodeGroup>
+
+</details>
 
 
 > Files API에 대한 자세한 내용은 [Files API 문서](https://platform.claude.com/docs/en/api/files-content)를 참조하세요.
@@ -394,8 +198,10 @@ curl -X DELETE "https://api.anthropic.com/v1/files/$FILE_ID" \
 
 컨테이너 ID를 지정하여 여러 메시지에서 동일한 컨테이너를 재사용합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 # 첫 번째 요청이 컨테이너를 생성
 response1 = client.beta.messages.create(
     model="claude-sonnet-4-5-20250929",
@@ -432,128 +238,16 @@ response2 = client.beta.messages.create(
 )
 ```
 
-```typescript TypeScript
-// 첫 번째 요청이 컨테이너를 생성
-const response1 = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {type: 'anthropic', skill_id: 'xlsx', version: 'latest'}
-    ]
-  },
-  messages: [{role: 'user', content: 'Analyze this sales data'}],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-
-// 동일한 컨테이너로 대화 계속
-const messages = [
-  {role: 'user', content: 'Analyze this sales data'},
-  {role: 'assistant', content: response1.content},
-  {role: 'user', content: 'What was the total revenue?'}
-];
-
-const response2 = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    id: response1.container.id,  // 컨테이너 재사용
-    skills: [
-      {type: 'anthropic', skill_id: 'xlsx', version: 'latest'}
-    ]
-  },
-  messages,
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-```
-</CodeGroup>
+</details>
 
 ### 장기 실행 작업
 
 스킬이 여러 턴이 필요한 작업을 수행할 수 있습니다. `pause_turn` 중지 이유를 처리합니다:
 
-<CodeGroup>
-```python Python
-messages = [{"role": "user", "content": "Process this large dataset"}]
-max_retries = 10
+<details>
+<summary>REST API 예시</summary>
 
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {"type": "custom", "skill_id": "skill_01AbCdEfGhIjKlMnOpQrStUv", "version": "latest"}
-        ]
-    },
-    messages=messages,
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
-
-# 장기 작업을 위한 pause_turn 처리
-for i in range(max_retries):
-    if response.stop_reason != "pause_turn":
-        break
-
-    messages.append({"role": "assistant", "content": response.content})
-    response = client.beta.messages.create(
-        model="claude-sonnet-4-5-20250929",
-        max_tokens=4096,
-        betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-        container={
-            "id": response.container.id,
-            "skills": [
-                {"type": "custom", "skill_id": "skill_01AbCdEfGhIjKlMnOpQrStUv", "version": "latest"}
-            ]
-        },
-        messages=messages,
-        tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-    )
-```
-
-```typescript TypeScript
-let messages = [{role: 'user' as const, content: 'Process this large dataset'}];
-const maxRetries = 10;
-
-let response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {type: 'custom', skill_id: 'skill_01AbCdEfGhIjKlMnOpQrStUv', version: 'latest'}
-    ]
-  },
-  messages,
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-
-// 장기 작업을 위한 pause_turn 처리
-for (let i = 0; i < maxRetries; i++) {
-  if (response.stop_reason !== 'pause_turn') {
-    break;
-  }
-
-  messages.push({role: 'assistant', content: response.content});
-  response = await client.beta.messages.create({
-    model: 'claude-sonnet-4-5-20250929',
-    max_tokens: 4096,
-    betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-    container: {
-      id: response.container.id,
-      skills: [
-        {type: 'custom', skill_id: 'skill_01AbCdEfGhIjKlMnOpQrStUv', version: 'latest'}
-      ]
-    },
-    messages,
-    tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-  });
-}
-```
-
-```bash Shell
+```bash
 # 초기 요청
 RESPONSE=$(curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -614,7 +308,8 @@ while [ "$STOP_REASON" = "pause_turn" ]; do
   STOP_REASON=$(echo "$RESPONSE" | jq -r '.stop_reason')
 done
 ```
-</CodeGroup>
+
+</details>
 
 
 > 응답에 `pause_turn` 중지 이유가 포함될 수 있으며, 이는 API가 장기 실행 스킬 작업을 일시 중지했음을 나타냅니다. Claude가 턴을 계속하도록 응답을 그대로 후속 요청에 제공하거나, 대화를 중단하고 추가 안내를 제공하려는 경우 콘텐츠를 수정할 수 있습니다.
@@ -624,78 +319,10 @@ done
 
 복잡한 워크플로를 처리하기 위해 단일 요청에서 여러 스킬을 결합합니다:
 
-<CodeGroup>
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {
-                "type": "anthropic",
-                "skill_id": "xlsx",
-                "version": "latest"
-            },
-            {
-                "type": "anthropic",
-                "skill_id": "pptx",
-                "version": "latest"
-            },
-            {
-                "type": "custom",
-                "skill_id": "skill_01AbCdEfGhIjKlMnOpQrStUv",
-                "version": "latest"
-            }
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Analyze sales data and create a presentation"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
+<details>
+<summary>REST API 예시</summary>
 
-```typescript TypeScript
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {
-        type: 'anthropic',
-        skill_id: 'xlsx',
-        version: 'latest'
-      },
-      {
-        type: 'anthropic',
-        skill_id: 'pptx',
-        version: 'latest'
-      },
-      {
-        type: 'custom',
-        skill_id: 'skill_01AbCdEfGhIjKlMnOpQrStUv',
-        version: 'latest'
-      }
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Analyze sales data and create a presentation'
-  }],
-  tools: [{
-    type: 'code_execution_20250825',
-    name: 'code_execution'
-  }]
-});
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -733,7 +360,8 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 ---
 
@@ -743,83 +371,10 @@ curl https://api.anthropic.com/v1/messages \
 
 워크스페이스에서 사용할 수 있도록 사용자 정의 스킬을 업로드합니다. 디렉토리 경로 또는 개별 파일 객체를 사용하여 업로드할 수 있습니다.
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-# 옵션 1: files_from_dir 헬퍼 사용 (Python 전용, 권장)
-from anthropic.lib import files_from_dir
-
-skill = client.beta.skills.create(
-    display_title="Financial Analysis",
-    files=files_from_dir("/path/to/financial_analysis_skill"),
-    betas=["skills-2025-10-02"]
-)
-
-# 옵션 2: zip 파일 사용
-skill = client.beta.skills.create(
-    display_title="Financial Analysis",
-    files=[("skill.zip", open("financial_analysis_skill.zip", "rb"))],
-    betas=["skills-2025-10-02"]
-)
-
-# 옵션 3: 파일 튜플 사용 (파일명, 파일 내용, MIME 타입)
-skill = client.beta.skills.create(
-    display_title="Financial Analysis",
-    files=[
-        ("financial_skill/SKILL.md", open("financial_skill/SKILL.md", "rb"), "text/markdown"),
-        ("financial_skill/analyze.py", open("financial_skill/analyze.py", "rb"), "text/x-python"),
-    ],
-    betas=["skills-2025-10-02"]
-)
-
-print(f"Created skill: {skill.id}")
-print(f"Latest version: {skill.latest_version}")
-```
-
-```typescript TypeScript
-import Anthropic, { toFile } from '@anthropic-ai/sdk';
-import fs from 'fs';
-
-const client = new Anthropic();
-
-// 옵션 1: zip 파일 사용
-const skill = await client.beta.skills.create({
-  displayTitle: 'Financial Analysis',
-  files: [
-    await toFile(
-      fs.createReadStream('financial_analysis_skill.zip'),
-      'skill.zip'
-    )
-  ],
-  betas: ['skills-2025-10-02']
-});
-
-// 옵션 2: 개별 파일 객체 사용
-const skill = await client.beta.skills.create({
-  displayTitle: 'Financial Analysis',
-  files: [
-    await toFile(
-      fs.createReadStream('financial_skill/SKILL.md'),
-      'financial_skill/SKILL.md',
-      { type: 'text/markdown' }
-    ),
-    await toFile(
-      fs.createReadStream('financial_skill/analyze.py'),
-      'financial_skill/analyze.py',
-      { type: 'text/x-python' }
-    ),
-  ],
-  betas: ['skills-2025-10-02']
-});
-
-console.log(`Created skill: ${skill.id}`);
-console.log(`Latest version: ${skill.latest_version}`);
-```
-
-```bash Shell
+```bash
 curl -X POST "https://api.anthropic.com/v1/skills" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -828,7 +383,8 @@ curl -X POST "https://api.anthropic.com/v1/skills" \
   -F "files[]=@financial_skill/SKILL.md;filename=financial_skill/SKILL.md" \
   -F "files[]=@financial_skill/analyze.py;filename=financial_skill/analyze.py"
 ```
-</CodeGroup>
+
+</details>
 
 **요구 사항:**
 - 최상위 수준에 SKILL.md 파일이 포함되어야 합니다
@@ -844,41 +400,10 @@ curl -X POST "https://api.anthropic.com/v1/skills" \
 
 Anthropic 사전 구축 스킬과 사용자 정의 스킬을 포함하여 워크스페이스에서 사용 가능한 모든 스킬을 검색합니다. `source` 매개변수를 사용하여 스킬 유형별로 필터링합니다:
 
-<CodeGroup>
-```python Python
-# 모든 스킬 목록 조회
-skills = client.beta.skills.list(
-    betas=["skills-2025-10-02"]
-)
+<details>
+<summary>REST API 예시</summary>
 
-for skill in skills.data:
-    print(f"{skill.id}: {skill.display_title} (source: {skill.source})")
-
-# 사용자 정의 스킬만 목록 조회
-custom_skills = client.beta.skills.list(
-    source="custom",
-    betas=["skills-2025-10-02"]
-)
-```
-
-```typescript TypeScript
-// 모든 스킬 목록 조회
-const skills = await client.beta.skills.list({
-  betas: ['skills-2025-10-02']
-});
-
-for (const skill of skills.data) {
-  console.log(`${skill.id}: ${skill.display_title} (source: ${skill.source})`);
-}
-
-// 사용자 정의 스킬만 목록 조회
-const customSkills = await client.beta.skills.list({
-  source: 'custom',
-  betas: ['skills-2025-10-02']
-});
-```
-
-```bash Shell
+```bash
 # 모든 스킬 목록 조회
 curl "https://api.anthropic.com/v1/skills" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -891,7 +416,8 @@ curl "https://api.anthropic.com/v1/skills?source=custom" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: skills-2025-10-02"
 ```
-</CodeGroup>
+
+</details>
 
 페이지네이션 및 필터링 옵션은 [List Skills API 참조](https://platform.claude.com/docs/en/api/skills/list-skills)를 참조하세요.
 
@@ -899,93 +425,34 @@ curl "https://api.anthropic.com/v1/skills?source=custom" \
 
 특정 스킬에 대한 세부 정보를 가져옵니다:
 
-<CodeGroup>
-```python Python
-skill = client.beta.skills.retrieve(
-    skill_id="skill_01AbCdEfGhIjKlMnOpQrStUv",
-    betas=["skills-2025-10-02"]
-)
+<details>
+<summary>REST API 예시</summary>
 
-print(f"Skill: {skill.display_title}")
-print(f"Latest version: {skill.latest_version}")
-print(f"Created: {skill.created_at}")
-```
-
-```typescript TypeScript
-const skill = await client.beta.skills.retrieve(
-  'skill_01AbCdEfGhIjKlMnOpQrStUv',
-  { betas: ['skills-2025-10-02'] }
-);
-
-console.log(`Skill: ${skill.display_title}`);
-console.log(`Latest version: ${skill.latest_version}`);
-console.log(`Created: ${skill.created_at}`);
-```
-
-```bash Shell
+```bash
 curl "https://api.anthropic.com/v1/skills/skill_01AbCdEfGhIjKlMnOpQrStUv" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: skills-2025-10-02"
 ```
-</CodeGroup>
+
+</details>
 
 ### 스킬 삭제하기
 
 스킬을 삭제하려면 먼저 모든 버전을 삭제해야 합니다:
 
-<CodeGroup>
-```python Python
-# 1단계: 모든 버전 삭제
-versions = client.beta.skills.versions.list(
-    skill_id="skill_01AbCdEfGhIjKlMnOpQrStUv",
-    betas=["skills-2025-10-02"]
-)
+<details>
+<summary>REST API 예시</summary>
 
-for version in versions.data:
-    client.beta.skills.versions.delete(
-        skill_id="skill_01AbCdEfGhIjKlMnOpQrStUv",
-        version=version.version,
-        betas=["skills-2025-10-02"]
-    )
-
-# 2단계: 스킬 삭제
-client.beta.skills.delete(
-    skill_id="skill_01AbCdEfGhIjKlMnOpQrStUv",
-    betas=["skills-2025-10-02"]
-)
-```
-
-```typescript TypeScript
-// 1단계: 모든 버전 삭제
-const versions = await client.beta.skills.versions.list(
-  'skill_01AbCdEfGhIjKlMnOpQrStUv',
-  { betas: ['skills-2025-10-02'] }
-);
-
-for (const version of versions.data) {
-  await client.beta.skills.versions.delete(
-    'skill_01AbCdEfGhIjKlMnOpQrStUv',
-    version.version,
-    { betas: ['skills-2025-10-02'] }
-  );
-}
-
-// 2단계: 스킬 삭제
-await client.beta.skills.delete(
-  'skill_01AbCdEfGhIjKlMnOpQrStUv',
-  { betas: ['skills-2025-10-02'] }
-);
-```
-
-```bash Shell
+```bash
 # 먼저 모든 버전을 삭제한 다음 스킬을 삭제
 curl -X DELETE "https://api.anthropic.com/v1/skills/skill_01AbCdEfGhIjKlMnOpQrStUv" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: skills-2025-10-02"
 ```
-</CodeGroup>
+
+</details>
 
 기존 버전이 있는 스킬을 삭제하려고 시도하면 400 오류가 반환됩니다.
 
@@ -1003,98 +470,10 @@ curl -X DELETE "https://api.anthropic.com/v1/skills/skill_01AbCdEfGhIjKlMnOpQrSt
 - 항상 최신 버전을 가져오려면 `"latest"` 사용
 - 스킬 파일을 업데이트할 때 새 버전 생성
 
-<CodeGroup>
-```python Python
-# 새 버전 생성
-from anthropic.lib import files_from_dir
+<details>
+<summary>REST API 예시</summary>
 
-new_version = client.beta.skills.versions.create(
-    skill_id="skill_01AbCdEfGhIjKlMnOpQrStUv",
-    files=files_from_dir("/path/to/updated_skill"),
-    betas=["skills-2025-10-02"]
-)
-
-# 특정 버전 사용
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [{
-            "type": "custom",
-            "skill_id": "skill_01AbCdEfGhIjKlMnOpQrStUv",
-            "version": new_version.version
-        }]
-    },
-    messages=[{"role": "user", "content": "Use updated Skill"}],
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
-
-# 최신 버전 사용
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [{
-            "type": "custom",
-            "skill_id": "skill_01AbCdEfGhIjKlMnOpQrStUv",
-            "version": "latest"
-        }]
-    },
-    messages=[{"role": "user", "content": "Use latest Skill version"}],
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
-```
-
-```typescript TypeScript
-// zip 파일을 사용하여 새 버전 생성
-const fs = require('fs');
-
-const newVersion = await client.beta.skills.versions.create(
-  'skill_01AbCdEfGhIjKlMnOpQrStUv',
-  {
-    files: [
-      fs.createReadStream('updated_skill.zip')
-    ],
-    betas: ['skills-2025-10-02']
-  }
-);
-
-// 특정 버전 사용
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [{
-      type: 'custom',
-      skill_id: 'skill_01AbCdEfGhIjKlMnOpQrStUv',
-      version: newVersion.version
-    }]
-  },
-  messages: [{role: 'user', content: 'Use updated Skill'}],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-
-// 최신 버전 사용
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [{
-      type: 'custom',
-      skill_id: 'skill_01AbCdEfGhIjKlMnOpQrStUv',
-      version: 'latest'
-    }]
-  },
-  messages: [{role: 'user', content: 'Use latest Skill version'}],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-```
-
-```bash Shell
+```bash
 # 새 버전 생성
 NEW_VERSION=$(curl -X POST "https://api.anthropic.com/v1/skills/skill_01AbCdEfGhIjKlMnOpQrStUv/versions" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -1144,7 +523,8 @@ curl https://api.anthropic.com/v1/messages \
     "tools": [{"type": "code_execution_20250825", "name": "code_execution"}]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 자세한 내용은 [Create Skill Version API 참조](https://platform.claude.com/docs/en/api/skills/create-skill-version)를 참조하세요.
 
@@ -1203,69 +583,10 @@ curl https://api.anthropic.com/v1/messages \
 
 Excel과 사용자 정의 DCF 분석 스킬 결합:
 
-<CodeGroup>
-```python Python
-# 사용자 정의 DCF 분석 스킬 생성
-from anthropic.lib import files_from_dir
+<details>
+<summary>REST API 예시</summary>
 
-dcf_skill = client.beta.skills.create(
-    display_title="DCF Analysis",
-    files=files_from_dir("/path/to/dcf_skill"),
-    betas=["skills-2025-10-02"]
-)
-
-# Excel과 함께 사용하여 재무 모델 생성
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02"],
-    container={
-        "skills": [
-            {"type": "anthropic", "skill_id": "xlsx", "version": "latest"},
-            {"type": "custom", "skill_id": dcf_skill.id, "version": "latest"}
-        ]
-    },
-    messages=[{
-        "role": "user",
-        "content": "Build a DCF valuation model for a SaaS company with the attached financials"
-    }],
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
-```
-
-```typescript TypeScript
-// 사용자 정의 DCF 분석 스킬 생성
-import { toFile } from '@anthropic-ai/sdk';
-import fs from 'fs';
-
-const dcfSkill = await client.beta.skills.create({
-  displayTitle: 'DCF Analysis',
-  files: [
-    await toFile(fs.createReadStream('dcf_skill.zip'), 'skill.zip')
-  ],
-  betas: ['skills-2025-10-02']
-});
-
-// Excel과 함께 사용하여 재무 모델 생성
-const response = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-  container: {
-    skills: [
-      {type: 'anthropic', skill_id: 'xlsx', version: 'latest'},
-      {type: 'custom', skill_id: dcfSkill.id, version: 'latest'}
-    ]
-  },
-  messages: [{
-    role: 'user',
-    content: 'Build a DCF valuation model for a SaaS company with the attached financials'
-  }],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-```
-
-```bash Shell
+```bash
 # 사용자 정의 DCF 분석 스킬 생성
 DCF_SKILL=$(curl -X POST "https://api.anthropic.com/v1/skills" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -1309,7 +630,8 @@ curl https://api.anthropic.com/v1/messages \
     }]
   }"
 ```
-</CodeGroup>
+
+</details>
 
 ---
 
@@ -1376,70 +698,10 @@ container={
 
 프롬프트 캐싱을 사용할 때 컨테이너의 스킬 목록을 변경하면 캐시가 무효화됩니다:
 
-<CodeGroup>
-```python Python
-# 첫 번째 요청이 캐시 생성
-response1 = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02", "prompt-caching-2024-07-31"],
-    container={
-        "skills": [
-            {"type": "anthropic", "skill_id": "xlsx", "version": "latest"}
-        ]
-    },
-    messages=[{"role": "user", "content": "Analyze sales data"}],
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
+<details>
+<summary>REST API 예시</summary>
 
-# 스킬 추가/제거로 캐시 무효화
-response2 = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=4096,
-    betas=["code-execution-2025-08-25", "skills-2025-10-02", "prompt-caching-2024-07-31"],
-    container={
-        "skills": [
-            {"type": "anthropic", "skill_id": "xlsx", "version": "latest"},
-            {"type": "anthropic", "skill_id": "pptx", "version": "latest"}  # 캐시 미스
-        ]
-    },
-    messages=[{"role": "user", "content": "Create a presentation"}],
-    tools=[{"type": "code_execution_20250825", "name": "code_execution"}]
-)
-```
-
-```typescript TypeScript
-// 첫 번째 요청이 캐시 생성
-const response1 = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02', 'prompt-caching-2024-07-31'],
-  container: {
-    skills: [
-      {type: 'anthropic', skill_id: 'xlsx', version: 'latest'}
-    ]
-  },
-  messages: [{role: 'user', content: 'Analyze sales data'}],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-
-// 스킬 추가/제거로 캐시 무효화
-const response2 = await client.beta.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
-  max_tokens: 4096,
-  betas: ['code-execution-2025-08-25', 'skills-2025-10-02', 'prompt-caching-2024-07-31'],
-  container: {
-    skills: [
-      {type: 'anthropic', skill_id: 'xlsx', version: 'latest'},
-      {type: 'anthropic', skill_id: 'pptx', version: 'latest'}  // 캐시 미스
-    ]
-  },
-  messages: [{role: 'user', content: 'Create a presentation'}],
-  tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-});
-```
-
-```bash Shell
+```bash
 # 첫 번째 요청이 캐시 생성
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -1477,7 +739,8 @@ curl https://api.anthropic.com/v1/messages \
     "tools": [{"type": "code_execution_20250825", "name": "code_execution"}]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 최상의 캐싱 성능을 위해 요청 간에 스킬 목록을 일관되게 유지하세요.
 
@@ -1485,8 +748,10 @@ curl https://api.anthropic.com/v1/messages \
 
 스킬 관련 오류를 우아하게 처리합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 try:
     response = client.beta.messages.create(
         model="claude-sonnet-4-5-20250929",
@@ -1508,30 +773,7 @@ except anthropic.BadRequestError as e:
         raise
 ```
 
-```typescript TypeScript
-try {
-  const response = await client.beta.messages.create({
-    model: 'claude-sonnet-4-5-20250929',
-    max_tokens: 4096,
-    betas: ['code-execution-2025-08-25', 'skills-2025-10-02'],
-    container: {
-      skills: [
-        {type: 'custom', skill_id: 'skill_01AbCdEfGhIjKlMnOpQrStUv', version: 'latest'}
-      ]
-    },
-    messages: [{role: 'user', content: 'Process data'}],
-    tools: [{type: 'code_execution_20250825', name: 'code_execution'}]
-  });
-} catch (error) {
-  if (error instanceof Anthropic.BadRequestError && error.message.includes('skill')) {
-    console.error(`Skill error: ${error.message}`);
-    // 스킬 관련 오류 처리
-  } else {
-    throw error;
-  }
-}
-```
-</CodeGroup>
+</details>
 
 ---
 

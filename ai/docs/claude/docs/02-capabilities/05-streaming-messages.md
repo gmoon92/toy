@@ -8,9 +8,11 @@ Message를 생성할 때 `"stream": true`로 설정하여 [서버 전송 이벤�
 
 [Python](https://github.com/anthropics/anthropic-sdk-python) 및 [TypeScript](https://github.com/anthropics/anthropic-sdk-typescript) SDK는 여러 가지 스트리밍 방법을 제공합니다. Python SDK는 동기 및 비동기 스트림을 모두 허용합니다. 자세한 내용은 각 SDK의 문서를 참조하세요.
 
-<CodeGroup>
-    ```python Python
-    import anthropic
+<details>
+<summary>Python 예시</summary>
+
+```python
+import anthropic
 
     client = anthropic.Anthropic()
 
@@ -21,22 +23,9 @@ Message를 생성할 때 `"stream": true`로 설정하여 [서버 전송 이벤�
     ) as stream:
       for text in stream.text_stream:
           print(text, end="", flush=True)
-    ```
+```
 
-    ```typescript TypeScript
-    import Anthropic from '@anthropic-ai/sdk';
-
-    const client = new Anthropic();
-
-    await client.messages.stream({
-        messages: [{role: 'user', content: "Hello"}],
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1024,
-    }).on('text', (text) => {
-        console.log(text);
-    });
-    ```
-</CodeGroup>
+</details>
 
 ## 이벤트 유형
 
@@ -130,8 +119,10 @@ data: {"type": "content_block_delta", "index": 0, "delta": {"type": "signature_d
 
 ### 기본 스트리밍 요청
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
      --header "anthropic-version: 2023-06-01" \
      --header "content-type: application/json" \
@@ -145,20 +136,7 @@ curl https://api.anthropic.com/v1/messages \
 }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-with client.messages.stream(
-    model="claude-sonnet-4-5",
-    messages=[{"role": "user", "content": "Hello"}],
-    max_tokens=256,
-) as stream:
-    for text in stream.text_stream:
-        print(text, end="", flush=True)
-```
-</CodeGroup>
+</details>
 
 ```json Response
 event: message_start
@@ -195,9 +173,11 @@ data: {"type": "message_stop"}
 
 이 요청에서는 Claude에게 도구를 사용하여 날씨를 알려달라고 요청합니다.
 
-<CodeGroup>
-```bash Shell
-  curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
     -H "content-type: application/json" \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
@@ -231,44 +211,7 @@ data: {"type": "message_stop"}
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-tools = [
-    {
-        "name": "get_weather",
-        "description": "주어진 위치의 현재 날씨를 가져옵니다",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "location": {
-                    "type": "string",
-                    "description": "도시와 주, 예: San Francisco, CA"
-                }
-            },
-            "required": ["location"]
-        }
-    }
-]
-
-with client.messages.stream(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=tools,
-    tool_choice={"type": "any"},
-    messages=[
-        {
-            "role": "user",
-            "content": "샌프란시스코의 날씨는 어떻습니까?"
-        }
-    ],
-) as stream:
-    for text in stream.text_stream:
-        print(text, end="", flush=True)
-```
-</CodeGroup>
+</details>
 
 ```json Response
 event: message_start
@@ -366,8 +309,10 @@ data: {"type":"message_stop"}
 
 이 요청에서는 스트리밍과 함께 extended thinking을 활성화하여 Claude의 단계별 추론을 확인합니다.
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -390,33 +335,7 @@ curl https://api.anthropic.com/v1/messages \
 }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-with client.messages.stream(
-    model="claude-sonnet-4-5",
-    max_tokens=20000,
-    thinking={
-        "type": "enabled",
-        "budget_tokens": 16000
-    },
-    messages=[
-        {
-            "role": "user",
-            "content": "27 * 453은 무엇입니까?"
-        }
-    ],
-) as stream:
-    for event in stream:
-        if event.type == "content_block_delta":
-            if event.delta.type == "thinking_delta":
-                print(event.delta.thinking, end="", flush=True)
-            elif event.delta.type == "text_delta":
-                print(event.delta.text, end="", flush=True)
-```
-</CodeGroup>
+</details>
 
 ```json Response
 event: message_start
@@ -469,8 +388,10 @@ data: {"type": "message_stop"}
 
 이 요청에서는 Claude에게 현재 날씨 정보를 웹에서 검색하도록 요청합니다.
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -496,32 +417,7 @@ curl https://api.anthropic.com/v1/messages \
 }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-with client.messages.stream(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "web_search_20250305",
-            "name": "web_search",
-            "max_uses": 5
-        }
-    ],
-    messages=[
-        {
-            "role": "user",
-            "content": "오늘 뉴욕시의 날씨는 어떻습니까?"
-        }
-    ],
-) as stream:
-    for text in stream.text_stream:
-        print(text, end="", flush=True)
-```
-</CodeGroup>
+</details>
 
 ```json Response
 event: message_start

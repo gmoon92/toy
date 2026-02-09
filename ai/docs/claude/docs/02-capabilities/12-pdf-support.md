@@ -86,9 +86,11 @@ Messages API를 사용하는 간단한 예제로 시작하겠습니다. Claude�
 
 가장 간단한 접근 방식은 URL에서 PDF를 직접 참조하는 것입니다.
 
-<CodeGroup>
-   ```bash Shell
-    curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
       -H "content-type: application/json" \
       -H "x-api-key: $ANTHROPIC_API_KEY" \
       -H "anthropic-version: 2023-06-01" \
@@ -110,117 +112,19 @@ Messages API를 사용하는 간단한 예제로 시작하겠습니다. Claude�
             }]
         }]
     }'
-    ```
-    ```python Python
-    import anthropic
+```
 
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "document",
-                        "source": {
-                            "type": "url",
-                            "url": "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf"
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": "What are the key findings in this document?"
-                    }
-                ]
-            }
-        ],
-    )
-
-    print(message.content)
-    ```
-    ```typescript TypeScript
-    import Anthropic from '@anthropic-ai/sdk';
-
-    const anthropic = new Anthropic();
-
-    async function main() {
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1024,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'document',
-                source: {
-                  type: 'url',
-                  url: 'https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf',
-                },
-              },
-              {
-                type: 'text',
-                text: 'What are the key findings in this document?',
-              },
-            ],
-          },
-        ],
-      });
-
-      console.log(response);
-    }
-
-    main();
-    ```
-    ```java Java
-    import java.util.List;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.models.messages.MessageCreateParams;
-    import com.anthropic.models.messages.*;
-
-    public class PdfExample {
-        public static void main(String[] args) {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            // Create document block with URL
-            DocumentBlockParam documentParam = DocumentBlockParam.builder()
-                    .urlPdfSource("https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf")
-                    .build();
-
-            // Create a message with document and text content blocks
-            MessageCreateParams params = MessageCreateParams.builder()
-                    .model(Model.CLAUDE_OPUS_4_20250514)
-                    .maxTokens(1024)
-                    .addUserMessageOfBlockParams(
-                            List.of(
-                                    ContentBlockParam.ofDocument(documentParam),
-                                    ContentBlockParam.ofText(
-                                            TextBlockParam.builder()
-                                                    .text("What are the key findings in this document?")
-                                                    .build()
-                                    )
-                            )
-                    )
-                    .build();
-
-            Message message = client.messages().create(params);
-            System.out.println(message.content());
-        }
-    }
-    ```
-</CodeGroup>
+</details>
 
 #### 옵션 2: Base64로 인코딩된 PDF 문서
 
 로컬 시스템에서 PDF를 보내거나 URL을 사용할 수 없는 경우:
 
-<CodeGroup>
-    ```bash Shell
-    # 방법 1: 원격 PDF 가져오기 및 인코딩
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+# 방법 1: 원격 PDF 가져오기 및 인코딩
     curl -s "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf" | base64 | tr -d '\n' > pdf_base64.txt
 
     # 방법 2: 로컬 PDF 파일 인코딩
@@ -253,165 +157,18 @@ Messages API를 사용하는 간단한 예제로 시작하겠습니다. Claude�
       -H "x-api-key: $ANTHROPIC_API_KEY" \
       -H "anthropic-version: 2023-06-01" \
       -d @request.json
-    ```
-    ```python Python
-    import anthropic
-    import base64
-    import httpx
+```
 
-    # 먼저 PDF를 로드하고 인코딩
-    pdf_url = "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf"
-    pdf_data = base64.standard_b64encode(httpx.get(pdf_url).content).decode("utf-8")
-
-    # 대안: 로컬 파일에서 로드
-    # with open("document.pdf", "rb") as f:
-    #     pdf_data = base64.standard_b64encode(f.read()).decode("utf-8")
-
-    # base64 인코딩을 사용하여 Claude에 보내기
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "document",
-                        "source": {
-                            "type": "base64",
-                            "media_type": "application/pdf",
-                            "data": pdf_data
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": "What are the key findings in this document?"
-                    }
-                ]
-            }
-        ],
-    )
-
-    print(message.content)
-    ```
-    ```typescript TypeScript
-    import Anthropic from '@anthropic-ai/sdk';
-    import fetch from 'node-fetch';
-    import fs from 'fs';
-
-    async function main() {
-      // 방법 1: 원격 PDF 가져오기 및 인코딩
-      const pdfURL = "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf";
-      const pdfResponse = await fetch(pdfURL);
-      const arrayBuffer = await pdfResponse.arrayBuffer();
-      const pdfBase64 = Buffer.from(arrayBuffer).toString('base64');
-
-      // 방법 2: 로컬 파일에서 로드
-      // const pdfBase64 = fs.readFileSync('document.pdf').toString('base64');
-
-      // base64로 인코딩된 PDF로 API 요청 보내기
-      const anthropic = new Anthropic();
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1024,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'document',
-                source: {
-                  type: 'base64',
-                  media_type: 'application/pdf',
-                  data: pdfBase64,
-                },
-              },
-              {
-                type: 'text',
-                text: 'What are the key findings in this document?',
-              },
-            ],
-          },
-        ],
-      });
-
-      console.log(response);
-    }
-
-    main();
-    ```
-
-    ```java Java
-    import java.io.IOException;
-    import java.net.URI;
-    import java.net.http.HttpClient;
-    import java.net.http.HttpRequest;
-    import java.net.http.HttpResponse;
-    import java.util.Base64;
-    import java.util.List;
-
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.models.messages.ContentBlockParam;
-    import com.anthropic.models.messages.DocumentBlockParam;
-    import com.anthropic.models.messages.Message;
-    import com.anthropic.models.messages.MessageCreateParams;
-    import com.anthropic.models.messages.Model;
-    import com.anthropic.models.messages.TextBlockParam;
-
-    public class PdfExample {
-        public static void main(String[] args) throws IOException, InterruptedException {
-            AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-            // 방법 1: 원격 PDF 다운로드 및 인코딩
-            String pdfUrl = "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf";
-            HttpClient httpClient = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(pdfUrl))
-                    .GET()
-                    .build();
-
-            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
-            String pdfBase64 = Base64.getEncoder().encodeToString(response.body());
-
-            // 방법 2: 로컬 파일에서 로드
-            // byte[] fileBytes = Files.readAllBytes(Path.of("document.pdf"));
-            // String pdfBase64 = Base64.getEncoder().encodeToString(fileBytes);
-
-            // base64 데이터로 문서 블록 생성
-            DocumentBlockParam documentParam = DocumentBlockParam.builder()
-                    .base64PdfSource(pdfBase64)
-                    .build();
-
-            // 문서 및 텍스트 콘텐츠 블록으로 메시지 생성
-            MessageCreateParams params = MessageCreateParams.builder()
-                    .model(Model.CLAUDE_OPUS_4_20250514)
-                    .maxTokens(1024)
-                    .addUserMessageOfBlockParams(
-                            List.of(
-                                    ContentBlockParam.ofDocument(documentParam),
-                                    ContentBlockParam.ofText(TextBlockParam.builder().text("What are the key findings in this document?").build())
-                            )
-                    )
-                    .build();
-
-            Message message = client.messages().create(params);
-            message.content().stream()
-                    .flatMap(contentBlock -> contentBlock.text().stream())
-                    .forEach(textBlock -> System.out.println(textBlock.text()));
-        }
-    }
-    ```
-
-</CodeGroup>
+</details>
 
 #### 옵션 3: Files API
 
 반복적으로 사용할 PDF가 있거나 인코딩 오버헤드를 피하려는 경우 [Files API](../02-capabilities/13-files-api.md)를 사용하세요.
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # 먼저 PDF를 Files API에 업로드
 curl -X POST https://api.anthropic.com/v1/files \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -445,135 +202,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-# PDF 파일 업로드
-with open("document.pdf", "rb") as f:
-    file_upload = client.beta.files.upload(file=("document.pdf", f, "application/pdf"))
-
-# 업로드된 파일을 메시지에서 사용
-message = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    betas=["files-api-2025-04-14"],
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "document",
-                    "source": {
-                        "type": "file",
-                        "file_id": file_upload.id
-                    }
-                },
-                {
-                    "type": "text",
-                    "text": "What are the key findings in this document?"
-                }
-            ]
-        }
-    ],
-)
-
-print(message.content)
-```
-
-```typescript TypeScript
-import { Anthropic, toFile } from '@anthropic-ai/sdk';
-import fs from 'fs';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  // PDF 파일 업로드
-  const fileUpload = await anthropic.beta.files.upload({
-    file: toFile(fs.createReadStream('document.pdf'), undefined, { type: 'application/pdf' })
-  }, {
-    betas: ['files-api-2025-04-14']
-  });
-
-  // 업로드된 파일을 메시지에서 사용
-  const response = await anthropic.beta.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 1024,
-    betas: ['files-api-2025-04-14'],
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'document',
-            source: {
-              type: 'file',
-              file_id: fileUpload.id
-            }
-          },
-          {
-            type: 'text',
-            text: 'What are the key findings in this document?'
-          }
-        ]
-      }
-    ]
-  });
-
-  console.log(response);
-}
-
-main();
-```
-
-```java Java
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.File;
-import com.anthropic.models.files.FileUploadParams;
-import com.anthropic.models.messages.*;
-
-public class PdfFilesExample {
-    public static void main(String[] args) throws IOException {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        // PDF 파일 업로드
-        File file = client.beta().files().upload(FileUploadParams.builder()
-                .file(Files.newInputStream(Path.of("document.pdf")))
-                .build());
-
-        // 업로드된 파일을 메시지에서 사용
-        DocumentBlockParam documentParam = DocumentBlockParam.builder()
-                .fileSource(file.id())
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_OPUS_4_20250514)
-                .maxTokens(1024)
-                .addUserMessageOfBlockParams(
-                        List.of(
-                                ContentBlockParam.ofDocument(documentParam),
-                                ContentBlockParam.ofText(
-                                        TextBlockParam.builder()
-                                                .text("What are the key findings in this document?")
-                                                .build()
-                                )
-                        )
-                )
-                .build();
-
-        Message message = client.messages().create(params);
-        System.out.println(message.content());
-    }
-}
-```
-</CodeGroup>
+</details>
 
 ### PDF 지원 작동 방식
 Claude에 PDF를 보내면 다음 단계가 수행됩니다.
@@ -620,8 +249,10 @@ PDF 파일의 토큰 수는 문서에서 추출된 총 텍스트와 페이지 �
 
 #### 프롬프트 캐싱 사용
 반복 쿼리의 성능을 향상시키기 위해 PDF를 캐시합니다.
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # pdf_base64.txt 내용을 사용하여 JSON 요청 파일 생성
 jq -n --rawfile PDF_BASE64 pdf_base64.txt '{
     "model": "claude-sonnet-4-5",
@@ -653,117 +284,15 @@ curl https://api.anthropic.com/v1/messages \
   -H "anthropic-version: 2023-06-01" \
   -d @request.json
 ```
-```python Python
-message = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "document",
-                    "source": {
-                        "type": "base64",
-                        "media_type": "application/pdf",
-                        "data": pdf_data
-                    },
-                    "cache_control": {"type": "ephemeral"}
-                },
-                {
-                    "type": "text",
-                    "text": "Analyze this document."
-                }
-            ]
-        }
-    ],
-)
-```
 
-```typescript TypeScript
-const response = await anthropic.messages.create({
-  model: 'claude-sonnet-4-5',
-  max_tokens: 1024,
-  messages: [
-    {
-      content: [
-        {
-          type: 'document',
-          source: {
-            media_type: 'application/pdf',
-            type: 'base64',
-            data: pdfBase64,
-          },
-          cache_control: { type: 'ephemeral' },
-        },
-        {
-          type: 'text',
-          text: 'Which model has the highest human preference win rates across each use-case?',
-        },
-      ],
-      role: 'user',
-    },
-  ],
-});
-console.log(response);
-```
-
-```java Java
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.Base64PdfSource;
-import com.anthropic.models.messages.CacheControlEphemeral;
-import com.anthropic.models.messages.ContentBlockParam;
-import com.anthropic.models.messages.DocumentBlockParam;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.TextBlockParam;
-
-public class MessagesDocumentExample {
-
-    public static void main(String[] args) throws IOException {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        // PDF 파일을 base64로 읽기
-        byte[] pdfBytes = Files.readAllBytes(Paths.get("pdf_base64.txt"));
-        String pdfBase64 = new String(pdfBytes);
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_OPUS_4_20250514)
-                .maxTokens(1024)
-                .addUserMessageOfBlockParams(List.of(
-                        ContentBlockParam.ofDocument(
-                                DocumentBlockParam.builder()
-                                        .source(Base64PdfSource.builder()
-                                                .data(pdfBase64)
-                                                .build())
-                                        .cacheControl(CacheControlEphemeral.builder().build())
-                                        .build()),
-                        ContentBlockParam.ofText(
-                                TextBlockParam.builder()
-                                        .text("Which model has the highest human preference win rates across each use-case?")
-                                        .build())
-                ))
-                .build();
-
-
-        Message message = client.messages().create(params);
-        System.out.println(message);
-    }
-}
-```
-</CodeGroup>
+</details>
 
 #### 문서 배치 처리
 대량 워크플로를 위해 Message Batches API를 사용합니다.
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # pdf_base64.txt 내용을 사용하여 JSON 요청 파일 생성
 jq -n --rawfile PDF_BASE64 pdf_base64.txt '
 {
@@ -831,170 +360,8 @@ curl https://api.anthropic.com/v1/messages/batches \
   -H "anthropic-version: 2023-06-01" \
   -d @request.json
 ```
-```python Python
-message_batch = client.messages.batches.create(
-    requests=[
-        {
-            "custom_id": "doc1",
-            "params": {
-                "model": "claude-sonnet-4-5",
-                "max_tokens": 1024,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "document",
-                                "source": {
-                                    "type": "base64",
-                                    "media_type": "application/pdf",
-                                    "data": pdf_data
-                                }
-                            },
-                            {
-                                "type": "text",
-                                "text": "Summarize this document."
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    ]
-)
-```
 
-```typescript TypeScript
-const response = await anthropic.messages.batches.create({
-  requests: [
-    {
-      custom_id: 'my-first-request',
-      params: {
-        max_tokens: 1024,
-        messages: [
-          {
-            content: [
-              {
-                type: 'document',
-                source: {
-                  media_type: 'application/pdf',
-                  type: 'base64',
-                  data: pdfBase64,
-                },
-              },
-              {
-                type: 'text',
-                text: 'Which model has the highest human preference win rates across each use-case?',
-              },
-            ],
-            role: 'user',
-          },
-        ],
-        model: 'claude-sonnet-4-5',
-      },
-    },
-    {
-      custom_id: 'my-second-request',
-      params: {
-        max_tokens: 1024,
-        messages: [
-          {
-            content: [
-              {
-                type: 'document',
-                source: {
-                  media_type: 'application/pdf',
-                  type: 'base64',
-                  data: pdfBase64,
-                },
-              },
-              {
-                type: 'text',
-                text: 'Extract 5 key insights from this document.',
-              },
-            ],
-            role: 'user',
-          },
-        ],
-        model: 'claude-sonnet-4-5',
-      },
-    }
-  ],
-});
-console.log(response);
-```
-
-```java Java
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.*;
-import com.anthropic.models.messages.batches.*;
-
-public class MessagesBatchDocumentExample {
-
-    public static void main(String[] args) throws IOException {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        // PDF 파일을 base64로 읽기
-        byte[] pdfBytes = Files.readAllBytes(Paths.get("pdf_base64.txt"));
-        String pdfBase64 = new String(pdfBytes);
-
-        BatchCreateParams params = BatchCreateParams.builder()
-                .addRequest(BatchCreateParams.Request.builder()
-                        .customId("my-first-request")
-                        .params(BatchCreateParams.Request.Params.builder()
-                                .model(Model.CLAUDE_OPUS_4_20250514)
-                                .maxTokens(1024)
-                                .addUserMessageOfBlockParams(List.of(
-                                        ContentBlockParam.ofDocument(
-                                                DocumentBlockParam.builder()
-                                                        .source(Base64PdfSource.builder()
-                                                                .data(pdfBase64)
-                                                                .build())
-                                                        .build()
-                                        ),
-                                        ContentBlockParam.ofText(
-                                                TextBlockParam.builder()
-                                                        .text("Which model has the highest human preference win rates across each use-case?")
-                                                        .build()
-                                        )
-                                ))
-                                .build())
-                        .build())
-                .addRequest(BatchCreateParams.Request.builder()
-                        .customId("my-second-request")
-                        .params(BatchCreateParams.Request.Params.builder()
-                                .model(Model.CLAUDE_OPUS_4_20250514)
-                                .maxTokens(1024)
-                                .addUserMessageOfBlockParams(List.of(
-                                        ContentBlockParam.ofDocument(
-                                        DocumentBlockParam.builder()
-                                                .source(Base64PdfSource.builder()
-                                                        .data(pdfBase64)
-                                                        .build())
-                                                .build()
-                                        ),
-                                        ContentBlockParam.ofText(
-                                                TextBlockParam.builder()
-                                                        .text("Extract 5 key insights from this document.")
-                                                        .build()
-                                        )
-                                ))
-                                .build())
-                        .build())
-                .build();
-
-        MessageBatch batch = client.messages().batches().create(params);
-        System.out.println(batch);
-    }
-}
-```
-</CodeGroup>
+</details>
 
 ## 다음 단계
 

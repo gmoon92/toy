@@ -136,8 +136,10 @@ Here are the functions available in JSONSchema format:
 
 도구 정의에 선택적 `input_examples` 필드를 추가하고 예제 입력 객체 배열을 제공하세요. 각 예제는 도구의 `input_schema`에 따라 유효해야 합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -186,54 +188,7 @@ response = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic();
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5-20250929",
-  max_tokens: 1024,
-  betas: ["advanced-tool-use-2025-11-20"],
-  tools: [
-    {
-      name: "get_weather",
-      description: "지정된 위치의 현재 날씨를 가져옵니다",
-      input_schema: {
-        type: "object",
-        properties: {
-          location: {
-            type: "string",
-            description: "도시와 주, 예: San Francisco, CA",
-          },
-          unit: {
-            type: "string",
-            enum: ["celsius", "fahrenheit"],
-            description: "온도 단위",
-          },
-        },
-        required: ["location"],
-      },
-      input_examples: [
-        {
-          location: "San Francisco, CA",
-          unit: "fahrenheit",
-        },
-        {
-          location: "Tokyo, Japan",
-          unit: "celsius",
-        },
-        {
-          location: "New York, NY",
-          // 'unit'이 선택사항임을 보여줍니다
-        },
-      ],
-    },
-  ],
-  messages: [{ role: "user", content: "샌프란시스코의 날씨는 어떤가요?" }],
-});
-```
-</CodeGroup>
+</details>
 
 예제는 도구 스키마와 함께 프롬프트에 포함되어 Claude에게 올바른 형식의 도구 호출에 대한 구체적인 패턴을 보여줍니다. 이는 Claude가 선택적 매개변수를 포함할 시기, 사용할 형식, 복잡한 입력을 구조화하는 방법을 이해하는 데 도움이 됩니다.
 
@@ -1050,8 +1005,10 @@ Claude가 자신의 행동을 설명할 때 다양한 표현과 접근 방식을
 
 다음은 메시지 기록에서 병렬 도구 호출을 올바르게 형식화하는 방법을 보여주는 완전한 예제입니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -1153,104 +1110,7 @@ final_response = client.messages.create(
 print(final_response.content[0].text)
 ```
 
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-// 도구 정의
-const tools = [
-  {
-    name: "get_weather",
-    description: "지정된 위치의 현재 날씨를 가져옵니다",
-    input_schema: {
-      type: "object",
-      properties: {
-        location: {
-          type: "string",
-          description: "도시와 주, 예: San Francisco, CA"
-        }
-      },
-      required: ["location"]
-    }
-  },
-  {
-    name: "get_time",
-    description: "지정된 시간대의 현재 시간을 가져옵니다",
-    input_schema: {
-      type: "object",
-      properties: {
-        timezone: {
-          type: "string",
-          description: "시간대, 예: America/New_York"
-        }
-      },
-      required: ["timezone"]
-    }
-  }
-];
-
-// 초기 요청
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: tools,
-  messages: [
-    {
-      role: "user",
-      content: "SF와 NYC의 날씨는 어떤가요, 그리고 그곳의 시간은 몇 시인가요?"
-    }
-  ]
-});
-
-// 도구 결과로 대화 구성
-const messages = [
-  {
-    role: "user",
-    content: "SF와 NYC의 날씨는 어떤가요, 그리고 그곳의 시간은 몇 시인가요?"
-  },
-  {
-    role: "assistant",
-    content: response.content  // 여러 tool_use 블록 포함
-  },
-  {
-    role: "user",
-    content: [
-      {
-        type: "tool_result",
-        tool_use_id: "toolu_01",  // tool_use의 ID와 일치해야 함
-        content: "샌프란시스코: 68°F, 부분적으로 흐림"
-      },
-      {
-        type: "tool_result",
-        tool_use_id: "toolu_02",
-        content: "뉴욕: 45°F, 맑음"
-      },
-      {
-        type: "tool_result",
-        tool_use_id: "toolu_03",
-        content: "샌프란시스코 시간: 오후 2:30 PST"
-      },
-      {
-        type: "tool_result",
-        tool_use_id: "toolu_04",
-        content: "뉴욕 시간: 오후 5:30 EST"
-      }
-    ]
-  }
-];
-
-// 최종 응답 얻기
-const finalResponse = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: tools,
-  messages: messages
-});
-
-console.log(finalResponse.content[0].text);
-```
-</CodeGroup>
+</details>
 
 병렬 도구 호출이 있는 어시스턴트 메시지는 다음과 같습니다:
 
@@ -1295,8 +1155,10 @@ console.log(finalResponse.content[0].text);
 
 다음은 병렬 도구 호출이 올바르게 작동하는지 테스트하고 검증하기 위한 완전한 실행 가능한 스크립트입니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 #!/usr/bin/env python3
 """Claude API로 병렬 도구 호출을 검증하는 테스트 스크립트"""
 
@@ -1410,119 +1272,7 @@ print("✓ 콘텐츠 배열에서 도구 결과 전에 텍스트 없음")
 print("✓ 향후 병렬 도구 사용을 위해 대화가 올바르게 형식화됨")
 ```
 
-```typescript TypeScript
-#!/usr/bin/env node
-// Claude API로 병렬 도구 호출을 검증하는 테스트 스크립트
-
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
-// 도구 정의
-const tools = [
-  {
-    name: "get_weather",
-    description: "지정된 위치의 현재 날씨를 가져옵니다",
-    input_schema: {
-      type: "object",
-      properties: {
-        location: {
-          type: "string",
-          description: "도시와 주, 예: San Francisco, CA"
-        }
-      },
-      required: ["location"]
-    }
-  },
-  {
-    name: "get_time",
-    description: "지정된 시간대의 현재 시간을 가져옵니다",
-    input_schema: {
-      type: "object",
-      properties: {
-        timezone: {
-          type: "string",
-          description: "시간대, 예: America/New_York"
-        }
-      },
-      required: ["timezone"]
-    }
-  }
-];
-
-async function testParallelTools() {
-  // 초기 요청
-  console.log("병렬 도구 호출 요청 중...");
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
-    max_tokens: 1024,
-    messages: [{
-      role: "user",
-      content: "SF와 NYC의 날씨는 어떤가요, 그리고 그곳의 시간은 몇 시인가요?"
-    }],
-    tools: tools
-  });
-
-  // 병렬 도구 호출 확인
-  const toolUses = response.content.filter(block => block.type === "tool_use");
-  console.log(`\n✓ Claude가 ${toolUses.length}개의 도구를 호출했습니다`);
-
-  if (toolUses.length > 1) {
-    console.log("✓ 병렬 도구 호출 감지!");
-    toolUses.forEach(tool => {
-      console.log(`  - ${tool.name}: ${JSON.stringify(tool.input)}`);
-    });
-  } else {
-    console.log("✗ 병렬 도구 호출이 감지되지 않았습니다");
-  }
-
-  // 도구 실행 시뮬레이션 및 결과 올바르게 형식화
-  const toolResults = toolUses.map(toolUse => {
-    let result;
-    if (toolUse.name === "get_weather") {
-      result = toolUse.input.location.includes("San Francisco")
-        ? "샌프란시스코: 68°F, 부분적으로 흐림"
-        : "뉴욕: 45°F, 맑음";
-    } else {
-      result = toolUse.input.timezone.includes("Los_Angeles")
-        ? "오후 2:30 PST"
-        : "오후 5:30 EST";
-    }
-
-    return {
-      type: "tool_result",
-      tool_use_id: toolUse.id,
-      content: result
-    };
-  });
-
-  // 올바른 형식으로 최종 응답 얻기
-  console.log("\n최종 응답을 가져오는 중...");
-  const finalResponse = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
-    max_tokens: 1024,
-    messages: [
-      { role: "user", content: "SF와 NYC의 날씨는 어떤가요, 그리고 그곳의 시간은 몇 시인가요?" },
-      { role: "assistant", content: response.content },
-      { role: "user", content: toolResults }  // 모든 결과를 하나의 메시지에!
-    ],
-    tools: tools
-  });
-
-  console.log(`\nClaude의 응답:\n${finalResponse.content[0].text}`);
-
-  // 형식 검증
-  console.log("\n--- 검증 ---");
-  console.log(`✓ 도구 결과가 단일 사용자 메시지로 전송됨: ${toolResults.length}개 결과`);
-  console.log("✓ 콘텐츠 배열에서 도구 결과 전에 텍스트 없음");
-  console.log("✓ 향후 병렬 도구 사용을 위해 대화가 올바르게 형식화됨");
-}
-
-testParallelTools().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 이 스크립트는 다음을 보여줍니다:
 - 병렬 도구 호출 및 결과를 올바르게 형식화하는 방법
@@ -1757,8 +1507,10 @@ Claude는 도구를 내부적으로 실행하고 추가적인 사용자 상호�
 
 [`max_tokens` 제한에 도달하여 Claude의 응답이 중단된](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons#max-tokens) 경우 잘린 응답에 불완전한 도구 사용 블록이 포함되어 있으면 전체 도구 사용을 얻기 위해 더 높은 `max_tokens` 값으로 요청을 다시 시도해야 합니다.
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 # 도구 사용 중 응답이 잘렸는지 확인
 if response.stop_reason == "max_tokens":
     # 마지막 콘텐츠 블록이 불완전한 tool_use인지 확인
@@ -1773,23 +1525,7 @@ if response.stop_reason == "max_tokens":
         )
 ```
 
-```typescript TypeScript
-// 도구 사용 중 응답이 잘렸는지 확인
-if (response.stop_reason === "max_tokens") {
-  // 마지막 콘텐츠 블록이 불완전한 tool_use인지 확인
-  const lastBlock = response.content[response.content.length - 1];
-  if (lastBlock.type === "tool_use") {
-    // 더 높은 max_tokens로 요청 전송
-    response = await anthropic.messages.create({
-      model: "claude-sonnet-4-5",
-      max_tokens: 4096, // 증가된 제한
-      messages: messages,
-      tools: tools
-    });
-  }
-}
-```
-</CodeGroup>
+</details>
 
 #### `pause_turn` 중지 이유 처리
 
@@ -1797,8 +1533,10 @@ if (response.stop_reason === "max_tokens") {
 
 다음은 `pause_turn` 중지 이유를 처리하는 방법입니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -1845,54 +1583,7 @@ else:
     print(response)
 ```
 
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-// 웹 검색을 사용한 초기 요청
-const response = await anthropic.messages.create({
-  model: "claude-3-7-sonnet-latest",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: "2025년 양자 컴퓨팅 돌파구에 대한 포괄적인 정보를 검색하세요"
-    }
-  ],
-  tools: [{
-    type: "web_search_20250305",
-    name: "web_search",
-    max_uses: 10
-  }]
-});
-
-// 응답에 pause_turn 중지 이유가 있는지 확인
-if (response.stop_reason === "pause_turn") {
-  // 일시 중지된 콘텐츠로 대화 계속
-  const messages = [
-    { role: "user", content: "2025년 양자 컴퓨팅 돌파구에 대한 포괄적인 정보를 검색하세요" },
-    { role: "assistant", content: response.content }
-  ];
-
-  // 연속 요청 전송
-  const continuation = await anthropic.messages.create({
-    model: "claude-3-7-sonnet-latest",
-    max_tokens: 1024,
-    messages: messages,
-    tools: [{
-      type: "web_search_20250305",
-      name: "web_search",
-      max_uses: 10
-    }]
-  });
-
-  console.log(continuation);
-} else {
-  console.log(response);
-}
-```
-</CodeGroup>
+</details>
 
 `pause_turn`을 처리할 때:
 - **대화 계속**: 일시 중지된 응답을 후속 요청에서 그대로 전달하여 Claude가 턴을 계속하도록 합니다

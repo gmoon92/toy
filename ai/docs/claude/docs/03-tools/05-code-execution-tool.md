@@ -41,8 +41,10 @@ Claude는 API 대화 내에서 직접 데이터를 분석하고, 시각화를 �
 
 다음은 Claude에게 계산을 수행하도록 요청하는 간단한 예제입니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -64,56 +66,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "Calculate the mean and standard deviation of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-
-print(response)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  const response = await anthropic.beta.messages.create({
-    model: "claude-sonnet-4-5",
-    betas: ["code-execution-2025-08-25"],
-    max_tokens: 4096,
-    messages: [
-      {
-        role: "user",
-        content: "Calculate the mean and standard deviation of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-      }
-    ],
-    tools: [{
-      type: "code_execution_20250825",
-      name: "code_execution"
-    }]
-  });
-
-  console.log(response);
-}
-
-main().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 ## 코드 실행 작동 방식
 
@@ -133,8 +86,10 @@ API 요청에 코드 실행 도구를 추가하면:
 
 Claude에게 시스템 정보를 확인하고 패키지를 설치하도록 요청합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -154,45 +109,16 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "Check the Python version and list installed packages"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
-
-```typescript TypeScript
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  betas: ["code-execution-2025-08-25"],
-  max_tokens: 4096,
-  messages: [{
-    role: "user",
-    content: "Check the Python version and list installed packages"
-  }],
-  tools: [{
-    type: "code_execution_20250825",
-    name: "code_execution"
-  }]
-});
-```
-</CodeGroup>
+</details>
 
 ### 파일 직접 생성 및 편집
 
 Claude는 파일 조작 기능을 사용하여 샌드박스에서 직접 파일을 생성, 보기 및 편집할 수 있습니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -212,38 +138,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "Create a config.yaml file with database settings, then update the port from 5432 to 3306"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
-
-```typescript TypeScript
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  betas: ["code-execution-2025-08-25"],
-  max_tokens: 4096,
-  messages: [{
-    role: "user",
-    content: "Create a config.yaml file with database settings, then update the port from 5432 to 3306"
-  }],
-  tools: [{
-    type: "code_execution_20250825",
-    name: "code_execution"
-  }]
-});
-```
-</CodeGroup>
+</details>
 
 ### 자체 파일 업로드 및 분석
 
@@ -268,8 +163,10 @@ Python 환경은 Files API를 통해 업로드된 다양한 파일 형식을 처
 2. `container_upload` 콘텐츠 블록을 사용하여 메시지에서 **파일을 참조**합니다
 3. API 요청에 **코드 실행 도구를 포함**합니다
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # 먼저 파일을 업로드합니다
 curl https://api.anthropic.com/v1/files \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
@@ -300,78 +197,16 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-# 파일 업로드
-file_object = client.beta.files.upload(
-    file=open("data.csv", "rb"),
-)
-
-# 코드 실행과 함께 file_id 사용
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25", "files-api-2025-04-14"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": [
-            {"type": "text", "text": "Analyze this CSV data"},
-            {"type": "container_upload", "file_id": file_object.id}
-        ]
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-import { createReadStream } from 'fs';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  // 파일 업로드
-  const fileObject = await anthropic.beta.files.create({
-    file: createReadStream("data.csv"),
-  });
-
-  // 코드 실행과 함께 file_id 사용
-  const response = await anthropic.beta.messages.create({
-    model: "claude-sonnet-4-5",
-    betas: ["code-execution-2025-08-25", "files-api-2025-04-14"],
-    max_tokens: 4096,
-    messages: [{
-      role: "user",
-      content: [
-        { type: "text", text: "Analyze this CSV data" },
-        { type: "container_upload", file_id: fileObject.id }
-      ]
-    }],
-    tools: [{
-      type: "code_execution_20250825",
-      name: "code_execution"
-    }]
-  });
-
-  console.log(response);
-}
-
-main().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 #### 생성된 파일 검색
 
 Claude가 코드 실행 중에 파일을 생성하면 Files API를 사용하여 이러한 파일을 검색할 수 있습니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 from anthropic import Anthropic
 
 # 클라이언트 초기화
@@ -412,72 +247,16 @@ for file_id in extract_file_ids(response):
     print(f"Downloaded: {file_metadata.filename}")
 ```
 
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-import { writeFileSync } from 'fs';
-
-// 클라이언트 초기화
-const anthropic = new Anthropic();
-
-async function main() {
-  // 파일을 생성하는 코드 실행 요청
-  const response = await anthropic.beta.messages.create({
-    model: "claude-sonnet-4-5",
-    betas: ["code-execution-2025-08-25", "files-api-2025-04-14"],
-    max_tokens: 4096,
-    messages: [{
-      role: "user",
-      content: "Create a matplotlib visualization and save it as output.png"
-    }],
-    tools: [{
-      type: "code_execution_20250825",
-      name: "code_execution"
-    }]
-  });
-
-  // 응답에서 파일 ID 추출
-  function extractFileIds(response: any): string[] {
-    const fileIds: string[] = [];
-    for (const item of response.content) {
-      if (item.type === 'bash_code_execution_tool_result') {
-        const contentItem = item.content;
-        if (contentItem.type === 'bash_code_execution_result' && contentItem.content) {
-          for (const file of contentItem.content) {
-            fileIds.push(file.file_id);
-          }
-        }
-      }
-    }
-    return fileIds;
-  }
-
-  // 생성된 파일 다운로드
-  const fileIds = extractFileIds(response);
-  for (const fileId of fileIds) {
-    const fileMetadata = await anthropic.beta.files.retrieveMetadata(fileId);
-    const fileContent = await anthropic.beta.files.download(fileId);
-
-    // ReadableStream을 Buffer로 변환하고 저장
-    const chunks: Uint8Array[] = [];
-    for await (const chunk of fileContent) {
-      chunks.push(chunk);
-    }
-    const buffer = Buffer.concat(chunks);
-    writeFileSync(fileMetadata.filename, buffer);
-    console.log(`Downloaded: ${fileMetadata.filename}`);
-  }
-}
-
-main().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 ### 작업 결합
 
 모든 기능을 사용하는 복잡한 워크플로우:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # 먼저 파일을 업로드합니다
 curl https://api.anthropic.com/v1/files \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
@@ -518,70 +297,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-# 파일 업로드
-file_object = client.beta.files.upload(
-    file=open("data.csv", "rb"),
-)
-
-# 코드 실행과 함께 사용
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25", "files-api-2025-04-14"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": [
-            {"type": "text", "text": "Analyze this CSV data: create a summary report, save visualizations, and create a README with the findings"},
-            {"type": "container_upload", "file_id": file_object.id}
-        ]
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-
-# Claude는 다음을 수행할 수 있습니다:
-# 1. bash를 사용하여 파일 크기 확인 및 데이터 미리보기
-# 2. text_editor를 사용하여 CSV를 분석하고 시각화를 생성하는 Python 코드 작성
-# 3. bash를 사용하여 Python 코드 실행
-# 4. text_editor를 사용하여 결과가 포함된 README.md 생성
-# 5. bash를 사용하여 파일을 보고서 디렉터리로 구성
-```
-
-```typescript TypeScript
-// 파일 업로드
-const fileObject = await anthropic.beta.files.create({
-  file: createReadStream("data.csv"),
-});
-
-// 코드 실행과 함께 사용
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  betas: ["code-execution-2025-08-25", "files-api-2025-04-14"],
-  max_tokens: 4096,
-  messages: [{
-    role: "user",
-    content: [
-      {type: "text", text: "Analyze this CSV data: create a summary report, save visualizations, and create a README with the findings"},
-      {type: "container_upload", file_id: fileObject.id}
-    ]
-  }],
-  tools: [{
-    type: "code_execution_20250825",
-    name: "code_execution"
-  }]
-});
-
-// Claude는 다음을 수행할 수 있습니다:
-// 1. bash를 사용하여 파일 크기 확인 및 데이터 미리보기
-// 2. text_editor를 사용하여 CSV를 분석하고 시각화를 생성하는 Python 코드 작성
-// 3. bash를 사용하여 Python 코드 실행
-// 4. text_editor를 사용하여 결과가 포함된 README.md 생성
-// 5. bash를 사용하여 파일을 보고서 디렉터리로 구성
-```
-</CodeGroup>
+</details>
 
 ## 도구 정의
 
@@ -778,102 +494,15 @@ const response = await anthropic.beta.messages.create({
 ## 컨테이너 재사용
 
 이전 응답의 컨테이너 ID를 제공하여 여러 API 요청에서 기존 컨테이너를 재사용할 수 있습니다.
+
 이를 통해 요청 간에 생성된 파일을 유지할 수 있습니다.
 
 ### 예제
 
-<CodeGroup>
-```python Python
-import os
-from anthropic import Anthropic
+<details>
+<summary>REST API 예시</summary>
 
-# 클라이언트 초기화
-client = Anthropic(
-    api_key=os.getenv("ANTHROPIC_API_KEY")
-)
-
-# 첫 번째 요청: 무작위 숫자로 파일 생성
-response1 = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "Write a file with a random number and save it to '/tmp/number.txt'"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-
-# 첫 번째 응답에서 컨테이너 ID 추출
-container_id = response1.container.id
-
-# 두 번째 요청: 컨테이너를 재사용하여 파일 읽기
-response2 = client.beta.messages.create(
-    container=container_id,  # 동일한 컨테이너 재사용
-    model="claude-sonnet-4-5",
-    betas=["code-execution-2025-08-25"],
-    max_tokens=4096,
-    messages=[{
-        "role": "user",
-        "content": "Read the number from '/tmp/number.txt' and calculate its square"
-    }],
-    tools=[{
-        "type": "code_execution_20250825",
-        "name": "code_execution"
-    }]
-)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  // 첫 번째 요청: 무작위 숫자로 파일 생성
-  const response1 = await anthropic.beta.messages.create({
-    model: "claude-sonnet-4-5",
-    betas: ["code-execution-2025-08-25"],
-    max_tokens: 4096,
-    messages: [{
-      role: "user",
-      content: "Write a file with a random number and save it to '/tmp/number.txt'"
-    }],
-    tools: [{
-      type: "code_execution_20250825",
-      name: "code_execution"
-    }]
-  });
-
-  // 첫 번째 응답에서 컨테이너 ID 추출
-  const containerId = response1.container.id;
-
-  // 두 번째 요청: 컨테이너를 재사용하여 파일 읽기
-  const response2 = await anthropic.beta.messages.create({
-    container: containerId,  // 동일한 컨테이너 재사용
-    model: "claude-sonnet-4-5",
-    betas: ["code-execution-2025-08-25"],
-    max_tokens: 4096,
-    messages: [{
-      role: "user",
-      content: "Read the number from '/tmp/number.txt' and calculate its square"
-    }],
-    tools: [{
-      type: "code_execution_20250825",
-      name: "code_execution"
-    }]
-  });
-
-  console.log(response2.content);
-}
-
-main().catch(console.error);
-```
-
-```bash Shell
+```bash
 # 첫 번째 요청: 무작위 숫자로 파일 생성
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
@@ -916,7 +545,8 @@ curl https://api.anthropic.com/v1/messages \
         }]
     }'
 ```
-</CodeGroup>
+
+</details>
 
 ## 스트리밍
 
@@ -944,6 +574,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "cod
 ## 사용량 및 가격
 
 코드 실행 도구 사용량은 토큰 사용량과 별도로 추적됩니다. 실행 시간은 최소 5분입니다.
+
 요청에 파일이 포함된 경우, 파일이 컨테이너에 사전 로드되므로 도구를 사용하지 않더라도 실행 시간이 청구됩니다.
 
 각 조직은 월별로 코드 실행 도구를 사용하여 1,550시간의 무료 사용량을 받습니다. 처음 1,550시간을 초과하는 추가 사용량은 컨테이너당 시간당 $0.05로 청구됩니다.
@@ -990,8 +621,10 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "cod
 
 코드 실행 도구는 [프로그래밍 방식 도구 호출](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)을 지원하며, 이를 통해 Claude가 실행 컨테이너 내에서 프로그래밍 방식으로 사용자 정의 도구를 호출하는 코드를 작성할 수 있습니다. 이를 통해 효율적인 다중 도구 워크플로우, Claude의 컨텍스트에 도달하기 전에 데이터 필터링 및 복잡한 조건부 로직이 가능합니다.
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 # 도구에 대해 프로그래밍 방식 호출 활성화
 response = client.beta.messages.create(
     model="claude-sonnet-4-5",
@@ -1015,7 +648,8 @@ response = client.beta.messages.create(
     ]
 )
 ```
-</CodeGroup>
+
+</details>
 
 자세한 내용은 [프로그래밍 방식 도구 호출 문서](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)를 참조하세요.
 

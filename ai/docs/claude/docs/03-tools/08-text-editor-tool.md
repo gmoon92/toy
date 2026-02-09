@@ -39,9 +39,10 @@ Messages API를 사용하여 텍스트 에디터 도구(`str_replace_based_edit_
 > `max_characters`는 `text_editor_20250728` 이상 버전의 텍스트 에디터 도구에서만 호환됩니다.
 
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -65,88 +66,14 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "text_editor_20250728",
-            "name": "str_replace_based_edit_tool",
-            "max_characters": 10000
-        }
-    ],
-    messages=[
-        {
-            "role": "user",
-            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
-        }
-    ]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: [
-    {
-      type: "text_editor_20250728",
-      name: "str_replace_based_edit_tool",
-      max_characters: 10000
-    }
-  ],
-  messages: [
-    {
-      role: "user",
-      content: "There's a syntax error in my primes.py file. Can you help me fix it?"
-    }
-  ]
-});
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.ToolStrReplaceBasedEditTool20250728;
-
-public class TextEditorToolExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        ToolStrReplaceBasedEditTool20250728 editorTool = ToolStrReplaceBasedEditTool20250728.builder()
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_SONNET_4_0)
-                .maxTokens(1024)
-                .addTool(editorTool)
-                .addUserMessage("There's a syntax error in my primes.py file. Can you help me fix it?")
-                .build();
-
-        Message message = client.messages().create(params);
-    }
-}
-```
-</CodeGroup>
+</details>
 </Tab>
 <Tab title="Claude Sonnet 3.7">
 Messages API를 사용하여 텍스트 에디터 도구(`str_replace_editor`라는 이름)를 Claude에 제공합니다.
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -169,80 +96,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-3-7-sonnet-20250219",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "text_editor_20250124",
-            "name": "str_replace_editor"
-        }
-    ],
-    messages=[
-        {
-            "role": "user",
-            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
-        }
-    ]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const response = await anthropic.messages.create({
-  model: "claude-3-7-sonnet-20250219",
-  max_tokens: 1024,
-  tools: [
-    {
-      type: "text_editor_20250124",
-      name: "str_replace_editor"
-    }
-  ],
-  messages: [
-    {
-      role: "user",
-      content: "There's a syntax error in my primes.py file. Can you help me fix it?"
-    }
-  ]
-});
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.ToolTextEditor20250124;
-
-public class TextEditorToolExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        ToolTextEditor20250124 editorTool = ToolTextEditor20250124.builder()
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_3_7_SONNET_LATEST)
-                .maxTokens(1024)
-                .addTool(editorTool)
-                .addUserMessage("There's a syntax error in my primes.py file. Can you help me fix it?")
-                .build();
-
-        Message message = client.messages().create(params);
-    }
-}
-```
-</CodeGroup>
+</details>
 </Tab>
 </Tabs>
 
@@ -437,8 +291,10 @@ public class TextEditorToolExample {
 
 먼저, 애플리케이션이 텍스트 에디터 도구와 구문 오류를 수정하라는 프롬프트를 Claude에 제공합니다.
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -461,80 +317,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "text_editor_20250728",
-            "name": "str_replace_based_edit_tool"
-        }
-    ],
-    messages=[
-        {
-            "role": "user",
-            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
-        }
-    ]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: [
-    {
-      type: "text_editor_20250728",
-      name: "str_replace_based_edit_tool"
-    }
-  ],
-  messages: [
-    {
-      role: "user",
-      content: "There's a syntax error in my primes.py file. Can you help me fix it?"
-    }
-  ]
-});
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.ToolStrReplaceBasedEditTool20250728;
-
-public class TextEditorToolExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        ToolStrReplaceBasedEditTool20250728 editorTool = ToolStrReplaceBasedEditTool20250728.builder()
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_SONNET_4_0)
-                .maxTokens(1024)
-                .addTool(editorTool)
-                .addUserMessage("There's a syntax error in my primes.py file. Can you help me fix it?")
-                .build();
-
-        Message message = client.messages().create(params);
-    }
-}
-```
-</CodeGroup>
+</details>
 
 Claude는 먼저 텍스트 에디터 도구를 사용하여 파일을 봅니다.
 
@@ -564,8 +347,10 @@ Claude는 먼저 텍스트 에디터 도구를 사용하여 파일을 봅니다.
 
 그런 다음 애플리케이션은 파일을 읽고 그 내용을 Claude에 반환해야 합니다.
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -616,133 +401,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "text_editor_20250728",
-            "name": "str_replace_based_edit_tool"
-        }
-    ],
-    messages=[
-        {
-            "role": "user",
-            "content": "There's a syntax error in my primes.py file. Can you help me fix it?"
-        },
-        {
-            "role": "assistant",
-            "content": [
-                {
-                    "type": "text",
-                    "text": "I'll help you fix the syntax error in your primes.py file. First, let me take a look at the file to identify the issue."
-                },
-                {
-                    "type": "tool_use",
-                    "id": "toolu_01AbCdEfGhIjKlMnOpQrStU",
-                    "name": "str_replace_based_edit_tool",
-                    "input": {
-                        "command": "view",
-                        "path": "primes.py"
-                    }
-                }
-            ]
-        },
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "tool_result",
-                    "tool_use_id": "toolu_01AbCdEfGhIjKlMnOpQrStU",
-                    "content": "1: def is_prime(n):\n2:     \"\"\"Check if a number is prime.\"\"\"\n3:     if n <= 1:\n4:         return False\n5:     if n <= 3:\n6:         return True\n7:     if n % 2 == 0 or n % 3 == 0:\n8:         return False\n9:     i = 5\n10:     while i * i <= n:\n11:         if n % i == 0 or n % (i + 2) == 0:\n12:             return False\n13:         i += 6\n14:     return True\n15: \n16: def get_primes(limit):\n17:     \"\"\"Generate a list of prime numbers up to the given limit.\"\"\"\n18:     primes = []\n19:     for num in range(2, limit + 1)\n20:         if is_prime(num):\n21:             primes.append(num)\n22:     return primes\n23: \n24: def main():\n25:     \"\"\"Main function to demonstrate prime number generation.\"\"\"\n26:     limit = 100\n27:     prime_list = get_primes(limit)\n28:     print(f\"Prime numbers up to {limit}:\")\n29:     print(prime_list)\n30:     print(f\"Found {len(prime_list)} prime numbers.\")\n31: \n32: if __name__ == \"__main__\":\n33:     main()"
-                }
-            ]
-        }
-    ]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: [
-    {
-      type: "text_editor_20250728",
-      name: "str_replace_based_edit_tool"
-    }
-  ],
-  messages: [
-    {
-      role: "user",
-      content: "There's a syntax error in my primes.py file. Can you help me fix it?"
-    },
-    {
-      role: "assistant",
-      content: [
-          {
-              type: "text",
-              text: "I'll help you fix the syntax error in your primes.py file. First, let me take a look at the file to identify the issue."
-          },
-          {
-              type: "tool_use",
-              id: "toolu_01AbCdEfGhIjKlMnOpQrStU",
-              name: "str_replace_based_edit_tool",
-              input: {
-                  command: "view",
-                  path: "primes.py"
-              }
-          }
-      ]
-    },
-    {
-      role: "user",
-      content: [
-          {
-              type: "tool_result",
-              tool_use_id: "toolu_01AbCdEfGhIjKlMnOpQrStU",
-              content: "1: def is_prime(n):\n2:     \"\"\"Check if a number is prime.\"\"\"\n3:     if n <= 1:\n4:         return False\n5:     if n <= 3:\n6:         return True\n7:     if n % 2 == 0 or n % 3 == 0:\n8:         return False\n9:     i = 5\n10:     while i * i <= n:\n11:         if n % i == 0 or n % (i + 2) == 0:\n12:             return False\n13:         i += 6\n14:     return True\n15: \n16: def get_primes(limit):\n17:     \"\"\"Generate a list of prime numbers up to the given limit.\"\"\"\n18:     primes = []\n19:     for num in range(2, limit + 1)\n20:         if is_prime(num):\n21:             primes.append(num)\n22:     return primes\n23: \n24: def main():\n25:     \"\"\"Main function to demonstrate prime number generation.\"\"\"\n26:     limit = 100\n27:     prime_list = get_primes(limit)\n28:     print(f\"Prime numbers up to {limit}:\")\n29:     print(prime_list)\n30:     print(f\"Found {len(prime_list)} prime numbers.\")\n31: \n32: if __name__ == \"__main__\":\n33:     main()"
-          }
-      ]
-    }
-  ]
-});
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.Message;
-import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.ToolStrReplaceBasedEditTool20250728;
-
-public class TextEditorToolExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        ToolStrReplaceBasedEditTool20250728 editorTool = ToolStrReplaceBasedEditTool20250728.builder()
-            .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-            .model(Model.CLAUDE_SONNET_4_0)
-            .maxTokens(1024)
-            .addTool(editorTool)
-            .addUserMessage("There's a syntax error in my primes.py file. Can you help me fix it?")
-            .build();
-
-        Message message = client.messages().create(params);
-        System.out.println(message);
-    }
-}
-```
-</CodeGroup>
+</details>
 
 
 > **줄 번호**
@@ -780,100 +439,10 @@ Claude는 구문 오류를 식별하고 `str_replace` 명령을 사용하여 수
 
 그런 다음 애플리케이션은 편집을 수행하고 결과를 반환해야 합니다.
 
-<CodeGroup>
-```python Python
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "text_editor_20250728",
-            "name": "str_replace_based_edit_tool"
-        }
-    ],
-    messages=[
-        # 이전 메시지들...
-        {
-            "role": "assistant",
-            "content": [
-                {
-                    "type": "text",
-                    "text": "I found the syntax error in your primes.py file. In the `get_primes` function, there is a missing colon (:) at the end of the for loop line. Let me fix that for you."
-                },
-                {
-                    "type": "tool_use",
-                    "id": "toolu_01PqRsTuVwXyZAbCdEfGh",
-                    "name": "str_replace_based_edit_tool",
-                    "input": {
-                        "command": "str_replace",
-                        "path": "primes.py",
-                        "old_str": "    for num in range(2, limit + 1)",
-                        "new_str": "    for num in range(2, limit + 1):"
-                    }
-                }
-            ]
-        },
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "tool_result",
-                    "tool_use_id": "toolu_01PqRsTuVwXyZAbCdEfGh",
-                    "content": "Successfully replaced text at exactly one location."
-                }
-            ]
-        }
-    ]
-)
-```
+<details>
+<summary>Java 예시</summary>
 
-```typescript TypeScript
-const response = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: [
-    {
-      type: "text_editor_20250728",
-      name: "str_replace_based_edit_tool"
-    }
-  ],
-  messages: [
-    // 이전 메시지들...
-    {
-      role: "assistant",
-      content: [
-        {
-          type: "text",
-          text: "I found the syntax error in your primes.py file. In the `get_primes` function, there is a missing colon (:) at the end of the for loop line. Let me fix that for you."
-        },
-        {
-          type: "tool_use",
-          id: "toolu_01PqRsTuVwXyZAbCdEfGh",
-          name: "str_replace_based_edit_tool",
-          input: {
-            command: "str_replace",
-            path: "primes.py",
-            old_str: "    for num in range(2, limit + 1)",
-            new_str: "    for num in range(2, limit + 1):"
-          }
-        }
-      ]
-    },
-    {
-      role: "user",
-      content: [
-        {
-          type: "tool_result",
-          tool_use_id: "toolu_01PqRsTuVwXyZAbCdEfGh",
-          content: "Successfully replaced text at exactly one location."
-        }
-      ]
-    }
-  ]
-});
-```
-
-```java Java
+```java
 import java.util.List;
 import java.util.Map;
 
@@ -933,7 +502,8 @@ public class TextEditorConversationExample {
     }
 }
 ```
-</CodeGroup>
+
+</details>
 
 마지막으로 Claude는 수정사항에 대한 완전한 설명을 제공합니다.
 

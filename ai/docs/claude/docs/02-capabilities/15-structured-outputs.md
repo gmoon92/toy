@@ -43,9 +43,10 @@ JSON outputs는 Claude의 응답 형식을 제어하여, Claude가 스키마와 
 
 ### 빠른 시작
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -78,77 +79,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": "Extract the key information from this email: John Smith (john@example.com) is interested in our Enterprise plan and wants to schedule a demo for next Tuesday at 2pm."
-        }
-    ],
-    output_config={
-        "format": {
-            "type": "json_schema",
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string"},
-                    "email": {"type": "string"},
-                    "plan_interest": {"type": "string"},
-                    "demo_requested": {"type": "boolean"}
-                },
-                "required": ["name", "email", "plan_interest", "demo_requested"],
-                "additionalProperties": False
-            }
-        }
-    }
-)
-print(response.content[0].text)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: "Extract the key information from this email: John Smith (john@example.com) is interested in our Enterprise plan and wants to schedule a demo for next Tuesday at 2pm."
-    }
-  ],
-  output_config: {
-    format: {
-      type: "json_schema",
-      schema: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
-          email: { type: "string" },
-          plan_interest: { type: "string" },
-          demo_requested: { type: "boolean" }
-        },
-        required: ["name", "email", "plan_interest", "demo_requested"],
-        additionalProperties: false
-      }
-    }
-  }
-});
-console.log(response.content[0].text);
-```
-
-</CodeGroup>
+</details>
 
 **응답 형식:** `response.content[0].text`에서 스키마와 일치하는 유효한 JSON
 
@@ -183,9 +114,10 @@ Python 및 TypeScript SDK는 스키마 변환, 자동 검증, 인기 있는 스�
 
 Python 및 TypeScript 개발자의 경우, 원시 JSON 스키마를 작성하는 대신 Pydantic 및 Zod와 같은 친숙한 스키마 정의 도구를 사용할 수 있습니다.
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 from pydantic import BaseModel
 from anthropic import Anthropic, transform_schema
 
@@ -233,37 +165,7 @@ response = client.messages.parse(
 print(response.parsed_output)
 ```
 
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-import { z } from 'zod';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
-
-const ContactInfoSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-  plan_interest: z.string(),
-  demo_requested: z.boolean(),
-});
-
-const client = new Anthropic();
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: "Extract the key information from this email: John Smith (john@example.com) is interested in our Enterprise plan and wants to schedule a demo for next Tuesday at 2pm."
-    }
-  ],
-  output_config: { format: zodOutputFormat(ContactInfoSchema) },
-});
-
-// 자동으로 파싱 및 검증됨
-console.log(response.content[0].text);
-```
-
-</CodeGroup>
+</details>
 
 #### SDK 전용 메서드
 
@@ -347,9 +249,10 @@ Python 및 TypeScript SDK는 지원되지 않는 기능을 가진 스키마를 �
 
 비구조화된 텍스트에서 구조화된 데이터 추출:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 from pydantic import BaseModel
 from typing import List
 
@@ -367,26 +270,7 @@ response = client.messages.parse(
 )
 ```
 
-```typescript TypeScript
-import { z } from 'zod';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
-
-const InvoiceSchema = z.object({
-  invoice_number: z.string(),
-  date: z.string(),
-  total_amount: z.number(),
-  line_items: z.array(z.record(z.string(), z.any())),
-  customer_name: z.string(),
-});
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  output_config: { format: zodOutputFormat(InvoiceSchema) },
-  messages: [{"role": "user", "content": `Extract invoice data from: ${invoiceText}`}]
-});
-```
-
-</CodeGroup>
+</details>
 </details>
 
 <details>
@@ -394,9 +278,10 @@ const response = await client.messages.create({
 
 구조화된 카테고리로 콘텐츠 분류:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 from pydantic import BaseModel
 from typing import List
 
@@ -413,25 +298,7 @@ response = client.messages.parse(
 )
 ```
 
-```typescript TypeScript
-import { z } from 'zod';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
-
-const ClassificationSchema = z.object({
-  category: z.string(),
-  confidence: z.number(),
-  tags: z.array(z.string()),
-  sentiment: z.string(),
-});
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  output_config: { format: zodOutputFormat(ClassificationSchema) },
-  messages: [{"role": "user", "content": `Classify this feedback: ${feedbackText}`}]
-});
-```
-
-</CodeGroup>
+</details>
 </details>
 
 <details>
@@ -439,9 +306,10 @@ const response = await client.messages.create({
 
 API에 바로 사용 가능한 응답 생성:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -458,25 +326,7 @@ response = client.messages.parse(
 )
 ```
 
-```typescript TypeScript
-import { z } from 'zod';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
-
-const APIResponseSchema = z.object({
-  status: z.string(),
-  data: z.record(z.string(), z.any()),
-  errors: z.array(z.record(z.string(), z.any())).optional(),
-  metadata: z.record(z.string(), z.any()),
-});
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  output_config: { format: zodOutputFormat(APIResponseSchema) },
-  messages: [{"role": "user", "content": "Process this request: ..."}]
-});
-```
-
-</CodeGroup>
+</details>
 </details>
 
 ## Strict tool use
@@ -501,9 +351,10 @@ Strict tool use는 타입 안전 매개변수를 보장합니다:
 
 ### 빠른 시작
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -537,85 +388,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {"role": "user", "content": "What's the weather like in San Francisco?"}
-    ],
-    tools=[
-        {
-            "name": "get_weather",
-            "description": "Get the current weather in a given location",
-            "strict": True,  # strict 모드 활성화
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": ["celsius", "fahrenheit"],
-                        "description": "The unit of temperature, either 'celsius' or 'fahrenheit'"
-                    }
-                },
-                "required": ["location"],
-                "additionalProperties": False
-            }
-        }
-    ]
-)
-print(response.content)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: "What's the weather like in San Francisco?"
-    }
-  ],
-  tools: [{
-    name: "get_weather",
-    description: "Get the current weather in a given location",
-    strict: true,  // strict 모드 활성화
-    input_schema: {
-      type: "object",
-      properties: {
-        location: {
-          type: "string",
-          description: "The city and state, e.g. San Francisco, CA"
-        },
-        unit: {
-          type: "string",
-          enum: ["celsius", "fahrenheit"]
-        }
-      },
-      required: ["location"],
-      additionalProperties: false
-    }
-  }]
-});
-console.log(response.content);
-```
-
-</CodeGroup>
+</details>
 
 **응답 형식:** `response.content[x].input`에서 검증된 입력이 포함된 도구 사용 블록
 
@@ -654,9 +427,10 @@ console.log(response.content);
 
 도구 매개변수가 스키마와 정확히 일치하는지 확인:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 response = client.messages.create(
     model="claude-sonnet-4-5",
     messages=[{"role": "user", "content": "Search for flights to Tokyo"}],
@@ -677,28 +451,7 @@ response = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  messages: [{"role": "user", "content": "Search for flights to Tokyo"}],
-  tools: [{
-    name: "search_flights",
-    strict: true,
-    input_schema: {
-      type: "object",
-      properties: {
-        destination: {type: "string"},
-        departure_date: {type: "string", format: "date"},
-        passengers: {type: "integer", enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-      },
-      required: ["destination", "departure_date"],
-      additionalProperties: false
-    }
-  }]
-});
-```
-
-</CodeGroup>
+</details>
 </details>
 
 <details>
@@ -706,9 +459,10 @@ const response = await client.messages.create({
 
 보장된 도구 매개변수로 신뢰할 수 있는 다단계 에이전트 구축:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 response = client.messages.create(
     model="claude-sonnet-4-5",
     messages=[{"role": "user", "content": "Help me plan a trip to Paris for 2 people"}],
@@ -746,45 +500,7 @@ response = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  messages: [{"role": "user", "content": "Help me plan a trip to Paris for 2 people"}],
-  tools: [
-    {
-      name: "search_flights",
-      strict: true,
-      input_schema: {
-        type: "object",
-        properties: {
-          origin: {type: "string"},
-          destination: {type: "string"},
-          departure_date: {type: "string", format: "date"},
-          travelers: {type: "integer", enum: [1, 2, 3, 4, 5, 6]}
-        },
-        required: ["origin", "destination", "departure_date"],
-        additionalProperties: false
-      }
-    },
-    {
-      name: "search_hotels",
-      strict: true,
-      input_schema: {
-        type: "object",
-        properties: {
-          city: {type: "string"},
-          check_in: {type: "string", format: "date"},
-          guests: {type: "integer", enum: [1, 2, 3, 4]}
-        },
-        required: ["city", "check_in"],
-        additionalProperties: false
-      }
-    }
-  ]
-});
-```
-
-</CodeGroup>
+</details>
 </details>
 
 ## 두 기능을 함께 사용하기
@@ -796,9 +512,10 @@ JSON outputs와 strict tool use는 서로 다른 문제를 해결하며 함께 �
 
 결합하면 Claude가 보장된 유효 매개변수로 도구를 호출하고 구조화된 JSON 응답을 반환할 수 있습니다. 이는 신뢰할 수 있는 도구 호출과 구조화된 최종 출력이 모두 필요한 에이전트 워크플로에 유용합니다.
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 response = client.messages.create(
     model="claude-sonnet-4-5",
     max_tokens=1024,
@@ -835,44 +552,7 @@ response = client.messages.create(
 )
 ```
 
-```typescript TypeScript
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [{ role: "user", content: "Help me plan a trip to Paris for next month" }],
-  // JSON outputs: 구조화된 응답 형식
-  output_config: {
-    format: {
-      type: "json_schema",
-      schema: {
-        type: "object",
-        properties: {
-          summary: { type: "string" },
-          next_steps: { type: "array", items: { type: "string" } }
-        },
-        required: ["summary", "next_steps"],
-        additionalProperties: false
-      }
-    }
-  },
-  // Strict tool use: 보장된 도구 매개변수
-  tools: [{
-    name: "search_flights",
-    strict: true,
-    input_schema: {
-      type: "object",
-      properties: {
-        destination: { type: "string" },
-        date: { type: "string", format: "date" }
-      },
-      required: ["destination", "date"],
-      additionalProperties: false
-    }
-  }]
-});
-```
-
-</CodeGroup>
+</details>
 
 ## 중요한 고려 사항
 

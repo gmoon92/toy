@@ -162,31 +162,10 @@ options = ClaudeAgentOptions(
 
 **마이그레이션:**
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```typescript TypeScript
-// 이전 (v0.0.x) - 기본적으로 Claude Code의 시스템 프롬프트 사용
-const result = query({ prompt: "Hello" });
-
-// 변경 후 (v0.1.0) - 기본적으로 최소한의 시스템 프롬프트 사용
-// 이전 동작을 원하면 명시적으로 Claude Code의 프리셋을 요청:
-const result = query({
-  prompt: "Hello",
-  options: {
-    systemPrompt: { type: "preset", preset: "claude_code" }
-  }
-});
-
-// 또는 커스텀 시스템 프롬프트 사용:
-const result = query({
-  prompt: "Hello",
-  options: {
-    systemPrompt: "You are a helpful coding assistant"
-  }
-});
-```
-
-```python Python
+```python
 # 이전 (v0.0.x) - 기본적으로 Claude Code의 시스템 프롬프트 사용
 async for message in query(prompt="Hello"):
     print(message)
@@ -213,7 +192,7 @@ async for message in query(
     print(message)
 ```
 
-</CodeGroup>
+</details>
 
 **변경 이유:** SDK 애플리케이션에 대한 더 나은 제어 및 격리를 제공합니다. 이제 Claude Code의 CLI 중심 지시사항을 상속하지 않고 커스텀 동작으로 에이전트를 구축할 수 있습니다.
 
@@ -223,37 +202,10 @@ async for message in query(
 
 **마이그레이션:**
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```typescript TypeScript
-// 이전 (v0.0.x) - 모든 설정을 자동으로 로드
-const result = query({ prompt: "Hello" });
-// 다음에서 읽음:
-// - ~/.claude/settings.json (user)
-// - .claude/settings.json (project)
-// - .claude/settings.local.json (local)
-// - CLAUDE.md 파일
-// - 커스텀 슬래시 명령
-
-// 변경 후 (v0.1.0) - 기본적으로 설정이 로드되지 않음
-// 이전 동작을 원하면:
-const result = query({
-  prompt: "Hello",
-  options: {
-    settingSources: ["user", "project", "local"]
-  }
-});
-
-// 또는 특정 소스만 로드:
-const result = query({
-  prompt: "Hello",
-  options: {
-    settingSources: ["project"]  // 프로젝트 설정만
-  }
-});
-```
-
-```python Python
+```python
 # 이전 (v0.0.x) - 모든 설정을 자동으로 로드
 async for message in query(prompt="Hello"):
     print(message)
@@ -286,7 +238,7 @@ async for message in query(
     print(message)
 ```
 
-</CodeGroup>
+</details>
 
 **변경 이유:** SDK 애플리케이션이 로컬 파일시스템 구성과 독립적으로 예측 가능한 동작을 보장합니다. 이는 특히 다음과 같은 경우에 중요합니다:
 - **CI/CD 환경** - 로컬 커스터마이징 없이 일관된 동작

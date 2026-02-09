@@ -64,9 +64,10 @@
 
 도구 결과 지우기를 활성화하는 가장 간단한 방법은 전략 유형만 지정하는 것입니다. 다른 모든 [구성 옵션](#configuration-options-for-tool-result-clearing)은 기본값을 사용합니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash cURL
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -95,71 +96,16 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=4096,
-    messages=[
-        {
-            "role": "user",
-            "content": "Search for recent developments in AI"
-        }
-    ],
-    tools=[
-        {
-            "type": "web_search_20250305",
-            "name": "web_search"
-        }
-    ],
-    betas=["context-management-2025-06-27"],
-    context_management={
-        "edits": [
-            {"type": "clear_tool_uses_20250919"}
-        ]
-    }
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 4096,
-  messages: [
-    {
-      role: "user",
-      content: "Search for recent developments in AI"
-    }
-  ],
-  tools: [
-    {
-      type: "web_search_20250305",
-      name: "web_search"
-    }
-  ],
-  context_management: {
-    edits: [
-      { type: "clear_tool_uses_20250919" }
-    ]
-  },
-  betas: ["context-management-2025-06-27"]
-});
-```
-
-</CodeGroup>
+</details>
 
 ### 고급 구성
 
 추가 매개변수로 도구 결과 지우기 동작을 사용자 정의할 수 있습니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash cURL
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -209,121 +155,16 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=4096,
-    messages=[
-        {
-            "role": "user",
-            "content": "Create a simple command line calculator app using Python"
-        }
-    ],
-    tools=[
-        {
-            "type": "text_editor_20250728",
-            "name": "str_replace_based_edit_tool",
-            "max_characters": 10000
-        },
-        {
-            "type": "web_search_20250305",
-            "name": "web_search",
-            "max_uses": 3
-        }
-    ],
-    betas=["context-management-2025-06-27"],
-    context_management={
-        "edits": [
-            {
-                "type": "clear_tool_uses_20250919",
-                # 임계값이 초과될 때 지우기 트리거
-                "trigger": {
-                    "type": "input_tokens",
-                    "value": 30000
-                },
-                # 지운 후 유지할 도구 사용 수
-                "keep": {
-                    "type": "tool_uses",
-                    "value": 3
-                },
-                # 선택 사항: 최소한 이 많은 토큰 지우기
-                "clear_at_least": {
-                    "type": "input_tokens",
-                    "value": 5000
-                },
-                # 지우지 않을 도구 제외
-                "exclude_tools": ["web_search"]
-            }
-        ]
-    }
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 4096,
-  messages: [
-    {
-      role: "user",
-      content: "Create a simple command line calculator app using Python"
-    }
-  ],
-  tools: [
-    {
-      type: "text_editor_20250728",
-      name: "str_replace_based_edit_tool",
-      max_characters: 10000
-    },
-    {
-      type: "web_search_20250305",
-      name: "web_search",
-      max_uses: 3
-    }
-  ],
-  betas: ["context-management-2025-06-27"],
-  context_management: {
-    edits: [
-      {
-        type: "clear_tool_uses_20250919",
-        // 임계값이 초과될 때 지우기 트리거
-        trigger: {
-          type: "input_tokens",
-          value: 30000
-        },
-        // 지운 후 유지할 도구 사용 수
-        keep: {
-          type: "tool_uses",
-          value: 3
-        },
-        // 선택 사항: 최소한 이 많은 토큰 지우기
-        clear_at_least: {
-          type: "input_tokens",
-          value: 5000
-        },
-        // 지우지 않을 도구 제외
-        exclude_tools: ["web_search"]
-      }
-    ]
-  }
-});
-```
-
-</CodeGroup>
+</details>
 
 ## Thinking 블록 지우기 사용법
 
 extended thinking이 활성화된 경우 컨텍스트와 프롬프트 캐싱을 효과적으로 관리하려면 thinking 블록 지우기를 활성화하세요:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash cURL
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -351,61 +192,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    max_tokens=1024,
-    messages=[...],
-    thinking={
-        "type": "enabled",
-        "budget_tokens": 10000
-    },
-    betas=["context-management-2025-06-27"],
-    context_management={
-        "edits": [
-            {
-                "type": "clear_thinking_20251015",
-                "keep": {
-                    "type": "thinking_turns",
-                    "value": 2
-                }
-            }
-        ]
-    }
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5-20250929",
-  max_tokens: 1024,
-  messages: [...],
-  thinking: {
-    type: "enabled",
-    budget_tokens: 10000
-  },
-  betas: ["context-management-2025-06-27"],
-  context_management: {
-    edits: [
-      {
-        type: "clear_thinking_20251015",
-        keep: {
-          type: "thinking_turns",
-          value: 2
-        }
-      }
-    ]
-  }
-});
-```
-
-</CodeGroup>
+</details>
 
 ### Thinking 블록 지우기 구성 옵션
 
@@ -442,9 +229,10 @@ thinking 블록 지우기와 도구 결과 지우기를 함께 사용할 수 있
 > 여러 전략을 사용할 때 `clear_thinking_20251015` 전략은 `edits` 배열에서 먼저 나열되어야 합니다.
 
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 response = client.beta.messages.create(
     model="claude-sonnet-4-5-20250929",
     max_tokens=1024,
@@ -480,43 +268,7 @@ response = client.beta.messages.create(
 )
 ```
 
-```typescript TypeScript
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5-20250929",
-  max_tokens: 1024,
-  messages: [...],
-  thinking: {
-    type: "enabled",
-    budget_tokens: 10000
-  },
-  tools: [...],
-  betas: ["context-management-2025-06-27"],
-  context_management: {
-    edits: [
-      {
-        type: "clear_thinking_20251015",
-        keep: {
-          type: "thinking_turns",
-          value: 2
-        }
-      },
-      {
-        type: "clear_tool_uses_20250919",
-        trigger: {
-          type: "input_tokens",
-          value: 50000
-        },
-        keep: {
-          type: "tool_uses",
-          value: 5
-        }
-      }
-    ]
-  }
-});
-```
-
-</CodeGroup>
+</details>
 
 ## 도구 결과 지우기 구성 옵션
 
@@ -580,9 +332,10 @@ const response = await anthropic.beta.messages.create({
 
 [토큰 계산](../02-capabilities/09-token-counting.md) 엔드포인트는 컨텍스트 관리를 지원하여 컨텍스트 편집이 적용된 후 프롬프트가 사용할 토큰 수를 미리 볼 수 있습니다.
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash cURL
+```bash
 curl https://api.anthropic.com/v1/messages/count_tokens \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -615,78 +368,7 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
     }'
 ```
 
-```python Python
-response = client.beta.messages.count_tokens(
-    model="claude-sonnet-4-5",
-    messages=[
-        {
-            "role": "user",
-            "content": "Continue our conversation..."
-        }
-    ],
-    tools=[...],  # 도구 정의
-    betas=["context-management-2025-06-27"],
-    context_management={
-        "edits": [
-            {
-                "type": "clear_tool_uses_20250919",
-                "trigger": {
-                    "type": "input_tokens",
-                    "value": 30000
-                },
-                "keep": {
-                    "type": "tool_uses",
-                    "value": 5
-                }
-            }
-        ]
-    }
-)
-
-print(f"원래 토큰: {response.context_management['original_input_tokens']}")
-print(f"지운 후: {response.input_tokens}")
-print(f"절약: {response.context_management['original_input_tokens'] - response.input_tokens} 토큰")
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const response = await anthropic.beta.messages.countTokens({
-  model: "claude-sonnet-4-5",
-  messages: [
-    {
-      role: "user",
-      content: "Continue our conversation..."
-    }
-  ],
-  tools: [...],  // 도구 정의
-  betas: ["context-management-2025-06-27"],
-  context_management: {
-    edits: [
-      {
-        type: "clear_tool_uses_20250919",
-        trigger: {
-          type: "input_tokens",
-          value: 30000
-        },
-        keep: {
-          type: "tool_uses",
-          value: 5
-        }
-      }
-    ]
-  }
-});
-
-console.log(`원래 토큰: ${response.context_management?.original_input_tokens}`);
-console.log(`지운 후: ${response.input_tokens}`);
-console.log(`절약: ${(response.context_management?.original_input_tokens || 0) - response.input_tokens} 토큰`);
-```
-</CodeGroup>
+</details>
 
 ```json Response
 {
@@ -713,9 +395,10 @@ console.log(`절약: ${(response.context_management?.original_input_tokens || 0)
 
 두 기능을 함께 사용하려면 API 요청에서 활성화하세요:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 response = client.beta.messages.create(
     model="claude-sonnet-4-5",
     max_tokens=4096,
@@ -736,34 +419,7 @@ response = client.beta.messages.create(
 )
 ```
 
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 4096,
-  messages: [...],
-  tools: [
-    {
-      type: "memory_20250818",
-      name: "memory"
-    },
-    // 다른 도구들
-  ],
-  betas: ["context-management-2025-06-27"],
-  context_management: {
-    edits: [
-      { type: "clear_tool_uses_20250919" }
-    ]
-  }
-});
-```
-
-</CodeGroup>
+</details>
 
 ## 클라이언트 측 압축 (SDK)
 
@@ -786,9 +442,10 @@ const response = await anthropic.beta.messages.create({
 
 `tool_runner` 호출에 `compaction_control`을 추가하세요:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -815,35 +472,7 @@ for message in runner:
 final = runner.until_done()
 ```
 
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-const runner = client.beta.messages.toolRunner({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 4096,
-    tools: [...],
-    messages: [
-        {
-            role: 'user',
-            content: 'Analyze all the files in this directory and write a summary report.'
-        }
-    ],
-    compactionControl: {
-        enabled: true,
-        contextTokenThreshold: 100000
-    }
-});
-
-for await (const message of runner) {
-    console.log('사용된 토큰:', message.usage.input_tokens);
-}
-
-const finalMessage = await runner.runUntilDone();
-```
-
-</CodeGroup>
+</details>
 
 #### 압축 중 발생하는 일
 
@@ -889,9 +518,10 @@ Claude는 이 요약이 원래 대화 기록인 것처럼 계속 작업합니다
 
 임계값은 압축이 발생하는 시기를 결정합니다. 낮은 임계값은 작은 컨텍스트 윈도우로 더 빈번한 압축을 의미합니다. 높은 임계값은 더 많은 컨텍스트를 허용하지만 제한에 도달할 위험이 있습니다.
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 # 메모리 제약 시나리오를 위한 더 빈번한 압축
 compaction_control={
     "enabled": True,
@@ -905,29 +535,16 @@ compaction_control={
 }
 ```
 
-```typescript TypeScript
-// 메모리 제약 시나리오를 위한 더 빈번한 압축
-compactionControl: {
-    enabled: true,
-    contextTokenThreshold: 50000
-}
-
-// 더 많은 컨텍스트가 필요할 때 덜 빈번한 압축
-compactionControl: {
-    enabled: true,
-    contextTokenThreshold: 150000
-}
-```
-
-</CodeGroup>
+</details>
 
 #### 요약에 다른 모델 사용
 
 요약 생성에 더 빠르거나 저렴한 모델을 사용할 수 있습니다:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 compaction_control={
     "enabled": True,
     "context_token_threshold": 100000,
@@ -935,23 +552,16 @@ compaction_control={
 }
 ```
 
-```typescript TypeScript
-compactionControl: {
-    enabled: true,
-    contextTokenThreshold: 100000,
-    model: 'claude-haiku-4-5'
-}
-```
-
-</CodeGroup>
+</details>
 
 #### 사용자 정의 요약 프롬프트
 
 도메인별 요구 사항에 대해 사용자 정의 프롬프트를 제공할 수 있습니다. 프롬프트는 Claude에게 요약을 `<summary></summary>` 태그로 래핑하도록 지시해야 합니다.
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 compaction_control={
     "enabled": True,
     "context_token_threshold": 100000,
@@ -964,20 +574,7 @@ compaction_control={
 }
 ```
 
-```typescript TypeScript
-compactionControl: {
-    enabled: true,
-    contextTokenThreshold: 100000,
-    summaryPrompt: `지금까지 수행된 연구를 다음을 포함하여 요약하세요:
-- 참조한 출처 및 주요 발견 사항
-- 답변한 질문 및 남은 미지의 것
-- 권장되는 다음 단계
-
-요약을 <summary></summary> 태그로 래핑하세요.`
-}
-```
-
-</CodeGroup>
+</details>
 
 ### 기본 요약 프롬프트
 
@@ -1065,9 +662,10 @@ SDK는 총 사용량을 63,000 + 270,000 = 333,000 토큰으로 계산합니다.
 
 로깅을 활성화하여 압축이 발생하는 시기를 추적하세요:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
 
-```python Python
+```python
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -1078,14 +676,7 @@ logging.getLogger("anthropic.lib.tools").setLevel(logging.INFO)
 # INFO: 압축이 완료되었습니다. 새 토큰 사용량: 2500
 ```
 
-```typescript TypeScript
-// SDK는 콘솔에 압축 이벤트를 로그합니다
-// 다음과 같은 메시지를 볼 수 있습니다:
-// 토큰 사용량 105000이 임계값 100000을 초과했습니다. 압축을 수행합니다.
-// 압축이 완료되었습니다. 새 토큰 사용량: 2500
-```
-
-</CodeGroup>
+</details>
 
 ### 압축을 사용해야 하는 경우
 

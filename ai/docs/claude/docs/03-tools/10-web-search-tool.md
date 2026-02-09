@@ -37,8 +37,10 @@ API 요청에 웹 검색 도구를 추가하면:
 
 API 요청에 웹 검색 도구를 제공합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -60,57 +62,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": "What's the weather in NYC?"
-        }
-    ],
-    tools=[{
-        "type": "web_search_20250305",
-        "name": "web_search",
-        "max_uses": 5
-    }]
-)
-print(response)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-async function main() {
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
-    max_tokens: 1024,
-    messages: [
-      {
-        role: "user",
-        content: "What's the weather in NYC?"
-      }
-    ],
-    tools: [{
-      type: "web_search_20250305",
-      name: "web_search",
-      max_uses: 5
-    }]
-  });
-
-  console.log(response);
-}
-
-main().catch(console.error);
-```
-</CodeGroup>
+</details>
 
 ### 도구 정의
 
@@ -303,9 +255,11 @@ main().catch(console.error);
 
 예를 들어, 다중 턴 대화에 대해 웹 검색과 함께 프롬프트 캐싱을 사용하려면:
 
-<CodeGroup>
+<details>
+<summary>Python 예시</summary>
+
 ```python
-import anthropic
+anthropic
 
 client = anthropic.Anthropic()
 
@@ -368,7 +322,7 @@ response2 = client.messages.create(
 print(f"Cache read tokens: {response2.usage.get('cache_read_input_tokens', 0)}")
 ```
 
-</CodeGroup>
+</details>
 
 ## 스트리밍
 

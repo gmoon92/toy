@@ -52,8 +52,10 @@ Extended thinking의 응답 형식에 대한 자세한 내용은 [Messages API R
 
 다음은 Messages API에서 extended thinking을 사용하는 예제입니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -75,86 +77,7 @@ curl https://api.anthropic.com/v1/messages \
 }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=16000,
-    thinking={
-        "type": "enabled",
-        "budget_tokens": 10000
-    },
-    messages=[{
-        "role": "user",
-        "content": "n mod 4 == 3인 무한한 수의 소수가 존재합니까?"
-    }]
-)
-
-# 응답에는 요약된 thinking 블록과 text 블록이 포함됩니다
-for block in response.content:
-    if block.type == "thinking":
-        print(f"\nThinking 요약: {block.thinking}")
-    elif block.type == "text":
-        print(f"\n응답: {block.text}")
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 16000,
-  thinking: {
-    type: "enabled",
-    budget_tokens: 10000
-  },
-  messages: [{
-    role: "user",
-    content: "n mod 4 == 3인 무한한 수의 소수가 존재합니까?"
-  }]
-});
-
-// 응답에는 요약된 thinking 블록과 text 블록이 포함됩니다
-for (const block of response.content) {
-  if (block.type === "thinking") {
-    console.log(`\nThinking 요약: ${block.thinking}`);
-  } else if (block.type === "text") {
-    console.log(`\n응답: ${block.text}`);
-  }
-}
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.beta.messages.*;
-import com.anthropic.models.beta.messages.MessageCreateParams;
-import com.anthropic.models.messages.*;
-
-public class SimpleThinkingExample {
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        BetaMessage response = client.beta().messages().create(
-                MessageCreateParams.builder()
-                        .model(Model.CLAUDE_OPUS_4_0)
-                        .maxTokens(16000)
-                        .thinking(BetaThinkingConfigEnabled.builder().budgetTokens(10000).build())
-                        .addUserMessage("n mod 4 == 3인 무한한 수의 소수가 존재합니까?")
-                        .build()
-        );
-
-        System.out.println(response);
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 Extended thinking을 켜려면 `thinking` 객체를 추가하고, `type` 매개변수를 `enabled`로 설정하고, `budget_tokens`를 extended thinking에 대한 지정된 토큰 예산으로 설정하세요.
 
@@ -191,8 +114,10 @@ Messages API를 통한 스트리밍에 대한 자세한 문서는 [Streaming Mes
 
 다음은 thinking과 함께 스트리밍을 처리하는 방법입니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -215,148 +140,7 @@ curl https://api.anthropic.com/v1/messages \
 }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-with client.messages.stream(
-    model="claude-sonnet-4-5",
-    max_tokens=16000,
-    thinking={"type": "enabled", "budget_tokens": 10000},
-    messages=[{"role": "user", "content": "27 * 453은 무엇입니까?"}],
-) as stream:
-    thinking_started = False
-    response_started = False
-
-    for event in stream:
-        if event.type == "content_block_start":
-            print(f"\n{event.content_block.type} 블록 시작...")
-            # 각 새 블록에 대해 플래그 재설정
-            thinking_started = False
-            response_started = False
-        elif event.type == "content_block_delta":
-            if event.delta.type == "thinking_delta":
-                if not thinking_started:
-                    print("Thinking: ", end="", flush=True)
-                    thinking_started = True
-                print(event.delta.thinking, end="", flush=True)
-            elif event.delta.type == "text_delta":
-                if not response_started:
-                    print("Response: ", end="", flush=True)
-                    response_started = True
-                print(event.delta.text, end="", flush=True)
-        elif event.type == "content_block_stop":
-            print("\n블록 완료.")
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-const stream = await client.messages.stream({
-  model: "claude-sonnet-4-5",
-  max_tokens: 16000,
-  thinking: {
-    type: "enabled",
-    budget_tokens: 10000
-  },
-  messages: [{
-    role: "user",
-    content: "27 * 453은 무엇입니까?"
-  }]
-});
-
-let thinkingStarted = false;
-let responseStarted = false;
-
-for await (const event of stream) {
-  if (event.type === 'content_block_start') {
-    console.log(`\n${event.content_block.type} 블록 시작...`);
-    // 각 새 블록에 대해 플래그 재설정
-    thinkingStarted = false;
-    responseStarted = false;
-  } else if (event.type === 'content_block_delta') {
-    if (event.delta.type === 'thinking_delta') {
-      if (!thinkingStarted) {
-        process.stdout.write('Thinking: ');
-        thinkingStarted = true;
-      }
-      process.stdout.write(event.delta.thinking);
-    } else if (event.delta.type === 'text_delta') {
-      if (!responseStarted) {
-        process.stdout.write('Response: ');
-        responseStarted = true;
-      }
-      process.stdout.write(event.delta.text);
-    }
-  } else if (event.type === 'content_block_stop') {
-    console.log('\n블록 완료.');
-  }
-}
-```
-
-```java Java
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.core.http.StreamResponse;
-import com.anthropic.models.beta.messages.MessageCreateParams;
-import com.anthropic.models.beta.messages.BetaRawMessageStreamEvent;
-import com.anthropic.models.beta.messages.BetaThinkingConfigEnabled;
-import com.anthropic.models.messages.Model;
-
-public class SimpleThinkingStreamingExample {
-    private static boolean thinkingStarted = false;
-    private static boolean responseStarted = false;
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        MessageCreateParams createParams = MessageCreateParams.builder()
-                .model(Model.CLAUDE_OPUS_4_0)
-                .maxTokens(16000)
-                .thinking(BetaThinkingConfigEnabled.builder().budgetTokens(10000).build())
-                .addUserMessage("27 * 453은 무엇입니까?")
-                .build();
-
-        try (StreamResponse<BetaRawMessageStreamEvent> streamResponse =
-                     client.beta().messages().createStreaming(createParams)) {
-            streamResponse.stream()
-                    .forEach(event -> {
-                        if (event.isContentBlockStart()) {
-                            System.out.printf("\n%s 블록 시작...%n",
-                                    event.asContentBlockStart()._type());
-                            // 각 새 블록에 대해 플래그 재설정
-                            thinkingStarted = false;
-                            responseStarted = false;
-                        } else if (event.isContentBlockDelta()) {
-                            var delta = event.asContentBlockDelta().delta();
-                            if (delta.isBetaThinking()) {
-                                if (!thinkingStarted) {
-                                    System.out.print("Thinking: ");
-                                    thinkingStarted = true;
-                                }
-                                System.out.print(delta.asBetaThinking().thinking());
-                                System.out.flush();
-                            } else if (delta.isBetaText()) {
-                                if (!responseStarted) {
-                                    System.out.print("Response: ");
-                                    responseStarted = true;
-                                }
-                                System.out.print(delta.asBetaText().text());
-                                System.out.flush();
-                            }
-                        } else if (event.isContentBlockStop()) {
-                            System.out.println("\n블록 완료.");
-                        }
-                    });
-        }
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 스트리밍 출력 예제:
 ```json
@@ -467,64 +251,10 @@ Extended thinking은 [도구 사용](../03-tools/01-overview.md)과 함께 사�
 
 다음은 도구 결과를 제공할 때 thinking 블록을 보존하는 방법을 보여주는 실용적인 예제입니다:
 
-<CodeGroup>
-```python Python
-weather_tool = {
-    "name": "get_weather",
-    "description": "위치에 대한 현재 날씨를 가져옵니다",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "location": {"type": "string"}
-        },
-        "required": ["location"]
-    }
-}
+<details>
+<summary>Java 예시</summary>
 
-# 첫 번째 요청 - Claude가 thinking 및 도구 요청으로 응답
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=16000,
-    thinking={
-        "type": "enabled",
-        "budget_tokens": 10000
-    },
-    tools=[weather_tool],
-    messages=[
-        {"role": "user", "content": "파리의 날씨는?"}
-    ]
-)
-```
-
-```typescript TypeScript
-const weatherTool = {
-  name: "get_weather",
-  description: "위치에 대한 현재 날씨를 가져옵니다",
-  input_schema: {
-    type: "object",
-    properties: {
-      location: { type: "string" }
-    },
-    required: ["location"]
-  }
-};
-
-// 첫 번째 요청 - Claude가 thinking 및 도구 요청으로 응답
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 16000,
-  thinking: {
-    type: "enabled",
-    budget_tokens: 10000
-  },
-  tools: [weatherTool],
-  messages: [
-    { role: "user", content: "파리의 날씨는?" }
-  ]
-});
-```
-
-```java Java
+```java
 import java.util.List;
 import java.util.Map;
 
@@ -569,7 +299,8 @@ public class ThinkingWithToolsExample {
     }
 }
 ```
-</CodeGroup>
+
+</details>
 
 API 응답에는 thinking, text, tool_use 블록이 포함됩니다:
 
@@ -599,78 +330,10 @@ API 응답에는 thinking, text, tool_use 블록이 포함됩니다:
 
 이제 대화를 계속하고 도구를 사용하겠습니다
 
-<CodeGroup>
-```python Python
-# thinking 블록과 tool use 블록 추출
-thinking_block = next((block for block in response.content
-                      if block.type == 'thinking'), None)
-tool_use_block = next((block for block in response.content
-                      if block.type == 'tool_use'), None)
+<details>
+<summary>Java 예시</summary>
 
-# 실제 날씨 API 호출, 실제 API 호출이 여기에 들어갑니다
-# 이것이 반환된다고 가정합시다
-weather_data = {"temperature": 88}
-
-# 두 번째 요청 - thinking 블록과 도구 결과 포함
-# 응답에 새 thinking 블록이 생성되지 않습니다
-continuation = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=16000,
-    thinking={
-        "type": "enabled",
-        "budget_tokens": 10000
-    },
-    tools=[weather_tool],
-    messages=[
-        {"role": "user", "content": "파리의 날씨는?"},
-        # thinking_block이 tool_use_block과 함께 전달되는 것에 주목하세요
-        # 이것이 전달되지 않으면 오류가 발생합니다
-        {"role": "assistant", "content": [thinking_block, tool_use_block]},
-        {"role": "user", "content": [{
-            "type": "tool_result",
-            "tool_use_id": tool_use_block.id,
-            "content": f"현재 온도: {weather_data['temperature']}°F"
-        }]}
-    ]
-)
-```
-
-```typescript TypeScript
-// thinking 블록과 tool use 블록 추출
-const thinkingBlock = response.content.find(block =>
-  block.type === 'thinking');
-const toolUseBlock = response.content.find(block =>
-  block.type === 'tool_use');
-
-// 실제 날씨 API 호출, 실제 API 호출이 여기에 들어갑니다
-// 이것이 반환된다고 가정합시다
-const weatherData = { temperature: 88 };
-
-// 두 번째 요청 - thinking 블록과 도구 결과 포함
-// 응답에 새 thinking 블록이 생성되지 않습니다
-const continuation = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 16000,
-  thinking: {
-    type: "enabled",
-    budget_tokens: 10000
-  },
-  tools: [weatherTool],
-  messages: [
-    { role: "user", content: "파리의 날씨는?" },
-    // thinkingBlock이 toolUseBlock과 함께 전달되는 것에 주목하세요
-    // 이것이 전달되지 않으면 오류가 발생합니다
-    { role: "assistant", content: [thinkingBlock, toolUseBlock] },
-    { role: "user", content: [{
-      type: "tool_result",
-      tool_use_id: toolUseBlock.id,
-      content: `현재 온도: ${weatherData.temperature}°F`
-    }]}
-  ]
-});
-```
-
-```java Java
+```java
 // thinking 블록과 tool use 블록 추출 코드는 위 Java 예제 참조
 
 if (thinkingBlockOpt.isPresent() && toolUseBlockOpt.isPresent()) {
@@ -709,7 +372,8 @@ if (thinkingBlockOpt.isPresent() && toolUseBlockOpt.isPresent()) {
     System.out.println(continuation);
 }
 ```
-</CodeGroup>
+
+</details>
 
 이제 API 응답에는 **text만** 포함됩니다
 

@@ -33,8 +33,10 @@ Files API는 파일 작업을 위한 간단한 한 번 생성, 여러 번 사용
 
 향후 API 호출에서 참조할 파일을 업로드합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl -X POST https://api.anthropic.com/v1/files \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -42,28 +44,7 @@ curl -X POST https://api.anthropic.com/v1/files \
   -F "file=@/path/to/document.pdf"
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-client.beta.files.upload(
-  file=("document.pdf", open("/path/to/document.pdf", "rb"), "application/pdf"),
-)
-```
-
-```typescript TypeScript
-import Anthropic, { toFile } from '@anthropic-ai/sdk';
-import fs from "fs";
-
-const anthropic = new Anthropic();
-
-await anthropic.beta.files.upload({
-  file: await toFile(fs.createReadStream('/path/to/document.pdf'), undefined, { type: 'application/pdf' })
-}, {
-  betas: ['files-api-2025-04-14']
-});
-```
-</CodeGroup>
+</details>
 
 파일 업로드 응답에는 다음이 포함됩니다:
 
@@ -83,8 +64,10 @@ await anthropic.beta.files.upload({
 
 업로드가 완료되면 `file_id`를 사용하여 파일을 참조합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl -X POST https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -114,69 +97,7 @@ curl -X POST https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": "Please summarize this document for me."
-                },
-                {
-                    "type": "document",
-                    "source": {
-                        "type": "file",
-                        "file_id": "file_011CNha8iCJcU1wXNR6q4V8w"
-                    }
-                }
-            ]
-        }
-    ],
-    betas=["files-api-2025-04-14"],
-)
-print(response)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const response = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: [
-        {
-          type: "text",
-          text: "Please summarize this document for me."
-        },
-        {
-          type: "document",
-          source: {
-            type: "file",
-            file_id: "file_011CNha8iCJcU1wXNR6q4V8w"
-          }
-        }
-      ]
-    }
-  ],
-  betas: ["files-api-2025-04-14"],
-});
-
-console.log(response);
-```
-</CodeGroup>
+</details>
 
 ### 파일 유형 및 콘텐츠 블록
 
@@ -193,8 +114,10 @@ Files API는 다양한 콘텐츠 블록 유형에 해당하는 여러 파일 유
 
 `document` 블록으로 지원되지 않는 파일 유형(.csv, .txt, .md, .docx, .xlsx)의 경우, 파일을 일반 텍스트로 변환하여 메시지에 직접 포함하세요:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 # 예시: 텍스트 파일을 읽고 일반 텍스트로 전송
 # 참고: 특수 문자가 있는 파일의 경우 base64 인코딩을 고려하세요
 TEXT_CONTENT=$(cat document.txt | jq -Rs .)
@@ -222,69 +145,7 @@ curl https://api.anthropic.com/v1/messages \
 EOF
 ```
 
-```python Python
-import pandas as pd
-import anthropic
-
-client = anthropic.Anthropic()
-
-# 예시: CSV 파일 읽기
-df = pd.read_csv('data.csv')
-csv_content = df.to_string()
-
-# 메시지에 일반 텍스트로 전송
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": f"Here's the CSV data:\n\n{csv_content}\n\nPlease analyze this data."
-                }
-            ]
-        }
-    ]
-)
-
-print(response.content[0].text)
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-import fs from 'fs';
-
-const anthropic = new Anthropic();
-
-async function analyzeDocument() {
-  // 예시: 텍스트 파일 읽기
-  const textContent = fs.readFileSync('document.txt', 'utf-8');
-
-  // 메시지에 일반 텍스트로 전송
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 1024,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: `Here's the document content:\n\n${textContent}\n\nPlease summarize this document.`
-          }
-        ]
-      }
-    ]
-  });
-
-  console.log(response.content[0].text);
-}
-
-analyzeDocument();
-```
-</CodeGroup>
+</details>
 
 
 > 이미지가 포함된 .docx 파일의 경우, 먼저 PDF 형식으로 변환한 다음 [PDF 지원](../02-capabilities/12-pdf-support.md)을 사용하여 내장된 이미지 파싱 기능을 활용하세요. 이를 통해 PDF 문서에서 인용을 사용할 수 있습니다.
@@ -327,97 +188,58 @@ PDF 및 텍스트 파일의 경우 `document` 콘텐츠 블록을 사용합니�
 
 업로드한 파일 목록을 조회합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/files \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: files-api-2025-04-14"
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-files = client.beta.files.list()
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-const files = await anthropic.beta.files.list({
-  betas: ['files-api-2025-04-14'],
-});
-```
-</CodeGroup>
+</details>
 
 #### 파일 메타데이터 가져오기
 
 특정 파일에 대한 정보를 조회합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/files/file_011CNha8iCJcU1wXNR6q4V8w \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: files-api-2025-04-14"
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-file = client.beta.files.retrieve_metadata("file_011CNha8iCJcU1wXNR6q4V8w")
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-const file = await anthropic.beta.files.retrieveMetadata(
-  "file_011CNha8iCJcU1wXNR6q4V8w",
-  { betas: ['files-api-2025-04-14'] },
-);
-```
-</CodeGroup>
+</details>
 
 #### 파일 삭제
 
 워크스페이스에서 파일을 제거합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl -X DELETE https://api.anthropic.com/v1/files/file_011CNha8iCJcU1wXNR6q4V8w \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: files-api-2025-04-14"
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-result = client.beta.files.delete("file_011CNha8iCJcU1wXNR6q4V8w")
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-const result = await anthropic.beta.files.delete(
-  "file_011CNha8iCJcU1wXNR6q4V8w",
-  { betas: ['files-api-2025-04-14'] },
-);
-```
-</CodeGroup>
+</details>
 
 ### 파일 다운로드
 
 스킬이나 코드 실행 도구로 생성된 파일을 다운로드합니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl -X GET "https://api.anthropic.com/v1/files/file_011CNha8iCJcU1wXNR6q4V8w/content" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
@@ -425,32 +247,7 @@ curl -X GET "https://api.anthropic.com/v1/files/file_011CNha8iCJcU1wXNR6q4V8w/co
   --output downloaded_file.txt
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-file_content = client.beta.files.download("file_011CNha8iCJcU1wXNR6q4V8w")
-
-# 파일로 저장
-with open("downloaded_file.txt", "w") as f:
-    f.write(file_content.decode('utf-8'))
-```
-
-```typescript TypeScript
-import { Anthropic } from '@anthropic-ai/sdk';
-import fs from 'fs';
-
-const anthropic = new Anthropic();
-
-const fileContent = await anthropic.beta.files.download(
-  "file_011CNha8iCJcU1wXNR6q4V8w",
-  { betas: ['files-api-2025-04-14'] },
-);
-
-// 파일로 저장
-fs.writeFileSync("downloaded_file.txt", fileContent);
-```
-</CodeGroup>
+</details>
 
 
 > [스킬](../04-agent-skills/05-using-skills-with-api.md) 또는 [코드 실행 도구](../03-tools/05-code-execution-tool.md)로 생성된 파일만 다운로드할 수 있습니다. 업로드한 파일은 다운로드할 수 없습니다.

@@ -102,41 +102,10 @@ Python 및 TypeScript SDK는 API 키와 리소스 이름 또는 base URL이 필�
 
 **API 키 사용 예시:**
 
-<CodeGroup>
-```python Python
-import os
-from anthropic import AnthropicFoundry
+<details>
+<summary>REST API 예시</summary>
 
-client = AnthropicFoundry(
-    api_key=os.environ.get("ANTHROPIC_FOUNDRY_API_KEY"),
-    resource='example-resource', # your resource name
-)
-
-message = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[{"role": "user", "content": "Hello!"}]
-)
-print(message.content)
-```
-
-```typescript TypeScript
-import AnthropicFoundry from "@anthropic-ai/foundry-sdk";
-
-const client = new AnthropicFoundry({
-  apiKey: process.env.ANTHROPIC_FOUNDRY_API_KEY,
-  resource: 'example-resource', // your resource name
-});
-
-const message = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [{ role: "user", content: "Hello!" }],
-});
-console.log(message.content);
-```
-
-```bash Shell
+```bash
 curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
   -H "content-type: application/json" \
   -H "api-key: YOUR_AZURE_API_KEY" \
@@ -149,7 +118,8 @@ curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
     ]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 
 > API 키를 안전하게 보관하세요. 버전 관리 시스템에 커밋하거나 공개적으로 공유하지 마세요. API 키에 액세스할 수 있는 사람은 누구나 Foundry 리소스를 통해 Claude에 요청할 수 있습니다.
@@ -165,63 +135,10 @@ curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
 
 **Entra ID 사용 예시:**
 
-<CodeGroup>
-```python Python
-import os
-from anthropic import AnthropicFoundry
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+<details>
+<summary>REST API 예시</summary>
 
-# Get Azure Entra ID token using token provider pattern
-token_provider = get_bearer_token_provider(
-    DefaultAzureCredential(),
-    "https://cognitiveservices.azure.com/.default"
-)
-
-# Create client with Entra ID authentication
-client = AnthropicFoundry(
-    resource='example-resource', # your resource name
-    azure_ad_token_provider=token_provider  # Use token provider for Entra ID auth
-)
-
-# Make request
-message = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[{"role": "user", "content": "Hello!"}]
-)
-print(message.content)
-```
-
-```typescript TypeScript
-import AnthropicFoundry from "@anthropic-ai/foundry-sdk";
-import {
-  DefaultAzureCredential,
-  getBearerTokenProvider,
-} from "@azure/identity";
-
-// Get Entra ID token using token provider pattern
-const credential = new DefaultAzureCredential();
-const tokenProvider = getBearerTokenProvider(
-  credential,
-  "https://cognitiveservices.azure.com/.default"
-);
-
-// Create client with Entra ID authentication
-const client = new AnthropicFoundry({
-  resource: 'example-resource', // your resource name
-  azureADTokenProvider: tokenProvider, // Use token provider for Entra ID auth
-});
-
-// Make request
-const message = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [{ role: "user", content: "Hello!" }],
-});
-console.log(message.content);
-```
-
-```bash Shell
+```bash
 # Get Azure Entra ID token
 ACCESS_TOKEN=$(az account get-access-token --resource https://cognitiveservices.azure.com --query accessToken -o tsv)
 
@@ -238,7 +155,8 @@ curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
     ]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 
 > Azure Entra ID 인증을 사용하면 Azure RBAC를 사용하여 액세스를 관리하고, 조직의 ID 관리와 통합하며, API 키를 수동으로 관리하는 것을 피할 수 있습니다.

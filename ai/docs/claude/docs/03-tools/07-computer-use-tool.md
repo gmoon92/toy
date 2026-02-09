@@ -75,39 +75,10 @@ Claude는 컴퓨터 사용 도구를 통해 컴퓨터 환경과 상호작용할 
 
 컴퓨터 사용을 시작하는 방법은 다음과 같습니다:
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",  # 또는 다른 호환 모델
-    max_tokens=1024,
-    tools=[
-        {
-          "type": "computer_20250124",
-          "name": "computer",
-          "display_width_px": 1024,
-          "display_height_px": 768,
-          "display_number": 1,
-        },
-        {
-          "type": "text_editor_20250728",
-          "name": "str_replace_based_edit_tool"
-        },
-        {
-          "type": "bash_20250124",
-          "name": "bash"
-        }
-    ],
-    messages=[{"role": "user", "content": "고양이 사진을 내 바탕화면에 저장해줘."}],
-    betas=["computer-use-2025-01-24"]
-)
-print(response)
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -141,7 +112,8 @@ curl https://api.anthropic.com/v1/messages \
     ]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 
 > 베타 헤더는 컴퓨터 사용 도구에만 필요합니다.
@@ -489,9 +461,11 @@ thinking이 활성화되면 Claude는 응답의 일부로 추론 프로세스를
 - 구성 파일 또는 스크립트 편집 ([텍스트 에디터 도구](../03-tools/08-text-editor-tool.md))
 - 사용자 정의 API 또는 서비스와 통합 (사용자 정의 도구)
 
-<CodeGroup>
-  ```bash Shell
-  curl https://api.anthropic.com/v1/messages \
+<details>
+<summary>REST API 예시</summary>
+
+```bash
+curl https://api.anthropic.com/v1/messages \
     -H "content-type: application/json" \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
@@ -546,178 +520,9 @@ thinking이 활성화되면 Claude는 응답의 일부로 추론 프로세스를
         "budget_tokens": 1024
       }
     }'
-  ```
-
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-          "type": "computer_20250124",
-          "name": "computer",
-          "display_width_px": 1024,
-          "display_height_px": 768,
-          "display_number": 1,
-        },
-        {
-          "type": "text_editor_20250728",
-          "name": "str_replace_based_edit_tool"
-        },
-        {
-          "type": "bash_20250124",
-          "name": "bash"
-        },
-        {
-          "name": "get_weather",
-          "description": "주어진 위치의 현재 날씨를 가져옵니다",
-          "input_schema": {
-            "type": "object",
-            "properties": {
-              "location": {
-                "type": "string",
-                "description": "도시와 주, 예: 샌프란시스코, CA"
-              },
-              "unit": {
-                "type": "string",
-                "enum": ["celsius", "fahrenheit"],
-                "description": "온도 단위, 'celsius' 또는 'fahrenheit'"
-              }
-            },
-            "required": ["location"]
-          }
-        },
-    ],
-    messages=[{"role": "user", "content": "샌프란시스코에서 더 따뜻한 날씨가 있는 곳으로 가는 항공편을 찾아줘."}],
-    betas=["computer-use-2025-01-24"],
-    thinking={"type": "enabled", "budget_tokens": 1024},
-)
-print(response)
 ```
 
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
-
-const message = await anthropic.beta.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  tools: [
-      {
-        type: "computer_20250124",
-        name: "computer",
-        display_width_px: 1024,
-        display_height_px: 768,
-        display_number: 1,
-      },
-      {
-        type: "text_editor_20250728",
-        name: "str_replace_based_edit_tool"
-      },
-      {
-        type: "bash_20250124",
-        name: "bash"
-      },
-      {
-        name: "get_weather",
-        description: "주어진 위치의 현재 날씨를 가져옵니다",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: {
-              type: "string",
-              description: "도시와 주, 예: 샌프란시스코, CA"
-            },
-            unit: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"],
-              description: "온도 단위, 'celsius' 또는 'fahrenheit'"
-            }
-          },
-          required: ["location"]
-        }
-      },
-  ],
-  messages: [{ role: "user", content: "샌프란시스코에서 더 따뜻한 날씨가 있는 곳으로 가는 항공편을 찾아줘." }],
-  betas: ["computer-use-2025-01-24"],
-  thinking: { type: "enabled", budget_tokens: 1024 },
-});
-console.log(message);
-```
-```java Java
-import java.util.List;
-import java.util.Map;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.core.JsonValue;
-import com.anthropic.models.beta.messages.BetaMessage;
-import com.anthropic.models.beta.messages.MessageCreateParams;
-import com.anthropic.models.beta.messages.BetaToolBash20250124;
-import com.anthropic.models.beta.messages.BetaToolComputerUse20250124;
-import com.anthropic.models.beta.messages.BetaToolTextEditor20250124;
-import com.anthropic.models.beta.messages.BetaThinkingConfigEnabled;
-import com.anthropic.models.beta.messages.BetaThinkingConfigParam;
-import com.anthropic.models.beta.messages.BetaTool;
-
-public class MultipleToolsExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model("claude-sonnet-4-5")
-                .maxTokens(1024)
-                .addTool(BetaToolComputerUse20250124.builder()
-                        .displayWidthPx(1024)
-                        .displayHeightPx(768)
-                        .displayNumber(1)
-                        .build())
-                .addTool(BetaToolTextEditor20250124.builder()
-                        .build())
-                .addTool(BetaToolBash20250124.builder()
-                        .build())
-                .addTool(BetaTool.builder()
-                        .name("get_weather")
-                        .description("주어진 위치의 현재 날씨를 가져옵니다")
-                        .inputSchema(BetaTool.InputSchema.builder()
-                                .properties(
-                                        JsonValue.from(
-                                                Map.of(
-                                                        "location", Map.of(
-                                                                "type", "string",
-                                                                "description", "도시와 주, 예: 샌프란시스코, CA"
-                                                        ),
-                                                        "unit", Map.of(
-                                                                "type", "string",
-                                                                "enum", List.of("celsius", "fahrenheit"),
-                                                                "description", "온도 단위, 'celsius' 또는 'fahrenheit'"
-                                                        )
-                                                )
-                                        ))
-                                .build()
-                        )
-                        .build())
-                .thinking(BetaThinkingConfigParam.ofEnabled(
-                        BetaThinkingConfigEnabled.builder()
-                                .budgetTokens(1024)
-                                .build()
-                ))
-                .addUserMessage("샌프란시스코에서 더 따뜻한 날씨가 있는 곳으로 가는 항공편을 찾아줘.")
-                .addBeta("computer-use-2025-01-24")
-                .build();
-
-        BetaMessage message = client.beta().messages().create(params);
-        System.out.println(message);
-    }
-}
-```
-</CodeGroup>
+</details>
 
 ### 사용자 정의 컴퓨터 사용 환경 구축
 
@@ -857,8 +662,10 @@ API는 이미지를 가장 긴 가장자리에서 최대 1568픽셀 및 약 1.15
 
 이를 수정하려면 스크린샷 크기를 직접 조정하고 Claude의 좌표를 다시 확대하세요:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import math
 
 def get_scale_factor(width, height):
@@ -886,36 +693,7 @@ def execute_click(x, y):
     perform_click(screen_x, screen_y)
 ```
 
-```typescript TypeScript
-const MAX_LONG_EDGE = 1568;
-const MAX_PIXELS = 1_150_000;
-
-function getScaleFactor(width: number, height: number): number {
-  const longEdge = Math.max(width, height);
-  const totalPixels = width * height;
-
-  const longEdgeScale = MAX_LONG_EDGE / longEdge;
-  const totalPixelsScale = Math.sqrt(MAX_PIXELS / totalPixels);
-
-  return Math.min(1.0, longEdgeScale, totalPixelsScale);
-}
-
-// 스크린샷을 캡처할 때
-const scale = getScaleFactor(screenWidth, screenHeight);
-const scaledWidth = Math.floor(screenWidth * scale);
-const scaledHeight = Math.floor(screenHeight * scale);
-
-// Claude에 보내기 전에 이미지 크기를 조정된 크기로 조정
-const screenshot = captureAndResize(scaledWidth, scaledHeight);
-
-// Claude의 좌표를 처리할 때 다시 확대
-function executeClick(x: number, y: number): void {
-  const screenX = x / scale;
-  const screenY = y / scale;
-  performClick(screenX, screenY);
-}
-```
-</CodeGroup>
+</details>
 
 #### 구현 모범 사례 따르기
 

@@ -124,8 +124,10 @@ def get_user_name(user):
 
 Python SDK를 사용하는 경우 `agent.py`를, TypeScript를 사용하는 경우 `agent.ts`를 생성합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import asyncio
 from claude_agent_sdk import query, ClaudeAgentOptions, AssistantMessage, ResultMessage
 
@@ -151,32 +153,7 @@ async def main():
 asyncio.run(main())
 ```
 
-```typescript TypeScript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-// 에이전트 루프: Claude가 작업하는 동안 메시지를 스트리밍합니다
-for await (const message of query({
-  prompt: "utils.py에서 크래시를 일으킬 수 있는 버그를 검토하세요. 발견한 문제를 수정하세요.",
-  options: {
-    allowedTools: ["Read", "Edit", "Glob"],  // Claude가 사용할 수 있는 도구
-    permissionMode: "acceptEdits"            // 파일 편집 자동 승인
-  }
-})) {
-  // 사람이 읽을 수 있는 출력 출력
-  if (message.type === "assistant" && message.message?.content) {
-    for (const block of message.message.content) {
-      if ("text" in block) {
-        console.log(block.text);             // Claude의 추론
-      } else if ("name" in block) {
-        console.log(`Tool: ${block.name}`);  // 호출되는 도구
-      }
-    }
-  } else if (message.type === "result") {
-    console.log(`Done: ${message.subtype}`); // 최종 결과
-  }
-}
-```
-</CodeGroup>
+</details>
 
 이 코드는 세 가지 주요 부분으로 구성됩니다:
 
@@ -237,26 +214,24 @@ for await (const message of query({
 
 **웹 검색 기능 추가:**
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 options=ClaudeAgentOptions(
     allowed_tools=["Read", "Edit", "Glob", "WebSearch"],
     permission_mode="acceptEdits"
 )
 ```
 
-```typescript TypeScript
-options: {
-  allowedTools: ["Read", "Edit", "Glob", "WebSearch"],
-  permissionMode: "acceptEdits"
-}
-```
-</CodeGroup>
+</details>
 
 **Claude에게 커스텀 시스템 프롬프트 제공:**
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 options=ClaudeAgentOptions(
     allowed_tools=["Read", "Edit", "Glob"],
     permission_mode="acceptEdits",
@@ -264,32 +239,21 @@ options=ClaudeAgentOptions(
 )
 ```
 
-```typescript TypeScript
-options: {
-  allowedTools: ["Read", "Edit", "Glob"],
-  permissionMode: "acceptEdits",
-  systemPrompt: "당신은 시니어 Python 개발자입니다. 항상 PEP 8 스타일 가이드라인을 따르세요."
-}
-```
-</CodeGroup>
+</details>
 
 **터미널에서 명령 실행:**
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 options=ClaudeAgentOptions(
     allowed_tools=["Read", "Edit", "Glob", "Bash"],
     permission_mode="acceptEdits"
 )
 ```
 
-```typescript TypeScript
-options: {
-  allowedTools: ["Read", "Edit", "Glob", "Bash"],
-  permissionMode: "acceptEdits"
-}
-```
-</CodeGroup>
+</details>
 
 `Bash`가 활성화된 상태에서 시도해보세요: `"utils.py에 대한 단위 테스트를 작성하고 실행한 후 모든 실패를 수정하세요"`
 

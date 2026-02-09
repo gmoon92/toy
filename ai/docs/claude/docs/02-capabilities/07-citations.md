@@ -20,9 +20,10 @@ Haiku 3를 제외한 모든 [활성 모델](https://platform.claude.com/docs/en/
 
 다음은 Messages API에서 인용을 사용하는 예시입니다:
 
-<CodeGroup>
+<details>
+<summary>REST API 예시</summary>
 
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -55,80 +56,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "document",
-                    "source": {
-                        "type": "text",
-                        "media_type": "text/plain",
-                        "data": "The grass is green. The sky is blue."
-                    },
-                    "title": "My Document",
-                    "context": "This is a trustworthy document.",
-                    "citations": {"enabled": True}
-                },
-                {
-                    "type": "text",
-                    "text": "What color is the grass and sky?"
-                }
-            ]
-        }
-    ]
-)
-print(response)
-```
-
-```java Java
-import java.util.List;
-
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.models.messages.*;
-
-public class DocumentExample {
-
-    public static void main(String[] args) {
-        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-        PlainTextSource source = PlainTextSource.builder()
-                .data("The grass is green. The sky is blue.")
-                .build();
-
-        DocumentBlockParam documentParam = DocumentBlockParam.builder()
-                .source(source)
-                .title("My Document")
-                .context("This is a trustworthy document.")
-                .citations(CitationsConfigParam.builder().enabled(true).build())
-                .build();
-
-        TextBlockParam textBlockParam = TextBlockParam.builder()
-                .text("What color is the grass and sky?")
-                .build();
-
-        MessageCreateParams params = MessageCreateParams.builder()
-                .model(Model.CLAUDE_SONNET_4_20250514)
-                .maxTokens(1024)
-                .addUserMessageOfBlockParams(List.of(ContentBlockParam.ofDocument(documentParam), ContentBlockParam.ofText(textBlockParam)))
-                .build();
-
-        Message message = client.messages().create(params);
-        System.out.println(message);
-    }
-}
-```
-
-</CodeGroup>
+</details>
 
 
 > **프롬프트 기반 접근 방식과의 비교**
@@ -209,78 +137,10 @@ public class DocumentExample {
 
 응답에서 생성된 인용 블록은 직접 캐시할 수 없지만, 참조하는 원본 문서는 캐시할 수 있습니다. 성능을 최적화하려면 최상위 문서 콘텐츠 블록에 `cache_control`을 적용하세요.
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-# 긴 문서 콘텐츠 (예: 기술 문서)
-long_document = "This is a very long document with thousands of words..." + " ... " * 1000  # 캐시 가능한 최소 길이
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "document",
-                    "source": {
-                        "type": "text",
-                        "media_type": "text/plain",
-                        "data": long_document
-                    },
-                    "citations": {"enabled": True},
-                    "cache_control": {"type": "ephemeral"}  # 문서 콘텐츠 캐시
-                },
-                {
-                    "type": "text",
-                    "text": "What does this document say about API features?"
-                }
-            ]
-        }
-    ]
-)
-```
-
-```typescript TypeScript
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic();
-
-// 긴 문서 콘텐츠 (예: 기술 문서)
-const longDocument = "This is a very long document with thousands of words..." + " ... ".repeat(1000);  // 캐시 가능한 최소 길이
-
-const response = await client.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 1024,
-  messages: [
-    {
-      role: "user",
-      content: [
-        {
-          type: "document",
-          source: {
-            type: "text",
-            media_type: "text/plain",
-            data: longDocument
-          },
-          citations: { enabled: true },
-          cache_control: { type: "ephemeral" }  // 문서 콘텐츠 캐시
-        },
-        {
-          type: "text",
-          text: "What does this document say about API features?"
-        }
-      ]
-    }
-  ]
-});
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
      --header "x-api-key: $ANTHROPIC_API_KEY" \
      --header "anthropic-version: 2023-06-01" \
@@ -311,7 +171,8 @@ curl https://api.anthropic.com/v1/messages \
     ]
 }'
 ```
-</CodeGroup>
+
+</details>
 
 이 예시에서:
 - 문서 콘텐츠는 문서 블록에 `cache_control`을 사용하여 캐시됩니다

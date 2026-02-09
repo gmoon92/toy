@@ -53,8 +53,10 @@ Tool search tool을 활성화하면:
 
 다음은 지연된 도구를 사용하는 간단한 예제입니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
     --header "x-api-key: $ANTHROPIC_API_KEY" \
     --header "anthropic-version: 2023-06-01" \
@@ -110,127 +112,7 @@ curl https://api.anthropic.com/v1/messages \
     }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    betas=["advanced-tool-use-2025-11-20"],
-    max_tokens=2048,
-    messages=[
-        {
-            "role": "user",
-            "content": "What is the weather in San Francisco?"
-        }
-    ],
-    tools=[
-        {
-            "type": "tool_search_tool_regex_20251119",
-            "name": "tool_search_tool_regex"
-        },
-        {
-            "name": "get_weather",
-            "description": "Get the weather at a specific location",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "location": {"type": "string"},
-                    "unit": {
-                        "type": "string",
-                        "enum": ["celsius", "fahrenheit"]
-                    }
-                },
-                "required": ["location"]
-            },
-            "defer_loading": True
-        },
-        {
-            "name": "search_files",
-            "description": "Search through files in the workspace",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "query": {"type": "string"},
-                    "file_types": {
-                        "type": "array",
-                        "items": {"type": "string"}
-                    }
-                },
-                "required": ["query"]
-            },
-            "defer_loading": True
-        }
-    ]
-)
-
-print(response)
-```
-
-```typescript TypeScript
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic();
-
-async function main() {
-  const response = await client.beta.messages.create({
-    model: "claude-sonnet-4-5-20250929",
-    betas: ["advanced-tool-use-2025-11-20"],
-    max_tokens: 2048,
-    messages: [
-      {
-        role: "user",
-        content: "What is the weather in San Francisco?",
-      },
-    ],
-    tools: [
-      {
-        type: "tool_search_tool_regex_20251119",
-        name: "tool_search_tool_regex",
-      },
-      {
-        name: "get_weather",
-        description: "Get the weather at a specific location",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: { type: "string" },
-            unit: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"],
-            },
-          },
-          required: ["location"],
-        },
-        defer_loading: true,
-      },
-      {
-        name: "search_files",
-        description: "Search through files in the workspace",
-        input_schema: {
-          type: "object",
-          properties: {
-            query: { type: "string" },
-            file_types: {
-              type: "array",
-              items: { type: "string" },
-            },
-          },
-          required: ["query"],
-        },
-        defer_loading: true,
-      },
-    ],
-  });
-
-  console.log(JSON.stringify(response, null, 2));
-}
-
-main();
-```
-
-</CodeGroup>
+</details>
 
 ## 도구 정의
 
@@ -354,8 +236,10 @@ Claude가 tool search tool을 사용하면 응답에 새로운 블록 타입이 
 
 Tool search tool은 [MCP 서버](./06-mcp-in-api-01-mcp-connector.md)와 함께 작동합니다. API 요청에 `"mcp-client-2025-11-20"` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 추가한 다음, `default_config`와 함께 `mcp_toolset`을 사용하여 MCP 도구 로딩을 지연시킵니다:
 
-<CodeGroup>
-```bash Shell
+<details>
+<summary>REST API 예시</summary>
+
+```bash
 curl https://api.anthropic.com/v1/messages \
   --header "x-api-key: $ANTHROPIC_API_KEY" \
   --header "anthropic-version: 2023-06-01" \
@@ -398,101 +282,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
-```python Python
-import anthropic
-
-client = anthropic.Anthropic()
-
-response = client.beta.messages.create(
-    model="claude-sonnet-4-5-20250929",
-    betas=["advanced-tool-use-2025-11-20", "mcp-client-2025-11-20"],
-    max_tokens=2048,
-    mcp_servers=[
-        {
-            "type": "url",
-            "name": "database-server",
-            "url": "https://mcp-db.example.com"
-        }
-    ],
-    tools=[
-        {
-            "type": "tool_search_tool_regex_20251119",
-            "name": "tool_search_tool_regex"
-        },
-        {
-            "type": "mcp_toolset",
-            "mcp_server_name": "database-server",
-            "default_config": {
-                "defer_loading": True
-            },
-            "configs": {
-                "search_events": {
-                    "defer_loading": False
-                }
-            }
-        }
-    ],
-    messages=[
-        {
-            "role": "user",
-            "content": "What events are in my database?"
-        }
-    ]
-)
-
-print(response)
-```
-
-```typescript TypeScript
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic();
-
-async function main() {
-  const response = await client.beta.messages.create({
-    model: "claude-sonnet-4-5-20250929",
-    betas: ["advanced-tool-use-2025-11-20", "mcp-client-2025-11-20"],
-    max_tokens: 2048,
-    mcp_servers: [
-      {
-        type: "url",
-        name: "database-server",
-        url: "https://mcp-db.example.com",
-      },
-    ],
-    tools: [
-      {
-        type: "tool_search_tool_regex_20251119",
-        name: "tool_search_tool_regex",
-      },
-      {
-        type: "mcp_toolset",
-        mcp_server_name: "database-server",
-        default_config: {
-          defer_loading: true,
-        },
-        configs: {
-          search_events: {
-            defer_loading: false,
-          },
-        },
-      },
-    ],
-    messages: [
-      {
-        role: "user",
-        content: "What events are in my database?",
-      },
-    ],
-  });
-
-  console.log(JSON.stringify(response, null, 2));
-}
-
-main();
-```
-
-</CodeGroup>
+</details>
 
 **MCP 구성 옵션:**
 
@@ -634,8 +424,10 @@ main();
 
 Tool search는 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)과 함께 작동합니다. 여러 턴 대화를 최적화하기 위해 `cache_control` 중단점을 추가합니다:
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -713,7 +505,8 @@ response2 = client.beta.messages.create(
 
 print(f"Cache read tokens: {response2.usage.get('cache_read_input_tokens', 0)}")
 ```
-</CodeGroup>
+
+</details>
 
 시스템은 전체 대화 기록에 걸쳐 tool_reference 블록을 자동으로 확장하므로 Claude는 다시 검색하지 않고도 이후 턴에서 발견된 도구를 재사용할 수 있습니다.
 

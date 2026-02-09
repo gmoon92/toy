@@ -31,28 +31,10 @@ bash 도구는 Claude에게 다음을 제공합니다:
 
 ## 빠른 시작
 
-<CodeGroup>
-```python Python
-import anthropic
+<details>
+<summary>REST API 예시</summary>
 
-client = anthropic.Anthropic()
-
-response = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    tools=[
-        {
-            "type": "bash_20250124",
-            "name": "bash"
-        }
-    ],
-    messages=[
-        {"role": "user", "content": "List all Python files in the current directory."}
-    ]
-)
-```
-
-```bash Shell
+```bash
 curl https://api.anthropic.com/v1/messages \
   -H "content-type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -74,7 +56,8 @@ curl https://api.anthropic.com/v1/messages \
     ]
   }'
 ```
-</CodeGroup>
+
+</details>
 
 ## 작동 방식
 

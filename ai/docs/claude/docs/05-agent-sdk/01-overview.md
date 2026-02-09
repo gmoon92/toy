@@ -10,8 +10,10 @@ Claude Code를 라이브러리로 사용하여 프로덕션 AI 에이전트 구�
 
 파일 읽기, 명령 실행, 웹 검색, 코드 편집 등을 자율적으로 수행하는 AI 에이전트를 구축하세요. Agent SDK는 Claude Code를 구동하는 동일한 도구, 에이전트 루프, 컨텍스트 관리 기능을 Python과 TypeScript로 프로그래밍 가능하게 제공합니다.
 
-<CodeGroup>
-```python Python
+<details>
+<summary>Python 예시</summary>
+
+```python
 import asyncio
 from claude_agent_sdk import query, ClaudeAgentOptions
 
@@ -25,17 +27,7 @@ async def main():
 asyncio.run(main())
 ```
 
-```typescript TypeScript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-for await (const message of query({
-  prompt: "auth.py에서 버그를 찾아서 수정해줘",
-  options: { allowedTools: ["Read", "Edit", "Bash"] }
-})) {
-  console.log(message);  // Claude가 파일을 읽고, 버그를 찾고, 편집합니다
-}
-```
-</CodeGroup>
+</details>
 
 Agent SDK는 파일 읽기, 명령 실행, 코드 편집을 위한 내장 도구를 포함하고 있어, 도구 실행을 직접 구현하지 않아도 에이전트가 즉시 작업을 시작할 수 있습니다. 퀵스타트를 시작하거나 SDK로 구축된 실제 에이전트를 살펴보세요:
 
@@ -70,9 +62,11 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     다음 예제는 코드베이스에서 TODO 주석을 검색하는 에이전트를 생성합니다:
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions
 
     async def main():
@@ -84,19 +78,9 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    for await (const message of query({
-      prompt: "모든 TODO 주석을 찾아서 요약본을 만들어줘",
-      options: { allowedTools: ["Read", "Glob", "Grep"] }
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
 
   </Tab>
   <Tab title="훅">
@@ -106,9 +90,11 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     다음 예제는 모든 파일 변경 사항을 감사 파일에 로깅합니다:
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from datetime import datetime
     from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher
 
@@ -132,31 +118,9 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query, HookCallback } from "@anthropic-ai/claude-agent-sdk";
-    import { appendFileSync } from "fs";
-
-    const logFileChange: HookCallback = async (input) => {
-      const filePath = (input as any).tool_input?.file_path ?? "unknown";
-      appendFileSync("./audit.log", `${new Date().toISOString()}: modified ${filePath}\n`);
-      return {};
-    };
-
-    for await (const message of query({
-      prompt: "utils.py를 리팩터링해서 가독성을 향상시켜줘",
-      options: {
-        permissionMode: "acceptEdits",
-        hooks: {
-          PostToolUse: [{ matcher: "Edit|Write", hooks: [logFileChange] }]
-        }
-      }
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
 
     [훅에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/hooks)
   </Tab>
@@ -165,9 +129,11 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     전문화된 지시사항으로 커스텀 에이전트를 정의하세요. 서브에이전트는 Task 도구를 통해 호출되므로 `allowedTools`에 `Task`를 포함해야 합니다:
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions, AgentDefinition
 
     async def main():
@@ -188,28 +154,9 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    for await (const message of query({
-      prompt: "code-reviewer 에이전트를 사용해서 이 코드베이스를 검토해줘",
-      options: {
-        allowedTools: ["Read", "Glob", "Grep", "Task"],
-        agents: {
-          "code-reviewer": {
-            description: "품질 및 보안 검토를 위한 전문 코드 리뷰어.",
-            prompt: "코드 품질을 분석하고 개선 사항을 제안해줘.",
-            tools: ["Read", "Glob", "Grep"]
-          }
-        }
-      }
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
 
     서브에이전트의 컨텍스트 내에서 발생한 메시지에는 `parent_tool_use_id` 필드가 포함되어 있어, 어떤 메시지가 어떤 서브에이전트 실행에 속하는지 추적할 수 있습니다.
 
@@ -220,9 +167,11 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     다음 예제는 [Playwright MCP 서버](https://github.com/microsoft/playwright-mcp)를 연결하여 에이전트에 브라우저 자동화 기능을 제공합니다:
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions
 
     async def main():
@@ -238,23 +187,9 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    for await (const message of query({
-      prompt: "example.com을 열고 무엇이 보이는지 설명해줘",
-      options: {
-        mcpServers: {
-          playwright: { command: "npx", args: ["@playwright/mcp@latest"] }
-        }
-      }
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
 
     [MCP에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/mcp)
   </Tab>
@@ -267,9 +202,11 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     다음 예제는 코드를 분석할 수 있지만 수정할 수 없는 읽기 전용 에이전트를 생성합니다:
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions
 
     async def main():
@@ -284,22 +221,9 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    for await (const message of query({
-      prompt: "이 코드를 베스트 프랙티스 관점에서 검토해줘",
-      options: {
-        allowedTools: ["Read", "Glob", "Grep"],
-        permissionMode: "bypassPermissions"
-      }
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
 
     [권한에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/permissions)
   </Tab>
@@ -308,9 +232,11 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
 
     다음 예제는 첫 번째 쿼리에서 세션 ID를 캡처한 다음, 전체 컨텍스트와 함께 재개합니다:
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions
 
     async def main():
@@ -333,32 +259,9 @@ Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    let sessionId: string | undefined;
-
-    // 첫 번째 쿼리: 세션 ID 캡처
-    for await (const message of query({
-      prompt: "인증 모듈을 읽어줘",
-      options: { allowedTools: ["Read", "Glob"] }
-    })) {
-      if (message.type === "system" && message.subtype === "init") {
-        sessionId = message.session_id;
-      }
-    }
-
-    // 첫 번째 쿼리의 전체 컨텍스트와 함께 재개
-    for await (const message of query({
-      prompt: "이제 이걸 호출하는 모든 위치를 찾아줘",  // "이걸" = 인증 모듈
-      options: { resume: sessionId }
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
 
     [세션에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/sessions)
   </Tab>
@@ -434,9 +337,11 @@ SDK는 Claude Code의 파일 시스템 기반 구성도 지원합니다. 이러�
   <Step title="첫 번째 에이전트 실행">
     다음 예제는 내장 도구를 사용하여 현재 디렉터리의 파일 목록을 나열하는 에이전트를 생성합니다.
 
-    <CodeGroup>
-    ```python Python
-    import asyncio
+    <details>
+<summary>Python 예시</summary>
+
+```python
+import asyncio
     from claude_agent_sdk import query, ClaudeAgentOptions
 
     async def main():
@@ -448,19 +353,9 @@ SDK는 Claude Code의 파일 시스템 기반 구성도 지원합니다. 이러�
                 print(message.result)
 
     asyncio.run(main())
-    ```
+```
 
-    ```typescript TypeScript
-    import { query } from "@anthropic-ai/claude-agent-sdk";
-
-    for await (const message of query({
-      prompt: "이 디렉터리에 어떤 파일들이 있어?",
-      options: { allowedTools: ["Bash", "Glob"] },
-    })) {
-      if ("result" in message) console.log(message.result);
-    }
-    ```
-    </CodeGroup>
+</details>
   </Step>
 </Steps>
 
@@ -476,9 +371,11 @@ Claude 플랫폼은 Claude로 빌드하는 여러 방법을 제공합니다. Age
 
     Client SDK로는 도구 루프를 구현해야 합니다. Agent SDK로는 Claude가 처리합니다:
 
-    <CodeGroup>
-    ```python Python
-    # Client SDK: 도구 루프를 직접 구현
+    <details>
+<summary>Python 예시</summary>
+
+```python
+# Client SDK: 도구 루프를 직접 구현
     response = client.messages.create(...)
     while response.stop_reason == "tool_use":
         result = your_tool_executor(response.tool_use)
@@ -487,22 +384,9 @@ Claude 플랫폼은 Claude로 빌드하는 여러 방법을 제공합니다. Age
     # Agent SDK: Claude가 자율적으로 도구를 처리
     async for message in query(prompt="auth.py의 버그를 수정해줘"):
         print(message)
-    ```
+```
 
-    ```typescript TypeScript
-    // Client SDK: 도구 루프를 직접 구현
-    let response = await client.messages.create({...});
-    while (response.stop_reason === "tool_use") {
-      const result = yourToolExecutor(response.tool_use);
-      response = await client.messages.create({ tool_result: result, ... });
-    }
-
-    // Agent SDK: Claude가 자율적으로 도구를 처리
-    for await (const message of query({ prompt: "auth.py의 버그를 수정해줘" })) {
-      console.log(message);
-    }
-    ```
-    </CodeGroup>
+</details>
   </Tab>
   <Tab title="Agent SDK vs Claude Code CLI">
     동일한 기능, 다른 인터페이스:
