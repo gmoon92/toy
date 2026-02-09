@@ -14,64 +14,49 @@ Step 2 of 3-stage message creation: User selects body items (multi-select) with 
 - Git log가 자동으로 보여주는 것: 파일 리스트, 변경 라인 수
 - Body가 제공해야 하는 것: 작업 내용, 목적, 맥락
 
-## Body Item Generation Algorithm
+## Body Item Generation (Script-Based)
 
-**기능/작업 중심 생성 (Feature-based, 권장):**
+**MANDATORY: Use executable script for body item generation**
 
-```javascript
-function generateBodyItems(files, diff) {
-  // 1. Analyze changes and group by feature/purpose
-  const features = analyzeFeatures(files, diff);
+```bash
+EXECUTE_SCRIPT: scripts/generation/generate_body_items.js
+```
 
-  // 2. Generate feature-based items
-  const items = features.map(feature => ({
-    label: feature.description,        // 작업 내용 (파일명 X)
-    description: feature.details,      // 상세 설명
-    score: calculateScore(feature),    // 중요도 점수 (0-100)
-    relatedFiles: feature.files        // 참고용 (선택 사항)
-  }));
-
-  // 3. Sort by score (high to low)
-  return items.sort((a, b) => b.score - a.score);
+**Input (JSON via stdin):**
+```json
+{
+  "files": [{"path": "...", "additions": N, "deletions": N}],
+  "diff": "git diff output",
+  "type": "feat|fix|refactor|..."
 }
 ```
 
-**Score 계산 알고리즘:**
-
-```javascript
-function calculateScore(feature) {
-  let score = 0;
-
-  // 변경 라인 수 (40점)
-  const totalLines = feature.files.reduce((sum, f) =>
-    sum + f.additions + f.deletions, 0);
-  score += Math.min(totalLines / 10, 40);
-
-  // 파일 중요도 (30점)
-  // src/main: 15점, config: 10점, test: 5점, others: 3점
-  const importanceScore = feature.files.reduce((sum, f) => {
-    if (f.path.includes('src/main')) return sum + 15;
-    if (f.path.includes('config')) return sum + 10;
-    if (f.path.includes('src/test')) return sum + 5;
-    return sum + 3;
-  }, 0);
-  score += Math.min(importanceScore, 30);
-
-  // 커밋 타입 관련성 (30점)
-  const typeRelevance = analyzeTypeRelevance(feature, detectedType);
-  score += typeRelevance;
-
-  return Math.round(score);
+**Output (JSON):**
+```json
+{
+  "items": [
+    {
+      "label": "작업 내용 설명",
+      "description": "상세 설명",
+      "score": 95,
+      "relatedFiles": ["file1", "file2"],
+      "module": "module-name"
+    }
+  ],
+  "totalCount": 15,
+  "detectedType": "feat"
 }
 ```
 
 **Generation rules:**
 - Feature/작업 중심 항목 생성 (파일명 제외)
-- Score로 중요도 표시 (0-100)
+- Score로 중요도 표시 (0-100): 변경량(40%) + 중요도(30%) + 관련성(30%)
 - 10-15개 후보 생성 (메타데이터 저장)
 - 페이지당 3개 항목 표시
 - 각 항목은 1-2줄로 간결하게
 - Score 기준 정렬 (높은 순)
+
+**See:** [scripts/generation/generate_body_items.js](../scripts/generation/generate_body_items.js) for implementation details
 
 ## Template (형식 명세)
 

@@ -4,58 +4,35 @@ Token optimization through session state persistence.
 
 ---
 
-## Problem
+## Overview
 
-Current flow causes excessive token usage:
-- Step 1: Analyze files, detect groups
-- Step 2: User selects split mode → **Re-analyze?**
-- Step 3: Generate messages → **Re-analyze groups?**
-- Step 4: User approves → **Re-load context?**
+Each `/commit` execution creates a unique metadata file to avoid re-analyzing the same data across steps.
 
-Each step re-processes the same information.
+**Token savings: ~67%** (analyze once, reuse multiple times)
 
 ---
 
-## Solution: Session Metadata File
-
-### File Location
+## File Location
 
 ```
 .claude/temp/commit-execution-{timestamp}.json
 ```
 
-Example: `.claude/temp/commit-execution-20260203-180000.json`
+**Example**: `.claude/temp/commit-execution-20260203-180000.json`
 
-**Important Distinction:**
-- **CLI Session ID**: Assigned when you run `claude` command (persists across multiple /commit calls)
-- **Commit Execution ID**: Created each time you run `/commit` (unique per commit operation)
+**Lifecycle**:
+- **CREATE**: Step 1 (Initial Analysis)
+- **READ**: Steps 2-N (Message generation, approval, execution)
+- **DELETE**: After commit completion or cancellation
 
-We use **timestamp-based execution ID** because:
-- Same CLI session may run `/commit` multiple times
-- Each `/commit` execution is independent
-- No conflict between multiple commits in same session
+**Execution ID**: Timestamp-based (unique per `/commit` invocation)
+- Same CLI session can have multiple `/commit` executions
+- Each execution has its own metadata file
+- No conflicts between concurrent commits
 
-**Example Flow:**
-```bash
-# Start CLI session (session-abc123)
-$ claude
+---
 
-# Modify files, stage, commit
-user> git add file1.js
-user> /commit
-→ Creates: commit-execution-20260203-180000.json
-→ Commit succeeds, file deleted
-
-# Modify more files, stage, commit again (SAME CLI session)
-user> git add file2.js
-user> /commit
-→ Creates: commit-execution-20260203-180500.json (NEW file)
-→ Commit succeeds, file deleted
-
-# Multiple /commit calls = multiple execution IDs
-```
-
-### File Structure
+## File Structure
 
 ```json
 {
@@ -67,8 +44,7 @@ user> /commit
       "count": 82,
       "list": [
         ".claude/skills/commit/SKILL.md",
-        ".claude/skills/commit/references/validation/rules.md",
-        "ai/docs/claude/docs/01-build-with-claude/01-features-overview.md"
+        ".claude/skills/commit/references/validation/rules.md"
       ]
     },
     "stats": {
@@ -87,44 +63,15 @@ user> /commit
         "fileCount": 4,
         "scope": "commit-skill",
         "type": "docs",
-        "files": [
-          ".claude/skills/commit/SKILL.md",
-          ".claude/skills/commit/references/validation/rules.md",
-          ".claude/skills/commit/references/support/examples.md",
-          ".claude/skills/commit/references/support/troubleshooting.md"
-        ],
+        "files": ["..."],
         "suggestedMessages": [
           {
             "rank": 1,
             "header": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가",
-            "body": "- SKILL.md: 스킬 실행 프로세스 정의\n- references/validation/rules.md: 커밋 메시지 형식 규칙\n- references/support/examples.md: 실제 사용 예시\n- references/support/troubleshooting.md: 문제 해결 가이드",
-            "footer": null
-          },
-          {
-            "rank": 2,
-            "header": "docs(commit-skill): 커밋 스킬 문서 추가",
-            "body": "- 커밋 자동화 스킬 문서\n- 메시지 형식 규칙 정의",
+            "body": "- SKILL.md: 스킬 실행 프로세스 정의\n- references/validation/rules.md: 커밋 메시지 형식 규칙",
             "footer": null
           }
         ]
-      },
-      {
-        "id": 2,
-        "directory": "ai/docs/claude/",
-        "fileCount": 70,
-        "scope": "claude-api",
-        "type": "docs",
-        "files": ["..."],
-        "suggestedMessages": [...]
-      },
-      {
-        "id": 3,
-        "directory": ".claude/agents/",
-        "fileCount": 8,
-        "scope": "korean-translator",
-        "type": "docs",
-        "files": ["..."],
-        "suggestedMessages": [...]
       }
     ]
   },
@@ -136,13 +83,7 @@ user> /commit
       {
         "groupId": 1,
         "status": "completed",
-        "commitHash": "abc1234",
-        "message": "docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가"
-      },
-      {
-        "groupId": 3,
-        "status": "failed",
-        "error": "Hook validation failed"
+        "commitHash": "abc1234"
       }
     ]
   }
@@ -151,251 +92,96 @@ user> /commit
 
 ---
 
-## Process Flow with Metadata
+## Usage Pattern
 
-### Step 1: Initial Analysis (Heavy)
+### Step 1: Create Metadata (Heavy)
 
-```
-1. Generate execution ID (timestamp)
-2. Run git commands (status, diff, log)
-3. Analyze staged files
-4. Detect violations (Tidy First, logical independence)
-5. Identify groups
-6. Generate 5 messages per group
-7. WRITE metadata file with executionId
+```bash
+# Generate execution ID
+EXECUTION_ID=$(date +%Y%m%d-%H%M%S)
+
+# Analyze and write metadata
+EXECUTE_SCRIPT: scripts/analysis/create_metadata.sh
 ```
 
-**Token usage: HIGH** (first time only per /commit execution)
+**Operations:**
+- Analyze staged files
+- Detect violations
+- Identify groups
+- Generate message candidates
+- Write metadata file
 
-### Step 2-N: Read from Metadata (Light)
+**Token cost**: HIGH (first time only)
 
-```
-1. READ metadata file using executionId
-2. Get pre-analyzed groups
-3. Get pre-generated messages
-4. Show to user
-5. UPDATE metadata with choice
-```
+### Steps 2-N: Read Metadata (Light)
 
-**Token usage: LOW** (file read only)
-
-**Note:** Each `/commit` execution gets its own executionId, even in the same CLI session.
-
-### Cleanup
-
-```
-On completion or cancellation:
-- DELETE metadata file for this execution
-- Other commit executions' metadata files are unaffected
+```bash
+# Read pre-computed data
+cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 ```
 
-**Multiple Executions:**
-If you run `/commit` 3 times in one CLI session:
-1. First: Creates & deletes `commit-execution-20260203-180000.json`
-2. Second: Creates & deletes `commit-execution-20260203-180500.json`
-3. Third: Creates & deletes `commit-execution-20260203-181000.json`
+**Operations:**
+- Load groups and messages
+- Present to user
+- Update with choices
 
-Each execution is completely independent.
+**Token cost**: LOW (file read only)
+
+### Cleanup: Delete Metadata
+
+```bash
+# After completion
+EXECUTE_SCRIPT: scripts/utils/cleanup_metadata.sh ${EXECUTION_ID}
+```
+
+**When:**
+- Commit success
+- User cancellation
+- Error/failure
 
 ---
 
-## Benefits
-
-### 1. Token Savings
-
-**Before:**
-- Step 1: 5000 tokens
-- Step 2: 5000 tokens (re-analyze)
-- Step 3: 5000 tokens (re-analyze)
-- Step 4: 5000 tokens (re-analyze)
-- **Total: 20,000 tokens**
-
-**After:**
-- Step 1: 5000 tokens + write file
-- Step 2: 500 tokens (read file)
-- Step 3: 500 tokens (read file)
-- Step 4: 500 tokens (read file)
-- **Total: 6,500 tokens (67% savings)**
-
-### 2. Consistency
-
-All steps use the same analysis results - no discrepancies.
-
-### 3. Resume Capability
-
-If process fails, can resume from metadata file.
-
-### 4. Debug/Audit
-
-Can review what was analyzed and chosen.
-
----
-
-## Implementation Changes
-
-### PROCESS.md Updates
-
-**Step 1: Initial Analysis**
-```
-1. Analyze staged files
-2. Detect violations
-3. Identify groups
-4. Generate all messages upfront
-5. WRITE .claude/temp/commit-{timestamp}.json
-6. Store sessionId in memory
-```
-
-**Step 2-N: Use Metadata**
-```
-1. READ .claude/temp/commit-{sessionId}.json
-2. Load pre-computed groups and messages
-3. Present to user
-4. UPDATE file with user choices
-```
-
-**Cleanup**
-```
-On success/cancel/error:
-- DELETE .claude/temp/commit-{sessionId}.json
-```
-
----
-
-## File Lifecycle
-
-### Per /commit Execution
-
-```
-START (/commit invoked)
-  ↓
-Generate executionId (timestamp)
-  ↓
-Step 1: CREATE commit-execution-{executionId}.json
-  ↓
-Step 2: READ + UPDATE (user choice)
-  ↓
-Step 3: READ (show messages)
-  ↓
-Step 4: READ + UPDATE (commit result)
-  ↓
-Step N: READ (final summary)
-  ↓
-END: DELETE commit-execution-{executionId}.json
-```
-
-### Across Multiple /commit Executions (Same CLI Session)
-
-```
-CLI Session Start
-  ↓
-User: /commit (execution-1)
-  → commit-execution-20260203-180000.json
-  → [lifecycle completes]
-  → [file deleted]
-  ↓
-User: /commit (execution-2)
-  → commit-execution-20260203-180500.json (NEW file)
-  → [lifecycle completes]
-  → [file deleted]
-  ↓
-User: /commit (execution-3)
-  → commit-execution-20260203-181000.json (NEW file)
-  → [lifecycle completes]
-  → [file deleted]
-```
-
-Each execution is isolated.
-
----
-
-## Metadata File Location
+## Directory Structure
 
 ```
 .claude/
 ├── temp/
-│   ├── commit-execution-20260203-180000.json  ← /commit execution 1
-│   ├── commit-execution-20260203-180500.json  ← /commit execution 2
-│   ├── commit-execution-20260203-181000.json  ← /commit execution 3
+│   ├── commit-execution-20260203-180000.json  ← Execution 1
+│   ├── commit-execution-20260203-180500.json  ← Execution 2
 │   └── .gitignore                              ← Ignore *.json
 ```
 
-**Note:** Multiple files may exist temporarily if:
-- Multiple `/commit` executions overlap
-- Previous cleanup failed (rare)
-
-Normally only one file exists at a time per execution.
-
-Add to `.gitignore`:
+**Add to `.gitignore`:**
 ```
 .claude/temp/*.json
 ```
 
 ---
 
-## Alternative: In-Memory State
+## Scripts Integration
 
-Could use conversation state instead of files, but:
-- ❌ Lost on error/crash
-- ❌ Can't resume
-- ❌ Can't debug
-- ❌ Still needs re-analysis if context cleared
-
-File-based is better for reliability.
-
----
-
-## Implementation Priority
-
-**High Impact Changes:**
-1. Create metadata file in Step 1
-2. Read metadata in subsequent steps
-3. Cleanup on completion
-
-**Medium Impact:**
-4. Resume from metadata on error
-5. Audit/debug commands
-
----
-
-## Example Commands
-
-### Create temp directory (once per repository)
+**Create metadata** (Step 1):
 ```bash
-mkdir -p .claude/temp
-echo "*.json" > .claude/temp/.gitignore
+EXECUTE_SCRIPT: scripts/analysis/create_metadata.sh
+# Returns: .claude/temp/commit-execution-{timestamp}.json
 ```
 
-### Write metadata (Step 1 - per /commit execution)
-```bash
-# Generate execution ID
-EXECUTION_ID=$(date +%Y%m%d-%H%M%S)
-
-# Write metadata
-cat > .claude/temp/commit-execution-${EXECUTION_ID}.json <<EOF
-{
-  "executionId": "${EXECUTION_ID}",
-  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-  "analysis": { ... }
-}
-EOF
-```
-
-### Read metadata (Step 2+ - same execution)
+**Read metadata** (Steps 2-N):
 ```bash
 cat .claude/temp/commit-execution-${EXECUTION_ID}.json
 ```
 
-### Cleanup (end of execution)
+**Cleanup** (End of execution):
 ```bash
-rm .claude/temp/commit-execution-${EXECUTION_ID}.json
+EXECUTE_SCRIPT: scripts/utils/cleanup_metadata.sh ${EXECUTION_ID}
 ```
 
-### Verify no orphaned files (optional)
+**Verify/cleanup orphaned files**:
 ```bash
-# List all commit execution files
+# List execution files
 ls -la .claude/temp/commit-execution-*.json
 
-# Clean up old files (if cleanup failed)
+# Remove old files (if cleanup failed)
 find .claude/temp -name "commit-execution-*.json" -mtime +1 -delete
 ```
 
@@ -403,11 +189,7 @@ find .claude/temp -name "commit-execution-*.json" -mtime +1 -delete
 
 ## Related Documents
 
-- **[process/step1-analysis.md](../process/step1-analysis.md)** - Metadata creation (Step 1)
-  - How metadata file is initially created
-  - What analysis results are stored
-- **[process/step2-violations.md](../process/step2-violations.md)** - Metadata read (Step 2+)
-  - How subsequent steps read from metadata
-  - Token savings through metadata reuse
+- **[process/step1-analysis.md](../process/step1-analysis.md)** - Metadata creation
+- **[process/step2-violations.md](../process/step2-violations.md)** - Metadata read and reuse
 - **[process/step5-execute.md](../process/step5-execute.md)** - Metadata cleanup
-  - Deletion after commit completion
+- **[scripts/README.md](../../scripts/README.md)** - Script usage details

@@ -70,7 +70,7 @@ Execute skill in phases. Load only required references per phase for maximum tok
 - **Examples**: [support/examples.md](references/support/examples.md)
 - **Token optimization**: [support/metadata.md](references/support/metadata.md)
 - **UI design**: [support/ui-design.md](references/support/ui-design.md)
-- **Algorithms**: [generation/algorithms.md](references/generation/algorithms.md) for scope/type detection
+- **Algorithms**: [scripts/algorithms/](scripts/algorithms/) (detect_scope.js, detect_type.js) for scope/type detection
 
 ### Scripts (MANDATORY: Execute directly, DO NOT inline or reconstruct)
 

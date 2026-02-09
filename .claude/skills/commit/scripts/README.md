@@ -178,6 +178,69 @@ echo '{"files":["f1.md","f2.md"],"diff":"..."}' | node scripts/generation/genera
 
 ---
 
+## generation/generate_body_items.js
+
+**Purpose:** Generate body item candidates for commit message
+
+**Usage:**
+```bash
+echo '{"files":[...],"diff":"...","type":"feat"}' | node scripts/generation/generate_body_items.js
+```
+
+**Input:**
+```json
+{
+  "files": [
+    {"path": "UserService.java", "additions": 152, "deletions": 23},
+    {"path": "LoginController.java", "additions": 87, "deletions": 5}
+  ],
+  "diff": "git diff output (optional)",
+  "type": "feat"
+}
+```
+
+**Output:**
+```json
+{
+  "items": [
+    {
+      "label": "사용자 인증 로직 구현",
+      "description": "JWT 기반 사용자 인증 처리 및 세션 관리",
+      "score": 95,
+      "relatedFiles": ["UserService.java", "AuthConfig.java"],
+      "module": "auth"
+    },
+    {
+      "label": "로그인 API 엔드포인트 추가",
+      "description": "/api/auth/login POST 엔드포인트 구현",
+      "score": 90,
+      "relatedFiles": ["LoginController.java"],
+      "module": "api"
+    }
+  ],
+  "totalCount": 10,
+  "detectedType": "feat"
+}
+```
+
+**Score calculation (0-100):**
+- **Changes (40%)**: Based on additions + deletions (totalLines / 10, max 40)
+- **Importance (30%)**: Based on file paths
+  - src/main: 15 points
+  - config: 10 points
+  - src/test: 5 points
+  - others: 3 points
+- **Type relevance (30%)**: Keyword matching with commit type
+
+**Generation strategy:**
+- Feature-based grouping (not file-listing)
+- Top 15 candidates generated
+- Sorted by score (high to low)
+- Score ≥80 gets ⭐ marker
+- Used in 3-stage message composition (Stage 2: Body selection)
+
+---
+
 ## Bash Scripts
 
 ---
@@ -390,6 +453,9 @@ echo '{"files":["..."],"diff":"..."}'  | node scripts/algorithms/detect_type.js 
 
 # EXECUTE_SCRIPT: scripts/generation/generate_headers.js
 cat /tmp/metadata.json | node scripts/generation/generate_headers.js > /tmp/headers.json
+
+# EXECUTE_SCRIPT: scripts/generation/generate_body_items.js
+echo '{"files":[...],"diff":"...","type":"feat"}' | node scripts/generation/generate_body_items.js > /tmp/body_items.json
 ```
 
 **Phase 5 - Execution:**

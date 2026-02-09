@@ -21,7 +21,7 @@ Guide user through 3 stages to build the commit message:
 - Refresh mechanism provides flexibility
 - Direct input available as fallback
 
-**Detailed algorithms:** See [generation/](../generation/) (header.md, body.md, footer.md, algorithms.md)
+**Detailed algorithms:** See [generation/](../generation/) (header.md, body.md, footer.md) and [scripts/](../../scripts/) (detect_scope.js, detect_type.js, generate_headers.js, generate_body_items.js)
 
 ---
 
@@ -102,7 +102,7 @@ Use metadata `analysis.bodyItemCandidates` (pre-generated in Step 1).
 ```javascript
 function generateBodyItems(files, diff) {
   // Strategy: Feature-based (task/feature focused, not filenames)
-  // See generation/algorithms.md for detailed algorithm
+  // See scripts/generation/generate_body_items.js for implementation
 
   // 1. Analyze and group by feature/purpose
   const features = analyzeFeatures(files, diff);
@@ -319,7 +319,8 @@ Then proceed to Step 4 (final confirmation).
 - [generation/header.md](../generation/header.md) - Header generation algorithm
 - [generation/body.md](../generation/body.md) - Body generation strategies
 - [generation/footer.md](../generation/footer.md) - Footer options
-- [generation/algorithms.md](../generation/algorithms.md) - Complete algorithms
+- [scripts/algorithms/](../../scripts/algorithms/) - Scope/Type detection algorithms (detect_scope.js, detect_type.js)
+- [scripts/generation/](../../scripts/generation/) - Message generation scripts (generate_headers.js, generate_body_items.js)
 - [validation/rules.md](../validation/rules.md) - Validation rules including body guidelines
 
 ---
