@@ -34,6 +34,7 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 1: Initial Analysis
 - **Load**: [process/step1-analysis.md](references/process/step1-analysis.md)
+- **Execute**: [scripts/analysis/collect_changes.sh](scripts/analysis/collect_changes.sh) + [scripts/analysis/create_metadata.sh](scripts/analysis/create_metadata.sh)
 - **Purpose**: Analyze git status, detect file changes, create metadata
 - **When**: Every /commit execution start
 
@@ -59,10 +60,10 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 5: Execution
 - **Load**: [process/step5-execute.md](references/process/step5-execute.md)
-- **Execute**: [scripts/validate_message.py](scripts/validate_message.py) (deterministic validation)
+- **Execute**: [scripts/execution/commit.sh](scripts/execution/commit.sh) + [scripts/utils/cleanup_metadata.sh](scripts/utils/cleanup_metadata.sh)
 - **Purpose**: Validate message format and execute git commit
 - **When**: After user approval
-- **Token efficiency**: Validation script runs via bash (0 context tokens consumed)
+- **Token efficiency**: Scripts run via bash (0 context tokens consumed)
 
 ### Support Resources (load as needed)
 - **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md)
@@ -71,11 +72,22 @@ Execute skill in phases. Load only required references per phase for maximum tok
 - **UI design**: [support/ui-design.md](references/support/ui-design.md)
 - **Algorithms**: [generation/algorithms.md](references/generation/algorithms.md) for scope/type detection
 
-### Scripts (executed via bash, not loaded into context)
-- **validate_message.py**: Deterministic message validation (0 tokens consumed)
-  - Validates format, detects forbidden patterns (Co-Authored-By)
-  - Exit code 0 (valid) or 1 (invalid)
-  - Usage: `python3 scripts/validate_message.py --message <file> --json`
+### Scripts (MANDATORY: Execute directly, DO NOT inline or reconstruct)
+
+**CRITICAL:** Scripts are pre-built, deterministic executables. Agent MUST use `EXECUTE_SCRIPT:` directive.
+
+**Phase 1 - Analysis:**
+- `EXECUTE_SCRIPT: scripts/analysis/collect_changes.sh` - Auto-stage and collect changes
+- `EXECUTE_SCRIPT: scripts/analysis/create_metadata.sh` - Generate execution metadata
+
+**Phase 5 - Execution:**
+- `EXECUTE_SCRIPT: scripts/execution/commit.sh` - Validate and commit
+- `EXECUTE_SCRIPT: scripts/utils/cleanup_metadata.sh` - Clean up metadata
+
+**Validation (used by commit.sh):**
+- `scripts/validation/validate_message.py` - Format validation (automatic)
+
+**Documentation:** See [scripts/README.md](scripts/README.md) for detailed usage
 
 ### Assets (not loaded into context)
 - **UI templates**: [templates](templates/) - Output templates for user interaction (7 files)

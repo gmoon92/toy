@@ -25,84 +25,76 @@ The commit skill follows a 5-step process to ensure quality commits that follow 
 
 ### Collect and Verify Changes (IDE-like behavior)
 
-**Collect all changes:**
+**MANDATORY: Use pre-built scripts (DO NOT inline bash commands)**
 
-Similar to IDE default behavior, automatically include modified files that haven't been explicitly staged for commit.
-
-```bash
-# Collect both staged and modified files
-git diff --cached --name-only  # Staged files
-git diff --name-only           # Modified files (unstaged)
-```
-
-**Auto-stage all modified files:**
+**Step 1: Collect changes and create metadata**
 
 ```bash
-# Stage all modified files automatically (IDE behavior)
-git add -u
+# EXECUTE_SCRIPT: scripts/analysis/collect_changes.sh
+# EXECUTE_SCRIPT: scripts/analysis/create_metadata.sh
+
+cd .claude/skills/commit && \
+./scripts/analysis/collect_changes.sh | ./scripts/analysis/create_metadata.sh
 ```
 
-**Check if any changes exist:**
+**What these scripts do:**
+- `collect_changes.sh`: Auto-stages modified files (IDE behavior), collects file list and stats
+- `create_metadata.sh`: Generates execution metadata file with unique ID
+
+**Output:** Path to metadata file
+```
+.claude/temp/commit-execution-20260209-123456.json
+```
+
+**Script behavior:**
+- ✅ Automatically runs `git add -u` (only modified files, not untracked)
+- ✅ Collects staged files, branch, and statistics
+- ✅ Warns if on main/master branch
+- ✅ Exits with error if no changes
+
+**Exit codes:**
+- `0`: Success (metadata created)
+- `1`: No changes to commit
+
+**IMPORTANT:**
+- DO NOT reconstruct bash commands from documentation
+- DO NOT inline scripts into the execution flow
+- ALWAYS use the pre-built scripts via `EXECUTE_SCRIPT:` directive
+- Scripts are deterministic and consume 0 context tokens
+
+### Read Metadata (Subsequent Steps)
+
+All steps after Step 1 read from the metadata file:
 
 ```bash
-git diff --cached --stat
+# Get execution ID from previous step output
+EXECUTION_ID="20260209-123456"
+METADATA_FILE=".claude/temp/commit-execution-${EXECUTION_ID}.json"
+
+# Read analysis data
+cat "$METADATA_FILE"
 ```
 
-If no changes after staging → exit with message:
-```
-변경사항이 없습니다. 먼저 파일을 수정하세요.
-```
-
-**Note:**
-- Untracked files (new files) are NOT automatically staged
-- Only modified files are auto-staged for commit
-
-**Additional checks:**
-- Warn if on main/master branch (recommend creating feature branch)
-
-### Collect Change Context (Parallel Execution)
-
-After auto-staging all modified files:
-
-- Get list of changed files (`git diff --cached --name-only`)
-- Get change statistics (`git diff --cached --stat`)
-- Get detailed diff (`git diff --cached`)
-- Identify primary module or modified files
-
-### Determine Scope
-
-- Use module name if changes are in logical module (e.g., `spring-batch`, `spring-security`)
-- Use primary filename if single file or related files
-- Choose most important file if multiple unrelated files
-
-### **Generate Metadata File (Important)**
-
-Save analysis results to `.claude/temp/commit-execution-{executionId}.json`:
-
-```bash
-mkdir -p .claude/temp
-EXECUTION_ID=$(date +%Y%m%d-%H%M%S)
-
-cat > .claude/temp/commit-execution-${EXECUTION_ID}.json <<EOF
+**Metadata structure:**
+```json
 {
-  "executionId": "${EXECUTION_ID}",
-  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "executionId": "20260209-123456",
+  "timestamp": "2026-02-09T12:34:56Z",
   "analysis": {
-    "stagedFiles": [...],
-    "groups": [...],
-    "violations": {...}
+    "branch": "master",
+    "stagedFiles": ["file1.md", "file2.md"],
+    "stats": {
+      "fileCount": 2,
+      "insertions": 5,
+      "deletions": 3
+    }
   }
 }
-EOF
 ```
 
-**Important:** executionId is the /commit execution ID, not CLI session ID.
-- Multiple /commit executions possible in same CLI session
-- Each execution generates new executionId
-
-All subsequent steps read from this file (token savings)
-
-Use parallel bash commands for efficiency
+**Token optimization:**
+- Step 1 analyzes once and writes metadata (67% token savings)
+- Steps 2-5 read from metadata instead of re-analyzing
 
 ---
 
