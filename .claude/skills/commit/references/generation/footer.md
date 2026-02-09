@@ -7,4 +7,3 @@ Simple selection, no refresh needed:
 
 See [3-3-footer-selection.md](../../templates/3-3-footer-selection.md)
 ---
-

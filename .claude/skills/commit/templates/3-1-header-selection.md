@@ -29,7 +29,7 @@ Generate **5 header messages**:
 **Message 4:**
 - Message expression variation (more concise or more detailed)
 
-**Generation algorithm:** See [MESSAGE_GENERATION.md](../MESSAGE_GENERATION.md#header-message-generation)
+**Generation algorithm:** See [header.md](../references/generation/header.md)
 
 ## Template (형식 명세)
 
