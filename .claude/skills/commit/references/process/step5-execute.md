@@ -145,46 +145,6 @@ SUBJECT: feat(spring-cloud-bus): 커스텀 이벤트 핸들러 구현
    $ /commit
 ```
 
-### Cleanup Metadata (Important)
-
-**MANDATORY: Use pre-built cleanup script (DO NOT inline bash commands)**
-
-```bash
-# EXECUTE_SCRIPT: scripts/utils/cleanup_metadata.sh
-
-# On success or failure, cleanup current execution metadata
-cd .claude/skills/commit && ./scripts/utils/cleanup_metadata.sh "$EXECUTION_ID"
-```
-
-**Alternative: Clean all metadata files**
-```bash
-# Clean all commit metadata files (use with caution)
-cd .claude/skills/commit && ./scripts/utils/cleanup_metadata.sh all
-```
-
-**What this script does:**
-- Removes `.claude/temp/commit-execution-{ID}.json` file(s)
-- Safe to call even if file doesn't exist
-- Prevents metadata accumulation
-
-**When to cleanup:**
-- ✅ After successful commit
-- ✅ After commit failure
-- ✅ After user cancellation
-- ✅ After auto-split commit (all groups processed)
-
-**Important:**
-- Each `/commit` execution is independent
-- Not related to previous execution's metadata files
-- Multiple `/commit` executions possible in same CLI session
-- Always cleanup current execution's metadata
-
-**IMPORTANT:**
-- DO NOT use `rm` command directly
-- ALWAYS use the pre-built `cleanup_metadata.sh` script via `EXECUTE_SCRIPT:` directive
-- Script handles edge cases and provides proper feedback
-
----
 
 ## Process Flow Diagram
 

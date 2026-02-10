@@ -20,10 +20,8 @@ scripts/
 │   └── collect_git_diff.sh
 ├── validation/         # Message format validation (Python)
 │   └── validate_message.py
-├── execution/          # Commit execution (Bash)
-│   └── commit.sh
-└── utils/              # Utility scripts (Bash)
-    └── cleanup_metadata.sh
+└── execution/          # Commit execution (Bash)
+    └── commit.sh
 ```
 
 **Removed directories:**
@@ -121,30 +119,6 @@ echo "feat(module): message" | python scripts/validation/validate_message.py
 
 ---
 
-## utils/cleanup_metadata.sh
-
-**Purpose:** Clean up temporary metadata files
-
-**Usage:**
-```bash
-./scripts/utils/cleanup_metadata.sh <execution_id|all>
-```
-
-**Operations:**
-- Remove `.claude/temp/commit-execution-*.json` files
-- Used after commit completion or cancellation
-
-**Examples:**
-```bash
-# Clean specific execution
-./scripts/utils/cleanup_metadata.sh 20260210-102506
-
-# Clean all metadata
-./scripts/utils/cleanup_metadata.sh all
-```
-
----
-
 ## Workflow
 
 ```
@@ -164,9 +138,6 @@ echo "feat(module): message" | python scripts/validation/validate_message.py
 
 5. commit.sh
    ↓ Execute commit
-
-6. cleanup_metadata.sh
-   ↓ Clean temp files
 ```
 
 ---

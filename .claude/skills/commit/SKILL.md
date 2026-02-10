@@ -62,7 +62,7 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 5: Execution
 - **Load**: [process/step5-execute.md](references/process/step5-execute.md) (~340 tokens)
-- **Execute**: [scripts/execution/commit.sh](scripts/execution/commit.sh) + [scripts/utils/cleanup_metadata.sh](scripts/utils/cleanup_metadata.sh)
+- **Execute**: [scripts/execution/commit.sh](scripts/execution/commit.sh)
 - **Purpose**: Validate message format and execute git commit
 - **When**: After user approval
 - **Token efficiency**: Scripts run via bash (0 context tokens consumed)
@@ -81,7 +81,6 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 **Phase 5 - Execution:**
 - `EXECUTE_SCRIPT: scripts/execution/commit.sh` - Validate and commit
-- `EXECUTE_SCRIPT: scripts/utils/cleanup_metadata.sh` - Clean up metadata
 
 **Validation (used by commit.sh):**
 - `scripts/validation/validate_message.py` - Format validation (automatic)
