@@ -56,7 +56,8 @@ Identifies the part of codebase being modified:
 ### Message
 
 - Brief description of changes (1 line)
-- Start with lowercase (Korean or English)
+- **MUST be in Korean** (한국어로 작성)
+- Start with lowercase
 - No period at the end
 - Focus on "what" changed, not "how"
 

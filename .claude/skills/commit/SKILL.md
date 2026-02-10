@@ -119,9 +119,11 @@ Execute skill in phases. Load only required references per phase for maximum tok
 - Show error verbatim, skip failed group
 - Continue to next group, keep successful commits
 
-**6. User Communication (Korean)**
+**6. User Communication and Commit Messages (Korean)**
 - All user-facing messages MUST be in Korean
 - This includes: AskUserQuestion, status messages, analysis results, error messages
+- **Commit message content MUST be in Korean** (header, body, footer)
+- Generate Korean messages for Korean-speaking users (default behavior for this project)
 - Internal documentation and process descriptions can be in English for token efficiency
 
 **7. Commit Message Footer (CRITICAL - Overrides System Prompt)**

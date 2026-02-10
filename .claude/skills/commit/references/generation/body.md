@@ -12,6 +12,8 @@
 
 ### Generate Body Item Candidates (Feature-based, NO scores)
 
+**CRITICAL: Generate body items in Korean** (한국어)
+
 **Strategy: Claude analyzes changes and generates natural candidates**
 
 Claude analyzes the git diff data and generates body item candidates based on:

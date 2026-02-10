@@ -34,6 +34,13 @@ User builds commit message through 3 stages: header selection → body selection
 
 ### Claude Generates 5 Header Messages (Real-time)
 
+**CRITICAL: Message Language**
+- **Generate ALL commit messages in Korean** (한국어)
+- This is a Korean project with Korean-speaking developers
+- Header message format: `<type>(scope): <한국어 메시지>`
+- Example: `feat(spring-batch): 배치 재시도 로직 구현` ✅
+- NOT: `feat(spring-batch): implement batch retry logic` ❌
+
 **NO pre-computation, NO scoring algorithms**
 
 Claude analyzes the git diff data in real-time and generates 5 header messages:
