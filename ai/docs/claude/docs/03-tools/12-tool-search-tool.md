@@ -2,7 +2,8 @@
 
 ---
 
-Tool search tool은 Claude가 수백 또는 수천 개의 도구를 동적으로 검색하고 필요에 따라 로드하여 작업할 수 있도록 합니다. 모든 도구 정의를 미리 컨텍스트 윈도우에 로드하는 대신, Claude는 도구 이름, 설명, 인수 이름, 인수 설명을 포함한 도구 카탈로그를 검색하고 필요한 도구만 로드합니다.
+Tool search tool은 Claude가 수백 또는 수천 개의 도구를 동적으로 검색하고 필요에 따라 로드하여 작업할 수 있도록 합니다.
+모든 도구 정의를 미리 컨텍스트 윈도우에 로드하는 대신, Claude는 도구 이름, 설명, 인수 이름, 인수 설명을 포함한 도구 카탈로그를 검색하고 필요한 도구만 로드합니다.
 
 이 접근 방식은 도구 라이브러리가 확장될 때 발생하는 두 가지 중요한 과제를 해결합니다:
 
@@ -10,7 +11,6 @@ Tool search tool은 Claude가 수백 또는 수천 개의 도구를 동적으로
 - **도구 선택 정확도**: 기존 방식으로 사용 가능한 도구가 30-50개를 초과하면 Claude의 도구 선택 능력이 크게 저하됩니다
 
 이것은 서버 측 도구로 제공되지만, 클라이언트 측 도구 검색 기능을 직접 구현할 수도 있습니다. 자세한 내용은 [커스텀 도구 검색 구현](#custom-tool-search-implementation)을 참조하세요.
-
 
 > Tool search tool은 현재 공개 베타 버전입니다. 제공자에 맞는 적절한 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 포함하세요:
 >
@@ -21,12 +21,8 @@ Tool search tool은 Claude가 수백 또는 수천 개의 도구를 동적으로
 > | Amazon Bedrock           | `tool-search-tool-2025-10-19`  | Claude Opus 4.5<br />Claude Sonnet 4.5 |
 >
 > 이 기능에 대한 피드백을 [피드백 양식](https://forms.gle/MhcGFFwLxuwnWTkYA)을 통해 공유해 주세요.
-
-
-
-> Amazon Bedrock에서 서버 측 도구 검색은 converse API가 아닌 [invoke
-> API](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-runtime_example_bedrock-runtime_InvokeModel_AnthropicClaude_section.html)를 통해서만 사용할 수 있습니다.
-
+>
+> Amazon Bedrock에서 서버 측 도구 검색은 converse API가 아닌 [invoke API](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-runtime_example_bedrock-runtime_InvokeModel_AnthropicClaude_section.html) 를 통해서만 사용할 수 있습니다.
 
 자체 검색 구현에서 `tool_reference` 블록을 반환하여 [클라이언트 측 도구 검색](#custom-tool-search-implementation)을 구현할 수도 있습니다.
 
@@ -132,7 +128,6 @@ Tool search tool에는 두 가지 변형이 있습니다:
 }
 ```
 
-
 > **Regex 변형 쿼리 형식: Python 정규식, 자연어 아님**
 >
 > `tool_search_tool_regex_20251119`를 사용할 때 Claude는 자연어 쿼리가 아닌 Python의 `re.search()` 문법을 사용하여 정규식 패턴을 구성합니다. 일반적인 패턴:
@@ -143,13 +138,10 @@ Tool search tool에는 두 가지 변형이 있습니다:
 > - `"(?i)slack"` - 대소문자를 구분하지 않는 검색
 >
 > 최대 쿼리 길이: 200자
-
-
-
+>
 > **BM25 변형 쿼리 형식: 자연어**
 >
 > `tool_search_tool_bm25_20251119`를 사용할 때 Claude는 자연어 쿼리를 사용하여 도구를 검색합니다.
-
 
 ### 지연된 도구 로딩
 
@@ -162,10 +154,20 @@ Tool search tool에는 두 가지 변형이 있습니다:
   "input_schema": {
     "type": "object",
     "properties": {
-      "location": { "type": "string" },
-      "unit": { "type": "string", "enum": ["celsius", "fahrenheit"] }
+      "location": {
+        "type": "string"
+      },
+      "unit": {
+        "type": "string",
+        "enum": [
+          "celsius",
+          "fahrenheit"
+        ]
+      }
     },
-    "required": ["location"]
+    "required": [
+      "location"
+    ]
   },
   "defer_loading": true
 }
@@ -205,7 +207,12 @@ Claude가 tool search tool을 사용하면 응답에 새로운 블록 타입이 
       "tool_use_id": "srvtoolu_01ABC123",
       "content": {
         "type": "tool_search_tool_search_result",
-        "tool_references": [{ "type": "tool_reference", "tool_name": "get_weather" }]
+        "tool_references": [
+          {
+            "type": "tool_reference",
+            "tool_name": "get_weather"
+          }
+        ]
       }
     },
     {
@@ -216,7 +223,10 @@ Claude가 tool search tool을 사용하면 응답에 새로운 블록 타입이 
       "type": "tool_use",
       "id": "toolu_01XYZ789",
       "name": "get_weather",
-      "input": { "location": "San Francisco", "unit": "fahrenheit" }
+      "input": {
+        "location": "San Francisco",
+        "unit": "fahrenheit"
+      }
     }
   ],
   "stop_reason": "tool_use"
@@ -230,11 +240,13 @@ Claude가 tool search tool을 사용하면 응답에 새로운 블록 타입이 
 - **`tool_references`**: 발견된 도구를 가리키는 `tool_reference` 객체의 배열입니다
 - **`tool_use`**: Claude가 발견된 도구를 호출합니다
 
-`tool_reference` 블록은 Claude에게 표시되기 전에 자동으로 전체 도구 정의로 확장됩니다. 이 확장을 직접 처리할 필요가 없습니다. `tools` 매개변수에 일치하는 모든 도구 정의를 제공하는 한 API에서 자동으로 수행됩니다.
+`tool_reference` 블록은 Claude에게 표시되기 전에 자동으로 전체 도구 정의로 확장됩니다. 
+이 확장을 직접 처리할 필요가 없습니다. `tools` 매개변수에 일치하는 모든 도구 정의를 제공하는 한 API에서 자동으로 수행됩니다.
 
 ## MCP 통합
 
-Tool search tool은 [MCP 서버](./06-mcp-in-api-01-mcp-connector.md)와 함께 작동합니다. API 요청에 `"mcp-client-2025-11-20"` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 추가한 다음, `default_config`와 함께 `mcp_toolset`을 사용하여 MCP 도구 로딩을 지연시킵니다:
+Tool search tool은 [MCP 서버](./06-mcp-in-api-01-mcp-connector.md)와 함께 작동합니다. 
+API 요청에 `"mcp-client-2025-11-20"` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 추가한 다음, `default_config`와 함께 `mcp_toolset`을 사용하여 MCP 도구 로딩을 지연시킵니다:
 
 <details>
 <summary>REST API 예시</summary>
@@ -292,32 +304,34 @@ curl https://api.anthropic.com/v1/messages \
 
 ## 커스텀 도구 검색 구현
 
-커스텀 도구에서 `tool_reference` 블록을 반환하여 자체 도구 검색 로직(예: 임베딩 또는 의미론적 검색 사용)을 구현할 수 있습니다. Claude가 커스텀 검색 도구를 호출하면 content 배열에 `tool_reference` 블록이 있는 표준 `tool_result`를 반환합니다:
+커스텀 도구에서 `tool_reference` 블록을 반환하여 자체 도구 검색 로직(예: 임베딩 또는 의미론적 검색 사용)을 구현할 수 있습니다. Claude가 커스텀 검색 도구를 호출하면 content 배열에
+`tool_reference` 블록이 있는 표준 `tool_result`를 반환합니다:
 
 ```json JSON
 {
   "type": "tool_result",
   "tool_use_id": "toolu_your_tool_id",
   "content": [
-    { "type": "tool_reference", "tool_name": "discovered_tool_name" }
+    {
+      "type": "tool_reference",
+      "tool_name": "discovered_tool_name"
+    }
   ]
 }
 ```
 
-참조된 모든 도구는 최상위 `tools` 매개변수에 `defer_loading: true`와 함께 해당하는 도구 정의가 있어야 합니다. 이 접근 방식을 사용하면 도구 검색 시스템과의 호환성을 유지하면서 더욱 정교한 검색 알고리즘을 사용할 수 있습니다.
+참조된 모든 도구는 최상위 `tools` 매개변수에 `defer_loading: true`와 함께 해당하는 도구 정의가 있어야 합니다. 
+이 접근 방식을 사용하면 도구 검색 시스템과의 호환성을 유지하면서 더욱 정교한 검색 알고리즘을 사용할 수 있습니다.
 
-
-> [응답 형식](#response-format) 섹션에 표시된 `tool_search_tool_result` 형식은 Anthropic의 내장 도구 검색에서 내부적으로 사용되는 서버 측 형식입니다. 커스텀 클라이언트 측 구현의 경우 항상 위에 표시된 것처럼 `tool_reference` 콘텐츠 블록이 있는 표준 `tool_result` 형식을 사용하세요.
-
+> [응답 형식](#response-format) 섹션에 표시된 `tool_search_tool_result` 형식은 Anthropic의 내장 도구 검색에서 내부적으로 사용되는 서버 측 형식입니다. 커스텀 클라이언트
+> 측 구현의 경우 항상 위에 표시된 것처럼 `tool_reference` 콘텐츠 블록이 있는 표준 `tool_result` 형식을 사용하세요.
 
 임베딩을 사용하는 완전한 예제는 [임베딩을 사용한 도구 검색 쿡북](https://platform.claude.com/cookbooks)을 참조하세요.
 
 ## 오류 처리
 
-
 > Tool search tool은 [도구 사용 예제](../03-tools/02-how-to-implement-tool-use.md)와 호환되지 않습니다.
 > 도구 사용 예제를 제공해야 하는 경우 도구 검색 없이 표준 도구 호출을 사용하세요.
-
 
 ### HTTP 오류 (400 상태)
 
@@ -380,10 +394,12 @@ curl https://api.anthropic.com/v1/messages \
 
 ```json
 {
-  "type": "tool_search_tool_regex_20251119", // 여기에 defer_loading 없음
+  "type": "tool_search_tool_regex_20251119",
+  // 여기에 defer_loading 없음
   "name": "tool_search_tool_regex"
 }
 ```
+
 </details>
 
 <details>
@@ -403,6 +419,7 @@ curl https://api.anthropic.com/v1/messages \
   "defer_loading": true
 }
 ```
+
 </details>
 
 <details>
@@ -516,24 +533,77 @@ print(f"Cache read tokens: {response2.usage.get('cache_read_input_tokens', 0)}")
 
 ```javascript
 event: content_block_start
-data: {"type": "content_block_start", "index": 1, "content_block": {"type": "server_tool_use", "id": "srvtoolu_xyz789", "name": "tool_search_tool_regex"}}
+data: {
+    "type"
+:
+    "content_block_start", "index"
+:
+    1, "content_block"
+:
+    {
+        "type"
+    :
+        "server_tool_use", "id"
+    :
+        "srvtoolu_xyz789", "name"
+    :
+        "tool_search_tool_regex"
+    }
+}
 
 // 검색 쿼리 스트리밍
 event: content_block_delta
-data: {"type": "content_block_delta", "index": 1, "delta": {"type": "input_json_delta", "partial_json": "{\"query\":\"weather\"}"}}
+data: {
+    "type"
+:
+    "content_block_delta", "index"
+:
+    1, "delta"
+:
+    {
+        "type"
+    :
+        "input_json_delta", "partial_json"
+    :
+        "{\"query\":\"weather\"}"
+    }
+}
 
 // 검색이 실행되는 동안 일시 중지
 
 // 검색 결과 스트리밍
 event: content_block_start
-data: {"type": "content_block_start", "index": 2, "content_block": {"type": "tool_search_tool_result", "tool_use_id": "srvtoolu_xyz789", "content": {"type": "tool_search_tool_search_result", "tool_references": [{"type": "tool_reference", "tool_name": "get_weather"}]}}}
+data: {
+    "type"
+:
+    "content_block_start", "index"
+:
+    2, "content_block"
+:
+    {
+        "type"
+    :
+        "tool_search_tool_result", "tool_use_id"
+    :
+        "srvtoolu_xyz789", "content"
+    :
+        {
+            "type"
+        :
+            "tool_search_tool_search_result", "tool_references"
+        :
+            [{"type": "tool_reference", "tool_name": "get_weather"}]
+        }
+    }
+}
 
 // Claude가 발견된 도구로 계속 진행
 ```
 
 ## 배치 요청
 
-[Messages Batches API](../02-capabilities/06-batch-processing.md)에 tool search tool을 포함할 수 있습니다. Messages Batches API를 통한 도구 검색 작업은 일반 Messages API 요청과 동일하게 가격이 책정됩니다.
+[Messages Batches API](../02-capabilities/06-batch-processing.md)에 tool search tool을 포함할 수 있습니다. 
+Messages Batches API를 통한 도구 검색 작업은 일반 Messages API 요청과 동일하게 가격이 책정됩니다.
 
 ## 제한 사항 및 모범 사례
 

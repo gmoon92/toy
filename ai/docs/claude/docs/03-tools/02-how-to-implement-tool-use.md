@@ -4,23 +4,22 @@
 
 ## 모델 선택하기
 
-복잡한 도구와 모호한 쿼리에는 최신 Claude Sonnet(4.5) 또는 Claude Opus(4.5) 모델을 권장합니다. 이 모델들은 여러 도구를 더 잘 처리하고 필요할 때 명확한 설명을 요청합니다.
+복잡한 도구와 모호한 쿼리에는 최신 Claude Sonnet(4.5) 또는 Claude Opus(4.5) 모델을 권장합니다. 
+이 모델들은 여러 도구를 더 잘 처리하고 필요할 때 명확한 설명을 요청합니다.
 
 간단한 도구에는 Claude Haiku 모델을 사용할 수 있지만, 누락된 매개변수를 추론할 수 있다는 점에 유의하세요.
 
-
 > 확장 사고(extended thinking)와 함께 도구 사용을 활용하는 경우, 자세한 내용은 [여기](../02-capabilities/03-extended-thinking.md)의 가이드를 참조하세요.
-
 
 ## 클라이언트 도구 지정하기
 
 클라이언트 도구(Anthropic 정의 및 사용자 정의 모두)는 API 요청의 최상위 `tools` 매개변수에 지정됩니다. 각 도구 정의에는 다음이 포함됩니다:
 
-| 매개변수 | 설명 |
-| :------------- | :-------------------------------------------------------------------------------------------------- |
-| `name` | 도구의 이름입니다. 정규식 `^[a-zA-Z0-9_-]{1,64}$`와 일치해야 합니다. |
-| `description` | 도구가 수행하는 작업, 사용 시기, 동작 방식에 대한 상세한 일반 텍스트 설명입니다. |
-| `input_schema` | 도구에 예상되는 매개변수를 정의하는 [JSON Schema](https://json-schema.org/) 객체입니다. |
+| 매개변수             | 설명                                                                                                               |
+|:-----------------|:-----------------------------------------------------------------------------------------------------------------|
+| `name`           | 도구의 이름입니다. 정규식 `^[a-zA-Z0-9_-]{1,64}$`와 일치해야 합니다.                                                                |
+| `description`    | 도구가 수행하는 작업, 사용 시기, 동작 방식에 대한 상세한 일반 텍스트 설명입니다.                                                                  |
+| `input_schema`   | 도구에 예상되는 매개변수를 정의하는 [JSON Schema](https://json-schema.org/) 객체입니다.                                               |
 | `input_examples` | (선택사항, 베타) Claude가 도구 사용 방법을 이해하는 데 도움이 되는 예제 입력 객체 배열입니다. [도구 사용 예제 제공하기](#providing-tool-use-examples)를 참조하세요. |
 
 <details>
@@ -53,7 +52,8 @@
 
 ### 도구 사용 시스템 프롬프트
 
-`tools` 매개변수를 사용하여 Claude API를 호출하면, 도구 정의, 도구 구성 및 사용자 지정 시스템 프롬프트로부터 특별한 시스템 프롬프트를 구성합니다. 구성된 프롬프트는 모델이 지정된 도구를 사용하고 도구가 올바르게 작동하는 데 필요한 컨텍스트를 제공하도록 설계되었습니다:
+`tools` 매개변수를 사용하여 Claude API를 호출하면, 도구 정의, 도구 구성 및 사용자 지정 시스템 프롬프트로부터 특별한 시스템 프롬프트를 구성합니다. 
+구성된 프롬프트는 모델이 지정된 도구를 사용하고 도구가 올바르게 작동하는 데 필요한 컨텍스트를 제공하도록 설계되었습니다:
 
 ```
 In this environment you have access to a set of tools you can use to answer the user's question.
@@ -69,12 +69,16 @@ Here are the functions available in JSONSchema format:
 
 도구를 사용할 때 Claude에서 최상의 성능을 얻으려면 다음 지침을 따르세요:
 
-- **매우 상세한 설명을 제공하세요.** 이것은 도구 성능에서 가장 중요한 요소입니다. 설명에는 다음을 포함한 도구에 대한 모든 세부 정보가 포함되어야 합니다:
-  - 도구가 수행하는 작업
-  - 사용해야 하는 시기(그리고 사용하지 말아야 하는 시기)
-  - 각 매개변수의 의미와 도구 동작에 미치는 영향
-  - 도구 이름이 불명확한 경우 도구가 반환하지 않는 정보와 같은 중요한 주의사항이나 제한사항. 도구에 대해 Claude에게 더 많은 컨텍스트를 제공할수록 도구를 언제 어떻게 사용할지 더 잘 결정할 수 있습니다. 도구 설명당 최소 3-4문장을 목표로 하고, 도구가 복잡한 경우 더 많이 작성하세요.
-- **설명을 우선시하되, 복잡한 도구에는 `input_examples` 사용을 고려하세요.** 명확한 설명이 가장 중요하지만, 복잡한 입력, 중첩된 객체 또는 형식에 민감한 매개변수가 있는 도구의 경우 `input_examples` 필드(베타)를 사용하여 스키마 검증된 예제를 제공할 수 있습니다. 자세한 내용은 [도구 사용 예제 제공하기](#providing-tool-use-examples)를 참조하세요.
+- **매우 상세한 설명을 제공하세요.** 
+  - 이것은 도구 성능에서 가장 중요한 요소입니다. 설명에는 다음을 포함한 도구에 대한 모든 세부 정보가 포함되어야 합니다:
+      - 도구가 수행하는 작업
+      - 사용해야 하는 시기(그리고 사용하지 말아야 하는 시기)
+      - 각 매개변수의 의미와 도구 동작에 미치는 영향
+      - 도구 이름이 불명확한 경우 도구가 반환하지 않는 정보와 같은 중요한 주의사항이나 제한사항. 
+      - 도구에 대해 Claude에게 더 많은 컨텍스트를 제공할수록 도구를 언제 어떻게 사용할지 더 잘 결정할 수 있습니다. 
+      - 도구 설명당 최소 3-4문장을 목표로 하고, 도구가 복잡한 경우 더 많이 작성하세요.
+- **설명을 우선시하되, 복잡한 도구에는 `input_examples` 사용을 고려하세요.** 명확한 설명이 가장 중요하지만, 복잡한 입력, 중첩된 객체 또는 형식에 민감한 매개변수가 있는 도구의 경우
+  `input_examples` 필드(베타)를 사용하여 스키마 검증된 예제를 제공할 수 있습니다. 자세한 내용은 [도구 사용 예제 제공하기](#providing-tool-use-examples)를 참조하세요.
 
 <details>
 <summary>좋은 도구 설명의 예</summary>
@@ -95,6 +99,7 @@ Here are the functions available in JSONSchema format:
   }
 }
 ```
+
 </details>
 
 <details>
@@ -115,13 +120,16 @@ Here are the functions available in JSONSchema format:
   }
 }
 ```
+
 </details>
 
-좋은 설명은 도구가 수행하는 작업, 사용 시기, 반환하는 데이터, `ticker` 매개변수의 의미를 명확하게 설명합니다. 좋지 않은 설명은 너무 간략하여 Claude가 도구의 동작과 사용법에 대해 많은 미해결 질문을 남깁니다.
+좋은 설명은 도구가 수행하는 작업, 사용 시기, 반환하는 데이터, `ticker` 매개변수의 의미를 명확하게 설명합니다. 좋지 않은 설명은 너무 간략하여 Claude가 도구의 동작과 사용법에 대해 많은 미해결 질문을
+남깁니다.
 
 ## 도구 사용 예제 제공하기
 
-복잡한 도구를 더 효과적으로 사용하는 방법을 Claude가 이해하도록 도와주는 유효한 도구 입력의 구체적인 예제를 제공할 수 있습니다. 이는 중첩된 객체, 선택적 매개변수 또는 형식에 민감한 입력이 있는 복잡한 도구에 특히 유용합니다.
+복잡한 도구를 더 효과적으로 사용하는 방법을 Claude가 이해하도록 도와주는 유효한 도구 입력의 구체적인 예제를 제공할 수 있습니다. 이는 중첩된 객체, 선택적 매개변수 또는 형식에 민감한 입력이 있는 복잡한
+도구에 특히 유용합니다.
 
 
 > 도구 사용 예제는 베타 기능입니다. 제공업체에 적합한 [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 포함하세요:
@@ -130,7 +138,6 @@ Here are the functions available in JSONSchema format:
 > |----------|-------------|------------------|
 > | Claude API,<br/>Microsoft Foundry | `advanced-tool-use-2025-11-20` | 모든 모델 |
 > | Vertex AI,<br/>Amazon Bedrock | `tool-examples-2025-10-29` | Claude Opus 4.5만 해당 |
-
 
 ### 기본 사용법
 
@@ -190,7 +197,8 @@ response = client.messages.create(
 
 </details>
 
-예제는 도구 스키마와 함께 프롬프트에 포함되어 Claude에게 올바른 형식의 도구 호출에 대한 구체적인 패턴을 보여줍니다. 이는 Claude가 선택적 매개변수를 포함할 시기, 사용할 형식, 복잡한 입력을 구조화하는 방법을 이해하는 데 도움이 됩니다.
+예제는 도구 스키마와 함께 프롬프트에 포함되어 Claude에게 올바른 형식의 도구 호출에 대한 구체적인 패턴을 보여줍니다. 이는 Claude가 선택적 매개변수를 포함할 시기, 사용할 형식, 복잡한 입력을 구조화하는
+방법을 이해하는 데 도움이 됩니다.
 
 ### 요구사항 및 제한사항
 
@@ -210,14 +218,16 @@ response = client.messages.create(
 대부분의 도구 사용 구현에 도구 러너를 사용하는 것을 권장합니다.
 
 
-> 도구 러너는 현재 베타 버전이며 [Python](https://github.com/anthropics/anthropic-sdk-python/blob/main/tools.md), [TypeScript](https://github.com/anthropics/anthropic-sdk-typescript/blob/main/helpers.md#tool-helpers), [Ruby](https://github.com/anthropics/anthropic-sdk-ruby/blob/main/helpers.md#3-auto-looping-tool-runner-beta) SDK에서 사용할 수 있습니다.
+> 도구 러너는 현재 베타
+> 버전이며 [Python](https://github.com/anthropics/anthropic-sdk-python/blob/main/tools.md), [TypeScript](https://github.com/anthropics/anthropic-sdk-typescript/blob/main/helpers.md#tool-helpers), [Ruby](https://github.com/anthropics/anthropic-sdk-ruby/blob/main/helpers.md#3-auto-looping-tool-runner-beta)
+> SDK에서 사용할 수 있습니다.
 
 
 
 > **압축을 통한 자동 컨텍스트 관리**
 >
-> 도구 러너는 자동 [압축](../02-capabilities/02-context-editing.md)을 지원하며, 토큰 사용량이 임계값을 초과하면 요약을 생성합니다. 이를 통해 장기 실행 에이전트 작업이 컨텍스트 윈도우 제한을 넘어 계속될 수 있습니다.
-
+> 도구 러너는 자동 [압축](../02-capabilities/02-context-editing.md)을 지원하며, 토큰 사용량이 임계값을 초과하면 요약을 생성합니다. 이를 통해 장기 실행 에이전트 작업이 컨텍스트
+> 윈도우 제한을 넘어 계속될 수 있습니다.
 
 ### 기본 사용법
 
@@ -230,7 +240,6 @@ SDK 헬퍼를 사용하여 도구를 정의한 다음 도구 러너를 사용하
 
 
 > 비동기 클라이언트를 사용하는 경우, `@beta_tool`을 `@beta_async_tool`로 바꾸고 `async def`로 함수를 정의하세요.
-
 
 ```python
 import anthropic
@@ -350,7 +359,6 @@ for await (const message of runner) {
 
 > Claude가 생성한 입력은 런타임에 검증되지 않습니다. 필요한 경우 `run` 함수 내에서 검증을 수행하세요.
 
-
 ```typescript
 import { Anthropic } from '@anthropic-ai/sdk';
 import { betaTool } from '@anthropic-ai/sdk/helpers/beta/json-schema';
@@ -447,15 +455,18 @@ runner.each_message do |message|
 end
 ```
 
-`Anthropic::BaseTool` 클래스는 도구 설명에 `doc` 메서드를 사용하고 예상 매개변수를 정의하는 데 `input_schema`를 사용합니다. SDK는 이것을 적절한 JSON 스키마 형식으로 자동 변환합니다.
+`Anthropic::BaseTool` 클래스는 도구 설명에 `doc` 메서드를 사용하고 예상 매개변수를 정의하는 데 `input_schema`를 사용합니다. SDK는 이것을 적절한 JSON 스키마 형식으로 자동
+변환합니다.
 
 </details>
 
-도구 함수는 텍스트, 이미지 또는 문서 블록을 포함한 콘텐츠 블록 또는 콘텐츠 블록 배열을 반환해야 합니다. 이를 통해 도구가 풍부한 멀티모달 응답을 반환할 수 있습니다. 반환된 문자열은 텍스트 콘텐츠 블록으로 변환됩니다. 구조화된 JSON 객체를 Claude에게 반환하려면 반환하기 전에 JSON 문자열로 인코딩하세요. 숫자, 불리언 또는 기타 비문자열 원시 타입도 문자열로 변환해야 합니다.
+도구 함수는 텍스트, 이미지 또는 문서 블록을 포함한 콘텐츠 블록 또는 콘텐츠 블록 배열을 반환해야 합니다. 이를 통해 도구가 풍부한 멀티모달 응답을 반환할 수 있습니다. 반환된 문자열은 텍스트 콘텐츠 블록으로
+변환됩니다. 구조화된 JSON 객체를 Claude에게 반환하려면 반환하기 전에 JSON 문자열로 인코딩하세요. 숫자, 불리언 또는 기타 비문자열 원시 타입도 문자열로 변환해야 합니다.
 
 ### 도구 러너 반복하기
 
-도구 러너는 Claude의 메시지를 생성하는 반복 가능한 객체입니다. 이를 흔히 "도구 호출 루프"라고 합니다. 각 반복에서 러너는 Claude가 도구 사용을 요청했는지 확인합니다. 그렇다면 도구를 호출하고 결과를 자동으로 Claude에게 다시 보낸 다음, Claude의 다음 메시지를 생성하여 루프를 계속합니다.
+도구 러너는 Claude의 메시지를 생성하는 반복 가능한 객체입니다. 이를 흔히 "도구 호출 루프"라고 합니다. 각 반복에서 러너는 Claude가 도구 사용을 요청했는지 확인합니다. 그렇다면 도구를 호출하고 결과를
+자동으로 Claude에게 다시 보낸 다음, Claude의 다음 메시지를 생성하여 루프를 계속합니다.
 
 `break` 문으로 모든 반복에서 루프를 종료할 수 있습니다. 러너는 Claude가 도구 사용 없이 메시지를 반환할 때까지 루프합니다.
 
@@ -523,12 +534,14 @@ all_messages.each { |msg| puts msg.content }
 
 ### 고급 사용법
 
-루프 내에서 도구 러너의 다음 요청을 완전히 사용자 정의할 수 있습니다. 러너는 메시지 기록에 도구 결과를 자동으로 추가하므로 수동으로 관리할 필요가 없습니다. 선택적으로 로깅이나 디버깅을 위해 도구 결과를 검사하고 다음 API 호출 전에 요청 매개변수를 수정할 수 있습니다.
+루프 내에서 도구 러너의 다음 요청을 완전히 사용자 정의할 수 있습니다. 러너는 메시지 기록에 도구 결과를 자동으로 추가하므로 수동으로 관리할 필요가 없습니다. 선택적으로 로깅이나 디버깅을 위해 도구 결과를 검사하고
+다음 API 호출 전에 요청 매개변수를 수정할 수 있습니다.
 
 <details>
 <summary>Python</summary>
 
-도구 결과를 선택적으로 검사하려면 `generate_tool_call_response()`를 사용하세요(러너가 자동으로 추가합니다). 요청을 수정하려면 `set_messages_params()` 및 `append_messages()`를 사용하세요.
+도구 결과를 선택적으로 검사하려면 `generate_tool_call_response()`를 사용하세요(러너가 자동으로 추가합니다). 요청을 수정하려면 `set_messages_params()` 및
+`append_messages()`를 사용하세요.
 
 ```python
 runner = client.beta.messages.tool_runner(
@@ -560,7 +573,8 @@ for message in runner:
 <details>
 <summary>TypeScript</summary>
 
-도구 결과를 선택적으로 검사하려면 `generateToolResponse()`를 사용하세요(러너가 자동으로 추가합니다). 요청을 수정하려면 `setMessagesParams()` 및 `pushMessages()`를 사용하세요.
+도구 결과를 선택적으로 검사하려면 `generateToolResponse()`를 사용하세요(러너가 자동으로 추가합니다). 요청을 수정하려면 `setMessagesParams()` 및 `pushMessages()`를
+사용하세요.
 
 ```typescript
 const runner = anthropic.beta.messages.toolRunner({
@@ -638,7 +652,8 @@ export ANTHROPIC_LOG=debug
 
 #### 도구 오류 가로채기
 
-기본적으로 도구 오류는 Claude에게 다시 전달되며, Claude는 적절하게 응답할 수 있습니다. 그러나 오류를 감지하고 다르게 처리하고 싶을 수 있습니다. 예를 들어 실행을 조기에 중지하거나 사용자 정의 오류 처리를 구현하는 경우입니다.
+기본적으로 도구 오류는 Claude에게 다시 전달되며, Claude는 적절하게 응답할 수 있습니다. 그러나 오류를 감지하고 다르게 처리하고 싶을 수 있습니다. 예를 들어 실행을 조기에 중지하거나 사용자 정의 오류
+처리를 구현하는 경우입니다.
 
 도구 응답 메서드를 사용하여 도구 결과를 가로채고 Claude에게 전송되기 전에 오류를 확인하세요:
 
@@ -745,7 +760,8 @@ end
 
 #### 도구 결과 수정
 
-Claude에게 다시 보내기 전에 도구 결과를 수정할 수 있습니다. 이는 도구 결과에 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 활성화하기 위해 `cache_control`과 같은 메타데이터를 추가하거나 도구 출력을 변환하는 데 유용합니다.
+Claude에게 다시 보내기 전에 도구 결과를 수정할 수 있습니다. 이는 도구 결과에 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 활성화하기 위해
+`cache_control`과 같은 메타데이터를 추가하거나 도구 출력을 변환하는 데 유용합니다.
 
 도구 응답 메서드를 사용하여 도구 결과를 가져온 다음 수정하고 수정된 버전을 메시지에 추가하세요:
 
@@ -847,8 +863,8 @@ end
 </details>
 
 
-> 도구 결과에 `cache_control`을 추가하는 것은 도구가 후속 API 호출을 위해 캐시하려는 많은 양의 데이터(예: 문서 검색 결과)를 반환할 때 특히 유용합니다. 캐싱 전략에 대한 자세한 내용은 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 참조하세요.
-
+> 도구 결과에 `cache_control`을 추가하는 것은 도구가 후속 API 호출을 위해 캐시하려는 많은 양의 데이터(예: 문서 검색 결과)를 반환할 때 특히 유용합니다. 캐싱 전략에 대한 자세한
+> 내용은 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 참조하세요.
 
 ### 스트리밍
 
@@ -934,12 +950,12 @@ end
 
 > SDK 도구 러너는 베타 버전입니다. 이 문서의 나머지 부분에서는 수동 도구 구현을 다룹니다.
 
-
 ## Claude의 출력 제어하기
 
 ### 도구 사용 강제하기
 
-일부 경우에는 Claude가 도구 없이 답변을 제공할 수 있다고 생각하더라도 사용자의 질문에 답변하기 위해 특정 도구를 사용하도록 하고 싶을 수 있습니다. 다음과 같이 `tool_choice` 필드에 도구를 지정하여 이를 수행할 수 있습니다:
+일부 경우에는 Claude가 도구 없이 답변을 제공할 수 있다고 생각하더라도 사용자의 질문에 답변하기 위해 특정 도구를 사용하도록 하고 싶을 수 있습니다. 다음과 같이 `tool_choice` 필드에 도구를 지정하여
+이를 수행할 수 있습니다:
 
 ```
 tool_choice = {"type": "tool", "name": "get_weather"}
@@ -952,8 +968,8 @@ tool_choice 매개변수를 사용할 때 네 가지 가능한 옵션이 있습�
 - `tool`은 Claude가 항상 특정 도구를 사용하도록 강제할 수 있게 합니다.
 - `none`은 Claude가 도구를 사용하는 것을 방지합니다. 이것은 `tools`가 제공되지 않을 때의 기본값입니다.
 
-
-> [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 사용할 때 `tool_choice` 매개변수의 변경은 캐시된 메시지 블록을 무효화합니다. 도구 정의와 시스템 프롬프트는 캐시된 상태로 유지되지만 메시지 콘텐츠는 재처리되어야 합니다.
+> [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 사용할 때 `tool_choice` 매개변수의 변경은 캐시된 메시지 블록을 무효화합니다. 도구 정의와 시스템 프롬프트는
+> 캐시된 상태로 유지되지만 메시지 콘텐츠는 재처리되어야 합니다.
 
 
 이 다이어그램은 각 옵션이 어떻게 작동하는지 보여줍니다:
@@ -962,23 +978,28 @@ tool_choice 매개변수를 사용할 때 네 가지 가능한 옵션이 있습�
   ![Image](/docs/images/tool_choice.png)
 </Frame>
 
-`tool_choice`가 `any` 또는 `tool`일 때 도구를 사용하도록 강제하기 위해 어시스턴트 메시지를 미리 채운다는 점에 유의하세요. 이는 모델이 `tool_use` 콘텐츠 블록 전에 자연어 응답이나 설명을 명시적으로 요청받더라도 출력하지 않는다는 것을 의미합니다.
+`tool_choice`가 `any` 또는 `tool`일 때 도구를 사용하도록 강제하기 위해 어시스턴트 메시지를 미리 채운다는 점에 유의하세요. 이는 모델이 `tool_use` 콘텐츠 블록 전에 자연어 응답이나
+설명을 명시적으로 요청받더라도 출력하지 않는다는 것을 의미합니다.
 
 
-> [확장 사고](../02-capabilities/03-extended-thinking.md)를 도구 사용과 함께 사용할 때, `tool_choice: {"type": "any"}` 및 `tool_choice: {"type": "tool", "name": "..."}`는 지원되지 않으며 오류가 발생합니다. `tool_choice: {"type": "auto"}`(기본값) 및 `tool_choice: {"type": "none"}`만 확장 사고와 호환됩니다.
+> [확장 사고](../02-capabilities/03-extended-thinking.md)를 도구 사용과 함께 사용할 때, `tool_choice: {"type": "any"}` 및
+`tool_choice: {"type": "tool", "name": "..."}`는 지원되지 않으며 오류가 발생합니다. `tool_choice: {"type": "auto"}`(기본값) 및
+`tool_choice: {"type": "none"}`만 확장 사고와 호환됩니다.
 
 
-우리의 테스트에 따르면 이것이 성능을 감소시키지 않아야 합니다. 모델이 특정 도구를 사용하도록 요청하면서 자연어 컨텍스트나 설명을 제공하기를 원한다면, `tool_choice`에 `{"type": "auto"}`(기본값)를 사용하고 `user` 메시지에 명시적 지시를 추가할 수 있습니다. 예를 들어: `런던의 날씨는 어떤가요? 응답에 get_weather 도구를 사용하세요.`
+우리의 테스트에 따르면 이것이 성능을 감소시키지 않아야 합니다. 모델이 특정 도구를 사용하도록 요청하면서 자연어 컨텍스트나 설명을 제공하기를 원한다면, `tool_choice`에 `{"type": "auto"}`(
+기본값)를 사용하고 `user` 메시지에 명시적 지시를 추가할 수 있습니다. 예를 들어: `런던의 날씨는 어떤가요? 응답에 get_weather 도구를 사용하세요.`
 
 
 > **엄격한 도구를 사용한 보장된 도구 호출**
 >
-> `tool_choice: {"type": "any"}`를 [엄격한 도구 사용](../02-capabilities/15-structured-outputs.md)과 결합하여 도구 중 하나가 호출되고 도구 입력이 스키마를 엄격하게 따르는 것을 모두 보장하세요. 스키마 검증을 활성화하려면 도구 정의에 `strict: true`를 설정하세요.
-
+> `tool_choice: {"type": "any"}`를 [엄격한 도구 사용](../02-capabilities/15-structured-outputs.md)과 결합하여 도구 중 하나가 호출되고 도구 입력이
+> 스키마를 엄격하게 따르는 것을 모두 보장하세요. 스키마 검증을 활성화하려면 도구 정의에 `strict: true`를 설정하세요.
 
 ### JSON 출력
 
-도구가 반드시 클라이언트 함수일 필요는 없습니다. 모델이 제공된 스키마를 따르는 JSON 출력을 반환하기를 원할 때마다 도구를 사용할 수 있습니다. 예를 들어, 특정 스키마를 가진 `record_summary` 도구를 사용할 수 있습니다. 전체 작동 예제는 [Claude와 도구 사용](../03-tools/01-overview.md)을 참조하세요.
+도구가 반드시 클라이언트 함수일 필요는 없습니다. 모델이 제공된 스키마를 따르는 JSON 출력을 반환하기를 원할 때마다 도구를 사용할 수 있습니다. 예를 들어, 특정 스키마를 가진 `record_summary`
+도구를 사용할 수 있습니다. 전체 작동 예제는 [Claude와 도구 사용](../03-tools/01-overview.md)을 참조하세요.
 
 ### 도구를 사용한 모델 응답
 
@@ -1004,9 +1025,11 @@ tool_choice 매개변수를 사용할 때 네 가지 가능한 옵션이 있습�
 }
 ```
 
-이러한 자연스러운 응답 스타일은 사용자가 Claude가 무엇을 하고 있는지 이해하는 데 도움이 되며 더 대화적인 상호작용을 만듭니다. 시스템 프롬프트에 `<examples>`를 제공하여 이러한 응답의 스타일과 내용을 안내할 수 있습니다.
+이러한 자연스러운 응답 스타일은 사용자가 Claude가 무엇을 하고 있는지 이해하는 데 도움이 되며 더 대화적인 상호작용을 만듭니다. 시스템 프롬프트에 `<examples>`를 제공하여 이러한 응답의 스타일과 내용을
+안내할 수 있습니다.
 
-Claude가 자신의 행동을 설명할 때 다양한 표현과 접근 방식을 사용할 수 있다는 점에 유의하는 것이 중요합니다. 코드는 이러한 응답을 다른 어시스턴트 생성 텍스트처럼 처리해야 하며 특정 형식 규칙에 의존해서는 안 됩니다.
+Claude가 자신의 행동을 설명할 때 다양한 표현과 접근 방식을 사용할 수 있다는 점에 유의하는 것이 중요합니다. 코드는 이러한 응답을 다른 어시스턴트 생성 텍스트처럼 처리해야 하며 특정 형식 규칙에 의존해서는 안
+됩니다.
 
 ### 병렬 도구 사용
 
@@ -1167,6 +1190,7 @@ print(final_response.content[0].text)
   ]
 }
 ```
+
 </details>
 <details>
 <summary>병렬 도구를 위한 완전한 테스트 스크립트</summary>
@@ -1293,6 +1317,7 @@ print("✓ 향후 병렬 도구 사용을 위해 대화가 올바르게 형식�
 </details>
 
 이 스크립트는 다음을 보여줍니다:
+
 - 병렬 도구 호출 및 결과를 올바르게 형식화하는 방법
 - 병렬 호출이 이루어지고 있는지 검증하는 방법
 - 향후 병렬 도구 사용을 권장하는 올바른 메시지 구조
@@ -1309,16 +1334,19 @@ Claude 4 모델은 기본적으로 우수한 병렬 도구 사용 기능을 갖�
 <summary>병렬 도구 사용을 위한 시스템 프롬프트</summary>
 
 Claude 4 모델(Opus 4, Sonnet 4)의 경우 시스템 프롬프트에 다음을 추가하세요:
+
 ```text
 최대 효율을 위해 여러 독립적인 작업을 수행해야 할 때마다 순차적이 아닌 동시에 관련된 모든 도구를 호출하세요.
 ```
 
 더 강력한 병렬 도구 사용을 위해 (기본값이 충분하지 않은 경우 권장):
+
 ```text
 <use_parallel_tool_calls>
 최대 효율을 위해 여러 독립적인 작업을 수행할 때마다 순차적이 아닌 동시에 관련된 모든 도구를 호출하세요. 가능한 한 병렬로 도구를 호출하는 것을 우선시하세요. 예를 들어, 3개의 파일을 읽을 때 3개의 도구 호출을 병렬로 실행하여 3개의 파일을 모두 동시에 컨텍스트로 읽어들이세요. `ls` 또는 `list_dir`와 같은 여러 읽기 전용 명령을 실행할 때 항상 모든 명령을 병렬로 실행하세요. 너무 많은 도구를 순차적으로 실행하는 것보다 병렬 도구 호출을 극대화하는 쪽으로 치우치세요.
 </use_parallel_tool_calls>
 ```
+
 </details>
 <details>
 <summary>사용자 메시지 프롬프팅</summary>
@@ -1335,22 +1363,26 @@ Claude 4 모델(Opus 4, Sonnet 4)의 경우 시스템 프롬프트에 다음을 
 # 또는 명시적으로:
 "병렬 도구 호출을 사용하여 파리, 런던, 도쿄의 날씨를 동시에 가져오세요."
 ```
+
 </details>
 
 
 > **Claude Sonnet 3.7의 병렬 도구 사용**
 >
-> Claude Sonnet 3.7은 `disable_parallel_tool_use`를 설정하지 않은 경우에도 응답에서 병렬 도구 호출을 수행할 가능성이 낮을 수 있습니다. 내장 토큰 효율적 도구 사용 및 향상된 병렬 도구 호출이 있는 [Claude 4 모델로 업그레이드](https://platform.claude.com/docs/en/about-claude/models/migrating-to-claude-4)하는 것을 권장합니다.
+> Claude Sonnet 3.7은 `disable_parallel_tool_use`를 설정하지 않은 경우에도 응답에서 병렬 도구 호출을 수행할 가능성이 낮을 수 있습니다. 내장 토큰 효율적 도구 사용 및 향상된
+> 병렬 도구 호출이 있는 [Claude 4 모델로 업그레이드](https://platform.claude.com/docs/en/about-claude/models/migrating-to-claude-4)하는 것을
+> 권장합니다.
 >
-> 여전히 Claude Sonnet 3.7을 사용하는 경우, Claude가 병렬 도구를 사용하도록 장려하는 데 도움이 되는 `token-efficient-tools-2025-02-19` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 활성화할 수 있습니다. 여러 도구를 동시에 호출하는 메타 도구로 작동할 수 있는 "배치 도구"를 도입할 수도 있습니다.
+> 여전히 Claude Sonnet 3.7을 사용하는 경우, Claude가 병렬 도구를 사용하도록 장려하는 데 도움이 되는
+`token-efficient-tools-2025-02-19` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)를 활성화할 수 있습니다. 여러 도구를
+> 동시에 호출하는 메타 도구로 작동할 수 있는 "배치 도구"를 도입할 수도 있습니다.
 >
 > 이 해결 방법을 사용하는 방법은 쿡북의 [이 예제](https://platform.claude.com/cookbook/tool-use-parallel-tools)를 참조하세요.
 
-
 ## 도구 사용 및 도구 결과 콘텐츠 블록 처리
 
-
-> **도구 러너로 더 간단하게**: 이 섹션에서 설명하는 수동 도구 처리는 [도구 러너](#tool-runner-beta)가 자동으로 관리합니다. 도구 실행에 대한 사용자 정의 제어가 필요할 때 이 섹션을 사용하세요.
+> **도구 러너로 더 간단하게**: 이 섹션에서 설명하는 수동 도구 처리는 [도구 러너](#tool-runner-beta)가 자동으로 관리합니다. 도구 실행에 대한 사용자 정의 제어가 필요할 때 이 섹션을
+> 사용하세요.
 
 
 Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 사용하는지에 따라 다릅니다.
@@ -1386,6 +1418,7 @@ Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 �
   ]
 }
 ```
+
 </details>
 
 클라이언트 도구에 대한 도구 사용 응답을 받으면 다음을 수행해야 합니다:
@@ -1393,10 +1426,12 @@ Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 �
 1. `tool_use` 블록에서 `name`, `id`, `input`을 추출합니다.
 2. 해당 도구 이름에 해당하는 코드베이스의 실제 도구를 실행하고 도구 `input`을 전달합니다.
 3. `role`이 `user`이고 다음 정보를 포함하는 `tool_result` 타입의 `content` 블록이 있는 새 메시지를 보내 대화를 계속합니다:
-   - `tool_use_id`: 이것이 결과인 도구 사용 요청의 `id`.
-   - `content`: 도구의 결과, 문자열(예: `"content": "15 degrees"`), 중첩된 콘텐츠 블록 목록(예: `"content": [{"type": "text", "text": "15 degrees"}]`), 또는 문서 블록 목록(예: `"content": ["type": "document", "source": {"type": "text", "media_type": "text/plain", "data": "15 degrees"}]`)으로 제공됩니다. 이러한 콘텐츠 블록은 `text`, `image` 또는 `document` 타입을 사용할 수 있습니다.
-   - `is_error` (선택사항): 도구 실행이 오류를 발생시킨 경우 `true`로 설정합니다.
-
+    - `tool_use_id`: 이것이 결과인 도구 사용 요청의 `id`.
+    - `content`: 도구의 결과, 문자열(예: `"content": "15 degrees"`), 중첩된 콘텐츠 블록 목록(예:
+      `"content": [{"type": "text", "text": "15 degrees"}]`), 또는 문서 블록 목록(예:
+      `"content": ["type": "document", "source": {"type": "text", "media_type": "text/plain", "data": "15 degrees"}]`)으로
+      제공됩니다. 이러한 콘텐츠 블록은 `text`, `image` 또는 `document` 타입을 사용할 수 있습니다.
+    - `is_error` (선택사항): 도구 실행이 오류를 발생시킨 경우 `true`로 설정합니다.
 
 > **중요한 형식 요구사항**:
 > - 도구 결과 블록은 메시지 기록에서 해당 도구 사용 블록 바로 뒤에 와야 합니다. 어시스턴트의 도구 사용 메시지와 사용자의 도구 결과 메시지 사이에 메시지를 포함할 수 없습니다.
@@ -1436,6 +1471,7 @@ Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 �
   ]
 }
 ```
+
 </details>
 
 <details>
@@ -1463,6 +1499,7 @@ Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 �
   ]
 }
 ```
+
 </details>
 <details>
 <summary>빈 도구 결과의 예</summary>
@@ -1478,6 +1515,7 @@ Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 �
   ]
 }
 ```
+
 </details>
 
 <details>
@@ -1505,6 +1543,7 @@ Claude의 응답은 클라이언트 도구를 사용하는지 서버 도구를 �
   ]
 }
 ```
+
 </details>
 
 도구 결과를 받은 후 Claude는 해당 정보를 사용하여 원래 사용자 프롬프트에 대한 응답을 계속 생성합니다.
@@ -1518,12 +1557,14 @@ Claude는 도구를 내부적으로 실행하고 추가적인 사용자 상호�
 >
 > 도구 사용을 분리하거나 `tool` 또는 `function`과 같은 특수 역할을 사용하는 API와 달리, Claude API는 도구를 `user` 및 `assistant` 메시지 구조에 직접 통합합니다.
 >
-> 메시지에는 `text`, `image`, `tool_use`, `tool_result` 블록의 배열이 포함됩니다. `user` 메시지에는 클라이언트 콘텐츠와 `tool_result`가 포함되고, `assistant` 메시지에는 AI 생성 콘텐츠와 `tool_use`가 포함됩니다.
-
+> 메시지에는 `text`, `image`, `tool_use`, `tool_result` 블록의 배열이 포함됩니다. `user` 메시지에는 클라이언트 콘텐츠와 `tool_result`가 포함되고,
+`assistant` 메시지에는 AI 생성 콘텐츠와 `tool_use`가 포함됩니다.
 
 ### `max_tokens` 중지 이유 처리
 
-[`max_tokens` 제한에 도달하여 Claude의 응답이 중단된](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons#max-tokens) 경우 잘린 응답에 불완전한 도구 사용 블록이 포함되어 있으면 전체 도구 사용을 얻기 위해 더 높은 `max_tokens` 값으로 요청을 다시 시도해야 합니다.
+[
+`max_tokens` 제한에 도달하여 Claude의 응답이 중단된](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons#max-tokens)
+경우 잘린 응답에 불완전한 도구 사용 블록이 포함되어 있으면 전체 도구 사용을 얻기 위해 더 높은 `max_tokens` 값으로 요청을 다시 시도해야 합니다.
 
 <details>
 <summary>Python 예시</summary>
@@ -1604,12 +1645,12 @@ else:
 </details>
 
 `pause_turn`을 처리할 때:
+
 - **대화 계속**: 일시 중지된 응답을 후속 요청에서 그대로 전달하여 Claude가 턴을 계속하도록 합니다
 - **필요시 수정**: 대화를 중단하거나 방향을 전환하려는 경우 계속하기 전에 선택적으로 콘텐츠를 수정할 수 있습니다
 - **도구 상태 보존**: 기능을 유지하기 위해 연속 요청에 동일한 도구를 포함합니다
 
 ## 오류 문제 해결
-
 
 > **내장 오류 처리**: [도구 러너](#tool-runner-beta)는 가장 일반적인 시나리오에 대한 자동 오류 처리를 제공합니다. 이 섹션은 고급 사용 사례를 위한 수동 오류 처리를 다룹니다.
 
@@ -1640,7 +1681,8 @@ Claude와 도구를 사용할 때 발생할 수 있는 몇 가지 유형의 오�
 <details>
 <summary>잘못된 도구 이름</summary>
 
-Claude의 도구 사용 시도가 유효하지 않은 경우(예: 필수 매개변수 누락), 일반적으로 Claude가 도구를 올바르게 사용하기에 충분한 정보가 없었음을 의미합니다. 개발 중 최선의 방법은 도구 정의에서 더 상세한 `description` 값으로 요청을 다시 시도하는 것입니다.
+Claude의 도구 사용 시도가 유효하지 않은 경우(예: 필수 매개변수 누락), 일반적으로 Claude가 도구를 올바르게 사용하기에 충분한 정보가 없었음을 의미합니다. 개발 중 최선의 방법은 도구 정의에서 더 상세한
+`description` 값으로 요청을 다시 시도하는 것입니다.
 
 그러나 오류를 나타내는 `tool_result`로 대화를 계속 진행할 수도 있으며, Claude는 누락된 정보를 채워 도구를 다시 사용하려고 시도합니다:
 
@@ -1661,7 +1703,8 @@ Claude의 도구 사용 시도가 유효하지 않은 경우(예: 필수 매개�
 도구 요청이 유효하지 않거나 매개변수가 누락된 경우 Claude는 사용자에게 사과하기 전에 수정과 함께 2-3번 재시도합니다.
 
 
-> 잘못된 도구 호출을 완전히 제거하려면 도구 정의에 `strict: true`를 설정하여 [엄격한 도구 사용](../02-capabilities/15-structured-outputs.md)을 사용하세요. 이렇게 하면 도구 입력이 항상 스키마와 정확히 일치하여 누락된 매개변수와 타입 불일치를 방지할 수 있습니다.
+> 잘못된 도구 호출을 완전히 제거하려면 도구 정의에 `strict: true`를 설정하여 [엄격한 도구 사용](../02-capabilities/15-structured-outputs.md)을 사용하세요. 이렇게
+> 하면 도구 입력이 항상 스키마와 정확히 일치하여 누락된 매개변수와 타입 불일치를 방지할 수 있습니다.
 </details>
 <details>
 <summary><search_quality_reflection> 태그</summary>
@@ -1671,14 +1714,17 @@ Claude가 \<search_quality_reflection> 태그로 검색 품질을 반영하지 �
 <details>
 <summary>서버 도구 오류</summary>
 
-서버 도구에 오류가 발생하면(예: 웹 검색의 네트워크 문제) Claude는 이러한 오류를 투명하게 처리하고 사용자에게 대안 응답이나 설명을 제공하려고 시도합니다. 클라이언트 도구와 달리 서버 도구에 대한 `is_error` 결과를 처리할 필요가 없습니다.
+서버 도구에 오류가 발생하면(예: 웹 검색의 네트워크 문제) Claude는 이러한 오류를 투명하게 처리하고 사용자에게 대안 응답이나 설명을 제공하려고 시도합니다. 클라이언트 도구와 달리 서버 도구에 대한
+`is_error` 결과를 처리할 필요가 없습니다.
 
 웹 검색의 경우 가능한 오류 코드는 다음과 같습니다:
+
 - `too_many_requests`: 속도 제한 초과
 - `invalid_input`: 잘못된 검색 쿼리 매개변수
 - `max_uses_exceeded`: 최대 웹 검색 도구 사용 초과
 - `query_too_long`: 쿼리가 최대 길이를 초과함
 - `unavailable`: 내부 오류 발생
+
 </details>
 <details>
 <summary>병렬 도구 호출이 작동하지 않음</summary>
@@ -1690,6 +1736,7 @@ Claude가 \<search_quality_reflection> 태그로 검색 품질을 반영하지 �
 가장 일반적인 문제는 대화 기록에서 도구 결과를 잘못 형식화하는 것입니다. 이는 Claude가 병렬 호출을 피하도록 "학습"시킵니다.
 
 특히 병렬 도구 사용의 경우:
+
 - ❌ **잘못됨**: 각 도구 결과에 대해 별도의 사용자 메시지 전송
 - ✅ **올바름**: 모든 도구 결과는 단일 사용자 메시지에 있어야 함
 
@@ -1743,6 +1790,9 @@ print(f"메시지당 평균 도구: {avg_tools_per_message}")
 **4. 모델별 동작**
 
 - Claude Opus 4.5, Opus 4.1, Sonnet 4: 최소한의 프롬프팅으로 병렬 도구 사용에 뛰어남
-- Claude Sonnet 3.7: 더 강한 프롬프팅 또는 `token-efficient-tools-2025-02-19` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)가 필요할 수 있습니다. [Claude 4로 업그레이드](https://platform.claude.com/docs/en/about-claude/models/migrating-to-claude-4)를 고려하세요.
+- Claude Sonnet 3.7: 더 강한 프롬프팅 또는
+  `token-efficient-tools-2025-02-19` [베타 헤더](https://platform.claude.com/docs/en/api/beta-headers)가 필요할 수
+  있습니다. [Claude 4로 업그레이드](https://platform.claude.com/docs/en/about-claude/models/migrating-to-claude-4)를 고려하세요.
 - Claude Haiku: 명시적 프롬프팅 없이는 병렬 도구를 사용할 가능성이 낮음
+
 </details>

@@ -2,11 +2,10 @@
 
 ---
 
-웹 검색 도구는 Claude에게 실시간 웹 콘텐츠에 대한 직접 액세스를 제공하여, 지식 기준일(knowledge cutoff) 이후의 최신 정보로 질문에 답변할 수 있게 합니다. Claude는 자동으로 검색 결과의 출처를 답변의 일부로 인용합니다.
-
+웹 검색 도구는 Claude에게 실시간 웹 콘텐츠에 대한 직접 액세스를 제공하여, 지식 기준일(knowledge cutoff) 이후의 최신 정보로 질문에 답변할 수 있게 합니다. 
+Claude는 자동으로 검색 결과의 출처를 답변의 일부로 인용합니다.
 
 > 웹 검색 도구에 대한 경험을 공유하려면 [피드백 양식](https://forms.gle/sWjBtsrNEY2oKGuE8)을 통해 문의해 주세요.
-
 
 ## 지원되는 모델
 
@@ -14,9 +13,11 @@
 
 - Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`)
 - Claude Sonnet 4 (`claude-sonnet-4-20250514`)
-- Claude Sonnet 3.7 ([지원 중단됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (`claude-3-7-sonnet-20250219`)
+- Claude Sonnet 3.7 ([지원 중단됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (
+  `claude-3-7-sonnet-20250219`)
 - Claude Haiku 4.5 (`claude-haiku-4-5-20251001`)
-- Claude Haiku 3.5 ([지원 중단됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (`claude-3-5-haiku-latest`)
+- Claude Haiku 3.5 ([지원 중단됨](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (
+  `claude-3-5-haiku-latest`)
 - Claude Opus 4.5 (`claude-opus-4-5-20251101`)
 - Claude Opus 4.1 (`claude-opus-4-1-20250805`)
 - Claude Opus 4 (`claude-opus-4-20250514`)
@@ -30,7 +31,6 @@ API 요청에 웹 검색 도구를 추가하면:
 3. 차례가 끝나면 Claude는 인용된 출처와 함께 최종 응답을 제공합니다.
 
 ## 웹 검색 사용 방법
-
 
 > 조직의 관리자가 [콘솔](/settings/privacy)에서 웹 검색을 활성화해야 합니다.
 
@@ -95,7 +95,8 @@ curl https://api.anthropic.com/v1/messages \
 
 #### 최대 사용 횟수
 
-`max_uses` 매개변수는 수행되는 검색 횟수를 제한합니다. Claude가 허용된 것보다 더 많은 검색을 시도하면, `web_search_tool_result`는 `max_uses_exceeded` 오류 코드와 함께 오류가 됩니다.
+`max_uses` 매개변수는 수행되는 검색 횟수를 제한합니다. 
+Claude가 허용된 것보다 더 많은 검색을 시도하면, `web_search_tool_result`는 `max_uses_exceeded` 오류 코드와 함께 오류가 됩니다.
 
 #### 도메인 필터링
 
@@ -115,9 +116,8 @@ curl https://api.anthropic.com/v1/messages \
 
 유효하지 않은 도메인 형식은 `invalid_tool_input` 도구 오류를 반환합니다.
 
-
-> 요청 수준의 도메인 제한은 콘솔에서 구성된 조직 수준의 도메인 제한과 호환되어야 합니다. 요청 수준의 도메인은 도메인을 더 제한할 수만 있고, 조직 수준 목록을 재정의하거나 확장할 수 없습니다. 요청에 조직 설정과 충돌하는 도메인이 포함된 경우, API는 유효성 검사 오류를 반환합니다.
-
+> 요청 수준의 도메인 제한은 콘솔에서 구성된 조직 수준의 도메인 제한과 호환되어야 합니다. 요청 수준의 도메인은 도메인을 더 제한할 수만 있고, 조직 수준 목록을 재정의하거나 확장할 수 없습니다. 요청에 조직
+> 설정과 충돌하는 도메인이 포함된 경우, API는 유효성 검사 오류를 반환합니다.
 
 #### 지역화
 
@@ -216,9 +216,8 @@ curl https://api.anthropic.com/v1/messages \
 
 웹 검색 인용 필드인 `cited_text`, `title`, `url`은 입력 또는 출력 토큰 사용량에 포함되지 않습니다.
 
-
-> API 출력을 최종 사용자에게 직접 표시할 때는 원본 출처에 대한 인용이 포함되어야 합니다. 최종 사용자에게 표시하기 전에 재처리 및/또는 자체 자료와 결합하는 등 API 출력을 수정하는 경우, 법무팀과 상의하여 적절하게 인용을 표시하세요.
-
+> API 출력을 최종 사용자에게 직접 표시할 때는 원본 출처에 대한 인용이 포함되어야 합니다. 최종 사용자에게 표시하기 전에 재처리 및/또는 자체 자료와 결합하는 등 API 출력을 수정하는 경우, 법무팀과 상의하여
+> 적절하게 인용을 표시하세요.
 
 #### 오류
 
@@ -245,11 +244,14 @@ curl https://api.anthropic.com/v1/messages \
 
 #### `pause_turn` 중단 이유
 
-응답에는 `pause_turn` 중단 이유가 포함될 수 있으며, 이는 API가 장시간 실행되는 턴을 일시 중지했음을 나타냅니다. 응답을 그대로 후속 요청에 제공하여 Claude가 턴을 계속하도록 하거나, 대화를 중단하려면 콘텐츠를 수정할 수 있습니다.
+응답에는 `pause_turn` 중단 이유가 포함될 수 있으며, 이는 API가 장시간 실행되는 턴을 일시 중지했음을 나타냅니다. 
+응답을 그대로 후속 요청에 제공하여 Claude가 턴을 계속하도록 하거나, 대화를 중단하려면 콘텐츠를 수정할 수 있습니다.
 
 ## 프롬프트 캐싱
 
-웹 검색은 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)과 함께 작동합니다. 프롬프트 캐싱을 활성화하려면 요청에 최소 하나의 `cache_control` 중단점을 추가하세요. 시스템은 도구를 실행할 때 마지막 `web_search_tool_result` 블록까지 자동으로 캐시합니다.
+웹 검색은 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)과 함께 작동합니다. 
+프롬프트 캐싱을 활성화하려면 요청에 최소 하나의 `cache_control` 중단점을 추가하세요. 
+시스템은 도구를 실행할 때 마지막 `web_search_tool_result` 블록까지 자동으로 캐시합니다.
 
 다중 턴 대화의 경우, 마지막 `web_search_tool_result` 블록에 또는 그 이후에 `cache_control` 중단점을 설정하여 캐시된 콘텐츠를 재사용하세요.
 
@@ -355,7 +357,8 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web
 
 ## 배치 요청
 
-[메시지 배치 API](../02-capabilities/06-batch-processing.md)에 웹 검색 도구를 포함할 수 있습니다. 메시지 배치 API를 통한 웹 검색 도구 호출은 일반 메시지 API 요청과 동일하게 가격이 책정됩니다.
+[메시지 배치 API](../02-capabilities/06-batch-processing.md)에 웹 검색 도구를 포함할 수 있습니다. 
+메시지 배치 API를 통한 웹 검색 도구 호출은 일반 메시지 API 요청과 동일하게 가격이 책정됩니다.
 
 ## 사용량 및 가격
 
@@ -373,6 +376,8 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web
 }
 ```
 
-웹 검색은 Claude API에서 **1,000회 검색당 $10**, 그리고 검색으로 생성된 콘텐츠에 대한 표준 토큰 비용이 청구됩니다. 대화 전체에서 검색된 웹 검색 결과는 단일 턴에서 실행된 검색 반복과 후속 대화 턴에서 입력 토큰으로 계산됩니다.
+웹 검색은 Claude API에서 **1,000회 검색당 $10**, 그리고 검색으로 생성된 콘텐츠에 대한 표준 토큰 비용이 청구됩니다. 
+대화 전체에서 검색된 웹 검색 결과는 단일 턴에서 실행된 검색 반복과 후속 대화 턴에서 입력 토큰으로 계산됩니다.
 
-각 웹 검색은 반환된 결과 수에 관계없이 한 번의 사용으로 계산됩니다. 웹 검색 중에 오류가 발생하면 웹 검색에 대한 요금이 청구되지 않습니다.
+각 웹 검색은 반환된 결과 수에 관계없이 한 번의 사용으로 계산됩니다. 
+웹 검색 중에 오류가 발생하면 웹 검색에 대한 요금이 청구되지 않습니다.

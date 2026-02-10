@@ -2,26 +2,25 @@
 
 ---
 
-Claude는 Anthropic이 정의한 텍스트 에디터 도구를 사용하여 텍스트 파일을 보고 수정할 수 있으며, 코드나 다른 텍스트 문서를 디버그하고, 수정하고, 개선하는 데 도움을 줄 수 있습니다. 이를 통해 Claude가 파일과 직접 상호작용하여 단순히 변경사항을 제안하는 것이 아니라 실질적인 지원을 제공할 수 있습니다.
+Claude는 Anthropic이 정의한 텍스트 에디터 도구를 사용하여 텍스트 파일을 보고 수정할 수 있으며, 코드나 다른 텍스트 문서를 디버그하고, 수정하고, 개선하는 데 도움을 줄 수 있습니다. 
+이를 통해 Claude가 파일과 직접 상호작용하여 단순히 변경사항을 제안하는 것이 아니라 실질적인 지원을 제공할 수 있습니다.
 
 ## 모델 호환성
 
-| 모델 | 도구 버전 |
-|-------|--------------|
-| Claude 4.x 모델 | `text_editor_20250728` |
+| 모델                                                                                                      | 도구 버전                  |
+|---------------------------------------------------------------------------------------------------------|------------------------|
+| Claude 4.x 모델                                                                                           | `text_editor_20250728` |
 | Claude Sonnet 3.7 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `text_editor_20250124` |
 
-
-> Claude 4 모델용 `text_editor_20250728` 도구는 `undo_edit` 명령을 포함하지 않습니다. 이 기능이 필요한 경우 Claude Sonnet 3.7([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))을 사용해야 합니다.
-
-
-
+> Claude 4 모델용 `text_editor_20250728` 도구는 `undo_edit` 명령을 포함하지 않습니다. 이 기능이 필요한 경우 Claude Sonnet
+> 3.7([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))을 사용해야 합니다.
+>
 > 이전 도구 버전은 새로운 모델과의 하위 호환성이 보장되지 않습니다. 항상 모델 버전에 해당하는 도구 버전을 사용하세요.
-
 
 ## 텍스트 에디터 도구를 사용하는 경우
 
 텍스트 에디터 도구를 사용하는 몇 가지 예시는 다음과 같습니다.
+
 - **코드 디버깅**: Claude가 구문 오류부터 로직 문제까지 코드의 버그를 식별하고 수정하도록 합니다.
 - **코드 리팩토링**: Claude가 대상 편집을 통해 코드 구조, 가독성 및 성능을 개선하도록 합니다.
 - **문서 생성**: Claude에게 코드베이스에 docstring, 주석 또는 README 파일을 추가하도록 요청합니다.
@@ -36,12 +35,7 @@ Messages API를 사용하여 텍스트 에디터 도구(`str_replace_based_edit_
 
 대용량 파일을 볼 때 잘림을 제어하기 위해 선택적으로 `max_characters` 매개변수를 지정할 수 있습니다.
 
-
 > `max_characters`는 `text_editor_20250728` 이상 버전의 텍스트 에디터 도구에서만 호환됩니다.
-
-
-<details>
-<summary>REST API 예시</summary>
 
 ```bash
 curl https://api.anthropic.com/v1/messages \
@@ -66,17 +60,12 @@ curl https://api.anthropic.com/v1/messages \
     ]
   }'
 ```
-
-</details>
-
 </details>
 
 <details>
 <summary>Claude Sonnet 3.7</summary>
 
 Messages API를 사용하여 텍스트 에디터 도구(`str_replace_editor`라는 이름)를 Claude에 제공합니다.
-<details>
-<summary>REST API 예시</summary>
 
 ```bash
 curl https://api.anthropic.com/v1/messages \
@@ -103,35 +92,28 @@ curl https://api.anthropic.com/v1/messages \
 
 </details>
 
-</details>
-
 텍스트 에디터 도구는 다음과 같은 방식으로 사용할 수 있습니다.
 
 - **Claude에 텍스트 에디터 도구와 사용자 프롬프트 제공**
-  - API 요청에 텍스트 에디터 도구 포함
-  - "내 코드의 구문 오류를 수정해 줄 수 있나요?"와 같이 파일을 검사하거나 수정해야 할 수 있는 사용자 프롬프트 제공
-
+    - API 요청에 텍스트 에디터 도구 포함
+    - "내 코드의 구문 오류를 수정해 줄 수 있나요?"와 같이 파일을 검사하거나 수정해야 할 수 있는 사용자 프롬프트 제공
 - **Claude가 도구를 사용하여 파일 또는 디렉토리 검사**
-  - Claude가 확인이 필요한 내용을 평가하고 `view` 명령을 사용하여 파일 내용을 검사하거나 디렉토리 내용을 나열
-  - API 응답에는 `view` 명령이 포함된 `tool_use` 콘텐츠 블록이 포함됨
-
+    - Claude가 확인이 필요한 내용을 평가하고 `view` 명령을 사용하여 파일 내용을 검사하거나 디렉토리 내용을 나열
+    - API 응답에는 `view` 명령이 포함된 `tool_use` 콘텐츠 블록이 포함됨
 - **view 명령 실행 및 결과 반환**
-  - Claude의 도구 사용 요청에서 파일 또는 디렉토리 경로 추출
-  - 파일 내용을 읽거나 디렉토리 내용을 나열
-  - 도구 구성에 `max_characters` 매개변수가 지정된 경우 파일 내용을 해당 길이로 잘라냄
-  - `tool_result` 콘텐츠 블록을 포함하는 새 `user` 메시지로 대화를 계속하여 결과를 Claude에 반환
-
+    - Claude의 도구 사용 요청에서 파일 또는 디렉토리 경로 추출
+    - 파일 내용을 읽거나 디렉토리 내용을 나열
+    - 도구 구성에 `max_characters` 매개변수가 지정된 경우 파일 내용을 해당 길이로 잘라냄
+    - `tool_result` 콘텐츠 블록을 포함하는 새 `user` 메시지로 대화를 계속하여 결과를 Claude에 반환
 - **Claude가 도구를 사용하여 파일 수정**
-  - 파일 또는 디렉토리를 검사한 후 Claude는 `str_replace`와 같은 명령을 사용하여 변경하거나 `insert`를 사용하여 특정 줄 번호에 텍스트를 추가할 수 있음
-  - Claude가 `str_replace` 명령을 사용하는 경우 이전 텍스트와 교체할 새 텍스트로 적절한 형식의 도구 사용 요청을 구성
-
+    - 파일 또는 디렉토리를 검사한 후 Claude는 `str_replace`와 같은 명령을 사용하여 변경하거나 `insert`를 사용하여 특정 줄 번호에 텍스트를 추가할 수 있음
+    - Claude가 `str_replace` 명령을 사용하는 경우 이전 텍스트와 교체할 새 텍스트로 적절한 형식의 도구 사용 요청을 구성
 - **편집 실행 및 결과 반환**
-  - Claude의 도구 사용 요청에서 파일 경로, 이전 텍스트 및 새 텍스트 추출
-  - 파일에서 텍스트 교체 수행
-  - Claude에 결과 반환
-
+    - Claude의 도구 사용 요청에서 파일 경로, 이전 텍스트 및 새 텍스트 추출
+    - 파일에서 텍스트 교체 수행
+    - Claude에 결과 반환
 - **Claude가 분석 및 설명 제공**
-  - 파일을 검사하고 편집한 후 Claude는 발견한 내용과 수행한 변경사항에 대한 완전한 설명을 제공
+    - 파일을 검사하고 편집한 후 Claude는 발견한 내용과 수행한 변경사항에 대한 완전한 설명을 제공
 
 ### 텍스트 에디터 도구 명령
 
@@ -142,9 +124,12 @@ curl https://api.anthropic.com/v1/messages \
 `view` 명령을 사용하면 Claude가 파일 내용을 검사하거나 디렉토리 내용을 나열할 수 있습니다. 전체 파일 또는 특정 줄 범위를 읽을 수 있습니다.
 
 매개변수:
+
 - `command`: "view"여야 함
 - `path`: 볼 파일 또는 디렉토리의 경로
-- `view_range` (선택 사항): 볼 시작 및 종료 줄 번호를 지정하는 두 개의 정수 배열. 줄 번호는 1부터 시작하며, 종료 줄에 대한 -1은 파일의 끝까지 읽음을 의미합니다. 이 매개변수는 파일을 볼 때만 적용되며 디렉토리에는 적용되지 않습니다.
+- `view_range` (선택 사항): 
+  - 볼 시작 및 종료 줄 번호를 지정하는 두 개의 정수 배열. 줄 번호는 1부터 시작하며, 종료 줄에 대한 -1은 파일의 끝까지 읽음을 의미합니다. 
+  - 이 매개변수는 파일을 볼 때만 적용되며 디렉토리에는 적용되지 않습니다.
 
 <details>
 <summary>view 명령 예시</summary>
@@ -172,6 +157,7 @@ curl https://api.anthropic.com/v1/messages \
   }
 }
 ```
+
 </details>
 
 #### str_replace
@@ -179,6 +165,7 @@ curl https://api.anthropic.com/v1/messages \
 `str_replace` 명령을 사용하면 Claude가 파일의 특정 문자열을 새 문자열로 교체할 수 있습니다. 이는 정밀한 편집을 위해 사용됩니다.
 
 매개변수:
+
 - `command`: "str_replace"여야 함
 - `path`: 수정할 파일의 경로
 - `old_str`: 교체할 텍스트 (공백과 들여쓰기를 포함하여 정확히 일치해야 함)
@@ -200,6 +187,7 @@ curl https://api.anthropic.com/v1/messages \
   }
 }
 ```
+
 </details>
 
 #### create
@@ -207,6 +195,7 @@ curl https://api.anthropic.com/v1/messages \
 `create` 명령을 사용하면 Claude가 지정된 내용으로 새 파일을 생성할 수 있습니다.
 
 매개변수:
+
 - `command`: "create"여야 함
 - `path`: 새 파일을 생성할 경로
 - `file_text`: 새 파일에 쓸 내용
@@ -226,6 +215,7 @@ curl https://api.anthropic.com/v1/messages \
   }
 }
 ```
+
 </details>
 
 #### insert
@@ -233,6 +223,7 @@ curl https://api.anthropic.com/v1/messages \
 `insert` 명령을 사용하면 Claude가 파일의 특정 위치에 텍스트를 삽입할 수 있습니다.
 
 매개변수:
+
 - `command`: "insert"여야 함
 - `path`: 수정할 파일의 경로
 - `insert_line`: 텍스트를 삽입할 줄 번호 (파일 시작은 0)
@@ -254,6 +245,7 @@ curl https://api.anthropic.com/v1/messages \
   }
 }
 ```
+
 </details>
 
 #### undo_edit
@@ -261,10 +253,12 @@ curl https://api.anthropic.com/v1/messages \
 `undo_edit` 명령을 사용하면 Claude가 파일에 대한 마지막 편집을 되돌릴 수 있습니다.
 
 
-> 이 명령은 Claude Sonnet 3.7([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))에서만 사용할 수 있습니다. `text_editor_20250728`을 사용하는 Claude 4 모델에서는 지원되지 않습니다.
+> 이 명령은 Claude Sonnet 3.7([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))에서만 사용할 수
+> 있습니다. `text_editor_20250728`을 사용하는 Claude 4 모델에서는 지원되지 않습니다.
 
 
 매개변수:
+
 - `command`: "undo_edit"여야 함
 - `path`: 마지막 편집을 취소할 파일의 경로
 
@@ -282,6 +276,7 @@ curl https://api.anthropic.com/v1/messages \
   }
 }
 ```
+
 </details>
 
 ### 예시: 텍스트 에디터 도구로 구문 오류 수정하기
@@ -408,7 +403,8 @@ curl https://api.anthropic.com/v1/messages \
 
 > **줄 번호**
 >
-> 위의 예시에서 `view` 도구 결과에는 각 줄에 줄 번호가 앞에 붙은 파일 내용(예: "1: def is_prime(n):")이 포함됩니다. 줄 번호는 필수는 아니지만 `view_range` 매개변수를 사용하여 파일의 특정 섹션을 검사하고 `insert_line` 매개변수를 사용하여 정확한 위치에 내용을 추가하는 데 필수적입니다.
+> 위의 예시에서 `view` 도구 결과에는 각 줄에 줄 번호가 앞에 붙은 파일 내용(예: "1: def is_prime(n):")이 포함됩니다. 줄 번호는 필수는 아니지만 `view_range` 매개변수를 사용하여
+> 파일의 특정 섹션을 검사하고 `insert_line` 매개변수를 사용하여 정확한 위치에 내용을 추가하는 데 필수적입니다.
 
 
 Claude는 구문 오류를 식별하고 `str_replace` 명령을 사용하여 수정합니다.
@@ -558,8 +554,8 @@ response = client.messages.create(
 print(response)
 ```
 
-
-> Claude Sonnet 3.7 예시는 위의 Claude 4 예시와 동일한 형식을 따르며, 동일한 도구 호출과 응답을 사용하지만 `text_editor_20250124` 도구 타입과 `str_replace_editor` 이름을 사용합니다.
+> Claude Sonnet 3.7 예시는 위의 Claude 4 예시와 동일한 형식을 따르며, 동일한 도구 호출과 응답을 사용하지만 `text_editor_20250124` 도구 타입과
+`str_replace_editor` 이름을 사용합니다.
 
 </details>
 
@@ -570,6 +566,7 @@ print(response)
 텍스트 에디터 도구는 스키마 없는 도구로 구현됩니다. 이 도구를 사용할 때 다른 도구와 달리 입력 스키마를 제공할 필요가 없습니다. 스키마는 Claude의 모델에 내장되어 있으며 수정할 수 없습니다.
 
 도구 타입은 모델 버전에 따라 다릅니다.
+
 - **Claude 4**: `type: "text_editor_20250728"`
 - **Claude Sonnet 3.7**: `type: "text_editor_20250124"`
 
@@ -609,10 +606,10 @@ print(response)
 - **보안 조치 구현**
 
   유효성 검사 및 보안 검사 추가:
-  - 디렉토리 순회를 방지하기 위해 파일 경로 검증
-  - 변경하기 전에 백업 생성
-  - 오류를 우아하게 처리
-  - 권한 검사 구현
+    - 디렉토리 순회를 방지하기 위해 파일 경로 검증
+    - 변경하기 전에 백업 생성
+    - 오류를 우아하게 처리
+    - 권한 검사 구현
 
 - **Claude의 응답 처리**
 
@@ -632,14 +629,12 @@ print(response)
           }
   ```
 
-
 > 텍스트 에디터 도구를 구현할 때 다음 사항을 염두에 두세요.
 >
 > 1. **보안**: 도구가 로컬 파일시스템에 액세스할 수 있으므로 적절한 보안 조치를 구현하세요.
 > 2. **백업**: 중요한 파일을 편집하기 전에 항상 백업을 생성하세요.
 > 3. **검증**: 의도하지 않은 변경을 방지하기 위해 모든 입력을 검증하세요.
 > 4. **고유 매칭**: 의도하지 않은 편집을 피하기 위해 교체가 정확히 한 위치와 일치하는지 확인하세요.
-
 
 ### 오류 처리
 
@@ -663,6 +658,7 @@ Claude가 존재하지 않는 파일을 보거나 수정하려고 하면 `tool_r
   ]
 }
 ```
+
 </details>
 
 <details>
@@ -683,6 +679,7 @@ Claude의 `str_replace` 명령이 파일의 여러 위치와 일치하는 경우
   ]
 }
 ```
+
 </details>
 
 <details>
@@ -703,6 +700,7 @@ Claude의 `str_replace` 명령이 파일의 어떤 텍스트와도 일치하지 
   ]
 }
 ```
+
 </details>
 
 <details>
@@ -723,6 +721,7 @@ Claude의 `str_replace` 명령이 파일의 어떤 텍스트와도 일치하지 
   ]
 }
 ```
+
 </details>
 
 ### 구현 모범 사례 따르기
@@ -730,7 +729,8 @@ Claude의 `str_replace` 명령이 파일의 어떤 텍스트와도 일치하지 
 <details>
 <summary>명확한 컨텍스트 제공</summary>
 
-Claude에게 코드를 수정하거나 변경하도록 요청할 때 검사해야 할 파일이나 해결해야 할 문제에 대해 구체적으로 설명하세요. 명확한 컨텍스트는 Claude가 올바른 파일을 식별하고 적절한 변경을 수행하는 데 도움이 됩니다.
+Claude에게 코드를 수정하거나 변경하도록 요청할 때 검사해야 할 파일이나 해결해야 할 문제에 대해 구체적으로 설명하세요. 
+명확한 컨텍스트는 Claude가 올바른 파일을 식별하고 적절한 변경을 수행하는 데 도움이 됩니다.
 
 **덜 유용한 프롬프트**: "내 코드를 수정해 줄 수 있나요?"
 
@@ -760,12 +760,15 @@ def backup_file(file_path):
         with open(file_path, 'r') as src, open(backup_path, 'w') as dst:
             dst.write(src.read())
 ```
+
 </details>
 
 <details>
 <summary>고유한 텍스트 교체를 신중하게 처리</summary>
 
-`str_replace` 명령은 교체할 텍스트의 정확한 일치를 요구합니다. 애플리케이션은 이전 텍스트에 대해 정확히 하나의 일치가 있는지 확인하거나 적절한 오류 메시지를 제공해야 합니다.
+`str_replace` 명령은 교체할 텍스트의 정확한 일치를 요구합니다. 
+애플리케이션은 이전 텍스트에 대해 정확히 하나의 일치가 있는지 확인하거나 적절한 오류 메시지를 제공해야 합니다.
+
 ```python
 def safe_replace(file_path, old_text, new_text):
     """정확히 하나의 일치가 있는 경우에만 텍스트 교체."""
@@ -783,12 +786,14 @@ def safe_replace(file_path, old_text, new_text):
             f.write(new_content)
         return "Successfully replaced text"
 ```
+
 </details>
 
 <details>
 <summary>변경사항 확인</summary>
 
 Claude가 파일을 변경한 후 테스트를 실행하거나 코드가 여전히 예상대로 작동하는지 확인하여 변경사항을 검증하세요.
+
 ```python
 def verify_changes(file_path):
     """변경 후 테스트 또는 검사 실행."""
@@ -802,36 +807,39 @@ def verify_changes(file_path):
     except Exception as e:
         return f"Verification failed: {str(e)}"
 ```
+
 </details>
 
 ---
 
 ## 가격 및 토큰 사용량
 
-텍스트 에디터 도구는 Claude와 함께 사용되는 다른 도구와 동일한 가격 구조를 사용합니다. 사용 중인 Claude 모델에 따라 표준 입력 및 출력 토큰 가격을 따릅니다.
+텍스트 에디터 도구는 Claude와 함께 사용되는 다른 도구와 동일한 가격 구조를 사용합니다. 
+사용 중인 Claude 모델에 따라 표준 입력 및 출력 토큰 가격을 따릅니다.
 
 기본 토큰 외에도 텍스트 에디터 도구에는 다음과 같은 추가 입력 토큰이 필요합니다.
 
-| 도구 | 추가 입력 토큰 |
-| ----------------------------------------- | --------------------------------------- |
-| `text_editor_20250429` (Claude 4.x) | 700 토큰 |
-| `text_editor_20250124` (Claude Sonnet 3.7 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))) | 700 토큰 |
+| 도구                                                                                                                               | 추가 입력 토큰 |
+|----------------------------------------------------------------------------------------------------------------------------------|----------|
+| `text_editor_20250429` (Claude 4.x)                                                                                              | 700 토큰   |
+| `text_editor_20250124` (Claude Sonnet 3.7 ([더 이상 사용되지 않음](https://platform.claude.com/docs/en/about-claude/model-deprecations))) | 700 토큰   |
 
 도구 가격에 대한 자세한 내용은 [도구 사용 가격](../03-tools/01-overview.md)을 참조하세요.
 
 ## 텍스트 에디터 도구를 다른 도구와 통합
 
 텍스트 에디터 도구는 다른 Claude 도구와 함께 사용할 수 있습니다. 도구를 결합할 때 다음을 확인하세요.
+
 - 사용 중인 모델과 도구 버전을 일치시킵니다.
 - 요청에 포함된 모든 도구에 대한 추가 토큰 사용량을 고려합니다.
 
 ## 변경 로그
 
-| 날짜 | 버전 | 변경사항 |
-| ---- | ------- | ------- |
-| 2025년 7월 28일 | `text_editor_20250728` | 일부 문제를 수정하고 선택적 `max_characters` 매개변수를 추가한 업데이트된 텍스트 에디터 도구 릴리스. 그 외에는 `text_editor_20250429`와 동일합니다. |
-| 2025년 4월 29일 | `text_editor_20250429` | Claude 4용 텍스트 에디터 도구 릴리스. 이 버전은 `undo_edit` 명령을 제거하지만 다른 모든 기능은 유지합니다. 도구 이름은 str_replace 기반 아키텍처를 반영하도록 업데이트되었습니다. |
-| 2025년 3월 13일 | `text_editor_20250124` | 독립형 텍스트 에디터 도구 문서 도입. 이 버전은 Claude Sonnet 3.7에 최적화되어 있지만 이전 버전과 동일한 기능을 가지고 있습니다. |
+| 날짜            | 버전                     | 변경사항                                                                                                                                                                                                                 |
+|---------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 2025년 7월 28일  | `text_editor_20250728` | 일부 문제를 수정하고 선택적 `max_characters` 매개변수를 추가한 업데이트된 텍스트 에디터 도구 릴리스. 그 외에는 `text_editor_20250429`와 동일합니다.                                                                                                                |
+| 2025년 4월 29일  | `text_editor_20250429` | Claude 4용 텍스트 에디터 도구 릴리스. 이 버전은 `undo_edit` 명령을 제거하지만 다른 모든 기능은 유지합니다. 도구 이름은 str_replace 기반 아키텍처를 반영하도록 업데이트되었습니다.                                                                                                  |
+| 2025년 3월 13일  | `text_editor_20250124` | 독립형 텍스트 에디터 도구 문서 도입. 이 버전은 Claude Sonnet 3.7에 최적화되어 있지만 이전 버전과 동일한 기능을 가지고 있습니다.                                                                                                                                    |
 | 2024년 10월 22일 | `text_editor_20241022` | Claude Sonnet 3.5([사용 중단](https://platform.claude.com/docs/en/about-claude/model-deprecations))와 함께 텍스트 에디터 도구의 초기 릴리스. `view`, `create`, `str_replace`, `insert` 및 `undo_edit` 명령을 통해 파일을 보고, 생성하고, 편집하는 기능을 제공합니다. |
 
 ## 다음 단계
@@ -846,12 +854,6 @@ def verify_changes(file_path):
 
 텍스트 에디터 도구를 사용하여 애플리케이션을 구축할 때 Claude의 기능을 활용하여 개발 워크플로우와 생산성을 향상시키는 방법을 기대합니다.
 
-
-  
 > Claude와 함께 사용할 도구 워크플로우를 구현하는 방법을 알아보세요.
-
-
-  
+>
 > Claude로 셸 명령을 실행하세요.
-
-
