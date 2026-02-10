@@ -4,7 +4,8 @@
 
 ---
 
-검색 결과 콘텐츠 블록은 적절한 출처 표시와 함께 자연스러운 인용을 가능하게 하여 웹 검색 품질의 인용을 사용자 정의 애플리케이션에 제공합니다. 이 기능은 Claude가 출처를 정확하게 인용해야 하는 RAG(Retrieval-Augmented Generation) 애플리케이션에 특히 강력합니다.
+검색 결과 콘텐츠 블록은 적절한 출처 표시와 함께 자연스러운 인용을 가능하게 하여 웹 검색 품질의 인용을 사용자 정의 애플리케이션에 제공합니다. 
+이 기능은 Claude가 출처를 정확하게 인용해야 하는 RAG(Retrieval-Augmented Generation) 애플리케이션에 특히 강력합니다.
 
 검색 결과 기능은 다음 모델에서 사용할 수 있습니다:
 
@@ -13,9 +14,11 @@
 - Claude Opus 4 (`claude-opus-4-20250514`)
 - Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`)
 - Claude Sonnet 4 (`claude-sonnet-4-20250514`)
-- Claude Sonnet 3.7 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (`claude-3-7-sonnet-20250219`)
+- Claude Sonnet 3.7 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (
+  `claude-3-7-sonnet-20250219`)
 - Claude Haiku 4.5 (`claude-haiku-4-5-20251001`)
-- Claude Haiku 3.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (`claude-3-5-haiku-20241022`)
+- Claude Haiku 3.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)) (
+  `claude-3-5-haiku-20241022`)
 
 ## 주요 이점
 
@@ -41,43 +44,50 @@
 ```json
 {
   "type": "search_result",
-  "source": "https://example.com/article",  // 필수: 소스 URL 또는 식별자
-  "title": "Article Title",                  // 필수: 결과의 제목
-  "content": [                               // 필수: 텍스트 블록 배열
+  "source": "https://example.com/article",
+  // 필수: 소스 URL 또는 식별자
+  "title": "Article Title",
+  // 필수: 결과의 제목
+  "content": [
+    // 필수: 텍스트 블록 배열
     {
       "type": "text",
       "text": "The actual content of the search result..."
     }
   ],
-  "citations": {                             // 선택: 인용 구성
-    "enabled": true                          // 이 결과에 대한 인용 활성화/비활성화
+  "citations": {
+    // 선택: 인용 구성
+    "enabled": true
+    // 이 결과에 대한 인용 활성화/비활성화
   }
 }
 ```
 
 ### 필수 필드
 
-| 필드 | 타입 | 설명 |
-|-------|------|-------------|
-| `type` | string | `"search_result"`이어야 합니다 |
-| `source` | string | 콘텐츠의 소스 URL 또는 식별자 |
-| `title` | string | 검색 결과의 설명적 제목 |
-| `content` | array | 실제 콘텐츠를 포함하는 텍스트 블록 배열 |
+| 필드        | 타입     | 설명                       |
+|-----------|--------|--------------------------|
+| `type`    | string | `"search_result"`이어야 합니다 |
+| `source`  | string | 콘텐츠의 소스 URL 또는 식별자       |
+| `title`   | string | 검색 결과의 설명적 제목            |
+| `content` | array  | 실제 콘텐츠를 포함하는 텍스트 블록 배열   |
 
 ### 선택 필드
 
-| 필드 | 타입 | 설명 |
-|-------|------|-------------|
-| `citations` | object | `enabled` 불린 필드가 있는 인용 구성 |
+| 필드              | 타입     | 설명                                    |
+|-----------------|--------|---------------------------------------|
+| `citations`     | object | `enabled` 불린 필드가 있는 인용 구성             |
 | `cache_control` | object | 캐시 제어 설정 (예: `{"type": "ephemeral"}`) |
 
 `content` 배열의 각 항목은 다음을 포함하는 텍스트 블록이어야 합니다:
+
 - `type`: `"text"`이어야 합니다
 - `text`: 실제 텍스트 콘텐츠 (비어있지 않은 문자열)
 
 ## 방법 1: 도구 호출에서 검색 결과
 
-가장 강력한 사용 사례는 사용자 정의 도구에서 검색 결과를 반환하는 것입니다. 이를 통해 도구가 자동 인용과 함께 관련 콘텐츠를 가져와 반환하는 동적 RAG 애플리케이션이 가능합니다.
+가장 강력한 사용 사례는 사용자 정의 도구에서 검색 결과를 반환하는 것입니다. 
+이를 통해 도구가 자동 인용과 함께 관련 콘텐츠를 가져와 반환하는 동적 RAG 애플리케이션이 가능합니다.
 
 ### 예제: 지식 베이스 도구
 
@@ -185,6 +195,7 @@ if response.content[0].type == "tool_use":
 ## 방법 2: 최상위 콘텐츠로서의 검색 결과
 
 사용자 메시지에 검색 결과를 직접 제공할 수도 있습니다. 이는 다음에 유용합니다:
+
 - 검색 인프라에서 미리 가져온 콘텐츠
 - 이전 쿼리의 캐시된 검색 결과
 - 외부 검색 서비스의 콘텐츠
@@ -310,15 +321,15 @@ curl https://api.anthropic.com/v1/messages \
 
 각 인용에는 다음이 포함됩니다:
 
-| 필드 | 타입 | 설명 |
-|-------|------|-------------|
-| `type` | string | 검색 결과 인용의 경우 항상 `"search_result_location"` |
-| `source` | string | 원본 검색 결과의 소스 |
-| `title` | string 또는 null | 원본 검색 결과의 제목 |
-| `cited_text` | string | 인용되는 정확한 텍스트 |
-| `search_result_index` | integer | 검색 결과의 인덱스 (0부터 시작) |
-| `start_block_index` | integer | 콘텐츠 배열의 시작 위치 |
-| `end_block_index` | integer | 콘텐츠 배열의 종료 위치 |
+| 필드                    | 타입             | 설명                                         |
+|-----------------------|----------------|--------------------------------------------|
+| `type`                | string         | 검색 결과 인용의 경우 항상 `"search_result_location"` |
+| `source`              | string         | 원본 검색 결과의 소스                               |
+| `title`               | string 또는 null | 원본 검색 결과의 제목                               |
+| `cited_text`          | string         | 인용되는 정확한 텍스트                               |
+| `search_result_index` | integer        | 검색 결과의 인덱스 (0부터 시작)                        |
+| `start_block_index`   | integer        | 콘텐츠 배열의 시작 위치                              |
+| `end_block_index`     | integer        | 콘텐츠 배열의 종료 위치                              |
 
 참고: `search_result_index`는 검색 결과가 제공된 방식(도구 호출 또는 최상위 콘텐츠)에 관계없이 검색 결과 콘텐츠 블록의 인덱스(0부터 시작)를 나타냅니다.
 
@@ -432,7 +443,12 @@ user_content = [
   "type": "search_result",
   "source": "https://docs.company.com/guide",
   "title": "User Guide",
-  "content": [{"type": "text", "text": "..."}],
+  "content": [
+    {
+      "type": "text",
+      "text": "..."
+    }
+  ],
   "cache_control": {
     "type": "ephemeral"
   }
@@ -448,23 +464,31 @@ user_content = [
   "type": "search_result",
   "source": "https://docs.company.com/guide",
   "title": "User Guide",
-  "content": [{"type": "text", "text": "Important documentation..."}],
+  "content": [
+    {
+      "type": "text",
+      "text": "Important documentation..."
+    }
+  ],
   "citations": {
-    "enabled": true  // 이 결과에 대한 인용 활성화
+    "enabled": true
+    // 이 결과에 대한 인용 활성화
   }
 }
 ```
 
-`citations.enabled`가 `true`로 설정되면 Claude는 검색 결과의 정보를 사용할 때 인용 참조를 포함합니다. 이를 통해:
+`citations.enabled`가 `true`로 설정되면 Claude는 검색 결과의 정보를 사용할 때 인용 참조를 포함합니다. 
+
+이를 통해:
 - 사용자 정의 RAG 애플리케이션에 대한 자연스러운 인용
 - 독점 지식 베이스와 인터페이스할 때 출처 표시
 - 검색 결과를 반환하는 사용자 정의 도구에 대한 웹 검색 품질의 인용
 
 `citations` 필드가 생략되면 기본적으로 인용이 비활성화됩니다.
 
-
-> 인용은 전체 또는 전무입니다: 요청의 모든 검색 결과에 인용이 활성화되거나 모두 비활성화되어야 합니다. 다른 인용 설정을 가진 검색 결과를 혼합하면 오류가 발생합니다. 일부 소스에 대한 인용을 비활성화해야 하는 경우 해당 요청의 모든 검색 결과에 대해 비활성화해야 합니다.
-
+> 인용은 전체 또는 전무입니다: 요청의 모든 검색 결과에 인용이 활성화되거나 모두 비활성화되어야 합니다. 
+> 다른 인용 설정을 가진 검색 결과를 혼합하면 오류가 발생합니다. 
+> 일부 소스에 대한 인용을 비활성화해야 하는 경우 해당 요청의 모든 검색 결과에 대해 비활성화해야 합니다.
 
 ## 모범 사례
 
@@ -483,15 +507,13 @@ user_content = [
 ### 일반 모범 사례
 
 1. **결과를 효과적으로 구조화**
-   - 명확하고 영구적인 소스 URL 사용
-   - 설명적인 제목 제공
-   - 긴 콘텐츠를 논리적인 텍스트 블록으로 나누기
-
+    - 명확하고 영구적인 소스 URL 사용
+    - 설명적인 제목 제공
+    - 긴 콘텐츠를 논리적인 텍스트 블록으로 나누기
 2. **일관성 유지**
-   - 애플리케이션 전체에서 일관된 소스 형식 사용
-   - 제목이 콘텐츠를 정확하게 반영하도록 보장
-   - 형식을 일관되게 유지
-
+    - 애플리케이션 전체에서 일관된 소스 형식 사용
+    - 제목이 콘텐츠를 정확하게 반영하도록 보장
+    - 형식을 일관되게 유지
 3. **오류를 우아하게 처리**
    ```python
    def search_with_fallback(query):

@@ -2,15 +2,17 @@
 
 ---
 
-Files API를 사용하면 매 요청마다 콘텐츠를 다시 업로드하지 않고도 Claude API와 함께 사용할 파일을 업로드하고 관리할 수 있습니다. 특히 [코드 실행 도구](../03-tools/05-code-execution-tool.md)를 사용하여 입력(예: 데이터셋 및 문서)을 제공하고 출력(예: 차트)을 다운로드할 때 유용합니다. 또한 Files API를 사용하여 여러 API 호출에서 자주 사용되는 문서와 이미지를 반복해서 업로드하지 않아도 됩니다. 이 가이드 외에도 [API 레퍼런스를 직접 탐색](https://platform.claude.com/docs/en/api/files-create)할 수 있습니다.
-
+Files API를 사용하면 매 요청마다 콘텐츠를 다시 업로드하지 않고도 Claude API와 함께 사용할 파일을 업로드하고 관리할 수 있습니다. 
+특히 [코드 실행 도구](../03-tools/05-code-execution-tool.md)를 사용하여 입력(예: 데이터셋 및 문서)을 제공하고 출력(예: 차트)을 다운로드할 때 유용합니다. 
+또한 Files API를 사용하여 여러 API 호출에서 자주 사용되는 문서와 이미지를 반복해서 업로드하지 않아도 됩니다. 
+이 가이드 외에도 [API 레퍼런스를 직접 탐색](https://platform.claude.com/docs/en/api/files-create)할 수 있습니다.
 
 > Files API는 현재 베타 버전입니다. Files API 사용 경험을 [피드백 양식](https://forms.gle/tisHyierGwgN4DUE9)을 통해 공유해 주세요.
 
-
 ## 지원되는 모델
 
-Messages 요청에서 `file_id`를 참조하는 기능은 해당 파일 유형을 지원하는 모든 모델에서 지원됩니다. 예를 들어, [이미지](../02-capabilities/11-vision.md)는 모든 Claude 3+ 모델에서 지원되고, [PDF](../02-capabilities/12-pdf-support.md)는 모든 Claude 3.5+ 모델에서 지원되며, [기타 다양한 파일 유형](../03-tools/05-code-execution-tool.md)은 코드 실행 도구용으로 Claude Haiku 4.5 및 모든 Claude 3.7+ 모델에서 지원됩니다.
+Messages 요청에서 `file_id`를 참조하는 기능은 해당 파일 유형을 지원하는 모든 모델에서 지원됩니다. 
+예를 들어, [이미지](../02-capabilities/11-vision.md)는 모든 Claude 3+ 모델에서 지원되고, [PDF](../02-capabilities/12-pdf-support.md)는 모든 Claude 3.5+ 모델에서 지원되며, [기타 다양한 파일 유형](../03-tools/05-code-execution-tool.md)은 코드 실행 도구용으로 Claude Haiku 4.5 및 모든 Claude 3.7+ 모델에서 지원됩니다.
 
 Files API는 현재 Amazon Bedrock 또는 Google Vertex AI에서는 지원되지 않습니다.
 
@@ -25,9 +27,7 @@ Files API는 파일 작업을 위한 간단한 한 번 생성, 여러 번 사용
 
 ## Files API 사용 방법
 
-
 > Files API를 사용하려면 베타 기능 헤더를 포함해야 합니다: `anthropic-beta: files-api-2025-04-14`.
-
 
 ### 파일 업로드
 
@@ -103,12 +103,12 @@ curl -X POST https://api.anthropic.com/v1/messages \
 
 Files API는 다양한 콘텐츠 블록 유형에 해당하는 여러 파일 유형을 지원합니다:
 
-| 파일 유형 | MIME 타입 | 콘텐츠 블록 유형 | 사용 사례 |
-| :--- | :--- | :--- | :--- |
-| PDF | `application/pdf` | `document` | 텍스트 분석, 문서 처리 |
-| 일반 텍스트 | `text/plain` | `document` | 텍스트 분석, 처리 |
-| 이미지 | `image/jpeg`, `image/png`, `image/gif`, `image/webp` | `image` | 이미지 분석, 시각적 작업 |
-| [데이터셋, 기타](../03-tools/05-code-execution-tool.md) | 다양함 | `container_upload` | 데이터 분석, 시각화 생성  |
+| 파일 유형                                             | MIME 타입                                              | 콘텐츠 블록 유형          | 사용 사례          |
+|:--------------------------------------------------|:-----------------------------------------------------|:-------------------|:---------------|
+| PDF                                               | `application/pdf`                                    | `document`         | 텍스트 분석, 문서 처리  |
+| 일반 텍스트                                            | `text/plain`                                         | `document`         | 텍스트 분석, 처리     |
+| 이미지                                               | `image/jpeg`, `image/png`, `image/gif`, `image/webp` | `image`            | 이미지 분석, 시각적 작업 |
+| [데이터셋, 기타](../03-tools/05-code-execution-tool.md) | 다양함                                                  | `container_upload` | 데이터 분석, 시각화 생성 |
 
 ### 다른 파일 형식 작업
 
@@ -148,8 +148,8 @@ EOF
 </details>
 
 
-> 이미지가 포함된 .docx 파일의 경우, 먼저 PDF 형식으로 변환한 다음 [PDF 지원](../02-capabilities/12-pdf-support.md)을 사용하여 내장된 이미지 파싱 기능을 활용하세요. 이를 통해 PDF 문서에서 인용을 사용할 수 있습니다.
-
+> 이미지가 포함된 .docx 파일의 경우, 먼저 PDF 형식으로 변환한 다음 [PDF 지원](../02-capabilities/12-pdf-support.md)을 사용하여 내장된 이미지 파싱 기능을 활용하세요. 
+> 이를 통해 PDF 문서에서 인용을 사용할 수 있습니다.
 
 #### 문서 블록
 

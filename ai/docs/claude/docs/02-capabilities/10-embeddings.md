@@ -243,8 +243,8 @@ Voyage의 기술적 접근 방식에 대한 자세한 내용은 [블로그](http
 
 ### 어떤 유사도 함수를 사용해야 하나요?
 
-Voyage 임베딩은 내적 유사도, 코사인 유사도 또는 유클리드 거리와 함께 사용할 수 있습니다. 임베딩 유사도에 대한
-설명은 [여기](https://www.pinecone.io/learn/vector-similarity/)에서 찾을 수 있습니다.
+Voyage 임베딩은 내적 유사도, 코사인 유사도 또는 유클리드 거리와 함께 사용할 수 있습니다. 
+임베딩 유사도에 대한 설명은 [여기](https://www.pinecone.io/learn/vector-similarity/)에서 찾을 수 있습니다.
 
 Voyage AI 임베딩은 길이 1로 정규화되어 있으므로:
 
@@ -257,31 +257,31 @@ Voyage AI 임베딩은 길이 1로 정규화되어 있으므로:
 
 ### input_type 매개변수는 언제 어떻게 사용해야 하나요?
 
-모든 검색 작업 및 사용 사례(예: RAG)에 대해 `input_type` 매개변수를 사용하여 입력 텍스트가 쿼리인지 문서인지 지정하는 것이 권장됩니다. `input_type`을 생략하거나
-`input_type=None`으로 설정하지 마세요. 입력 텍스트가 쿼리인지 문서인지 지정하면 검색을 위한 더 나은 밀집 벡터 표현을 생성할 수 있으며, 이는 더 나은 검색 품질로 이어질 수 있습니다.
+모든 검색 작업 및 사용 사례(예: RAG)에 대해 `input_type` 매개변수를 사용하여 입력 텍스트가 쿼리인지 문서인지 지정하는 것이 권장됩니다. 
+`input_type`을 생략하거나 `input_type=None`으로 설정하지 마세요. 
+입력 텍스트가 쿼리인지 문서인지 지정하면 검색을 위한 더 나은 밀집 벡터 표현을 생성할 수 있으며, 이는 더 나은 검색 품질로 이어질 수 있습니다.
 
-`input_type` 매개변수를 사용할 때 임베딩 전에 입력 텍스트 앞에 특수 프롬프트가 추가됩니다. 구체적으로:
+`input_type` 매개변수를 사용할 때 임베딩 전에 입력 텍스트 앞에 특수 프롬프트가 추가됩니다. 
 
+구체적으로:
 > 📘 **`input_type`과 관련된 프롬프트**
 >
 > - 쿼리의 경우, 프롬프트는 "Represent the query for retrieving supporting documents: "입니다.
 > - 문서의 경우, 프롬프트는 "Represent the document for retrieval: "입니다.
 > - 예제
-    >
-- `input_type="query"`일 때, "When is Apple's conference call scheduled?"와 같은 쿼리는 "**Represent the query for retrieving
-  supporting documents:** When is Apple's conference call scheduled?"가 됩니다.
->     - `input_type="document"`일 때, "Apple's conference call to discuss fourth fiscal quarter results and business
-        updates is scheduled for Thursday, November 2, 2023 at 2:00 p.m. PT / 5:00 p.m. ET."와 같은 쿼리는 "**Represent the
-        document for retrieval:** Apple's conference call to discuss fourth fiscal quarter results and business updates
-        is scheduled for Thursday, November 2, 2023 at 2:00 p.m. PT / 5:00 p.m. ET."가 됩니다.
+> - `input_type="query"`일 때, "When is Apple's conference call scheduled?"와 같은 쿼리는 "**Represent the query for retrieving supporting documents:** When is Apple's conference call scheduled?"가 됩니다.
+> - `input_type="document"`일 때, 
+>   - "Apple's conference call to discuss fourth fiscal quarter results and business updates is scheduled for Thursday, November 2, 2023 at 2:00 p.m. PT / 5:00 p.m. ET."
+>   - 와 같은 쿼리는 "**Represent the document for retrieval:** Apple's conference call to discuss fourth fiscal quarter results and business updates is scheduled for Thursday, November 2, 2023 at 2:00 p.m. PT / 5:00 p.m. ET."
+>   - 가 됩니다.
 
 `voyage-large-2-instruct`는 이름에서 알 수 있듯이 입력 텍스트 앞에 추가되는 추가 지침에 응답하도록 훈련되었습니다. 분류, 클러스터링 또는
 기타 [MTEB](https://huggingface.co/mteb) 하위 작업의 경우 [여기](https://github.com/voyage-ai/voyage-large-2-instruct)의 지침을 사용하세요.
 
 ### 사용 가능한 양자화 옵션은 무엇인가요?
 
-임베딩의 양자화는 32비트 단정밀도 부동 소수점 숫자와 같은 고정밀도 값을 8비트 정수 또는 1비트 이진 값과 같은 저정밀도 형식으로 변환하여 각각 4배 및 32배의 저장, 메모리 및 비용을 절감합니다. 지원되는
-Voyage 모델은 `output_dtype` 매개변수로 출력 데이터 유형을 지정하여 양자화를 가능하게 합니다:
+임베딩의 양자화는 32비트 단정밀도 부동 소수점 숫자와 같은 고정밀도 값을 8비트 정수 또는 1비트 이진 값과 같은 저정밀도 형식으로 변환하여 각각 4배 및 32배의 저장, 메모리 및 비용을 절감합니다. 
+지원되는 Voyage 모델은 `output_dtype` 매개변수로 출력 데이터 유형을 지정하여 양자화를 가능하게 합니다:
 
 - `float`: 반환된 각 임베딩은 32비트(4바이트) 단정밀도 부동 소수점 숫자 목록입니다. 이는 기본값이며 가장 높은 정밀도/검색 정확도를 제공합니다.
 - `int8` 및 `uint8`: 반환된 각 임베딩은 각각 -128에서 127 및 0에서 255 범위의 8비트(1바이트) 정수 목록입니다.
@@ -298,8 +298,9 @@ Voyage 모델은 `output_dtype` 매개변수로 출력 데이터 유형을 지�
 
 ### Matryoshka 임베딩을 어떻게 잘라낼 수 있나요?
 
-Matryoshka 학습은 단일 벡터 내에서 조잡한 것부터 세밀한 것까지 표현을 가진 임베딩을 생성합니다. 여러 출력 차원을 지원하는 `voyage-code-3`과 같은 Voyage 모델은 이러한 Matryoshka
-임베딩을 생성합니다. 선두 차원의 하위 집합을 유지하여 이러한 벡터를 잘라낼 수 있습니다. 예를 들어, 다음 Python 코드는 1024차원 벡터를 256차원으로 잘라내는 방법을 보여줍니다:
+Matryoshka 학습은 단일 벡터 내에서 조잡한 것부터 세밀한 것까지 표현을 가진 임베딩을 생성합니다. 
+여러 출력 차원을 지원하는 `voyage-code-3`과 같은 Voyage 모델은 이러한 Matryoshka 임베딩을 생성합니다. 
+선두 차원의 하위 집합을 유지하여 이러한 벡터를 잘라낼 수 있습니다. 예를 들어, 다음 Python 코드는 1024차원 벡터를 256차원으로 잘라내는 방법을 보여줍니다:
 
 ```python
 import voyageai
