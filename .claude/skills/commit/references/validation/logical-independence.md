@@ -188,5 +188,3 @@ Final report shows:
   - How 5 header messages are generated for each split group
 - **[generation/body.md](../generation/body.md)** - Body generation per group
   - Feature-based body items for each group
-- **[support/metadata.md](../support/metadata.md)** - Group metadata structure
-  - How groups are stored and tracked during auto-split

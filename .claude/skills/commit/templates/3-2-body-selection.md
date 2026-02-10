@@ -2,7 +2,7 @@
 
 ## Situation
 
-Step 2 of 3-stage message creation: User selects body items (multi-select) with pagination
+Step 2 of 3-stage message creation: User selects body items (multi-select)
 
 ## Core Principle
 
@@ -14,49 +14,21 @@ Step 2 of 3-stage message creation: User selects body items (multi-select) with 
 - Git log가 자동으로 보여주는 것: 파일 리스트, 변경 라인 수
 - Body가 제공해야 하는 것: 작업 내용, 목적, 맥락
 
-## Body Item Generation (Script-Based)
+## Body Item Generation (Claude Real-time)
 
-**MANDATORY: Use executable script for body item generation**
+**Claude generates 5-10 feature-based body item candidates:**
 
-```bash
-EXECUTE_SCRIPT: scripts/generation/generate_body_items.js
-```
+1. Analyzes changed files and their content
+2. Groups related changes by logical purpose
+3. Generates clear, natural descriptions
+4. Presents in order of significance (NO mechanical scoring)
 
-**Input (JSON via stdin):**
-```json
-{
-  "files": [{"path": "...", "additions": N, "deletions": N}],
-  "diff": "git diff output",
-  "type": "feat|fix|refactor|..."
-}
-```
-
-**Output (JSON):**
-```json
-{
-  "items": [
-    {
-      "label": "작업 내용 설명",
-      "description": "상세 설명",
-      "score": 95,
-      "relatedFiles": ["file1", "file2"],
-      "module": "module-name"
-    }
-  ],
-  "totalCount": 15,
-  "detectedType": "feat"
-}
-```
-
-**Generation rules:**
+**Generation approach:**
 - Feature/작업 중심 항목 생성 (파일명 제외)
-- Score로 중요도 표시 (0-100): 변경량(40%) + 중요도(30%) + 관련성(30%)
-- 10-15개 후보 생성 (메타데이터 저장)
-- 페이지당 3개 항목 표시
+- 자연스러운 우선순위 (Claude's understanding)
+- 5-10개 후보 생성
 - 각 항목은 1-2줄로 간결하게
-- Score 기준 정렬 (높은 순)
-
-**See:** [scripts/generation/generate_body_items.js](../scripts/generation/generate_body_items.js) for implementation details
+- NO score calculation - natural ordering
 
 ## Template (형식 명세)
 

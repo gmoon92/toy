@@ -362,7 +362,6 @@ Is it build/config? → chore
 - **[support/examples.md](../support/examples.md)** - Complete commit message examples
   - All 7 commit types with real examples
   - Good vs bad patterns demonstrating these rules
-- **[scripts/algorithms/](../../scripts/algorithms/)** - Scope/Type detection (detect_scope.js, detect_type.js)
   - How rules are applied in automatic detection
 - **[process/step4-approval.md](../process/step4-approval.md)** - Validation process
   - When these rules are checked during approval

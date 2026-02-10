@@ -34,8 +34,8 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 1: Initial Analysis
 - **Load**: [process/step1-analysis.md](references/process/step1-analysis.md)
-- **Execute**: [scripts/analysis/collect_changes.sh](scripts/analysis/collect_changes.sh) + [scripts/analysis/create_metadata.sh](scripts/analysis/create_metadata.sh)
-- **Purpose**: Analyze git status, detect file changes, create metadata
+- **Execute**: [scripts/analysis/collect_git_diff.sh](scripts/analysis/collect_git_diff.sh)
+- **Purpose**: Collect pure git diff data (no caching, no inference)
 - **When**: Every /commit execution start
 
 ### Phase 2: Violation Detection (conditional)
@@ -68,17 +68,14 @@ Execute skill in phases. Load only required references per phase for maximum tok
 ### Support Resources (load as needed)
 - **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md)
 - **Examples**: [support/examples.md](references/support/examples.md)
-- **Token optimization**: [support/metadata.md](references/support/metadata.md)
 - **UI design**: [support/ui-design.md](references/support/ui-design.md)
-- **Algorithms**: [scripts/algorithms/](scripts/algorithms/) (detect_scope.js, detect_type.js) for scope/type detection
 
 ### Scripts (MANDATORY: Execute directly, DO NOT inline or reconstruct)
 
 **CRITICAL:** Scripts are pre-built, deterministic executables. Agent MUST use `EXECUTE_SCRIPT:` directive.
 
 **Phase 1 - Analysis:**
-- `EXECUTE_SCRIPT: scripts/analysis/collect_changes.sh` - Auto-stage and collect changes
-- `EXECUTE_SCRIPT: scripts/analysis/create_metadata.sh` - Generate execution metadata
+- `EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh` - Auto-stage and collect pure git data
 
 **Phase 5 - Execution:**
 - `EXECUTE_SCRIPT: scripts/execution/commit.sh` - Validate and commit

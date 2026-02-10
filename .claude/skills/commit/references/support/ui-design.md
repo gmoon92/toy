@@ -86,47 +86,33 @@ Select a commit header message.
 - ❌ List filenames (already shown in git log)
 - ✅ Describe work done (what was accomplished)
 
-**System automatically generates 10-15 feature-based candidates** with score:
+**Claude generates 5-10 feature-based candidates in real-time:**
 
 **Example screen:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📝 Step 2/3: Select Body Items [Page 1/3]
+📝 Step 2/3: Select Body Items
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Modified files (10 files, for reference):
-  [95⭐] UserService.java          (+152, -23)
-  [90⭐] LoginController.java      (+87, -5)
-  [85⭐] SecurityConfig.java       (+45, -12)
-  ...
+Select work items to include in commit body.
+(Multi-select with spacebar)
 
-💡 Score: Changes(40%) + Importance(30%) + Relevance(30%)
-   ⭐ = Score 80+ (Important)
-
-Currently selected: 0 items
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Select work items (1-3):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-◯ [95⭐] Implement user authentication logic
-◯ [90⭐] Add login API endpoint
-◯ [85⭐] Configure Spring Security filter chain
-◯ [Next Page]
+◯ Implement user authentication logic
+◯ Add login API endpoint
+◯ Configure Spring Security filter chain
+◯ JWT token generation and validation logic
+◯ No body
 ```
 
 **Item Generation Strategy:**
 
-**Feature-based (recommended, default strategy):**
+**Feature-based (Claude's natural understanding):**
 ```
-[{score}⭐] {work description}
-Example: [95⭐] Implement user authentication logic
+{work description}
+Example: Implement user authentication logic
 ```
 
-**Score calculation:**
-- Lines changed (40%)
-- File importance (30%): src/main > config > test
-- Commit type relevance (30%)
+**NO score calculation** - Claude presents items in natural order of significance
 
 **Pagination:**
 - Generate 10-15 candidates
@@ -486,9 +472,6 @@ cat .claude/skills/commit/../templates/3-3-footer-selection.md
   - Feature-based candidates in body selection template
 - **[generation/footer.md](../generation/footer.md)** - Footer options for Stage 3
   - Footer selection template design
-- **[metadata.md](metadata.md)** - Metadata structure
-  - Pre-generated body candidates
-  - User selections storage
 - **[validation/rules.md](../validation/rules.md)** - Validation rules
   - Format validation
 - **[examples.md](examples.md)** - Complete examples

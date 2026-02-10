@@ -10,83 +10,44 @@
 - What git log shows automatically: file list, changed line counts
 - What Body should provide: work description, purpose, context
 
-### Generate 10-15 Body Item Candidates (Feature-based)
+### Generate Body Item Candidates (Feature-based, NO scores)
 
-**Strategy: Feature/work-centric (exclude filenames)**
+**Strategy: Claude analyzes changes and generates natural candidates**
 
-```javascript
-function generateBodyItems(files, diff) {
-  // 1. Analyze changes and group by feature/purpose
-  const features = analyzeFeatures(files, diff);
-
-  // 2. Generate feature-based items
-  const items = features.map(feature => ({
-    label: feature.description,        // Work description (no filenames)
-    description: feature.details,      // Detailed explanation
-    score: calculateScore(feature),    // Importance score (0-100)
-    relatedFiles: feature.files        // For reference (optional)
-  }));
-
-  // 3. Sort by score (high to low)
-  return items.sort((a, b) => b.score - a.score);
-}
-
-function calculateScore(feature) {
-  let score = 0;
-
-  // Changed line count (40 points)
-  const totalLines = feature.files.reduce((sum, f) =>
-    sum + f.additions + f.deletions, 0);
-  score += Math.min(totalLines / 10, 40);
-
-  // File importance (30 points)
-  const importanceScore = feature.files.reduce((sum, f) => {
-    if (f.path.includes('src/main')) return sum + 15;
-    if (f.path.includes('config')) return sum + 10;
-    if (f.path.includes('src/test')) return sum + 5;
-    return sum + 3;
-  }, 0);
-  score += Math.min(importanceScore, 30);
-
-  // Commit type relevance (30 points)
-  const typeRelevance = analyzeTypeRelevance(feature, detectedType);
-  score += typeRelevance;
-
-  return Math.round(score);
-}
-```
-
-See [3-2-body-selection.md](../../templates/3-2-body-selection.md) for detailed algorithm.
+Claude analyzes the git diff data and generates body item candidates based on:
+1. **Understanding the changes**: What was actually modified, added, or removed
+2. **Identifying features/work**: Group related changes by logical purpose
+3. **Natural prioritization**: Present items in order of significance (no mechanical scoring)
+4. **Clear descriptions**: Focus on "what work was done" not "which files changed"
 
 **Example candidates:**
 ```
-[95⭐] Change commit message generation to 3-stage selection
-[90⭐] Rewrite header generation strategy to 5 options
-[85⭐] Implement body item pagination
-[80] Add 3 new templates (header, body, footer selection)
-[75] Update core prompt to header selection approach
+Stage 2: 바디 항목 선택 (다중 선택)
+
+다음 항목 중 커밋 메시지에 포함할 내용을 선택하세요:
+
+□ 커밋 메시지 생성을 3단계 선택 방식으로 변경
+  (사용자 경험 개선 및 선택 유연성 향상)
+
+□ 헤더 생성 전략을 5개 옵션 제공으로 재작성
+  (추천 2개 + 일반 3개 구조)
+
+□ 바디 항목 페이지네이션 구현
+  (3개씩 페이지 단위로 표시, 가독성 향상)
+
+□ 바디 항목 없이 진행
+
+[↑↓: 이동 | Space: 선택/해제 | Enter: 완료]
 ```
 
-### Pagination (Per-page Display)
+### Generation Approach
 
-**Implementation:**
-- Generate 10-15 candidates in Step 1 (metadata)
-- Show 3 items per page in Step 2
-- User can navigate: [Next Page], [Previous Page]
-- Selections accumulate across pages
-- Last page shows: "No body", "[Complete Selection]"
+**NO pre-computation**: Claude generates candidates in real-time during Phase 3
+- Analyze files and changes from git diff data
+- Understand the purpose and context
+- Generate 5-10 clear, feature-based descriptions
+- Present in natural order of importance
 
-```javascript
-// Step 1: Pre-generate all candidates
-metadata.analysis.bodyItemCandidates = generateBodyItems(files, diff);
-
-// Step 2: Paginate (3 items per page)
-const itemsPerPage = 3;
-for (let page = 0; page < totalPages; page++) {
-  const start = page * itemsPerPage;
-  const pageItems = candidates.slice(start, start + itemsPerPage);
-  // Show pageItems with navigation options
-}
-```
+**Multi-select**: User can select multiple items or none
 
 ---
