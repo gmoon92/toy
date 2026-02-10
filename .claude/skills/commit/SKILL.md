@@ -33,42 +33,44 @@ Automates commit message generation following project conventions.
 Execute skill in phases. Load only required references per phase for maximum token efficiency.
 
 ### Phase 1: Initial Analysis
-- **Load**: [process/step1-analysis.md](references/process/step1-analysis.md)
+- **Load**: [process/step1-analysis.md](references/process/step1-analysis.md) (~180 tokens)
 - **Execute**: [scripts/analysis/collect_git_diff.sh](scripts/analysis/collect_git_diff.sh)
 - **Purpose**: Collect pure git diff data (no caching, no inference)
 - **When**: Every /commit execution start
 
 ### Phase 2: Violation Detection (conditional)
-- **Load**: [process/step2-violations.md](references/process/step2-violations.md)
-- **Load**: [validation/logical-independence.md](references/validation/logical-independence.md) IF 10+ files detected
+- **Load**: [process/step2-violations.md](references/process/step2-violations.md) (~90 tokens)
+- **Load**: [validation/logical-independence.md](references/validation/logical-independence.md) (~250 tokens) IF 10+ files detected
 - **Purpose**: Detect and handle violations (Tidy First, logical independence)
 - **When**: Only if violations detected during analysis
 
 ### Phase 3: Message Generation
-- **Load**: [process/step3-message.md](references/process/step3-message.md) for 3-stage workflow
-- **Load**: [generation/header.md](references/generation/header.md) for header algorithm
-- **Load**: [generation/body.md](references/generation/body.md) for body candidates
-- **Load**: [generation/footer.md](references/generation/footer.md) for footer options
+- **Load**: [process/step3-message.md](references/process/step3-message.md) (~320 tokens) for 3-stage workflow
+- **Load**: [generation/header.md](references/generation/header.md) (~190 tokens) for header algorithm
+- **Load**: [generation/body.md](references/generation/body.md) (~70 tokens) for body candidates
+- **Load**: [generation/footer.md](references/generation/footer.md) (~10 tokens) for footer options
 - **Purpose**: Generate commit message components through 3-stage selection
 - **When**: After passing validation checks
+- **Total**: ~590 tokens
 
 ### Phase 4: Validation & Approval
-- **Load**: [process/step4-approval.md](references/process/step4-approval.md)
-- **Load**: [validation/rules.md](references/validation/rules.md) for format validation
+- **Load**: [process/step4-approval.md](references/process/step4-approval.md) (~70 tokens)
+- **Load**: [validation/rules.md](references/validation/rules.md) (~490 tokens) for format validation
 - **Purpose**: Validate message format and get user approval
 - **When**: After message generation, before commit
+- **Total**: ~560 tokens
 
 ### Phase 5: Execution
-- **Load**: [process/step5-execute.md](references/process/step5-execute.md)
+- **Load**: [process/step5-execute.md](references/process/step5-execute.md) (~340 tokens)
 - **Execute**: [scripts/execution/commit.sh](scripts/execution/commit.sh) + [scripts/utils/cleanup_metadata.sh](scripts/utils/cleanup_metadata.sh)
 - **Purpose**: Validate message format and execute git commit
 - **When**: After user approval
 - **Token efficiency**: Scripts run via bash (0 context tokens consumed)
 
 ### Support Resources (load as needed)
-- **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md)
-- **Examples**: [support/examples.md](references/support/examples.md)
-- **UI design**: [support/ui-design.md](references/support/ui-design.md)
+- **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md) (~450 tokens)
+- **Examples**: [support/examples.md](references/support/examples.md) (~350 tokens)
+- **UI design**: [support/ui-design.md](references/support/ui-design.md) (~50 tokens)
 
 ### Scripts (MANDATORY: Execute directly, DO NOT inline or reconstruct)
 

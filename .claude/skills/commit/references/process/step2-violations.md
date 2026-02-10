@@ -1,11 +1,5 @@
 # Step 2: Analyze Changes and Detect Violations
 
-**Read metadata:**
-```bash
-# Read pre-analyzed data using executionId
-cat .claude/temp/commit-execution-${EXECUTION_ID}.json
-```
-
 ### Determine Commit Type
 
 | Change Type | Type |

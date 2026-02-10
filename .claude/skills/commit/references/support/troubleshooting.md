@@ -4,130 +4,72 @@ Quick solutions for commit failures and hook errors.
 
 ---
 
-## Pre-commit Hook Failures
+## Hook Failures
 
-Pre-commit hooks run **before** the commit is created. If they fail, no commit is made.
+Git hooks validate changes at different stages. If they fail, no commit is created.
 
-### Linting Errors (ESLint, Prettier)
+**Hook types:**
+- **Pre-commit**: Runs before commit (validates code quality)
+- **Commit-msg**: Runs after message provided (validates message format)
+
+**Skip hook (emergency only):**
+```bash
+git commit --no-verify -m "message"
+```
+⚠️ Skipping hooks can break CI/CD pipelines. Fix issues properly.
+
+### Pre-commit: Linting Errors
 
 **Symptom:**
 ```
-❌ pre-commit hook failed
-ESLint found 3 errors:
+❌ ESLint found 3 errors:
   src/components/Agent.tsx:15:3 - 'agentData' is assigned but never used
 ```
 
 **Solution:**
-
-Auto-fix (recommended):
 ```bash
-npx eslint --fix src/
-npx prettier --write src/
-git add .
+npx eslint --fix src/ && npx prettier --write src/
+git add . && /commit
 ```
 
-Manual fix:
-1. Fix issues in mentioned files
-2. Re-stage: `git add <file>`
-3. Retry commit
+### Pre-commit: Compilation/Test Failures
 
-Skip hook (not recommended):
+**Java compilation:**
 ```bash
-git commit --no-verify -m "message"
+mvn clean compile    # Fix errors, verify
 ```
 
-⚠️ Skipping hooks can break CI/CD pipelines.
+**Test failures:**
+```bash
+mvn test -Dtest=AgentServiceTest#shouldDeleteAgent    # Diagnose
+mvn test                                               # Verify all pass
+```
 
-### Java Compilation Errors
+**Common causes:** Missing setup, incorrect mocks, changed signatures
 
-**Solution:**
-1. Fix compilation errors in IDE
-2. Verify: `mvn clean compile`
-3. Re-stage and retry
-
-### Test Failures
+### Pre-commit: Code Style
 
 **Solution:**
 ```bash
-# Diagnose specific test
-mvn test -Dtest=AgentServiceTest#shouldDeleteAgent
-
-# Fix tests, verify all pass
-mvn test
-
-# Re-stage and retry
+mvn spotless:apply    # Or Ctrl+Alt+L in IntelliJ
 ```
 
-**Common causes:** Missing setup, incorrect mocks, changed signatures, missing test data
-
-### Checkstyle/Spotless Violations
-
-**Solution:**
-```bash
-# Format in IDE: Ctrl+Alt+L (IntelliJ)
-# Or auto-fix
-mvn spotless:apply
-
-# Re-stage and retry
-```
-
----
-
-## Commit-msg Hook Failures
-
-Commit-msg hooks run **after** message is provided but **before** commit is created.
-
-### Format Validation Errors
+### Commit-msg: Format Validation
 
 **Common mistakes:**
-
 ```
-❌ feat(agent):message          # Missing space after colon
+❌ feat(agent):message          # Missing space
 ❌ feat agent: message           # Missing parentheses
 ❌ feat(agent) message           # Missing colon
 ❌ feature(agent): message       # Invalid type
-❌ feat(agent):                  # No message
-❌ feat(agent service): message  # Space in scope
-
-✅ feat(agent): message          # Correct format
+✅ feat(agent): message          # Correct: <type>(scope): <message>
 ```
 
-**Solution:** Retry with correct format: `<type>(scope): <message>`
+**Allowed types:** `feat`, `fix`, `refactor`, `test`, `docs`, `style`, `chore`
 
-### Invalid Type
+**Max blank lines:** 2 groups only (title-body, body-footer)
 
-**Allowed types:**
-- `feat` - New feature
-- `fix` - Bug fix
-- `refactor` - Code refactoring
-- `test` - Test code
-- `docs` - Documentation
-- `style` - Formatting
-- `chore` - Build/config
-
-See [rules.md](../validation/rules.md) for details.
-
-### Excessive Blank Lines
-
-**Problem:** More than 2 groups of consecutive blank lines
-
-**Solution:**
-```
-✅ feat(agent): title
-
-body
-
-footer
-```
-
-### Sensitive Information Detected
-
-**Solution:**
-1. Remove sensitive info from message
-2. If already committed: `git commit --amend`
-3. If pushed: Contact team lead immediately
-
-⚠️ Never commit passwords, API keys, tokens, or credentials
+**Sensitive info:** Never commit passwords, API keys, tokens. If committed: `git commit --amend`
 
 ---
 
@@ -244,25 +186,17 @@ git add file3.java file4.java
 
 ## Hook Debugging
 
-### Check Hook Installation
-
+**Check installation:**
 ```bash
 ls -la .git/hooks/
 cat .git/hooks/pre-commit
-cat .git/hooks/commit-msg
 ```
 
-### Temporarily Disable Hooks
-
+**Disable temporarily (testing only):**
 ```bash
-# Rename hook
-mv .git/hooks/pre-commit .git/hooks/pre-commit.bak
-
-# Or use flag
-git commit --no-verify -m "message"
+mv .git/hooks/pre-commit .git/hooks/pre-commit.bak    # Rename
+git commit --no-verify -m "message"                    # Or skip with flag
 ```
-
-⚠️ Only for testing. Fix issues properly.
 
 ---
 

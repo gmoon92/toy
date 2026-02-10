@@ -80,6 +80,28 @@ When user requests refresh, Claude generates 3 NEW general messages while keepin
 - Generate 3 new variations with different perspectives
 - Explore different scopes, types, or message angles
 
+**Example Refresh Variations:**
+
+*Initial 5 messages:*
+- Recommended 1: `docs(commit-skill): change commit message generation to 3-stage selection`
+- Recommended 2: `refactor(commit-skill): restructure message generation process`
+- General 3: `docs(generation/header.md): rewrite with 3-stage selection algorithm`
+- General 4: `docs(.claude/skills): update commit skill documentation`
+- General 5: `refactor(message-generation): improve commit workflow`
+
+*After refresh (Recommended 1 & 2 stay, General 3-5 regenerated):*
+- Recommended 1: `docs(commit-skill): change commit message generation to 3-stage selection` ✓ (unchanged)
+- Recommended 2: `refactor(commit-skill): restructure message generation process` ✓ (unchanged)
+- NEW General 3: `feat(commit-skill): introduce interactive message composition`
+- NEW General 4: `docs(skill-references): add 3-stage selection process documentation`
+- NEW General 5: `chore(commit-workflow): reorganize message generation templates`
+
+**Variation Strategies:**
+1. **Scope variations**: File-level → Module-level → Parent directory
+2. **Type alternatives**: Different interpretation angles (docs vs refactor vs feat)
+3. **Message focus**: Action-oriented vs outcome-oriented vs technical detail
+4. **Granularity**: Specific file changes vs broader system changes
+
 ---
 
 ## Generation Strategy

@@ -222,20 +222,6 @@ chore(application.yml): add database connection pool configuration
 
 ---
 
-## Quick Reference
-
-| Type     | Example                                       |
-|----------|-----------------------------------------------|
-| feat     | `feat(spring-cloud-config): implement Config Server` |
-| fix      | `fix(spring-data-redis): fix connection timeout`          |
-| refactor | `refactor(spring-batch): clarify variable names`             |
-| test     | `test(CacheServiceTest.java): add tests`         |
-| docs     | `docs(README.md): add Gradle configuration guide`           |
-| style    | `style(spring-security): format code`              |
-| chore    | `chore(build.gradle): update Spring Boot version`    |
-
----
-
 ## Common Mistakes
 
 ### ❌ Wrong Format
