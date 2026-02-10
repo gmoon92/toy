@@ -18,88 +18,102 @@ Agent SDK를 사용하여 코드를 읽고, 버그를 찾고, 수동 개입 없�
 
 ## 설정
 
-<Steps>
-  <Step title="Claude Code 설치">
-    Agent SDK는 Claude Code를 런타임으로 사용합니다. 플랫폼에 맞게 설치하세요:
+- **Claude Code 설치**
 
-    <Tabs>
-      <Tab title="macOS/Linux/WSL">
-        ```bash
-        curl -fsSL https://claude.ai/install.sh | bash
-        ```
-      </Tab>
-      <Tab title="Homebrew">
-        ```bash
-        brew install --cask claude-code
-        ```
-      </Tab>
-      <Tab title="WinGet">
-        ```powershell
-        winget install Anthropic.ClaudeCode
-        ```
-      </Tab>
-    </Tabs>
+  Agent SDK는 Claude Code를 런타임으로 사용합니다. 플랫폼에 맞게 설치하세요:
 
-    컴퓨터에 Claude Code를 설치한 후, 터미널에서 `claude`를 실행하고 인증 안내에 따라 진행하세요. SDK는 이 인증을 자동으로 사용합니다.
+  <details>
+<summary>macOS/Linux/WSL</summary>
 
-    
+```bash
+      curl -fsSL https://claude.ai/install.sh | bash
+      ```
+
+</details>
+
+<details>
+<summary>Homebrew</summary>
+
+```bash
+      brew install --cask claude-code
+      ```
+
+</details>
+
+<details>
+<summary>WinGet</summary>
+
+```powershell
+      winget install Anthropic.ClaudeCode
+      ```
+
+</details>
+
+  컴퓨터에 Claude Code를 설치한 후, 터미널에서 `claude`를 실행하고 인증 안내에 따라 진행하세요. SDK는 이 인증을 자동으로 사용합니다.
+
+
 > Claude Code 설치에 대한 자세한 정보는 [Claude Code 설정](https://code.claude.com/docs/en/setup)을 참조하세요.
 
-  </Step>
+- **프로젝트 폴더 생성**
 
-  <Step title="프로젝트 폴더 생성">
-    이 빠른 시작을 위한 새 디렉토리를 생성합니다:
+  이 빠른 시작을 위한 새 디렉토리를 생성합니다:
 
-    ```bash
-    mkdir my-agent && cd my-agent
-    ```
+  ```bash
+  mkdir my-agent && cd my-agent
+  ```
 
-    자체 프로젝트의 경우 어떤 폴더에서든 SDK를 실행할 수 있으며, 기본적으로 해당 디렉토리와 하위 디렉토리의 파일에 접근할 수 있습니다.
-  </Step>
+  자체 프로젝트의 경우 어떤 폴더에서든 SDK를 실행할 수 있으며, 기본적으로 해당 디렉토리와 하위 디렉토리의 파일에 접근할 수 있습니다.
 
-  <Step title="SDK 설치">
-    사용하는 언어에 맞는 Agent SDK 패키지를 설치합니다:
+- **SDK 설치**
 
-    <Tabs>
-      <Tab title="TypeScript">
-        ```bash
-        npm install @anthropic-ai/claude-agent-sdk
-        ```
-      </Tab>
-      <Tab title="Python (uv)">
-        [uv Python 패키지 매니저](https://docs.astral.sh/uv/)는 가상 환경을 자동으로 처리하는 빠른 Python 패키지 매니저입니다:
-        ```bash
-        uv init && uv add claude-agent-sdk
-        ```
-      </Tab>
-      <Tab title="Python (pip)">
-        먼저 가상 환경을 생성한 후 설치합니다:
-        ```bash
-        python3 -m venv .venv && source .venv/bin/activate
-        pip3 install claude-agent-sdk
-        ```
-      </Tab>
-    </Tabs>
-  </Step>
+  사용하는 언어에 맞는 Agent SDK 패키지를 설치합니다:
 
-  <Step title="API 키 설정">
-    이미 Claude Code를 인증했다면(터미널에서 `claude`를 실행하여), SDK는 해당 인증을 자동으로 사용합니다.
+  <details>
+<summary>TypeScript</summary>
 
-    그렇지 않은 경우 [Claude Console](https://platform.claude.com/)에서 API 키가 필요합니다.
+```bash
+      npm install @anthropic-ai/claude-agent-sdk
+      ```
 
-    프로젝트 디렉토리에 `.env` 파일을 생성하고 API 키를 저장합니다:
+</details>
 
-    ```bash
-    ANTHROPIC_API_KEY=your-api-key
-    ```
+<details>
+<summary>Python (uv)</summary>
 
-    
+[uv Python 패키지 매니저](https://docs.astral.sh/uv/)는 가상 환경을 자동으로 처리하는 빠른 Python 패키지 매니저입니다:
+      ```bash
+      uv init && uv add claude-agent-sdk
+      ```
+
+</details>
+
+<details>
+<summary>Python (pip)</summary>
+
+먼저 가상 환경을 생성한 후 설치합니다:
+      ```bash
+      python3 -m venv .venv && source .venv/bin/activate
+      pip3 install claude-agent-sdk
+      ```
+
+</details>
+
+- **API 키 설정**
+
+  이미 Claude Code를 인증했다면(터미널에서 `claude`를 실행하여), SDK는 해당 인증을 자동으로 사용합니다.
+
+  그렇지 않은 경우 [Claude Console](https://platform.claude.com/)에서 API 키가 필요합니다.
+
+  프로젝트 디렉토리에 `.env` 파일을 생성하고 API 키를 저장합니다:
+
+  ```bash
+  ANTHROPIC_API_KEY=your-api-key
+  ```
+
+
 > **Amazon Bedrock, Google Vertex AI 또는 Microsoft Azure를 사용하시나요?** [Bedrock](https://code.claude.com/docs/en/amazon-bedrock), [Vertex AI](https://code.claude.com/docs/en/google-vertex-ai) 또는 [Azure AI Foundry](https://code.claude.com/docs/en/azure-ai-foundry) 설정 가이드를 참조하세요.
 >
 > 사전 승인이 없는 한, Anthropic은 타사 개발자가 Agent SDK 기반 에이전트를 포함하여 자신의 제품에 claude.ai 로그인 또는 사용률 제한을 제공하는 것을 허용하지 않습니다. 대신 이 문서에 설명된 API 키 인증 방법을 사용하세요.
-
-  </Step>
-</Steps>
 
 ## 버그가 있는 파일 생성
 
@@ -175,18 +189,23 @@ asyncio.run(main())
 
 에이전트가 준비되었습니다. 다음 명령으로 실행하세요:
 
-<Tabs>
-  <Tab title="Python">
-    ```bash
+<details>
+<summary>Python</summary>
+
+```bash
     python3 agent.py
     ```
-  </Tab>
-  <Tab title="TypeScript">
-    ```bash
+
+</details>
+
+<details>
+<summary>TypeScript</summary>
+
+```bash
     npx tsx agent.ts
     ```
-  </Tab>
-</Tabs>
+
+</details>
 
 실행 후 `utils.py`를 확인하세요. 빈 리스트와 null 사용자를 처리하는 방어적 코드가 표시됩니다. 에이전트가 자율적으로:
 

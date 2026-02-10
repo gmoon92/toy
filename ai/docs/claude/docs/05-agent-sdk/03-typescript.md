@@ -1898,7 +1898,7 @@ type SdkBeta = 'context-1m-2025-08-07';
 
 | 값 | 설명 | 호환 모델 |
 |:------|:------------|:------------------|
-| `'context-1m-2025-08-07'` | 100만 토큰 [컨텍스트 윈도우](./01-build-with-claude-02-context-windows.md) 활성화 | Claude Sonnet 4, Claude Sonnet 4.5 |
+| `'context-1m-2025-08-07'` | 100만 토큰 [컨텍스트 윈도우](../01-build-with-claude/02-context-windows.md) 활성화 | Claude Sonnet 4, Claude Sonnet 4.5 |
 
 ### `SlashCommand`
 

@@ -29,8 +29,9 @@ Claude는 Anthropic이 정의한 텍스트 에디터 도구를 사용하여 텍�
 
 ## 텍스트 에디터 도구 사용하기
 
-<Tabs>
-<Tab title="Claude 4">
+<details>
+<summary>Claude 4</summary>
+
 Messages API를 사용하여 텍스트 에디터 도구(`str_replace_based_edit_tool`이라는 이름)를 Claude에 제공합니다.
 
 대용량 파일을 볼 때 잘림을 제어하기 위해 선택적으로 `max_characters` 매개변수를 지정할 수 있습니다.
@@ -67,8 +68,12 @@ curl https://api.anthropic.com/v1/messages \
 ```
 
 </details>
-</Tab>
-<Tab title="Claude Sonnet 3.7">
+
+</details>
+
+<details>
+<summary>Claude Sonnet 3.7</summary>
+
 Messages API를 사용하여 텍스트 에디터 도구(`str_replace_editor`라는 이름)를 Claude에 제공합니다.
 <details>
 <summary>REST API 예시</summary>
@@ -97,39 +102,36 @@ curl https://api.anthropic.com/v1/messages \
 ```
 
 </details>
-</Tab>
-</Tabs>
+
+</details>
 
 텍스트 에디터 도구는 다음과 같은 방식으로 사용할 수 있습니다.
 
-<Steps>
-  <Step title="Claude에 텍스트 에디터 도구와 사용자 프롬프트 제공">
-    - API 요청에 텍스트 에디터 도구 포함
-    - "내 코드의 구문 오류를 수정해 줄 수 있나요?"와 같이 파일을 검사하거나 수정해야 할 수 있는 사용자 프롬프트 제공
-  </Step>
-  <Step title="Claude가 도구를 사용하여 파일 또는 디렉토리 검사">
-    - Claude가 확인이 필요한 내용을 평가하고 `view` 명령을 사용하여 파일 내용을 검사하거나 디렉토리 내용을 나열
-    - API 응답에는 `view` 명령이 포함된 `tool_use` 콘텐츠 블록이 포함됨
-  </Step>
-  <Step title="view 명령 실행 및 결과 반환">
-    - Claude의 도구 사용 요청에서 파일 또는 디렉토리 경로 추출
-    - 파일 내용을 읽거나 디렉토리 내용을 나열
-    - 도구 구성에 `max_characters` 매개변수가 지정된 경우 파일 내용을 해당 길이로 잘라냄
-    - `tool_result` 콘텐츠 블록을 포함하는 새 `user` 메시지로 대화를 계속하여 결과를 Claude에 반환
-  </Step>
-  <Step title="Claude가 도구를 사용하여 파일 수정">
-    - 파일 또는 디렉토리를 검사한 후 Claude는 `str_replace`와 같은 명령을 사용하여 변경하거나 `insert`를 사용하여 특정 줄 번호에 텍스트를 추가할 수 있음
-    - Claude가 `str_replace` 명령을 사용하는 경우 이전 텍스트와 교체할 새 텍스트로 적절한 형식의 도구 사용 요청을 구성
-  </Step>
-  <Step title="편집 실행 및 결과 반환">
-    - Claude의 도구 사용 요청에서 파일 경로, 이전 텍스트 및 새 텍스트 추출
-    - 파일에서 텍스트 교체 수행
-    - Claude에 결과 반환
-  </Step>
-  <Step title="Claude가 분석 및 설명 제공">
-    - 파일을 검사하고 편집한 후 Claude는 발견한 내용과 수행한 변경사항에 대한 완전한 설명을 제공
-  </Step>
-</Steps>
+- **Claude에 텍스트 에디터 도구와 사용자 프롬프트 제공**
+  - API 요청에 텍스트 에디터 도구 포함
+  - "내 코드의 구문 오류를 수정해 줄 수 있나요?"와 같이 파일을 검사하거나 수정해야 할 수 있는 사용자 프롬프트 제공
+
+- **Claude가 도구를 사용하여 파일 또는 디렉토리 검사**
+  - Claude가 확인이 필요한 내용을 평가하고 `view` 명령을 사용하여 파일 내용을 검사하거나 디렉토리 내용을 나열
+  - API 응답에는 `view` 명령이 포함된 `tool_use` 콘텐츠 블록이 포함됨
+
+- **view 명령 실행 및 결과 반환**
+  - Claude의 도구 사용 요청에서 파일 또는 디렉토리 경로 추출
+  - 파일 내용을 읽거나 디렉토리 내용을 나열
+  - 도구 구성에 `max_characters` 매개변수가 지정된 경우 파일 내용을 해당 길이로 잘라냄
+  - `tool_result` 콘텐츠 블록을 포함하는 새 `user` 메시지로 대화를 계속하여 결과를 Claude에 반환
+
+- **Claude가 도구를 사용하여 파일 수정**
+  - 파일 또는 디렉토리를 검사한 후 Claude는 `str_replace`와 같은 명령을 사용하여 변경하거나 `insert`를 사용하여 특정 줄 번호에 텍스트를 추가할 수 있음
+  - Claude가 `str_replace` 명령을 사용하는 경우 이전 텍스트와 교체할 새 텍스트로 적절한 형식의 도구 사용 요청을 구성
+
+- **편집 실행 및 결과 반환**
+  - Claude의 도구 사용 요청에서 파일 경로, 이전 텍스트 및 새 텍스트 추출
+  - 파일에서 텍스트 교체 수행
+  - Claude에 결과 반환
+
+- **Claude가 분석 및 설명 제공**
+  - 파일을 검사하고 편집한 후 Claude는 발견한 내용과 수행한 변경사항에 대한 완전한 설명을 제공
 
 ### 텍스트 에디터 도구 명령
 
@@ -284,8 +286,8 @@ curl https://api.anthropic.com/v1/messages \
 
 ### 예시: 텍스트 에디터 도구로 구문 오류 수정하기
 
-<Tabs>
-<Tab title="Claude 4">
+<details>
+<summary>Claude 4</summary>
 
 이 예시는 Claude 4 모델이 텍스트 에디터 도구를 사용하여 Python 파일의 구문 오류를 수정하는 방법을 보여줍니다.
 
@@ -521,9 +523,12 @@ public class TextEditorConversationExample {
   ]
 }
 ```
-</Tab>
 
-<Tab title="Claude Sonnet 3.7">
+</details>
+
+<details>
+<summary>Claude Sonnet 3.7</summary>
+
 이 예시는 Claude Sonnet 3.7이 텍스트 에디터 도구를 사용하여 Python 파일의 구문 오류를 수정하는 방법을 보여줍니다.
 
 먼저, 애플리케이션이 텍스트 에디터 도구와 구문 오류를 수정하라는 프롬프트를 Claude에 제공합니다.
@@ -556,8 +561,7 @@ print(response)
 
 > Claude Sonnet 3.7 예시는 위의 Claude 4 예시와 동일한 형식을 따르며, 동일한 도구 호출과 응답을 사용하지만 `text_editor_20250124` 도구 타입과 `str_replace_editor` 이름을 사용합니다.
 
-</Tab>
-</Tabs>
+</details>
 
 ***
 
@@ -569,63 +573,64 @@ print(response)
 - **Claude 4**: `type: "text_editor_20250728"`
 - **Claude Sonnet 3.7**: `type: "text_editor_20250124"`
 
-<Steps>
-  <Step title="에디터 구현 초기화">
-    파일 읽기, 쓰기 및 수정과 같은 파일 작업을 처리하는 헬퍼 함수를 만듭니다. 실수에서 복구하기 위해 백업 기능 구현을 고려하세요.
-  </Step>
-  <Step title="에디터 도구 호출 처리">
-    명령 타입에 따라 Claude의 도구 호출을 처리하는 함수를 만듭니다.
-    ```python
-    def handle_editor_tool(tool_call, model_version):
-        input_params = tool_call.input
-        command = input_params.get('command', '')
-        file_path = input_params.get('path', '')
+- **에디터 구현 초기화**
 
-        if command == 'view':
-            # 파일 내용 읽기 및 반환
-            pass
-        elif command == 'str_replace':
-            # 파일에서 텍스트 교체
-            pass
-        elif command == 'create':
-            # 새 파일 생성
-            pass
-        elif command == 'insert':
-            # 위치에 텍스트 삽입
-            pass
-        elif command == 'undo_edit':
-            # Claude 4 모델인지 확인
-            if 'str_replace_based_edit_tool' in model_version:
-                return {"error": "undo_edit command is not supported in Claude 4"}
-            # Claude 3.7용 백업에서 복원
-            pass
-    ```
-  </Step>
-  <Step title="보안 조치 구현">
-    유효성 검사 및 보안 검사 추가:
-    - 디렉토리 순회를 방지하기 위해 파일 경로 검증
-    - 변경하기 전에 백업 생성
-    - 오류를 우아하게 처리
-    - 권한 검사 구현
-  </Step>
-  <Step title="Claude의 응답 처리">
-    Claude의 응답에서 도구 호출을 추출하고 처리합니다.
-    ```python
-    # Claude의 응답에서 도구 사용 처리
-    for content in response.content:
-        if content.type == "tool_use":
-            # 명령에 따라 도구 실행
-            result = handle_editor_tool(content)
+  파일 읽기, 쓰기 및 수정과 같은 파일 작업을 처리하는 헬퍼 함수를 만듭니다. 실수에서 복구하기 위해 백업 기능 구현을 고려하세요.
 
-            # Claude에 결과 반환
-            tool_result = {
-                "type": "tool_result",
-                "tool_use_id": content.id,
-                "content": result
-            }
-    ```
-  </Step>
-</Steps>
+- **에디터 도구 호출 처리**
+
+  명령 타입에 따라 Claude의 도구 호출을 처리하는 함수를 만듭니다.
+  ```python
+  def handle_editor_tool(tool_call, model_version):
+      input_params = tool_call.input
+      command = input_params.get('command', '')
+      file_path = input_params.get('path', '')
+
+      if command == 'view':
+          # 파일 내용 읽기 및 반환
+          pass
+      elif command == 'str_replace':
+          # 파일에서 텍스트 교체
+          pass
+      elif command == 'create':
+          # 새 파일 생성
+          pass
+      elif command == 'insert':
+          # 위치에 텍스트 삽입
+          pass
+      elif command == 'undo_edit':
+          # Claude 4 모델인지 확인
+          if 'str_replace_based_edit_tool' in model_version:
+              return {"error": "undo_edit command is not supported in Claude 4"}
+          # Claude 3.7용 백업에서 복원
+          pass
+  ```
+
+- **보안 조치 구현**
+
+  유효성 검사 및 보안 검사 추가:
+  - 디렉토리 순회를 방지하기 위해 파일 경로 검증
+  - 변경하기 전에 백업 생성
+  - 오류를 우아하게 처리
+  - 권한 검사 구현
+
+- **Claude의 응답 처리**
+
+  Claude의 응답에서 도구 호출을 추출하고 처리합니다.
+  ```python
+  # Claude의 응답에서 도구 사용 처리
+  for content in response.content:
+      if content.type == "tool_use":
+          # 명령에 따라 도구 실행
+          result = handle_editor_tool(content)
+
+          # Claude에 결과 반환
+          tool_result = {
+              "type": "tool_result",
+              "tool_use_id": content.id,
+              "content": result
+          }
+  ```
 
 
 > 텍스트 에디터 도구를 구현할 때 다음 사항을 염두에 두세요.

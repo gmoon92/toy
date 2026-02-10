@@ -223,8 +223,8 @@ response = client.messages.create(
 
 SDK 헬퍼를 사용하여 도구를 정의한 다음 도구 러너를 사용하여 실행하세요.
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
 
 타입 힌트와 독스트링으로 도구를 정의하려면 `@beta_tool` 데코레이터를 사용하세요.
 
@@ -301,8 +301,10 @@ for message in runner:
 }
 ```
 
-</Tab>
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
 
 Zod 검증을 사용한 타입 안전 도구 정의에는 `betaZodTool()`을 사용하거나, JSON Schema 기반 정의에는 `betaTool()`을 사용하세요.
 
@@ -383,8 +385,10 @@ for await (const message of runner) {
 }
 ```
 
-</Tab>
-<Tab title="Ruby">
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 타입이 지정된 입력 스키마로 도구를 정의하려면 `Anthropic::BaseTool` 클래스를 사용하세요.
 
@@ -445,8 +449,7 @@ end
 
 `Anthropic::BaseTool` 클래스는 도구 설명에 `doc` 메서드를 사용하고 예상 매개변수를 정의하는 데 `input_schema`를 사용합니다. SDK는 이것을 적절한 JSON 스키마 형식으로 자동 변환합니다.
 
-</Tab>
-</Tabs>
+</details>
 
 도구 함수는 텍스트, 이미지 또는 문서 블록을 포함한 콘텐츠 블록 또는 콘텐츠 블록 배열을 반환해야 합니다. 이를 통해 도구가 풍부한 멀티모달 응답을 반환할 수 있습니다. 반환된 문자열은 텍스트 콘텐츠 블록으로 변환됩니다. 구조화된 JSON 객체를 Claude에게 반환하려면 반환하기 전에 JSON 문자열로 인코딩하세요. 숫자, 불리언 또는 기타 비문자열 원시 타입도 문자열로 변환해야 합니다.
 
@@ -458,8 +461,8 @@ end
 
 중간 메시지가 필요하지 않은 경우 최종 메시지를 직접 가져올 수 있습니다:
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
 
 최종 메시지를 얻으려면 `runner.until_done()`을 사용하세요.
 
@@ -476,8 +479,10 @@ final_message = runner.until_done()
 print(final_message.content[0].text)
 ```
 
-</Tab>
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
 
 최종 메시지를 얻으려면 러너를 단순히 `await`하세요.
 
@@ -493,8 +498,10 @@ const finalMessage = await runner;
 console.log(finalMessage.content[0].text);
 ```
 
-</Tab>
-<Tab title="Ruby">
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 모든 메시지를 얻으려면 `runner.run_until_finished`를 사용하세요.
 
@@ -512,15 +519,14 @@ all_messages = runner.run_until_finished
 all_messages.each { |msg| puts msg.content }
 ```
 
-</Tab>
-</Tabs>
+</details>
 
 ### 고급 사용법
 
 루프 내에서 도구 러너의 다음 요청을 완전히 사용자 정의할 수 있습니다. 러너는 메시지 기록에 도구 결과를 자동으로 추가하므로 수동으로 관리할 필요가 없습니다. 선택적으로 로깅이나 디버깅을 위해 도구 결과를 검사하고 다음 API 호출 전에 요청 매개변수를 수정할 수 있습니다.
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
 
 도구 결과를 선택적으로 검사하려면 `generate_tool_call_response()`를 사용하세요(러너가 자동으로 추가합니다). 요청을 수정하려면 `set_messages_params()` 및 `append_messages()`를 사용하세요.
 
@@ -549,8 +555,10 @@ for message in runner:
     )
 ```
 
-</Tab>
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
 
 도구 결과를 선택적으로 검사하려면 `generateToolResponse()`를 사용하세요(러너가 자동으로 추가합니다). 요청을 수정하려면 `setMessagesParams()` 및 `pushMessages()`를 사용하세요.
 
@@ -582,8 +590,10 @@ for await (const message of runner) {
 }
 ```
 
-</Tab>
-<Tab title="Ruby">
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 단계별 제어를 위해 `next_message`를 사용하세요. 메시지를 삽입하려면 `feed_messages`를, 매개변수에 액세스하려면 `params`를 사용하세요.
 
@@ -608,8 +618,7 @@ runner.feed_messages([
 puts runner.params
 ```
 
-</Tab>
-</Tabs>
+</details>
 
 #### 도구 실행 디버깅
 
@@ -633,8 +642,8 @@ export ANTHROPIC_LOG=debug
 
 도구 응답 메서드를 사용하여 도구 결과를 가로채고 Claude에게 전송되기 전에 오류를 확인하세요:
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
 
 ```python
 import json
@@ -663,8 +672,10 @@ for message in runner:
     print(message.content)
 ```
 
-</Tab>
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
 
 ```typescript
 const runner = anthropic.beta.messages.toolRunner({
@@ -695,8 +706,10 @@ for await (const message of runner) {
 }
 ```
 
-</Tab>
-<Tab title="Ruby">
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 ```ruby
 runner = client.beta.messages.tool_runner(
@@ -728,8 +741,7 @@ runner.each_message do |message|
 end
 ```
 
-</Tab>
-</Tabs>
+</details>
 
 #### 도구 결과 수정
 
@@ -737,8 +749,8 @@ Claude에게 다시 보내기 전에 도구 결과를 수정할 수 있습니다
 
 도구 응답 메서드를 사용하여 도구 결과를 가져온 다음 수정하고 수정된 버전을 메시지에 추가하세요:
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
 
 ```python
 runner = client.beta.messages.tool_runner(
@@ -764,8 +776,10 @@ for message in runner:
     print(message.content)
 ```
 
-</Tab>
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
 
 ```typescript
 const runner = anthropic.beta.messages.toolRunner({
@@ -795,8 +809,10 @@ for await (const message of runner) {
 }
 ```
 
-</Tab>
-<Tab title="Ruby">
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 ```ruby
 runner = client.beta.messages.tool_runner(
@@ -828,8 +844,7 @@ loop do
 end
 ```
 
-</Tab>
-</Tabs>
+</details>
 
 
 > 도구 결과에 `cache_control`을 추가하는 것은 도구가 후속 API 호출을 위해 캐시하려는 많은 양의 데이터(예: 문서 검색 결과)를 반환할 때 특히 유용합니다. 캐싱 전략에 대한 자세한 내용은 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)을 참조하세요.
@@ -839,8 +854,8 @@ end
 
 스트리밍을 활성화하여 도착하는 대로 이벤트를 수신하세요. 각 반복은 이벤트를 반복할 수 있는 스트림 객체를 생성합니다.
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
 
 `stream=True`를 설정하고 누적된 메시지를 얻으려면 `get_final_message()`를 사용하세요.
 
@@ -862,8 +877,10 @@ for message_stream in runner:
 print(runner.until_done())
 ```
 
-</Tab>
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
 
 `stream: true`를 설정하고 누적된 메시지를 얻으려면 `finalMessage()`를 사용하세요.
 
@@ -887,8 +904,10 @@ for await (const messageStream of runner) {
 console.log(await runner);
 ```
 
-</Tab>
-<Tab title="Ruby">
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 스트리밍 이벤트를 반복하려면 `each_streaming`을 사용하세요.
 
@@ -910,8 +929,7 @@ runner.each_streaming do |event|
 end
 ```
 
-</Tab>
-</Tabs>
+</details>
 
 
 > SDK 도구 러너는 베타 버전입니다. 이 문서의 나머지 부분에서는 수동 도구 구현을 다룹니다.

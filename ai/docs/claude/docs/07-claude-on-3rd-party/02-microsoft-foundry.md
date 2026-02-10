@@ -24,25 +24,32 @@ Azure 네이티브 엔드포인트와 인증을 통해 Microsoft Foundry에서 C
 
 Anthropic의 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)는 플랫폼별 패키지를 통해 Foundry를 지원합니다.
 
-<Tabs>
-<Tab title="Python">
+<details>
+<summary>Python</summary>
+
 ```bash
 pip install -U "anthropic"
 ```
-</Tab>
 
-<Tab title="TypeScript">
+</details>
+
+<details>
+<summary>TypeScript</summary>
+
 ```bash
 npm install @anthropic-ai/foundry-sdk
 ```
-</Tab>
 
-<Tab title="C#">
+</details>
+
+<details>
+<summary>C#</summary>
+
 ```bash
 dotnet add package Anthropic.Foundry
 ```
-</Tab>
-</Tabs>
+
+</details>
 
 ## 프로비저닝
 
@@ -168,7 +175,7 @@ Foundry는 디버깅 및 추적을 위해 HTTP 응답 헤더에 요청 식별자
 
 ## 지원되는 기능
 
-Foundry의 Claude는 Claude의 강력한 기능 대부분을 지원합니다. 현재 지원되는 모든 기능은 [개요 문서](./01-build-with-claude-01-features-overview.md)에서 확인할 수 있습니다.
+Foundry의 Claude는 Claude의 강력한 기능 대부분을 지원합니다. 현재 지원되는 모든 기능은 [개요 문서](../01-build-with-claude/01-features-overview.md)에서 확인할 수 있습니다.
 
 ### 지원되지 않는 기능
 

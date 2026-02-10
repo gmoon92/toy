@@ -17,14 +17,14 @@ Extended thinking은 다음 모델에서 지원됩니다:
 - Claude Opus 4 (`claude-opus-4-20250514`)
 
 
-> API 동작은 Claude Sonnet 3.7과 Claude 4 모델 간에 다르지만 API 형태는 정확히 동일하게 유지됩니다.
->
+> API 동작은 Claude Sonnet 3.7과 Claude 4 모델 간에 다르지만 API 형태는 정확히 동일하게 유지됩니다.<br/>
 > 자세한 내용은 [모델 버전별 thinking 차이](#differences-in-thinking-across-model-versions)를 참조하세요.
 
 
 ## Extended thinking 작동 방식
 
-Extended thinking이 켜져 있으면 Claude는 내부 추론을 출력하는 `thinking` 콘텐츠 블록을 생성합니다. Claude는 최종 응답을 작성하기 전에 이 추론에서 얻은 통찰력을 통합합니다.
+Extended thinking이 켜져 있으면 Claude는 내부 추론을 출력하는 `thinking` 콘텐츠 블록을 생성합니다. <br/>
+Claude는 최종 응답을 작성하기 전에 이 추론에서 얻은 통찰력을 통합합니다.
 
 API 응답에는 `thinking` 콘텐츠 블록이 포함되고 그 뒤에 `text` 콘텐츠 블록이 포함됩니다.
 
@@ -81,13 +81,17 @@ curl https://api.anthropic.com/v1/messages \
 
 Extended thinking을 켜려면 `thinking` 객체를 추가하고, `type` 매개변수를 `enabled`로 설정하고, `budget_tokens`를 extended thinking에 대한 지정된 토큰 예산으로 설정하세요.
 
-`budget_tokens` 매개변수는 Claude가 내부 추론 프로세스에 사용할 수 있는 최대 토큰 수를 결정합니다. Claude 4 모델에서 이 제한은 전체 thinking 토큰에 적용되며 [요약된 출력](#summarized-thinking)에는 적용되지 않습니다. 더 큰 예산은 복잡한 문제에 대해 보다 철저한 분석을 가능하게 하여 응답 품질을 향상시킬 수 있지만, Claude는 특히 32k 이상의 범위에서 할당된 전체 예산을 사용하지 않을 수 있습니다.
+`budget_tokens` 매개변수는 Claude가 내부 추론 프로세스에 사용할 수 있는 최대 토큰 수를 결정합니다. <br/>
+Claude 4 모델에서 이 제한은 전체 thinking 토큰에 적용되며 [요약된 출력](#summarized-thinking)에는 적용되지 않습니다. <br/>
+더 큰 예산은 복잡한 문제에 대해 보다 철저한 분석을 가능하게 하여 응답 품질을 향상시킬 수 있지만, Claude는 특히 32k 이상의 범위에서 할당된 전체 예산을 사용하지 않을 수 있습니다.
 
-`budget_tokens`는 `max_tokens`보다 작은 값으로 설정해야 합니다. 그러나 [도구와 함께 인터리브 thinking](#interleaved-thinking)을 사용할 때는 토큰 제한이 전체 컨텍스트 윈도우(200k 토큰)가 되므로 이 제한을 초과할 수 있습니다.
+`budget_tokens`는 `max_tokens`보다 작은 값으로 설정해야 합니다. <br/>
+그러나 [도구와 함께 인터리브 thinking](#interleaved-thinking)을 사용할 때는 토큰 제한이 전체 컨텍스트 윈도우(200k 토큰)가 되므로 이 제한을 초과할 수 있습니다.
 
 ### 요약된 thinking
 
-Extended thinking이 활성화되면 Claude 4 모델용 Messages API는 Claude의 전체 thinking 프로세스 요약을 반환합니다. 요약된 thinking은 오용을 방지하면서 extended thinking의 전체 지능 이점을 제공합니다.
+Extended thinking이 활성화되면 Claude 4 모델용 Messages API는 Claude의 전체 thinking 프로세스 요약을 반환합니다. <br/>
+요약된 thinking은 오용을 방지하면서 extended thinking의 전체 지능 이점을 제공합니다.
 
 요약된 thinking에 대한 몇 가지 중요한 고려 사항은 다음과 같습니다:
 
@@ -98,11 +102,8 @@ Extended thinking이 활성화되면 Claude 4 모델용 Messages API는 Claude�
 - 요약은 최소한의 추가 지연 시간으로 Claude의 thinking 프로세스의 핵심 아이디어를 보존하여 스트리밍 가능한 사용자 경험과 Claude Sonnet 3.7에서 Claude 4 모델로의 쉬운 마이그레이션을 가능하게 합니다.
 - 요약은 요청에서 대상으로 하는 모델과 다른 모델에 의해 처리됩니다. thinking 모델은 요약된 출력을 보지 않습니다.
 
-
-> Claude Sonnet 3.7은 계속해서 전체 thinking 출력을 반환합니다.
->
+> Claude Sonnet 3.7은 계속해서 전체 thinking 출력을 반환합니다.<br/>
 > Claude 4 모델에 대한 전체 thinking 출력에 액세스해야 하는 드문 경우 [영업 팀에 문의](mailto:sales@anthropic.com)하세요.
-
 
 ### Thinking 스트리밍
 
@@ -182,11 +183,10 @@ event: message_stop
 data: {"type": "message_stop"}
 ```
 
-
-> thinking이 활성화된 스트리밍을 사용할 때 텍스트가 때때로 더 큰 청크로 도착하고 더 작은 토큰별 전달과 교대로 나타날 수 있습니다. 이것은 예상되는 동작이며 특히 thinking 콘텐츠에 해당합니다.
->
-> 스트리밍 시스템은 최적의 성능을 위해 콘텐츠를 배치로 처리해야 하므로 스트리밍 이벤트 간에 가능한 지연과 함께 이 "청크형" 전달 패턴이 발생할 수 있습니다. 향후 업데이트가 thinking 콘텐츠를 더 부드럽게 스트리밍하는 데 중점을 두고 이 경험을 개선하기 위해 지속적으로 노력하고 있습니다.
-
+> thinking이 활성화된 스트리밍을 사용할 때 텍스트가 때때로 더 큰 청크로 도착하고 더 작은 토큰별 전달과 교대로 나타날 수 있습니다. <br/>
+> 이것은 예상되는 동작이며 특히 thinking 콘텐츠에 해당합니다.<br/>
+> 스트리밍 시스템은 최적의 성능을 위해 콘텐츠를 배치로 처리해야 하므로 스트리밍 이벤트 간에 가능한 지연과 함께 이 "청크형" 전달 패턴이 발생할 수 있습니다. <br/>
+> 향후 업데이트가 thinking 콘텐츠를 더 부드럽게 스트리밍하는 데 중점을 두고 이 경험을 개선하기 위해 지속적으로 노력하고 있습니다.
 
 ## 도구 사용과 함께 Extended thinking
 
@@ -194,18 +194,24 @@ Extended thinking은 [도구 사용](../03-tools/01-overview.md)과 함께 사�
 
 도구 사용과 함께 extended thinking을 사용할 때 다음 제한 사항에 유의하세요:
 
-1. **도구 선택 제한**: thinking과 함께 도구 사용은 `tool_choice: {"type": "auto"}`(기본값) 또는 `tool_choice: {"type": "none"}`만 지원합니다. `tool_choice: {"type": "any"}` 또는 `tool_choice: {"type": "tool", "name": "..."}`를 사용하면 오류가 발생합니다. 이러한 옵션은 extended thinking과 호환되지 않는 도구 사용을 강제하기 때문입니다.
-
-2. **Thinking 블록 보존**: 도구 사용 중에 마지막 어시스턴트 메시지에 대해 `thinking` 블록을 API에 다시 전달해야 합니다. 추론 연속성을 유지하려면 완전히 수정되지 않은 블록을 API에 다시 포함하세요.
+1. **도구 선택 제한**: 
+   - thinking과 함께 도구 사용은 `tool_choice: {"type": "auto"}`(기본값) 또는 `tool_choice: {"type": "none"}`만 지원합니다. 
+   - `tool_choice: {"type": "any"}` 또는 `tool_choice: {"type": "tool", "name": "..."}`를 사용하면 오류가 발생합니다. 
+   - 이러한 옵션은 extended thinking과 호환되지 않는 도구 사용을 강제하기 때문입니다.
+2. **Thinking 블록 보존**: 
+   - 도구 사용 중에 마지막 어시스턴트 메시지에 대해 `thinking` 블록을 API에 다시 전달해야 합니다. 
+   - 추론 연속성을 유지하려면 완전히 수정되지 않은 블록을 API에 다시 포함하세요.
 
 ### 대화 중 thinking 모드 전환
 
-도구 사용 루프를 포함하여 어시스턴트 턴 중간에 thinking을 전환할 수 없습니다. 전체 어시스턴트 턴은 단일 thinking 모드에서 작동해야 합니다:
+도구 사용 루프를 포함하여 어시스턴트 턴 중간에 thinking을 전환할 수 없습니다. <br/>
+전체 어시스턴트 턴은 단일 thinking 모드에서 작동해야 합니다:
 
 - **thinking이 활성화된 경우**, 최종 어시스턴트 턴은 thinking 블록으로 시작해야 합니다.
 - **thinking이 비활성화된 경우**, 최종 어시스턴트 턴에는 thinking 블록이 포함되어서는 안 됩니다.
 
-모델의 관점에서 **도구 사용 루프는 어시스턴트 턴의 일부**입니다. 어시스턴트 턴은 Claude가 여러 도구 호출과 결과를 포함할 수 있는 전체 응답을 완료할 때까지 완료되지 않습니다.
+모델의 관점에서 **도구 사용 루프는 어시스턴트 턴의 일부**입니다.
+어시스턴트 턴은 Claude가 여러 도구 호출과 결과를 포함할 수 있는 전체 응답을 완료할 때까지 완료되지 않습니다.
 
 예를 들어, 이 시퀀스는 모두 **단일 어시스턴트 턴**의 일부입니다:
 ```
@@ -219,12 +225,14 @@ Extended thinking은 [도구 사용](../03-tools/01-overview.md)과 함께 사�
 
 #### 우아한 thinking 저하
 
-턴 중간 thinking 충돌이 발생하면(예: 도구 사용 루프 중에 thinking을 켜거나 끄는 경우) API는 해당 요청에 대해 자동으로 thinking을 비활성화합니다. 모델 품질을 보존하고 분포 내에 유지하기 위해 API는 다음을 수행할 수 있습니다:
+턴 중간 thinking 충돌이 발생하면(예: 도구 사용 루프 중에 thinking을 켜거나 끄는 경우) API는 해당 요청에 대해 자동으로 thinking을 비활성화합니다.<br/>
+모델 품질을 보존하고 분포 내에 유지하기 위해 API는 다음을 수행할 수 있습니다:
 
 - 잘못된 턴 구조를 생성하는 경우 대화에서 thinking 블록을 제거합니다
 - 대화 기록이 thinking이 활성화되는 것과 호환되지 않을 때 현재 요청에 대해 thinking을 비활성화합니다
 
-즉, 턴 중간에 thinking을 전환하려고 시도해도 오류가 발생하지 않지만 해당 요청에 대해 thinking이 자동으로 비활성화됩니다. thinking이 활성화되었는지 확인하려면 응답에 `thinking` 블록이 있는지 확인하세요.
+즉, 턴 중간에 thinking을 전환하려고 시도해도 오류가 발생하지 않지만 해당 요청에 대해 thinking이 자동으로 비활성화됩니다. <br/>
+thinking이 활성화되었는지 확인하려면 응답에 `thinking` 블록이 있는지 확인하세요.
 
 #### 실용적 지침
 
@@ -242,9 +250,7 @@ Extended thinking은 [도구 사용](../03-tools/01-overview.md)과 함께 사�
 
 어시스턴트 턴을 완료한 후 thinking을 전환하면 새 요청에 대해 thinking이 실제로 활성화되도록 보장합니다.
 
-
 > thinking 모드를 전환하면 메시지 기록에 대한 프롬프트 캐싱도 무효화됩니다. 자세한 내용은 [프롬프트 캐싱과 함께 Extended thinking](#extended-thinking-with-prompt-caching) 섹션을 참조하세요.
-
 
 <details>
 <summary>예제: 도구 결과와 함께 thinking 블록 전달</summary>
@@ -391,26 +397,29 @@ if (thinkingBlockOpt.isPresent() && toolUseBlockOpt.isPresent()) {
 
 ### Thinking 블록 보존
 
-도구 사용 중에 `thinking` 블록을 API에 다시 전달해야 하며 완전히 수정되지 않은 블록을 API에 다시 포함해야 합니다. 이는 모델의 추론 흐름과 대화 무결성을 유지하는 데 중요합니다.
-
+도구 사용 중에 `thinking` 블록을 API에 다시 전달해야 하며 완전히 수정되지 않은 블록을 API에 다시 포함해야 합니다. 
+이는 모델의 추론 흐름과 대화 무결성을 유지하는 데 중요합니다.
 
 > 이전 `assistant` 역할 턴에서 `thinking` 블록을 생략할 수 있지만 다회전 대화의 경우 항상 모든 thinking 블록을 API에 다시 전달하는 것이 좋습니다. API는 다음을 수행합니다:
 > - 제공된 thinking 블록을 자동으로 필터링합니다
 > - 모델의 추론을 보존하는 데 필요한 관련 thinking 블록을 사용합니다
-> - Claude에게 표시된 블록에 대한 입력 토큰에 대해서만 청구합니다
+> - Claude에게 표시된 블록에 대한 입력 토큰에 대해서만 청구합니다<br/>
+> 대화 중에 thinking 모드를 전환할 때 전체 어시스턴트 턴(도구 사용 루프 포함)이 단일 thinking 모드에서 작동해야 한다는 점을 기억하세요. <br/>
+> 자세한 내용은 [대화 중 thinking 모드 전환](#toggling-thinking-modes-in-conversations)을 참조하세요.
 
+Claude가 도구를 호출하면 외부 정보를 기다리기 위해 응답 구성을 일시 중지합니다. <br/>
+도구 결과가 반환되면 Claude는 기존 응답 구축을 계속합니다. 이는 여러 가지 이유로 도구 사용 중에 thinking 블록을 보존해야 합니다:
 
+1. **추론 연속성**: 
+   - thinking 블록은 도구 요청으로 이어진 Claude의 단계별 추론을 캡처합니다. 
+   - 도구 결과를 게시할 때 원래 thinking을 포함하면 Claude가 중단한 부분에서 추론을 계속할 수 있습니다.
+2. **컨텍스트 유지**: 
+   - 도구 결과가 API 구조에서 사용자 메시지로 나타나지만 연속적인 추론 흐름의 일부입니다. 
+   - thinking 블록을 보존하면 여러 API 호출에 걸쳐 이 개념적 흐름이 유지됩니다. 
+   - 컨텍스트 관리에 대한 자세한 내용은 [컨텍스트 윈도우 가이드](../01-build-with-claude/02-context-windows.md)를 참조하세요.
 
-> 대화 중에 thinking 모드를 전환할 때 전체 어시스턴트 턴(도구 사용 루프 포함)이 단일 thinking 모드에서 작동해야 한다는 점을 기억하세요. 자세한 내용은 [대화 중 thinking 모드 전환](#toggling-thinking-modes-in-conversations)을 참조하세요.
-
-
-Claude가 도구를 호출하면 외부 정보를 기다리기 위해 응답 구성을 일시 중지합니다. 도구 결과가 반환되면 Claude는 기존 응답 구축을 계속합니다. 이는 여러 가지 이유로 도구 사용 중에 thinking 블록을 보존해야 합니다:
-
-1. **추론 연속성**: thinking 블록은 도구 요청으로 이어진 Claude의 단계별 추론을 캡처합니다. 도구 결과를 게시할 때 원래 thinking을 포함하면 Claude가 중단한 부분에서 추론을 계속할 수 있습니다.
-
-2. **컨텍스트 유지**: 도구 결과가 API 구조에서 사용자 메시지로 나타나지만 연속적인 추론 흐름의 일부입니다. thinking 블록을 보존하면 여러 API 호출에 걸쳐 이 개념적 흐름이 유지됩니다. 컨텍스트 관리에 대한 자세한 내용은 [컨텍스트 윈도우 가이드](./01-build-with-claude-02-context-windows.md)를 참조하세요.
-
-**중요**: `thinking` 블록을 제공할 때 연속적인 `thinking` 블록의 전체 시퀀스는 원래 요청 중에 모델이 생성한 출력과 일치해야 합니다. 이러한 블록의 시퀀스를 재배열하거나 수정할 수 없습니다.
+**중요**: `thinking` 블록을 제공할 때 연속적인 `thinking` 블록의 전체 시퀀스는 원래 요청 중에 모델이 생성한 출력과 일치해야 합니다. 
+이러한 블록의 시퀀스를 재배열하거나 수정할 수 없습니다.
 
 ### 인터리브 thinking
 
@@ -482,9 +491,7 @@ Claude 4 모델의 도구 사용과 함께 extended thinking은 인터리브 thi
 
 thinking과 함께 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)에는 몇 가지 중요한 고려 사항이 있습니다:
 
-
 > Extended thinking 작업은 종종 5분 이상 걸립니다. 더 긴 thinking 세션과 다단계 워크플로에서 캐시 히트를 유지하려면 [1시간 캐시 기간](../02-capabilities/01-prompt-caching.md) 사용을 고려하세요.
-
 
 **Thinking 블록 컨텍스트 제거**
 - 이전 턴의 thinking 블록이 컨텍스트에서 제거되어 캐시 중단점에 영향을 줄 수 있습니다
@@ -497,9 +504,7 @@ thinking과 함께 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md
 - [인터리브 thinking](#interleaved-thinking)은 여러 [도구 호출](#extended-thinking-with-tool-use) 사이에 thinking 블록이 발생할 수 있으므로 캐시 무효화를 증폭시킵니다
 - 시스템 프롬프트와 도구는 thinking 매개변수 변경이나 블록 제거에도 불구하고 캐시된 상태로 유지됩니다
 
-
 > thinking 블록은 캐싱 및 컨텍스트 계산을 위해 제거되지만 특히 [인터리브 thinking](#interleaved-thinking)과 함께 [도구 사용](#extended-thinking-with-tool-use)으로 대화를 계속할 때 보존해야 합니다.
-
 
 ### Thinking 블록 캐싱 동작 이해
 
@@ -514,37 +519,33 @@ thinking과 함께 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md
 
 **상세 예제 흐름:**
 
-**요청 1:**
-```
-사용자: "파리의 날씨는?"
-```
-**응답 1:**
-```
-[thinking_block_1] + [tool_use block 1]
+```text
+요청 1:
+    사용자: "파리의 날씨는?"
+응답 1:
+    [thinking_block_1] + [tool_use block 1]
+
+요청 2:
+    사용자: ["파리의 날씨는?"],
+    어시스턴트: [thinking_block_1] + [tool_use block 1],
+    사용자: [tool_result_1, cache=True]
+응답 2:
+    [thinking_block_2] + [text block 2]
+
+> 요청 2는 요청 콘텐츠의 캐시를 작성합니다(응답이 아님). 캐시에는 원래 사용자 메시지, 첫 번째 thinking 블록, tool use 블록 및 도구 결과가 포함됩니다.
+
+요청 3:
+    사용자: ["파리의 날씨는?"],
+    어시스턴트: [thinking_block_1] + [tool_use block 1],
+    사용자: [tool_result_1, cache=True],
+    어시스턴트: [thinking_block_2] + [text block 2],
+    사용자: [Text response, cache=True]
 ```
 
-**요청 2:**
-```
-사용자: ["파리의 날씨는?"],
-어시스턴트: [thinking_block_1] + [tool_use block 1],
-사용자: [tool_result_1, cache=True]
-```
-**응답 2:**
-```
-[thinking_block_2] + [text block 2]
-```
-요청 2는 요청 콘텐츠의 캐시를 작성합니다(응답이 아님). 캐시에는 원래 사용자 메시지, 첫 번째 thinking 블록, tool use 블록 및 도구 결과가 포함됩니다.
-
-**요청 3:**
-```
-사용자: ["파리의 날씨는?"],
-어시스턴트: [thinking_block_1] + [tool_use block 1],
-사용자: [tool_result_1, cache=True],
-어시스턴트: [thinking_block_2] + [text block 2],
-사용자: [Text response, cache=True]
-```
-Claude Opus 4.5 이상의 경우 이전의 모든 thinking 블록이 기본적으로 유지됩니다. 이전 모델의 경우 도구 결과가 아닌 사용자 블록이 포함되었기 때문에 이전의 모든 thinking 블록이 무시됩니다. 이 요청은 다음과 동일하게 처리됩니다:
-```
+Claude Opus 4.5 이상의 경우 이전의 모든 thinking 블록이 기본적으로 유지됩니다.<br/> 
+이전 모델의 경우 도구 결과가 아닌 사용자 블록이 포함되었기 때문에 이전의 모든 thinking 블록이 무시됩니다.<br/>
+이 요청은 다음과 동일하게 처리됩니다:
+```text
 사용자: ["파리의 날씨는?"],
 어시스턴트: [tool_use block 1],
 사용자: [tool_result_1, cache=True],
@@ -558,13 +559,13 @@ Claude Opus 4.5 이상의 경우 이전의 모든 thinking 블록이 기본적�
 
 ## Extended thinking과 함께 Max tokens 및 컨텍스트 윈도우 크기
 
-이전 Claude 모델(Claude Sonnet 3.7 이전)에서는 프롬프트 토큰과 `max_tokens`의 합이 모델의 컨텍스트 윈도우를 초과하면 시스템이 컨텍스트 제한 내에 맞도록 `max_tokens`를 자동으로 조정했습니다. 즉, 큰 `max_tokens` 값을 설정할 수 있었고 시스템이 필요에 따라 자동으로 줄여주었습니다.
+이전 Claude 모델(Claude Sonnet 3.7 이전)에서는 프롬프트 토큰과 `max_tokens`의 합이 모델의 컨텍스트 윈도우를 초과하면 시스템이 컨텍스트 제한 내에 맞도록 `max_tokens`를 자동으로 조정했습니다. 
+즉, 큰 `max_tokens` 값을 설정할 수 있었고 시스템이 필요에 따라 자동으로 줄여주었습니다.
 
-Claude 3.7 및 4 모델에서는 `max_tokens`(thinking이 활성화된 경우 thinking 예산 포함)가 엄격한 제한으로 적용됩니다. 이제 프롬프트 토큰 + `max_tokens`가 컨텍스트 윈도우 크기를 초과하면 시스템이 검증 오류를 반환합니다.
+Claude 3.7 및 4 모델에서는 `max_tokens`(thinking이 활성화된 경우 thinking 예산 포함)가 엄격한 제한으로 적용됩니다. <br/>
+이제 프롬프트 토큰 + `max_tokens`가 컨텍스트 윈도우 크기를 초과하면 시스템이 검증 오류를 반환합니다.
 
-
-> 더 철저한 심층 분석을 위해 [컨텍스트 윈도우 가이드](./01-build-with-claude-02-context-windows.md)를 읽어보세요.
-
+> 더 철저한 심층 분석을 위해 [컨텍스트 윈도우 가이드](../01-build-with-claude/02-context-windows.md)를 읽어보세요.
 
 ### Extended thinking과 함께 컨텍스트 윈도우
 
@@ -616,13 +617,12 @@ extended thinking Claude 3.7 및 4 모델의 컨텍스트 윈도우 및 `max_tok
 
 ## Thinking 암호화
 
-전체 thinking 콘텐츠가 암호화되어 `signature` 필드에 반환됩니다. 이 필드는 API에 다시 전달될 때 Claude가 thinking 블록을 생성했음을 확인하는 데 사용됩니다.
+전체 thinking 콘텐츠가 암호화되어 `signature` 필드에 반환됩니다. 
+이 필드는 API에 다시 전달될 때 Claude가 thinking 블록을 생성했음을 확인하는 데 사용됩니다.
 
-
-> [도구와 함께 extended thinking](#extended-thinking-with-tool-use)을 사용할 때만 thinking 블록을 다시 보내는 것이 엄격하게 필요합니다. 그렇지 않으면 이전 턴에서 thinking 블록을 생략하거나 다시 전달하면 API가 자동으로 제거하도록 할 수 있습니다.
->
+> [도구와 함께 extended thinking](#extended-thinking-with-tool-use)을 사용할 때만 thinking 블록을 다시 보내는 것이 엄격하게 필요합니다.<br/> 
+> 그렇지 않으면 이전 턴에서 thinking 블록을 생략하거나 다시 전달하면 API가 자동으로 제거하도록 할 수 있습니다.<br/>
 > thinking 블록을 다시 보내는 경우 일관성을 위해 받은 모든 것을 다시 전달하고 잠재적인 문제를 피하는 것이 좋습니다.
-
 
 thinking 암호화에 대한 몇 가지 중요한 고려 사항은 다음과 같습니다:
 - [응답을 스트리밍](#streaming-thinking)할 때 서명은 `content_block_stop` 이벤트 직전에 `content_block_delta` 이벤트 내부의 `signature_delta`를 통해 추가됩니다.
@@ -632,7 +632,9 @@ thinking 암호화에 대한 몇 가지 중요한 고려 사항은 다음과 같
 
 ### Thinking 리댁션
 
-때때로 Claude의 내부 추론이 안전 시스템에 의해 플래그가 지정됩니다. 이런 일이 발생하면 `thinking` 블록의 일부 또는 전체를 암호화하여 `redacted_thinking` 블록으로 반환합니다. `redacted_thinking` 블록은 API에 다시 전달될 때 복호화되어 Claude가 컨텍스트를 잃지 않고 응답을 계속할 수 있습니다.
+때때로 Claude의 내부 추론이 안전 시스템에 의해 플래그가 지정됩니다. 
+이런 일이 발생하면 `thinking` 블록의 일부 또는 전체를 암호화하여 `redacted_thinking` 블록으로 반환합니다. 
+`redacted_thinking` 블록은 API에 다시 전달될 때 복호화되어 Claude가 컨텍스트를 잃지 않고 응답을 계속할 수 있습니다.
 
 extended thinking을 사용하는 고객 대면 애플리케이션을 구축할 때:
 
@@ -664,13 +666,13 @@ extended thinking을 사용하는 고객 대면 애플리케이션을 구축할 
 }
 ```
 
+> 출력에서 리댁트된 thinking 블록을 보는 것은 예상되는 동작입니다. <br/>
+> 모델은 안전 가드레일을 유지하면서 이 리댁트된 추론을 사용하여 응답을 알릴 수 있습니다.<br/>
+> 애플리케이션에서 리댁트된 thinking 처리를 테스트해야 하는 경우 이 특수 테스트 문자열을 프롬프트로 사용할 수 있습니다:<br/> 
+> `ANTHROPIC_MAGIC_STRING_TRIGGER_REDACTED_THINKING_46C9A13E193C177646C7398A98432ECCCE4C1253D5E2D82641AC0E52CC2876CB`
 
-> 출력에서 리댁트된 thinking 블록을 보는 것은 예상되는 동작입니다. 모델은 안전 가드레일을 유지하면서 이 리댁트된 추론을 사용하여 응답을 알릴 수 있습니다.
->
-> 애플리케이션에서 리댁트된 thinking 처리를 테스트해야 하는 경우 이 특수 테스트 문자열을 프롬프트로 사용할 수 있습니다: `ANTHROPIC_MAGIC_STRING_TRIGGER_REDACTED_THINKING_46C9A13E193C177646C7398A98432ECCCE4C1253D5E2D82641AC0E52CC2876CB`
-
-
-다회전 대화에서 `thinking` 및 `redacted_thinking` 블록을 API에 다시 전달할 때 마지막 어시스턴트 턴에 대해 완전히 수정되지 않은 블록을 API에 다시 포함해야 합니다. 이는 모델의 추론 흐름을 유지하는 데 중요합니다. 항상 모든 thinking 블록을 API에 다시 전달하는 것이 좋습니다. 자세한 내용은 위의 [Thinking 블록 보존](#preserving-thinking-blocks) 섹션을 참조하세요.
+다회전 대화에서 `thinking` 및 `redacted_thinking` 블록을 API에 다시 전달할 때 마지막 어시스턴트 턴에 대해 완전히 수정되지 않은 블록을 API에 다시 포함해야 합니다. 
+이는 모델의 추론 흐름을 유지하는 데 중요합니다. 항상 모든 thinking 블록을 API에 다시 전달하는 것이 좋습니다. 자세한 내용은 위의 [Thinking 블록 보존](#thinking-블록-보존) 섹션을 참조하세요.
 
 ## 모델 버전별 thinking 차이
 
@@ -686,22 +688,19 @@ Messages API는 Claude Sonnet 3.7과 Claude 4 모델에서 thinking을 다르게
 
 ### Claude Opus 4.5의 Thinking 블록 보존
 
-Claude Opus 4.5는 새로운 기본 동작을 도입합니다: **이전 어시스턴트 턴의 thinking 블록이 기본적으로 모델 컨텍스트에 보존됩니다**. 이는 이전 턴의 thinking 블록을 제거하는 이전 모델과 다릅니다.
+Claude Opus 4.5는 새로운 기본 동작을 도입합니다: **이전 어시스턴트 턴의 thinking 블록이 기본적으로 모델 컨텍스트에 보존됩니다**. 
+이는 이전 턴의 thinking 블록을 제거하는 이전 모델과 다릅니다.
 
 **Thinking 블록 보존의 이점:**
-
 - **캐시 최적화**: 도구 사용을 사용할 때 보존된 thinking 블록은 도구 결과와 함께 다시 전달되고 어시스턴트 턴에 걸쳐 점진적으로 캐시되므로 캐시 히트를 활성화하여 다단계 워크플로에서 토큰 절약을 가능하게 합니다
 - **지능 영향 없음**: thinking 블록을 보존해도 모델 성능에 부정적인 영향이 없습니다
 
 **중요한 고려 사항:**
-
 - **컨텍스트 사용량**: thinking 블록이 컨텍스트에 보존되므로 긴 대화는 더 많은 컨텍스트 공간을 소비합니다
 - **자동 동작**: 이것은 Claude Opus 4.5의 기본 동작입니다. 코드 변경이나 베타 헤더가 필요하지 않습니다
 - **하위 호환성**: 이 기능을 활용하려면 도구 사용을 위해 수행하는 것처럼 완전하고 수정되지 않은 thinking 블록을 API에 다시 계속 전달하세요
 
-
-> 이전 모델(Claude Sonnet 4.5, Opus 4.1 등)의 경우 이전 턴의 thinking 블록은 계속 컨텍스트에서 제거됩니다. [프롬프트 캐싱과 함께 Extended thinking](#extended-thinking-with-prompt-caching) 섹션에 설명된 기존 동작이 해당 모델에 적용됩니다.
-
+> 이전 모델(Claude Sonnet 4.5, Opus 4.1 등)의 경우 이전 턴의 thinking 블록은 계속 컨텍스트에서 제거됩니다. [프롬프트 캐싱과 함께 Extended thinking](#프롬프트-캐싱과-함께-extended-thinking) 섹션에 설명된 기존 동작이 해당 모델에 적용됩니다.
 
 ## 가격
 
@@ -712,9 +711,7 @@ thinking 프로세스는 다음에 대한 요금이 부과됩니다:
 - 후속 요청에 포함된 마지막 어시스턴트 턴의 thinking 블록 (입력 토큰)
 - 표준 텍스트 출력 토큰
 
-
 > extended thinking이 활성화되면 이 기능을 지원하기 위해 특수화된 시스템 프롬프트가 자동으로 포함됩니다.
-
 
 요약된 thinking을 사용할 때:
 - **입력 토큰**: 원래 요청의 토큰 (이전 턴의 thinking 토큰 제외)
@@ -722,23 +719,33 @@ thinking 프로세스는 다음에 대한 요금이 부과됩니다:
 - **출력 토큰 (표시됨)**: 응답에서 보는 요약된 thinking 토큰
 - **요금 없음**: 요약을 생성하는 데 사용된 토큰
 
-
 > 청구된 출력 토큰 수는 응답에서 보이는 토큰 수와 **일치하지 않습니다**. 보이는 요약이 아니라 전체 thinking 프로세스에 대해 청구됩니다.
-
 
 ## Extended thinking에 대한 모범 사례 및 고려 사항
 
 ### Thinking 예산 작업
 
-- **예산 최적화:** 최소 예산은 1,024토큰입니다. 최소에서 시작하여 사용 사례에 대한 최적 범위를 찾기 위해 thinking 예산을 점진적으로 증가시키는 것이 좋습니다. 토큰 수가 높을수록 작업에 따라 수익 감소가 있지만 보다 포괄적인 추론이 가능합니다. 예산을 늘리면 지연 시간이 증가하는 대신 응답 품질이 향상될 수 있습니다. 중요한 작업의 경우 다양한 설정을 테스트하여 최적의 균형을 찾으세요. thinking 예산은 엄격한 제한이 아닌 목표이며 실제 토큰 사용량은 작업에 따라 다를 수 있습니다.
-- **시작점:** 복잡한 작업의 경우 더 큰 thinking 예산(16k+ 토큰)으로 시작하고 필요에 따라 조정하세요.
-- **큰 예산:** 32k 이상의 thinking 예산의 경우 네트워킹 문제를 피하기 위해 [배치 처리](../02-capabilities/06-batch-processing.md) 사용을 권장합니다. 모델이 32k 토큰 이상 생각하도록 푸시하는 요청은 시스템 타임아웃 및 열린 연결 제한에 부딪힐 수 있는 장기 실행 요청을 발생시킵니다.
-- **토큰 사용량 추적:** 비용 및 성능을 최적화하기 위해 thinking 토큰 사용량을 모니터링하세요.
+- **예산 최적화:** 
+  - 최소 예산은 1,024토큰입니다. 최소에서 시작하여 사용 사례에 대한 최적 범위를 찾기 위해 thinking 예산을 점진적으로 증가시키는 것이 좋습니다. 
+  - 토큰 수가 높을수록 작업에 따라 수익 감소가 있지만 보다 포괄적인 추론이 가능합니다. 
+  - 예산을 늘리면 지연 시간이 증가하는 대신 응답 품질이 향상될 수 있습니다. 중요한 작업의 경우 다양한 설정을 테스트하여 최적의 균형을 찾으세요. 
+  - thinking 예산은 엄격한 제한이 아닌 목표이며 실제 토큰 사용량은 작업에 따라 다를 수 있습니다.
+- **시작점:** 
+  - 복잡한 작업의 경우 더 큰 thinking 예산(16k+ 토큰)으로 시작하고 필요에 따라 조정하세요.
+- **큰 예산:** 
+  - 32k 이상의 thinking 예산의 경우 네트워킹 문제를 피하기 위해 [배치 처리](../02-capabilities/06-batch-processing.md) 사용을 권장합니다. 
+  - 모델이 32k 토큰 이상 생각하도록 푸시하는 요청은 시스템 타임아웃 및 열린 연결 제한에 부딪힐 수 있는 장기 실행 요청을 발생시킵니다.
+- **토큰 사용량 추적:** 
+  - 비용 및 성능을 최적화하기 위해 thinking 토큰 사용량을 모니터링하세요.
 
 ### 성능 고려 사항
 
-- **응답 시간:** 추론 프로세스에 필요한 추가 처리로 인해 응답 시간이 더 길어질 수 있습니다. thinking 블록을 생성하면 전체 응답 시간이 증가할 수 있습니다.
-- **스트리밍 요구 사항:** `max_tokens`가 21,333보다 큰 경우 스트리밍이 필요합니다. 스트리밍할 때 thinking 및 text 콘텐츠 블록이 도착할 때 처리할 준비를 하세요.
+- **응답 시간:** 
+  - 추론 프로세스에 필요한 추가 처리로 인해 응답 시간이 더 길어질 수 있습니다. 
+  - thinking 블록을 생성하면 전체 응답 시간이 증가할 수 있습니다.
+- **스트리밍 요구 사항:** 
+  - `max_tokens`가 21,333보다 큰 경우 스트리밍이 필요합니다. 
+  - 스트리밍할 때 thinking 및 text 콘텐츠 블록이 도착할 때 처리할 준비를 하세요.
 
 ### 기능 호환성
 
@@ -752,13 +759,3 @@ thinking 프로세스는 다음에 대한 요금이 부과됩니다:
 - **작업 선택:** 수학, 코딩 및 분석과 같은 단계별 추론의 이점을 얻는 특히 복잡한 작업에 extended thinking을 사용하세요.
 - **컨텍스트 처리:** 이전 thinking 블록을 직접 제거할 필요가 없습니다. Claude API는 자동으로 이전 턴의 thinking 블록을 무시하며 컨텍스트 사용량을 계산할 때 포함되지 않습니다.
 - **프롬프트 엔지니어링:** Claude의 thinking 능력을 최대화하려면 [extended thinking 프롬프팅 팁](../08-prompt-engineering/13-extended-thinking-tips.md)을 검토하세요.
-
-## 다음 단계
-
-
-  
-> 쿡북에서 thinking의 실용적인 예제를 탐색하세요.
-
-  
-> extended thinking을 위한 프롬프트 엔지니어링 모범 사례를 배우세요.
-

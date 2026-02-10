@@ -49,20 +49,21 @@
 
 #### 워크스페이스 생성
 
-<Steps>
-  <Step title="워크스페이스 설정 열기">
-    Claude Console에서 **Settings > Workspaces**로 이동합니다.
-  </Step>
-  <Step title="새 워크스페이스 추가">
-    **Add Workspace**를 클릭합니다.
-  </Step>
-  <Step title="워크스페이스 구성">
-    워크스페이스 이름을 입력하고 시각적 식별을 위한 색상을 선택합니다.
-  </Step>
-  <Step title="워크스페이스 생성">
-    **Create**를 클릭하여 완료합니다.
-  </Step>
-</Steps>
+- **워크스페이스 설정 열기**
+
+  Claude Console에서 **Settings > Workspaces**로 이동합니다.
+
+- **새 워크스페이스 추가**
+
+  **Add Workspace**를 클릭합니다.
+
+- **워크스페이스 구성**
+
+  워크스페이스 이름을 입력하고 시각적 식별을 위한 색상을 선택합니다.
+
+- **워크스페이스 생성**
+
+  **Create**를 클릭하여 완료합니다.
 
 
 > 콘솔에서 워크스페이스 간에 전환하려면 왼쪽 상단의 **Workspaces** 선택기를 사용하세요.
@@ -247,23 +248,25 @@ bucket_width=1d" \
 
 ## 모범 사례
 
-<Steps>
-  <Step title="워크스페이스 구조 계획">
-    워크스페이스를 생성하기 전에 어떻게 구성할지 고려하세요. 청구, 액세스 제어 및 사용량 추적 요구 사항을 생각하세요.
-  </Step>
-  <Step title="의미 있는 이름 사용">
-    워크스페이스의 용도를 나타내기 위해 명확하게 이름을 지정하세요 (예: "Production - Customer Chatbot", "Dev - Internal Tools").
-  </Step>
-  <Step title="적절한 제한 설정">
-    예상치 못한 비용을 방지하고 공정한 리소스 분배를 보장하기 위해 지출 및 속도 제한을 구성하세요.
-  </Step>
-  <Step title="정기적으로 액세스 감사">
-    적절한 사용자만 액세스 권한을 갖도록 주기적으로 워크스페이스 멤버십을 검토하세요.
-  </Step>
-  <Step title="사용량 모니터링">
-    [Usage and Cost API](../11-administration-monitoring/03-usage-cost-api.md)를 사용하여 워크스페이스 수준의 소비를 추적하세요.
-  </Step>
-</Steps>
+- **워크스페이스 구조 계획**
+
+  워크스페이스를 생성하기 전에 어떻게 구성할지 고려하세요. 청구, 액세스 제어 및 사용량 추적 요구 사항을 생각하세요.
+
+- **의미 있는 이름 사용**
+
+  워크스페이스의 용도를 나타내기 위해 명확하게 이름을 지정하세요 (예: "Production - Customer Chatbot", "Dev - Internal Tools").
+
+- **적절한 제한 설정**
+
+  예상치 못한 비용을 방지하고 공정한 리소스 분배를 보장하기 위해 지출 및 속도 제한을 구성하세요.
+
+- **정기적으로 액세스 감사**
+
+  적절한 사용자만 액세스 권한을 갖도록 주기적으로 워크스페이스 멤버십을 검토하세요.
+
+- **사용량 모니터링**
+
+  [Usage and Cost API](../11-administration-monitoring/03-usage-cost-api.md)를 사용하여 워크스페이스 수준의 소비를 추적하세요.
 
 ## FAQ
 

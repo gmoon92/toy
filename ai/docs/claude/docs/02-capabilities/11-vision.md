@@ -244,9 +244,10 @@ Claude에게 하나의 이미지를 설명하도록 요청합니다.
 | ---- | ----------------------------- |
 | User | [이미지] 이 이미지를 설명해줘. |
 
-<Tabs>
-  <Tab title="Base64 사용">
-    ```python Python
+<details>
+<summary>Base64 사용</summary>
+
+```python Python
     message = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=1024,
@@ -271,9 +272,13 @@ Claude에게 하나의 이미지를 설명하도록 요청합니다.
         ],
     )
     ```
-  </Tab>
-  <Tab title="URL 사용">
-    ```python Python
+
+</details>
+
+<details>
+<summary>URL 사용</summary>
+
+```python Python
     message = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=1024,
@@ -297,8 +302,8 @@ Claude에게 하나의 이미지를 설명하도록 요청합니다.
         ],
     )
     ```
-  </Tab>
-</Tabs>
+
+</details>
 </details>
 <details>
 <summary>예제: 다중 이미지</summary>
@@ -310,9 +315,10 @@ Claude에게 여러 이미지 간의 차이점을 설명하도록 요청합니�
 | ---- | ----------------------------------------------------------------------------- |
 | User | Image 1: [이미지 1] Image 2: [이미지 2] 이 이미지들은 어떻게 다른가요? |
 
-<Tabs>
-  <Tab title="Base64 사용">
-    ```python Python
+<details>
+<summary>Base64 사용</summary>
+
+```python Python
     message = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=1024,
@@ -353,9 +359,13 @@ Claude에게 여러 이미지 간의 차이점을 설명하도록 요청합니�
         ],
     )
     ```
-  </Tab>
-  <Tab title="URL 사용">
-    ```python Python
+
+</details>
+
+<details>
+<summary>URL 사용</summary>
+
+```python Python
     message = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=1024,
@@ -394,8 +404,8 @@ Claude에게 여러 이미지 간의 차이점을 설명하도록 요청합니�
         ],
     )
     ```
-  </Tab>
-</Tabs>
+
+</details>
 </details>
 <details>
 <summary>예제: 시스템 프롬프트와 함께 다중 이미지</summary>
@@ -407,9 +417,10 @@ Claude에게 여러 이미지 간의 차이점을 설명하도록 요청하면�
 | System | 스페인어로만 응답하세요.                                                      |
 | User   | Image 1: [이미지 1] Image 2: [이미지 2] 이 이미지들은 어떻게 다른가요? |
 
-<Tabs>
-  <Tab title="Base64 사용">
-    ```python Python
+<details>
+<summary>Base64 사용</summary>
+
+```python Python
     message = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=1024,
@@ -451,9 +462,13 @@ Claude에게 여러 이미지 간의 차이점을 설명하도록 요청하면�
         ],
     )
     ```
-  </Tab>
-  <Tab title="URL 사용">
-    ```python Python
+
+</details>
+
+<details>
+<summary>URL 사용</summary>
+
+```python Python
     message = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=1024,
@@ -493,8 +508,8 @@ Claude에게 여러 이미지 간의 차이점을 설명하도록 요청하면�
         ],
     )
     ```
-  </Tab>
-</Tabs>
+
+</details>
 </details>
 <details>
 <summary>예제: 두 번의 대화 턴에 걸친 4개의 이미지</summary>

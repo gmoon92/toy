@@ -6,7 +6,8 @@ Message를 생성할 때 `"stream": true`로 설정하여 [서버 전송 이벤�
 
 ## SDK를 사용한 스트리밍
 
-[Python](https://github.com/anthropics/anthropic-sdk-python) 및 [TypeScript](https://github.com/anthropics/anthropic-sdk-typescript) SDK는 여러 가지 스트리밍 방법을 제공합니다. Python SDK는 동기 및 비동기 스트림을 모두 허용합니다. 자세한 내용은 각 SDK의 문서를 참조하세요.
+[Python](https://github.com/anthropics/anthropic-sdk-python) 및 [TypeScript](https://github.com/anthropics/anthropic-sdk-typescript) SDK는 여러 가지 스트리밍 방법을 제공합니다.
+Python SDK는 동기 및 비동기 스트림을 모두 허용합니다. 자세한 내용은 각 SDK의 문서를 참조하세요.
 
 <details>
 <summary>Python 예시</summary>
@@ -34,13 +35,12 @@ import anthropic
 각 스트림은 다음 이벤트 흐름을 사용합니다:
 
 1. `message_start`: 빈 `content`가 있는 `Message` 객체를 포함합니다.
-2. 일련의 콘텐츠 블록. 각 블록에는 `content_block_start`, 하나 이상의 `content_block_delta` 이벤트 및 `content_block_stop` 이벤트가 있습니다. 각 콘텐츠 블록에는 최종 Message `content` 배열의 인덱스에 해당하는 `index`가 있습니다.
+2. 일련의 콘텐츠 블록. 각 블록에는 `content_block_start`, 하나 이상의 `content_block_delta` 이벤트 및 `content_block_stop` 이벤트가 있습니다. 
+   - 각 콘텐츠 블록에는 최종 Message `content` 배열의 인덱스에 해당하는 `index`가 있습니다.
 3. 하나 이상의 `message_delta` 이벤트, 최종 `Message` 객체에 대한 최상위 변경 사항을 나타냅니다.
 4. 최종 `message_stop` 이벤트.
-
   
 > `message_delta` 이벤트의 `usage` 필드에 표시된 토큰 수는 *누적*입니다.
-
 
 ### Ping 이벤트
 
@@ -73,22 +73,37 @@ data: {"type": "content_block_delta","index": 0,"delta": {"type": "text_delta", 
 
 ### 입력 JSON 델타
 
-`tool_use` 콘텐츠 블록에 대한 델타는 블록의 `input` 필드에 대한 업데이트에 해당합니다. 최대 세분성을 지원하기 위해 델타는 _부분 JSON 문자열_인 반면 최종 `tool_use.input`은 항상 _객체_입니다.
+`tool_use` 콘텐츠 블록에 대한 델타는 블록의 `input` 필드에 대한 업데이트에 해당합니다. 
+최대 세분성을 지원하기 위해 델타는 **부분 JSON 문자열**인 반면 최종 `tool_use.input`은 항상 **객체**입니다.
 
-`content_block_stop` 이벤트를 받은 후 문자열 델타를 누적하고 JSON을 구문 분석하거나, [Pydantic](https://docs.pydantic.dev/latest/concepts/json/#partial-json-parsing)과 같은 라이브러리를 사용하여 부분 JSON 구문 분석을 수행하거나, 구문 분석된 증분 값에 액세스하는 헬퍼를 제공하는 [SDK](https://platform.claude.com/docs/en/api/client-sdks)를 사용할 수 있습니다.
+`content_block_stop` 이벤트를 받은 후 
+- 문자열 델타를 누적하고 JSON을 구문 분석하거나, 
+- [Pydantic](https://docs.pydantic.dev/latest/concepts/json/#partial-json-parsing)과 같은 라이브러리를 사용하여 부분 JSON 구문 분석을 수행하거나, 
+- 구문 분석된 증분 값에 액세스하는 헬퍼를 제공하는 [SDK](https://platform.claude.com/docs/en/api/client-sdks)를 사용할 수 있습니다.
 
 `tool_use` 콘텐츠 블록 델타는 다음과 같습니다:
 ```json 입력 JSON 델타
 event: content_block_delta
-data: {"type": "content_block_delta","index": 1,"delta": {"type": "input_json_delta","partial_json": "{\"location\": \"San Fra"}}}
+"data": {
+    "type": "content_block_delta",
+    "index": 1,
+    "delta": {
+      "type": "input_json_delta",
+      "partial_json": "{\"location\": \"San Fra"
+    }
+}
 ```
-참고: 현재 모델은 한 번에 `input`에서 하나의 완전한 키와 값 속성만 내보내는 것을 지원합니다. 따라서 도구를 사용할 때 모델이 작업하는 동안 스트리밍 이벤트 사이에 지연이 있을 수 있습니다. `input` 키와 값이 누적되면 향후 모델에서 더 세밀한 세분성을 자동으로 지원할 수 있도록 청크된 부분 json과 함께 여러 `content_block_delta` 이벤트로 내보냅니다.
+참고: 현재 모델은 한 번에 `input`에서 하나의 완전한 키와 값 속성만 내보내는 것을 지원합니다. 
+따라서 도구를 사용할 때 모델이 작업하는 동안 스트리밍 이벤트 사이에 지연이 있을 수 있습니다. 
+`input` 키와 값이 누적되면 향후 모델에서 더 세밀한 세분성을 자동으로 지원할 수 있도록 청크된 부분 json과 함께 여러 `content_block_delta` 이벤트로 내보냅니다.
 
 ### Thinking 델타
 
-스트리밍이 활성화된 상태에서 [extended thinking](../02-capabilities/03-extended-thinking.md)을 사용하면 `thinking_delta` 이벤트를 통해 thinking 콘텐츠를 받게 됩니다. 이러한 델타는 `thinking` 콘텐츠 블록의 `thinking` 필드에 해당합니다.
+스트리밍이 활성화된 상태에서 [extended thinking](../02-capabilities/03-extended-thinking.md)을 사용하면 `thinking_delta` 이벤트를 통해 thinking 콘텐츠를 받게 됩니다. 
+이러한 델타는 `thinking` 콘텐츠 블록의 `thinking` 필드에 해당합니다.
 
-thinking 콘텐츠의 경우 `content_block_stop` 이벤트 직전에 특수 `signature_delta` 이벤트가 전송됩니다. 이 서명은 thinking 블록의 무결성을 확인하는 데 사용됩니다.
+thinking 콘텐츠의 경우 `content_block_stop` 이벤트 직전에 특수 `signature_delta` 이벤트가 전송됩니다. 
+이 서명은 thinking 블록의 무결성을 확인하는 데 사용됩니다.
 
 일반적인 thinking 델타는 다음과 같습니다:
 ```json Thinking 델타
@@ -104,7 +119,8 @@ data: {"type": "content_block_delta", "index": 0, "delta": {"type": "signature_d
 
 ## 전체 HTTP 스트림 응답
 
-스트리밍 모드를 사용할 때 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)를 사용하는 것을 강력히 권장합니다. 그러나 직접 API 통합을 구축하는 경우 이러한 이벤트를 직접 처리해야 합니다.
+스트리밍 모드를 사용할 때 [클라이언트 SDK](https://platform.claude.com/docs/en/api/client-sdks)를 사용하는 것을 강력히 권장합니다. 
+그러나 직접 API 통합을 구축하는 경우 이러한 이벤트를 직접 처리해야 합니다.
 
 스트림 응답은 다음으로 구성됩니다:
 1. `message_start` 이벤트
@@ -135,7 +151,6 @@ curl https://api.anthropic.com/v1/messages \
   "stream": true
 }'
 ```
-
 </details>
 
 ```json Response
@@ -167,9 +182,8 @@ data: {"type": "message_stop"}
 
 ### 도구 사용이 있는 스트리밍 요청
 
-
-> 도구 사용은 이제 베타 기능으로 매개변수 값에 대한 세밀한 스트리밍을 지원합니다. 자세한 내용은 [세밀한 도구 스트리밍](../03-tools/03-fine-grained-tool-streaming.md)을 참조하세요.
-
+> 도구 사용은 이제 베타 기능으로 매개변수 값에 대한 세밀한 스트리밍을 지원합니다. <br/>
+> 자세한 내용은 [세밀한 도구 스트리밍](../03-tools/03-fine-grained-tool-streaming.md)을 참조하세요.
 
 이 요청에서는 Claude에게 도구를 사용하여 날씨를 알려달라고 요청합니다.
 
@@ -514,4 +528,7 @@ data: {"type":"message_stop"}
 ### 오류 복구 모범 사례
 
 1. **SDK 기능 사용**: SDK의 내장 메시지 누적 및 오류 처리 기능을 활용합니다
-2. **콘텐츠 유형 처리**: 메시지에 여러 콘텐츠 블록(`text`, `tool_use`, `thinking`)이 포함될 수 있음을 인식합니다. 도구 사용 및 extended thinking 블록은 부분적으로 복구할 수 없습니다. 가장 최근의 텍스트 블록에서 스트리밍을 재개할 수 있습니다.
+2. **콘텐츠 유형 처리**: 
+   - 메시지에 여러 콘텐츠 블록(`text`, `tool_use`, `thinking`)이 포함될 수 있음을 인식합니다. 
+   - 도구 사용 및 extended thinking 블록은 부분적으로 복구할 수 없습니다. 
+   - 가장 최근의 텍스트 블록에서 스트리밍을 재개할 수 있습니다.

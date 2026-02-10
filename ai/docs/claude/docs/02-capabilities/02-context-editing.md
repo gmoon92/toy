@@ -6,48 +6,57 @@
 
 ## 개요
 
-컨텍스트 편집을 사용하면 대화 컨텍스트가 증가함에 따라 자동으로 관리할 수 있어 비용을 최적화하고 컨텍스트 윈도우 제한 내에 머물 수 있습니다. 서버 측 API 전략, 클라이언트 측 SDK 기능 또는 둘 다 함께 사용할 수 있습니다.
+컨텍스트 편집을 사용하면 대화 컨텍스트가 증가함에 따라 자동으로 관리할 수 있어 비용을 최적화하고 컨텍스트 윈도우 제한 내에 머물 수 있습니다. 
+서버 측 API 전략, 클라이언트 측 SDK 기능 또는 둘 다 함께 사용할 수 있습니다.
 
-| 접근 방식 | 실행 위치 | 전략 | 작동 방식 |
-|----------|---------------|------------|--------------|
-| **서버 측** | API | 도구 결과 지우기 (`clear_tool_uses_20250919`)<br/>Thinking 블록 지우기 (`clear_thinking_20251015`) | 프롬프트가 Claude에 도달하기 전에 적용됩니다. 대화 기록에서 특정 콘텐츠를 지웁니다. 각 전략은 독립적으로 구성할 수 있습니다. |
-| **클라이언트 측** | SDK | 압축(Compaction) | [`tool_runner`](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](https://platform.claude.com/docs/en/api/client-sdks)에서 사용 가능합니다. 요약을 생성하고 전체 대화 기록을 대체합니다. 아래 [압축](#client-side-compaction-sdk)을 참조하세요. |
+| 접근 방식       | 실행 위치 | 전략                                                                                     | 작동 방식                                                                                                                                                                                                                                 |
+|-------------|-------|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **서버 측**    | API   | 도구 결과 지우기 (`clear_tool_uses_20250919`)<br/>Thinking 블록 지우기 (`clear_thinking_20251015`) | 프롬프트가 Claude에 도달하기 전에 적용됩니다. 대화 기록에서 특정 콘텐츠를 지웁니다. 각 전략은 독립적으로 구성할 수 있습니다.                                                                                                                                                            |
+| **클라이언트 측** | SDK   | 압축(Compaction)                                                                         | [`tool_runner`](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](https://platform.claude.com/docs/en/api/client-sdks)에서 사용 가능합니다. 요약을 생성하고 전체 대화 기록을 대체합니다. 아래 [압축](#client-side-compaction-sdk)을 참조하세요. |
 
 ## 서버 측 전략
 
-
-> 컨텍스트 편집은 현재 베타 버전이며 도구 결과 지우기 및 thinking 블록 지우기를 지원합니다. 이를 활성화하려면 API 요청에 베타 헤더 `context-management-2025-06-27`을 사용하세요.
+> 컨텍스트 편집은 현재 베타 버전이며 도구 결과 지우기 및 thinking 블록 지우기를 지원합니다. 
+> 이를 활성화하려면 API 요청에 베타 헤더 `context-management-2025-06-27`을 사용하세요.
 >
 > 이 기능에 대한 피드백을 공유하려면 [피드백 양식](https://forms.gle/YXC2EKGMhjN1c4L88)을 통해 연락해 주세요.
 
-
 ### 도구 결과 지우기
 
-`clear_tool_uses_20250919` 전략은 대화 컨텍스트가 구성된 임계값을 초과할 때 도구 결과를 지웁니다. 활성화되면 API는 시간순으로 가장 오래된 도구 결과를 자동으로 지우고, 도구 결과가 제거되었음을 Claude에게 알리는 자리 표시자 텍스트로 대체합니다. 기본적으로 도구 결과만 지워집니다. `clear_tool_inputs`를 true로 설정하여 선택적으로 도구 결과와 도구 호출(도구 사용 매개변수)을 모두 지울 수 있습니다.
+`clear_tool_uses_20250919` 전략은 대화 컨텍스트가 구성된 임계값을 초과할 때 도구 결과를 지웁니다. 
+활성화되면 API는 시간순으로 가장 오래된 도구 결과를 자동으로 지우고, 도구 결과가 제거되었음을 Claude에게 알리는 자리 표시자 텍스트로 대체합니다. 
+기본적으로 도구 결과만 지워집니다. `clear_tool_inputs`를 true로 설정하여 선택적으로 도구 결과와 도구 호출(도구 사용 매개변수)을 모두 지울 수 있습니다.
 
 ### Thinking 블록 지우기
 
-`clear_thinking_20251015` 전략은 extended thinking이 활성화된 경우 대화의 `thinking` 블록을 관리합니다. 이 전략은 이전 턴의 오래된 thinking 블록을 자동으로 지웁니다.
+`clear_thinking_20251015` 전략은 extended thinking이 활성화된 경우 대화의 `thinking` 블록을 관리합니다. 
+이 전략은 이전 턴의 오래된 thinking 블록을 자동으로 지웁니다.
 
-
-> **기본 동작**: `clear_thinking_20251015` 전략을 구성하지 않고 extended thinking을 활성화하면 API는 자동으로 마지막 어시스턴트 턴의 thinking 블록만 유지합니다(`keep: {type: "thinking_turns", value: 1}`과 동일).
->
+> **기본 동작**: 
+> - `clear_thinking_20251015` 전략을 구성하지 않고 extended thinking을 활성화하면 API는 자동으로 마지막 어시스턴트 턴의 thinking 블록만 유지합니다(`keep: {type: "thinking_turns", value: 1}`과 동일).<br/>
 > 캐시 히트를 최대화하려면 `keep: "all"`을 설정하여 모든 thinking 블록을 보존하세요.
-
 
 어시스턴트 대화 턴에는 여러 콘텐츠 블록(예: 도구 사용 시) 및 여러 thinking 블록(예: [인터리브 thinking](../02-capabilities/03-extended-thinking.md))이 포함될 수 있습니다.
 
 ### 컨텍스트 편집은 서버 측에서 발생합니다
 
-컨텍스트 편집은 프롬프트가 Claude에 도달하기 전에 서버 측에서 적용됩니다. 클라이언트 애플리케이션은 전체 수정되지 않은 대화 기록을 유지합니다. 클라이언트 상태를 편집된 버전과 동기화할 필요가 없습니다. 평소처럼 전체 대화 기록을 로컬에서 계속 관리하세요.
+컨텍스트 편집은 프롬프트가 Claude에 도달하기 전에 서버 측에서 적용됩니다. 
+클라이언트 애플리케이션은 전체 수정되지 않은 대화 기록을 유지합니다. 클라이언트 상태를 편집된 버전과 동기화할 필요가 없습니다.
+평소처럼 전체 대화 기록을 로컬에서 계속 관리하세요.
 
 ### 컨텍스트 편집과 프롬프트 캐싱
 
 컨텍스트 편집과 [프롬프트 캐싱](../02-capabilities/01-prompt-caching.md)의 상호 작용은 전략에 따라 다릅니다:
 
-- **도구 결과 지우기**: 콘텐츠가 지워질 때 캐시된 프롬프트 접두사를 무효화합니다. 이를 고려하여 캐시 무효화를 가치 있게 만들기 위해 충분한 토큰을 지우는 것이 좋습니다. `clear_at_least` 매개변수를 사용하여 매번 지워지는 최소 토큰 수를 보장하세요. 콘텐츠가 지워질 때마다 캐시 쓰기 비용이 발생하지만 후속 요청은 새로 캐시된 접두사를 재사용할 수 있습니다.
-
-- **Thinking 블록 지우기**: thinking 블록이 컨텍스트에 **유지**되면(지워지지 않음) 프롬프트 캐시가 보존되어 캐시 히트를 활성화하고 입력 토큰 비용을 줄입니다. thinking 블록이 **지워지면** 지우기가 발생하는 지점에서 캐시가 무효화됩니다. 캐시 성능을 우선시할지 컨텍스트 윈도우 가용성을 우선시할지에 따라 `keep` 매개변수를 구성하세요.
+- **도구 결과 지우기**: 
+  - 콘텐츠가 지워질 때 캐시된 프롬프트 접두사를 무효화합니다. 
+  - 이를 고려하여 캐시 무효화를 가치 있게 만들기 위해 충분한 토큰을 지우는 것이 좋습니다. 
+  - `clear_at_least` 매개변수를 사용하여 매번 지워지는 최소 토큰 수를 보장하세요. 
+  - 콘텐츠가 지워질 때마다 캐시 쓰기 비용이 발생하지만 후속 요청은 새로 캐시된 접두사를 재사용할 수 있습니다.
+- **Thinking 블록 지우기**: 
+  - thinking 블록이 컨텍스트에 **유지**되면(지워지지 않음) 프롬프트 캐시가 보존되어 캐시 히트를 활성화하고 입력 토큰 비용을 줄입니다. 
+  - thinking 블록이 **지워지면** 지우기가 발생하는 지점에서 캐시가 무효화됩니다. 
+  - 캐시 성능을 우선시할지 컨텍스트 윈도우 가용성을 우선시할지에 따라 `keep` 매개변수를 구성하세요.
 
 ## 지원되는 모델
 
@@ -198,8 +207,8 @@ curl https://api.anthropic.com/v1/messages \
 
 `clear_thinking_20251015` 전략은 다음 구성을 지원합니다:
 
-| 구성 옵션 | 기본값 | 설명 |
-|---------------------|---------|-------------|
+| 구성 옵션  | 기본값                                  | 설명                                                                                                                                                          |
+|--------|--------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `keep` | `{type: "thinking_turns", value: 1}` | thinking 블록이 있는 최근 어시스턴트 턴을 몇 개 보존할지 정의합니다. 마지막 N개 턴을 유지하려면 `{type: "thinking_turns", value: N}`을 사용하거나(N은 > 0이어야 함), 모든 thinking 블록을 유지하려면 `"all"`을 사용하세요. |
 
 **구성 예제:**
@@ -272,13 +281,13 @@ response = client.beta.messages.create(
 
 ## 도구 결과 지우기 구성 옵션
 
-| 구성 옵션 | 기본값 | 설명 |
-|---------------------|---------|-------------|
-| `trigger` | 100,000 입력 토큰 | 컨텍스트 편집 전략이 활성화되는 시기를 정의합니다. 프롬프트가 이 임계값을 초과하면 지우기가 시작됩니다. 이 값을 `input_tokens` 또는 `tool_uses`로 지정할 수 있습니다. |
-| `keep` | 3개의 도구 사용 | 지우기가 발생한 후 유지할 최근 도구 사용/결과 쌍의 수를 정의합니다. API는 가장 오래된 도구 상호 작용을 먼저 제거하고 가장 최근 것을 보존합니다. |
-| `clear_at_least` | None | 전략이 활성화될 때마다 지워지는 최소 토큰 수를 보장합니다. API가 최소한 지정된 양을 지울 수 없으면 전략이 적용되지 않습니다. 이는 컨텍스트 지우기가 프롬프트 캐시를 깨뜨릴 가치가 있는지 결정하는 데 도움이 됩니다. |
-| `exclude_tools` | None | 도구 사용 및 결과를 절대 지우지 않아야 하는 도구 이름 목록입니다. 중요한 컨텍스트를 보존하는 데 유용합니다. |
-| `clear_tool_inputs` | `false` | 도구 결과와 함께 도구 호출 매개변수를 지울지 여부를 제어합니다. 기본적으로 Claude의 원래 도구 호출을 보이게 유지하면서 도구 결과만 지워집니다. |
+| 구성 옵션               | 기본값           | 설명                                                                                                                          |
+|---------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `trigger`           | 100,000 입력 토큰 | 컨텍스트 편집 전략이 활성화되는 시기를 정의합니다. 프롬프트가 이 임계값을 초과하면 지우기가 시작됩니다. 이 값을 `input_tokens` 또는 `tool_uses`로 지정할 수 있습니다.                  |
+| `keep`              | 3개의 도구 사용     | 지우기가 발생한 후 유지할 최근 도구 사용/결과 쌍의 수를 정의합니다. API는 가장 오래된 도구 상호 작용을 먼저 제거하고 가장 최근 것을 보존합니다.                                       |
+| `clear_at_least`    | None          | 전략이 활성화될 때마다 지워지는 최소 토큰 수를 보장합니다. API가 최소한 지정된 양을 지울 수 없으면 전략이 적용되지 않습니다. 이는 컨텍스트 지우기가 프롬프트 캐시를 깨뜨릴 가치가 있는지 결정하는 데 도움이 됩니다. |
+| `exclude_tools`     | None          | 도구 사용 및 결과를 절대 지우지 않아야 하는 도구 이름 목록입니다. 중요한 컨텍스트를 보존하는 데 유용합니다.                                                              |
+| `clear_tool_inputs` | `false`       | 도구 결과와 함께 도구 호출 매개변수를 지울지 여부를 제어합니다. 기본적으로 Claude의 원래 도구 호출을 보이게 유지하면서 도구 결과만 지워집니다.                                        |
 
 ## 컨텍스트 편집 응답
 
@@ -286,27 +295,31 @@ response = client.beta.messages.create(
 
 ```json Response
 {
-    "id": "msg_013Zva2CMHLNnXjNJJKqJ2EF",
-    "type": "message",
-    "role": "assistant",
-    "content": [...],
-    "usage": {...},
-    "context_management": {
-        "applied_edits": [
-            // `clear_thinking_20251015` 사용 시
-            {
-                "type": "clear_thinking_20251015",
-                "cleared_thinking_turns": 3,
-                "cleared_input_tokens": 15000
-            },
-            // `clear_tool_uses_20250919` 사용 시
-            {
-                "type": "clear_tool_uses_20250919",
-                "cleared_tool_uses": 8,
-                "cleared_input_tokens": 50000
-            }
-        ]
-    }
+  "id": "msg_013Zva2CMHLNnXjNJJKqJ2EF",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    ...
+  ],
+  "usage": {
+    ...
+  },
+  "context_management": {
+    "applied_edits": [
+      // `clear_thinking_20251015` 사용 시
+      {
+        "type": "clear_thinking_20251015",
+        "cleared_thinking_turns": 3,
+        "cleared_input_tokens": 15000
+      },
+      // `clear_tool_uses_20250919` 사용 시
+      {
+        "type": "clear_tool_uses_20250919",
+        "cleared_tool_uses": 8,
+        "cleared_input_tokens": 50000
+      }
+    ]
+  }
 }
 ```
 
@@ -314,17 +327,19 @@ response = client.beta.messages.create(
 
 ```json Streaming Response
 {
-    "type": "message_delta",
-    "delta": {
-        "stop_reason": "end_turn",
-        "stop_sequence": null
-    },
-    "usage": {
-        "output_tokens": 1024
-    },
-    "context_management": {
-        "applied_edits": [...]
-    }
+  "type": "message_delta",
+  "delta": {
+    "stop_reason": "end_turn",
+    "stop_sequence": null
+  },
+  "usage": {
+    "output_tokens": 1024
+  },
+  "context_management": {
+    "applied_edits": [
+      ...
+    ]
+  }
 }
 ```
 
@@ -372,10 +387,10 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
 
 ```json Response
 {
-    "input_tokens": 25000,
-    "context_management": {
-        "original_input_tokens": 70000
-    }
+  "input_tokens": 25000,
+  "context_management": {
+    "original_input_tokens": 70000
+  }
 }
 ```
 
@@ -383,7 +398,9 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
 
 ## Memory Tool과 함께 사용
 
-컨텍스트 편집은 [memory tool](../03-tools/11-memory-tool.md)과 결합할 수 있습니다. 대화 컨텍스트가 구성된 지우기 임계값에 가까워지면 Claude는 중요한 정보를 보존하라는 자동 경고를 받습니다. 이를 통해 Claude는 대화 기록에서 지워지기 전에 도구 결과나 컨텍스트를 메모리 파일에 저장할 수 있습니다.
+컨텍스트 편집은 [memory tool](../03-tools/11-memory-tool.md)과 결합할 수 있습니다. 
+대화 컨텍스트가 구성된 지우기 임계값에 가까워지면 Claude는 중요한 정보를 보존하라는 자동 경고를 받습니다. 
+이를 통해 Claude는 대화 기록에서 지워지기 전에 도구 결과나 컨텍스트를 메모리 파일에 저장할 수 있습니다.
 
 이 조합을 통해 다음을 수행할 수 있습니다:
 
@@ -391,7 +408,8 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
 - **장기 실행 워크플로 유지**: 정보를 영구 저장소에 오프로드하여 그렇지 않으면 컨텍스트 제한을 초과할 에이전틱 워크플로를 활성화합니다
 - **필요 시 정보 액세스**: Claude는 활성 컨텍스트 윈도우에 모든 것을 유지하는 대신 필요할 때 메모리 파일에서 이전에 지워진 정보를 조회할 수 있습니다
 
-예를 들어, Claude가 많은 작업을 수행하는 파일 편집 워크플로에서 컨텍스트가 증가함에 따라 Claude는 완료된 변경 사항을 메모리 파일에 요약할 수 있습니다. 도구 결과가 지워지면 Claude는 메모리 시스템을 통해 해당 정보에 대한 액세스를 유지하고 효과적으로 계속 작업할 수 있습니다.
+예를 들어, Claude가 많은 작업을 수행하는 파일 편집 워크플로에서 컨텍스트가 증가함에 따라 Claude는 완료된 변경 사항을 메모리 파일에 요약할 수 있습니다. 
+도구 결과가 지워지면 Claude는 메모리 시스템을 통해 해당 정보에 대한 액세스를 유지하고 효과적으로 계속 작업할 수 있습니다.
 
 두 기능을 함께 사용하려면 API 요청에서 활성화하세요:
 
@@ -423,11 +441,13 @@ response = client.beta.messages.create(
 
 ## 클라이언트 측 압축 (SDK)
 
+> 압축은 [`tool_runner` 메서드](../03-tools/02-how-to-implement-tool-use.md)를 사용할
+> 때 [Python 및 TypeScript SDK](https://platform.claude.com/docs/en/api/client-sdks)에서 사용할 수 있습니다.
 
-> 압축은 [`tool_runner` 메서드](../03-tools/02-how-to-implement-tool-use.md)를 사용할 때 [Python 및 TypeScript SDK](https://platform.claude.com/docs/en/api/client-sdks)에서 사용할 수 있습니다.
 
-
-압축은 토큰 사용량이 너무 커질 때 요약을 생성하여 대화 컨텍스트를 자동으로 관리하는 SDK 기능입니다. 콘텐츠를 지우는 서버 측 컨텍스트 편집 전략과 달리 압축은 Claude에게 대화 기록을 요약하도록 지시한 다음 전체 기록을 해당 요약으로 대체합니다. 이를 통해 Claude는 그렇지 않으면 [컨텍스트 윈도우](./01-build-with-claude-02-context-windows.md)를 초과할 장기 실행 작업을 계속할 수 있습니다.
+압축은 토큰 사용량이 너무 커질 때 요약을 생성하여 대화 컨텍스트를 자동으로 관리하는 SDK 기능입니다. 
+콘텐츠를 지우는 서버 측 컨텍스트 편집 전략과 달리 압축은 Claude에게 대화 기록을 요약하도록 지시한 다음 전체 기록을 해당 요약으로 대체합니다. 
+이를 통해 Claude는 그렇지 않으면 [컨텍스트 윈도우](../01-build-with-claude/02-context-windows.md)를 초과할 장기 실행 작업을 계속할 수 있습니다.
 
 ### 압축 작동 방식
 
@@ -479,14 +499,45 @@ final = runner.until_done()
 대화가 증가함에 따라 메시지 기록이 누적됩니다:
 
 **압축 전 (100k 토큰에 근접):**
+
 ```json
 [
-  { "role": "user", "content": "모든 파일을 분석하고 보고서를 작성..." },
-  { "role": "assistant", "content": "도와드리겠습니다. 먼저 읽어보겠습니다..." },
-  { "role": "user", "content": [{ "type": "tool_result", "tool_use_id": "...", "content": "..." }] },
-  { "role": "assistant", "content": "file1.txt를 기반으로 볼 수 있습니다..." },
-  { "role": "user", "content": [{ "type": "tool_result", "tool_use_id": "...", "content": "..." }] },
-  { "role": "assistant", "content": "file2.txt를 분석한 후..." },
+  {
+    "role": "user",
+    "content": "모든 파일을 분석하고 보고서를 작성..."
+  },
+  {
+    "role": "assistant",
+    "content": "도와드리겠습니다. 먼저 읽어보겠습니다..."
+  },
+  {
+    "role": "user",
+    "content": [
+      {
+        "type": "tool_result",
+        "tool_use_id": "...",
+        "content": "..."
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "content": "file1.txt를 기반으로 볼 수 있습니다..."
+  },
+  {
+    "role": "user",
+    "content": [
+      {
+        "type": "tool_result",
+        "tool_use_id": "...",
+        "content": "..."
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "content": "file2.txt를 분석한 후..."
+  }
   // ... 이와 같은 50개 이상의 교환 ...
 ]
 ```
@@ -494,6 +545,7 @@ final = runner.until_done()
 토큰이 임계값을 초과하면 SDK는 요약 요청을 주입하고 Claude는 요약을 생성합니다. 그런 다음 전체 기록이 대체됩니다:
 
 **압축 후 (약 2-3k 토큰으로 돌아감):**
+
 ```json
 [
   {
@@ -507,12 +559,12 @@ Claude는 이 요약이 원래 대화 기록인 것처럼 계속 작업합니다
 
 ### 구성 옵션
 
-| 매개변수 | 타입 | 필수 | 기본값 | 설명 |
-|-----------|------|----------|---------|-------------|
-| `enabled` | boolean | 예 | - | 자동 압축 활성화 여부 |
-| `context_token_threshold` | number | 아니요 | 100,000 | 압축이 트리거되는 토큰 수 |
-| `model` | string | 아니요 | 메인 모델과 동일 | 요약 생성에 사용할 모델 |
-| `summary_prompt` | string | 아니요 | 아래 참조 | 요약 생성을 위한 사용자 정의 프롬프트 |
+| 매개변수                      | 타입      | 필수  | 기본값       | 설명                    |
+|---------------------------|---------|-----|-----------|-----------------------|
+| `enabled`                 | boolean | 예   | -         | 자동 압축 활성화 여부          |
+| `context_token_threshold` | number  | 아니요 | 100,000   | 압축이 트리거되는 토큰 수        |
+| `model`                   | string  | 아니요 | 메인 모델과 동일 | 요약 생성에 사용할 모델         |
+| `summary_prompt`          | string  | 아니요 | 아래 참조     | 요약 생성을 위한 사용자 정의 프롬프트 |
 
 #### 토큰 임계값 선택
 
@@ -623,15 +675,14 @@ compaction_control={
 
 요약을 <summary></summary> 태그로 래핑하세요.
 ```
+
 </details>
 
 ### 제한 사항
 
 #### 서버 측 도구
 
-
 > 압축은 [웹 검색](../03-tools/10-web-search-tool.md) 또는 [웹 가져오기](../03-tools/09-web-fetch-tool.md)와 같은 서버 측 도구를 사용할 때 특별한 고려가 필요합니다.
-
 
 서버 측 도구를 사용할 때 SDK는 토큰 사용량을 잘못 계산하여 압축이 잘못된 시간에 트리거될 수 있습니다.
 
@@ -647,7 +698,9 @@ compaction_control={
 }
 ```
 
-SDK는 총 사용량을 63,000 + 270,000 = 333,000 토큰으로 계산합니다. 그러나 `cache_read_input_tokens` 값에는 실제 대화 컨텍스트가 아니라 서버 측 도구가 수행한 여러 내부 API 호출에서 누적된 읽기가 포함됩니다. 실제 컨텍스트 길이는 63,000 `input_tokens`일 수 있지만 SDK는 333k를 보고 압축을 조기에 트리거합니다.
+SDK는 총 사용량을 63,000 + 270,000 = 333,000 토큰으로 계산합니다. 
+그러나 `cache_read_input_tokens` 값에는 실제 대화 컨텍스트가 아니라 서버 측 도구가 수행한 여러 내부 API 호출에서 누적된 읽기가 포함됩니다. 
+실제 컨텍스트 길이는 63,000 `input_tokens`일 수 있지만 SDK는 333k를 보고 압축을 조기에 트리거합니다.
 
 **해결 방법:**
 

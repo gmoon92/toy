@@ -125,36 +125,24 @@ curl https://api.anthropic.com/v1/messages \
 
 ## 컴퓨터 사용 작동 방식
 
-<Steps>
-  <Step
-    title="Claude에 컴퓨터 사용 도구와 사용자 프롬프트 제공"
-    icon="tool"
-  >
-    - API 요청에 컴퓨터 사용 도구(및 선택적으로 다른 도구)를 추가합니다.
-    - 데스크톱 상호작용이 필요한 사용자 프롬프트를 포함합니다. 예: "고양이 사진을 내 바탕화면에 저장해줘."
-  </Step>
-  <Step title="Claude가 컴퓨터 사용 도구를 사용하기로 결정" icon="wrench">
-    - Claude는 컴퓨터 사용 도구가 사용자의 쿼리에 도움이 될 수 있는지 평가합니다.
-    - 가능하면 Claude는 올바르게 형식화된 도구 사용 요청을 구성합니다.
-    - API 응답은 Claude의 의도를 나타내는 `stop_reason`이 `tool_use`입니다.
-  </Step>
-  <Step
-    title="도구 입력을 추출하고, 컴퓨터에서 도구를 평가하고, 결과를 반환"
-    icon="computer"
-  >
-    - 귀하의 측에서 Claude의 요청에서 도구 이름과 입력을 추출합니다.
-    - 컨테이너 또는 가상 머신에서 도구를 사용합니다.
-    - `tool_result` 콘텐츠 블록을 포함하는 새로운 `user` 메시지로 대화를 계속합니다.
-  </Step>
-  <Step
-    title="Claude가 작업을 완료할 때까지 컴퓨터 사용 도구를 계속 호출"
-    icon="arrows-clockwise"
-  >
-    - Claude는 도구 결과를 분석하여 더 많은 도구 사용이 필요한지 또는 작업이 완료되었는지 결정합니다.
-    - Claude가 다른 도구가 필요하다고 결정하면 다른 `tool_use` `stop_reason`으로 응답하며 3단계로 돌아가야 합니다.
-    - 그렇지 않으면 사용자에게 텍스트 응답을 작성합니다.
-  </Step>
-</Steps>
+- **Claude에 컴퓨터 사용 도구와 사용자 프롬프트 제공**
+  - API 요청에 컴퓨터 사용 도구(및 선택적으로 다른 도구)를 추가합니다.
+  - 데스크톱 상호작용이 필요한 사용자 프롬프트를 포함합니다. 예: "고양이 사진을 내 바탕화면에 저장해줘."
+
+- **Claude가 컴퓨터 사용 도구를 사용하기로 결정**
+  - Claude는 컴퓨터 사용 도구가 사용자의 쿼리에 도움이 될 수 있는지 평가합니다.
+  - 가능하면 Claude는 올바르게 형식화된 도구 사용 요청을 구성합니다.
+  - API 응답은 Claude의 의도를 나타내는 `stop_reason`이 `tool_use`입니다.
+
+- **도구 입력을 추출하고, 컴퓨터에서 도구를 평가하고, 결과를 반환**
+  - 귀하의 측에서 Claude의 요청에서 도구 이름과 입력을 추출합니다.
+  - 컨테이너 또는 가상 머신에서 도구를 사용합니다.
+  - `tool_result` 콘텐츠 블록을 포함하는 새로운 `user` 메시지로 대화를 계속합니다.
+
+- **Claude가 작업을 완료할 때까지 컴퓨터 사용 도구를 계속 호출**
+  - Claude는 도구 결과를 분석하여 더 많은 도구 사용이 필요한지 또는 작업이 완료되었는지 결정합니다.
+  - Claude가 다른 도구가 필요하다고 결정하면 다른 `tool_use` `stop_reason`으로 응답하며 3단계로 돌아가야 합니다.
+  - 그렇지 않으면 사용자에게 텍스트 응답을 작성합니다.
 
 우리는 사용자 입력 없이 3단계와 4단계를 반복하는 것을 "에이전트 루프"라고 부릅니다. 즉, Claude가 도구 사용 요청으로 응답하고 귀하의 애플리케이션이 해당 요청을 평가한 결과로 Claude에 응답하는 것입니다.
 
@@ -537,58 +525,59 @@ curl https://api.anthropic.com/v1/messages \
 
 컴퓨터 사용 도구는 스키마 없는 도구로 구현됩니다. 이 도구를 사용할 때 다른 도구와 마찬가지로 입력 스키마를 제공할 필요가 없습니다. 스키마는 Claude의 모델에 내장되어 있으며 수정할 수 없습니다.
 
-<Steps>
-  <Step title="컴퓨팅 환경 설정">
-    Claude가 상호작용할 가상 디스플레이를 만들거나 기존 디스플레이에 연결합니다. 일반적으로 Xvfb(X Virtual Framebuffer) 또는 유사한 기술을 설정하는 것이 포함됩니다.
-  </Step>
-  <Step title="액션 핸들러 구현">
-    Claude가 요청할 수 있는 각 액션 유형을 처리하는 함수를 만듭니다:
-    ```python
-    def handle_computer_action(action_type, params):
-        if action_type == "screenshot":
-            return capture_screenshot()
-        elif action_type == "left_click":
-            x, y = params["coordinate"]
-            return click_at(x, y)
-        elif action_type == "type":
-            return type_text(params["text"])
-        # ... 다른 액션 처리
-    ```
-  </Step>
-  <Step title="Claude의 도구 호출 처리">
-    Claude의 응답에서 도구 호출을 추출하고 실행합니다:
-    ```python
-    for content in response.content:
-        if content.type == "tool_use":
-            action = content.input["action"]
-            result = handle_computer_action(action, content.input)
+- **컴퓨팅 환경 설정**
 
-            # Claude에 결과 반환
-            tool_result = {
-                "type": "tool_result",
-                "tool_use_id": content.id,
-                "content": result
-            }
-    ```
-  </Step>
-  <Step title="에이전트 루프 구현">
-    Claude가 작업을 완료할 때까지 계속되는 루프를 만듭니다:
-    ```python
-    while True:
-        response = client.beta.messages.create(...)
+  Claude가 상호작용할 가상 디스플레이를 만들거나 기존 디스플레이에 연결합니다. 일반적으로 Xvfb(X Virtual Framebuffer) 또는 유사한 기술을 설정하는 것이 포함됩니다.
 
-        # Claude가 도구를 사용했는지 확인
-        tool_results = process_tool_calls(response)
+- **액션 핸들러 구현**
 
-        if not tool_results:
-            # 더 이상 도구 사용이 없으면 작업 완료
-            break
+  Claude가 요청할 수 있는 각 액션 유형을 처리하는 함수를 만듭니다:
+  ```python
+  def handle_computer_action(action_type, params):
+      if action_type == "screenshot":
+          return capture_screenshot()
+      elif action_type == "left_click":
+          x, y = params["coordinate"]
+          return click_at(x, y)
+      elif action_type == "type":
+          return type_text(params["text"])
+      # ... 다른 액션 처리
+  ```
 
-        # 도구 결과로 대화 계속
-        messages.append({"role": "user", "content": tool_results})
-    ```
-  </Step>
-</Steps>
+- **Claude의 도구 호출 처리**
+
+  Claude의 응답에서 도구 호출을 추출하고 실행합니다:
+  ```python
+  for content in response.content:
+      if content.type == "tool_use":
+          action = content.input["action"]
+          result = handle_computer_action(action, content.input)
+
+          # Claude에 결과 반환
+          tool_result = {
+              "type": "tool_result",
+              "tool_use_id": content.id,
+              "content": result
+          }
+  ```
+
+- **에이전트 루프 구현**
+
+  Claude가 작업을 완료할 때까지 계속되는 루프를 만듭니다:
+  ```python
+  while True:
+      response = client.beta.messages.create(...)
+
+      # Claude가 도구를 사용했는지 확인
+      tool_results = process_tool_calls(response)
+
+      if not tool_results:
+          # 더 이상 도구 사용이 없으면 작업 완료
+          break
+
+      # 도구 결과로 대화 계속
+      messages.append({"role": "user", "content": tool_results})
+  ```
 
 #### 오류 처리
 

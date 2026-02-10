@@ -94,17 +94,17 @@ curl https://api.anthropic.com/v1/messages \
 
 ### 작동 방식
 
-<Steps>
-  <Step title="JSON 스키마 정의">
-    Claude가 따라야 하는 구조를 설명하는 JSON 스키마를 생성합니다. 스키마는 일부 제한 사항이 있는 표준 JSON Schema 형식을 사용합니다([JSON Schema 제한사항](#json-schema-limitations) 참조).
-  </Step>
-  <Step title="output_config.format 매개변수 추가">
-    API 요청에 `type: "json_schema"`와 스키마 정의를 포함한 `output_config.format` 매개변수를 포함합니다.
-  </Step>
-  <Step title="응답 파싱">
-    Claude의 응답은 `response.content[0].text`에 반환되는 스키마와 일치하는 유효한 JSON입니다.
-  </Step>
-</Steps>
+- **JSON 스키마 정의**
+
+  Claude가 따라야 하는 구조를 설명하는 JSON 스키마를 생성합니다. 스키마는 일부 제한 사항이 있는 표준 JSON Schema 형식을 사용합니다([JSON Schema 제한사항](#json-schema-limitations) 참조).
+
+- **output_config.format 매개변수 추가**
+
+  API 요청에 `type: "json_schema"`와 스키마 정의를 포함한 `output_config.format` 매개변수를 포함합니다.
+
+- **응답 파싱**
+
+  Claude의 응답은 `response.content[0].text`에 반환되는 스키마와 일치하는 유효한 JSON입니다.
 
 ### SDK에서 JSON outputs 사용하기
 
@@ -408,17 +408,17 @@ curl https://api.anthropic.com/v1/messages \
 
 ### 작동 방식
 
-<Steps>
-  <Step title="도구 스키마 정의">
-    도구의 `input_schema`에 대한 JSON 스키마를 생성합니다. 스키마는 일부 제한 사항이 있는 표준 JSON Schema 형식을 사용합니다([JSON Schema 제한사항](#json-schema-limitations) 참조).
-  </Step>
-  <Step title="strict: true 추가">
-    도구 정의에서 `name`, `description`, `input_schema`와 함께 최상위 속성으로 `"strict": true`를 설정합니다.
-  </Step>
-  <Step title="도구 호출 처리">
-    Claude가 도구를 사용할 때, tool_use 블록의 `input` 필드는 `input_schema`를 엄격히 따르며, `name`은 항상 유효합니다.
-  </Step>
-</Steps>
+- **도구 스키마 정의**
+
+  도구의 `input_schema`에 대한 JSON 스키마를 생성합니다. 스키마는 일부 제한 사항이 있는 표준 JSON Schema 형식을 사용합니다([JSON Schema 제한사항](#json-schema-limitations) 참조).
+
+- **strict: true 추가**
+
+  도구 정의에서 `name`, `description`, `input_schema`와 함께 최상위 속성으로 `"strict": true`를 설정합니다.
+
+- **도구 호출 처리**
+
+  Claude가 도구를 사용할 때, tool_use 블록의 `input` 필드는 `input_schema`를 엄격히 따르며, `name`은 항상 유효합니다.
 
 ### 일반적인 사용 사례
 

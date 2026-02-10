@@ -120,77 +120,78 @@ Claude는 복잡한 작업을 완료하기 위해 명령을 체이닝할 수 있
 
 bash 도구는 스키마 없는 도구로 구현됩니다. 이 도구를 사용할 때 다른 도구와 달리 입력 스키마를 제공할 필요가 없습니다. 스키마는 Claude의 모델에 내장되어 있으며 수정할 수 없습니다.
 
-<Steps>
-  <Step title="bash 환경 설정">
-    Claude가 상호작용할 수 있는 지속적인 bash 세션을 생성합니다:
-    ```python
-    import subprocess
-    import threading
-    import queue
+- **bash 환경 설정**
 
-    class BashSession:
-        def __init__(self):
-            self.process = subprocess.Popen(
-                ['/bin/bash'],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                bufsize=0
-            )
-            self.output_queue = queue.Queue()
-            self.error_queue = queue.Queue()
-            self._start_readers()
-    ```
-  </Step>
-  <Step title="명령 실행 처리">
-    명령을 실행하고 출력을 캡처하는 함수를 생성합니다:
-    ```python
-    def execute_command(self, command):
-        # bash에 명령 전송
-        self.process.stdin.write(command + '\n')
-        self.process.stdin.flush()
+  Claude가 상호작용할 수 있는 지속적인 bash 세션을 생성합니다:
+  ```python
+  import subprocess
+  import threading
+  import queue
 
-        # 타임아웃과 함께 출력 캡처
-        output = self._read_output(timeout=10)
-        return output
-    ```
-  </Step>
-  <Step title="Claude의 도구 호출 처리">
-    Claude의 응답에서 명령을 추출하고 실행합니다:
-    ```python
-    for content in response.content:
-        if content.type == "tool_use" and content.name == "bash":
-            if content.input.get("restart"):
-                bash_session.restart()
-                result = "Bash session restarted"
-            else:
-                command = content.input.get("command")
-                result = bash_session.execute_command(command)
+  class BashSession:
+      def __init__(self):
+          self.process = subprocess.Popen(
+              ['/bin/bash'],
+              stdin=subprocess.PIPE,
+              stdout=subprocess.PIPE,
+              stderr=subprocess.PIPE,
+              text=True,
+              bufsize=0
+          )
+          self.output_queue = queue.Queue()
+          self.error_queue = queue.Queue()
+          self._start_readers()
+  ```
 
-            # Claude에 결과 반환
-            tool_result = {
-                "type": "tool_result",
-                "tool_use_id": content.id,
-                "content": result
-            }
-    ```
-  </Step>
-  <Step title="안전 조치 구현">
-    검증 및 제한 사항을 추가합니다:
-    ```python
-    def validate_command(command):
-        # 위험한 명령 차단
-        dangerous_patterns = ['rm -rf /', 'format', ':(){:|:&};:']
-        for pattern in dangerous_patterns:
-            if pattern in command:
-                return False, f"Command contains dangerous pattern: {pattern}"
+- **명령 실행 처리**
 
-        # 필요에 따라 추가 검증
-        return True, None
-    ```
-  </Step>
-</Steps>
+  명령을 실행하고 출력을 캡처하는 함수를 생성합니다:
+  ```python
+  def execute_command(self, command):
+      # bash에 명령 전송
+      self.process.stdin.write(command + '\n')
+      self.process.stdin.flush()
+
+      # 타임아웃과 함께 출력 캡처
+      output = self._read_output(timeout=10)
+      return output
+  ```
+
+- **Claude의 도구 호출 처리**
+
+  Claude의 응답에서 명령을 추출하고 실행합니다:
+  ```python
+  for content in response.content:
+      if content.type == "tool_use" and content.name == "bash":
+          if content.input.get("restart"):
+              bash_session.restart()
+              result = "Bash session restarted"
+          else:
+              command = content.input.get("command")
+              result = bash_session.execute_command(command)
+
+          # Claude에 결과 반환
+          tool_result = {
+              "type": "tool_result",
+              "tool_use_id": content.id,
+              "content": result
+          }
+  ```
+
+- **안전 조치 구현**
+
+  검증 및 제한 사항을 추가합니다:
+  ```python
+  def validate_command(command):
+      # 위험한 명령 차단
+      dangerous_patterns = ['rm -rf /', 'format', ':(){:|:&};:']
+      for pattern in dangerous_patterns:
+          if pattern in command:
+              return False, f"Command contains dangerous pattern: {pattern}"
+
+      # 필요에 따라 추가 검증
+      return True, None
+  ```
 
 ### 오류 처리
 

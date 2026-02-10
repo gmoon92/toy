@@ -129,7 +129,7 @@ PDF 지원은 Converse API와 InvokeModel API를 모두 통해 Amazon Bedrock에
 
 ### 1M 토큰 컨텍스트 윈도우
 
-Claude Sonnet 4 및 4.5는 Amazon Bedrock에서 [1M 토큰 컨텍스트 윈도우](./01-build-with-claude-02-context-windows.md)를 지원합니다.
+Claude Sonnet 4 및 4.5는 Amazon Bedrock에서 [1M 토큰 컨텍스트 윈도우](../01-build-with-claude/02-context-windows.md)를 지원합니다.
 
 
 > 1M 토큰 컨텍스트 윈도우는 현재 베타 버전입니다. 확장된 컨텍스트 윈도우를 사용하려면 [Bedrock API 요청](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html)에 `context-1m-2025-08-07` 베타 헤더를 포함해야 합니다.

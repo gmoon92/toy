@@ -12,7 +12,7 @@ Skill의 작동 방식에 대한 개념적 배경은 [Skills 개요](../04-agent
 
 ### 간결함이 핵심입니다
 
-[컨텍스트 윈도우](./01-build-with-claude-02-context-windows.md)는 공공재입니다. 여러분의 Skill은 Claude가 알아야 하는 다른 모든 것들과 컨텍스트 윈도우를 공유합니다:
+[컨텍스트 윈도우](../01-build-with-claude/02-context-windows.md)는 공공재입니다. 여러분의 Skill은 Claude가 알아야 하는 다른 모든 것들과 컨텍스트 윈도우를 공유합니다:
 - 시스템 프롬프트
 - 대화 기록
 - 다른 Skill들의 메타데이터

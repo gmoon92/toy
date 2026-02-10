@@ -44,9 +44,10 @@ Agent SDK는 파일 읽기, 명령 실행, 코드 편집을 위한 내장 도구
 
 Claude Code를 강력하게 만드는 모든 기능이 SDK에서 사용 가능합니다:
 
-<Tabs>
-  <Tab title="내장 도구">
-    에이전트는 즉시 파일을 읽고, 명령을 실행하고, 코드베이스를 검색할 수 있습니다. 주요 도구는 다음과 같습니다:
+<details>
+<summary>내장 도구</summary>
+
+에이전트는 즉시 파일을 읽고, 명령을 실행하고, 코드베이스를 검색할 수 있습니다. 주요 도구는 다음과 같습니다:
 
     | 도구 | 기능 |
     |------|------|
@@ -82,9 +83,12 @@ import asyncio
 
 </details>
 
-  </Tab>
-  <Tab title="훅">
-    에이전트 생명주기의 주요 시점에 커스텀 코드를 실행합니다. SDK 훅은 콜백 함수를 사용하여 에이전트 동작을 검증, 로깅, 차단 또는 변환할 수 있습니다.
+</details>
+
+<details>
+<summary>훅</summary>
+
+에이전트 생명주기의 주요 시점에 커스텀 코드를 실행합니다. SDK 훅은 콜백 함수를 사용하여 에이전트 동작을 검증, 로깅, 차단 또는 변환할 수 있습니다.
 
     **사용 가능한 훅:** `PreToolUse`, `PostToolUse`, `Stop`, `SessionStart`, `SessionEnd`, `UserPromptSubmit` 등.
 
@@ -123,9 +127,13 @@ import asyncio
 </details>
 
     [훅에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/hooks)
-  </Tab>
-  <Tab title="서브에이전트">
-    특정 하위 작업을 처리할 전문화된 에이전트를 생성합니다. 메인 에이전트가 작업을 위임하고, 서브에이전트가 결과를 보고합니다.
+
+</details>
+
+<details>
+<summary>서브에이전트</summary>
+
+특정 하위 작업을 처리할 전문화된 에이전트를 생성합니다. 메인 에이전트가 작업을 위임하고, 서브에이전트가 결과를 보고합니다.
 
     전문화된 지시사항으로 커스텀 에이전트를 정의하세요. 서브에이전트는 Task 도구를 통해 호출되므로 `allowedTools`에 `Task`를 포함해야 합니다:
 
@@ -161,9 +169,13 @@ import asyncio
     서브에이전트의 컨텍스트 내에서 발생한 메시지에는 `parent_tool_use_id` 필드가 포함되어 있어, 어떤 메시지가 어떤 서브에이전트 실행에 속하는지 추적할 수 있습니다.
 
     [서브에이전트에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/subagents)
-  </Tab>
-  <Tab title="MCP">
-    Model Context Protocol을 통해 외부 시스템에 연결하세요: 데이터베이스, 브라우저, API 및 [수백 가지 이상](https://github.com/modelcontextprotocol/servers)의 서비스.
+
+</details>
+
+<details>
+<summary>MCP</summary>
+
+Model Context Protocol을 통해 외부 시스템에 연결하세요: 데이터베이스, 브라우저, API 및 [수백 가지 이상](https://github.com/modelcontextprotocol/servers)의 서비스.
 
     다음 예제는 [Playwright MCP 서버](https://github.com/microsoft/playwright-mcp)를 연결하여 에이전트에 브라우저 자동화 기능을 제공합니다:
 
@@ -192,9 +204,13 @@ import asyncio
 </details>
 
     [MCP에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/mcp)
-  </Tab>
-  <Tab title="권한">
-    에이전트가 사용할 수 있는 도구를 정확하게 제어합니다. 안전한 작업은 허용하고, 위험한 작업은 차단하거나, 민감한 작업에 대해 승인을 요구할 수 있습니다.
+
+</details>
+
+<details>
+<summary>권한</summary>
+
+에이전트가 사용할 수 있는 도구를 정확하게 제어합니다. 안전한 작업은 허용하고, 위험한 작업은 차단하거나, 민감한 작업에 대해 승인을 요구할 수 있습니다.
 
     
 > 대화형 승인 프롬프트 및 `AskUserQuestion` 도구에 대해서는 [승인 및 사용자 입력 처리](https://platform.claude.com/docs/en/agent-sdk/user-input)를 참조하세요.
@@ -226,9 +242,13 @@ import asyncio
 </details>
 
     [권한에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/permissions)
-  </Tab>
-  <Tab title="세션">
-    여러 교환에 걸쳐 컨텍스트를 유지합니다. Claude는 읽은 파일, 수행한 분석, 대화 기록을 기억합니다. 나중에 세션을 재개하거나, 포크하여 다른 접근 방식을 탐색할 수 있습니다.
+
+</details>
+
+<details>
+<summary>세션</summary>
+
+여러 교환에 걸쳐 컨텍스트를 유지합니다. Claude는 읽은 파일, 수행한 분석, 대화 기록을 기억합니다. 나중에 세션을 재개하거나, 포크하여 다른 접근 방식을 탐색할 수 있습니다.
 
     다음 예제는 첫 번째 쿼리에서 세션 ID를 캡처한 다음, 전체 컨텍스트와 함께 재개합니다:
 
@@ -264,8 +284,8 @@ import asyncio
 </details>
 
     [세션에 대해 자세히 알아보기 →](https://platform.claude.com/docs/en/agent-sdk/sessions)
-  </Tab>
-</Tabs>
+
+</details>
 
 ### Claude Code 기능
 
@@ -280,84 +300,98 @@ SDK는 Claude Code의 파일 시스템 기반 구성도 지원합니다. 이러�
 
 ## 시작하기
 
-<Steps>
-  <Step title="Claude Code 설치">
-    SDK는 Claude Code를 런타임으로 사용합니다:
+- **Claude Code 설치**
 
-    <Tabs>
-      <Tab title="macOS/Linux/WSL">
-        ```bash
-        curl -fsSL https://claude.ai/install.sh | bash
-        ```
-      </Tab>
-      <Tab title="Homebrew">
-        ```bash
-        brew install --cask claude-code
-        ```
-      </Tab>
-      <Tab title="WinGet">
-        ```powershell
-        winget install Anthropic.ClaudeCode
-        ```
-      </Tab>
-    </Tabs>
+  SDK는 Claude Code를 런타임으로 사용합니다:
 
-    Windows 및 기타 옵션은 [Claude Code 설정](https://code.claude.com/docs/en/setup)을 참조하세요.
-  </Step>
-  <Step title="SDK 설치">
-    <Tabs>
-      <Tab title="TypeScript">
-        ```bash
-        npm install @anthropic-ai/claude-agent-sdk
-        ```
-      </Tab>
-      <Tab title="Python">
-        ```bash
-        pip install claude-agent-sdk
-        ```
-      </Tab>
-    </Tabs>
-  </Step>
-  <Step title="API 키 설정">
-    ```bash
-    export ANTHROPIC_API_KEY=your-api-key
-    ```
-    [콘솔](https://platform.claude.com/)에서 키를 받으세요.
+  <details>
+<summary>macOS/Linux/WSL</summary>
 
-    SDK는 서드파티 API 제공업체를 통한 인증도 지원합니다:
+```bash
+      curl -fsSL https://claude.ai/install.sh | bash
+      ```
 
-    - **Amazon Bedrock**: `CLAUDE_CODE_USE_BEDROCK=1` 환경 변수를 설정하고 AWS 자격 증명 구성
-    - **Google Vertex AI**: `CLAUDE_CODE_USE_VERTEX=1` 환경 변수를 설정하고 Google Cloud 자격 증명 구성
-    - **Microsoft Foundry**: `CLAUDE_CODE_USE_FOUNDRY=1` 환경 변수를 설정하고 Azure 자격 증명 구성
+</details>
 
-    
+<details>
+<summary>Homebrew</summary>
+
+```bash
+      brew install --cask claude-code
+      ```
+
+</details>
+
+<details>
+<summary>WinGet</summary>
+
+```powershell
+      winget install Anthropic.ClaudeCode
+      ```
+
+</details>
+
+  Windows 및 기타 옵션은 [Claude Code 설정](https://code.claude.com/docs/en/setup)을 참조하세요.
+
+- **SDK 설치**
+
+  <details>
+<summary>TypeScript</summary>
+
+```bash
+      npm install @anthropic-ai/claude-agent-sdk
+      ```
+
+</details>
+
+<details>
+<summary>Python</summary>
+
+```bash
+      pip install claude-agent-sdk
+      ```
+
+</details>
+
+- **API 키 설정**
+
+  ```bash
+  export ANTHROPIC_API_KEY=your-api-key
+  ```
+  [콘솔](https://platform.claude.com/)에서 키를 받으세요.
+
+  SDK는 서드파티 API 제공업체를 통한 인증도 지원합니다:
+
+  - **Amazon Bedrock**: `CLAUDE_CODE_USE_BEDROCK=1` 환경 변수를 설정하고 AWS 자격 증명 구성
+  - **Google Vertex AI**: `CLAUDE_CODE_USE_VERTEX=1` 환경 변수를 설정하고 Google Cloud 자격 증명 구성
+  - **Microsoft Foundry**: `CLAUDE_CODE_USE_FOUNDRY=1` 환경 변수를 설정하고 Azure 자격 증명 구성
+
+
 > 사전 승인이 없는 경우, 서드파티 개발자가 Claude Agent SDK로 구축된 에이전트를 포함하여 자신의 제품에 Claude.ai 로그인 또는 속도 제한을 제공하는 것을 허용하지 않습니다. 대신 이 문서에 설명된 API 키 인증 방법을 사용하세요.
 
-  </Step>
-  <Step title="첫 번째 에이전트 실행">
-    다음 예제는 내장 도구를 사용하여 현재 디렉터리의 파일 목록을 나열하는 에이전트를 생성합니다.
+- **첫 번째 에이전트 실행**
 
-    <details>
+  다음 예제는 내장 도구를 사용하여 현재 디렉터리의 파일 목록을 나열하는 에이전트를 생성합니다.
+
+  <details>
 <summary>Python 예시</summary>
 
 ```python
 import asyncio
-    from claude_agent_sdk import query, ClaudeAgentOptions
+  from claude_agent_sdk import query, ClaudeAgentOptions
 
-    async def main():
-        async for message in query(
-            prompt="이 디렉터리에 어떤 파일들이 있어?",
-            options=ClaudeAgentOptions(allowed_tools=["Bash", "Glob"])
-        ):
-            if hasattr(message, "result"):
-                print(message.result)
+  async def main():
+      async for message in query(
+          prompt="이 디렉터리에 어떤 파일들이 있어?",
+          options=ClaudeAgentOptions(allowed_tools=["Bash", "Glob"])
+      ):
+          if hasattr(message, "result"):
+              print(message.result)
 
-    asyncio.run(main())
+  asyncio.run(main())
 ```
 
 </details>
-  </Step>
-</Steps>
 
 **빌드 준비 완료?** [퀵스타트](../05-agent-sdk/02-quickstart.md)를 따라 몇 분 안에 버그를 찾아 수정하는 에이전트를 만들어보세요.
 
@@ -365,9 +399,10 @@ import asyncio
 
 Claude 플랫폼은 Claude로 빌드하는 여러 방법을 제공합니다. Agent SDK가 어떻게 적용되는지 살펴보세요:
 
-<Tabs>
-  <Tab title="Agent SDK vs Client SDK">
-    [Anthropic Client SDK](https://platform.claude.com/docs/en/api/client-sdks)는 직접 API 액세스를 제공합니다: 프롬프트를 보내고 도구 실행을 직접 구현합니다. **Agent SDK**는 내장 도구 실행이 포함된 Claude를 제공합니다.
+<details>
+<summary>Agent SDK vs Client SDK</summary>
+
+[Anthropic Client SDK](https://platform.claude.com/docs/en/api/client-sdks)는 직접 API 액세스를 제공합니다: 프롬프트를 보내고 도구 실행을 직접 구현합니다. **Agent SDK**는 내장 도구 실행이 포함된 Claude를 제공합니다.
 
     Client SDK로는 도구 루프를 구현해야 합니다. Agent SDK로는 Claude가 처리합니다:
 
@@ -387,9 +422,13 @@ Claude 플랫폼은 Claude로 빌드하는 여러 방법을 제공합니다. Age
 ```
 
 </details>
-  </Tab>
-  <Tab title="Agent SDK vs Claude Code CLI">
-    동일한 기능, 다른 인터페이스:
+
+</details>
+
+<details>
+<summary>Agent SDK vs Claude Code CLI</summary>
+
+동일한 기능, 다른 인터페이스:
 
     | 사용 사례 | 최선의 선택 |
     |-----------|-------------|
@@ -400,8 +439,8 @@ Claude 플랫폼은 Claude로 빌드하는 여러 방법을 제공합니다. Age
     | 프로덕션 자동화 | SDK |
 
     많은 팀이 두 가지를 모두 사용합니다: 일상적인 개발에는 CLI, 프로덕션에는 SDK. 워크플로우는 두 가지 간에 직접 전환됩니다.
-  </Tab>
-</Tabs>
+
+</details>
 
 ## 변경 로그
 
