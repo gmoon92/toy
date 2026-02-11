@@ -163,6 +163,21 @@ description: Analyzes git changes and generates commit messages following projec
 - Mention file types or tools explicitly
 - Describe both what AND when to use
 
+**Validation Rules:**
+
+`name` field (required):
+- Maximum 64 characters
+- Must contain only lowercase letters, numbers, and hyphens
+- Cannot contain XML tags
+- Cannot contain reserved words: "anthropic", "claude"
+- Use gerund form (verb-ing): `processing-pdfs`, `analyzing-data`
+
+`description` field (required):
+- Must not be empty
+- Maximum 1024 characters
+- Cannot contain XML tags
+- Include key terms Claude should recognize
+
 ---
 
 ## Refactoring Workflow

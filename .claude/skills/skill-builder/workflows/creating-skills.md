@@ -102,10 +102,27 @@ allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion, Write, Edit
 ```
 
 **Key fields:**
-- `name`: Use gerund form (verb-ing): `processing-pdfs`, `analyzing-data`
-- `description`: Include key terms Claude should recognize, explain WHEN to use it
-- `user-invocable`: Set to `true` if users should invoke with `/skill-name`
-- `allowed-tools`: Limit to only tools the skill needs
+
+**`name` (required):**
+- Use gerund form (verb-ing): `processing-pdfs`, `analyzing-data`
+- **Validation rules:**
+  - Maximum 64 characters
+  - Must contain only lowercase letters, numbers, and hyphens
+  - Cannot contain XML tags
+  - Cannot contain reserved words: "anthropic", "claude"
+
+**`description` (required):**
+- Include key terms Claude should recognize, explain WHEN to use it
+- **Validation rules:**
+  - Must not be empty
+  - Maximum 1024 characters
+  - Cannot contain XML tags
+
+**`user-invocable`:**
+- Set to `true` if users should invoke with `/skill-name`
+
+**`allowed-tools`:**
+- Limit to only tools the skill needs
 
 **2. Overview**
 - Brief purpose statement (1-2 sentences)

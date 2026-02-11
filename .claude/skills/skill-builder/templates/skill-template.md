@@ -15,6 +15,22 @@ user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion, Write, Edit
 ---
 
+# YAML Frontmatter Validation Rules:
+#
+# name (required):
+#   - Maximum 64 characters
+#   - Must contain only lowercase letters, numbers, and hyphens
+#   - Cannot contain XML tags
+#   - Cannot contain reserved words: "anthropic", "claude"
+#   - Use gerund form (verb-ing): processing-pdfs, analyzing-data
+#
+# description (required):
+#   - Must not be empty
+#   - Maximum 1024 characters
+#   - Cannot contain XML tags
+#   - Include key terms Claude should recognize
+#   - Explain WHEN to use this skill
+
 ## Overview
 
 Detailed description of the skill's purpose and capabilities.
