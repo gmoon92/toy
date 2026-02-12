@@ -5,10 +5,12 @@
 ---
 
 
-> V2 인터페이스는 **불안정한 프리뷰** 버전입니다. 안정화되기 전에 피드백에 따라 API가 변경될 수 있습니다. 세션 포킹과 같은 일부 기능은 [V1 SDK](../05-agent-sdk/03-typescript.md)에서만 사용할 수 있습니다.
+> V2 인터페이스는 **불안정한 프리뷰** 버전입니다. 안정화되기 전에 피드백에 따라 API가 변경될 수 있습니다. 세션 포킹과 같은 일부
+> 기능은 [V1 SDK](../05-agent-sdk/03-typescript.md)에서만 사용할 수 있습니다.
 
 
-V2 Claude Agent TypeScript SDK는 비동기 제너레이터와 yield 조정의 필요성을 제거했습니다. 이를 통해 다중 턴 대화가 더 간단해졌습니다. 턴 간에 제너레이터 상태를 관리하는 대신, 각 턴은 별도의 `send()`/`stream()` 사이클이 됩니다. API 표면은 세 가지 개념으로 축소됩니다:
+V2 Claude Agent TypeScript SDK는 비동기 제너레이터와 yield 조정의 필요성을 제거했습니다. 이를 통해 다중 턴 대화가 더 간단해졌습니다. 
+턴 간에 제너레이터 상태를 관리하는 대신, 각 턴은 별도의 `send()`/`stream()` 사이클이 됩니다. API 표면은 세 가지 개념으로 축소됩니다:
 
 - `createSession()` / `resumeSession()`: 대화 시작 또는 계속하기
 - `session.send()`: 메시지 전송
@@ -26,7 +28,8 @@ npm install @anthropic-ai/claude-agent-sdk
 
 ### 단발성 프롬프트
 
-세션을 유지할 필요가 없는 간단한 단일 턴 쿼리의 경우 `unstable_v2_prompt()`를 사용하세요. 이 예제는 수학 질문을 보내고 답변을 로그에 출력합니다:
+세션을 유지할 필요가 없는 간단한 단일 턴 쿼리의 경우 `unstable_v2_prompt()`를 사용하세요. 
+이 예제는 수학 질문을 보내고 답변을 로그에 출력합니다:
 
 ```typescript
 import { unstable_v2_prompt } from '@anthropic-ai/claude-agent-sdk'
@@ -59,13 +62,17 @@ for await (const msg of q) {
 
 ### 기본 세션
 
-단일 프롬프트를 넘어서는 상호작용의 경우 세션을 생성하세요. V2는 전송과 스트리밍을 별도의 단계로 분리합니다:
+단일 프롬프트를 넘어서는 상호작용의 경우 세션을 생성하세요. 
+V2는 전송과 스트리밍을 별도의 단계로 분리합니다:
+
 - `send()`는 메시지를 전달합니다
 - `stream()`은 응답을 스트리밍합니다
 
 이러한 명시적인 분리는 턴 사이에 로직을 추가하기 쉽게 만듭니다(예: 후속 메시지를 보내기 전에 응답을 처리하는 등).
 
-아래 예제는 세션을 생성하고 Claude에게 "Hello!"를 보낸 후 텍스트 응답을 출력합니다. [`await using`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html#using-declarations-and-explicit-resource-management) (TypeScript 5.2+)을 사용하여 블록이 종료될 때 자동으로 세션을 닫습니다. 수동으로 `session.close()`를 호출할 수도 있습니다.
+아래 예제는 세션을 생성하고 Claude에게 "Hello!"를 보낸 후 텍스트 응답을 출력합니다. 
+[ `await using`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html#using-declarations-and-explicit-resource-management) ( TypeScript 5.2+)을 사용하여 블록이 종료될 때 자동으로 세션을 닫습니다. 
+수동으로 `session.close()`를 호출할 수도 있습니다.
 
 ```typescript
 import { unstable_v2_createSession } from '@anthropic-ai/claude-agent-sdk'
@@ -90,7 +97,8 @@ for await (const msg of session.stream()) {
 <details>
 <summary>V1에서 동일한 작업 보기</summary>
 
-V1에서는 입력과 출력 모두 단일 비동기 제너레이터를 통해 흐릅니다. 기본 프롬프트의 경우 비슷해 보이지만, 다중 턴 로직을 추가하려면 입력 제너레이터를 사용하도록 재구성해야 합니다.
+V1에서는 입력과 출력 모두 단일 비동기 제너레이터를 통해 흐릅니다. 
+기본 프롬프트의 경우 비슷해 보이지만, 다중 턴 로직을 추가하려면 입력 제너레이터를 사용하도록 재구성해야 합니다.
 
 ```typescript
 import { query } from '@anthropic-ai/claude-agent-sdk'
@@ -115,7 +123,8 @@ for await (const msg of q) {
 
 ### 다중 턴 대화
 
-세션은 여러 차례의 교환에 걸쳐 컨텍스트를 유지합니다. 대화를 계속하려면 동일한 세션에서 `send()`를 다시 호출하세요. Claude는 이전 턴을 기억합니다.
+세션은 여러 차례의 교환에 걸쳐 컨텍스트를 유지합니다. 
+대화를 계속하려면 동일한 세션에서 `send()`를 다시 호출하세요. Claude는 이전 턴을 기억합니다.
 
 이 예제는 수학 질문을 한 다음 이전 답변을 참조하는 후속 질문을 합니다:
 
@@ -296,7 +305,8 @@ for await (const msg of resumedQuery) {
 
 ### 정리
 
-세션은 수동으로 닫거나 자동 리소스 정리를 위한 TypeScript 5.2+ 기능인 [`await using`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html#using-declarations-and-explicit-resource-management)을 사용하여 자동으로 닫을 수 있습니다. 이전 TypeScript 버전을 사용 중이거나 호환성 문제가 발생하면 대신 수동 정리를 사용하세요.
+세션은 수동으로 닫거나 자동 리소스 정리를 위한 TypeScript 5.2+ 기능인 [`await using`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html#using-declarations-and-explicit-resource-management) 을 사용하여 자동으로 닫을 수 있습니다. 
+이전 TypeScript 버전을 사용 중이거나 호환성 문제가 발생하면 대신 수동 정리를 사용하세요.
 
 **자동 정리 (TypeScript 5.2+):**
 

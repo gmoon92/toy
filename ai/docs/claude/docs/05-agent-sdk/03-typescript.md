@@ -4,9 +4,9 @@ TypeScript Agent SDK의 완전한 API 레퍼런스로, 모든 함수, 타입, �
 
 ---
 
-
-> **새로운 V2 인터페이스 체험하기 (프리뷰):** 이제 `send()`와 `receive()` 패턴을 사용하는 간소화된 인터페이스를 사용할 수 있으며, 이를 통해 다중 턴 대화가 더 쉬워졌습니다. [TypeScript V2 프리뷰에 대해 자세히 알아보기](../05-agent-sdk/04-typescript-v2-preview.md)
-
+> **새로운 V2 인터페이스 체험하기 (프리뷰):** 이제 `send()`와 `receive()` 패턴을 사용하는 간소화된 인터페이스를 사용할 수 있으며, 
+> 이를 통해 다중 턴 대화가 더 쉬워졌습니다. 
+> [TypeScript V2 프리뷰에 대해 자세히 알아보기](../05-agent-sdk/04-typescript-v2-preview.md)
 
 ## 설치
 
@@ -18,7 +18,8 @@ npm install @anthropic-ai/claude-agent-sdk
 
 ### `query()`
 
-Claude Code와 상호작용하기 위한 주요 함수입니다. 메시지가 도착하면 스트리밍하는 async generator를 생성합니다.
+Claude Code와 상호작용하기 위한 주요 함수입니다. 
+메시지가 도착하면 스트리밍하는 async generator를 생성합니다.
 
 ```typescript
 function query({
@@ -32,10 +33,10 @@ function query({
 
 #### 파라미터
 
-| 파라미터 | 타입 | 설명 |
-| :-------- | :--- | :---------- |
-| `prompt` | `string \| AsyncIterable<`[`SDKUserMessage`](#sdkusermessage)`>` | 입력 프롬프트(문자열) 또는 스트리밍 모드를 위한 async iterable |
-| `options` | [`Options`](#options) | 선택적 설정 객체(아래 Options 타입 참조) |
+| 파라미터      | 타입                                                               | 설명                                         |
+|:----------|:-----------------------------------------------------------------|:-------------------------------------------|
+| `prompt`  | `string \| AsyncIterable<`[`SDKUserMessage`](#sdkusermessage)`>` | 입력 프롬프트(문자열) 또는 스트리밍 모드를 위한 async iterable |
+| `options` | [`Options`](#options)                                            | 선택적 설정 객체(아래 Options 타입 참조)                |
 
 #### 반환값
 
@@ -56,12 +57,12 @@ function tool<Schema extends ZodRawShape>(
 
 #### 파라미터
 
-| 파라미터 | 타입 | 설명 |
-| :-------- | :--- | :---------- |
-| `name` | `string` | 도구의 이름 |
-| `description` | `string` | 도구의 기능 설명 |
-| `inputSchema` | `Schema extends ZodRawShape` | 도구의 입력 파라미터를 정의하는 Zod 스키마 |
-| `handler` | `(args, extra) => Promise<`[`CallToolResult`](#calltoolresult)`>` | 도구 로직을 실행하는 비동기 함수 |
+| 파라미터          | 타입                                                                | 설명                        |
+|:--------------|:------------------------------------------------------------------|:--------------------------|
+| `name`        | `string`                                                          | 도구의 이름                    |
+| `description` | `string`                                                          | 도구의 기능 설명                 |
+| `inputSchema` | `Schema extends ZodRawShape`                                      | 도구의 입력 파라미터를 정의하는 Zod 스키마 |
+| `handler`     | `(args, extra) => Promise<`[`CallToolResult`](#calltoolresult)`>` | 도구 로직을 실행하는 비동기 함수        |
 
 ### `createSdkMcpServer()`
 
@@ -77,11 +78,11 @@ function createSdkMcpServer(options: {
 
 #### 파라미터
 
-| 파라미터 | 타입 | 설명 |
-| :-------- | :--- | :---------- |
-| `options.name` | `string` | MCP 서버의 이름 |
-| `options.version` | `string` | 선택적 버전 문자열 |
-| `options.tools` | `Array<SdkMcpToolDefinition>` | [`tool()`](#tool)로 생성된 도구 정의 배열 |
+| 파라미터              | 타입                            | 설명                              |
+|:------------------|:------------------------------|:--------------------------------|
+| `options.name`    | `string`                      | MCP 서버의 이름                      |
+| `options.version` | `string`                      | 선택적 버전 문자열                      |
+| `options.tools`   | `Array<SdkMcpToolDefinition>` | [`tool()`](#tool)로 생성된 도구 정의 배열 |
 
 ## 타입
 
@@ -89,45 +90,45 @@ function createSdkMcpServer(options: {
 
 `query()` 함수에 대한 설정 객체입니다.
 
-| 속성 | 타입 | 기본값 | 설명 |
-| :------- | :--- | :------ | :---------- |
-| `abortController` | `AbortController` | `new AbortController()` | 작업 취소를 위한 컨트롤러 |
-| `additionalDirectories` | `string[]` | `[]` | Claude가 접근할 수 있는 추가 디렉터리 |
-| `agents` | `Record<string, [`AgentDefinition`](#agentdefinition)>` | `undefined` | 프로그래밍 방식으로 서브에이전트 정의 |
-| `allowDangerouslySkipPermissions` | `boolean` | `false` | 권한 우회 활성화. `permissionMode: 'bypassPermissions'` 사용 시 필요 |
-| `allowedTools` | `string[]` | 모든 도구 | 허용된 도구 이름 목록 |
-| `betas` | [`SdkBeta`](#sdkbeta)`[]` | `[]` | 베타 기능 활성화(예: `['context-1m-2025-08-07']`) |
-| `canUseTool` | [`CanUseTool`](#canusetool) | `undefined` | 도구 사용을 위한 사용자 정의 권한 함수 |
-| `continue` | `boolean` | `false` | 가장 최근 대화 계속하기 |
-| `cwd` | `string` | `process.cwd()` | 현재 작업 디렉터리 |
-| `disallowedTools` | `string[]` | `[]` | 허용되지 않는 도구 이름 목록 |
-| `enableFileCheckpointing` | `boolean` | `false` | 되감기를 위한 파일 변경 추적 활성화. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조 |
-| `env` | `Dict<string>` | `process.env` | 환경 변수 |
-| `executable` | `'bun' \| 'deno' \| 'node'` | 자동 감지 | 사용할 JavaScript 런타임 |
-| `executableArgs` | `string[]` | `[]` | 실행 파일에 전달할 인수 |
-| `extraArgs` | `Record<string, string \| null>` | `{}` | 추가 인수 |
-| `fallbackModel` | `string` | `undefined` | 주 모델이 실패할 경우 사용할 모델 |
-| `forkSession` | `boolean` | `false` | `resume`으로 재개할 때, 원래 세션을 계속하는 대신 새 세션 ID로 분기 |
-| `hooks` | `Partial<Record<`[`HookEvent`](#hookevent)`, `[`HookCallbackMatcher`](#hookcallbackmatcher)`[]>>` | `{}` | 이벤트에 대한 훅 콜백 |
-| `includePartialMessages` | `boolean` | `false` | 부분 메시지 이벤트 포함 |
-| `maxBudgetUsd` | `number` | `undefined` | 쿼리의 최대 예산(USD) |
-| `maxThinkingTokens` | `number` | `undefined` | 사고 프로세스의 최대 토큰 수 |
-| `maxTurns` | `number` | `undefined` | 최대 대화 턴 수 |
-| `mcpServers` | `Record<string, [`McpServerConfig`](#mcpserverconfig)>` | `{}` | MCP 서버 설정 |
-| `model` | `string` | CLI 기본값 | 사용할 Claude 모델 |
-| `outputFormat` | `{ type: 'json_schema', schema: JSONSchema }` | `undefined` | 에이전트 결과의 출력 형식 정의. 자세한 내용은 [구조화된 출력](https://platform.claude.com/docs/en/agent-sdk/structured-outputs) 참조 |
-| `pathToClaudeCodeExecutable` | `string` | 내장 실행 파일 사용 | Claude Code 실행 파일 경로 |
-| `permissionMode` | [`PermissionMode`](#permissionmode) | `'default'` | 세션의 권한 모드 |
-| `permissionPromptToolName` | `string` | `undefined` | 권한 프롬프트를 위한 MCP 도구 이름 |
-| `plugins` | [`SdkPluginConfig`](#sdkpluginconfig)`[]` | `[]` | 로컬 경로에서 사용자 정의 플러그인 로드. 자세한 내용은 [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins) 참조 |
-| `resume` | `string` | `undefined` | 재개할 세션 ID |
-| `resumeSessionAt` | `string` | `undefined` | 특정 메시지 UUID에서 세션 재개 |
-| `sandbox` | [`SandboxSettings`](#sandboxsettings) | `undefined` | 프로그래밍 방식으로 샌드박스 동작 구성. 자세한 내용은 [샌드박스 설정](#sandboxsettings) 참조 |
-| `settingSources` | [`SettingSource`](#settingsource)`[]` | `[]` (설정 없음) | 로드할 파일 시스템 설정 제어. 생략하면 설정이 로드되지 않음. **참고:** CLAUDE.md 파일을 로드하려면 `'project'`를 포함해야 함 |
-| `stderr` | `(data: string) => void` | `undefined` | stderr 출력 콜백 |
-| `strictMcpConfig` | `boolean` | `false` | 엄격한 MCP 검증 시행 |
-| `systemPrompt` | `string \| { type: 'preset'; preset: 'claude_code'; append?: string }` | `undefined` (최소 프롬프트) | 시스템 프롬프트 설정. 사용자 정의 프롬프트는 문자열로 전달하거나, Claude Code의 시스템 프롬프트를 사용하려면 `{ type: 'preset', preset: 'claude_code' }`를 사용. 프리셋 객체 형식 사용 시, 추가 지침으로 시스템 프롬프트를 확장하려면 `append` 추가 |
-| `tools` | `string[] \| { type: 'preset'; preset: 'claude_code' }` | `undefined` | 도구 설정. 도구 이름 배열을 전달하거나 프리셋을 사용하여 Claude Code의 기본 도구 가져오기 |
+| 속성                                | 타입                                                                                                | 기본값                     | 설명                                                                                                                                                                      |
+|:----------------------------------|:--------------------------------------------------------------------------------------------------|:------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `abortController`                 | `AbortController`                                                                                 | `new AbortController()` | 작업 취소를 위한 컨트롤러                                                                                                                                                          |
+| `additionalDirectories`           | `string[]`                                                                                        | `[]`                    | Claude가 접근할 수 있는 추가 디렉터리                                                                                                                                                |
+| `agents`                          | `Record<string, [`AgentDefinition`](#agentdefinition)>`                                           | `undefined`             | 프로그래밍 방식으로 서브에이전트 정의                                                                                                                                                    |
+| `allowDangerouslySkipPermissions` | `boolean`                                                                                         | `false`                 | 권한 우회 활성화. `permissionMode: 'bypassPermissions'` 사용 시 필요                                                                                                                |
+| `allowedTools`                    | `string[]`                                                                                        | 모든 도구                   | 허용된 도구 이름 목록                                                                                                                                                            |
+| `betas`                           | [`SdkBeta`](#sdkbeta)`[]`                                                                         | `[]`                    | 베타 기능 활성화(예: `['context-1m-2025-08-07']`)                                                                                                                               |
+| `canUseTool`                      | [`CanUseTool`](#canusetool)                                                                       | `undefined`             | 도구 사용을 위한 사용자 정의 권한 함수                                                                                                                                                  |
+| `continue`                        | `boolean`                                                                                         | `false`                 | 가장 최근 대화 계속하기                                                                                                                                                           |
+| `cwd`                             | `string`                                                                                          | `process.cwd()`         | 현재 작업 디렉터리                                                                                                                                                              |
+| `disallowedTools`                 | `string[]`                                                                                        | `[]`                    | 허용되지 않는 도구 이름 목록                                                                                                                                                        |
+| `enableFileCheckpointing`         | `boolean`                                                                                         | `false`                 | 되감기를 위한 파일 변경 추적 활성화. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조                                                                   |
+| `env`                             | `Dict<string>`                                                                                    | `process.env`           | 환경 변수                                                                                                                                                                   |
+| `executable`                      | `'bun' \| 'deno' \| 'node'`                                                                       | 자동 감지                   | 사용할 JavaScript 런타임                                                                                                                                                      |
+| `executableArgs`                  | `string[]`                                                                                        | `[]`                    | 실행 파일에 전달할 인수                                                                                                                                                           |
+| `extraArgs`                       | `Record<string, string \| null>`                                                                  | `{}`                    | 추가 인수                                                                                                                                                                   |
+| `fallbackModel`                   | `string`                                                                                          | `undefined`             | 주 모델이 실패할 경우 사용할 모델                                                                                                                                                     |
+| `forkSession`                     | `boolean`                                                                                         | `false`                 | `resume`으로 재개할 때, 원래 세션을 계속하는 대신 새 세션 ID로 분기                                                                                                                            |
+| `hooks`                           | `Partial<Record<`[`HookEvent`](#hookevent)`, `[`HookCallbackMatcher`](#hookcallbackmatcher)`[]>>` | `{}`                    | 이벤트에 대한 훅 콜백                                                                                                                                                            |
+| `includePartialMessages`          | `boolean`                                                                                         | `false`                 | 부분 메시지 이벤트 포함                                                                                                                                                           |
+| `maxBudgetUsd`                    | `number`                                                                                          | `undefined`             | 쿼리의 최대 예산(USD)                                                                                                                                                          |
+| `maxThinkingTokens`               | `number`                                                                                          | `undefined`             | 사고 프로세스의 최대 토큰 수                                                                                                                                                        |
+| `maxTurns`                        | `number`                                                                                          | `undefined`             | 최대 대화 턴 수                                                                                                                                                               |
+| `mcpServers`                      | `Record<string, [`McpServerConfig`](#mcpserverconfig)>`                                           | `{}`                    | MCP 서버 설정                                                                                                                                                               |
+| `model`                           | `string`                                                                                          | CLI 기본값                 | 사용할 Claude 모델                                                                                                                                                           |
+| `outputFormat`                    | `{ type: 'json_schema', schema: JSONSchema }`                                                     | `undefined`             | 에이전트 결과의 출력 형식 정의. 자세한 내용은 [구조화된 출력](https://platform.claude.com/docs/en/agent-sdk/structured-outputs) 참조                                                               |
+| `pathToClaudeCodeExecutable`      | `string`                                                                                          | 내장 실행 파일 사용             | Claude Code 실행 파일 경로                                                                                                                                                    |
+| `permissionMode`                  | [`PermissionMode`](#permissionmode)                                                               | `'default'`             | 세션의 권한 모드                                                                                                                                                               |
+| `permissionPromptToolName`        | `string`                                                                                          | `undefined`             | 권한 프롬프트를 위한 MCP 도구 이름                                                                                                                                                   |
+| `plugins`                         | [`SdkPluginConfig`](#sdkpluginconfig)`[]`                                                         | `[]`                    | 로컬 경로에서 사용자 정의 플러그인 로드. 자세한 내용은 [플러그인](https://platform.claude.com/docs/en/agent-sdk/plugins) 참조                                                                        |
+| `resume`                          | `string`                                                                                          | `undefined`             | 재개할 세션 ID                                                                                                                                                               |
+| `resumeSessionAt`                 | `string`                                                                                          | `undefined`             | 특정 메시지 UUID에서 세션 재개                                                                                                                                                     |
+| `sandbox`                         | [`SandboxSettings`](#sandboxsettings)                                                             | `undefined`             | 프로그래밍 방식으로 샌드박스 동작 구성. 자세한 내용은 [샌드박스 설정](#sandboxsettings) 참조                                                                                                           |
+| `settingSources`                  | [`SettingSource`](#settingsource)`[]`                                                             | `[]` (설정 없음)            | 로드할 파일 시스템 설정 제어. 생략하면 설정이 로드되지 않음. **참고:** CLAUDE.md 파일을 로드하려면 `'project'`를 포함해야 함                                                                                     |
+| `stderr`                          | `(data: string) => void`                                                                          | `undefined`             | stderr 출력 콜백                                                                                                                                                            |
+| `strictMcpConfig`                 | `boolean`                                                                                         | `false`                 | 엄격한 MCP 검증 시행                                                                                                                                                           |
+| `systemPrompt`                    | `string \| { type: 'preset'; preset: 'claude_code'; append?: string }`                            | `undefined` (최소 프롬프트)   | 시스템 프롬프트 설정. 사용자 정의 프롬프트는 문자열로 전달하거나, Claude Code의 시스템 프롬프트를 사용하려면 `{ type: 'preset', preset: 'claude_code' }`를 사용. 프리셋 객체 형식 사용 시, 추가 지침으로 시스템 프롬프트를 확장하려면 `append` 추가 |
+| `tools`                           | `string[] \| { type: 'preset'; preset: 'claude_code' }`                                           | `undefined`             | 도구 설정. 도구 이름 배열을 전달하거나 프리셋을 사용하여 Claude Code의 기본 도구 가져오기                                                                                                                |
 
 ### `Query`
 
@@ -149,17 +150,17 @@ interface Query extends AsyncGenerator<SDKMessage, void> {
 
 #### 메서드
 
-| 메서드 | 설명 |
-| :----- | :---------- |
-| `interrupt()` | 쿼리 중단(스트리밍 입력 모드에서만 사용 가능) |
+| 메서드                            | 설명                                                                                                                                          |
+|:-------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------|
+| `interrupt()`                  | 쿼리 중단(스트리밍 입력 모드에서만 사용 가능)                                                                                                                  |
 | `rewindFiles(userMessageUuid)` | 지정된 사용자 메시지의 상태로 파일 복원. `enableFileCheckpointing: true` 필요. [파일 체크포인팅](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing) 참조 |
-| `setPermissionMode()` | 권한 모드 변경(스트리밍 입력 모드에서만 사용 가능) |
-| `setModel()` | 모델 변경(스트리밍 입력 모드에서만 사용 가능) |
-| `setMaxThinkingTokens()` | 최대 사고 토큰 수 변경(스트리밍 입력 모드에서만 사용 가능) |
-| `supportedCommands()` | 사용 가능한 슬래시 명령 반환 |
-| `supportedModels()` | 표시 정보가 포함된 사용 가능한 모델 반환 |
-| `mcpServerStatus()` | 연결된 MCP 서버의 상태 반환 |
-| `accountInfo()` | 계정 정보 반환 |
+| `setPermissionMode()`          | 권한 모드 변경(스트리밍 입력 모드에서만 사용 가능)                                                                                                               |
+| `setModel()`                   | 모델 변경(스트리밍 입력 모드에서만 사용 가능)                                                                                                                  |
+| `setMaxThinkingTokens()`       | 최대 사고 토큰 수 변경(스트리밍 입력 모드에서만 사용 가능)                                                                                                          |
+| `supportedCommands()`          | 사용 가능한 슬래시 명령 반환                                                                                                                            |
+| `supportedModels()`            | 표시 정보가 포함된 사용 가능한 모델 반환                                                                                                                     |
+| `mcpServerStatus()`            | 연결된 MCP 서버의 상태 반환                                                                                                                           |
+| `accountInfo()`                | 계정 정보 반환                                                                                                                                    |
 
 ### `AgentDefinition`
 
@@ -174,12 +175,12 @@ type AgentDefinition = {
 }
 ```
 
-| 필드 | 필수 여부 | 설명 |
-|:------|:---------|:------------|
-| `description` | 예 | 이 에이전트를 사용할 시점에 대한 자연어 설명 |
-| `tools` | 아니오 | 허용된 도구 이름 배열. 생략하면 모든 도구 상속 |
-| `prompt` | 예 | 에이전트의 시스템 프롬프트 |
-| `model` | 아니오 | 이 에이전트에 대한 모델 재정의. 생략하면 주 모델 사용 |
+| 필드            | 필수 여부 | 설명                              |
+|:--------------|:------|:--------------------------------|
+| `description` | 예     | 이 에이전트를 사용할 시점에 대한 자연어 설명       |
+| `tools`       | 아니오   | 허용된 도구 이름 배열. 생략하면 모든 도구 상속     |
+| `prompt`      | 예     | 에이전트의 시스템 프롬프트                  |
+| `model`       | 아니오   | 이 에이전트에 대한 모델 재정의. 생략하면 주 모델 사용 |
 
 ### `SettingSource`
 
@@ -189,19 +190,21 @@ SDK가 설정을 로드하는 파일 시스템 기반 설정 소스를 제어합
 type SettingSource = 'user' | 'project' | 'local';
 ```
 
-| 값 | 설명 | 위치 |
-|:------|:------------|:---------|
-| `'user'` | 전역 사용자 설정 | `~/.claude/settings.json` |
-| `'project'` | 공유 프로젝트 설정(버전 제어됨) | `.claude/settings.json` |
-| `'local'` | 로컬 프로젝트 설정(gitignored) | `.claude/settings.local.json` |
+| 값           | 설명                     | 위치                            |
+|:------------|:-----------------------|:------------------------------|
+| `'user'`    | 전역 사용자 설정              | `~/.claude/settings.json`     |
+| `'project'` | 공유 프로젝트 설정(버전 제어됨)     | `.claude/settings.json`       |
+| `'local'`   | 로컬 프로젝트 설정(gitignored) | `.claude/settings.local.json` |
 
 #### 기본 동작
 
-`settingSources`가 **생략**되거나 **undefined**인 경우, SDK는 파일 시스템 설정을 로드하지 **않습니다**. 이는 SDK 애플리케이션에 격리를 제공합니다.
+`settingSources`가 **생략**되거나 **undefined**인 경우, SDK는 파일 시스템 설정을 로드하지 **않습니다**. 
+이는 SDK 애플리케이션에 격리를 제공합니다.
 
 #### settingSources를 사용하는 이유는?
 
 **모든 파일 시스템 설정 로드(레거시 동작):**
+
 ```typescript
 // SDK v0.0.x처럼 모든 설정 로드
 const result = query({
@@ -213,6 +216,7 @@ const result = query({
 ```
 
 **특정 설정 소스만 로드:**
+
 ```typescript
 // 프로젝트 설정만 로드, 사용자 및 로컬 설정 무시
 const result = query({
@@ -224,6 +228,7 @@ const result = query({
 ```
 
 **테스트 및 CI 환경:**
+
 ```typescript
 // 로컬 설정을 제외하여 CI에서 일관된 동작 보장
 const result = query({
@@ -236,6 +241,7 @@ const result = query({
 ```
 
 **SDK 전용 애플리케이션:**
+
 ```typescript
 // 모든 것을 프로그래밍 방식으로 정의(기본 동작)
 // 파일 시스템 종속성 없음 - settingSources 기본값은 []
@@ -251,6 +257,7 @@ const result = query({
 ```
 
 **CLAUDE.md 프로젝트 지침 로드:**
+
 ```typescript
 // CLAUDE.md 파일을 포함하려면 프로젝트 설정 로드
 const result = query({
@@ -269,6 +276,7 @@ const result = query({
 #### 설정 우선순위
 
 여러 소스가 로드될 때, 설정은 다음 우선순위로 병합됩니다(높음에서 낮음 순):
+
 1. 로컬 설정(`.claude/settings.local.json`)
 2. 프로젝트 설정(`.claude/settings.json`)
 3. 사용자 설정(`~/.claude/settings.json`)
@@ -382,12 +390,13 @@ type SdkPluginConfig = {
 }
 ```
 
-| 필드 | 타입 | 설명 |
-|:------|:-----|:------------|
+| 필드     | 타입        | 설명                             |
+|:-------|:----------|:-------------------------------|
 | `type` | `'local'` | `'local'`이어야 함(현재 로컬 플러그인만 지원) |
-| `path` | `string` | 플러그인 디렉터리의 절대 또는 상대 경로 |
+| `path` | `string`  | 플러그인 디렉터리의 절대 또는 상대 경로         |
 
 **예제:**
+
 ```typescript
 plugins: [
   { type: 'local', path: './my-plugin' },
@@ -914,7 +923,8 @@ interface AskUserQuestionInput {
 }
 ```
 
-실행 중 사용자에게 명확한 질문을 합니다. 사용 세부 정보는 [승인 및 사용자 입력 처리](https://platform.claude.com/docs/en/agent-sdk/user-input#handle-clarifying-questions)를 참조하세요.
+실행 중 사용자에게 명확한 질문을 합니다. 사용 세부
+정보는 [승인 및 사용자 입력 처리](https://platform.claude.com/docs/en/agent-sdk/user-input#handle-clarifying-questions)를 참조하세요.
 
 ### Bash
 
@@ -1896,8 +1906,8 @@ type ApiKeySource = 'user' | 'project' | 'org' | 'temporary';
 type SdkBeta = 'context-1m-2025-08-07';
 ```
 
-| 값 | 설명 | 호환 모델 |
-|:------|:------------|:------------------|
+| 값                         | 설명                                                                    | 호환 모델                              |
+|:--------------------------|:----------------------------------------------------------------------|:-----------------------------------|
 | `'context-1m-2025-08-07'` | 100만 토큰 [컨텍스트 윈도우](../01-build-with-claude/02-context-windows.md) 활성화 | Claude Sonnet 4, Claude Sonnet 4.5 |
 
 ### `SlashCommand`
@@ -2038,25 +2048,24 @@ type SandboxSettings = {
 }
 ```
 
-| 속성 | 타입 | 기본값 | 설명 |
-| :------- | :--- | :------ | :---------- |
-| `enabled` | `boolean` | `false` | 명령 실행을 위한 샌드박스 모드 활성화 |
-| `autoAllowBashIfSandboxed` | `boolean` | `false` | 샌드박스가 활성화된 경우 bash 명령 자동 승인 |
-| `excludedCommands` | `string[]` | `[]` | 항상 샌드박스 제한을 우회하는 명령(예: `['docker']`). 이들은 모델 개입 없이 자동으로 샌드박스되지 않은 상태로 실행됨 |
-| `allowUnsandboxedCommands` | `boolean` | `false` | 모델이 샌드박스 외부에서 명령 실행을 요청하도록 허용. `true`일 때, 모델은 도구 입력에서 `dangerouslyDisableSandbox`를 설정할 수 있으며, 이는 [권한 시스템](#permissions-fallback-for-unsandboxed-commands)으로 폴백됨 |
-| `network` | [`NetworkSandboxSettings`](#networksandboxsettings) | `undefined` | 네트워크 특정 샌드박스 설정 |
-| `ignoreViolations` | [`SandboxIgnoreViolations`](#sandboxignoreviolations) | `undefined` | 무시할 샌드박스 위반 구성 |
-| `enableWeakerNestedSandbox` | `boolean` | `false` | 호환성을 위한 약한 중첩 샌드박스 활성화 |
+| 속성                          | 타입                                                    | 기본값         | 설명                                                                                                                                                              |
+|:----------------------------|:------------------------------------------------------|:------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enabled`                   | `boolean`                                             | `false`     | 명령 실행을 위한 샌드박스 모드 활성화                                                                                                                                           |
+| `autoAllowBashIfSandboxed`  | `boolean`                                             | `false`     | 샌드박스가 활성화된 경우 bash 명령 자동 승인                                                                                                                                     |
+| `excludedCommands`          | `string[]`                                            | `[]`        | 항상 샌드박스 제한을 우회하는 명령(예: `['docker']`). 이들은 모델 개입 없이 자동으로 샌드박스되지 않은 상태로 실행됨                                                                                       |
+| `allowUnsandboxedCommands`  | `boolean`                                             | `false`     | 모델이 샌드박스 외부에서 명령 실행을 요청하도록 허용. `true`일 때, 모델은 도구 입력에서 `dangerouslyDisableSandbox`를 설정할 수 있으며, 이는 [권한 시스템](#permissions-fallback-for-unsandboxed-commands)으로 폴백됨 |
+| `network`                   | [`NetworkSandboxSettings`](#networksandboxsettings)   | `undefined` | 네트워크 특정 샌드박스 설정                                                                                                                                                 |
+| `ignoreViolations`          | [`SandboxIgnoreViolations`](#sandboxignoreviolations) | `undefined` | 무시할 샌드박스 위반 구성                                                                                                                                                  |
+| `enableWeakerNestedSandbox` | `boolean`                                             | `false`     | 호환성을 위한 약한 중첩 샌드박스 활성화                                                                                                                                          |
 
-
-> **파일 시스템 및 네트워크 액세스 제한**은 샌드박스 설정을 통해 구성되지 않습니다. 대신 [권한 규칙](https://code.claude.com/docs/en/settings#permission-settings)에서 파생됩니다:
+> **파일 시스템 및 네트워크 액세스 제한**은 샌드박스 설정을 통해 구성되지 않습니다.
+> 대신 [권한 규칙](https://code.claude.com/docs/en/settings#permission-settings)에서 파생됩니다:
 >
 > - **파일 시스템 읽기 제한**: Read deny 규칙
 > - **파일 시스템 쓰기 제한**: Edit allow/deny 규칙
 > - **네트워크 제한**: WebFetch allow/deny 규칙
 >
 > 명령 실행 샌드박싱에는 샌드박스 설정을 사용하고, 파일 시스템 및 네트워크 액세스 제어에는 권한 규칙을 사용하세요.
-
 
 #### 사용 예제
 
@@ -2077,9 +2086,8 @@ const result = await query({
 });
 ```
 
-
-> **Unix 소켓 보안**: `allowUnixSockets` 옵션은 강력한 시스템 서비스에 대한 액세스를 부여할 수 있습니다. 예를 들어, `/var/run/docker.sock`을 허용하면 Docker API를 통해 호스트 시스템에 대한 전체 액세스를 효과적으로 부여하여 샌드박스 격리를 우회합니다. 엄격히 필요한 Unix 소켓만 허용하고 각 소켓의 보안 영향을 이해하세요.
-
+> **Unix 소켓 보안**: `allowUnixSockets` 옵션은 강력한 시스템 서비스에 대한 액세스를 부여할 수 있습니다. 예를 들어, `/var/run/docker.sock`을 허용하면 Docker
+> API를 통해 호스트 시스템에 대한 전체 액세스를 효과적으로 부여하여 샌드박스 격리를 우회합니다. 엄격히 필요한 Unix 소켓만 허용하고 각 소켓의 보안 영향을 이해하세요.
 
 ### `NetworkSandboxSettings`
 
@@ -2095,13 +2103,13 @@ type NetworkSandboxSettings = {
 }
 ```
 
-| 속성 | 타입 | 기본값 | 설명 |
-| :------- | :--- | :------ | :---------- |
-| `allowLocalBinding` | `boolean` | `false` | 프로세스가 로컬 포트에 바인딩하도록 허용(예: 개발 서버용) |
-| `allowUnixSockets` | `string[]` | `[]` | 프로세스가 액세스할 수 있는 Unix 소켓 경로(예: Docker 소켓) |
-| `allowAllUnixSockets` | `boolean` | `false` | 모든 Unix 소켓에 대한 액세스 허용 |
-| `httpProxyPort` | `number` | `undefined` | 네트워크 요청용 HTTP 프록시 포트 |
-| `socksProxyPort` | `number` | `undefined` | 네트워크 요청용 SOCKS 프록시 포트 |
+| 속성                    | 타입         | 기본값         | 설명                                       |
+|:----------------------|:-----------|:------------|:-----------------------------------------|
+| `allowLocalBinding`   | `boolean`  | `false`     | 프로세스가 로컬 포트에 바인딩하도록 허용(예: 개발 서버용)        |
+| `allowUnixSockets`    | `string[]` | `[]`        | 프로세스가 액세스할 수 있는 Unix 소켓 경로(예: Docker 소켓) |
+| `allowAllUnixSockets` | `boolean`  | `false`     | 모든 Unix 소켓에 대한 액세스 허용                    |
+| `httpProxyPort`       | `number`   | `undefined` | 네트워크 요청용 HTTP 프록시 포트                     |
+| `socksProxyPort`      | `number`   | `undefined` | 네트워크 요청용 SOCKS 프록시 포트                    |
 
 ### `SandboxIgnoreViolations`
 
@@ -2114,20 +2122,20 @@ type SandboxIgnoreViolations = {
 }
 ```
 
-| 속성 | 타입 | 기본값 | 설명 |
-| :------- | :--- | :------ | :---------- |
-| `file` | `string[]` | `[]` | 위반을 무시할 파일 경로 패턴 |
-| `network` | `string[]` | `[]` | 위반을 무시할 네트워크 패턴 |
+| 속성        | 타입         | 기본값  | 설명               |
+|:----------|:-----------|:-----|:-----------------|
+| `file`    | `string[]` | `[]` | 위반을 무시할 파일 경로 패턴 |
+| `network` | `string[]` | `[]` | 위반을 무시할 네트워크 패턴  |
 
 ### 샌드박스되지 않은 명령에 대한 권한 폴백
 
-`allowUnsandboxedCommands`가 활성화되면, 모델은 도구 입력에서 `dangerouslyDisableSandbox: true`를 설정하여 샌드박스 외부에서 명령을 실행하도록 요청할 수 있습니다. 이러한 요청은 기존 권한 시스템으로 폴백되므로 `canUseTool` 핸들러가 호출되어 사용자 정의 권한 부여 로직을 구현할 수 있습니다.
+`allowUnsandboxedCommands`가 활성화되면, 모델은 도구 입력에서 `dangerouslyDisableSandbox: true`를 설정하여 샌드박스 외부에서 명령을 실행하도록 요청할 수 있습니다.
+이러한 요청은 기존 권한 시스템으로 폴백되므로 `canUseTool` 핸들러가 호출되어 사용자 정의 권한 부여 로직을 구현할 수 있습니다.
 
 
 > **`excludedCommands` vs `allowUnsandboxedCommands`:**
 > - `excludedCommands`: 항상 샌드박스를 자동으로 우회하는 명령의 정적 목록(예: `['docker']`). 모델은 이를 제어할 수 없습니다.
 > - `allowUnsandboxedCommands`: 모델이 도구 입력에서 `dangerouslyDisableSandbox: true`를 설정하여 런타임에 샌드박스되지 않은 실행을 요청할지 결정하도록 허용합니다.
-
 
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
@@ -2161,11 +2169,10 @@ const result = await query({
 - **허용 목록 구현**: 특정 명령만 샌드박스되지 않은 상태로 실행 허용
 - **승인 워크플로 추가**: 권한이 필요한 작업에 대해 명시적인 권한 부여 요구
 
-
 > `dangerouslyDisableSandbox: true`로 실행되는 명령은 전체 시스템 액세스 권한을 가집니다. `canUseTool` 핸들러가 이러한 요청을 신중하게 검증하도록 하세요.
 >
-> `permissionMode`가 `bypassPermissions`로 설정되고 `allowUnsandboxedCommands`가 활성화되면, 모델은 승인 프롬프트 없이 샌드박스 외부에서 자율적으로 명령을 실행할 수 있습니다. 이 조합은 모델이 샌드박스 격리를 자동으로 벗어날 수 있도록 효과적으로 허용합니다.
-
+> `permissionMode`가 `bypassPermissions`로 설정되고 `allowUnsandboxedCommands`가 활성화되면, 모델은 승인 프롬프트 없이 샌드박스 외부에서 자율적으로 명령을 실행할
+> 수 있습니다. 이 조합은 모델이 샌드박스 격리를 자동으로 벗어날 수 있도록 효과적으로 허용합니다.
 
 ## 참조
 

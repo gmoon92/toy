@@ -6,19 +6,19 @@ Claude Code TypeScript 및 Python SDK를 Claude Agent SDK로 마이그레이션�
 
 ## 개요
 
-Claude Code SDK가 **Claude Agent SDK**로 이름이 변경되었으며 문서가 재구성되었습니다. 이 변경은 단순한 코딩 작업을 넘어 AI 에이전트를 구축하기 위한 SDK의 광범위한 기능을 반영합니다.
+Claude Code SDK가 **Claude Agent SDK**로 이름이 변경되었으며 문서가 재구성되었습니다. 
+이 변경은 단순한 코딩 작업을 넘어 AI 에이전트를 구축하기 위한 SDK의 광범위한 기능을 반영합니다.
 
 ## 변경 사항
 
-| 항목                   | 이전                         | 변경 후                              |
-| :----------------------- | :-------------------------- | :------------------------------- |
+| 항목                 | 이전                          | 변경 후                             |
+|:-------------------|:----------------------------|:---------------------------------|
 | **패키지 이름 (TS/JS)** | `@anthropic-ai/claude-code` | `@anthropic-ai/claude-agent-sdk` |
-| **Python 패키지**       | `claude-code-sdk`           | `claude-agent-sdk`               |
-| **문서 위치** | Claude Code 문서 | API 가이드 → Agent SDK 섹션 |
+| **Python 패키지**     | `claude-code-sdk`           | `claude-agent-sdk`               |
+| **문서 위치**          | Claude Code 문서              | API 가이드 → Agent SDK 섹션           |
 
-
-> **문서 변경 사항:** Agent SDK 문서가 Claude Code 문서에서 API 가이드의 전용 [Agent SDK](../05-agent-sdk/01-overview.md) 섹션으로 이동되었습니다. Claude Code 문서는 이제 CLI 도구 및 자동화 기능에 중점을 둡니다.
-
+> **문서 변경 사항:** Agent SDK 문서가 Claude Code 문서에서 API 가이드의 전용 [Agent SDK](../05-agent-sdk/01-overview.md) 섹션으로 이동되었습니다.
+> Claude Code 문서는 이제 CLI 도구 및 자동화 기능에 중점을 둡니다.
 
 ## 마이그레이션 단계
 
@@ -126,9 +126,8 @@ options = ClaudeAgentOptions(
 
 ## 주요 변경 사항
 
-
-> 격리 및 명시적 구성을 개선하기 위해 Claude Agent SDK v0.1.0은 Claude Code SDK에서 마이그레이션하는 사용자에게 주요 변경 사항을 도입합니다. 마이그레이션하기 전에 이 섹션을 주의 깊게 검토하세요.
-
+> 격리 및 명시적 구성을 개선하기 위해 Claude Agent SDK v0.1.0은 Claude Code SDK에서 마이그레이션하는 사용자에게 주요 변경 사항을 도입합니다. 마이그레이션하기 전에 이 섹션을 주의
+> 깊게 검토하세요.
 
 ### Python: ClaudeCodeOptions가 ClaudeAgentOptions로 이름 변경
 
@@ -241,18 +240,19 @@ async for message in query(
 </details>
 
 **변경 이유:** SDK 애플리케이션이 로컬 파일시스템 구성과 독립적으로 예측 가능한 동작을 보장합니다. 이는 특히 다음과 같은 경우에 중요합니다:
+
 - **CI/CD 환경** - 로컬 커스터마이징 없이 일관된 동작
 - **배포된 애플리케이션** - 파일시스템 설정에 대한 의존성 없음
 - **테스트** - 격리된 테스트 환경
 - **멀티 테넌트 시스템** - 사용자 간 설정 누출 방지
 
-
-> **하위 호환성:** 애플리케이션이 파일시스템 설정(커스텀 슬래시 명령, CLAUDE.md 지시사항 등)에 의존했다면 옵션에 `settingSources: ['user', 'project', 'local']`을 추가하세요.
-
+> **하위 호환성:** 애플리케이션이 파일시스템 설정(커스텀 슬래시 명령, CLAUDE.md 지시사항 등)에 의존했다면 옵션에 `settingSources: ['user', 'project', 'local']`을
+> 추가하세요.
 
 ## 이름 변경 이유
 
-Claude Code SDK는 원래 코딩 작업을 위해 설계되었지만, 모든 유형의 AI 에이전트를 구축하기 위한 강력한 프레임워크로 발전했습니다. 새로운 이름 "Claude Agent SDK"는 다음과 같은 기능을 더 잘 반영합니다:
+Claude Code SDK는 원래 코딩 작업을 위해 설계되었지만, 모든 유형의 AI 에이전트를 구축하기 위한 강력한 프레임워크로 발전했습니다. 
+새로운 이름 "Claude Agent SDK"는 다음과 같은 기능을 더 잘 반영합니다:
 
 - 비즈니스 에이전트 구축(법률 보조, 재무 고문, 고객 지원)
 - 전문 코딩 에이전트 생성(SRE 봇, 보안 검토자, 코드 리뷰 에이전트)
@@ -279,4 +279,5 @@ Claude Code SDK는 원래 코딩 작업을 위해 설계되었지만, 모든 유
 - [Agent SDK 개요](../05-agent-sdk/01-overview.md)에서 사용 가능한 기능 살펴보기
 - [TypeScript SDK 레퍼런스](../05-agent-sdk/03-typescript.md)에서 상세한 API 문서 확인
 - [Python SDK 레퍼런스](../05-agent-sdk/05-python.md)에서 Python 관련 문서 확인
-- [커스텀 도구](https://platform.claude.com/docs/en/agent-sdk/custom-tools) 및 [MCP 통합](https://platform.claude.com/docs/en/agent-sdk/mcp)에 대해 학습
+- [커스텀 도구](https://platform.claude.com/docs/en/agent-sdk/custom-tools)
+  및 [MCP 통합](https://platform.claude.com/docs/en/agent-sdk/mcp)에 대해 학습
