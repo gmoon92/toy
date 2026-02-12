@@ -4,48 +4,39 @@ API를 통해 에이전트 스킬을 사용하여 Claude의 기능을 확장하�
 
 ---
 
-에이전트 스킬(Agent Skills)은 명령, 스크립트, 리소스로 구성된 폴더를 통해 Claude의 기능을 확장합니다. 이 가이드에서는 Claude API를 사용하여 사전 구축된 스킬과 사용자 정의 스킬을 모두 사용하는 방법을 보여줍니다.
-
+에이전트 스킬(Agent Skills)은 명령, 스크립트, 리소스로 구성된 폴더를 통해 Claude의 기능을 확장합니다. 
+이 가이드에서는 Claude API를 사용하여 사전 구축된 스킬과 사용자 정의 스킬을 모두 사용하는 방법을 보여줍니다.
 
 > 요청/응답 스키마 및 모든 매개변수를 포함한 전체 API 참조는 다음을 참조하세요:
 > - [스킬 관리 API 참조](https://platform.claude.com/docs/en/api/skills/list-skills) - 스킬의 CRUD 작업
 > - [스킬 버전 API 참조](https://platform.claude.com/docs/en/api/skills/list-skill-versions) - 버전 관리
 
-
-## 빠른 링크
-
-
-  
-> 첫 번째 스킬 만들기
-
-  
-> 스킬 작성 모범 사례
-
-
-
 ## 개요
 
+> 에이전트 스킬의 아키텍처와 실제 적용 사례에 대한 심층 분석은 엔지니어링 블로그를 읽어보세요 
+> [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills).
 
-> 에이전트 스킬의 아키텍처와 실제 적용 사례에 대한 심층 분석은 엔지니어링 블로그를 읽어보세요: [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills).
-
-
-스킬은 코드 실행 도구를 통해 Messages API와 통합됩니다. Anthropic에서 관리하는 사전 구축된 스킬을 사용하든 업로드한 사용자 정의 스킬을 사용하든 통합 형태는 동일합니다. 둘 다 코드 실행이 필요하며 동일한 `container` 구조를 사용합니다.
+스킬은 코드 실행 도구를 통해 Messages API와 통합됩니다. 
+Anthropic에서 관리하는 사전 구축된 스킬을 사용하든 업로드한 사용자 정의 스킬을 사용하든 통합 형태는 동일합니다. 
+둘 다 코드 실행이 필요하며 동일한 `container` 구조를 사용합니다.
 
 ### 스킬 사용하기
 
-스킬은 출처에 관계없이 Messages API에서 동일하게 통합됩니다. `container` 매개변수에 `skill_id`, `type`, 선택적으로 `version`을 지정하면 코드 실행 환경에서 실행됩니다.
+스킬은 출처에 관계없이 Messages API에서 동일하게 통합됩니다. 
+`container` 매개변수에 `skill_id`, `type`, 선택적으로 `version`을 지정하면 코드 실행 환경에서 실행됩니다.
 
 **두 가지 출처에서 스킬을 사용할 수 있습니다:**
 
-| 구분 | Anthropic 스킬 | 사용자 정의 스킬 |
-|--------|------------------|---------------|
-| **Type 값** | `anthropic` | `custom` |
-| **스킬 ID** | 짧은 이름: `pptx`, `xlsx`, `docx`, `pdf` | 생성된 ID: `skill_01AbCdEfGhIjKlMnOpQrStUv` |
-| **버전 형식** | 날짜 기반: `20251013` 또는 `latest` | Epoch 타임스탬프: `1759178010641129` 또는 `latest` |
-| **관리** | Anthropic에서 사전 구축 및 유지 관리 | [Skills API](https://platform.claude.com/docs/en/api/skills/create-skill)를 통해 업로드 및 관리 |
-| **가용성** | 모든 사용자에게 제공 | 워크스페이스 내 비공개 |
+| 구분         | Anthropic 스킬                         | 사용자 정의 스킬                                                                              |
+|------------|--------------------------------------|----------------------------------------------------------------------------------------|
+| **Type 값** | `anthropic`                          | `custom`                                                                               |
+| **스킬 ID**  | 짧은 이름: `pptx`, `xlsx`, `docx`, `pdf` | 생성된 ID: `skill_01AbCdEfGhIjKlMnOpQrStUv`                                               |
+| **버전 형식**  | 날짜 기반: `20251013` 또는 `latest`        | Epoch 타임스탬프: `1759178010641129` 또는 `latest`                                            |
+| **관리**     | Anthropic에서 사전 구축 및 유지 관리            | [Skills API](https://platform.claude.com/docs/en/api/skills/create-skill)를 통해 업로드 및 관리 |
+| **가용성**    | 모든 사용자에게 제공                          | 워크스페이스 내 비공개                                                                           |
 
-두 스킬 출처 모두 [List Skills 엔드포인트](https://platform.claude.com/docs/en/api/skills/list-skills)에서 반환됩니다(`source` 매개변수를 사용하여 필터링). 통합 형태와 실행 환경은 동일하며, 유일한 차이점은 스킬의 출처와 관리 방법입니다.
+두 스킬 출처 모두 [List Skills 엔드포인트](https://platform.claude.com/docs/en/api/skills/list-skills)에서 반환됩니다(`source` 매개변수를 사용하여 필터링). 
+통합 형태와 실행 환경은 동일하며, 유일한 차이점은 스킬의 출처와 관리 방법입니다.
 
 ### 사전 요구 사항
 
@@ -53,9 +44,9 @@ API를 통해 에이전트 스킬을 사용하여 Claude의 기능을 확장하�
 
 1. **Anthropic API 키** - [콘솔](/settings/keys)에서 발급
 2. **베타 헤더**:
-   - `code-execution-2025-08-25` - 코드 실행 활성화 (스킬에 필수)
-   - `skills-2025-10-02` - Skills API 활성화
-   - `files-api-2025-04-14` - 컨테이너로/에서 파일 업로드/다운로드용
+    - `code-execution-2025-08-25` - 코드 실행 활성화 (스킬에 필수)
+    - `skills-2025-10-02` - Skills API 활성화
+    - `files-api-2025-04-14` - 컨테이너로/에서 파일 업로드/다운로드용
 3. **코드 실행 도구** - 요청에서 활성화
 
 ---
@@ -64,9 +55,11 @@ API를 통해 에이전트 스킬을 사용하여 Claude의 기능을 확장하�
 
 ### Container 매개변수
 
-스킬은 Messages API의 `container` 매개변수를 사용하여 지정합니다. 요청당 최대 8개의 스킬을 포함할 수 있습니다.
+스킬은 Messages API의 `container` 매개변수를 사용하여 지정합니다. 
+요청당 최대 8개의 스킬을 포함할 수 있습니다.
 
-구조는 Anthropic 스킬과 사용자 정의 스킬 모두 동일합니다. 필수 `type`과 `skill_id`를 지정하고, 선택적으로 `version`을 포함하여 특정 버전으로 고정할 수 있습니다:
+구조는 Anthropic 스킬과 사용자 정의 스킬 모두 동일합니다. 
+필수 `type`과 `skill_id`를 지정하고, 선택적으로 `version`을 포함하여 특정 버전으로 고정할 수 있습니다:
 
 <details>
 <summary>REST API 예시</summary>
@@ -104,9 +97,11 @@ curl https://api.anthropic.com/v1/messages \
 
 ### 생성된 파일 다운로드하기
 
-스킬이 문서(Excel, PowerPoint, PDF, Word)를 생성할 때, 응답에 `file_id` 속성을 반환합니다. 이러한 파일을 다운로드하려면 Files API를 사용해야 합니다.
+스킬이 문서(Excel, PowerPoint, PDF, Word)를 생성할 때, 응답에 `file_id` 속성을 반환합니다. 
+이러한 파일을 다운로드하려면 Files API를 사용해야 합니다.
 
 **작동 방식:**
+
 1. 스킬이 코드 실행 중에 파일을 생성합니다
 2. 응답에 생성된 각 파일의 `file_id`가 포함됩니다
 3. Files API를 사용하여 실제 파일 콘텐츠를 다운로드합니다
@@ -192,7 +187,6 @@ curl -X DELETE "https://api.anthropic.com/v1/files/$FILE_ID" \
 
 
 > Files API에 대한 자세한 내용은 [Files API 문서](https://platform.claude.com/docs/en/api/files-content)를 참조하세요.
-
 
 ### 다중 턴 대화
 
@@ -311,9 +305,8 @@ done
 
 </details>
 
-
-> 응답에 `pause_turn` 중지 이유가 포함될 수 있으며, 이는 API가 장기 실행 스킬 작업을 일시 중지했음을 나타냅니다. Claude가 턴을 계속하도록 응답을 그대로 후속 요청에 제공하거나, 대화를 중단하고 추가 안내를 제공하려는 경우 콘텐츠를 수정할 수 있습니다.
-
+> 응답에 `pause_turn` 중지 이유가 포함될 수 있으며, 이는 API가 장기 실행 스킬 작업을 일시 중지했음을 나타냅니다. Claude가 턴을 계속하도록 응답을 그대로 후속 요청에 제공하거나, 대화를
+> 중단하고 추가 안내를 제공하려는 경우 콘텐츠를 수정할 수 있습니다.
 
 ### 여러 스킬 사용하기
 
@@ -387,12 +380,13 @@ curl -X POST "https://api.anthropic.com/v1/skills" \
 </details>
 
 **요구 사항:**
+
 - 최상위 수준에 SKILL.md 파일이 포함되어야 합니다
 - 모든 파일은 경로에 공통 루트 디렉토리를 지정해야 합니다
 - 총 업로드 크기는 8MB 미만이어야 합니다
 - YAML frontmatter 요구 사항:
-  - `name`: 최대 64자, 소문자/숫자/하이픈만 사용, XML 태그 없음, 예약어("anthropic", "claude") 사용 불가
-  - `description`: 최대 1024자, 비어있지 않음, XML 태그 없음
+    - `name`: 최대 64자, 소문자/숫자/하이픈만 사용, XML 태그 없음, 예약어("anthropic", "claude") 사용 불가
+    - `description`: 최대 1024자, 비어있지 않음, XML 태그 없음
 
 전체 요청/응답 스키마는 [Create Skill API 참조](https://platform.claude.com/docs/en/api/skills/create-skill)를 참조하세요.
 
@@ -461,11 +455,13 @@ curl -X DELETE "https://api.anthropic.com/v1/skills/skill_01AbCdEfGhIjKlMnOpQrSt
 스킬은 안전하게 업데이트를 관리하기 위한 버전 관리를 지원합니다:
 
 **Anthropic 관리 스킬**:
+
 - 날짜 형식의 버전 사용: `20251013`
 - 업데이트가 이루어질 때마다 새 버전이 릴리스됨
 - 안정성을 위해 정확한 버전 지정
 
 **사용자 정의 스킬**:
+
 - 자동 생성된 epoch 타임스탬프: `1759178010641129`
 - 항상 최신 버전을 가져오려면 `"latest"` 사용
 - 스킬 파일을 업데이트할 때 새 버전 생성
@@ -638,14 +634,17 @@ curl https://api.anthropic.com/v1/messages \
 ## 제한 사항 및 제약 조건
 
 ### 요청 제한
+
 - **요청당 최대 스킬 수**: 8개
 - **최대 스킬 업로드 크기**: 8MB (모든 파일 합계)
 - **YAML frontmatter 요구 사항**:
-  - `name`: 최대 64자, 소문자/숫자/하이픈만 사용, XML 태그 없음, 예약어 사용 불가
-  - `description`: 최대 1024자, 비어있지 않음, XML 태그 없음
+    - `name`: 최대 64자, 소문자/숫자/하이픈만 사용, XML 태그 없음, 예약어 사용 불가
+    - `description`: 최대 1024자, 비어있지 않음, XML 태그 없음
 
 ### 환경 제약 사항
+
 스킬은 다음과 같은 제한 사항이 있는 코드 실행 컨테이너에서 실행됩니다:
+
 - **네트워크 액세스 없음** - 외부 API 호출 불가
 - **런타임 패키지 설치 없음** - 사전 설치된 패키지만 사용 가능
 - **격리된 환경** - 각 요청마다 새로운 컨테이너 제공
@@ -671,6 +670,7 @@ curl https://api.anthropic.com/v1/messages \
 ### 버전 관리 전략
 
 **프로덕션 환경:**
+
 ```python
 # 안정성을 위해 특정 버전으로 고정
 container={
@@ -683,6 +683,7 @@ container={
 ```
 
 **개발 환경:**
+
 ```python
 # 활성 개발을 위해 latest 사용
 container={
@@ -776,17 +777,3 @@ except anthropic.BadRequestError as e:
 </details>
 
 ---
-
-## 다음 단계
-
-
-  
-> 모든 엔드포인트가 포함된 전체 API 참조
-
-  
-> 효과적인 스킬 작성을 위한 모범 사례
-
-  
-> 코드 실행 환경에 대해 알아보기
-
-
