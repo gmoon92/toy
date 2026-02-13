@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="5">
+    <properties>
+        <Property name="CONSOLE_LOG_PATTERN">%style{%d{HH:mm:ss.SSS}}{faint} %highlight{[%-5p]}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black bold, DEBUG=green bold, TRACE=faint} %c{length=30}.%M{-20}() %style{[%t]}{blue} %style{:}{red} %m%n</Property>
+    </properties>
+
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout disableAnsi="false" pattern="${CONSOLE_LOG_PATTERN}" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.gmoon.springlogging" level="info"/>
+        <Root level="error">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -2,7 +2,6 @@
 
 ---
 
-
 > 이러한 팁은 모든 Claude 모델에 광범위하게 적용되지만, Extended Thinking 모델에 특화된 프롬프팅
 > 팁은 [여기](../08-prompt-engineering/13-extended-thinking-tips.md)에서 찾을 수 있습니다.
 
@@ -17,9 +16,7 @@
 그렇지 않다면, 먼저 이를 확립하는 데 시간을 투자할 것을 강력히 권장합니다. 팁과 가이드는 [성공 기준 정의](../09-test-evaluate/01-define-success.md)
 및 [강력한 실증적 평가 생성](../09-test-evaluate/02-develop-tests.md)을 참조하세요.
 
-
 > 초안 프롬프트가 없으신가요? Claude Console에서 프롬프트 생성기를 사용해보세요!
-
 
 ***
 

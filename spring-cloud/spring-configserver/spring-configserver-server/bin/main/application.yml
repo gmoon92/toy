@@ -1,0 +1,19 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+  profiles:
+    active: native
+
+  cloud:
+    config:
+      server:
+        native:
+          # 개발 환경: Gradle 빌드 시점에 rootDir 변수로 치환됨 (processResources)
+          # 프로젝트 루트에서 실행: ./gradlew :spring-cloud:spring-configserver:spring-configserver-server:bootRun
+          search-locations: file:${projectDir}/src/main/resources/config-repo
+          # 운영 환경: classpath 또는 Git 저장소 사용
+          # search-locations: classpath:/config-repo

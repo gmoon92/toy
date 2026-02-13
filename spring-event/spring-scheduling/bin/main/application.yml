@@ -1,0 +1,10 @@
+schedule:
+#  type: default
+  type: dynamic
+  gmoon:
+    fixedDelay:
+      ms: 100
+    fixedRate:
+      ms: 100
+    cron:
+      expression: "* * * * * *"

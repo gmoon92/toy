@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- ref https://djunnni.gitbook.io/springboot/2019-09-07 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>rooms index</title>
+</head>
+<body>
+<div>
+    <h2>Rooms</h2>
+</div>
+<div>
+    <table>
+        <tr>
+            <td>이름</td>
+            <td>가격</td>
+            <td></td>
+        </tr>
+        <tr th:each="item : ${rooms}">
+            <td>
+                <a th:href="@{/room/{name}(name=${item.name})}" th:text="${item.name}"/>
+            </td>
+            <td th:text="${item.price}"></td>
+            <td>
+                <button th:onclick="onDelete([[${item.name}]])" th:text="삭제"/>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+
+<script th:inline="javascript">
+    function onDelete(name) {
+        window.fetch('/room/' + name, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                console.log(response);
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Not deleted room ' + name);
+                }
+            })
+            .then(data => {
+                console.log('data:', data);
+            })
+            .catch(error => {
+                console.error('데이터를 가져오는 중 에러 발생:', error);
+            })
+        ;
+    }
+</script>
+</html>

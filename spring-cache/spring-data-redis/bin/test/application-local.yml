@@ -1,0 +1,14 @@
+service:
+  redis:
+#    embedded-enabled: true
+
+spring:
+  cache:
+    type: REDIS
+
+#  redis:
+#    port: 4000
+
+logging:
+  level:
+    "[com.gmoon]": DEBUG

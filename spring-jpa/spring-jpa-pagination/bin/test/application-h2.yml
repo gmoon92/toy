@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: root
+    password: root
+
+  # JPA Persistence
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    show-sql: &show-sql true
+    generate-ddl: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        "[hbm2ddl.auto]": none
+        "[jdbc.time_zone]": UTC
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+  #        highlight_sql: *show-sql
+#        use_sql_comments: *show-sql
+
+  # Sql
+  # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+      encoding: UTF-8
+      platform: h2
+
+#      platform 치환 안되서 에러 발생하여 주석 처리. 추후 확인.
+#      schema-locations: classpath*:db/schema-${spring.sql.init.platform}.sql
+#      data-locations: classpath*:db/data-${spring.sql.init.platform}.sql
+
+logging:
+  level:
+    "[org.hibernate.SQL]": OFF
+    "[org.hibernate.type.descriptor.sql]": OFF
+    "[MySQL]": OFF

@@ -1,0 +1,22 @@
+google:
+  spreadsheet:
+    id:
+    range: A2:F
+    sheet-names:
+      - ApplicationResources
+      - BrandSiteResources
+      - CommonCodeResources
+      - OptionCodeResources
+    sheet-heads:
+      - key
+      - ko
+      - en
+      - ja
+      - zh_CN
+      - zh_TW
+    data-set:
+      id :
+
+logging:
+  level:
+    "[com.gmoon]": trace

@@ -26,7 +26,7 @@
 | **프로젝트명** | Claude Code 에이전트/스킬 모니터링 및 자동 개선 시스템           |
 | **목적**    | 사용자 학습 자동화, 에이전트/스킬 사용 이력 추적, 문서 품질 자동 평가 및 개선 |
 | **구현 방식** | Claude Code 훅(Hooks) 기반 자동화                    |
-| **저장 위치** | 프로젝트별 `.claude/hooks/monitoring/.data/` 디렉토리   |
+| **저장 위치** | 프로젝트별 `.claude/hooks/monitoring/logs/` 디렉토리   |
 
 ### 1.2 배경
 

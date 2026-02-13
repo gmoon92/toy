@@ -11,13 +11,13 @@ Claude Code CLI를 통해 사용자 학습을 자동화하고, 에이전트/에�
 
 ### 2. 사용 이력 추적
 - 어떤 에이전트와 스킬이 사용되었는지 세션별로 기록
-- 누적 사용 통계 제공 (`.claude/monitoring/usage-stats.json`)
+- 누적 사용 통계 제공 (`.claude/hooks/monitoring/logs/usage-stats.json`)
 - 에이전트별 성공률, 평균 실행 시간 등 메트릭 수집
 
 ### 3. 자동 개선 제안
 - 에이전트/스킬 문서를 자동으로 평가
 - 문서 길이, 예시 포함 여부, 워크플로우 정의 등 체크
-- 개선이 필요한 항목을 마크다운 파일로 생성 (`.claude/monitoring/improvement-suggestions/pending/`)
+- 개선이 필요한 항목을 마크다운 파일로 생성 (`.claude/hooks/monitoring/logs/improvement-suggestions/pending/`)
 
 ## 설치 방법
 
@@ -77,7 +77,7 @@ cat .claude/hooks/monitoring/settings.json >> ~/.claude/settings.json
 
 ## 데이터 구조
 
-### 세션 로그 (`.claude/monitoring/sessions/{session-id}.jsonl`)
+### 세션 로그 (`.claude/hooks/monitoring/logs/sessions/{session-id}.jsonl`)
 
 ```jsonl
 {"timestamp": "2026-02-13T10:00:00Z", "event": "task_invoke", "subagent_type": "Explore", "task_description": "Find API endpoints"}
@@ -85,7 +85,7 @@ cat .claude/hooks/monitoring/settings.json >> ~/.claude/settings.json
 {"timestamp": "2026-02-13T10:10:00Z", "event": "skill_invoke", "skill_name": "commit"}
 ```
 
-### 사용 통계 (`.claude/monitoring/usage-stats.json`)
+### 사용 통계 (`.claude/hooks/monitoring/logs/usage-stats.json`)
 
 ```json
 {
@@ -109,7 +109,7 @@ cat .claude/hooks/monitoring/settings.json >> ~/.claude/settings.json
 }
 ```
 
-### 개선 제안 (`.claude/monitoring/improvement-suggestions/pending/{id}.md`)
+### 개선 제안 (`.claude/hooks/monitoring/logs/improvement-suggestions/pending/{id}.md`)
 
 ```markdown
 ---

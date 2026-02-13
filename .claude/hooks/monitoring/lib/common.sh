@@ -2,7 +2,8 @@
 # common.sh - 모니터링 시스템 공통 유틸리티
 
 # 환경 변수 설정
-MONITORING_DIR="${CLAUDE_PROJECT_DIR}/.claude/monitoring"
+# 데이터 저장소: hooks/monitoring/logs/ (세션 로그, 통계, 개선 제안 저장)
+MONITORING_DIR="${CLAUDE_PROJECT_DIR}/.claude/hooks/monitoring/logs"
 HOOKS_LIB_DIR="${CLAUDE_PROJECT_DIR}/.claude/hooks/monitoring/lib"
 
 # 로그 레벨 정의

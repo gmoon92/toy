@@ -1,0 +1,11 @@
+spring:
+  security:
+    user:
+      name: admin
+      password: 123
+      roles: ADMIN
+
+logging:
+  level:
+    root: info
+    "[org.springframework.security]": debug

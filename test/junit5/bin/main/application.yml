@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    show-sql: &show-sql true
+    generate-ddl: true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create-drop
+        "[id.new_generator_mappings]": false
+        "[jdbc.time_zone]": UTC
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        highlight_sql: *show-sql
+#        use_sql_comments: *show-sql
+
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": OFF

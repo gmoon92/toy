@@ -1,0 +1,7 @@
+# ApplicationContextInitializer
+#org.springframework.context.ApplicationContextInitializer=\
+#com.gmoon.core.config.DecryptEnvironmentInitializer
+
+# EnvironmentPostProcessors
+#org.springframework.boot.env.EnvironmentPostProcessor=\
+#com.gmoon.core.config.CustomEnvironmentPostProcessor

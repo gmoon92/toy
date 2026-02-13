@@ -1,0 +1,11 @@
+service:
+  storage-path: @project.basedir@/storage
+
+firebase:
+  enabled: 0
+  credentials: file:${service.storage-path}/service-account.json
+
+logging:
+  level:
+    "[com.google.firebase]": trace
+    "[com.google.api]": trace

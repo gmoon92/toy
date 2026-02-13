@@ -1,26 +1,66 @@
 # Step 1: Initial Analysis
 
-Collect pure git diff data (NO caching, NO inference).
+Collect pure git diff data with memory-based path management.
 
 ---
 
 ## Overview
 
 **Phase 1 executes a single script:**
-- `collect_git_diff.sh` - Collects pure git data
+- `collect_git_diff.sh` - Collects pure git data with memory-based pre-scan
 
 **What it does:**
-1. Auto-stages modified files (`git add -u`)
-2. Collects git metadata (branch, timestamp)
-3. Extracts file changes (path, additions, deletions)
-4. Calculates totals
-5. Outputs JSON to stdout
+1. **사전 스캔**: Scan all changed files and save to memory
+2. **경로 해석**: Match user input with memory-based file list
+3. **정확한 파일 지정**: Stage only matching files (tracked only)
+4. **Collects git metadata** (branch, timestamp)
+5. **Extracts file changes** (path, additions, deletions)
+6. **Calculates totals**
+7. **Outputs JSON to stdout**
 
 **What it does NOT do:**
 - NO type detection (Claude will infer)
 - NO scope detection (Claude will infer)
-- NO caching (fresh collection every time)
-- NO metadata files (Claude creates in-memory)
+- NO caching across sessions (fresh scan every time)
+- NO staging of ignored/untracked files (.gitignore respected)
+
+---
+
+## Memory-Based Pre-Scan System
+
+### Concept
+The skill uses a memory-based file path management system to ensure precise file selection:
+
+```
+/commit ai/docs/claude/docs/07-claude-on-3rd-party
+    ↓
+1. 사전 스캔: git status로 전체 변경 파일 목록 수집
+2. 메모리 저장: commit-skill-paths.md에 파일 목록 저장
+3. 경로 매칭: 사용자 입력과 메모리의 파일 목록 매칭
+4. 정확한 파일 지정: git add <매칭된 파일1> <매칭된 파일2> ...
+5. 커밋: git commit -m "..." (path 인자 없이, staging된 파일만)
+```
+
+### Memory File Structure
+
+**Location**: `~/.claude/projects/{project}/memory/commit-skill-paths.md`
+
+```markdown
+# Commit Skill - 변경 파일 목록
+
+## 현재 변경사항 (2026-02-13 14:30:00)
+
+### Modified Files (Unstaged)
+- ai/docs/claude/docs/07-claude-on-3rd-party/01-amazon-bedrock.md
+- ai/docs/claude/docs/07-claude-on-3rd-party/02-microsoft-foundry.md
+- .claude/skills/commit/scripts/analysis/collect_git_diff.sh
+
+### Staged Files
+- (없음)
+
+### Untracked Files
+- .claude/agents/codegen/
+```
 
 ---
 
@@ -29,7 +69,11 @@ Collect pure git diff data (NO caching, NO inference).
 **MANDATORY: Use pre-built script**
 
 ```bash
+# All modified files (default)
 EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh
+
+# Only specific path
+EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh <path>
 ```
 
 **Output: Pure git data as JSON**
@@ -37,6 +81,7 @@ EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh
 {
   "timestamp": "2026-02-10T01:25:06Z",
   "branch": "master",
+  "resolvedPath": "ai/docs/claude/docs/07-claude-on-3rd-party",
   "summary": {
     "totalFiles": 15,
     "totalAdditions": 762,
@@ -54,19 +99,58 @@ EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh
 ```
 
 **Script behavior:**
-- ✅ Automatically runs `git add -u` (only modified files, not untracked)
-- ✅ Collects staged files and statistics
-- ✅ Exits with error if no changes
+- ✅ 사전 스캔: Saves all changed files to memory before staging
+- ✅ 정확한 파일 지정: Only stages files matching the specified path
+- ✅ Tracked files only: Respects .gitignore (no staging of ignored files)
+- ✅ Exits with error if no changes in specified path
 
-**Exit codes:**
-- `0`: Success (JSON output)
-- `1`: No changes to commit
+### Path Resolution with Memory
 
-**IMPORTANT:**
-- DO NOT reconstruct bash commands from documentation
-- DO NOT inline scripts into the execution flow
-- ALWAYS use the pre-built script via `EXECUTE_SCRIPT:` directive
-- Scripts are deterministic and consume 0 context tokens
+**5-Step Matching Process:**
+
+1. **정확한 파일 일치**: Exact file path match from memory
+2. **디렉토리 정확 일치**: Exact directory match
+3. **메모리 기반 부분 매칭**: Match by path components
+4. **전체 경로 부분 매칭**: Substring match in full paths
+5. **Fallback to traditional**: Legacy resolution as last resort
+
+**Example:**
+```bash
+# Input: "07-claude-on-3rd-party"
+# Memory matches:
+#   - ai/docs/claude/docs/07-claude-on-3rd-party/01-amazon-bedrock.md
+#   - ai/docs/claude/docs/07-claude-on-3rd-party/02-microsoft-foundry.md
+# Result: Only these 2 files are staged
+```
+
+### .gitignore Protection
+
+**Double-Check Mechanism:**
+
+```bash
+# Files are classified before staging:
+- TRACKED: Safe to commit (git ls-files confirms)
+- UNTRACKED: Requires user confirmation
+- IGNORED: Auto-excluded (git check-ignore)
+
+# Only TRACKED files are staged automatically
+```
+
+**Warnings:**
+- `WARN:UNTRACKED_FILES:file1 file2` - Untracked files detected
+- `INFO:IGNORED_FILES:file1 file2` - Ignored files auto-excluded
+
+### Duplicate Matching Detection
+
+When multiple paths match the input:
+```
+WARN: 여러 경로가 매칭됩니다. 첫 번째 항목을 사용합니다.
+```
+
+The script will:
+1. List all matching paths to stderr
+2. Use the first match for staging
+3. Continue with warning (does not fail)
 
 ---
 
@@ -102,34 +186,38 @@ After collecting git data, Claude analyzes in real-time:
 
 ---
 
-## No Metadata Files
+## Memory Management
 
-**Previous approach (removed):**
-- Generated `.claude/temp/commit-execution-{timestamp}.json`
-- Stored pre-computed analysis
-- Required cleanup
+**Memory file location:**
+```
+~/.claude/projects/{project-name}/memory/commit-skill-paths.md
+```
 
-**Current approach (simplified):**
-- Git data → Claude analyzes → User interacts
-- No intermediate files
-- Fresh analysis every time
-- Simpler workflow
+**Characteristics:**
+- Fresh scan on every execution
+- No persistence across commit skill runs
+- Used only for precise path matching during current run
+- Automatically cleaned up (overwritten each run)
+
+**Why this approach:**
+- Prevents accidental staging of wrong files
+- Enables precise partial commits
+- Maintains .gitignore protection
+- No complex caching logic needed
 
 ---
 
 ## Token Efficiency
 
-**Old approach (with caching):**
-- First run: Heavy (analysis + metadata)
-- Retry: Light (cache reuse, 95% savings)
-
-**New approach (no caching):**
-- Every run: Moderate (fresh analysis)
-- Trade-off: Always current context, simpler system
+**Memory-based approach:**
+- Scan: O(n) where n = number of changed files
+- Matching: O(n) with early exit on exact match
+- Storage: File-based (0 context tokens)
+- Deterministic and predictable
 
 **Why this is OK:**
-- Commit happens once per changeset (rarely retried)
-- Fresh analysis ensures latest context
-- System simplicity > micro-optimization
+- File I/O is fast for typical change sets
+- Precise matching prevents costly mistakes
+- No context token overhead
 
 ---

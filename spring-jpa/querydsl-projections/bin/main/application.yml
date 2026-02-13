@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/querydsl_projections?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    username: root
+    password: 111111
+    hikari:
+      pool-name: gmoon-pool
+
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    generate-ddl: true
+    show-sql: &show-sql true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create
+        show-sql: *show-sql
+
+
+  sql:
+    init:
+      mode: always
+
+"[logging.level.MySQL]": OFF

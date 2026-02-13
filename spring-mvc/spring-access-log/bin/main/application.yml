@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: spring-access-log
+
+  security:
+    user:
+      name: admin
+      password: 123
+      roles: ADMIN
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: "JSESSIONID"

@@ -14,12 +14,14 @@
 
 1. **작업별 맞춤화**: 실제 작업 분포를 반영하는 평가를 설계하세요. 엣지 케이스도 반드시 고려해야 합니다!
     <details>
+
 <summary>엣지 케이스 예시</summary>
 
 - 관련 없거나 존재하지 않는 입력 데이터
-       - 지나치게 긴 입력 데이터 또는 사용자 입력
-       - [채팅 사용 사례] 부적절하거나, 유해하거나, 관련 없는 사용자 입력
-       - 사람조차 합의에 도달하기 어려운 모호한 테스트 케이스
+  - 지나치게 긴 입력 데이터 또는 사용자 입력
+  - [채팅 사용 사례] 부적절하거나, 유해하거나, 관련 없는 사용자 입력
+  - 사람조차 합의에 도달하기 어려운 모호한 테스트 케이스
+
 </details>
 2. **가능한 자동화**: 자동화된 채점이 가능하도록 질문을 구조화하세요 (예: 객관식, 문자열 매칭, 코드 기반 채점, LLM 기반 채점).
 3. **품질보다 양 우선**: 약간 낮은 신호의 자동화된 채점으로 더 많은 질문을 다루는 것이 고품질 수동 채점으로 적은 질문을 다루는 것보다 낫습니다.
@@ -62,12 +64,14 @@
     accuracy = sum(evaluate_exact_match(output, tweet['sentiment']) for output, tweet in zip(outputs, tweets)) / len(tweets)
     print(f"Sentiment Analysis Accuracy: {accuracy * 100}%")
     ```
+
 </details>
 
   <details>
 <summary>일관성 (FAQ 봇) - 코사인 유사도 평가</summary>
 
-**측정 내용**: 코사인 유사도는 두 벡터(이 경우 SBERT를 사용한 모델 출력의 문장 임베딩) 사이의 각도의 코사인을 계산하여 유사성을 측정합니다. 1에 가까운 값은 높은 유사성을 나타냅니다. 유사한 질문이 표현은 다르더라도 의미적으로 유사한 답변을 생성해야 하므로 일관성 평가에 이상적입니다.
+**측정 내용**: 코사인 유사도는 두 벡터(이 경우 SBERT를 사용한 모델 출력의 문장 임베딩) 사이의 각도의 코사인을 계산하여 유사성을 측정합니다. 1에 가까운 값은 높은 유사성을 나타냅니다. 유사한 질문이
+표현은 다르더라도 의미적으로 유사한 답변을 생성해야 하므로 일관성 평가에 이상적입니다.
 
     **평가 테스트 케이스 예시**: 각각 몇 가지 바꿔 말한 버전이 있는 50개의 그룹.
     ```python
@@ -106,12 +110,14 @@
         similarity_score = evaluate_cosine_similarity(outputs)
         print(f"FAQ Consistency Score: {similarity_score * 100}%")
     ```
+
 </details>
 
   <details>
 <summary>관련성 및 일관성 (요약) - ROUGE-L 평가</summary>
 
-**측정 내용**: ROUGE-L(Recall-Oriented Understudy for Gisting Evaluation - Longest Common Subsequence)은 생성된 요약의 품질을 평가합니다. 후보 요약과 참조 요약 사이의 최장 공통 부분 수열의 길이를 측정합니다. 높은 ROUGE-L 점수는 생성된 요약이 일관된 순서로 핵심 정보를 포착했음을 나타냅니다.
+**측정 내용**: ROUGE-L(Recall-Oriented Understudy for Gisting Evaluation - Longest Common Subsequence)은 생성된 요약의 품질을 평가합니다.
+후보 요약과 참조 요약 사이의 최장 공통 부분 수열의 길이를 측정합니다. 높은 ROUGE-L 점수는 생성된 요약이 일관된 순서로 핵심 정보를 포착했음을 나타냅니다.
 
     **평가 테스트 케이스 예시**: 참조 요약이 포함된 200개의 기사.
     ```python
@@ -146,12 +152,14 @@
     relevance_scores = [evaluate_rouge_l(output, article['summary']) for output, article in zip(outputs, articles)]
     print(f"Average ROUGE-L F1 Score: {sum(relevance_scores) / len(relevance_scores)}")
     ```
+
 </details>
 
   <details>
 <summary>톤 및 스타일 (고객 서비스) - LLM 기반 리커트 척도</summary>
 
-**측정 내용**: LLM 기반 리커트 척도는 LLM을 사용하여 주관적인 태도나 인식을 판단하는 심리측정 척도입니다. 여기서는 1에서 5까지의 척도로 응답의 톤을 평가하는 데 사용됩니다. 전통적인 지표로는 정량화하기 어려운 공감, 전문성, 인내심과 같은 미묘한 측면을 평가하는 데 이상적입니다.
+**측정 내용**: LLM 기반 리커트 척도는 LLM을 사용하여 주관적인 태도나 인식을 판단하는 심리측정 척도입니다. 여기서는 1에서 5까지의 척도로 응답의 톤을 평가하는 데 사용됩니다. 전통적인 지표로는 정량화하기
+어려운 공감, 전문성, 인내심과 같은 미묘한 측면을 평가하는 데 이상적입니다.
 
     **평가 테스트 케이스 예시**: 목표 톤(공감적, 전문적, 간결한)이 포함된 100개의 고객 문의.
     ```python
@@ -191,12 +199,14 @@
     tone_scores = [evaluate_likert(output, inquiry['tone']) for output, inquiry in zip(outputs, inquiries)]
     print(f"Average Tone Score: {sum(tone_scores) / len(tone_scores)}")
     ```
+
 </details>
 
   <details>
 <summary>개인정보 보호 (의료 챗봇) - LLM 기반 이진 분류</summary>
 
-**측정 내용**: 이진 분류는 입력이 두 클래스 중 하나에 속하는지 판단합니다. 여기서는 응답에 PHI(개인 건강 정보)가 포함되어 있는지 여부를 분류하는 데 사용됩니다. 이 방법은 맥락을 이해하고 규칙 기반 시스템이 놓칠 수 있는 미묘하거나 암시적인 형태의 PHI를 식별할 수 있습니다.
+**측정 내용**: 이진 분류는 입력이 두 클래스 중 하나에 속하는지 판단합니다. 여기서는 응답에 PHI(개인 건강 정보)가 포함되어 있는지 여부를 분류하는 데 사용됩니다. 이 방법은 맥락을 이해하고 규칙 기반
+시스템이 놓칠 수 있는 미묘하거나 암시적인 형태의 PHI를 식별할 수 있습니다.
 
     **평가 테스트 케이스 예시**: 일부 PHI가 포함된 500개의 시뮬레이션된 환자 질의.
     ```python
@@ -245,12 +255,14 @@
     privacy_scores = [evaluate_binary(output, query['contains_phi']) for output, query in zip(outputs, patient_queries)]
     print(f"Privacy Preservation Score: {sum(privacy_scores) / len(privacy_scores) * 100}%")
     ```
+
 </details>
 
   <details>
 <summary>컨텍스트 활용 (대화 도우미) - LLM 기반 서수 척도</summary>
 
-**측정 내용**: 리커트 척도와 유사하게 서수 척도는 고정된 순서형 척도(1-5)로 측정합니다. 모델이 대화 기록을 참조하고 구축하는 정도를 포착할 수 있기 때문에 컨텍스트 활용 평가에 완벽하며, 이는 일관되고 개인화된 상호작용의 핵심입니다.
+**측정 내용**: 리커트 척도와 유사하게 서수 척도는 고정된 순서형 척도(1-5)로 측정합니다. 모델이 대화 기록을 참조하고 구축하는 정도를 포착할 수 있기 때문에 컨텍스트 활용 평가에 완벽하며, 이는 일관되고
+개인화된 상호작용의 핵심입니다.
 
     **평가 테스트 케이스 예시**: 컨텍스트 종속적 질문이 있는 100개의 다중 턴 대화.
     ```python
@@ -305,6 +317,7 @@
     context_scores = [evaluate_ordinal(output, conversation) for output, conversation in zip(outputs, conversations)]
     print(f"Average Context Utilization Score: {sum(context_scores) / len(context_scores)}")
     ```
+
 </details>
 
 
@@ -321,19 +334,21 @@
 평가를 채점하는 데 사용할 방법을 결정할 때는 가장 빠르고 신뢰할 수 있으며 확장 가능한 방법을 선택하세요:
 
 1. **코드 기반 채점**: 가장 빠르고 신뢰할 수 있으며 매우 확장 가능하지만, 규칙 기반의 경직성이 덜한 복잡한 판단에는 뉘앙스가 부족합니다.
-   - 정확한 일치: `output == golden_answer`
-   - 문자열 매칭: `key_phrase in output`
+    - 정확한 일치: `output == golden_answer`
+    - 문자열 매칭: `key_phrase in output`
 
 2. **사람 채점**: 가장 유연하고 고품질이지만 느리고 비용이 많이 듭니다. 가능하면 피하세요.
 
 3. **LLM 기반 채점**: 빠르고 유연하며 확장 가능하고 복잡한 판단에 적합합니다. 먼저 신뢰성을 테스트한 다음 확장하세요.
 
 ### LLM 기반 채점 팁
+
 - **상세하고 명확한 루브릭 사용**: "답변은 항상 첫 번째 문장에서 'Acme Inc.'를 언급해야 합니다. 그렇지 않으면 답변은 자동으로 '부정확'으로 채점됩니다."
-    
+
 > 특정 사용 사례, 심지어 해당 사용 사례의 특정 성공 기준에는 전체적인 평가를 위해 여러 루브릭이 필요할 수 있습니다.
 
-- **경험적이거나 구체적으로**: 예를 들어, LLM이 'correct' 또는 'incorrect'만 출력하도록 하거나, 1-5의 척도로 판단하도록 지시하세요. 순수하게 정성적인 평가는 빠르게 대규모로 평가하기 어렵습니다.
+- **경험적이거나 구체적으로**: 예를 들어, LLM이 'correct' 또는 'incorrect'만 출력하도록 하거나, 1-5의 척도로 판단하도록 지시하세요. 순수하게 정성적인 평가는 빠르게 대규모로 평가하기
+  어렵습니다.
 - **추론 장려**: LLM에게 평가 점수를 결정하기 전에 먼저 생각하도록 요청한 다음 추론을 버리세요. 이는 특히 복잡한 판단이 필요한 작업에서 평가 성능을 높입니다.
 
 <details>
@@ -377,15 +392,14 @@ outputs = [get_completion(q["question"]) for q in eval_data]
 grades = [grade_completion(output, a["golden_answer"]) for output, a in zip(outputs, eval_data)]
 print(f"Score: {grades.count('correct') / len(grades) * 100}%")
 ```
+
 </details>
 
 ## 다음 단계
 
-
-  
 > 평가 점수를 극대화하는 프롬프트 작성 방법을 알아보세요.
 
-  
+
 > 사람, 코드, LLM 기반 채점 평가의 더 많은 코드 예시.
 
 

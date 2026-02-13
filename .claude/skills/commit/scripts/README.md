@@ -18,10 +18,12 @@ Simple, deterministic scripts for commit workflow.
 scripts/
 ├── analysis/           # Git data collection (Bash)
 │   └── collect_git_diff.sh
-├── validation/         # Message format validation (Python)
-│   └── validate_message.py
-└── execution/          # Commit execution (Bash)
-    └── commit.sh
+├── execution/          # Commit execution (Bash)
+│   └── commit.sh
+├── utils/              # Utility functions (Bash)
+│   └── resolve_path.sh
+└── validation/         # Message format validation (Python)
+    └── validate_message.py
 ```
 
 **Removed directories:**
@@ -33,34 +35,40 @@ scripts/
 
 ## analysis/collect_git_diff.sh
 
-**Purpose:** Collect pure git diff data (NO caching, NO inference)
+**Purpose:** Collect git diff data with memory-based path management
 
 **Usage:**
 ```bash
+# All modified files
 ./scripts/analysis/collect_git_diff.sh
+
+# Specific path only
+./scripts/analysis/collect_git_diff.sh <path>
 ```
 
 **Operations:**
-1. Auto-stage modified files (`git add -u`)
-2. Check for staged changes
-3. Collect git metadata (branch, timestamp)
-4. Extract file changes (path, additions, deletions)
-5. Calculate totals
-6. Output as JSON
+1. **사전 스캔**: Scan all changed files and save to memory (`~/.claude/projects/{project}/memory/commit-skill-paths.md`)
+2. **경로 해석**: Match user input with memory file list (exact → directory → partial matching)
+3. **안전한 staging**: Stage only tracked files matching the path (.gitignore respected)
+4. Collect git metadata (branch, timestamp)
+5. Extract file changes (path, additions, deletions)
+6. Calculate totals
+7. Output as JSON
 
 **Output:**
 ```json
 {
   "timestamp": "2026-02-10T01:25:06Z",
   "branch": "master",
+  "resolvedPath": "ai/docs/claude/docs/07-claude-on-3rd-party",
   "summary": {
-    "totalFiles": 15,
-    "totalAdditions": 762,
-    "totalDeletions": 629
+    "totalFiles": 3,
+    "totalAdditions": 150,
+    "totalDeletions": 80
   },
   "files": [
     {
-      "path": "ai/docs/claude/docs/02-capabilities/03-extended-thinking.md",
+      "path": "ai/docs/claude/docs/07-claude-on-3rd-party/01-amazon-bedrock.md",
       "status": "M",
       "additions": 50,
       "deletions": 30
@@ -72,8 +80,9 @@ scripts/
 **What it does NOT do:**
 - NO type detection (Claude infers from file paths/content)
 - NO scope detection (Claude infers from directory structure)
-- NO caching (fresh collection every time)
-- NO pre-analysis (pure git data only)
+- NO cross-session caching (fresh scan every time)
+- NO staging of ignored/untracked files (tracked only)
+- NO auto-staging in commit phase (precise control)
 
 ---
 
@@ -98,24 +107,80 @@ echo "feat(module): message" | python scripts/validation/validate_message.py
 
 ---
 
-## execution/commit.sh
+## utils/resolve_path.sh
 
-**Purpose:** Execute git commit
+**Purpose:** Memory-based path resolution utilities
 
 **Usage:**
 ```bash
-./scripts/execution/commit.sh "commit message here"
+# Direct execution
+./scripts/utils/resolve_path.sh scan [memory_file]
+./scripts/utils/resolve_path.sh resolve <input> [memory_file]
+./scripts/utils/resolve_path.sh classify <files>
+./scripts/utils/resolve_path.sh stage <files>
+./scripts/utils/resolve_path.sh match <input> [memory_file]
+
+# Source for functions
+source scripts/utils/resolve_path.sh
+scan_and_save_to_memory "$MEMORY_FILE"
+resolve_path_with_memory "$INPUT" "$MEMORY_FILE"
+```
+
+**Functions:**
+- `scan_and_save_to_memory()` - Scan git status and save to memory file
+- `resolve_path_with_memory()` - Resolve user input to actual path using memory
+- `classify_files()` - Classify files as TRACKED/UNTRACKED/IGNORED
+- `stage_files_safely()` - Stage only tracked files with warnings
+- `get_matching_files_from_memory()` - Get all files matching input pattern
+
+**Memory File Structure:**
+```markdown
+# Commit Skill - 변경 파일 목록
+
+## 현재 변경사항 (2026-02-13 14:30:00)
+
+### Modified Files (Unstaged)
+- path/to/file1.md
+- path/to/file2.sh
+
+### Staged Files
+- already/staged/file.java
+
+### Untracked Files
+- new/untracked/file.txt
+```
+
+**Path Resolution Priority:**
+1. Exact file match from memory
+2. Exact directory match
+3. Path component matching
+4. Substring matching
+5. Fallback to traditional resolution
+
+---
+
+## execution/commit.sh
+
+**Purpose:** Execute git commit (staged files only)
+
+**Usage:**
+```bash
+# Via stdin (recommended)
+echo "commit message" | ./scripts/execution/commit.sh
+echo "commit message" | ./scripts/execution/commit.sh <path>
 ```
 
 **Operations:**
 1. Validate message format (calls validate_message.py)
-2. Execute `git commit -m "message"`
-3. Return commit hash or error
+2. Verify there are staged files to commit
+3. Execute `git commit -m "message"` (NO path argument)
+4. Return commit hash or error
+
+**Important:** This script only commits already staged files. The path argument (if provided) is used for logging only, not passed to `git commit`. This prevents accidental staging of unstaged files.
 
 **Exit codes:**
 - 0: Success
-- 1: Validation failed
-- 2: Commit failed
+- 1: Validation failed, no staged files, or commit failed
 
 ---
 
@@ -123,7 +188,10 @@ echo "feat(module): message" | python scripts/validation/validate_message.py
 
 ```
 1. collect_git_diff.sh
-   ↓ Pure git data (JSON)
+   ├─ 1. Scan all changes to memory
+   ├─ 2. Match user input with memory
+   ├─ 3. Stage only matching tracked files
+   └─ ↓ Pure git data (JSON)
 
 2. Claude analyzes (NO scripts)
    ↓ Infers type, scope, groups
@@ -136,7 +204,7 @@ echo "feat(module): message" | python scripts/validation/validate_message.py
 4. validate_message.py
    ↓ Format check
 
-5. commit.sh
+5. commit.sh (staged files only)
    ↓ Execute commit
 ```
 
@@ -144,26 +212,22 @@ echo "feat(module): message" | python scripts/validation/validate_message.py
 
 ## Key Changes from Previous Version
 
-**Removed:**
-- ❌ `analyze_with_cache.sh` - Caching removed
-- ❌ `validate_cache.sh` - Caching removed
-- ❌ `decide_mode.sh` - Caching removed
-- ❌ `create_metadata.sh` - Metadata now created by Claude
-- ❌ `collect_changes.sh` - Merged into collect_git_diff.sh
-- ❌ `algorithms/detect_type.js` - Claude infers type
-- ❌ `algorithms/detect_scope.js` - Claude infers scope
-- ❌ `generation/generate_body_items.js` - Claude generates
-- ❌ `generation/generate_headers.js` - Claude generates
-- ❌ `telemetry/` - Removed with caching
-- ❌ `utils/cleanup_sessions.sh` - Session caching removed
-- ❌ `utils/init_session.sh` - Session management removed
-- ❌ `utils/get_session_id.sh` - Session management removed
+**Added (Memory-Based System):**
+- ✅ `utils/resolve_path.sh` - Memory-based path resolution utilities
+- ✅ Memory file: `~/.claude/projects/{project}/memory/commit-skill-paths.md`
+- ✅ 5-step path matching: Exact → Directory → Partial → Substring → Fallback
+- ✅ File classification: TRACKED/UNTRACKED/IGNORED with .gitignore protection
+- ✅ Safe staging: Only tracked files staged automatically
 
-**Why removed:**
-- **Simplification**: Reduced from 15+ scripts to 4 scripts
-- **Claude's strength**: Type/scope inference better with context understanding
-- **No caching**: Fresh analysis reflects latest context
-- **No scores**: Natural prioritization instead of mechanical scoring
+**Modified:**
+- 🔄 `collect_git_diff.sh` - Added memory-based pre-scan and path resolution
+- 🔄 `commit.sh` - Now only commits staged files (no path argument to git commit)
+
+**Why changed:**
+- **Precise control**: Only specified files staged via memory matching
+- **.gitignore protection**: Ignored/untracked files auto-excluded
+- **No accidental commits**: commit.sh doesn't auto-stage unstaged files
+- **Fresh analysis**: Memory rebuilt every run, no stale data
 
 ---
 

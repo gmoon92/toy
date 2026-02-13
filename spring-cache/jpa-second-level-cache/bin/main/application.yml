@@ -1,0 +1,62 @@
+# xml config disable
+# spring.cache.jcache.config=classpath:ehcache.xml
+
+l2:
+  ### SIMPLE(EHCACHE), HAZELCAST, REDIS
+  cache-storage: SIMPLE
+#  cache-storage: REDIS
+#  cache-storage: HAZELCAST
+spring:
+  ## Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  ## CACHE
+  cache:
+    # org.springframework.boot.autoconfigure.cache.CacheProperties
+    # org.springframework.boot.autoconfigure.cache.CacheConfigurations
+    type: jcache
+    # JCache Custom cache provider 지정
+#    jcache:
+#      provider: &jcache-provider org.ehcache.jsr107.EhcacheCachingProvider
+#      provider: &jcache-provider com.hazelcast.cache.impl.HazelcastServerCachingProvider
+#      provider: &jcache-provider org.redisson.jcache.JCachingProvider
+  ### JPA
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    show-sql: &show-sql true
+    generate-ddl: true
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        #        auto_quote_keyword: true
+        "[hbm2ddl.auto]": create-drop
+        show_sql: true
+        # format_sql: true
+        use_sql_comments: true
+        ## Hibernate L2 Cache
+        cache:
+          "[use_second_level_cache]": true
+          "[use_query_cache]": true
+#          "[ehcache.missing_cache_strategy]": create
+          ## 캐싱 구현체 지정
+#          "[region.factory_class]": org.hibernate.cache.jcache.internal.JCacheRegionFactory
+          "[region.factory_class]": jcache
+        ## org.hibernate.cache.jcache.ConfigSettings
+        javax:
+          cache:
+#            "[provider]": *jcache-provider
+            # fail, create-warn(default), create
+            "[missing_cache_strategy]": create
+
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": OFF

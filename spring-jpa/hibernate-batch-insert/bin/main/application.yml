@@ -1,0 +1,58 @@
+basedir: @project.basedir@
+resources-dir: ${basedir}/src/main/resources
+
+## service
+service:
+  storage:
+    path: storage
+    absolute-path: ${resources-dir}/${service.storage.path}
+
+## jooq
+jooq:
+  properties:
+    schema: batchinsert
+    # org.jooq.meta.*.*Database
+    driver-class-name: org.jooq.meta.mariadb.MariaDBDatabase
+    target-dir: src/main/java
+
+## spirng
+spring:
+  # persistence
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:mysql://localhost:3306
+    user: &username root
+    password: &password 111111
+    create-schemas: true
+    default-schema: ${jooq.properties.schema}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${spring.flyway.url}/${spring.flyway.default-schema}?serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8&rewriteBatchedStatements=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    username: *username
+    password: *password
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    database-platform: &dialect org.hibernate.dialect.MySQLDialect
+    show-sql: &showsql true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: *dialect
+#        "[hbm2ddl.auto]": validate
+#        format_sql: *showsql
+
+        # batch
+        order_inserts: true
+        order_updates: true
+        "[jdbc.batch_size]": 200
+
+logging:
+  level:
+    "[com.gmoon]": INFO
+    "[org.jooq]": WARN
+    "[MySQL]": WARN

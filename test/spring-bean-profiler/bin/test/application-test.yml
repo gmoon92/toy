@@ -1,0 +1,10 @@
+service:
+  test:
+    bean:
+      profiler:
+        threshold: 50ms
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

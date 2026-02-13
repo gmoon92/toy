@@ -1,0 +1,79 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+  # Native 프로파일 활성화 - 로컬 파일 시스템에서 설정 파일 조회
+  # Git 커밋 없이 바로 테스트 가능
+  profiles:
+    active: native
+
+  # 메시지 버스용 RabbitMQ 설정
+  # Spring Cloud Bus는 이벤트 브로드캐스트를 위해 RabbitMQ를 메시지 브로커로 사용
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  # Cloud Bus 설정
+  cloud:
+    bus:
+      # 외부 미들웨어(RabbitMQ/Kafka)에서 사용되는 토픽명
+      # 모든 Bus 이벤트가 이 토픽에 발행됨
+      destination: springCloudBus
+      # 디버깅을 위한 Bus 이벤트 추적 활성화
+      # /actuator/trace 엔드포인트에서 sent/ack 이벤트 표시
+      trace:
+        enabled: true
+      # 서비스 ID 형식: app:index:id
+      # 특정 인스턴스 지정을 위해 사용됨
+      id: ${spring.application.name}:${server.port}:${random.value}
+
+    # Config Server 설정
+    config:
+      label: alpha
+      server:
+        # Native 파일 시스템 백엔드 설정 (개발 환경)
+        # 로컬 파일 시스템의 설정 파일을 직접 참조
+        # Git 커밋 없이 실시간으로 설정 변경 가능
+        native:
+          search-locations: file:@projectDir@/src/main/resources/config-repo/
+
+        # Git 백엔드 설정 (운영 환경 권장)
+        # 버전 관리 및 변경 이력 추적 가능
+        # 로컬 테스트 시 매번 커밋이 필요하므로 주석 처리
+#        git:
+#          # 로컬 Git 저장소
+#          uri: file://@projectDir@/config-repo
+#          # 원격 Git 저장소 (운영 환경)
+#          # uri: https://github.com/your-org/config-repo.git
+#          default-label: alpha # 기본 브랜치 or 라벨
+#          clone-on-start: true # 시작 시 저장소 클론
+#          search-paths: '{label}/{application}' # 설정 파일을 위한 검색 경로
+#          # Git 인증 (필요시)
+#          # username: your-username
+#          # password: your-password
+
+
+# Actuator 설정
+# 이벤트 트리거를 위한 Bus 엔드포인트 노출
+# https://docs.spring.io/spring-boot/reference/actuator/endpoints.html
+# https://docs.spring.io/spring-boot/api/rest/actuator/index.html
+management:
+  endpoints:
+    web:
+      exposure:
+        # bus 엔드포인트 노출: busrefresh, busenv
+        # busrefresh: 모든 인스턴스에서 설정 갱신
+        # busenv: 환경 변수 동적 업데이트
+        # info, health: 표준 actuator 엔드포인트
+        include: busrefresh,busenv,refresh
+
+# 로깅 설정
+logging:
+  level:
+    org.springframework.cloud.bus: DEBUG
+    org.springframework.cloud.config: DEBUG

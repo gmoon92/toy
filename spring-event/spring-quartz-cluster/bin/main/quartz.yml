@@ -1,0 +1,13 @@
+# https://yaml.org/spec/1.2-old/spec.html#id2785586
+default-value: &default-value true
+
+service-check:
+  jvm-memory-usage:
+    enabled: *default-value
+    threshold-percentage: 98
+  disk-space:
+    enabled: *default-value
+    threshold-percentage: 98
+  cpu-usage:
+    enabled: *default-value
+    threshold-percentage: 90

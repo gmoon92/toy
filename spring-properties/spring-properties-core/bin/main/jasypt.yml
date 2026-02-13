@@ -1,0 +1,7 @@
+jasypt.encryptor:
+  bean: "customBeanName"
+#  password: jasyptPassword
+#  algorithm: PBEWithMD5AndDES
+  property:
+    prefix: "enc@("
+    suffix: ")"

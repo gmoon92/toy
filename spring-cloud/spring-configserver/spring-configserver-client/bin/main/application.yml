@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: client
+
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  # 활성화할 프로파일 (dev, prod 등)
+  # profiles:
+  #   active: dev
+
+  # https://docs.spring.io/spring-cloud-config/docs/current/reference/html/
+  cloud:
+    config:
+      # alpha, real
+      label: alpha
+
+# Actuator 설정
+# https://docs.spring.io/spring-boot/reference/actuator/endpoints.html
+management:
+  endpoints:
+    web:
+      exposure:
+        # refresh 엔드포인트 노출
+        include: health,info,refresh

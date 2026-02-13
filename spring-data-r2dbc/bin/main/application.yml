@@ -1,0 +1,60 @@
+#database-url: mariadb://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true
+#database-url: mariadb://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+#database-url: mysql://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true
+
+#https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-debugging-profiling.html
+database-url: mysql://localhost:3306/spring_data_r2dbc?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=9999
+spring:
+  #  data:
+#    "[r2dbc.repositories.enabled]": false
+  data:
+    r2dbc:
+      repositories:
+        enabled: false
+
+  datasource:
+    #    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:${database-url}
+    username: root
+    password: 111111
+
+  jpa:
+    open-in-view: false
+    #    database-platform: org.hibernate.dialect.MariaDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: &show-sql true
+    defer-datasource-initialization: true
+    generate-ddl: true
+    hibernate:
+      #      ddl-auto: update
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": update
+        #      "[hbm2ddl.auto]": create-drop
+#        show_sql: true
+#        format_sql: true
+#        use_sql_comments: true
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
+#    https://r2dbc.io/spec/0.8.3.RELEASE/spec/html/#overview.connection.url
+  r2dbc:
+    url: r2dbc:${database-url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    pool:
+      validation-query: SELECT 1
+
+logging:
+  level:
+    "[org.mariadb.r2dbc]": WARN
+#    "[org.springframework.transaction]": TRACE
+#    "[org.springframework.r2dbc]": WARN
+#    "[org.springframework.r2dbc.core]": DEBUG
+#    "[org.springframework.data.r2dbc]": TRACE
+    "[MySQL]": OFF

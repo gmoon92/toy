@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 상세 정보</title>
+</head>
+<body>
+    <div>
+        <h2>사용자 상세 정보</h2>
+        <p><strong>이름:</strong> <span th:text="${userForm.username}"></span></p>
+        <p><strong>나이:</strong> <span th:text="${userForm.age}"></span></p>
+
+        <a class="button" href="/">홈으로</a>
+    </div>
+</body>
+</html>

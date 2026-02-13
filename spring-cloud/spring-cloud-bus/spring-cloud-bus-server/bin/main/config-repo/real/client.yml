@@ -1,0 +1,15 @@
+# Config Server에서 관리하는 spring-configserver-client 애플리케이션 설정 파일
+# 이 파일을 수정한 후 POST /actuator/refresh를 호출하면 재시작 없이 설정이 갱신됩니다.
+app:
+  message: "Welcome to Real Environment Config Server!"
+  version: "real 1.0.0"
+  feature:
+    enabled: true
+    max-retry: 3
+    timeout-seconds: 30
+
+database:
+  pool:
+    min-size: 5
+    max-size: 20
+    connection-timeout: 5000

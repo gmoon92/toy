@@ -1,0 +1,37 @@
+spring:
+  aop:
+    proxy-target-class: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/spring_tx?createDatabaseIfNotExist=true&logger=Slf4JLogger&profileSQL=true&maxQuerySizeToLog=999999
+    url: jdbc:mysql://localhost:3306/spring_tx?createDatabaseIfNotExist=true
+    username: root
+    password: 111111
+
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    generate-ddl: true
+    show-sql: &show-sql true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create-drop
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        highlight_sql: *show-sql
+#        use_sql_comments: *show-sql
+        globally_quoted_identifiers: true
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+      encoding: UTF-8
+      platform: mysql
+
+  test:
+    database:
+      replace: none
+
+"[logging.level.MySQL]": OFF

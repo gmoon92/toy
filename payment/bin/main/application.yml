@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: payment
+    version: '@project.version@'
+    build:
+      number: '@jenkins.build.number@'
+      timestamp: '@jenkins.build.timestamp@'
+
+  config:
+    import: "optional:configserver:"
+
+  # config server
+  cloud:
+    config:
+      enabled: true
+      label: payment
+
+  # spring banner
+  main:
+    banner-mode: log
+
+service:
+#  project-dir: file:/Users/gmoon/payment
+  project-dir: 'classpath:'
+
+  payment:
+    appstore:
+      enabled: @appstore.enabled@
+      cert-storage: ${service.project-dir}/appstore/cert
+      root-cert-dir: ${service.payment.appstore.cert-storage}/root
+      environment: PRODUCTION # PRODUCTION, SANDBOX
+      bundle-id: '@appstore.bundle-id@' # Your app’s bundle ID
+      issuer-id: '@appstore.issuer-id@' # Your issuer ID from the Keys page in App Store Connect
+      app-apple-id: @appstore.app-apple-id@ # The unique identifier of the app in the App Store.
+      private-key:
+        id: '@appstore.private-key-id@' # Your private key ID from App Store Connect
+
+        # Your private key downloaded from App Store Connect
+        file-path: ${service.payment.appstore.cert-storage}/SubscriptionKey_${service.payment.appstore.private-key.id}.p8

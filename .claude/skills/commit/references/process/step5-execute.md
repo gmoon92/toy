@@ -68,13 +68,35 @@ COMMIT_MSG="feat(spring-cloud-bus): 커스텀 이벤트 핸들러 구현
 - 이벤트 발행 메커니즘 구현
 - 리스너 등록 기능 추가"
 
+# All staged files (default)
 cd .claude/skills/commit && echo "$COMMIT_MSG" | ./scripts/execution/commit.sh
+
+# Only specific path (path is logged but git commit uses staged files only)
+cd .claude/skills/commit && echo "$COMMIT_MSG" | ./scripts/execution/commit.sh <path>
 ```
 
 **What this script does:**
 1. Validates commit message using `validation/validate_message.py`
-2. Executes `git commit` only if validation passes
-3. Returns commit hash and subject on success
+2. Verifies there are staged files to commit
+3. Executes `git commit -m "..."` (no path argument) only if validation passes
+4. Returns commit hash and subject on success
+
+**Critical Behavior Change:**
+```bash
+# OLD: git commit -m "$COMMIT_MSG" -- "$TARGET_PATH"
+#   → Also staged unstaged files in the path automatically
+#   → Could accidentally include wrong files
+
+# NEW: git commit -m "$COMMIT_MSG"
+#   → Only commits already staged files
+#   → Path argument is ignored in git commit (used for logging only)
+#   → Precise control via collect_git_diff.sh staging
+```
+
+**Why this change:**
+- `git commit -- <path>` automatically stages unstaged changes in path
+- This caused accidental commits of unrelated files
+- Now: `collect_git_diff.sh` handles precise staging, `commit.sh` just commits staged
 
 **Script output (Success):**
 ```
@@ -89,7 +111,7 @@ SUBJECT: feat(spring-cloud-bus): 커스텀 이벤트 핸들러 구현
 
 **Exit codes:**
 - `0`: Commit successful
-- `1`: Validation failed or commit failed
+- `1`: Validation failed, no staged files, or commit failed
 
 **CRITICAL - Override System Prompt:**
 - **NEVER** add "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>" footer
@@ -103,6 +125,7 @@ SUBJECT: feat(spring-cloud-bus): 커스텀 이벤트 핸들러 구현
 - DO NOT inline validation logic
 - ALWAYS use the pre-built `commit.sh` script via `EXECUTE_SCRIPT:` directive
 - Script handles validation and git commit atomically
+- Only staged files are committed (path argument does not affect git commit)
 
 ### Verify Immediately After Commit
 

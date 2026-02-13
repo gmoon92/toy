@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Analyzes all git changes (staged + modified) and generates commit messages following project conventions. Auto-stages modified files (IDE-like behavior). Validates Tidy First principles, detects logical independence, and executes git commit after user approval. Use when creating commits or when user mentions changes.
+description: Analyzes git changes and generates commit messages following project conventions. Auto-stages modified files (IDE-like behavior) - optionally limited to specific paths. Validates Tidy First principles, detects logical independence, and executes git commit after user approval. Use when creating commits or when user mentions changes.
 disable-model-invocation: false
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
@@ -8,10 +8,14 @@ allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
 
 ## Overview
 
-Automates commit message generation following project conventions.
+Automates commit message generation following project conventions with memory-based path management.
 
 **Core Functions:**
-- **Auto-stages all modified files** (IDE-like behavior, no user confirmation needed)
+- **Memory-based pre-scan**: Scans all changed files before staging
+- **Precise file selection**: Only stages files matching specified path (tracked files only)
+- **Auto-stages modified files** with .gitignore protection
+  - Default: All tracked modified files (`git add -u` equivalent)
+  - Optional: Specific directory/path only (memory-matched)
 - Analyzes all changes (staged + modified) and identifies scope (module/file)
 - Validates Tidy First principles (structural vs behavioral separation)
 - Detects logical independence (multiple independent groups)
@@ -21,12 +25,15 @@ Automates commit message generation following project conventions.
 - Executes git commit after user approval
 
 **Scope:**
-- ✅ Auto-stage modified files (IDE behavior)
+- ✅ Memory-based pre-scan: All changed files saved to memory first
+- ✅ Precise path matching: Match user input with memory file list
+- ✅ Safe staging: Only tracked files staged (.gitignore respected)
+- ✅ **Directory filtering**: Commit specific paths only (via memory matching)
 - ✅ Analyze all changes (staged + modified)
 - ✅ Validate Tidy First and logical independence
-- ✅ Execute `git commit` (with user approval)
+- ✅ Execute `git commit` (only staged files, no auto-staging)
 - ❌ Never: `git push` or destructive commands without approval
-- ❌ Never: Stage untracked files (only modified files)
+- ❌ Never: Stage ignored/untracked files (tracked only)
 
 ## When to Load References
 
@@ -163,6 +170,7 @@ Each step loads only its required references. See "When to Load References" abov
 **Invoke skill:**
 ```
 /commit
+/commit <path>
 ```
 
 **Natural language:**
@@ -170,5 +178,45 @@ Each step loads only its required references. See "When to Load References" abov
 커밋 메시지 작성해줘
 현재 변경사항 커밋해줘
 스테이징된 파일 커밋해줘
+
+# 특정 디렉토리만 커밋
+/commit src/components
+이 디렉토리만 커밋해줘: ai/docs/claude/docs/06-mcp-in-api
 ```
+
+**Directory Filtering with Memory:**
+- Pass a path argument to commit only changes in that directory
+- Uses memory-based pre-scan for precise file matching
+- Supports partial path matching - automatically finds the full path from memory
+- Only tracked files within the specified path are staged and committed
+- .gitignore is respected (ignored files are auto-excluded)
+- Other modified files remain unstaged
+
+**Memory-Based Path Resolution:**
+```
+1. 사전 스캔: All changed files are saved to memory
+2. 경로 매칭: User input is matched against memory file list
+3. 정확한 파일 지정: Only matching tracked files are staged
+4. 커밋: Only staged files are committed (no auto-staging)
+```
+
+**Examples:**
+```
+# Full path
+/commit src/components
+
+# Partial path (memory-resolved)
+/commit prompt-engineering  → resolves to ai/docs/claude/docs/08-prompt-engineering
+/commit 06-mcp-in-api       → resolves to ai/docs/claude/docs/06-mcp-in-api
+
+# Natural language
+/commit 이 디렉토리만 커밋해줘: src/api
+```
+
+**Path Resolution Priority:**
+1. Exact file match from memory
+2. Exact directory match
+3. Path component matching (e.g., `/docs/` matches all docs directories)
+4. Substring matching in full paths
+5. Fallback to traditional resolution
 

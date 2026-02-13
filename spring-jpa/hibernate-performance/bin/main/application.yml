@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/hibernate_performance?createDatabaseIfNotExist=true&serverTimezone=UTC&useLegacyDatetimeCode=false&characterEncoding=UTF-8
+      username: root
+      password: 111111
+
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    show-sql: &show-sql true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        #        "[hbm2ddl.auto]": create-drop
+        dialect: org.hibernate.dialect.MySQLDialect
+#        show_sql: true
+  #        format_sql: true
+  #        format_sql: false
+  #        use_sql_comments: true
+
+logging:
+  config: src/main/resources/log4j2.xml
+  level:
+    "[com.gmoon]": trace
+    "[org.hibernate.type.descriptor.sql]": off

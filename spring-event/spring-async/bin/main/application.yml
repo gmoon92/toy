@@ -1,0 +1,23 @@
+spring:
+  task:
+    execution:
+      thread-name-prefix: thread-gmoon-pool
+      pool:
+        core-size: 16
+        max-size: 32
+        keep-alive: 120
+        queue-capacity: 500
+        allow-core-thread-timeout: false
+  mail:
+#    host: smtp.gmail.com
+#    port: 587
+    host: smtp.naver.com
+    port: 465
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
+      # smtp naver
+      "[mail.smtp.ssl.trust]": smtp.naver.com
+      "[mail.smtp.ssl.enable]": true

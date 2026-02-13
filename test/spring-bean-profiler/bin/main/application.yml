@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: spring-bean-profiler
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring_bean_profiler?createDatabaseIfNotExist=true
+    username: root
+    password: 111111
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect

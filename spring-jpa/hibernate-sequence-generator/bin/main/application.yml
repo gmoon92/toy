@@ -1,0 +1,16 @@
+logging:
+  level:
+    "[org.hibernate.type.descriptor.sql]": trace
+
+spring:
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    show-sql: &show-sql true
+    properties:
+      hibernate:
+        "[hbm2ddl.auto]": create-drop
+#        show-sql: *show-sql
+#        format_sql: *show-sql
+#        highlight_sql: *show-sql
+#        use_sql_comments: *show-sql
