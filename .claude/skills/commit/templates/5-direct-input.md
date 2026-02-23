@@ -88,10 +88,7 @@ docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
 ### Validation Items
 
-```bash
-# 정규식 검증
-pattern="^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$"
-```
+**정규식 패턴:** `^(feat|fix|refactor|test|docs|style|chore)\([a-zA-Z0-9._-]+\): .+$`
 
 - Type: 7가지 중 하나 (feat, fix, refactor, test, docs, style, chore)
 - Scope: 영숫자 + `.`, `-`, `_`만 포함

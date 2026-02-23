@@ -15,8 +15,8 @@ Automates commit message generation following project conventions.
 - Analyzes all changes (staged + modified) and identifies scope (module/file)
 - Validates Tidy First principles (structural vs behavioral separation)
 - Detects logical independence (multiple independent groups)
-- **Guides user through 3-stage message composition** (type → body items → footer)
-- Auto-generates body item candidates from changed files
+- **Guides user through 3-stage message composition** (type → body items → footer) per [step3-message.md](references/process/step3-message.md)
+- Generates body item candidates following [body.md](references/generation/body.md)
 - Supports auto-split commit for logically independent changes
 - Executes git commit after user approval
 
@@ -34,7 +34,7 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 1: Initial Analysis
 - **Load**: [process/step1-analysis.md](references/process/step1-analysis.md) (~180 tokens)
-- **Execute**: [scripts/analysis/collect_git_diff.sh](scripts/analysis/collect_git_diff.sh)
+- **Execute**: Git commands via Bash tool as appropriate
 - **Purpose**: Collect pure git diff data (no caching, no inference)
 - **When**: Every /commit execution start
 
@@ -62,30 +62,14 @@ Execute skill in phases. Load only required references per phase for maximum tok
 
 ### Phase 5: Execution
 - **Load**: [process/step5-execute.md](references/process/step5-execute.md) (~340 tokens)
-- **Execute**: [scripts/execution/commit.sh](scripts/execution/commit.sh)
-- **Purpose**: Validate message format and execute git commit
+- **Execute**: Git commands via Bash tool as appropriate
+- **Purpose**: Execute git commit
 - **When**: After user approval
-- **Token efficiency**: Scripts run via bash (0 context tokens consumed)
 
 ### Support Resources (load as needed)
 - **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md) (~450 tokens)
 - **Examples**: [support/examples.md](references/support/examples.md) (~350 tokens)
 - **UI design**: [support/ui-design.md](references/support/ui-design.md) (~50 tokens)
-
-### Scripts (MANDATORY: Execute directly, DO NOT inline or reconstruct)
-
-**CRITICAL:** Scripts are pre-built, deterministic executables. Agent MUST use `EXECUTE_SCRIPT:` directive.
-
-**Phase 1 - Analysis:**
-- `EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh` - Auto-stage and collect pure git data
-
-**Phase 5 - Execution:**
-- `EXECUTE_SCRIPT: scripts/execution/commit.sh` - Validate and commit
-
-**Validation (used by commit.sh):**
-- `scripts/validation/validate_message.py` - Format validation (automatic)
-
-**Documentation:** See [scripts/README.md](scripts/README.md) for detailed usage
 
 ### Assets (not loaded into context)
 - **UI templates**: [templates](templates/) - Output templates for user interaction (7 files)
@@ -107,9 +91,9 @@ Execute skill in phases. Load only required references per phase for maximum tok
 - Tooltip always shown: "모든 변경사항을 하나의 커밋으로 진행하면 전체 롤백이나 코드 리뷰/수정이 어려울 수 있습니다"
 
 **4. Message Composition (3-Stage Selection)**
-- Stage 1: User selects header from 5 pre-generated messages (추천 2 + 일반 3)
-- Stage 2: User selects body items (multi-select from auto-generated candidates)
-- Stage 3: User selects footer (none/issue reference/breaking change)
+- Stage 1: User selects header from 5 messages per [header.md](references/generation/header.md) (추천 2 + 일반 3)
+- Stage 2: User selects body items (multi-select) per [body.md](references/generation/body.md)
+- Stage 3: User selects footer per [footer.md](references/generation/footer.md) (none/issue reference/breaking change)
 - **Refresh mechanism**: "다른 추천 리스트 보기" to see different options
 - **Direct input**: Available at each stage as fallback
 - Format: `<type>(scope): <message>` with optional body and footer

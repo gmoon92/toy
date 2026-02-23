@@ -6,15 +6,15 @@ Collect pure git diff data (NO caching, NO inference).
 
 ## Overview
 
-**Phase 1 executes a single script:**
-- `collect_git_diff.sh` - Collects pure git data
+**Phase 1 executes git commands directly:**
+- Check status, stage files, collect data
 
 **What it does:**
-1. Auto-stages modified files (`git add -u`)
-2. Collects git metadata (branch, timestamp)
-3. Extracts file changes (path, additions, deletions)
-4. Calculates totals
-5. Outputs JSON to stdout
+1. Check current git status
+2. Unstage existing files first (for isolated commits) - optional
+3. Stage modified files (`git add -u`)
+4. Collect git metadata (branch, timestamp)
+5. Extract file changes (path, additions, deletions)
 
 **What it does NOT do:**
 - NO type detection (Claude will infer)
@@ -24,49 +24,21 @@ Collect pure git diff data (NO caching, NO inference).
 
 ---
 
-## Execute Script
+## Execute Git Commands
 
-**MANDATORY: Use pre-built script**
+**Use Bash tool to execute appropriate git commands:**
 
-```bash
-EXECUTE_SCRIPT: scripts/analysis/collect_git_diff.sh
-```
+**Key commands:**
+- ✅ `git status --porcelain` - Check current state
+- ✅ `git reset HEAD` - Unstage existing files (optional)
+- ✅ `git add -u` - Stage modified files only (not untracked)
+- ✅ `git diff --cached` - Collect staged file statistics
 
-**Output: Pure git data as JSON**
+**Exit if no changes:**
+If `git diff --cached --name-only` returns empty, exit with error:
 ```json
-{
-  "timestamp": "2026-02-10T01:25:06Z",
-  "branch": "master",
-  "summary": {
-    "totalFiles": 15,
-    "totalAdditions": 762,
-    "totalDeletions": 629
-  },
-  "files": [
-    {
-      "path": "ai/docs/claude/docs/02-capabilities/03-extended-thinking.md",
-      "status": "M",
-      "additions": 50,
-      "deletions": 30
-    }
-  ]
-}
+{"error":"변경사항이 없습니다"}
 ```
-
-**Script behavior:**
-- ✅ Automatically runs `git add -u` (only modified files, not untracked)
-- ✅ Collects staged files and statistics
-- ✅ Exits with error if no changes
-
-**Exit codes:**
-- `0`: Success (JSON output)
-- `1`: No changes to commit
-
-**IMPORTANT:**
-- DO NOT reconstruct bash commands from documentation
-- DO NOT inline scripts into the execution flow
-- ALWAYS use the pre-built script via `EXECUTE_SCRIPT:` directive
-- Scripts are deterministic and consume 0 context tokens
 
 ---
 
@@ -102,28 +74,9 @@ After collecting git data, Claude analyzes in real-time:
 
 ---
 
-## No Metadata Files
-
-**Previous approach (removed):**
-- Generated `.claude/temp/commit-execution-{timestamp}.json`
-- Stored pre-computed analysis
-- Required cleanup
-
-**Current approach (simplified):**
-- Git data → Claude analyzes → User interacts
-- No intermediate files
-- Fresh analysis every time
-- Simpler workflow
-
----
-
 ## Token Efficiency
 
-**Old approach (with caching):**
-- First run: Heavy (analysis + metadata)
-- Retry: Light (cache reuse, 95% savings)
-
-**New approach (no caching):**
+**Approach:**
 - Every run: Moderate (fresh analysis)
 - Trade-off: Always current context, simpler system
 

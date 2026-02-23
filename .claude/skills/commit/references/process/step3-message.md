@@ -8,12 +8,12 @@ Guide user through 3 stages to build the commit message.
 
 **3-Stage Selection Process:**
 
-1. **Stage 1**: Select commit header from 5 Claude-generated messages
-2. **Stage 2**: Select body items (multi-select from Claude-generated candidates)
-3. **Stage 3**: Select footer (none, issue reference, or breaking change)
+1. **Stage 1**: Select commit header from 5 messages per [header.md](../generation/header.md)
+2. **Stage 2**: Select body items (multi-select) per [body.md](../generation/body.md)
+3. **Stage 3**: Select footer per [footer.md](../generation/footer.md) (none, issue reference, or breaking change)
 
 **Benefits:**
-- Claude's natural understanding ensures quality
+- Policy-based generation ensures consistency
 - User has full control through selection
 - Refresh mechanism provides flexibility
 - Direct input available as fallback
@@ -26,15 +26,15 @@ Guide user through 3 stages to build the commit message.
 
 **Template:** [3-1-header-selection.md](../../templates/3-1-header-selection.md)
 
-**Claude generates 5 header messages in real-time:**
-- **Recommended 2**: Claude's top suggestions
+**Generate 5 header messages per [header.md](../generation/header.md):**
+- **Recommended 2**: Top suggestions following policy
 - **General 3**: Alternative variations
 
-**Claude's generation approach:**
-1. Analyzes git diff data
-2. Infers type (feat/fix/refactor/docs/test/style/chore)
-3. Infers scope (module/file/directory)
-4. Generates 5 messages with different perspectives
+**Generation approach per policy:**
+1. Analyze git diff data
+2. Infer type (feat/fix/refactor/docs/test/style/chore)
+3. Infer scope (module/file/directory)
+4. Generate 5 messages with different perspectives
 
 **Screen Output:**
 ```
@@ -47,15 +47,15 @@ Select a commit header message.
 ```
 
 **Actions:**
-1. Claude generates 5 header messages
+1. Generate 5 header messages per [header.md](../generation/header.md)
 2. Display screen output
 3. Call AskUserQuestion with options:
    - Option 1-4: Headers (Recommended 2 marked with "(Recommended)")
    - "Other": Direct input (automatically added)
 4. Handle user selection:
    - **Header selected** → Store selected header, proceed to Stage 2
-   - **"Show other recommendations" selected** → Claude generates 3 new variations
-   - **"Other" (direct input) selected** → Prompt for manual input, validate, proceed to Stage 2
+   - **"Show other recommendations" selected** → Generate 3 new variations per policy
+   - **"Other" (direct input) selected** → Prompt for manual input, validate per [rules.md](../validation/rules.md), proceed to Stage 2
 
 **Example headers:**
 ```
@@ -65,7 +65,7 @@ Select a commit header message.
 4. docs(.claude/skills): update commit skill documentation
 ```
 
-**Note:** AskUserQuestion limits to 4 options, so show Recommended 2 + General 2. On refresh, Claude generates new variations.
+**Note:** AskUserQuestion limits to 4 options, so show Recommended 2 + General 2. On refresh, generate new variations per [header.md](../generation/header.md).
 
 ---
 
@@ -79,13 +79,12 @@ Select a commit header message.
 - ❌ List filenames (already in git log)
 - ✅ Describe work done (what was accomplished)
 
-**Claude generates body item candidates in real-time:**
+**Generate body item candidates per [body.md](../generation/body.md):**
 
-Claude analyzes changes and generates feature-based descriptions:
-1. Groups related changes by logical purpose
-2. Understands what work was done
-3. Generates clear, natural descriptions
-4. Presents in order of significance (no mechanical scoring)
+1. Group related changes by logical purpose
+2. Identify what work was done
+3. Create clear, natural descriptions
+4. Present in order of significance (no mechanical scoring)
 
 **Screen Output:**
 ```
@@ -98,7 +97,7 @@ Select work items to include in commit body.
 ```
 
 **Actions:**
-1. Claude generates 5-10 feature-based body item candidates
+1. Generate 5-10 feature-based body item candidates per [body.md](../generation/body.md)
 2. Display candidates
 3. Call AskUserQuestion with multi-select enabled
 4. User selects items (or "No body")

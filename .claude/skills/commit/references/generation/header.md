@@ -8,12 +8,12 @@ User builds commit message through 3 stages: header selection → body selection
 
 **3-Stage Selection Process:**
 
-1. **Stage 1: Header Selection** - User selects from 5 Claude-generated header messages
-   - Recommended 2 (Claude's top suggestions)
+1. **Stage 1: Header Selection** - User selects from 5 header messages per this policy
+   - Recommended 2 (top suggestions following policy)
    - General 3 (alternative variations)
 
 2. **Stage 2: Body Selection** - User selects body items (multi-select)
-   - Claude-generated feature-based descriptions
+   - Feature-based descriptions per [body.md](body.md)
    - "No body" for header-only commits
    - "Show other recommendations" to regenerate
 
@@ -24,7 +24,7 @@ User builds commit message through 3 stages: header selection → body selection
 
 **Benefits:**
 - User has full control through selection
-- Claude's natural understanding ensures quality
+- Policy-based generation ensures consistency
 - Refresh mechanism provides flexibility
 - Direct input available as fallback
 
@@ -32,7 +32,7 @@ User builds commit message through 3 stages: header selection → body selection
 
 ## Stage 1: Header Message Generation
 
-### Claude Generates 5 Header Messages (Real-time)
+### Generate 5 Header Messages Following This Policy
 
 **CRITICAL: Message Language**
 - **Generate ALL commit messages in Korean** (한국어)
@@ -43,13 +43,13 @@ User builds commit message through 3 stages: header selection → body selection
 
 **NO pre-computation, NO scoring algorithms**
 
-Claude analyzes the git diff data in real-time and generates 5 header messages:
+Analyze git diff data and generate 5 header messages per this policy:
 
 **Recommended Message 1 (Top suggestion):**
-- Analyzes file paths, changes, and context
-- Identifies optimal scope (module/file/directory)
-- Determines primary type (feat/fix/refactor/docs/test/style/chore)
-- Generates clear, concise message
+- Analyze file paths, changes, and context
+- Identify optimal scope (module/file/directory)
+- Determine primary type (feat/fix/refactor/docs/test/style/chore)
+- Create clear, concise message
 
 **Example:**
 ```
@@ -57,9 +57,9 @@ docs(commit-skill): change commit message generation to 3-stage selection
 ```
 
 **Recommended Message 2 (Strong alternative):**
-- Different emphasis or perspective
-- Alternative scope level or type interpretation
-- Provides meaningful choice
+- Use different emphasis or perspective
+- Apply alternative scope level or type interpretation
+- Provide meaningful choice
 
 **Example:**
 ```
@@ -80,7 +80,7 @@ refactor(.claude/skills): improve commit skill documentation and process
 
 ### Refresh Logic (Show Other Recommendations)
 
-When user requests refresh, Claude generates 3 NEW general messages while keeping Recommended 2 fixed.
+When user requests refresh, generate 3 NEW general messages while keeping Recommended 2 fixed.
 
 **Approach:**
 - Keep Recommended 1 & 2 unchanged (best suggestions)
@@ -113,7 +113,7 @@ When user requests refresh, Claude generates 3 NEW general messages while keepin
 
 ## Generation Strategy
 
-**Claude's analysis process:**
+**Analysis process per this policy:**
 
 1. **Understand changes**:
    - File paths and extensions
@@ -142,7 +142,7 @@ When user requests refresh, Claude generates 3 NEW general messages while keepin
    - Alternative type interpretations
    - Various message expressions
 
-**NO mechanical scoring, NO pre-computation - just Claude's natural understanding**
+**NO mechanical scoring, NO pre-computation - follow this policy document**
 
 ---
 

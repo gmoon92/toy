@@ -14,11 +14,11 @@
 
 **CRITICAL: Generate body items in Korean** (한국어)
 
-**Strategy: Claude analyzes changes and generates natural candidates**
+**Strategy: Analyze changes and generate natural candidates per this policy**
 
-Claude analyzes the git diff data and generates body item candidates based on:
-1. **Understanding the changes**: What was actually modified, added, or removed
-2. **Identifying features/work**: Group related changes by logical purpose
+Analyze git diff data and generate body item candidates based on:
+1. **Understand the changes**: What was actually modified, added, or removed
+2. **Identify features/work**: Group related changes by logical purpose
 3. **Natural prioritization**: Present items in order of significance (no mechanical scoring)
 4. **Clear descriptions**: Focus on "what work was done" not "which files changed"
 
@@ -34,9 +34,6 @@ Stage 2: 바디 항목 선택 (다중 선택)
 □ 헤더 생성 전략을 5개 옵션 제공으로 재작성
   (추천 2개 + 일반 3개 구조)
 
-□ 바디 항목 페이지네이션 구현
-  (3개씩 페이지 단위로 표시, 가독성 향상)
-
 □ 바디 항목 없이 진행
 
 [↑↓: 이동 | Space: 선택/해제 | Enter: 완료]
@@ -44,10 +41,10 @@ Stage 2: 바디 항목 선택 (다중 선택)
 
 ### Generation Approach
 
-**NO pre-computation**: Claude generates candidates in real-time during Phase 3
+**NO pre-computation**: Generate candidates following this policy during Phase 3
 - Analyze files and changes from git diff data
 - Understand the purpose and context
-- Generate 5-10 clear, feature-based descriptions
+- Create 5-10 clear, feature-based descriptions
 - Present in natural order of importance
 
 **Multi-select**: User can select multiple items or none
