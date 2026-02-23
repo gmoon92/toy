@@ -38,3 +38,7 @@
 ### report ###
 **/build/report/**
 
+### Compiled binaries ###
+**/bin/
+
+/.serena/
