@@ -120,9 +120,9 @@ chore(spring-cloud-bus): initialize project
 1. docs(commit-skill): add automatic commit message generation skill
 
    - SKILL.md: define skill execution process
-   - references/validation/rules.md: commit message format rules
-   - references/support/examples.md: usage examples
-   - references/support/troubleshooting.md: troubleshooting guide
+   - rules/format.md: commit message format rules
+   - support/examples.md: usage examples
+   - support/troubleshooting.md: troubleshooting guide
 
 2. docs(commit-skill): add commit skill documentation
 
@@ -245,17 +245,3 @@ fix(spring-jpa): UserRepository null check            # Should use filename
 
 ---
 
-## Related Documents
-
-- **[validation/rules.md](../validation/rules.md)** - Commit message format rules
-  - Complete validation rules and specifications
-  - Why these patterns are recommended
-- **[generation/header.md](../generation/header.md)** - Header generation algorithm
-  - How to generate 5 header message candidates
-- **[generation/body.md](../generation/body.md)** - Body generation strategy
-  - Feature-based body item candidate generation
-- **[validation/logical-independence.md](../validation/logical-independence.md)** - Auto-split examples
-  - How to properly separate independent changes
-- **[process/step3-message.md](../process/step3-message.md)** - 3-stage composition
-  - How examples are used in message generation
-  - Where examples are used in the workflow

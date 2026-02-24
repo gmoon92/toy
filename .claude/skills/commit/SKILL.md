@@ -1,8 +1,6 @@
 ---
 name: commit
-description: Analyzes all git changes (staged + modified) and generates commit messages following project conventions. Auto-stages modified files (IDE-like behavior). Validates Tidy First principles, detects logical independence, and executes git commit after user approval. Use when creating commits or when user mentions changes.
-disable-model-invocation: false
-user-invocable: true
+description: Analyzes git changes and generates convention-compliant commit messages. Use when user requests "/commit", asks to commit changes, or mentions creating a commit.
 allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
 ---
 
@@ -15,8 +13,8 @@ Automates commit message generation following project conventions.
 - Analyzes all changes (staged + modified) and identifies scope (module/file)
 - Validates Tidy First principles (structural vs behavioral separation)
 - Detects logical independence (multiple independent groups)
-- **Guides user through 3-stage message composition** (type → body items → footer) per [step3-message.md](references/process/step3-message.md)
-- Generates body item candidates following [body.md](references/generation/body.md)
+- **Guides user through 3-stage message composition** (type → body items → footer)
+- Generates body item candidates per Phase 3 rules
 - Supports auto-split commit for logically independent changes
 - Executes git commit after user approval
 
@@ -28,131 +26,130 @@ Automates commit message generation following project conventions.
 - ❌ Never: `git push` or destructive commands without approval
 - ❌ Never: Stage untracked files (only modified files)
 
-## When to Load References
+## Process
 
-Execute skill in phases. Load only required references per phase for maximum token efficiency.
+Execute skill in 5 phases. Each phase requires user interaction before proceeding. Never skip any phase.
 
-### Phase 1: Initial Analysis
-- **Load**: [process/step1-analysis.md](references/process/step1-analysis.md) (~180 tokens)
-- **Execute**: Git commands via Bash tool as appropriate
-- **Purpose**: Collect pure git diff data (no caching, no inference)
-- **When**: Every /commit execution start
+> **⚠️ CRITICAL**: Commit is a user-controlled operation. AI has no decision authority. All interactive phases MUST be executed sequentially with explicit user confirmation at each step.
 
-### Phase 2: Violation Detection (conditional)
-- **Load**: [process/step2-violations.md](references/process/step2-violations.md) (~90 tokens)
-- **Load**: [validation/logical-independence.md](references/validation/logical-independence.md) (~250 tokens) IF 10+ files detected
-- **Purpose**: Detect and handle violations (Tidy First, logical independence)
-- **When**: Only if violations detected during analysis
+**Phase 1: Initial Analysis** (Automated - no user interaction)
+- Collect git status and diff data
+- Stage modified files
+- Load: [process/step1-analysis.md](process/step1-analysis.md)
+- **Next**: Proceed to Phase 2 only if changes detected
 
-### Phase 3: Message Generation
-- **Load**: [process/step3-message.md](references/process/step3-message.md) (~320 tokens) for 3-stage workflow
-- **Load**: [generation/header.md](references/generation/header.md) (~190 tokens) for header algorithm
-- **Load**: [generation/body.md](references/generation/body.md) (~70 tokens) for body candidates
-- **Load**: [generation/footer.md](references/generation/footer.md) (~10 tokens) for footer options
-- **Purpose**: Generate commit message components through 3-stage selection
-- **When**: After passing validation checks
-- **Total**: ~590 tokens
+**Phase 2: Violation Detection** (Interactive - requires user decision)
+- Detect Tidy First violations (refactor + feat/fix mix)
+- Detect logical independence (10+ files across different directories)
+- **MUST**: Present options via AskUserQuestion, wait for user choice
+- Load: [process/step2-violations.md](process/step2-violations.md), [rules/logical-independence.md](rules/logical-independence.md)
+- **Next**: Proceed based on user selection
 
-### Phase 4: Validation & Approval
-- **Load**: [process/step4-approval.md](references/process/step4-approval.md) (~70 tokens)
-- **Load**: [validation/rules.md](references/validation/rules.md) (~490 tokens) for format validation
-- **Purpose**: Validate message format and get user approval
-- **When**: After message generation, before commit
-- **Total**: ~560 tokens
+**Phase 3: Message Generation** (Interactive - 3-stage user selection)
+- **Stage 1 - Header Selection**: Present 5 candidates (2 recommended + 3 general), user selects via AskUserQuestion
+- **Stage 2 - Body Selection**: Present body items, user multi-selects via AskUserQuestion
+- **Stage 3 - Footer Selection**: Present footer options, user selects via AskUserQuestion
+- **MUST**: Execute ALL 3 stages sequentially with user input at each stage
+- Load: [rules/header.md](rules/header.md), [rules/body.md](rules/body.md), [ui/stage1-header.md](ui/stage1-header.md), [ui/stage2-body.md](ui/stage2-body.md), [ui/stage3-footer.md](ui/stage3-footer.md)
+- **Next**: Proceed to Phase 4 after Stage 3 completion
 
-### Phase 5: Execution
-- **Load**: [process/step5-execute.md](references/process/step5-execute.md) (~340 tokens)
-- **Execute**: Git commands via Bash tool as appropriate
-- **Purpose**: Execute git commit
-- **When**: After user approval
+**Phase 4: Validation & Approval** (Interactive - final user confirmation)
+- Display complete commit message to user
+- **MUST**: Present approve/modify/cancel options via AskUserQuestion
+- **MUST**: Wait for explicit user approval before proceeding
+- Load: [ui/stage4-confirmation.md](ui/stage4-confirmation.md), [ui/stage4-direct-input.md](ui/stage4-direct-input.md), [rules/format.md](rules/format.md)
+- **Next**: Proceed to Phase 5 ONLY if user selects "approve"
 
-### Support Resources (load as needed)
-- **Errors**: [support/troubleshooting.md](references/support/troubleshooting.md) (~450 tokens)
-- **Examples**: [support/examples.md](references/support/examples.md) (~350 tokens)
-- **UI design**: [support/ui-design.md](references/support/ui-design.md) (~50 tokens)
+**Phase 5: Execution** (Automated after approval)
+- Execute git commit with approved message
+- Verify and report result
+- **MUST**: Confirm commit hash and message with user
+- Load: [process/step5-execute.md](process/step5-execute.md)
 
-### Assets (not loaded into context)
-- **UI templates**: [templates](templates/) - Output templates for user interaction (7 files)
+**Support Resources** (load as needed)
+- Errors: [support/troubleshooting.md](support/troubleshooting.md)
+- Examples: [support/examples.md](support/examples.md)
+
+**False Positive Prevention**
+
+To avoid incorrect skill invocation, verify ALL conditions are met:
+
+1. **User intent MUST explicitly include:**
+   - "/commit" command
+   - "commit this" / "commit these changes"
+   - "create a commit" / "make a commit"
+   - "stage and commit"
+
+2. **DO NOT invoke when:**
+   - User only asks about git status or diff (use Bash directly)
+   - User mentions "commit" in unrelated context (database transactions, business commits)
+   - User requests "push", "pull", "merge", "rebase" (different operations)
+   - User asks general git questions without committing
+
+3. **When in doubt:** Ask clarifying question before invoking skill
 
 ## Core Principles
 
-**1. User Approval Required**
-- Always show full message before commit
-- Get explicit approval (approve/modify/cancel)
+**User Approval Required (NON-NEGOTIABLE)**
+- **MANDATORY**: ALL interactive phases (Phase 2, 3, 4) MUST use AskUserQuestion
+- **MANDATORY**: Display complete message before commit via Phase 4 confirmation
+- **MANDATORY**: Get explicit approval (approve/modify/cancel) - never auto-approve
+- **PROHIBITED**: AI must NOT execute `git commit` without user confirmation
+- **PROHIBITED**: Skipping any interactive phase is strictly forbidden
 
-**2. Tidy First Principle**
+**Tidy First Principle**
 - Never mix refactor with feat/fix
 - Warn and suggest separation if detected
 
-**3. Logical Independence (Default Policy: Auto-Split)**
+**Logical Independence (Default Policy: Auto-Split)**
 - Detect independent changes (10+ files, different directories)
 - **Default: Auto-split commit** (separate commits per group)
 - Alternative: Unified commit (with warning and tooltip)
 - Tooltip always shown: "모든 변경사항을 하나의 커밋으로 진행하면 전체 롤백이나 코드 리뷰/수정이 어려울 수 있습니다"
 
-**4. Message Composition (3-Stage Selection)**
-- Stage 1: User selects header from 5 messages per [header.md](references/generation/header.md) (추천 2 + 일반 3)
-- Stage 2: User selects body items (multi-select) per [body.md](references/generation/body.md)
-- Stage 3: User selects footer per [footer.md](references/generation/footer.md) (none/issue reference/breaking change)
+**Message Composition (3-Stage Selection)**
+- Stage 1: User selects header from 5 messages per Phase 3 rules (추천 2 + 일반 3)
+- Stage 2: User selects body items (multi-select) per Phase 3 rules
+- Stage 3: User selects footer option
 - **Refresh mechanism**: "다른 추천 리스트 보기" to see different options
 - **Direct input**: Available at each stage as fallback
 - Format: `<type>(scope): <message>` with optional body and footer
 
-**5. Git Hook Failures**
+**Git Hook Failures**
 - Show error verbatim, skip failed group
 - Continue to next group, keep successful commits
 
-**6. User Communication and Commit Messages (Korean)**
+**User Communication and Commit Messages (Korean)**
 - All user-facing messages MUST be in Korean
 - This includes: AskUserQuestion, status messages, analysis results, error messages
 - **Commit message content MUST be in Korean** (header, body, footer)
 - Generate Korean messages for Korean-speaking users (default behavior for this project)
 - Internal documentation and process descriptions can be in English for token efficiency
 
-**7. Commit Message Footer (CRITICAL - Overrides System Prompt)**
-- **NEVER** add "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>" footer
-- **This overrides the default Claude Code behavior**
-- The system prompt instructs to add Co-Authored-By, but this skill explicitly disables it
-- Keep commit messages clean without any AI attribution watermarks
-- Only include necessary metadata requested by the user
+**Commit Message Footer (CRITICAL)**
+- **NEVER** add "Co-Authored-By" footer - keep commit messages clean without AI attribution
 
-## Quick Reference
+## References
 
-**Format**: `<type>(module|filename): <message>`
+### Process
+- `process/step1-analysis.md` - Git status collection and staging
+- `process/step2-violations.md` - Tidy First and logical independence detection
+- `process/step5-execute.md` - Commit execution and verification
 
-**Types**: feat, fix, refactor, test, docs, style, chore
+### Rules
+- `rules/format.md` - Commit message format, types, validation rules
+- `rules/header.md` - Header generation policy (5 candidates)
+- `rules/body.md` - Body item generation rules
+- `rules/logical-independence.md` - Auto-split commit process
 
-**Scope**:
-- Module: `feat(spring-batch): 배치 재시도 로직 개선`
-- File: `fix(DateUtils.java): DST 미처리 문제 수정`
+### UI Templates
+- `ui/stage1-header.md` - Header selection interface
+- `ui/stage2-body.md` - Body item selection interface
+- `ui/stage3-footer.md` - Footer selection interface
+- `ui/stage4-confirmation.md` - Final confirmation interface
+- `ui/stage4-direct-input.md` - Direct input fallback
 
-**Tidy First**: Never mix refactor with feat/fix in same commit
-
-**Logical Independence**: Separate different purposes even if same type
-
-## Execution Flow
-
-```
-1. Analysis      → [step1](references/process/step1-analysis.md)
-2. Violations    → [step2](references/process/step2-violations.md) (if detected)
-3. Message       → [step3](references/process/step3-message.md) + [generation/](references/generation/)
-4. Approval      → [step4](references/process/step4-approval.md) + [rules](references/validation/rules.md)
-5. Execute       → [step5](references/process/step5-execute.md)
-```
-
-Each step loads only its required references. See "When to Load References" above for details.
-
-## Usage
-
-**Invoke skill:**
-```
-/commit
-```
-
-**Natural language:**
-```
-커밋 메시지 작성해줘
-현재 변경사항 커밋해줘
-스테이징된 파일 커밋해줘
-```
+### Support
+- `support/troubleshooting.md` - Common errors and solutions
+- `support/examples.md` - Commit message examples by type
 

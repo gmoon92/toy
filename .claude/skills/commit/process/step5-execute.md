@@ -4,7 +4,7 @@
 
 **Claude validates the commit message before execution:**
 
-Validation is performed using `validation/rules.md` which is already loaded in Phase 4:
+Validation rules (already loaded in Phase 4):
 
 1. ✅ Message follows `<type>(scope): <message>` format
 2. ✅ Type is one of: feat, fix, refactor, test, docs, style, chore
@@ -64,7 +64,7 @@ SUBJECT: feat(spring-cloud-bus): 커스텀 이벤트 핸들러 구현
 ### When Commit Fails
 
 - Explain error message in Korean
-- Guide to refer to [troubleshooting.md](../support/troubleshooting.md)
+- Guide to load support/troubleshooting.md for error details
 - Suggest possible solutions
 
 ---
@@ -149,17 +149,3 @@ Start
 
 ---
 
-## Related Documents
-
-- **[step1-analysis.md](step1-analysis.md)** - Restart from beginning if needed
-  - If commit fails, may need to re-analyze
-- **[support/troubleshooting.md](../support/troubleshooting.md)** - Error handling
-  - Git hook failures and common commit errors
-- **[validation/rules.md](../validation/rules.md)** - Commit message format rules
-  - Validation rules and format specifications
-  - Tidy First and Logical Independence principles
-- **[support/examples.md](../support/examples.md)** - Complete commit message examples
-  - All 7 commit types with real examples
-- **[support/ui-design.md](../support/ui-design.md)** - User interaction templates
-  - 5 template files for different user interactions
-- **[support/troubleshooting.md](../support/troubleshooting.md)** - Error handling and hook failures

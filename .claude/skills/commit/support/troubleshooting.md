@@ -65,7 +65,7 @@ mvn spotless:apply    # Or Ctrl+Alt+L in IntelliJ
 ✅ feat(agent): message          # Correct: <type>(scope): <message>
 ```
 
-**Allowed types:** `feat`, `fix`, `refactor`, `test`, `docs`, `style`, `chore`
+**Allowed types:** feat, fix, refactor, test, docs, style, chore
 
 **Max blank lines:** 2 groups only (title-body, body-footer)
 
@@ -139,24 +139,6 @@ git restore .                 # Discard all (⚠️ permanent)
 ---
 
 ## Common Workflow Issues
-
-### Mixed Changes (Tidy First Violation)
-
-Staged changes mix refactor and feat/fix.
-
-**Solution:**
-```bash
-# Unstage all
-git reset HEAD
-
-# Stage refactor changes only
-git add -p               # Interactive staging
-/commit
-
-# Stage feature changes
-git add -p
-/commit
-```
 
 ### Committed to Main Branch
 
@@ -262,8 +244,3 @@ When stuck, follow this checklist:
 
 ---
 
-## Additional Resources
-
-- [rules.md](../validation/rules.md) - Commit message format rules
-- [examples.md](examples.md) - Commit examples
-- [SKILL.md](../../SKILL.md) - Skill overview

@@ -2,6 +2,8 @@
 
 Detailed specifications for toy project commit messages.
 
+> **Single Source of Truth:** This file contains the authoritative definitions for commit message format, types, and validation rules. Loaded by SKILL.md during Phase 4.
+
 ## Basic Format
 
 ```
@@ -119,9 +121,6 @@ feat(spring-security-jwt): JWT 인증 필터 구현
 - 토큰 생성 및 검증 로직 추가, SecurityConfig에 JWT 필터 통합
 ```
 
-**For detailed format specifications, see:**
-- [Body Generation](../generation/body.md) - Complete body generation criteria and format rules
-
 ### Footer
 
 Add footer for:
@@ -192,28 +191,8 @@ Related: something
 
 **Core Rule:** NEVER mix structural changes (refactor) and behavioral changes (feat/fix) in one commit.
 
-### Quick Guide
-
-**Structural changes (refactor):**
-- Method extraction, variable renaming, code reorganization
-- Import reordering, formatting improvements
-- No behavior change
-
-**Behavioral changes (feat/fix):**
-- New features, bug fixes, API changes, logic modifications
-- Affects functionality
-
-### Why Separate?
-
-Separating structural and behavioral changes enables:
-- Easier code review (focus on one type)
-- Safer rollback (revert behavior without losing refactoring)
-- Better debugging with `git bisect`
-- Clearer git history
-
-**For detailed examples and detection process, see:**
-- [../templates/1-tidy-first.md](../../templates/1-tidy-first.md) - Detection and user guidance
-- [examples.md](../support/examples.md) - Correct vs incorrect commit examples
+- **Structural** (refactor): Method extraction, renaming, reorganization - no behavior change
+- **Behavioral** (feat/fix): New features, bug fixes, API changes - affects functionality
 
 ## Toy Project Conventions
 
@@ -262,25 +241,10 @@ Bad: fix(java-core): DST 미처리 문제 수정
 
 **Core Rule:** Separate logically independent changes even if they're the same type.
 
-### When to Separate
-
-Separate commits when changes have:
-1. **Different purposes**: Different documents, features, or goals
-2. **Independent review**: Can be reviewed separately
-3. **Different contexts**: Different projects/modules/features
-
-### Quick Decision Criteria
-
-Consider separating if:
-- 10+ files changed
-- Different top-level directories
-- Each part can be explained independently
-- Not appropriate for one PR review
-
-**For detailed examples and auto-split process, see:**
-- [2-logical-independence.md](../../templates/2-logical-independence.md) - Detection and user guidance
-- [logical-independence.md](logical-independence.md) - Automatic commit splitting process
-- [examples.md](../support/examples.md) - Correct vs incorrect commit examples
+**Separate when:**
+- Different purposes, contexts, or goals
+- Can be reviewed independently
+- 10+ files across different directories
 
 ## Common Mistakes
 
@@ -358,13 +322,3 @@ Is it formatting only? → style
 Is it build/config? → chore
 ```
 
-## Related Documents
-
-- **[support/examples.md](../support/examples.md)** - Complete commit message examples
-  - All 7 commit types with real examples
-  - Good vs bad patterns demonstrating these rules
-  - How rules are applied in automatic detection
-- **[process/step4-approval.md](../process/step4-approval.md)** - Validation process
-  - When these rules are checked during approval
-- **[logical-independence.md](logical-independence.md)** - Automatic commit splitting
-- **[troubleshooting.md](../support/troubleshooting.md)** - Error handling and hook failures

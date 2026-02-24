@@ -100,8 +100,8 @@ For each group in order:
 1. docs(commit-skill): 커밋 메시지 자동 생성 스킬 추가
 
    - SKILL.md: 스킬 실행 프로세스 정의
-   - references/validation/rules.md: 커밋 메시지 형식 규칙
-   - references/support/examples.md: 실제 사용 예시
+   - rules/format.md: 커밋 메시지 형식 규칙
+   - support/examples.md: 실제 사용 예시
 
 2. docs(commit-skill): 커밋 스킬 문서 추가
 ...
@@ -173,18 +173,3 @@ Final report shows:
 - Priority can be reset before starting commits
 
 ---
-
-## Related Documents
-
-- **[process/step2-violations.md](../process/step2-violations.md)** - Violation detection
-  - How logical independence is detected
-  - Integration with auto-split process
-- **[rules.md](rules.md)** - Logical Independence principle
-  - When and why to separate commits
-  - Decision criteria
-- **[support/examples.md](../support/examples.md)** - Auto-split examples
-  - Real-world scenarios of independent changes
-- **[generation/header.md](../generation/header.md)** - Header generation per group
-  - How 5 header messages are generated for each split group
-- **[generation/body.md](../generation/body.md)** - Body generation per group
-  - Feature-based body items for each group

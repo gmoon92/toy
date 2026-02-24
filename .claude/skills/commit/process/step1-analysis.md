@@ -85,4 +85,3 @@ After collecting git data, Claude analyzes in real-time:
 - Fresh analysis ensures latest context
 - System simplicity > micro-optimization
 
----
