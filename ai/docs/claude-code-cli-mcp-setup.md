@@ -4,22 +4,11 @@
 
 MCP의 개념과 배경은 [MCP 기본 개념 가이드](mcp-concepts.md)를 참고하세요.
 
-MCP 개념 설명은 별도 문서를 참고하세요.
-
-- [MCP 기본 개념](./mcp-concepts.md)
-- [기존 LLM의 동작 방식과 한계](./mcp-concepts.md#1-기존-llm의-동작-방식과-한계)
-- [실행 문제를 해결하기 위한 확장](./mcp-concepts.md#2-실행-문제를-해결하기-위한-확장)
-- [MCP란?](./mcp-concepts.md#3-mcp란)
-- [CLI 기반 MCP 동작 구조](./mcp-concepts.md#4-cli-기반-mcp-동작-구조)
-- [MCP 연결 시 가능한 변화](./mcp-concepts.md#5-mcp-연결-시-가능한-변화)
-
 ---
 
 ## MCP 서버 추가하기
 
 이 섹션은 MCP 서버를 Claude Code CLI에 등록하는 기본 명령과 연결 방식을 설명합니다.
-
-기본 구문:
 
 ```bash
 claude mcp add [option] <name> -- <command> [args...]
@@ -37,69 +26,20 @@ claude mcp add \
 
 ### MCP 서버 연결 방식
 
-MCP 서버를 연동하는 방식은 크게 3가지입니다.
+Claude Code CLI는 MCP 서버 연결을 3가지 방식으로 지원합니다.
 
-<details>
-<summary>`http`: HTTP 원격 서버 연결</summary>
+| 방식        | 설명                          | 예시                                                                                              |
+|-----------|-----------------------------|-------------------------------------------------------------------------------------------------|
+| `http`    | 원격 서버 URL에 연결               | `claude mcp add --transport http context7 https://mcp.context7.com/mcp`                         |
+| `stdio`   | 로컬 프로세스 직접 실행               | `claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking` |
+| ~~`sse`~~ | ~~SSE 전송 이벤트 (Deprecated)~~ | 사용 권장하지 않음                                                                                      |
 
-`http` transport 옵션은 원격에서 이미 실행 중인 서버 URL에 연결할 때 사용합니다.
+> `sse` 방식은 레거시 방식이며 deprecated 상태입니다. 
+> 자세한 내용은 [Claude Code 공식 문서 - Installing MCP servers](https://code.claude.com/docs/en/mcp#installing-mcp-servers)를 참고하세요.
 
-```bash
-# 예시 1: Context7
-claude mcp add \
-  --scope project \
-  --transport http \
-  context7 \
-  https://mcp.context7.com/mcp
+### MCP 설치 범위
 
-# 예시 2: Bearer 토큰
-claude mcp add \
-  --scope user \
-  --transport http \
-  secure-api \
-  https://api.example.com/mcp \
-  --header "Authorization: Bearer your-token"
-```
-
-```bash
-claude mcp add --scope project --transport http context7 https://mcp.context7.com/mcp
-```
-
-</details>
-
-<details>
-<summary>`stdio`: 로컬 프로세스 실행</summary>
-
-`stdio`는 로컬 컴퓨터에서 MCP 서버 프로세스를 직접 실행할 때 사용합니다.
-
-```bash
-claude mcp add --scope project sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
-```
-
-</details>
-
-<details>
-<summary>~~`sse`: SSE 전송 이벤트 (Deprecated)~~</summary>
-
-`sse`는 레거시 방식이며 deprecated 상태이므로 가능하면 `http`를 사용하세요.
-
-```bash
-claude mcp add --transport sse asana https://mcp.asana.com/sse
-```
-
-</details>
-
----
-
-## MCP 설치 범위
-
-이 섹션은 `--scope`에 따른 저장 위치와 적용 범위를 설명합니다.
-
-- `local`은 기본값이며 현재 작업 디렉토리의 `.claude.json`에 저장되고 현재 프로젝트에서만 사용됩니다.
-- `project`는 프로젝트 루트의 `.mcp.json`에 저장되며 팀과 공유할 수 있습니다.
-- `user`는 홈 디렉토리의 `~/.claude.json`에 저장되며 모든 프로젝트에서 사용됩니다.
-
-현재 작업 디렉토리는 `claude` 명령을 실행한 폴더이며 `pwd`로 확인할 수 있습니다.
+Claude Code CLI에서는 `--scope` 옵션을 통해 MCP 서버의 동작 범위를 지정할 수 있습니다.
 
 ```bash
 # local (기본)
@@ -112,15 +52,46 @@ claude mcp add --scope project --transport http paypal https://mcp.paypal.com/mc
 claude mcp add --scope user --transport http hubspot https://mcp.hubspot.com/anthropic
 ```
 
-동일한 이름이 여러 범위에 있으면 `local > project > user` 순서로 우선 적용됩니다.
+- `local`은 기본값이며 현재 작업 디렉토리의 `.claude.json`에 저장되고 현재 프로젝트에서만 사용됩니다.
+- `project`는 프로젝트 루트의 `.mcp.json`에 저장되며 팀과 공유할 수 있습니다.
+- `user`는 홈 디렉토리의 `~/.claude.json`에 저장되며 모든 프로젝트에서 사용됩니다.
 
-프로젝트 범위 서버는 최초 사용 전에 보안 승인 절차가 필요합니다.
+> 현재 작업 디렉토리는 `claude` 명령을 실행한 폴더이며 `pwd`로 확인할 수 있습니다.
+
+#### 설정 파일 로드 및 적용 순서
+
+Claude Code는 기본적으로 다음 순서로 설정 파일을 로드합니다.
+
+1. global (`user` 사용자)
+2. project (`.mcp.json`)
+3. local (`claude.json`)
+
+이때 설정값은 역순으로 적용되며, 동일한 이름이 여러 범위에 있으면 `local > project > user` 순서로 우선 적용됩니다.
+
+## 프로젝트 별 MCP 서버 설정 구성
+
+프로젝트 범위(`--scope project`)로 등록된 MCP 서버는 `.mcp.json` 파일에 저장되어 팀과 공유됩니다. 
+이 파일은 버전 관리에 체크인되므로, 외부 저장소에서 클론받았을 때 의도치 않은 MCP 서버가 자동으로 실행되는 것을 방지하기 위해 **최초 사용 전 보안 승인 절차**가 필요합니다.
+
+### 보안 승인
+
+프로젝트 범위 서버는 최초 사용 전에 보안 승인이 필요합니다.
+기존 승인 내역을 초기화하여 재확인하거나, 프로젝트 설정 변경 시 전체를 재승인하려면 다음 명령을 사용하세요.
 
 ```bash
 claude mcp reset-project-choices
 ```
 
-프로젝트 설정 파일에서는 환경 변수 확장을 사용할 수 있습니다.
+**초기화가 필요한 경우:**
+
+- 승인 내역 재확인 및 보안 재검토
+- `.mcp.json` 변경 또는 새 서버 추가 시
+- 정기적 보안 정책 준수
+- 서버 연결 문제 해결
+
+### 환경 변수 설정
+
+프로젝트 설정 파일(`.mcp.json`)에서는 민감 정보를 하드코딩하지 않고 환경 변수 확장을 사용할 수 있습니다.
 
 ```json
 {
@@ -140,41 +111,159 @@ claude mcp reset-project-choices
 
 ---
 
-## 설정 파일 예시
+## 프로젝트 `.mcp.json` 설정 가이드
 
-이 섹션은 `~/.claude.json` 또는 `.mcp.json`에서 사용하는 기본 구조 예시를 보여줍니다.
+예를 들어 `my-project`라는 프로젝트에서 `.mcp.json` 파일로 MCP 서버를 관리한다면 다음과 같은 구조를 가지고 있습니다.
+
+```text
+my-project/
+├─ .claude/
+├     └─ prd/
+├     └─ promt/
+├     └─ settings.local.json     <- 로컬 클로드 코드 CLI 설정 파일
+├─ .mcp.json  <- 프로젝트 MCP 서버 설정 파일
+├─ fe/
+└─ be/
+```
+
+### 1. settings.local.json 환경변수 설정
+
+프로젝트의 `.claude/settings.local.json` 파일에 아래 환경변수를 추가합니다.
 
 ```json
 {
-  "mcpServers": {
-    "sequential-thinking": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
-    },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp"
+  "env": {
+    "PROJECT_DIR": "/Users/gmoon/IdeaProjects/my-project",
+    "PROJECT_DIR_SHRIMP_TASK_MANAGER": "/Users/gmoon/IdeaProjects/mcp-shrimp-task-manager"
+  }
+}
+```
+
+- `PROJECT_DIR`: 현재 프로젝트의 절대 경로
+- `PROJECT_DIR_SHRIMP_TASK_MANAGER`: Shrimp Task Manager 프로젝트의 절대 경로
+    - 자세한 프로젝트 설치 방법은 다음 [Shrimp Task Manager 섹션](#shrimp-task-manager)을 참고하세요.
+
+두 값 모두 반드시 절대 경로로 지정하세요.
+
+### 2. Claude Code CLI에서 MCP 서버 설정 확인
+
+Claude Code CLI에서 `/mcp` 명령으로 서버 연결 상태를 확인할 수 있습니다.
+
+```bash
+➜  my-project (main) claude                                                                                                                                                                                                                                              ✭ ✱
+
+╭─── Claude Code v2.1.62 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                   │ Tips for getting started                                                                                                                                                                                                               │
+│           Welcome back!           │ Run /init to create a CLAUDE.md file with instructions for Claude                                                                                                                                                                      │
+│                                   │ ─────────────────────────────────────────────────────────────────                                                                                                                                                                      │
+│                                   │ Recent activity                                                                                                                                                                                                                        │
+│              ▐▛███▜▌              │ No recent activity                                                                                                                                                                                                                     │
+│             ▝▜█████▛▘             │                                                                                                                                                                                                                                        │
+│               ▘▘ ▝▝               │                                                                                                                                                                                                                                        │
+│   kimi-k2.5 · API Usage Billing   │                                                                                                                                                                                                                                        │
+│    ~/IdeaProjects/my-project     │                                                                                                                                                                                                                                        │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  /model to try Opus 4.6
+
+❯ /mcp
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Manage MCP servers
+ 6 servers
+
+   Project MCPs (/Users/gmoon/IdeaProjects/my-project/.mcp.json)
+ ❯ chrome-devtools · ✔ connected
+   context7 · ✔ connected
+   playwright · ✔ connected
+   sequential-thinking · ✔ connected
+   serena · ✔ connected
+   shrimp-task-manager · ✔ connected
+
+ https://code.claude.com/docs/en/mcp for help
+
+ ↑↓ to navigate · Enter to confirm · Esc to cancel
+```
+
+- Claude Code CLI에서 프로젝트 단위 MCP 서버 설정은 `.mcp.json`으로 관리됩니다.
+- 아래 문구가 보이면 `.mcp.json`이 정상 로드된 상태입니다.
+    - `Project MCPs (/Users/gmoon/IdeaProjects/my-project/.mcp.json)`
+
+### 3. `.mcp.json` 설정이 아닌, 사용자 설정(글로벌)으로 로드된다면?
+
+간혹 설정 충돌로 인해 프로젝트 설정(`.mcp.json`) 대신 사용자 설정(`~/.claude.json`)이 적용되는 경우가 있습니다. 이 경우 프로젝트 설정을 초기화하고 다시 로드해야 합니다.
+
+#### 3.1. 사용자 클로드 설정에서 맵핑된 프로젝트 제거
+
+사용자 설정 파일 `~/.claude.json`의 `projects` 항목에서 현재 프로젝트를 제거하세요.
+
+```bash
+vi ~/.claude.json
+```
+
+```json
+{
+  "projects": {
+    "/Users/gmoon/IdeaProjects/my-project": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": true,
+      "ignorePatterns": [],
+      "projectOnboardingSeenCount": 4,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [
+        "SettingLicenseController.java",
+        "PaymentManagerImpl.java",
+        "LicenseManagerImpl.java",
+        "PaymentController.java",
+        "DateUtil.java"
+      ],
+      "lastTotalWebSearchRequests": 0,
+      "exampleFilesGeneratedAt": 1771901333692,
+      "reactVulnerabilityCache": {
+        "detected": false,
+        "package": null,
+        "packageName": null,
+        "version": null,
+        "packageManager": null
+      }
     }
   }
 }
 ```
 
-직접 편집보다 `claude mcp add` 명령을 사용해 설정을 생성하는 방식을 권장합니다.
+- `"/Users/gmoon/IdeaProjects/my-project"` 항목을 제거
 
----
+### 3.2. Claude Code CLI 재시작
 
-## 보안 주의사항
+Claude Code CLI를 종료 후 다시 실행하면 변경된 프로젝트 설정이 적용됩니다.
 
-이 섹션은 MCP 운영 시 꼭 확인해야 할 보안 체크포인트를 요약합니다.
+```bash
+my-project (main) claude                                                                                                     ✭ ✱
 
-- MCP 서버는 외부 프로그램이므로 신뢰할 수 있는 출처만 사용하세요.
-- `project` 범위 설정은 팀과 공유될 수 있으니 민감 정보를 직접 기록하지 마세요.
-- API 키와 토큰은 환경 변수로 분리하고 설정 파일에서는 참조만 하세요.
-- 프로젝트 범위 서버는 최초 승인 전에 동작 범위를 확인하세요.
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Accessing workspace:
+
+ /Users/gmoon/IdeaProjects/my-project
+
+ Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source project, or work
+ from your team). If not, take a moment to review what's in this folder first.
+
+ Claude Code'll be able to read, edit, and execute files here.
+
+ Security guide
+
+ ❯ 1. Yes, I trust this folder
+   2. No, exit
+
+ Enter to confirm · Esc to cancel
+```
+
+- 프로젝트 신뢰성 컨펌 메시지가 나온다면 초기화가 정상적으로 됐다는 의미입니다.
+- `1. Yes, I trust this folder` 선택하면 자동적으로 사용자 설정(글로벌)에 프로젝트가 재설정됩니다.
 
 ---
 
@@ -203,7 +292,7 @@ claude
 
 ▐▛███▜▌   Claude Code v2.1.56
 ▝▜█████▛▘  kimi-k2.5 · API Usage Billing
-▘▘ ▝▝    /Users/username
+▘▘ ▝▝    /Users/gmoon
 
 /model to try Opus 4.6
 
@@ -212,7 +301,7 @@ claude
 Manage MCP servers
 6 servers
 
-User MCPs (/Users/username/.claude.json)
+User MCPs (/Users/gmoon/.claude.json)
 ❯ chrome-devtools · ✔ connected
 playwright · ✔ connected
 sequential-thinking · ✔ connected
@@ -373,14 +462,22 @@ npm run build
 ```json
 {
   "env": {
-    "PROJECT_DIR": "/Users/username/IdeaProjects/my-project",
-    "PROJECT_DIR_SHRIMP_TASK_MANAGER": "/Users/username/IdeaProjects/mcp-shrimp-task-manager"
+    "PROJECT_DIR": "/Users/gmoon/IdeaProjects/my-project",
+    "PROJECT_DIR_SHRIMP_TASK_MANAGER": "/Users/gmoon/IdeaProjects/mcp-shrimp-task-manager"
   }
 }
 ```
 
-> 참고:
-> - https://github.com/cjo4m06/mcp-shrimp-task-manager
+> 참고: https://github.com/cjo4m06/mcp-shrimp-task-manager
+
+---
+
+## 보안 주의사항
+
+MCP 운영 시 꼭 확인해야 할 보안 체크포인트입니다.
+
+- MCP 서버는 외부 프로그램이므로 신뢰할 수 있는 출처만 사용하세요.
+- 정기적으로 `claude mcp list`로 등록된 서버를 확인하고 불필요한 서버는 제거하세요.
 
 ## 참고 자료
 
