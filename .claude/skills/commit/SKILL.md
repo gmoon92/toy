@@ -9,7 +9,8 @@ allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
 Automates commit message generation following project conventions.
 
 **Core Functions:**
-- **Auto-stages all modified files** (IDE-like behavior, no user confirmation needed)
+- **Preserves existing staging state**: Saves and restores user's original staging area state
+- **Intelligent staging**: Stages only specified files when paths are provided; auto-stages all modified files when no paths specified
 - Analyzes all changes (staged + modified) and identifies scope (module/file)
 - Validates Tidy First principles (structural vs behavioral separation)
 - Detects logical independence (multiple independent groups)
@@ -19,7 +20,8 @@ Automates commit message generation following project conventions.
 - Executes git commit after user approval
 
 **Scope:**
-- ✅ Auto-stage modified files (IDE behavior)
+- ✅ Stage specified files when paths are provided (respects user selection)
+- ✅ Auto-stage all modified files when no paths specified (IDE behavior)
 - ✅ Analyze all changes (staged + modified)
 - ✅ Validate Tidy First and logical independence
 - ✅ Execute `git commit` (with user approval)
@@ -33,10 +35,18 @@ Execute skill in 5 phases. Each phase requires user interaction before proceedin
 > **⚠️ CRITICAL**: Commit is a user-controlled operation. AI has no decision authority. All interactive phases MUST be executed sequentially with explicit user confirmation at each step.
 
 **Phase 1: Initial Analysis** (Automated - no user interaction)
+- **Save current staging state** (list of already staged files)
 - Collect git status and diff data
-- Stage modified files
+- **Unstage existing files** (`git reset HEAD`) for clean slate
+- **Stage files based on user input**:
+  - If specific files are mentioned: Stage ONLY those files
+  - If NO specific files: Stage all modified files (`git add -u`)
 - Load: [process/step1-analysis.md](process/step1-analysis.md)
 - **Next**: Proceed to Phase 2 only if changes detected
+
+**Phase 5+: Restore Staging State** (Always execute at end)
+- **Restore original staging state** after commit/cancel/error
+- Ensures user's pre-existing staged files remain staged
 
 **Phase 2: Violation Detection** (Interactive - requires user decision)
 - Detect Tidy First violations (refactor + feat/fix mix)
