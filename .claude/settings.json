@@ -1,17 +1,38 @@
 {
-  "permissions": {
-    "allow": [
-      "mcp__serena__list_dir",
-      "mcp__serena__activate_project",
-      "mcp__serena__read_file"
-    ]
-  },
+  "language": "korean",
+  "autoUpdatesChannel": "stable",
+  "teammateMode": "tmux",
+  "alwaysThinkingEnabled": true,
+
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "context7",
     "serena",
     "sequential-thinking",
     "chrome-devtools"
   ],
+  "disabledMcpjsonServers": [
+    "playwright",
+    "shrimp-task-manager"
+  ],
+
+  "companyAnnouncements": [
+    "  ______                            \n /_  __/___  __  __                 \n  / / / __ \\/ / / /                 \n / / / /_/ / /_/ /                  \n/_/  \\____/\\__, /                   \n   ____ __/____/_  ____  ____  ____ \n  / __ `/ __ `__ \\/ __ \\/ __ \\/ __ \\\n / /_/ / / / / / / /_/ / /_/ / / / /\n \\__, /_/ /_/ /_/\\____/\\____/_/ /_/ \n/____/                              \n\n@github: https://github.com/gmoon92\n",
+    "Font: Slant with https://www.patorjk.com/software/taag/#p=display&f=Slant"
+  ],
+
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "CLAUDE_CODE_EFFORT_LEVEL": "high",
+    "MCP_TIMEOUT": 1000
+  },
+
   "hooks": {
     "Notification": [
       {
@@ -24,6 +45,33 @@
           }
         ]
       }
+    ]
+  },
+
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "mcp__serena__list_dir",
+      "mcp__serena__read_file",
+      "mcp__serena__activate_project",
+      "mcp__serena__replace_content",
+      "mcp__serena__create_text_file",
+      "mcp__serena__replace_symbol_body",
+      "mcp__serena__find_symbol",
+      "mcp__serena__search_for_pattern",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*credentials*)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)"
     ]
   }
 }
