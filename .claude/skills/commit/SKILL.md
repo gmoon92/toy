@@ -1,165 +1,197 @@
 ---
-name: commit
-description: Analyzes git changes and generates convention-compliant commit messages. Use when user requests "/commit", asks to commit changes, or mentions creating a commit.
-allowed-tools: Read, Grep, Glob, Bash, AskUserQuestion
+name: git:commit
+description: Git 커밋 메시지 작성을 요청할 때 반드시 사용하세요.
+disable-model-invocation: true
+user-invocable: true
 ---
 
-## Overview
+# Git commit
 
-Automates commit message generation following project conventions.
+Git 변경사항을 분석하고 **Conventional Commits 규약**에 따라 커밋 메시지를 작성합니다.
 
-**Core Functions:**
-- **Preserves existing staging state**: Saves and restores user's original staging area state
-- **Intelligent staging**: Stages only specified files when paths are provided; auto-stages all modified files when no paths specified
-- Analyzes all changes (staged + modified) and identifies scope (module/file)
-- Validates Tidy First principles (structural vs behavioral separation)
-- Detects logical independence (multiple independent groups)
-- **Guides user through 3-stage message composition** (type → body items → footer)
-- Generates body item candidates per Phase 3 rules
-- Supports auto-split commit for logically independent changes
-- Executes git commit after user approval
+**IMPORTANT**
 
-**Scope:**
-- ✅ Stage specified files when paths are provided (respects user selection)
-- ✅ Auto-stage all modified files when no paths specified (IDE behavior)
-- ✅ Analyze all changes (staged + modified)
-- ✅ Validate Tidy First and logical independence
-- ✅ Execute `git commit` (with user approval)
-- ❌ Never: `git push` or destructive commands without approval
-- ❌ Never: Stage untracked files (only modified files)
+- 여러 논리적 변경사항이 존재하면 **분리된 커밋으로 진행하세요.**
+- **Tidy First 원칙을 준수하세요**: 구조 변경(`refactor`)과 기능 변경(`feat`, `fix`)은 **동일 커밋에 포함하지 않습니다**
+- 기본적으로 커밋 메시지 언어(`language`)는 **한국어**로 작성합니다.
 
-## Process
+# Workflow
 
-Execute skill in 5 phases. Each phase requires user interaction before proceeding. Never skip any phase.
+## 1. 변경사항 분석
 
-> **⚠️ CRITICAL**: Commit is a user-controlled operation. AI has no decision authority. All interactive phases MUST be executed sequentially with explicit user confirmation at each step.
+Git 변경사항을 확인하여 변경 범위를 파악합니다.
 
-**Phase 1: Initial Analysis** (Automated - no user interaction)
-- **Save current staging state** (list of already staged files)
-- Collect git status and diff data
-- **Unstage existing files** (`git reset HEAD`) for clean slate
-- **Stage files based on user input**:
-  - If specific files are mentioned: Stage ONLY those files
-  - If NO specific files: Stage all modified files (`git add -u`)
-- Load: [process/step1-analysis.md](process/step1-analysis.md)
-- **Next**: Proceed to Phase 2 only if changes detected
+1. `git status`로 변경된 파일 확인
+2. `git diff`로 **working tree 변경사항 확인**
+3. 소스 코드 변경 분석 시 **가능하면 LSP를 우선 사용**
 
-**Phase 5+: Restore Staging State** (Always execute at end)
-- **Restore original staging state** after commit/cancel/error
-- Ensures user's pre-existing staged files remain staged
+## 2. 논리적 커밋 분리
 
-**Phase 2: Violation Detection** (Interactive - requires user decision)
-- Detect Tidy First violations (refactor + feat/fix mix)
-- Detect logical independence (10+ files across different directories)
-- **MUST**: Present options via AskUserQuestion, wait for user choice
-- Load: [process/step2-violations.md](process/step2-violations.md), [rules/logical-independence.md](rules/logical-independence.md)
-- **Next**: Proceed based on user selection
+변경사항을 논리적 단위로 나눕니다.
 
-**Phase 3: Message Generation** (Interactive - 3-stage user selection)
-- **Stage 1 - Header Selection**: Present 5 candidates (2 recommended + 3 general), user selects via AskUserQuestion
-- **Stage 2 - Body Selection**: Present body items, user multi-selects via AskUserQuestion
-- **Stage 3 - Footer Selection**: Present footer options, user selects via AskUserQuestion
-- **MUST**: Execute ALL 3 stages sequentially with user input at each stage
-- Load: [rules/header.md](rules/header.md), [rules/body.md](rules/body.md), [ui/stage1-header.md](ui/stage1-header.md), [ui/stage2-body.md](ui/stage2-body.md), [ui/stage3-footer.md](ui/stage3-footer.md)
-- **Next**: Proceed to Phase 4 after Stage 3 completion
+1. **논리적 단위로 그룹화** (refactor / feat / docs 등)
+2. 각 그룹의 **파일 경로를 명확히 식별**
+3. **파일 경로를 지정하여 개별 commit**
 
-**Phase 4: Validation & Approval** (Interactive - final user confirmation)
-- Display complete commit message to user
-- **MUST**: Present approve/modify/cancel options via AskUserQuestion
-- **MUST**: Wait for explicit user approval before proceeding
-- Load: [ui/stage4-confirmation.md](ui/stage4-confirmation.md), [ui/stage4-direct-input.md](ui/stage4-direct-input.md), [rules/format.md](rules/format.md)
-- **Next**: Proceed to Phase 5 ONLY if user selects "approve"
+## 3. 커밋 메시지 작성
 
-**Phase 5: Execution** (Automated after approval)
-- Execute git commit with approved message
-- Verify and report result
-- **MUST**: Confirm commit hash and message with user
-- Load: [process/step5-execute.md](process/step5-execute.md)
+커밋 메시지는 다음 구조를 따릅니다.
 
-**Support Resources** (load as needed)
-- Errors: [support/troubleshooting.md](support/troubleshooting.md)
-- Examples: [support/examples.md](support/examples.md)
+```
+<type>(scope): <description>
 
-**False Positive Prevention**
+<body>
 
-To avoid incorrect skill invocation, verify ALL conditions are met:
+<footer>
+```
 
-1. **User intent MUST explicitly include:**
-   - "/commit" command
-   - "commit this" / "commit these changes"
-   - "create a commit" / "make a commit"
-   - "stage and commit"
+### Commit Type
 
-2. **DO NOT invoke when:**
-   - User only asks about git status or diff (use Bash directly)
-   - User mentions "commit" in unrelated context (database transactions, business commits)
-   - User requests "push", "pull", "merge", "rebase" (different operations)
-   - User asks general git questions without committing
+| 타입         | 설명                      |
+|------------|-------------------------|
+| `feat`     | 새로운 기능 추가               |
+| `fix`      | 버그 수정                   |
+| `docs`     | 문서 수정 (README, 주석 등)    |
+| `style`    | 코드 스타일 수정 (포맷팅, 세미콜론 등) |
+| `refactor` | 리팩토링 (기능 변화 없음)         |
+| `test`     | 테스트 추가 또는 수정            |
+| `chore`    | 빌드, 설정, CI/CD 등 기타 작업   |
 
-3. **When in doubt:** Ask clarifying question before invoking skill
+### Description 규칙
 
-## Core Principles
+**IMPORTANT**:
 
-**User Approval Required (NON-NEGOTIABLE)**
-- **MANDATORY**: ALL interactive phases (Phase 2, 3, 4) MUST use AskUserQuestion
-- **MANDATORY**: Display complete message before commit via Phase 4 confirmation
-- **MANDATORY**: Get explicit approval (approve/modify/cancel) - never auto-approve
-- **PROHIBITED**: AI must NOT execute `git commit` without user confirmation
-- **PROHIBITED**: Skipping any interactive phase is strictly forbidden
+- **명령문 형태로 작성**
+- 첫 글자는 **소문자**
+- **마침표(.) 사용 금지**
+- **50자 이내 권장**
 
-**Tidy First Principle**
-- Never mix refactor with feat/fix
-- Warn and suggest separation if detected
+예시:
+```
+feat(auth): 사용자 로그인 엔드포인트 추가
+fix(api): 언어 리소스 조회 오류 수정
+```
 
-**Logical Independence (Default Policy: Auto-Split)**
-- Detect independent changes (10+ files, different directories)
-- **Default: Auto-split commit** (separate commits per group)
-- Alternative: Unified commit (with warning and tooltip)
-- Tooltip always shown: "모든 변경사항을 하나의 커밋으로 진행하면 전체 롤백이나 코드 리뷰/수정이 어려울 수 있습니다"
+### Body 규칙
 
-**Message Composition (3-Stage Selection)**
-- Stage 1: User selects header from 5 messages per Phase 3 rules (추천 2 + 일반 3)
-- Stage 2: User selects body items (multi-select) per Phase 3 rules
-- Stage 3: User selects footer option
-- **Refresh mechanism**: "다른 추천 리스트 보기" to see different options
-- **Direct input**: Available at each stage as fallback
-- Format: `<type>(scope): <message>` with optional body and footer
+**IMPORTANT**:
 
-**Git Hook Failures**
-- Show error verbatim, skip failed group
-- Continue to next group, keep successful commits
+- 목록은 `-` 기호 사용
+- 목록 항목(`-`) 사이에 **추가 개행 금지**
 
-**User Communication and Commit Messages (Korean)**
-- All user-facing messages MUST be in Korean
-- This includes: AskUserQuestion, status messages, analysis results, error messages
-- **Commit message content MUST be in Korean** (header, body, footer)
-- Generate Korean messages for Korean-speaking users (default behavior for this project)
-- Internal documentation and process descriptions can be in English for token efficiency
+예시:
+```
+feat(search): 게시물 검색 기능 추가
 
-**Commit Message Footer (CRITICAL)**
-- **NEVER** add "Co-Authored-By" footer - keep commit messages clean without AI attribution
+- 제목 및 내용 기반 검색 구현
+- Elasticsearch 연동
+- 검색 결과 페이징 처리
+```
 
-## References
+**WRONG** (항목 사이에 개행 넣지 마세요):
+```
+feat(commands): Figma 디자인 계획 문서 생성 명령어 추가
 
-### Process
-- `process/step1-analysis.md` - Git status collection and staging
-- `process/step2-violations.md` - Tidy First and logical independence detection
-- `process/step5-execute.md` - Commit execution and verification
+- design-plan 명령어 정의
 
-### Rules
-- `rules/format.md` - Commit message format, types, validation rules
-- `rules/header.md` - Header generation policy (5 candidates)
-- `rules/body.md` - Body item generation rules
-- `rules/logical-independence.md` - Auto-split commit process
+- Figma Desktop MCP 연동
 
-### UI Templates
-- `ui/stage1-header.md` - Header selection interface
-- `ui/stage2-body.md` - Body item selection interface
-- `ui/stage3-footer.md` - Footer selection interface
-- `ui/stage4-confirmation.md` - Final confirmation interface
-- `ui/stage4-direct-input.md` - Direct input fallback
+- plan.md 문서 생성 워크플로우 정의
+```
 
-### Support
-- `support/troubleshooting.md` - Common errors and solutions
-- `support/examples.md` - Commit message examples by type
+### Footer 형식
 
+- `BREAKING CHANGE: 설명`
+- `Closes #issue`
+- `Fixes #issue`
+- `Refs #issue`
+
+예시:
+```
+feat(api): API 응답 형식 변경
+
+BREAKING CHANGE: 응답이 JSON 객체에서 배열로 변경됨
+```
+
+# 4. Git Commit 실행 패턴
+
+파일 경로를 직접 지정하여 스테이징 없이 커밋합니다.
+
+## 패턴 1: 단일 파일, 한 줄 메시지
+
+```bash
+git commit <path> -m "<type>(<scope>): <description>"
+```
+
+예시:
+```bash
+git commit src/auth/Login.ts -m "feat(auth): 로그인 기능 추가"
+```
+
+## 패턴 2: 다중 파일, 여러 줄 메시지 (Heredoc)
+
+**IMPORTANT**: `EOF`는 닫는 따옴표와 같은 라인에 작성합니다.
+
+```bash
+git commit <path1> <path2> -m "$(cat <<'EOF'
+<type>(<scope>): <description>
+
+- <change 1>
+- <change 2>
+EOF
+)"
+```
+
+예시:
+```bash
+git commit src/auth/AuthService.ts src/auth/AuthController.ts -m "$(cat <<'EOF'
+refactor(auth): 인증 서비스 구조 개선
+
+- 단일 책임 원칙 적용
+- 비즈니스 로직을 서비스 레이어로 분리
+EOF
+)"
+```
+
+## 패턴 3: 논리적 분리 예제 (Tidy First)
+
+다음 파일이 수정됨:
+- `AuthService.ts`, `AuthController.ts` → 리팩토링
+- `SocialLogin.tsx`, `OAuthButton.ts` → 신규 기능
+- `auth-flow.md` → 문서
+
+커밋 순서:
+```bash
+# Group 1: 구조 변경 (refactor)
+git commit src/auth/AuthService.ts src/auth/AuthController.ts -m "$(cat <<'EOF'
+refactor(auth): 인증 로직 서비스 레이어로 분리
+
+- UserController의 인증 관련 코드 추출
+- AuthService 클래스 신규 생성
+EOF
+)"
+
+# Group 2: 기능 추가 (feat)
+git commit src/auth/SocialLogin.tsx src/auth/OAuthButton.ts -m "$(cat <<'EOF'
+feat(auth): 소셜 로그인 기능 추가
+
+- Google OAuth 연동
+- 카카오 로그인 버튼 컴포넌트 구현
+EOF
+)"
+
+# Group 3: 문서 (docs)
+git commit docs/auth-flow.md -m "$(cat <<'EOF'
+docs(auth): 인증 플로우 문서 추가
+
+- 소셜 로그인 인증 절차 정리
+- 시퀀스 다이어그램 추가
+EOF
+)"
+```
+
+## 주의사항
+
+- **스테이징 없이 커밋**: `git add` 없이 path를 직접 지정
+- **커밋 순서**: 구조 변경(refactor) → 기능 변경(feat/fix) → 문서(docs)
+- **되돌리기**: 각 커밋은 독립적이므로 실패 시 해당 커밋만 수정
