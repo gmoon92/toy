@@ -195,7 +195,7 @@ grep -r "^\`\`\`javascript" skill-name/
 grep -r "^\`\`\`python" skill-name/
 
 # Check token count (rough estimate)
-cat skill-name/SKILL.md | wc -w
+cat skill-name/git-commit.md | wc -w
 ```
 
 **Red flags:**
@@ -514,8 +514,8 @@ description: Creates, reads, and edits Word documents (.docx files). Use when wo
 **Token Usage:**
 ```bash
 # Rough estimate (words * 1.3)
-cat SKILL.md | wc -w  # Before: 1800 words = ~2340 tokens
-cat SKILL.md | wc -w  # After: 400 words = ~520 tokens
+cat git-commit.md | wc -w  # Before: 1800 words = ~2340 tokens
+cat git-commit.md | wc -w  # After: 400 words = ~520 tokens
 # Savings: 78%
 ```
 
