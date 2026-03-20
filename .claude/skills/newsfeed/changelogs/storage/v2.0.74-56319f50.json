@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.0.74",
+  "name": "v2.0.74",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.0.74",
+  "target_commitish": "main",
+  "created_at": "2025-12-19T22:13:14Z",
+  "updated_at": "2025-12-19T22:13:25Z",
+  "published_at": "2025-12-19T22:13:25Z",
+  "body": "## What's changed\n\n- Added LSP (Language Server Protocol) tool for code intelligence features like go-to-definition, find references, and hover documentation\n- Added `/terminal-setup` support for Kitty, Alacritty, Zed, and Warp terminals\n- Added ctrl+t shortcut in `/theme` to toggle syntax highlighting on/off\n- Added syntax highlighting info to theme picker\n- Added guidance for macOS users when Alt shortcuts fail due to terminal configuration\n- Fixed skill `allowed-tools` not being applied to tools invoked by the skill\n- Fixed Opus 4.5 tip incorrectly showing when user was already using Opus\n- Fixed a potential crash when syntax highlighting isn't initialized correctly\n- Fixed visual bug in `/plugins discover` where list selection indicator showed while search box was focused\n- Fixed macOS keyboard shortcuts to display 'opt' instead of 'alt'\n- Improved `/context` command visualization with grouped skills and agents by source, slash commands, and sorted token count\n- [Windows] Fixed issue with improper rendering\n- [VSCode] Added gift tag pictogram for year-end promotion message\n"
+}

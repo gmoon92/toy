@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.23",
+  "name": "v2.1.23",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.23",
+  "target_commitish": "main",
+  "created_at": "2026-01-29T01:09:14Z",
+  "updated_at": "2026-01-29T01:09:51Z",
+  "published_at": "2026-01-29T01:09:51Z",
+  "body": "## What's changed\n\n- Added customizable spinner verbs setting (`spinnerVerbs`)\n- Fixed mTLS and proxy connectivity for users behind corporate proxies or using client certificates\n- Fixed per-user temp directory isolation to prevent permission conflicts on shared systems\n- Fixed a race condition that could cause 400 errors when prompt caching scope was enabled\n- Fixed pending async hooks not being cancelled when headless streaming sessions ended\n- Fixed tab completion not updating the input field when accepting a suggestion\n- Fixed ripgrep search timeouts silently returning empty results instead of reporting errors\n- Improved terminal rendering performance with optimized screen data layout\n- Changed Bash commands to show timeout duration alongside elapsed time\n- Changed merged pull requests to show a purple status indicator in the prompt footer\n- [IDE] Fixed model options displaying incorrect region strings for Bedrock users in headless mode\n"
+}

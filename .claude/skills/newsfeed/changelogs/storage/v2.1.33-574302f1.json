@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.33",
+  "name": "v2.1.33",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.33",
+  "target_commitish": "main",
+  "created_at": "2026-02-06T01:46:32Z",
+  "updated_at": "2026-02-06T01:47:21Z",
+  "published_at": "2026-02-06T01:47:21Z",
+  "body": "## What's changed\n\n- Fixed agent teammate sessions in tmux to send and receive messages\n- Fixed warnings about agent teams not being available on your current plan\n- Added `TeammateIdle` and `TaskCompleted` hook events for multi-agent workflows\n- Added support for restricting which sub-agents can be spawned via `Task(agent_type)` syntax in agent \"tools\" frontmatter\n- Added `memory` frontmatter field support for agents, enabling persistent memory with `user`, `project`, or `local` scope\n- Added plugin name to skill descriptions and `/skills` menu for better discoverability\n- Fixed an issue where submitting a new message while the model was in extended thinking would interrupt the thinking phase\n- Fixed an API error that could occur when aborting mid-stream, where whitespace text combined with a thinking block would bypass normalization and produce an invalid request\n- Fixed API proxy compatibility issue where 404 errors on streaming endpoints no longer triggered non-streaming fallback\n- Fixed an issue where proxy settings configured via `settings.json` environment variables were not applied to WebFetch and other HTTP requests on the Node.js build\n- Fixed `/resume` session picker showing raw XML markup instead of clean titles for sessions started with slash commands\n- Improved error messages for API connection failures — now shows specific cause (e.g., ECONNREFUSED, SSL errors) instead of generic \"Connection error\"\n- Errors from invalid managed settings are now surfaced\n- VSCode: Added support for remote sessions, allowing OAuth users to browse and resume sessions from claude.ai\n- VSCode: Added git branch and message count to the session picker, with support for searching by branch name\n- VSCode: Fixed scroll-to-bottom under-scrolling on initial session load and session switch\n"
+}

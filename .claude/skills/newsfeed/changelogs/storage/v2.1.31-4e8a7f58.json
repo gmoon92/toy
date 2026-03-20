@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.31",
+  "name": "v2.1.31",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.31",
+  "target_commitish": "main",
+  "created_at": "2026-02-04T00:43:28Z",
+  "updated_at": "2026-02-04T00:44:13Z",
+  "published_at": "2026-02-04T00:44:13Z",
+  "body": "## What's changed\n\n- Added session resume hint on exit, showing how to continue your conversation later\n- Added support for full-width (zenkaku) space input from Japanese IME in checkbox selection\n- Fixed PDF too large errors permanently locking up sessions, requiring users to start a new conversation\n- Fixed bash commands incorrectly reporting failure with \"Read-only file system\" errors when sandbox mode was enabled\n- Fixed a crash that made sessions unusable after entering plan mode when project config in `~/.claude.json` was missing default fields\n- Fixed `temperatureOverride` being silently ignored in the streaming API path, causing all streaming requests to use the default temperature (1) regardless of the configured override\n- Fixed LSP shutdown/exit compatibility with strict language servers that reject null params\n- Improved system prompts to more clearly guide the model toward using dedicated tools (Read, Edit, Glob, Grep) instead of bash equivalents (`cat`, `sed`, `grep`, `find`), reducing unnecessary bash command usage\n- Improved PDF and request size error messages to show actual limits (100 pages, 20MB)\n- Reduced layout jitter in the terminal when the spinner appears and disappears during streaming\n- Removed misleading Anthropic API pricing from model selector for third-party provider (Bedrock, Vertex, Foundry) users\n"
+}

@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.36",
+  "name": "v2.1.36",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.36",
+  "target_commitish": "main",
+  "created_at": "2026-02-07T18:01:26Z",
+  "updated_at": "2026-02-07T18:02:15Z",
+  "published_at": "2026-02-07T18:02:15Z",
+  "body": "## What's changed\n\n- Fast mode is now available for Opus 4.6. Learn more at https://code.claude.com/docs/en/fast-mode\n"
+}

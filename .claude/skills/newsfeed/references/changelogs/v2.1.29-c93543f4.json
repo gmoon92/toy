@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.29",
+  "name": "v2.1.29",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.29",
+  "target_commitish": "main",
+  "created_at": "2026-01-31T23:37:08Z",
+  "updated_at": "2026-01-31T23:37:51Z",
+  "published_at": "2026-01-31T23:37:51Z",
+  "body": "## What's changed\n\n- Fixed startup performance issues when resuming sessions that have `saved_hook_context`\n"
+}

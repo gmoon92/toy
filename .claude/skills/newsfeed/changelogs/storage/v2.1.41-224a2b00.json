@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.41",
+  "name": "v2.1.41",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.41",
+  "target_commitish": "main",
+  "created_at": "2026-02-13T06:07:54Z",
+  "updated_at": "2026-02-13T06:08:49Z",
+  "published_at": "2026-02-13T06:08:49Z",
+  "body": "## What's changed\n\n- Fixed AWS auth refresh hanging indefinitely by adding a 3-minute timeout\n- Added `claude auth login`, `claude auth status`, and `claude auth logout` CLI subcommands\n- Added Windows ARM64 (win32-arm64) native binary support\n- Improved `/rename` to auto-generate session name from conversation context when called without arguments\n- Improved narrow terminal layout for prompt footer\n- Fixed file resolution failing for @-mentions with anchor fragments (e.g., `@README.md#installation`)\n- Fixed FileReadTool blocking the process on FIFOs, `/dev/stdin`, and large files\n- Fixed background task notifications not being delivered in streaming Agent SDK mode\n- Fixed cursor jumping to end on each keystroke in classifier rule input\n- Fixed markdown link display text being dropped for raw URL\n- Fixed auto-compact failure error notifications being shown to users\n- Fixed permission wait time being included in subagent elapsed time display\n- Fixed proactive ticks firing while in plan mode\n- Fixed clear stale permission rules when settings change on disk\n- Fixed hook blocking errors showing stderr content in UI\n"
+}

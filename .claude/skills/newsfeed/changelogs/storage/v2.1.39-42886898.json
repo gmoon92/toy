@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.39",
+  "name": "v2.1.39",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.39",
+  "target_commitish": "main",
+  "created_at": "2026-02-10T23:10:48Z",
+  "updated_at": "2026-02-10T23:11:36Z",
+  "published_at": "2026-02-10T23:11:36Z",
+  "body": "## What's changed\n\n- Improved terminal rendering performance\n- Fixed fatal errors being swallowed instead of displayed\n- Fixed process hanging after session close\n- Fixed character loss at terminal screen boundary\n- Fixed blank lines in verbose transcript view\n"
+}

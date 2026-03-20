@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.62",
+  "name": "v2.1.62",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.62",
+  "target_commitish": "main",
+  "created_at": "2026-02-27T01:55:28Z",
+  "updated_at": "2026-02-27T01:56:19Z",
+  "published_at": "2026-02-27T01:56:19Z",
+  "body": "## What's changed\n\n- Fixed prompt suggestion cache regression that reduced cache hit rates\n"
+}
