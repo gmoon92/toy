@@ -4,8 +4,16 @@
   "teammateMode": "tmux",
   "alwaysThinkingEnabled": true,
 
-  "enableAllProjectMcpServers": true,
+  "env": {
+    "CLAUDE_TMP_DIR": "${CLAUDE_PROJECT_DIR}/.claude/.tmp",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "CLAUDE_CODE_EFFORT_LEVEL": "high",
+    "ENABLE_LSP_TOOL": "1",
+    "MCP_TIMEOUT": "1000"
+  },
 
+  "enableAllProjectMcpServers": true,
   "enabledPlugins": {
     "kotlin-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true
@@ -30,14 +38,6 @@
   "attribution": {
     "commit": "",
     "pr": ""
-  },
-
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
-    "CLAUDE_CODE_EFFORT_LEVEL": "high",
-    "ENABLE_LSP_TOOL": "1",
-    "MCP_TIMEOUT": "1000"
   },
 
   "hooks": {
@@ -70,7 +70,6 @@
       "Read(./.env.*)",
       "Read(./secrets/**)",
       "Read(**/*credentials*)",
-      "Bash(rm -rf *)",
       "Bash(sudo *)"
     ]
   }

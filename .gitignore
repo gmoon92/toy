@@ -9,6 +9,10 @@
 **/build/**
 **/.gradle/**
 
+### CLAUDE CODE ###
+**/.claude/.tmp/**
+**/settings.local.json
+
 ### STS ###
 .apt_generated
 .classpath
