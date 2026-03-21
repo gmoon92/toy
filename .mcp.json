@@ -1,5 +1,11 @@
 {
   "mcpServers": {
+    "webhook": {
+      "command": "bun",
+      "args": [
+        "${CLAUDE_PROJECT_DIR}/webhook.ts"
+      ]
+    },
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
