@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.25",
+  "name": "v2.1.25",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.25",
+  "target_commitish": "main",
+  "created_at": "2026-01-29T21:12:53Z",
+  "updated_at": "2026-01-29T21:13:33Z",
+  "published_at": "2026-01-29T21:13:33Z",
+  "body": "## What's changed\n\n- Fixed beta header validation error for gateway users on Bedrock and Vertex, ensuring `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` avoids the error\n"
+}

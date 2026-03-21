@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.5",
+  "name": "v2.1.5",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.5",
+  "target_commitish": "main",
+  "created_at": "2026-01-12T18:48:06Z",
+  "updated_at": "2026-01-12T18:48:25Z",
+  "published_at": "2026-01-12T18:48:25Z",
+  "body": "## What's changed\n\n- Added `CLAUDE_CODE_TMPDIR` environment variable to override the temp directory used for internal temp files, useful for environments with custom temp directory requirements\n"
+}

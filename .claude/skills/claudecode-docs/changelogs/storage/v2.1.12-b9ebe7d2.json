@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.12",
+  "name": "v2.1.12",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.12",
+  "target_commitish": "main",
+  "created_at": "2026-01-17T16:17:56Z",
+  "updated_at": "2026-01-17T16:18:21Z",
+  "published_at": "2026-01-17T16:18:21Z",
+  "body": "## What's changed\n\n- Fixed message rendering bug\n"
+}

@@ -1,0 +1,10 @@
+{
+  "tag_name": "v2.1.9",
+  "name": "v2.1.9",
+  "html_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.9",
+  "target_commitish": "main",
+  "created_at": "2026-01-16T02:19:08Z",
+  "updated_at": "2026-01-16T02:19:31Z",
+  "published_at": "2026-01-16T02:19:31Z",
+  "body": "## What's changed\n\n- Added `auto:N` syntax for configuring the MCP tool search auto-enable threshold, where N is the context window percentage (0-100)\n- Added `plansDirectory` setting to customize where plan files are stored\n- Added external editor support (Ctrl+G) in AskUserQuestion \"Other\" input field\n- Added session URL attribution to commits and PRs created from web sessions\n- Added support for `PreToolUse` hooks to return `additionalContext` to the model\n- Added `${CLAUDE_SESSION_ID}` string substitution for skills to access the current session ID\n- Fixed long sessions with parallel tool calls failing with an API error about orphan tool_result blocks\n- Fixed MCP server reconnection hanging when cached connection promise never resolves\n- Fixed Ctrl+Z suspend not working in terminals using Kitty keyboard protocol (Ghostty, iTerm2, kitty, WezTerm)\n"
+}
