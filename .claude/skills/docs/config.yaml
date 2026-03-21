@@ -1,0 +1,158 @@
+skill_name: docs
+version: 2.0
+description: 통합 문서 에이전트를 활용한 문서 검증 및 작성 스킬
+
+# 에이전트 매핑
+agents:
+  reviewer:
+    path: ".claude/agents/docs/reviewer.md"
+    description: "통합 검증 에이전트 - 5가지 모드 지원"
+    supported_modes:
+      - standard
+      - technical
+      - critical
+      - reader
+      - structure
+      - comprehensive
+    default_mode: standard
+    outputs:
+      - "${CLAUDE_TMP_DIR}/review_result.md"
+
+  writer:
+    path: ".claude/agents/docs/writer.md"
+    description: "작성/개선 에이전트"
+    actions:
+      - draft
+      - revise
+    outputs:
+      - "${CLAUDE_TMP_DIR}/draft.md"
+
+  translator:
+    path: ".claude/agents/docs/translator.md"
+    description: "번역 에이전트 - settings.json language 연동"
+    language_settings: "${SETTINGS_LANGUAGE}"
+    outputs:
+      - "ai/docs/claude/docs/{filename}.md"
+
+# 워크플로우 정의
+workflows:
+  blog-review:
+    description: "블로그 콘텐츠 멀티 모드 검증"
+    required_agents:
+      - reviewer
+    steps:
+      - step: 1
+        agent: reviewer
+        mode: technical
+        input: "${DOCUMENT_PATH}"
+        output: "${CLAUDE_TMP_DIR}/review_technical.md"
+
+      - step: 2
+        agent: reviewer
+        mode: critical
+        input: "${DOCUMENT_PATH}"
+        output: "${CLAUDE_TMP_DIR}/review_critical.md"
+
+      - step: 3
+        agent: reviewer
+        mode: reader
+        input: "${DOCUMENT_PATH}"
+        output: "${CLAUDE_TMP_DIR}/review_reader.md"
+
+    result_aggregation:
+      method: "merge"
+      output: "${CLAUDE_TMP_DIR}/review_result.md"
+
+  korean-doc-validation:
+    description: "한국어 문서 종합 검증"
+    required_agents:
+      - reviewer
+    steps:
+      - step: 1
+        agent: reviewer
+        mode: comprehensive
+        language: auto
+        input: "${DOCUMENT_PATH}"
+        output: "${CLAUDE_TMP_DIR}/review_result.md"
+
+  write-validate-loop:
+    description: "작성-검증 피드백 루프"
+    required_agents:
+      - writer
+      - reviewer
+    max_iterations: 3
+    steps:
+      - step: 1
+        name: "draft"
+        agent: writer
+        action: draft
+        requirements: "${REQUIREMENTS}"
+        output: "${CLAUDE_TMP_DIR}/draft.md"
+
+      - step: 2
+        name: "review"
+        agent: reviewer
+        mode: standard
+        input: "${CLAUDE_TMP_DIR}/draft.md"
+        output: "${CLAUDE_TMP_DIR}/review_result.md"
+
+      - step: 3
+        name: "check_improvements"
+        condition: "has_critical_issues"
+        agent: writer
+        action: revise
+        draft: "${CLAUDE_TMP_DIR}/draft.md"
+        feedback: "${CLAUDE_TMP_DIR}/review_result.md"
+        output: "${CLAUDE_TMP_DIR}/draft.md"
+
+  quick-check:
+    description: "빠른 품질 확인"
+    required_agents:
+      - reviewer
+    steps:
+      - step: 1
+        agent: reviewer
+        mode: standard
+        input: "${DOCUMENT_PATH}"
+        output: "${CLAUDE_TMP_DIR}/review_result.md"
+
+# 결과 통합 설정
+aggregation:
+  priority_levels:
+    CRITICAL: 5
+    WARNING: 3
+    INFO: 1
+
+  merge_strategy:
+    group_by: "category"
+    categories:
+      - technical_accuracy
+      - logical_validity
+      - reader_experience
+      - document_structure
+      - basic_quality
+
+# 에러 처리
+error_handling:
+  invalid_mode:
+    action: "fallback_to_standard"
+    notify: true
+
+  agent_not_found:
+    action: "skip_and_continue"
+    log: true
+
+  timeout:
+    duration: 300  # seconds
+    action: "return_partial_results"
+
+# 설정 연동
+settings_integration:
+  language:
+    source: ".claude/settings.json"
+    key: "language"
+    default: "korean"
+    mapping:
+      korean: "ko"
+      english: "en"
+      auto: "auto"

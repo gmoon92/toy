@@ -1,0 +1,28 @@
+name: korean-doc-validation
+description: 한국어 문서 종합 검증 워크플로우 (comprehensive 모드)
+
+# 단일 comprehensive 모드 실행
+# 한국어 언어 검증 자동 포함
+
+steps:
+  - name: "comprehensive-review"
+    step: 1
+    agent: reviewer
+    mode: comprehensive
+    description: "종합 검증 (모든 모드 통합)"
+    language: auto
+    input: "${DOCUMENT_PATH}"
+    output: "${CLAUDE_TMP_DIR}/review_result.md"
+
+result_aggregation:
+  method: "none"  # comprehensive는 이미 통합된 결과
+  output: "${CLAUDE_TMP_DIR}/review_result.md"
+
+# 특수 설정
+korean_specific:
+  enabled: true
+  checks:
+    - honorifics      # 높임법
+    - speech_level    # 해요체/합니다체 일관성
+    - first_person    # 1인칭 지칭 (저/나)
+    - terminology     # 한국어 용어 일관성

@@ -1,0 +1,37 @@
+name: quick-check
+description: 빠른 품질 확인 워크플로우
+
+# 단일 standard 모드로 빠른 검증
+# 시간 제한: 60초
+
+timeout: 60
+
+steps:
+  - name: "quick-review"
+    step: 1
+    agent: reviewer
+    mode: standard
+    description: "빠른 품질 검증"
+    input: "${DOCUMENT_PATH}"
+    output: "${CLAUDE_TMP_DIR}/review_result.md"
+    options:
+      quick_mode: true
+      focus_areas:
+        - clarity
+        - completeness
+        - structure
+
+result_aggregation:
+  method: "summary"
+  output: "${CLAUDE_TMP_DIR}/review_result.md"
+  format: |
+    ## 빠른 검증 결과
+
+    ### 핵심 이슈
+    [CRITICAL/WARNING 항목만 표시]
+
+    ### 권장사항
+    [INFO 항목 중 주요 내용]
+
+    ### 전체 평가
+    [Good/Needs Work/Poor]

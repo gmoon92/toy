@@ -1,0 +1,40 @@
+name: blog-review
+description: 블로그 콘텐츠 멀티 모드 검증 워크플로우
+
+# 순차 실행: technical → critical → reader
+
+steps:
+  - name: "technical-review"
+    step: 1
+    agent: reviewer
+    mode: technical
+    description: "기술 정확성 및 용어 검증"
+    input: "${DOCUMENT_PATH}"
+    output: "${CLAUDE_TMP_DIR}/review_technical.md"
+
+  - name: "critical-review"
+    step: 2
+    agent: reviewer
+    mode: critical
+    description: "공격적 검증 및 가정 발굴"
+    input: "${DOCUMENT_PATH}"
+    output: "${CLAUDE_TMP_DIR}/review_critical.md"
+
+  - name: "reader-review"
+    step: 3
+    agent: reviewer
+    mode: reader
+    description: "독자 관점 접근성 평가"
+    input: "${DOCUMENT_PATH}"
+    output: "${CLAUDE_TMP_DIR}/review_reader.md"
+
+result_aggregation:
+  method: "merge"
+  output: "${CLAUDE_TMP_DIR}/review_result.md"
+  sections:
+    - title: "기술 검증"
+      source: "${CLAUDE_TMP_DIR}/review_technical.md"
+    - title: "비판적 검토"
+      source: "${CLAUDE_TMP_DIR}/review_critical.md"
+    - title: "독자 관점"
+      source: "${CLAUDE_TMP_DIR}/review_reader.md"
