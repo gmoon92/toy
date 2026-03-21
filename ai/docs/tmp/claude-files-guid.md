@@ -1,5 +1,8 @@
-좋다. 이건 단순 “읽힌다/안 읽힌다” 수준이 아니라 **Claude Code의 메모리 로딩 전략 (hierarchical + lazy loading)**을 정확히 이해해야 하는 영역이다.
-공식 문서 + 실제 동작 기준으로 **모노레포 상황**을 전제로 정리해준다.
+# Claude Code CLAUDE.md 로딩 전략 완벽 가이드
+
+CLAUDE.md 파일이 언제, 어떻게 로딩되는지 이해하는 것은 Claude Code를 효과적으로 사용하는 핵심입니다. 단순히 “읽히거나 읽히지 않는다”를 넘어서, **계층적(hierarchical) + 지연(lazy) 로딩 전략**의 동작 원리를 파악해야 합니다.
+
+이 문서에서는 공식 문서와 실제 동작을 기준으로 **모노레포 환경**에서의 CLAUDE.md 로딩 메커니즘을 상세히 설명합니다.
 
 ---
 
@@ -260,11 +263,7 @@ root CLAUDE.md
 
 ---
 
-원하면
-👉 “모노레포 CLAUDE.md 설계 템플릿 (실제 적용용)”
-👉 “.claude/rules vs CLAUDE.md 구조 비교”
+## 참고 자료
 
-까지 이어서 더 깊게 설계 관점으로 정리해줄게.
-
-[1]: https://docs.anthropic.com/en/docs/claude-code/memory?utm_source=chatgpt.com "Manage Claude's memory - Anthropic"
-[2]: https://serenitiesai.com/articles/claude-md-complete-guide-2026?utm_source=chatgpt.com "CLAUDE.md Guide: Configure Claude Code Like a Pro (2026) | Serenities AI"
+- [Claude Code 공식 문서 - Memory](https://docs.anthropic.com/en/docs/claude-code/memory)
+- [CLAUDE.md 완벽 가이드](https://serenitiesai.com/articles/claude-md-complete-guide-2026)

@@ -272,7 +272,7 @@ Agent Debate 품질은 **tooling에 크게 의존**합니다:
 | **test runner** | 테스트 실행 및 검증 |
 | **docs**        | 문서 참조       |
 
-**중요:** Tooling이 없으면 Agent는 제한된 정볼나로 판단해야 합니다.
+**중요:** Tooling이 없으면 Agent는 제한된 정볼만으로 판단해야 합니다.
 
 ### 2.7 고급 패턴: Tournament Architecture
 
