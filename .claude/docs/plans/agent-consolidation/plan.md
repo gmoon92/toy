@@ -22,7 +22,7 @@ color: blue
 현재 `.claude/agents/`에는 두 개의 에이전트 디렉토리가 존재:
 
 - **`docs/`** (3개): `doc-reviewer`, `doc-writer`, `translator`
-- **`blog/`** (8개): `diagram-designer`, `synthesizer`, `moderator`, `reader-advocate`, `editor`, `critic`, `content-strategist`, `tech-writer`
+- ~~**`blog/`** (8개): `diagram-designer`, `synthesizer`, `moderator`, `reader-advocate`, `editor`, `critic`, `content-strategist`, `tech-writer`~~ → 통합되어 삭제됨
 
 **문제점:**
 - 기능 중복 (tech-writer ↔ doc-reviewer, blog-editor ↔ doc-reviewer)
@@ -37,9 +37,9 @@ color: blue
 - 모드 기반 접근으로 에이전트 선택 단순화
 
 **유지 원칙:**
-- 기존 에이전트 문서는 삭제하지 않음
+- ~~기존 에이전트 문서는 삭제하지 않음~~ → blog/ 에이전트는 통합을 위해 삭제됨
 - 새로운 통합 에이전트 문서를 별도로 생성
-- 각 에이전트의 고유 가치는 보존
+- 각 에이전트의 고유 가치는 통합 에이전트에 보존
 
 ---
 
@@ -834,27 +834,27 @@ aggregation:
 
 ### A. 기존 에이전트와의 호환성
 
-| 기존 사용 방식 | 통합 후 대안 | 호환성 |
-|-------------|-------------|--------|
-| `doc-reviewer` 단독 사용 | `reviewer(mode: standard)` | ✅ 완전 호환 |
-| `tech-writer` 단독 사용 | `reviewer(mode: technical)` | ✅ 기능 동등 |
-| `critic` 단독 사용 | `reviewer(mode: critical)` | ✅ 기능 동등 |
-| `reader-advocate` 단독 사용 | `reviewer(mode: reader)` | ✅ 기능 동등 |
-| `content-strategist` 단독 사용 | `reviewer(mode: structure)` | ✅ 기능 동등 |
-| `blog-editor` 단독 사용 | `reviewer(mode: standard)` + 게시 체크리스트 | ⚠️ 부분 변경 |
-| Blue/Red 팀 전체 워크플로우 | 오케스트레이션 스킬에서 순차 호출 | ⚠️ 스킬 의존 |
+| 기존 사용 방식 | 통합 후 대안 | 호환성 | 상태 |
+|-------------|-------------|--------|------|
+| `doc-reviewer` 단독 사용 | `reviewer(mode: standard)` | ✅ 완전 호환 | 유지 |
+| `tech-writer` 단독 사용 | `reviewer(mode: technical)` | ✅ 기능 동등 | ~~삭제됨~~ |
+| `critic` 단독 사용 | `reviewer(mode: critical)` | ✅ 기능 동등 | ~~삭제됨~~ |
+| `reader-advocate` 단독 사용 | `reviewer(mode: reader)` | ✅ 기능 동등 | ~~삭제됨~~ |
+| `content-strategist` 단독 사용 | `reviewer(mode: structure)` | ✅ 기능 동등 | ~~삭제됨~~ |
+| `blog-editor` 단독 사용 | `reviewer(mode: standard)` + 게시 체크리스트 | ⚠️ 부분 변경 | ~~삭제됨~~ |
+| Blue/Red 팀 전체 워크플로우 | 오케스트레이션 스킬에서 순차 호출 | ⚠️ 스킬 의존 | 통합됨 |
 
 ### B. 마이그레이션 가이드 (선택)
 
 기존 `blog/` 에이전트를 통합 구조로 전환하고 싶은 경우:
 
-1. **개별 에이전트 유지**: 기존 방식 그대로 사용 가능 (blog/ 에이전트 삭제되지 않음)
-2. **점진적 전환**: 새 프로젝트에서만 통합 에이전트 사용
-3. **완전 전환**: 기존 스킬의 에이전트 호출 부분을 모드 호출로 변경
+1. ~~**개별 에이전트 유지**: 기존 방식 그대로 사용 가능 (blog/ 에이전트 삭제되지 않음)~~
+2. **통합 에이전트 사용**: `.claude/agents/docs/reviewer.md`의 모드 기반 검증 사용
+3. **기존 스킬 업데이트**: 에이전트 호출 부분을 모드 호출로 변경
 
 ### C. 참조 자료
 
-- 기존 에이전트 문서: `.claude/agents/blog/*.md`, `.claude/agents/docs/*.md`
+- 기존 에이전트 문서: ~~`.claude/agents/blog/*.md`~~ (삭제됨), `.claude/agents/docs/*.md`
 - 오케스트레이션 스킬 예시: `.claude/skills/docs/SKILL.md`
 - Claude Code 에이전트 가이드: 공식 문서
 

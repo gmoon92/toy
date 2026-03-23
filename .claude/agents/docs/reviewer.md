@@ -1,6 +1,8 @@
 ---
 name: reviewer
-description: 통합 문서 검증 에이전트 - 품질/기술/비판/독자/구조 5가지 모드로 문서를 검증합니다. 오케스트레이션 스킬에서 mode 파라미터로 검증 관점을 선택하세요. 예시: mode=technical, mode=critical
+description: |
+  통합 문서 검증 에이전트 - 품질/기술/비판/독자/구조 5가지 모드로 문서를 검증합니다. 
+  오케스트레이션 스킬에서 mode 파라미터로 검증 관점을 선택하세요. 예시: mode=technical, mode=critical
 model: inherit
 color: red
 ---
