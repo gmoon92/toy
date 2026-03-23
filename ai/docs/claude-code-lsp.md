@@ -1,19 +1,21 @@
 # Claude Code LSP 가이드
 
-> Claude Code의 Language Server Protocol(LSP) 지원 기능을 소개하고 설정 방법을 안내합니다.
+Claude Code는 플러그인 시스템을 통해 LSP(Language Server Protocol) 기능을 제공합니다.
 
-## 200토큰 요약
-
-Claude Code v2.0.74 이상부터 LSP(Language Server Protocol)를 공식 지원합니다. LSP는 IDE와 언어 서버 간 표준 통신 프로토콜로, 기존 N×M 구조의 문제를 N+M 구조로
-해결합니다. 이 문서에서는 LSP의 개념, Claude Code에서의 설정 방법, 사용 예시를 설명합니다.
+이 문서에서는 LSP의 개념, Claude Code에서의 플러그인 설치 및 설정 방법, 사용 예시를 설명합니다.
 
 ---
 
 ## LSP란 무엇인가?
 
+LSP는 IDE와 언어 서버 간 표준 통신 프로토콜로, 기존 N×M 구조의 문제를 N+M 구조로 해결합니다.
+
 ### LSP가 해결하는 문제
 
 LSP(Language Server Protocol)는 IDE와 개발 도구가 프로그래밍 언어 지원 기능을 구현하는 방식을 표준화한 프로토콜입니다.
+
+- **기존 방식 (N×M 구조)**: VSCode, IntelliJ, Vim 등 각 IDE마다 Java, Python, Go 지원 기능을 따로 개발 → IDE 3개 × 언어 3개 = 9개 구현 필요
+- **LSP 방식 (N+M 구조)**: 각 IDE는 "LSP 클라이언트"만, 각 언어는 "LSP 서버"만 구현 → IDE 3개 + 언어 3개 = 6개 구현으로 충분
 
 #### 기존 방식의 문제 (N×M 구조)
 
@@ -51,7 +53,7 @@ LSP는 IDE와 언어 서버 간의 표준 통신 프로토콜을 제공합니다
 - 기존: `IDE × 언어` 개의 구현 필요
 - LSP 이후: `IDE + 언어` 개의 구현 필요
 
-즉, IDE는 **컴파일러 수준의 코드 분석기**가 필요합니다.
+즉, **Language Server는 컴파일러 수준의 코드 분석기**입니다.
 
 ### 왜 단순 검색으로는 부족한가?
 
@@ -79,7 +81,9 @@ class UserService {
 
 ---
 
-## LSP 지원 기능
+## Claude Code에서 LSP 설정하기
+
+### 1. LSP 지원 기능
 
 Claude Code는 LSP를 통해 다음과 같은 기능을 제공합니다:
 
@@ -87,229 +91,110 @@ Claude Code는 LSP를 통해 다음과 같은 기능을 제공합니다:
 |----------------------|---------------|-----------------------------------|-------------------------|
 | **Go to Definition** | 심볼의 정의 위치로 이동 | `textDocument/definition`         | 함수가 어디서 선언되었는지 찾기       |
 | **Find References**  | 심볼의 모든 참조 찾기  | `textDocument/references`         | 변수의 모든 사용처 검색           |
-| **Hover 정보**         | 타입 및 문서 정보 표시 | `textDocument/hover`              | 변수 위에 마우스를 올려 타입 확인     |
+| **Hover 정보**         | 타입 및 문서 정보 표시 | `textDocument/hover`              | 변수 위에서 타입 및 문서 정보 확인    |
 | **Rename Symbol**    | 심볼 이름 일괄 변경   | `textDocument/rename`             | 변수명을 변경하면 모든 참조 자동 업데이트 |
 | **Diagnostics**      | 실시간 오류 및 경고   | `textDocument/publishDiagnostics` | 코드 작성 중 문법 오류 감지        |
 
----
+> 자세한 내용은 [Tools Reference - LSP](https://code.claude.com/docs/en/tools-reference)를 참고하세요.
 
-## Claude Code에서 LSP 설정하기
+### 2. LSP 플러그인 설치
 
-### 요구사항
+Claude Code에서는 공식 `claude-plugins-official` 마켓플레이스에서 언어별 LSP 플러그인을 설치할 수 있습니다.
 
-- Claude Code v2.0.74 이상
-- LSP 환경 변수 설정
-- 언어별 Language Server 설치
-
-### 1. 환경 변수 설정
-
-LSP 기능을 활성화하려면 `ENABLE_LSP_TOOL` 환경 변수를 설정해야 합니다.
-
-#### 방법 1: Claude Code 설정 파일 사용 (권장)
-
-`.claude/settings.json` 파일에 환경 변수를 추가합니다:
-
-```json
-{
-  "env": {
-    "ENABLE_LSP_TOOL": "1"
-  }
-}
-```
-
-이 방법은 Claude Code 내에서만 환경 변수가 적용되므로 시스템 전체에 영향을 주지 않습니다.
-
-#### 방법 2: 시스템 환경 변수 설정
-
-터미널에서 일회성으로 설정:
-
-```bash
-export ENABLE_LSP_TOOL=1
-```
-
-영구적으로 설정하려면 쉘 설정 파일에 추가하세요:
-
-```bash
-# zsh 사용 시
-echo 'export ENABLE_LSP_TOOL=1' >> ~/.zshrc
-
-# bash 사용 시
-echo 'export ENABLE_LSP_TOOL=1' >> ~/.bashrc
-```
-
-설정 후 터미널을 재시작하거나 `source ~/.zshrc` 명령어를 실행하세요.
-
-### 2. 언어별 플러그인 설치
-
-Claude Code CLI에서 다음 명령어를 실행하여 LSP 플러그인을 설치합니다:
+| 플러그인             | Language Server            | 언어                     |
+|------------------|----------------------------|------------------------|
+| `typescript-lsp` | TypeScript Language Server | TypeScript, JavaScript |
+| `pyright-lsp`    | Pyright                    | Python                 |
+| `rust-lsp`       | rust-analyzer              | Rust                   |
 
 ```bash
 /plugin install typescript-lsp@claude-plugins-official
-/plugin install jdtls-lsp@claude-plugins-official
-/plugin install kotlin-lsp@claude-plugins-official
-/plugin install gopls-lsp@claude-plugins-official
-/plugin install rust-analyzer-lsp@claude-plugins-official
-```
-
-설치 후 플러그인을 로드합니다:
-
-```bash
 /reload-plugins
 ```
 
-### 3. 지원 언어 및 플러그인
-
-| 언어                    | 플러그인 명령어                                                    | Language Server            |
-|-----------------------|-------------------------------------------------------------|----------------------------|
-| TypeScript/JavaScript | `/plugin install typescript-lsp@claude-plugins-official`    | typescript-language-server |
-| Java                  | `/plugin install jdtls-lsp@claude-plugins-official`         | jdtls                      |
-| Kotlin                | `/plugin install kotlin-lsp@claude-plugins-official`        | kotlin-language-server     |
-| Python                | `/plugin install pyright-lsp@claude-plugins-official`       | pyright-langserver         |
-| Go                    | `/plugin install gopls-lsp@claude-plugins-official`         | gopls                      |
-| Rust                  | `/plugin install rust-analyzer-lsp@claude-plugins-official` | rust-analyzer              |
-| C/C++                 | `/plugin install clangd-lsp@claude-plugins-official`        | clangd                     |
-
 > **참고**: `claude-plugins-official` 플러그인을 사용하면 Language Server 바이너리가 **자동으로 설치**됩니다. 별도로 시스템에 바이너리를 설치할 필요가 없습니다.
+>
+> 더 많은 LSP 목록은 [Code Intelligence](https://code.claude.com/docs/en/discover-plugins#code-intelligence)를 참고하세요.
 
-#### 수동 설치가 필요한 경우
+### 3. 플러그인 활성화
 
-커스텀 Language Server 버전을 사용하거나, 공식 플러그인 외의 방식으로 LSP를 구성하려는 경우에만 아래 명령어로 수동 설치하세요:
+#### 공식 플러그인 사용 (권장)
 
-| 언어         | 수동 설치 명령어                                                        |
-|------------|------------------------------------------------------------------|
-| TypeScript | `npm install -g typescript-language-server`                      |
-| Java       | `brew install jdtls`                                             |
-| Kotlin     | [공식 GitHub](https://github.com/fwcd/kotlin-language-server)에서 설치 |
-| Python     | `pip install pyright`                                            |
-| Go         | `go install golang.org/x/tools/gopls@latest`                     |
-| Rust       | `rustup component add rust-analyzer`                             |
-| C/C++      | LLVM 설치 (clangd 포함)                                              |
+공식 플러그인은 설치 후 기본적으로 **활성화 상태**입니다. `/reload-plugins` 후 바로 사용할 수 있습니다.
 
-### 4. 설정 파일 (settings.json)
+**플러그인 비활성화**
 
-Claude Code 설정 파일에서 활성화할 LSP 플러그인을 지정합니다.
+특정 플러그인을 비활성화하려면 `settings.json`의 [`enabledPlugins`](https://code.claude.com/docs/en/settings#enabledplugins)에 `false`로
+설정합니다:
 
 ```json
 {
   "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true,
-    "jdtls-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": false
   }
 }
 ```
 
----
+#### 수동 설치 (고급 사용자용)
 
-## 사용 예시
+커스텀 Language Server를 사용하거나 공식 플러그인 외의 방식으로 LSP를 구성하려면 다음 단계를 따르세요.
 
-### Go 프로젝트에서 LSP 사용하기
+⚠️ **중요**: LSP 플러그인은 Language Server와의 연결 설정만 제공합니다. Language Server 바이너리는 별도로 설치해야 합니다.
 
-```go
-// main.go
-package main
+**1. Language Server 바이너리 설치**
 
-type User struct {
-    ID   int
-    Name string
-}
+| 플러그인             | Language Server            | 설치 명령어                                                                              |
+|------------------|----------------------------|-------------------------------------------------------------------------------------|
+| `pyright-lsp`    | Pyright (Python)           | `pip install pyright` 또는 `npm install -g pyright`                                   |
+| `typescript-lsp` | TypeScript Language Server | `npm install -g typescript-language-server typescript`                              |
+| `rust-lsp`       | rust-analyzer              | [rust-analyzer 설치 가이드](https://rust-analyzer.github.io/manual.html#installation) 참조 |
 
-func (u User) GetName() string {
-    return u.Name
-}
+**2. 플러그인 설치**
 
-func main() {
-    user := User{ID: 1, Name: "Alice"}
-    println(user.GetName())  // 여기서 GetName()을 선택
-}
+마켓플레이스에서 해당 플러그인을 설치합니다:
+
+```bash
+/plugin install typescript-lsp
+/reload-plugins
 ```
 
-1. `GetName()` 위에서 `/lsp definition` 실행 → 함수 정의로 이동
-2. `GetName()` 위에서 `/lsp references` 실행 → 모든 사용처 표시
-3. `User` 타입 위에서 Hover → 타입 정보 표시
+**3. `.lsp.json`으로 직접 설정 (플러그인 없이)**
 
-### Java 프로젝트에서 LSP 사용하기
+플러그인을 사용하지 않고 직접 LSP 서버를 구성하려면 프로젝트 루트에 `.lsp.json` 파일을 생성합니다:
 
-```java
-// UserService.java
-public class UserService {
-	private UserRepository userRepository;
-
-	public User findUser(Long id) {
-		return userRepository.findById(id);  // findById에서 /lsp definition
-	}
-}
-```
-
-### TypeScript 프로젝트에서 LSP 사용하기
-
-```typescript
-// userService.ts
-interface User {
-    id: number;
-    name: string;
-}
-
-class UserService {
-    private users: User[] = [];
-
-    findUser(id: number): User | undefined {
-        return this.users.find(user => user.id === id);  // find에서 /lsp definition
+```json
+{
+  "typescript": {
+    "command": "typescript-language-server",
+    "args": [
+      "--stdio"
+    ],
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescript"
     }
-
-    addUser(user: User): void {
-        this.users.push(user);
-    }
+  }
 }
-
-const service = new UserService();
-service.addUser({ id: 1, name: "Alice" });
 ```
 
-1. `findUser()` 위에서 `/lsp definition` 실행 → 메서드 정의로 이동
-2. `User` 인터페이스 위에서 Hover → 타입 정보 및 프로퍼티 표시
-3. `users` 배열 위에서 `/lsp references` 실행 → 모든 참조 위치 표시
+- 필수 필드
+    - `command`             : 실행할 LSP 바이너리 (PATH에 있어야 함)
+    - `extensionToLanguage` : 파일 확장자를 언어 식별자로 매핑
+- 선택적 필드
+    - `args`                  : LSP 서버에 전달할 명령줄 인자
+    - `env`                   : 환경 변수 설정
+    - `initializationOptions` : 서버 초기화 옵션
+    - `settings`              : `workspace/didChangeConfiguration`로 전달할 설정
 
----
-
-## 문제 해결
-
-### LSP가 작동하지 않을 때
-
-1. **환경 변수 확인**
-   ```bash
-   echo $ENABLE_LSP_TOOL  # 1이 출력되어야 함
-   ```
-
-2. **Language Server 설치 확인**
-   ```bash
-   which gopls  # 또는 해당 언어의 서버
-   ```
-
-3. **플러그인 활성화 확인**
-   ```bash
-   /plugin list  # 설치된 플러그인 목록 확인
-   ```
-
-4. **Claude Code 버전 확인**
-   ```bash
-   claude --version  # v2.0.74 이상 필요
-   ```
-
-### 자주 발생하는 오류
-
-| 오류 메시지                      | 원인                   | 해결 방법                        |
-|-----------------------------|----------------------|------------------------------|
-| `LSP tool not enabled`      | 환경 변수 미설정            | `export ENABLE_LSP_TOOL=1`   |
-| `Language server not found` | 바이너리 미설치 또는 PATH 미등록 | Language Server 설치 및 PATH 설정 |
-| `Connection refused`        | Language Server 미실행  | IDE 재시작 또는 수동 서버 실행          |
+> 자세한 내용은 [Plugins Reference - LSP Servers](https://code.claude.com/docs/en/plugins-reference#lsp-servers)를 참고하세요.
 
 ---
 
 ## 참고 자료
 
-- [Language Server Protocol 공식 문서](https://microsoft.github.io/language-server-protocol/)
-- [Claude Code 공식 문서 - Settings](https://code.claude.com/docs/en/settings#tools-available-to-claude)
-- [LSP 구현체 목록](https://microsoft.github.io/language-server-protocol/implementors/servers/)
+- https://code.claude.com/docs/en/changelog
+- https://code.claude.com/docs/en/tools-reference#tools-reference
+- https://code.claude.com/docs/en/discover-plugins#code-intelligence
+- https://code.claude.com/docs/en/plugins-reference#lsp-servers
+- https://code.claude.com/docs/en/plugins#add-lsp-servers-to-your-plugin
+- https://code.claude.com/docs/en/settings#enabledplugins
