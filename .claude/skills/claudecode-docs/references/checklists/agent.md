@@ -1,21 +1,14 @@
-# 검증 체크리스트 (Validation Checklist)
+# 에이전트(Agent) 검증 체크리스트
 
-## 1. 프론트 매터 검증
+> **참조**:
+> - [프론트매터 공통 검증](./common/frontmatter.md)
+> - [문서 구조 공통 검증](./common/structure.md)
+> - [참조 일관성 공통 검증](./common/cross-reference.md)
+> - [Agent 프론트매터 스펙](../frontmatter/agent.md)
 
-### Sub-agents 필수 필드 체크
+## 1. 에이전트 특화 프론트매터 검증
 
-- [ ] `name` 필드 존재
-- [ ] `name`이 64자 이하
-- [ ] `name`에 소문자/숫자/하이픈만 사용
-- [ ] `name`에 XML 태그 없음
-- [ ] `name`에 예약어(anthropic, claude) 없음
-- [ ] `description` 필드 존재
-- [ ] `description` 비어있지 않음
-- [ ] `description` 1024자 이하
-- [ ] `description`에 XML 태그 없음
-- [ ] `description`이 "무엇을 하는지"와 "언제 사용하는지" 모두 포함
-
-### Sub-agents 선택 필드 유효성
+### 선택 필드 유효성
 
 - [ ] `model` 값이 지원되는 값인지 (`inherit`, `sonnet`, `opus`, `haiku`, 전체 모델 ID)
 - [ ] `permissionMode` 값이 지원되는 값인지 (`default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan`, `auto`)
@@ -50,7 +43,7 @@
 - [ ] hook의 `command`가 유효한 명령어인지
 - [ ] 플러그인 에이전트에 `hooks`가 없는지 (플러그인에서는 지원 안 함)
 
-### Agent 문서 서브에이전트 참조 검증
+### 서브에이전트 참조 검증
 
 - [ ] `subagents` 필드가 유효한 배열 또는 객체 형식인지
 - [ ] `subagents`에 정의된 에이전트가 `.claude/agents/` 디렉토리에 실제 존재하는지
@@ -58,22 +51,9 @@
 - [ ] `subagents.condition` 값이 지원되는 조건인지 (`on_complete`, `on_error`, `always`)
 - [ ] 순환 참조가 없는지 (A → B → A 형태의 무한 루프 방지)
 
-### 본문-프론트매터 일치성 검증
-
-- [ ] 본문에 "use X agent", "X 에이전트 사용" 등의 패턴이 있는지
-- [ ] 언급된 에이전트가 프론트 매터 `subagents`에 정의되어 있는지
-- [ ] 본문에서 직접 호출하는 에이전트가 프론트 매터로 대체 가능한지
-
-**권장 변환 패턴:**
-
-| 본문 패턴 | 프론트 매터 변환 | 적용 대상 |
-|:----------|:-----------------|:----------|
-| `use X agent`, `X 에이전트 사용` | `subagents: [X]` | Agent 문서 |
-| `call X agent when complete` | `subagents: [{name: X, condition: on_complete}]` | Agent 문서 |
-
 ---
 
-## 2. 에이전트 문서 구조 검증
+## 2. 에이전트 특화 문서 구조 검증
 
 ### 필수 섹션
 

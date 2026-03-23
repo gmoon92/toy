@@ -50,4 +50,4 @@
 
 ## Reference
 
-- [Claude Code - Sub Agent: Supported frontmatter fields](https://code.claude.com/docs/en/sub-agents)
+- [Claude Code - Sub Agent: Supported frontmatter fields](https://code.claude.com/docs/en/sub-agents#write-subagent-files)

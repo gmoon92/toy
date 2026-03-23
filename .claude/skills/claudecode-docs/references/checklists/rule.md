@@ -1,17 +1,18 @@
-# 검증 체크리스트 (Validation Checklist)
+# 룰(Rule) 검증 체크리스트
 
-## 1. Rule 문서 구조 검증
+> **참조**:
+> - [프론트매터 공통 검증](./common/frontmatter.md)
+> - [문서 구조 공통 검증](./common/structure.md)
+> - [Rule 프론트매터 스펙](../frontmatter/rule.md)
 
-### 파일 위치 검증
+## 1. 룰 특화 파일 위치 검증
 
 - [ ] Rule 파일이 `.claude/rules/` 디렉토리에 위치하는지
 - [ ] 파일 확장자가 `.md`인지
 - [ ] 파일명이 규칙의 목적을 명확히 설명하는지 (예: `code-style.md`, `api-design.md`)
 - [ ] 하위 디렉토리를 사용하여 규칙을 주제별로 그룹화했는지 (선택사항, 예: `frontend/`, `backend/`)
 
----
-
-## 2. 프론트 매터 검증
+## 2. 룰 특화 프론트매터 검증
 
 ### 선택 필드 유효성
 
@@ -32,7 +33,7 @@
 
 ---
 
-## 3. 본문 내용 검증
+## 3. 룰 특화 본문 내용 검증
 
 ### 규칙의 명확성
 
@@ -122,4 +123,3 @@ description: API 개발 규칙
 - 상수: UPPER_SNAKE_CASE
 - 클래스: PascalCase
 ```
-

@@ -60,49 +60,115 @@ Claude Code 문서의 구조, 형식, 일관성을 검증하고 개선 방향을
 1. **문서 유형 식별**: `{doc-type}` 결정 (agent, skill, rule, command, claude)
 2. **참조 문서 로드** (동시에):
    - 프론트매터 스펙: `${CLAUDE_SKILL_DIR}/references/frontmatter/{doc-type}.md`
-   - 구조 체크리스트: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
+   - 공통 체크리스트:
+     - `${CLAUDE_SKILL_DIR}/references/checklists/common/frontmatter.md`
+     - `${CLAUDE_SKILL_DIR}/references/checklists/common/structure.md`
+     - `${CLAUDE_SKILL_DIR}/references/checklists/common/cross-reference.md`
+   - 유형별 체크리스트: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
    - 출력 템플릿: `${CLAUDE_SKILL_DIR}/references/templates/output.md`
 
-## Step 2: 프론트 매터 검증
+## Step 2: 프론트매터 검증
+
+### Step 2-1: 공통 프론트매터 검증
+
+**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/common/frontmatter.md`
+
+모든 문서 유형에 적용되는 공통 검증:
+
+- [ ] YAML 문법 오류 검증
+- [ ] `name` 필드 검증 (존재, 길이, 형식, 예약어)
+- [ ] `description` 필드 검증 (존재, 길이, 내용)
+- [ ] 선택 필드 타입 검증
+
+### Step 2-2: 문서 유형별 프론트매터 검증
 
 **참조**: `${CLAUDE_SKILL_DIR}/references/frontmatter/{doc-type}.md`
 
-프론트매터 스펙 문서에 정의된 기준으로 검증한다:
+문서 유형별 특화 검증:
 
-- [ ] YAML 문법 오류 검증
-- [ ] 필수 필드 존재 여부 검증
-- [ ] 필드 타입 및 값 범위 검증
-- [ ] 지원하지 않는 필드 검증
+- [ ] 유형별 필수/선택 필드 존재 여부
+- [ ] 유형별 필드 값 범위 검증
 - [ ] `skills`, `agents`, `subagents` 필드 순환 참조 방지
 - [ ] 에이전트, 스킬 이름 일치 검증
 - [ ] `name` 필드 유일성 검증
 
+### Step 2-3: Skill 전용 - Description 사용 예시 트리거 검증
+
+**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/skill.md`
+
+Skill 문서의 경우, `description` 필드에 사용 예시 트리거가 포함되어 있는지 검증:
+
+- [ ] `description`에 "언제 사용하는지" (사용 예시/트리거)가 포함되어 있는지
+- [ ] `description`에 구체적인 사용 예시 문장이 포함되어 있는지
+- [ ] 트리거 예시가 실제 사용자가 입력할 만한 자연스러운 문장인지
+- [ ] `user-invocable: true`인 경우 `argument-hint`가 적절히 설정되어 있는지
+
+> **중요**: 사용 예시 트리거는 반드시 프론트매터 `description`에만 배치해야 함
+
 ## Step 3: 본문 구조 검증
+
+### Step 3-1: 공통 문서 구조 검증
+
+**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/common/structure.md`
+
+모든 문서 유형에 적용되는 공통 검증:
+
+- [ ] 마크다운 헤딩 레벨 검사
+- [ ] 필수/권장 섹션 존재 확인
+- [ ] 가독성 및 일관성 평가
+- [ ] 파일 경로 및 참조 검증 (Unix 스타일 `/` 사용)
+
+### Step 3-2: 문서 유형별 구조 검증
 
 **참조**: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
 
-체크리스트 문서의 "문서 구조 검증" 섹션 기준으로 검증한다:
+문서 유형별 특화 검증:
 
-- [ ] 마크다운 헤딩 레벨 검사
-- [ ] 필수 섹션 존재 확인
-- [ ] 링크/참조 유효성 검사
-- [ ] 일관성 및 가독성 평가
+- [ ] 유형별 필수 섹션 존재 확인
+- [ ] 유형별 권장 섹션 존재 확인
+- [ ] 유형별 금지 섹션 확인
 - [ ] MCP 도구 이름 정규화 여부 (`ServerName:tool_name`)
 - [ ] CLAUDE.md 중복 섹션 체크 (해당 시)
 
-## Step 4: 본문-프론트매터 일치성 검증
+### Step 3-3: Skill 전용 - 본문 사용 예시 섹션 금지 검증
 
-본문의 에이전트/스킬 언급이 프론트매터에 정의되어 있는지 확인한다.
+**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/skill.md`
+
+Skill 문서의 경우, 본문에 "사용 예시" 또는 "트리거" 섹션이 없는지 검증:
+
+- [ ] 본문에 `## 사용 예시`, `## 예시`, `## 트리거` 등의 섹션이 없는지
+- [ ] 본문에 사용자 호출 예시를 나열하는 섹션이 없는지
+- [ ] 사용 예시 트리거가 프론트매터 `description`에만 포함되어 있는지
+
+> **위반 시 처리**: WARNING 수준으로 보고, `description`으로 이동 권장
+
+## Step 4: 참조 일관성 검증
+
+### Step 4-1: 공통 참조 일관성 검증
+
+**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/common/cross-reference.md`
+
+모든 문서 유형에 적용되는 공통 검증:
+
+- [ ] 본문-프론트매터 일치성 검증
+- [ ] 순환 참조 방지 (A → B → A 형태)
+- [ ] 파일 참조 유효성 (`.claude/agents/`, `.claude/skills/`)
+- [ ] 참조된 이름이 실제 파일의 `name` 필드와 일치
+- [ ] MCP 도구 이름 정규화 (`ServerName:tool_name`)
+
+### Step 4-2: 문서 유형별 참조 일관성 검증
+
+**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
+
+문서 유형별 특화 검증:
 
 | 검증 항목 | 대상 필드 | 검증 내용 |
 |:----------|:----------|:----------|
 | Skill 서브에이전트 연결 | `context: fork` 사용 시 `agent` 필드 필수 여부 | `.claude/agents/` 내 파일 존재 확인 |
 | Agent 서브에이전트 참조 | `subagents` 필드 | 파일 존재 여부, `condition` 값 유효성 |
-| 에이전트 순환 참조 방지 | `subagents`, `skills` | A → B → A 형태 무한 루프 체크 |
 | 에이전트-스킬 이름 일치 | `agent`로 참조된 이름 | 실제 파일의 `name` 필드와 일치 |
-| 본문-프론트매터 일치성 | 본문 언급 vs `subagents` | 프론트매터에 정의 여부 |
 
-**변환 권장 패턴:**
+**권장 변환 패턴:**
 
 | 본문 패턴 | 프론트 매터 변환 | 적용 대상 |
 |:----------|:-----------------|:----------|
