@@ -1,9 +1,4 @@
 {
-  "language": "korean",
-  "autoUpdatesChannel": "latest",
-  "teammateMode": "tmux",
-  "alwaysThinkingEnabled": true,
-
   "env": {
     "CLAUDE_TMP_DIR": "${CLAUDE_PROJECT_DIR}/.claude/.tmp",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -12,34 +7,41 @@
     "ENABLE_LSP_TOOL": "1",
     "MCP_TIMEOUT": "1000"
   },
-
-  "enableAllProjectMcpServers": true,
-  "enabledPlugins": {
-    "kotlin-lsp@claude-plugins-official": true,
-    "jdtls-lsp@claude-plugins-official": true
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
-
+  "permissions": {
+    "allow": [
+      "mcp__serena__*",
+      "mcp__sequential-thinking__*",
+      "mcp__context7__*",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*credentials*)",
+      "Bash(sudo *)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "context7",
     "serena",
     "sequential-thinking",
     "chrome-devtools"
   ],
-
   "disabledMcpjsonServers": [
     "playwright",
     "shrimp-task-manager"
   ],
-
-  "companyAnnouncements": [
-    "  ______                            \n /_  __/___  __  __                 \n  / / / __ \\/ / / /                 \n / / / /_/ / /_/ /                  \n/_/  \\____/\\__, /                   \n   ____ __/____/_  ____  ____  ____ \n  / __ `/ __ `__ \\/ __ \\/ __ \\/ __ \\\n / /_/ / / / / / / /_/ / /_/ / / / /\n \\__, /_/ /_/ /_/\\____/\\____/_/ /_/ \n/____/                              \n\n@github: https://github.com/gmoon92\nFont: Slant with https://www.patorjk.com/software/taag/#p=display&f=Slant"
-  ],
-
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-
   "hooks": {
     "Notification": [
       {
@@ -54,23 +56,15 @@
       }
     ]
   },
-
-  "permissions": {
-    "defaultMode": "acceptEdits",
-    "allow": [
-      "mcp__serena__*",
-      "Bash(git status *)",
-      "Bash(git diff *)",
-      "Bash(git log *)",
-      "Bash(git add *)",
-      "Bash(git commit *)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Read(**/*credentials*)",
-      "Bash(sudo *)"
-    ]
-  }
+  "enabledPlugins": {
+    "kotlin-lsp@claude-plugins-official": true,
+    "jdtls-lsp@claude-plugins-official": true
+  },
+  "language": "korean",
+  "alwaysThinkingEnabled": true,
+  "companyAnnouncements": [
+    "  ______                            \n /_  __/___  __  __                 \n  / / / __ \\/ / / /                 \n / / / /_/ / /_/ /                  \n/_/  \\____/\\__, /                   \n   ____ __/____/_  ____  ____  ____ \n  / __ `/ __ `__ \\/ __ \\/ __ \\/ __ \\\n / /_/ / / / / / / /_/ / /_/ / / / /\n \\__, /_/ /_/ /_/\\____/\\____/_/ /_/ \n/____/                              \n\n@github: https://github.com/gmoon92\nFont: Slant with https://www.patorjk.com/software/taag/#p=display&f=Slant"
+  ],
+  "autoUpdatesChannel": "latest",
+  "teammateMode": "tmux"
 }
