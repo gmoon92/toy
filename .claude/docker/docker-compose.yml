@@ -1,4 +1,26 @@
+name: claude-code
+
 services:
+  # https://github.com/oraios/serena/blob/main/DOCKER.md
+  # https://github.com/oraios/serena/pkgs/container/serena
+  serena:
+    image: ghcr.io/oraios/serena:latest
+    container_name: mcp-serena
+    stdin_open: true
+    tty: true
+    ports:
+      # Web Dashboard 포트 (호스트:컨테이너)
+      - "24282:24282"
+    volumes:
+      # 현재 프로젝트(toy)를 워크스페이스로 마운트
+      - ../../:/workspace/toy
+    environment:
+      - SERENA_DOCKER=1
+    command: >
+      sleep infinity
+    restart: "no"
+
+  # https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking
   sequential-thinking:
     image: mcp/sequentialthinking:latest
     container_name: mcp-sequential-thinking

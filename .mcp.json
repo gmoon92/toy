@@ -12,24 +12,26 @@
     },
     "serena": {
       "type": "stdio",
-      "command": "uvx",
+      "command": "docker",
       "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena-mcp-server",
-        "--enable-web-dashboard",
-        "false",
-        "start-mcp-server"
-      ],
-      "env": {}
+        "exec",
+        "-i",
+        "mcp-serena",
+        "serena",
+        "start-mcp-server",
+        "--transport",
+        "stdio"
+      ]
     },
     "sequential-thinking": {
-      "command": "npx",
+      "type": "stdio",
+      "command": "docker",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
-      "env": {}
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ]
     },
     "chrome-devtools": {
       "command": "npx",
