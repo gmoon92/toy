@@ -60,9 +60,3 @@ color: blue
     mode: "revise"
     feedback: "${CLAUDE_TMP_DIR}/review_result.md"
 ```
-
-## 참고
-
-- **기반**: doc-writer
-- **버전**: 1.0
-- **작성일**: 2026-03-21
