@@ -3,12 +3,8 @@
     "webhook": {
       "command": "bun",
       "args": [
-        "${CLAUDE_PROJECT_DIR}/webhook.ts"
+        "\"${CLAUDE_PROJECT_DIR}\"/webhook.ts"
       ]
-    },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp"
     },
     "serena": {
       "type": "stdio",
@@ -39,6 +35,13 @@
         "-y",
         "chrome-devtools-mcp@latest"
       ]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
     }
   }
 }

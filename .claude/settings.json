@@ -31,13 +31,6 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "context7",
-    "serena",
-    "sequential-thinking",
-    "chrome-devtools"
-  ],
   "disabledMcpjsonServers": [
     "playwright",
     "shrimp-task-manager"
