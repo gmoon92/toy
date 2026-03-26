@@ -44,19 +44,3 @@ color: blue
 ### 출력
 - `${CLAUDE_TMP_DIR}/draft.md`: 최종 산출물
 - `${CLAUDE_TMP_DIR}/writer_workspace/`: 버전 관리
-
-## 사용 예시
-
-```yaml
-# 초안 작성
-- agent: writer
-  parameters:
-    mode: "draft"
-    requirements: "API 문서 작성"
-
-# 피드백 기반 개선
-- agent: writer
-  parameters:
-    mode: "revise"
-    feedback: "${CLAUDE_TMP_DIR}/review_result.md"
-```

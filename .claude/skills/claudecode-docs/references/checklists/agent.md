@@ -1,85 +1,52 @@
-# 에이전트(Agent) 검증 체크리스트
+# Agent 검증 체크리스트
 
-> **참조**:
-> - [프론트매터 공통 검증](./common/frontmatter.md)
-> - [문서 구조 공통 검증](./common/structure.md)
-> - [참조 일관성 공통 검증](./common/cross-reference.md)
-> - [Agent 프론트매터 스펙](../frontmatter/agent.md)
+## Agent 특화 프론트매터 검증
 
-## 1. 에이전트 특화 프론트매터 검증
+- [ ] `model`: inherit, sonnet, opus, haiku 중 하나
+- [ ] `permissionMode`: default, acceptEdits, dontAsk, bypassPermissions, plan, auto 중 하나
+- [ ] `memory`: user, project, local 중 하나
+- [ ] `tools`: 문자열 배열
+- [ ] `disallowedTools`: 문자열 배열
+- [ ] `maxTurns`: 숫자
+- [ ] `skills`: 문자열 배열
+- [ ] `mcpServers`: 문자열 배열 또는 객체
+- [ ] `background`: boolean
+- [ ] `isolation`: worktree만 사용
 
-### 선택 필드 유효성
+## 서브에이전트 검증
 
-- [ ] `model` 값이 지원되는 값인지 (`inherit`, `sonnet`, `opus`, `haiku`, 전체 모델 ID)
-- [ ] `permissionMode` 값이 지원되는 값인지 (`default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan`, `auto`)
-- [ ] `memory` 값이 지원되는 범위인지 (`user`, `project`, `local`)
-- [ ] `tools`가 문자열 배열인지
-- [ ] `disallowedTools`가 문자열 배열인지
-- [ ] `maxTurns`가 숫자인지
-- [ ] `skills`가 문자열 배열인지
-- [ ] `mcpServers`가 문자열 배열 또는 객체인지
-- [ ] `background`가 boolean인지
-- [ ] `isolation` 값이 `worktree`인지
+- [ ] `subagents`가 유효한 배열/객체 형식
+- [ ] `subagents.condition`: on_complete, on_error, always 중 하나
 
-### tools 필드 에이전트 제한 검증
+## hooks 검증
 
-- [ ] `Agent(agent_type)` 문법이 올바른지
-- [ ] 지정된 에이전트 타입이 존재하는지
-- [ ] 에이전트 제한이 의도된 보안 정책인지
+- [ ] `PreToolUse`: 유효한 matcher와 hooks 포함
+- [ ] `PostToolUse`: 유효한 matcher와 hooks 포함
+- [ ] `Stop`: 서브에이전트에서만 사용
+- [ ] `matcher`: 지원되는 도구/이벤트 이름
+- [ ] `type`: command만 사용
 
-### mcpServers 형식 검증
-
-- [ ] 문자열 참조 시 해당 서버가 설정되어 있는지
-- [ ] 인라인 정의 시 `type`, `command` 필드 존재 확인
-- [ ] 인라인 정의가 서브에이전트에서만 사용되는지 (플러그인에서는 지원 안 함)
-
-### hooks 형식 검증
-
-- [ ] `PreToolUse` 이벤트가 유효한 matcher와 hooks를 포함하는지
-- [ ] `PostToolUse` 이벤트가 유효한 matcher와 hooks를 포함하는지
-- [ ] `Stop` 이벤트가 서브에이전트에서만 사용되는지
-- [ ] hook의 `matcher`가 지원되는 도구/이벤트 이름인지
-- [ ] hook의 `type`이 `command`인지
-- [ ] hook의 `command`가 유효한 명령어인지
-- [ ] 플러그인 에이전트에 `hooks`가 없는지 (플러그인에서는 지원 안 함)
-
-### 서브에이전트 참조 검증
-
-- [ ] `subagents` 필드가 유효한 배열 또는 객체 형식인지
-- [ ] `subagents`에 정의된 에이전트가 `.claude/agents/` 디렉토리에 실제 존재하는지
-- [ ] `subagents`의 각 항목에 `name`, `condition` 등 필수 속성이 있는지
-- [ ] `subagents.condition` 값이 지원되는 조건인지 (`on_complete`, `on_error`, `always`)
-- [ ] 순환 참조가 없는지 (A → B → A 형태의 무한 루프 방지)
-
----
-
-## 2. 에이전트 특화 문서 구조 검증
+## Agent 특화 본문 구조 검증
 
 ### 필수 섹션
-
-- [ ] 핵심 역량 (또는 유사한 개요 섹션)
-- [ ] 해야 할 행위 (Workflow / 사용 방법)
-- [ ] 하지 말아야 할 행위 (Never / 주의사항)
+- [ ] 핵심 역량 (또는 유사 개요)
+- [ ] 해야 할 행위 (Workflow)
+- [ ] 하지 말아야 할 행위 (Never)
 - [ ] 출력 형식 (Output Format)
 
-### 권장 섹션
-
-- [ ] Input (입력 형식)
-- [ ] Output (출력 예시)
-- [ ] Example (사용 예시)
-- [ ] Decision Framework (결정 프레임워크)
+### 검토/평가 에이전트 필수 섹션
+- [ ] 요약 (Summary)
+- [ ] 심각한 문제 (Critical Issues)
+- [ ] 경고 (Warnings)
+- [ ] 제안 (Suggestions)
+- [ ] 긍정적인 발견 (Positive Findings)
+- [ ] 체크리스트 (Checklist)
 
 ---
 
-## 3. 검토/평가 에이전트 고정 템플릿 검증
-
-검토/리뷰/검증 성격의 에이전트는 다음 고정 템플릿을 준수해야 합니다:
-
-### 필수 출력 섹션
-
-- [ ] 요약 (Summary)
-- [ ] 심각한 문제 (Critical Issues - 반드시 수정)
-- [ ] 경고 (Warnings - 수정 권장)
-- [ ] 제안 (Suggestions - 선택 사항)
-- [ ] 긍정적인 발견 (Positive Findings)
-- [ ] 체크리스트 (Checklist)
+**참조**:
+- [공통 프론트매터 검증](../common/frontmatter.md) - `name`, `description`, `subagents` 등
+- [공통 구조 검증](../common/structure.md) - 헤딩 레벨, 경로 등
+- [공통 참조 검증](../common/cross-reference.md) - 순환 참조, 파일 존재 등
+- [가이드라인](../../guidelines.md)
+- [전환 패턴](../../transformation-patterns.md)

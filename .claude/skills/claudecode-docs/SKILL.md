@@ -43,13 +43,12 @@ Claude Code 문서의 구조, 형식, 일관성을 검증하고 개선 방향을
   - `CLAUDE.md`
   - `**/CLAUDE.md`
 
-- `${CLAUDE_SKILL_DIR}`는 현재 스킬 디렉토리의 절대 경로로 치환
 - {doc-type} = 문서 유형 식별
-  - subagent: `${CLAUDE_PROJECT_DIR}/.claude/agents/**`
-  - skill: `${CLAUDE_PROJECT_DIR}/.claude/skills/**`
-  - command: `${CLAUDE_PROJECT_DIR}/.claude/command/**`
-  - rule: `${CLAUDE_PROJECT_DIR}/.claude/rules/**`
-  - claude: `CLAUDE.md` (프로젝트 루트 또는 모듈별)
+  - agent: `.claude/agents/**/*.md`
+  - skill: `.claude/skills/**/*.md`
+  - command: `.claude/commands/**/*.md`
+  - rule: `.claude/rules/**/*.md`
+  - claude: `CLAUDE.md` 또는 `**/CLAUDE.md`
 
 # Workflow
 
@@ -60,154 +59,116 @@ Claude Code 문서의 구조, 형식, 일관성을 검증하고 개선 방향을
 1. **문서 유형 식별**: `{doc-type}` 결정 (agent, skill, rule, command, claude)
 2. **참조 문서 로드** (동시에):
    - 프론트매터 스펙: `${CLAUDE_PROJECT_DIR}/.claude/docs/claude-code-meta/frontmatter/{doc-type}.md`
-   - 공통 체크리스트:
-     - `${CLAUDE_SKILL_DIR}/references/checklists/common/frontmatter.md`
-     - `${CLAUDE_SKILL_DIR}/references/checklists/common/structure.md`
-     - `${CLAUDE_SKILL_DIR}/references/checklists/common/cross-reference.md`
-   - 유형별 체크리스트: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
-   - 출력 템플릿: `${CLAUDE_SKILL_DIR}/references/templates/output.md`
-3. **공식 문서 참고** (해야 할 행위): [Sub-agents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills) 문서 기준 검증
+   - 공통 검증 항목:
+     - `references/checklists/common/frontmatter.md` (Step 2용)
+     - `references/checklists/common/structure.md` (Step 3용)
+     - `references/checklists/common/cross-reference.md` (Step 4용)
+   - 작성 가이드라인: `references/guidelines.md`
+   - 유형별 체크리스트: `references/checklists/{doc-type}.md`
+   - 출력 템플릿: `references/templates/output.md`
+3. **공식 문서 참고**: [Sub-agents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills) 문서 기준 검증
 
 ## Step 2: 프론트매터 검증
 
-### Step 2-1: 공통 프론트매터 검증
+**참조**: `references/checklists/common/frontmatter.md`, `references/checklists/{doc-type}.md`
 
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/common/frontmatter.md`
+### 공통 검증
 
-모든 문서 유형에 적용되는 공통 검증:
+- [ ] YAML 문법 유효성 (`---`로 시작/종료)
+- [ ] `name`: 필수(에이전트/스킬), 64자 이하, 소문자/숫자/하이픈만
+- [ ] `name`: XML 태그 및 예약어(anthropic, claude) 없음
+- [ ] `description`: "무엇+언제" 포함, 1024자 이하(에이전트/스킬), 200자 이하(룰)
+- [ ] 선택 필드 타입: `model`, `tools`, `skills`, `mcpServers`, `hooks`
 
-- [ ] YAML 문법 오류 검증 (해야 할 행위: YAML 문법 검증)
-- [ ] `name` 필드 검증 (존재, 길이, 형식, 예약어)
-- [ ] `description` 필드 검증 (존재, 길이, 내용)
-  - **주의**: description을 1024자로 강제 자르지 않기 (사용자 수정 안내) (하지 말아야 할 행위)
-- [ ] 선택 필드 타입 검증
-  - **주의**: 선택 필드 누락을 심각한 문제로 보고하지 않기 (경고 수준) (하지 말아야 할 행위)
+### 유형별 검증
 
-### Step 2-2: 문서 유형별 프론트매터 검증
+- [ ] Agent: `model`, `permissionMode`, `memory`, `tools`, `subagents` 등
+- [ ] Skill: `argument-hint`, `user-invocable`, `context`, `agent` 등
+- [ ] Command: 프론트매터 생략 가능
+- [ ] Rule: `paths` (Glob 패턴), `description`
+- [ ] CLAUDE.md: **프론트매터 없음**
 
-**참조**: `${CLAUDE_PROJECT_DIR}/.claude/docs/claude-code-meta/frontmatter/{doc-type}.md`
+### Skill 전용 추가 검증
 
-문서 유형별 특화 검증:
+- [ ] `description`에 사용 예시 트리거 포함
+- [ ] `user-invocable: true` 시 `argument-hint` 필수
+- [ ] `context: fork` 시 `agent` 필수
 
-- [ ] 유형별 필수/선택 필드 존재 여부
-  - **주의**: 새로운 프론트 매터 필드를 "표준"이라 주장하지 않기 (하지 말아야 할 행위)
-- [ ] 유형별 필드 값 범위 검증
-- [ ] `skills`, `agents`, `subagents` 필드 순환 참조 방지 (A → B → A 형태의 무한 루프 가능성) (해야 할 행위: 에이전트 순환 참조 방지)
-- [ ] 에이전트, 스킬 이름 일치 검증 (해야 할 행위: 에이전트-스킬 이름 일치)
-- [ ] `name` 필드 유일성 검증
-- [ ] Skills의 `color` 필드는 사용되지 않음 (하지 말아야 할 행위: Skills color 필드 권장하지 않음)
-
-### Step 2-3: Skill 전용 - Description 사용 예시 트리거 검증
-
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/skill.md`
-
-Skill 문서의 경우, `description` 필드에 사용 예시 트리거가 포함되어 있는지 검증:
-
-- [ ] `description`에 "언제 사용하는지" (사용 예시/트리거)가 포함되어 있는지
-- [ ] `description`에 구체적인 사용 예시 문장이 포함되어 있는지
-- [ ] 트리거 예시가 실제 사용자가 입력할 만한 자연스러운 문장인지
-- [ ] `user-invocable: true`인 경우 `argument-hint`가 적절히 설정되어 있는지
-
-> **중요**: 사용 예시 트리거는 반드시 프론트매터 `description`에만 배치해야 함
+> **중요**: 사용 예시 트리거는 반드시 프론트매터 `description`에만 배치
 
 ## Step 3: 본문 구조 검증
 
-### Step 3-1: 공통 문서 구조 검증
+**참조**: `references/checklists/common/structure.md`, `references/checklists/{doc-type}.md`
 
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/common/structure.md`
+### 공통 검증
 
-모든 문서 유형에 적용되는 공통 검증:
+- [ ] 마크다운 헤딩 레벨: h1 → h2 → h3 순으로 논리적 구성
+- [ ] h1 제목이 문서의 목적을 명확히 설명
+- [ ] 일관된 용어 사용 (하나의 용어를 문서 전체에서 사용)
+- [ ] 코드 블록에 적절한 언어 태그 사용
+- [ ] Unix 스타일 경로(`/`) 사용 (Windows `\` 금지)
+- [ ] 불필요한 ASCII 아트 다이어그램 없음
 
-- [ ] 마크다운 헤딩 레벨 검사
-- [ ] 필수/권장 섹션 존재 확인
-  - **주의**: 동명사(gerund) 명명을 강제하지 않기 (권장사항일 뿐) (하지 말아야 할 행위)
-- [ ] 가독성 및 일관성 평가
-- [ ] 파일 경로 및 참조 검증 (Unix 스타일 `/` 사용)
-- [ ] 고정 템플릿 준수 (검토/평가 에이전트의 경우 필수 섹션 확인) (해야 할 행위)
-- [ ] MCP 도구 이름 정규화 여부 (`ServerName:tool_name`) 검증 (해야 할 행위: MCP 도구 이름)
-- [ ] `` `!command` `` 문법 남용 여부 확인 (하지 말아야 할 행위: Bash Injection 남용)
-- [ ] mcpServers 인라인 정의 여부 확인 (하지 말아야 할 행위: 인라인 MCP 정의 권장하지 않음)
+### 유형별 검증
 
-### Step 3-2: 문서 유형별 구조 검증
+| 문서 유형 | 필수 섹션 | 금지 섹션 |
+|:----------|:----------|:----------|
+| **Agent** | 핵심 역량, Workflow, Don'ts, Output Format | - |
+| **Skill** | Workflow, Tool Use Examples | 본문 "사용 예시", "트리거" 섹션 |
+| **Command** | 최소 동작 (30줄 이하 권장) | 복잡한 로직 |
+| **Rule** | 구체적이고 실행 가능한 규칙 | 모호한 표현("적절히", "가능하면") |
+| **CLAUDE.md** | Overview, Structure, Commands | 프론트매터 |
 
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
+### 기술적 검증
 
-문서 유형별 특화 검증:
-
-- [ ] 유형별 필수 섹션 존재 확인
-- [ ] 유형별 권장 섹션 존재 확인
-- [ ] 유형별 금지 섹션 확인
-- [ ] MCP 도구 이름 정규화 여부 (`ServerName:tool_name`) (해야 할 행위: MCP 도구 이름)
-- [ ] CLAUDE.md 중복 섹션 체크 (해당 시)
-- [ ] **로직 검증 금지**: 에이전트의 로직 자체를 검증하지 않기 (문서 구조만 검증) (하지 말아야 할 행위)
-- [ ] 본문에서 `use X agent` 직접 호출 대신 프론트 매터 `subagents`/`agent` 사용 권장 (하지 말아야 할 행위: 본문 에이전트 직접 언급)
-
-### Step 3-3: Skill 전용 - 본문 사용 예시 섹션 금지 검증
-
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/skill.md`
-
-Skill 문서의 경우, 본문에 "사용 예시" 또는 "트리거" 섹션이 없는지 검증:
-
-- [ ] 본문에 `## 사용 예시`, `## 예시`, `## 트리거` 등의 섹션이 없는지
-- [ ] 본문에 사용자 호출 예시를 나열하는 섹션이 없는지
-- [ ] 사용 예시 트리거가 프론트매터 `description`에만 포함되어 있는지
-
-> **위반 시 처리**: WARNING 수준으로 보고, `description`으로 이동 권장
+- [ ] MCP 도구 이름 정규화: `ServerName:tool_name`
+- [ ] `` `!command` `` 문법 남용 여부
+- [ ] 에이전트 로직 검증 금지 (문서 구조만 검증)
 
 ## Step 4: 참조 일관성 검증
 
-### Step 4-1: 공통 참조 일관성 검증
+**참조**: `references/checklists/common/cross-reference.md`, `references/transformation-patterns.md`, `references/checklists/{doc-type}.md`
 
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/common/cross-reference.md`
+### 공통 검증
 
-모든 문서 유형에 적용되는 공통 검증:
+- [ ] 본문에 언급된 에이전트/스킬이 프론트매터에 정의되어 있는지
+- [ ] 본문의 호출 패턴이 프론트매터와 일치하는지
+- [ ] 순환 참조 없음 (A → B → A 형태 방지)
 
-- [ ] 본문-프론트매터 일치성 검증 (해야 할 행위: 본문-프론트매터 일치성)
-  - **주의**: 본문의 에이전트 언급이 프론트 매터에 없으면 경고 수준으로 보고 (하지 말아야 할 행위: 프론트 매터 누락 무시)
-- [ ] 순환 참조 방지 (A → B → A 형태) (해야 할 행위: 에이전트 순환 참조 방지)
-- [ ] 파일 참조 유효성 (`.claude/agents/`, `.claude/skills/`)
-  - **주의**: 파일 참조 2단계 이상 중첩을 심각한 문제로 보고하지 않기 (하지 말아야 할 행위: 중첩 참조 과대평가)
-- [ ] 참조된 이름이 실제 파일의 `name` 필드와 일치 (해야 할 행위: 에이전트-스킬 이름 일치)
-- [ ] MCP 도구 이름 정규화 (`ServerName:tool_name`) (해야 할 행위: MCP 도구 이름)
+### 파일 참조 유효성
 
-### Step 4-2: 문서 유형별 참조 일관성 검증
+- [ ] `.claude/agents/` 내 에이전트 파일 존재
+- [ ] `.claude/skills/` 내 스킬 파일 존재
+- [ ] 참조된 이름이 실제 파일의 `name` 필드와 일치
 
-**참조**: `${CLAUDE_SKILL_DIR}/references/checklists/{doc-type}.md`
+### 연결 검증
 
-문서 유형별 특화 검증:
+| 문서 유형 | 검증 항목 |
+|:----------|:----------|
+| **Skill** | `context: fork` 사용 시 `agent` 필드 필수 |
+| **Agent** | `subagents` 파일 존재 및 `condition` 값 유효성 (`on_complete`, `on_error`, `always`) |
 
-| 검증 항목 | 대상 필드 | 검증 내용 |
-|:----------|:----------|:----------|
-| Skill 서브에이전트 연결 | `context: fork` 사용 시 `agent` 필드 필수 여부 | `.claude/agents/` 내 파일 존재 확인 (해야 할 행위: Skill 서브에이전트 연결) |
-| Agent 서브에이전트 참조 | `subagents` 필드 | 파일 존재 여부, `condition` 값 유효성 (해야 할 행위: Agent 서브에이전트 참조) |
-| 에이전트-스킬 이름 일치 | `agent`로 참조된 이름 | 실제 파일의 `name` 필드와 일치 (해야 할 행위: 에이전트-스킬 이름 일치) |
+### 개선 제안
 
-**추가 검증** (해야 할 행위: 프론트 매터 전환 제안):
-- [ ] 본문의 에이전트 호출을 `subagents`/`agent` 필드로 전환 가능한지 제안
+- [ ] 본문 에이전트 호출 → 프론트매터 `subagents`/`agent` 필드로 전환 가능성 제안
 
-**권장 변환 패턴:**
-
-| 본문 패턴 | 프론트 매터 변환 | 적용 대상 |
-|:----------|:-----------------|:----------|
-| `use X agent`, `X 에이전트 사용` | `subagents: [X]` | Agent 문서 |
-| `call X agent when complete` | `subagents: [{name: X, condition: on_complete}]` | Agent 문서 |
-| `delegate to X agent` | `context: fork` + `agent: X` | Skill 문서 |
+> **참조**: [전환 패턴](references/transformation-patterns.md) - 변환 예시 및 검증 체크리스트
 
 ## Step 5: 결과 보고
 
-1. 통합 검증 테이블 출력 (`${CLAUDE_SKILL_DIR}/references/templates/output.md` 참조)
-2. 수정 제안 제공
-   - 본문의 에이전트 호출을 `subagents`/`agent` 필드로 전환 가능한지 제안 (해야 할 행위: 프론트 매터 전환 제안)
-3. 피드백 문서 저장 (`${CLAUDE_TMP_DIR}/validation/{CLAUDE_SESSION_ID}`)
-4. **결과 보고 시 유의사항** (하지 말아야 할 행위):
-   - 로직 검증 금지: 에이전트의 로직 자체를 검증하지 않기 (문서 구조만 검증)
-   - 선택 필드 과대평가 금지: 선택 필드 누락을 심각한 문제로 보고하지 않기 (경고 수준)
+1. 통합 검증 테이블 출력 (`references/templates/output.md` 참조)
+2. 수정 제안 제공 (본문→프론트매터 전환 가능성)
+3. 피드백 문서 저장 (`${CLAUDE_TMP_DIR}/claudecode-document-validator/${CLAUDE_SESSION_ID}/`)
+
+**주의사항**:
+- 에이전트 로직 자체는 검증하지 않음 (문서 구조만 검증)
+- 선택 필드 누락은 WARNING 수준으로 처리
 
 ---
 
 # 출력 형식
 
-검증 결과는 다음 템플릿을 따릅니다 (`${CLAUDE_SKILL_DIR}/references/templates/output.md`):
+검증 결과는 다음 템플릿을 따릅니다 (`references/templates/output.md`):
 
 검증 결과는 `${CLAUDE_TMP_DIR}/claudecode-document-validator/${CLAUDE_SESSION_ID}` 디렉토리에 마크다운 파일로 저장됩니다.
 
@@ -230,33 +191,8 @@ ${CLAUDE_TMP_DIR}/claudecode-document-validator/
     └── command-pr-create.md
 ```
 
-# 해야 할 행위 (Do's)
+# 참조
 
-| 항목                  | 설명                                                                                                                  |
-|:--------------------|:--------------------------------------------------------------------------------------------------------------------|
-| YAML 문법 검증          | 프론트 매터 문법이 올바른지 확인                                                                                                  |
-| MCP 도구 이름           | 정규화된 이름(`ServerName:tool_name`) 사용 여부 확인                                                                            |
-| 고정 템플릿 준수           | 검토/평가 에이전트의 경우 필수 섹션 확인                                                                                             |
-| 공식 문서 참고            | [Sub-agents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills) 문서 기준 검증 |
-| **Skill 서브에이전트 연결** | `context: fork` 사용 시 `agent` 필드 필수 여부 확인                                                                            |
-| **Agent 서브에이전트 참조** | `subagents` 필드의 에이전트 파일 존재 여부 확인                                                                                    |
-| **에이전트 순환 참조 방지**   | A → B → A 형태의 무한 루프 가능성 체크                                                                                          |
-| **에이전트-스킬 이름 일치**   | `agent`로 참조된 이름이 실제 파일의 `name`과 일치하는지 확인                                                                            |
-| **본문-프론트매터 일치성**    | 본문의 에이전트 언급이 프론트 매터 `subagents`에 정의되어 있는지 확인                                                                        |
-| **프론트 매터 전환 제안**    | 본문의 에이전트 호출을 `subagents`/`agent` 필드로 전환 가능한지 제안                                                                     |
-
-# 하지 말아야 할 행위 (Don'ts)
-
-| 항목                 | 설명                                                           |
-|:-------------------|:-------------------------------------------------------------|
-| 임의 표준 선언           | 새로운 프론트 매터 필드를 "표준"이라 주장하지 않기                                |
-| 강제 자르기             | description을 1024자로 강제 자르지 않기 (사용자 수정 안내)                    |
-| 선택 필드 과대평가         | 선택 필드 누락을 심각한 문제로 보고하지 않기 (경고 수준)                            |
-| 로직 검증              | 에이전트의 로직 자체를 검증하지 않기 (문서 구조만)                                |
-| 중첩 참조 과대평가         | 파일 참조 2단계 이상 중첩을 심각한 문제로 보고하지 않기                             |
-| 강제 명명              | 동명사(gerund) 명명을 강제하지 않기 (권장사항일 뿐)                            |
-| Bash Injection 남용  | `` `!command` `` 문법을 불필요하게 사용하지 않도록 경고                       |
-| mcpServers 인라인 남용  | 인라인 MCP 정의를 권장하지 않음 (설정된 서버 참조 권장)                           |
-| Skills color 필드 권장 | `color` 필드는 **스킬에서만** 더 이상 사용되지 않음 (에이전트는 지원)                |
-| 본문 에이전트 직접 언급      | 본문에서 `use X agent` 직접 호출 대신 프론트 매터 `subagents`/`agent` 사용 권장 |
-| 프론트 매터 누락 무시       | 본문의 에이전트 언급이 프론트 매터에 없으면 경고 수준으로 보고                          |
+- [작성 가이드라인](references/guidelines.md) - 필수/권장/금지사항
+- [전환 패턴](references/transformation-patterns.md) - 본문-프론트매터 변환 가이드
+- [체크리스트](references/checklists/) - 문서 유형별 검증 항목
