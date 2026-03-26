@@ -1,24 +1,5 @@
 {
   "mcpServers": {
-    "webhook": {
-      "command": "bun",
-      "args": [
-        "\"${CLAUDE_PROJECT_DIR}\"/webhook.ts"
-      ]
-    },
-    "serena": {
-      "type": "stdio",
-      "command": "docker",
-      "args": [
-        "exec",
-        "-i",
-        "mcp-serena",
-        "serena",
-        "start-mcp-server",
-        "--transport",
-        "stdio"
-      ]
-    },
     "sequential-thinking": {
       "type": "stdio",
       "command": "docker",
@@ -29,11 +10,12 @@
         "mcp/sequentialthinking"
       ]
     },
-    "chrome-devtools": {
+    "playwright": {
       "command": "npx",
       "args": [
-        "-y",
-        "chrome-devtools-mcp@latest"
+        "@playwright/mcp@latest",
+        "--output-dir",
+        "${CLAUDE_TMP_DIR}/playwright-output"
       ]
     },
     "context7": {

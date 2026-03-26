@@ -12,6 +12,7 @@
 ### CLAUDE CODE ###
 **/.claude/.tmp/**
 **/settings.local.json
+**/scheduled_tasks.lock
 
 ### STS ###
 .apt_generated
