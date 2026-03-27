@@ -65,37 +65,47 @@ cc() {
 > 팀 플랜은 시간당 토큰 제한과 주간 사용 제한이 있어서, 한 모델만 사용하는 것보다 모델을 나눠 병행하면 한도를 더 효율적으로 활용할 수 있습니다.
 
 ## 트러블슈팅
+ 
+3rd-party 모델과 Anthropic 모델을 함께 사용할 때, `settings.json`에 인증 관련 설정이 남아 있으면 충돌이 발생합니다.
 
-만약 기존에 `~/.claude/settings.json` 또는 `~/.claude/settings.local.json`에 인증 키 관련 설정이 되어 있다면 제거하세요. 
+```bash
+➜  ~  claude
 
-Claude Code의 설정 적용 우선순위는 다음과 같습니다.
+ ▐▛███▜▌   Claude Code v2.1.85
+▝▜█████▛▘  kimi-k2.5 · API Usage Billing
+  ▘▘ ▝▝    /Users/moongyeom
 
-1. 환경 변수 (가장 높음)
-2. `claude --<options>` 
+  /model to try Opus 4.6
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+Auth conflict: Both a token (ANTHROPIC_AUTH_TOKEN) and an API key
+(/login managed key) are set. This may lead to unexpected behavior.
+  • Trying to use ANTHROPIC_AUTH_TOKEN? claude /logout
+  • Trying to use /login managed key? Unset the ANTHROPIC_AUTH_TOKEN environment variable
+
+>
+```
+
+_Auth conflict: Both a token (ANTHROPIC_AUTH_TOKEN) and an API key..._
+
+이 충돌은 Claude Code의 설정 적용 우선순위에서 비롯됩니다:
+
+1. 시스템 환경 변수
+2. `claude --<options>`
 3. `settings.json`
-4. `settings.local.json` (가장 낮음)
+4. `settings.local.json`
 
-`settings.json`에 인증 관련 설정이 남아 있으면 환경 변수와 충돌할 수 있으므로, 셸 함수 방식을 사용할 때는 해당 설정을 제거해야 합니다.
+충돌을 일으키는 아래 설정을 `settings.json`에서 제거하세요.
 
-> Claude Code CLI 실행 중 `/model` 명령어로 모델을 전환할 수 있지만, 공식 Anthropic 모델로만 제한됩니다.
->
-> 3rd-party 모델(Kimi 등)을 사용하려면 `ANTHROPIC_BASE_URL`로 API 엔드포인트를 변경하고, `ANTHROPIC_AUTH_TOKEN`에 해당 provider의 API 키를 설정해야 합니다.  
-> 이때 `ANTHROPIC_API_KEY`와 `ANTHROPIC_AUTH_TOKEN`이 동시에 환경 변수로 설정되어 있으면 아래처럼 충돌이 발생하며, 정상 동작을 보장할 수 없습니다.
->
->  ```bash
-> ➜  ~  claude
-> 
->  ▐▛███▜▌   Claude Code v2.1.85
-> ▝▜█████▛▘  kimi-k2.5 · API Usage Billing
->   ▘▘ ▝▝    /Users/moongyeom
-> 
->   /model to try Opus 4.6
-> 
-> ──────────────────────────────────────────────────────────────────────────────────────────────
-> Auth conflict: Both a token (ANTHROPIC_AUTH_TOKEN) and an API key
-> (/login managed key) are set. This may lead to unexpected behavior.
->   • Trying to use ANTHROPIC_AUTH_TOKEN? claude /logout
->   • Trying to use /login managed key? Unset the ANTHROPIC_AUTH_TOKEN environment variable
-> 
-> >
-> ```
+**Anthropic 인증 키** (3rd-party의 `ANTHROPIC_AUTH_TOKEN`과 충돌)
+- `ANTHROPIC_API_KEY`
+
+**3rd-party 모델 설정**
+- `ANTHROPIC_BASE_URL`
+- `ANTHROPIC_AUTH_TOKEN`
+
+**모델 지정 설정**
+- `ANTHROPIC_MODEL`
+- `ANTHROPIC_DEFAULT_OPUS_MODEL`
+- `ANTHROPIC_DEFAULT_SONNET_MODEL`
+- `ANTHROPIC_DEFAULT_HAIKU_MODEL`
