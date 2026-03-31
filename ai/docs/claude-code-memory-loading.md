@@ -61,15 +61,15 @@ claude
 ```
 
 **초기 로딩**:
-- ✅ `repo/CLAUDE.md` → 로딩됨
-- ❌ `backend/CLAUDE.md` → 아직 로딩 안 됨
-- ❌ `frontend/CLAUDE.md` → 아직 로딩 안 됨
+- `repo/CLAUDE.md` → 로딩됨
+- `backend/CLAUDE.md` → 미로딩
+- `frontend/CLAUDE.md` → 미로딩
 
 **이후 파일 접근 시**:
-- `backend/src/service.ts` 읽기 → ✅ `backend/CLAUDE.md` 로딩
-- `frontend/App.tsx` 수정 → ✅ `frontend/CLAUDE.md` 로딩
+- `backend/src/service.ts` 읽기 → `backend/CLAUDE.md` 로딩
+- `frontend/App.tsx` 수정 → `frontend/CLAUDE.md` 로딩
 
-**✔️ 특징**: 루트 실행 = **global context + 필요한 모듈만 점진 로딩**
+**특징**: 루트 실행 = **global context + 필요한 모듈만 점진 로딩**
 
 ### 3.2 케이스 2: 특정 모듈에서 실행
 
@@ -79,10 +79,10 @@ claude
 ```
 
 **초기 로딩**:
-- ✅ `backend/CLAUDE.md`
-- ✅ `repo/CLAUDE.md`
+- `backend/CLAUDE.md`
+- `repo/CLAUDE.md`
 
-**✔️ 특징**: backend 전용 context + root 정책 같이 적용, frontend 내용은 전혀 로딩 안 됨
+**특징**: backend 전용 context + root 정책 같이 적용, frontend 내용은 전혀 로딩 안 됨
 
 ---
 
@@ -136,19 +136,19 @@ root CLAUDE.md
 
 이러한 패턴을 적용할 때 흔히 발생하는 오해는 다음과 같습니다.
 
-### ❗ 오해 1: "모든 CLAUDE.md가 항상 로딩된다"
+### 오해 1: "모든 CLAUDE.md가 항상 로딩된다"
 
-→ ❌ 틀림
+→ 틀림
 → 하위는 lazy loading
 
-### ❗ 오해 2: "루트에서 실행하면 모든 모듈 rules 적용된다"
+### 오해 2: "루트에서 실행하면 모든 모듈 rules 적용된다"
 
-→ ❌ 틀림
+→ 틀림
 → 해당 모듈 파일 접근 전까지는 적용 안 됨
 
-### ❗ 오해 3: "모듈 CLAUDE.md는 독립적이다"
+### 오해 3: "모듈 CLAUDE.md는 독립적이다"
 
-→ ❌ 틀림
+→ 틀림
 → 항상 root 영향을 받음 (inherit 구조)
 
 ---
@@ -182,8 +182,3 @@ root CLAUDE.md
 
 - [Claude Code 공식 문서 - Memory](https://docs.anthropic.com/en/docs/claude-code/memory)
 - [CLAUDE.md 완벽 가이드](https://serenitiesai.com/articles/claude-md-complete-guide-2026)
-
----
-
-*생성일: 2026-03-23*
-*통합 문서: claude-code-loading-strategy.md + claude-files-guid.md*

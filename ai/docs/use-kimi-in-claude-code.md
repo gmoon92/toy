@@ -56,7 +56,7 @@ vim ~/.claude/settings.json
 ```
 
 - `ANTHROPIC_BASE_URL`: Moonshot의 Anthropic 호환 엔드포인트
-- `ANTHROPIC_AUTH_TOKEN`: Moonshot API 키 (⚠️ `ANTHROPIC_API_KEY` 아님!)
+- `ANTHROPIC_AUTH_TOKEN`: Moonshot API 키 (주의: `ANTHROPIC_API_KEY`가 아님)
 - `ANTHROPIC_MODEL`: 기본 사용 모델
 
 > - Moonshot API 키는 [Moonshot AI Console](https://platform.moonshot.ai/console/api-keys)에서 확인합니다.

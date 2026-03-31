@@ -24,7 +24,7 @@ claude plugin install kotlin-lsp@claude-plugins-official \
 
 LSP 기능은 Language Server 바이너리가 필요하지만, 공식 플러그인은 Language Server 바이너리가 **자동으로 설치**됩니다. 별도로 시스템에 바이너리를 설치할 필요가 없습니다.
 
-> **참고**: Claude Code CLI 낵부에서도 `/plugin install`로 설치할 수 있습니다. 설치 후 `/reload-plugins`로 적용하세요.
+> **참고**: Claude Code CLI 내부에서도 `/plugin install`로 설치할 수 있습니다. 설치 후 `/reload-plugins`로 적용하세요.
 >
 >```bash
 >/plugin install kotlin-lsp@claude-plugins-official
@@ -103,7 +103,7 @@ LSP(Language Server Protocol)는 IDE와 개발 도구가 프로그래밍 언어 
 | VSCode   | 별도 구현   | 별도 구현     | 별도 구현 | 별도 구현   |
 | Neovim   | 별도 구현   | 별도 구현     | 별도 구현 | 별도 구현   |
 
-새로운 언어가 등장할 때마다 모든 IDE가 해당 언어에 대한 지원 기능을 개발해야 했습니다. 이는 `IDE 수 × 언어 수` 만큼의 구현이 필요한 비효율적인 구조였습니다.
+새로운 언어가 등장할 때마다 모든 IDE가 해당 언어에 대한 지원 기능을 개발해야 했습니다. 이는 `IDE 수 × 언어 수`만큼의 구현이 필요한 비효율적인 구조였습니다.
 
 #### LSP 도입 후 (N+M 구조)
 
@@ -132,12 +132,12 @@ LSP는 IDE와 언어 서버 간의 표준 통신 프로토콜을 제공합니다
 
 ## LSP가 제공하는 가치
 
-클로드 코드는 `grep` 기반으로 우선 적용하여 파일 탐색합니다.
+클로드 코드는 `grep` 기반으로 파일을 우선 탐색합니다.
 
-타입 추론 또는 타입이 실제 사용하는 위치 변수 사용처 등 알 수 없습니다.
+타입 추론 또는 타입이 실제 사용되는 위치, 변수 사용처 등을 알 수 없습니다.
 
-따라서 소스 코드 리팩토링 또는 분석 작업 요청시 누락된 부분으로 인해 컴파일 에러 또는 자세히 분석을 못한다고 느꼈을 텐데,
-이점 lsp 를 연동하여 사용하여 누락된 파일없이 완벽하게 해소 시킬 수 있습니다.
+따라서 소스 코드 리팩토링 또는 분석 작업 요청 시 누락된 부분으로 인해 컴파일 에러 또는 자세한 분석을 못한다고 느꼈을 텐데,
+이 점은 LSP를 연동하여 사용하면 누락된 파일 없이 완벽하게 해소할 수 있습니다.
 
 ### 왜 단순 검색으로는 부족한가?
 
@@ -167,7 +167,7 @@ class UserService {
 
 - 타입 오류 및 경고 자동 보고: 코드 저장 후 문법/타입 오류 감지
 - 코드 네비게이션: 정의로 이동, 참조 찾기 및 호버 정보
-  - 심볼의 정의 위치로 이동: 함수/클스 선언 위치 찾기
+  - 심볼의 정의 위치로 이동: 함수/클래스 선언 위치 찾기
   - 심볼의 모든 참조 찾기: 변수/메서드 사용처 검색
   - 타입 및 문서 정보 표시: 변수/함수 위에서 타입 확인
   - 파일의 모든 심볼 목록: 클래스 멤버, 함수 목록 보기
@@ -225,9 +225,9 @@ public class OrderService {
 
 ## 참고 자료
 
-- https://code.claude.com/docs/en/changelog
-- https://code.claude.com/docs/en/tools-reference#tools-reference
-- https://code.claude.com/docs/en/discover-plugins#code-intelligence
-- https://code.claude.com/docs/en/plugins-reference#lsp-servers
-- https://code.claude.com/docs/en/plugins#add-lsp-servers-to-your-plugin
-- https://code.claude.com/docs/en/settings#enabledplugins
+- [Claude Code 공식 문서 - Changelog](https://code.claude.com/docs/en/changelog)
+- [Claude Code 공식 문서 - Tools Reference](https://code.claude.com/docs/en/tools-reference#tools-reference)
+- [Claude Code 공식 문서 - Code Intelligence](https://code.claude.com/docs/en/discover-plugins#code-intelligence)
+- [Claude Code 공식 문서 - LSP Servers](https://code.claude.com/docs/en/plugins-reference#lsp-servers)
+- [Claude Code 공식 문서 - Add LSP Servers to Your Plugin](https://code.claude.com/docs/en/plugins#add-lsp-servers-to-your-plugin)
+- [Claude Code 공식 문서 - Settings - enabledPlugins](https://code.claude.com/docs/en/settings#enabledplugins)

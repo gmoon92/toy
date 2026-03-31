@@ -67,8 +67,8 @@ You are a software architect responsible for designing system architecture based
 
 | 필드 | 필수 | 설명 |
 |------|------|------|
-| `name` | ✅ | 에이전트 식별자 |
-| `description` | ✅ | 사용 상황 설명 (Agent 선택 힌트) |
+| `name` | 필수 | 에이전트 식별자 |
+| `description` | 필수 | 사용 상황 설명 (Agent 선택 힌트) |
 | `model` | 선택 | 사용 모델 (sonnet/opus/haiku) |
 
 > description은 **Agent 선택 힌트**로 사용됩니다. description은 행동 지시가 아니라 **사용 상황 설명**입니다.
@@ -198,12 +198,12 @@ You are a code reviewer.
 
 ### 5.1 Persona에 과도하게 의존
 
-**❌ 잘못된 접근:**
+**잘못된 접근:**
 ```
 You are a wise wizard who codes with magic...
 ```
 
-**✅ 올바른 접근:**
+**올바른 접근:**
 ```
 You are a senior backend engineer.
 
@@ -217,12 +217,12 @@ You are a senior backend engineer.
 
 ### 5.2 모호한 출력 형식
 
-**❌ 잘못된 접근:**
+**잘못된 접근:**
 ```
 리뷰해주세요.
 ```
 
-**✅ 올바른 접근:**
+**올바른 접근:**
 ```
 ## Output Format
 - Critical issues (must fix)
@@ -232,20 +232,20 @@ You are a senior backend engineer.
 
 ### 5.3 과도하게 긴 프롬프트
 
-**❌ 잘못된 접근:**
+**잘못된 접근:**
 100줄 이상의 system prompt
 
-**✅ 올바른 접근:**
+**올바른 접근:**
 20~40줄로 핵심만 정의
 
 > 너무 긴 프롬프트는 "Lost in the Middle" 현상 발생
 
 ### 5.4 제약 조건 누락
 
-**❌ 잘못된 접근:**
+**잘못된 접근:**
 제약 조건 없이 자율에 맡김
 
-**✅ 올바른 접근:**
+**올바른 접근:**
 ```
 ## Constraints
 - Do not use external libraries without approval
@@ -257,10 +257,5 @@ You are a senior backend engineer.
 
 ## 참고 문서
 
-- [claude-code-agent-skills.md](./claude-code-agent-skills.md) - Skills 상세 작성법
-- [agent-team-practice.md](./agent-team-practice.md) - Agent Team 실전 활용
-
----
-
-*생성일: 2026-03-23*
-*통합 문서: claude-code-agent-design-guide.md 기반*
+- [claude-code-agent-skills.md](claude-code-agent-skills.md) - Skills 상세 작성법
+- [agent-team-practice.md](agent-team-practice.md) - Agent Team 실전 활용

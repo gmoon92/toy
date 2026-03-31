@@ -49,7 +49,7 @@ MCP Server (외부 프로그램)
 claude mcp add [option] <name> -- <command> [args...]
 ```
 
-> ⚠️ `--` 이후의 명령어는 CLI가 실행하는 외부 프로세스입니다.
+> **[주의]** `--` 이후의 명령어는 CLI가 실행하는 외부 프로세스입니다.
 > - `--` 전: Claude CLI 옵션
 > - `--` 후: 실행할 프로그램
 
@@ -62,7 +62,7 @@ claude mcp add [option] <name> -- <command> [args...]
 
 ### HTTP 원격 서버에 연결 (권장)
 
-클로우드 기반 MCP 서버에 연결:
+클라우드 기반 MCP 서버에 연결:
 
 ```bash
 # 예시: Context7에 연결
@@ -81,7 +81,7 @@ claude mcp add \
   --header "Authorization: Bearer your-token"
 ```
 
-> ⚠️ **Windows 사용자 주의**: 줄 끝의 `\`는 macOS/Linux용입니다. Windows는 한 줄로 실행하세요.
+> **[주의]** **Windows 사용자 주의**: 줄 끝의 `\`는 macOS/Linux용입니다. Windows는 한 줄로 실행하세요.
 
 ### stdio 로컬 프로세스 실행
 
@@ -218,7 +218,7 @@ User MCPs
 
 ## 보안 주의사항
 
-⚠️ **MCP 서버 사용 시 반드시 확인하세요:**
+**[주의]** **MCP 서버 사용 시 반드시 확인하세요:**
 
 1. **외부 프로그램 위험성**
    - MCP 서버는 외부 프로그램입니다
@@ -290,5 +290,5 @@ claude mcp add ...
 
 ## 참고 자료
 
-- [Claude Code MCP 공식 문서](https://code.claude.com/docs/en/mcp)
+- [Claude Code 공식 문서 - MCP](https://code.claude.com/docs/en/mcp)
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)

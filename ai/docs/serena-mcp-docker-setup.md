@@ -50,7 +50,7 @@ services:
 ```
 
 - **`image`** - GitHub Container Registry의 공식 이미지 (`ghcr.io/oraios/serena:latest`)
-- **`volumes`** - 분석할 프로젝트를 컨테이너 낸부 `/workspace`에 마운트
+- **`volumes`** - 분석할 프로젝트를 컨테이너 내부 `/workspace`에 마운트
 - **`command`** - stdio transport로 MCP 서버 실행 (Claude Code와 직접 통신)
 - **`stdin_open` / `tty`** - MCP stdio 통신에 필요한 TTY 설정
 
@@ -83,7 +83,7 @@ services:
 
 ### 서버 실행 테스트
 
-터미널에서 직접 Docker Compose로 실행핼 수 있습니다:
+터미널에서 직접 Docker Compose로 실행할 수 있습니다:
 
 ```bash
 cd .claude/docker
@@ -154,8 +154,8 @@ volumes:
 
 ## 참고 자료
 
-- **Serena GitHub Repository**: https://github.com/oraios/serena
-- **Docker 설정 공식 문서**: https://github.com/oraios/serena/blob/main/DOCKER.md
-- **GitHub Container Registry**: https://github.com/oraios/serena/pkgs/container/serena
-- **MCP 공식 문서**: https://modelcontextprotocol.io/
-- **Claude Code MCP 설정**: https://docs.anthropic.com/en/docs/claude-code/mcp
+- [Serena GitHub Repository](https://github.com/oraios/serena)
+- [Docker 설정 공식 문서](https://github.com/oraios/serena/blob/main/DOCKER.md)
+- [GitHub Container Registry](https://github.com/oraios/serena/pkgs/container/serena)
+- [MCP 공식 문서](https://modelcontextprotocol.io/)
+- [Claude Code MCP 설정](https://docs.anthropic.com/en/docs/claude-code/mcp)

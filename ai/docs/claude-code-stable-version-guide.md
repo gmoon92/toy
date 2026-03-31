@@ -2,7 +2,7 @@
 
 이 글은 Claude Code를 `stable` 버전으로 고정하는 방법을 소개합니다.
 
-Claude Code CLI 최신 버전를 통해 개발 중 [API 400 (tool_reference)](issues/claude-code-api-400-tool-reference-troubleshooting.md) 에러를 겪으면서, 
+Claude Code CLI 최신 버전을 통해 개발 중 [API 400 (tool_reference)](issues/claude-code-api-400-tool-reference-troubleshooting.md) 에러를 겪으면서,
 최신 버전보다 `stable` 고정 전략이 더 현실적이라는 결론을 얻었습니다.
 
 ---

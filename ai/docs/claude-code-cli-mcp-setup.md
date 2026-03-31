@@ -68,7 +68,7 @@ Claude Code는 기본적으로 다음 순서로 설정 파일을 로드합니다
 
 이때 설정값은 역순으로 적용되며, 동일한 이름이 여러 범위에 있으면 `local > project > user` 순서로 우선 적용됩니다.
 
-## 프로젝트 별 MCP 서버 설정 구성
+## 프로젝트별 MCP 서버 설정 구성
 
 프로젝트 범위(`--scope project`)로 등록된 MCP 서버는 `.mcp.json` 파일에 저장되어 팀과 공유됩니다. 
 이 파일은 버전 관리에 체크인되므로, 외부 저장소에서 클론받았을 때 의도치 않은 MCP 서버가 자동으로 실행되는 것을 방지하기 위해 **최초 사용 전 보안 승인 절차**가 필요합니다.
@@ -192,7 +192,7 @@ Claude Code CLI에서 `/mcp` 명령으로 서버 연결 상태를 확인할 수 
 
 간혹 설정 충돌로 인해 프로젝트 설정(`.mcp.json`) 대신 사용자 설정(`~/.claude.json`)이 적용되는 경우가 있습니다. 이 경우 프로젝트 설정을 초기화하고 다시 로드해야 합니다.
 
-#### 3.1. 사용자 클로드 설정에서 맵핑된 프로젝트 제거
+#### 3.1. 사용자 클로드 설정에서 매핑된 프로젝트 제거
 
 사용자 설정 파일 `~/.claude.json`의 `projects` 항목에서 현재 프로젝트를 제거하세요.
 
@@ -434,7 +434,7 @@ npm run build
 }
 ```
 
-`/path/to`를 직접 쓰지 않고, 프로젝트 로컬 `.claude/settings.local.json`의 `env`로 경로를 관리하는걸 권장합니다.
+`/path/to`를 직접 쓰지 않고, 프로젝트 로컬 `.claude/settings.local.json`의 `env`로 경로를 관리하는 걸 권장합니다.
 
 ```json
 {
@@ -481,4 +481,4 @@ MCP 운영 시 꼭 확인해야 할 보안 체크포인트입니다.
 
 ## 참고 자료
 
-- [Claude Code MCP 공식 문서](https://code.claude.com/docs/en/mcp)
+- [Claude Code 공식 문서 - MCP](https://code.claude.com/docs/en/mcp)
