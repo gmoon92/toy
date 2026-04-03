@@ -1,5 +1,5 @@
 ---
-name: cc:docs
+name: cc:analyzer
 description: |
   Claude Code 문서(Agent, Skill, Rule, Command, CLAUDE.md)의 구조와 형식을 검증합니다.
   프론트매터 유효성, 필수 섹션, 문서 구조, 참조 일관성 등을 검사하고 개선 제안을 제공합니다.
@@ -14,7 +14,7 @@ description: |
   - ".claude/ 디렉토리 전체 검증"
   - "CLAUDE.md 품질 확인"
 user-invocable: true
-argument-hint: files
+argument-hint: [file]
 ---
 
 # Document Validator Skill
@@ -66,6 +66,10 @@ Claude Code 문서의 구조, 형식, 일관성을 검증하고 개선 방향을
    - 작성 가이드라인: `references/guidelines.md`
    - 유형별 체크리스트: `references/checklists/{doc-type}.md`
    - 출력 템플릿: `references/templates/output.md`
+   - Skill 검증 시 추가 로드:
+     - `references/implementation-patterns.md` (구현 패턴 품질 검증)
+     - `references/strong-directives.md` (지시어 품질 검증)
+     - `references/skill-freedom-levels.md` (지시 자유도 수준 검증)
 3. **공식 문서 참고**: [Sub-agents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills) 문서 기준 검증
 
 ## Step 2: 프론트매터 검증
@@ -172,7 +176,7 @@ Claude Code 문서의 구조, 형식, 일관성을 검증하고 개선 방향을
 
 검증 결과는 `${CLAUDE_TMP_DIR}/claudecode-document-validator/${CLAUDE_SESSION_ID}` 디렉토리에 마크다운 파일로 저장됩니다.
 
-- 폴터명 규칙: `{CLAUDE_SESSION_ID}` 세션 ID
+- 폴더명 규칙: `{CLAUDE_SESSION_ID}` 세션 ID
 - 개별 파일명 규칙: `{doc-type}-{name}.md`
 - type: 문서 유형 (`agent`, `skill`, `rule`, `command`, `memory`)
 - name: 프론트 매터 name 필드
@@ -181,7 +185,7 @@ Claude Code 문서의 구조, 형식, 일관성을 검증하고 개선 방향을
 
 ```
 ${CLAUDE_TMP_DIR}/claudecode-document-validator/
-└── a1b2c3d4e5f6/              # 실행별 고유 폴터 (CLAUDE_SESSION_ID)
+└── a1b2c3d4e5f6/              # 실행별 고유 폴더 (CLAUDE_SESSION_ID)
     ├── README.md               # 실행 요약 및 인덱스
     ├── agent-backend-developer.md
     ├── agent-frontend-reviewer.md
@@ -196,3 +200,6 @@ ${CLAUDE_TMP_DIR}/claudecode-document-validator/
 - [작성 가이드라인](references/guidelines.md) - 필수/권장/금지사항
 - [전환 패턴](references/transformation-patterns.md) - 본문-프론트매터 변환 가이드
 - [체크리스트](references/checklists/) - 문서 유형별 검증 항목
+- [구현 패턴](references/implementation-patterns.md) - 10가지 스킬 구현 패턴 (진행적 로딩, 스크립트 추출 등)
+- [강한 지시어](references/strong-directives.md) - MANDATORY/DO NOT/ALWAYS 등 지시어 키워드 참조
+- [자유도 수준](references/skill-freedom-levels.md) - 지시 자유도 스펙트럼 (High/Medium/Low)

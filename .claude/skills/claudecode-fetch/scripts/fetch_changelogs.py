@@ -293,11 +293,6 @@ def is_file_up_to_date(release: Dict[str, Any], output_dir: str) -> bool:
 # API 검증 (API Validation)
 # =============================================================================
 
-class APIValidationError(Exception):
-    """API 응답 검증 실패 시 발생하는 예외"""
-    pass
-
-
 def validate_api_response(release: Dict[str, Any], context: str = "API response") -> List[str]:
     """
     API 응답에 필요한 모든 필드가 있는지 검증합니다.
@@ -345,7 +340,7 @@ def format_validation_error(missing_keys: List[str], hash_keys: List[str]) -> st
         사용자 친화적인 에러 메시지
     """
     lines = ["\n" + "=" * 60]
-    lines.append("⚠️  GitHub API 응답 구조가 변경되었습니다!")
+    lines.append("[WARNING] GitHub API 응답 구조가 변경되었습니다!")
     lines.append("=" * 60)
     lines.append("")
     lines.append("스크립트가 예상하는 필드가 API 응답에 없습니다.")
@@ -395,7 +390,8 @@ def fetch_json_from_api(url: str) -> Optional[Any]:
         req = create_api_request(url)
         with urllib.request.urlopen(req, timeout=API_TIMEOUT_SECONDS) as response:
             return json.loads(response.read().decode('utf-8'))
-    except Exception:
+    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, OSError) as e:
+        print(f"  API request failed: {e}")
         return None
 
 
@@ -507,7 +503,7 @@ def create_api_connection_error(api_calls: int) -> 'FetchResult':
     """API 연결 실패 결과를 생성합니다."""
     error_msg = """
 ============================================================
-❌ GitHub API 호출 실패
+[ERROR] GitHub API 호출 실패
 ============================================================
 GitHub API에 연결할 수 없습니다.
 
@@ -640,7 +636,7 @@ class FetchResult:
         }
 
     def __repr__(self) -> str:
-        status = "✓ SUCCESS" if self.success else "✗ FAILED"
+        status = "SUCCESS" if self.success else "FAILED"
         return f"[{status}] {self.message} (saved: {self.total_saved}, api_calls: {self.api_calls})"
 
 
@@ -742,7 +738,7 @@ def fetch_changelogs(output_dir: str, per_page: int = 100) -> FetchResult:
             api_calls=api_calls
         )
 
-    print("  ✓ API response structure is valid")
+    print("  API response structure is valid")
 
     # 1단계: 최신 릴리즈 조회 (검증용으로 이미 가져옴)
     print("\nFetching latest release...")

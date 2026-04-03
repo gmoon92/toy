@@ -29,7 +29,7 @@ GitHub API에서 Claude Code 릴리즈 정보를 가져와 버전별 JSON 파일
     # index.jsonl 파일 존재 여부 확인
     ls -la {output-dir}/index.jsonl
 
-    # 최신 버션 파일 예시 확인
+    # 최신 버전 파일 예시 확인
     head -5 {output-dir}/index.jsonl
     ```
 5. 결과 요약 출력

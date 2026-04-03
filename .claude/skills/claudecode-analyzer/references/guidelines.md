@@ -75,6 +75,23 @@
 
 2. **문자열 치환 사용**: `$ARGUMENTS`, `${CLAUDE_SESSION_ID}`, `${CLAUDE_SKILL_DIR}`
 
+3. **진행적 참조 로딩**: 100줄 이상 SKILL.md는 `When to Load References` 섹션으로 단계별 로드
+   ```markdown
+   ## When to Load References
+   ### Phase 1: 분석 단계
+   - **Load**: [references/process.md](references/process.md)
+   - **When**: 작업 시작 시
+   ```
+
+4. **강한 지시어 사용**: 핵심 실행 지시에는 명확한 키워드 사용 → [강한 지시어](strong-directives.md) 참조
+   - 필수 행동: `MANDATORY:`, `ALWAYS`
+   - 금지 사항: `DO NOT`, `NEVER`
+   - 중요 경고: `CRITICAL:`, `IMPORTANT:`
+
+5. **스크립트 추출**: 반복 Bash/Python 코드 3개 이상이면 `scripts/` 디렉토리로 분리 + `EXECUTE_SCRIPT:` 지시어 사용
+
+6. **범위 명시**: ✅/❌ 패턴으로 스킬이 하는 것과 하지 않는 것을 명확히 정의
+
 ### Agent 문서
 
 1. **검토/평가 에이전트 템플릿**: 아래 6개 섹션 포함
@@ -120,3 +137,5 @@
 
 - [전환 패턴](transformation-patterns.md) - 본문-프론트매터 변환 가이드
 - [체크리스트](checklists/) - 문서 유형별 검증 항목
+- [구현 패턴](implementation-patterns.md) - 10가지 스킬 구현 패턴 (진행적 로딩, 스크립트 추출 등)
+- [강한 지시어](strong-directives.md) - MANDATORY/DO NOT/ALWAYS 등 지시어 키워드 참조
