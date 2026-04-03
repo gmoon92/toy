@@ -2,8 +2,8 @@
 
 ## Metadata
 
-- claude-code-version: v2.1.80 (2026-03-19)
-- last-updated: 2026-03-20
+- claude-code-version: v2.1.90 (2026-04-01)
+- last-updated: 2026-04-02
 
 ## Custom Extensions
 
@@ -21,6 +21,8 @@
 | `context`                |       Optional        |     string      |     none     | `fork`                                                      | `fork`로 설정하면 포크된 서브에이전트 컨텍스트에서 실행                      |      |                                 |       |
 | `agent`                  |       Optional        |     string      | general-purpose | `Explore`, `Plan`, `general-purpose` 또는 커스텀 에이전트 이름    | `context: fork`가 설정된 경우 사용할 서브에이전트 유형                      |      |                                 |       |
 | `hooks`                  |       Optional        |     object      |     none     | Hook 설정 객체                                                | 이 스킬의 라이프사이클에 범위가 지정된 훅                                   |      |                                 |       |
+| `paths`                  |       Optional        |  array<string>  |     none     | Glob 패턴 목록 (쉼표 구분 문자열 또는 YAML 목록)                 | 이 스킬이 자동 활성화될 파일 경로 패턴. 지정 시 해당 패턴과 일치하는 파일 작업 시에만 Claude가 자동 로드 | v2.1.90 (2026-04-01) |                                 |       |
+| `shell`                  |       Optional        |     string      |    bash      | `bash`, `powershell`                                          | 스킬 내 `` !`command` `` 블록에서 사용할 셸. `powershell`은 `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` 필요 | v2.1.90 (2026-04-01) |                                 |       |
 | `effort`                 |       Optional        |     string      |   inherit    | `low`, `medium`, `high`, `max` (Opus 4.6 only)               | 이 스킬이 활성화될 때의 Effort 레벨                                       | v2.1.80 (2026-03-19) |                                 |       |
 
 ## Note

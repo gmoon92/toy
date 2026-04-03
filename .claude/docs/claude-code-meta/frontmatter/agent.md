@@ -2,8 +2,8 @@
 
 ## Metadata
 
-- claude-code-version: v2.1.80 (2026-03-19)
-- last-updated: 2026-03-20
+- claude-code-version: v2.1.90 (2026-04-01)
+- last-updated: 2026-04-02
 
 ## Custom Extensions
 
@@ -37,6 +37,7 @@
 | `memory`        |       Optional        |     string      |     none     | `user`, `project`, `local`                                                                                                            | 세션 간 학습을 위한 영구 메모리 범위                                        |      |                                 |       |
 | `background`    |       Optional        |     boolean     |    false     | `true`, `false`                                                                                                                       | `true`로 설정하면 이 서브에이전트를 항상 백그라운드 작업으로 실행             |      |                                 |       |
 | `isolation`     |       Optional        |     string      |     none     | `worktree`                                                                                                                            | `worktree`로 설정하면 임시 git worktree에서 실행                            |      |                                 |       |
+| `initialPrompt` |       Optional        |     string      |     none     | -                                                                                                                                     | `--agent` 또는 `agent` 설정으로 메인 세션 에이전트로 실행될 때 첫 사용자 턴으로 자동 제출되는 프롬프트. 커맨드와 스킬이 처리되며, 사용자가 입력한 프롬프트 앞에 붙음 | v2.1.90 (2026-04-01) |                                 |       |
 | `color`         |       Optional        |     string      |     none     | CSS 색상 값 (예: `#FF5733`, `red`)                                                                                                     | 서브에이전트 UI 배경색을 지정하여 시각적으로 구분                              |      |                                 | Custom Extension |
 | `effort`        |       Optional        |     string      |   inherit    | `low`, `medium`, `high`, `max` (Opus 4.6 only)                                                                                         | 이 서브에이전트가 활성화될 때의 Effort 레벨                                 | v2.1.80 (2026-03-19) |                                 |       |
 
@@ -50,4 +51,4 @@
 
 ## Reference
 
-- [Claude Code - Sub Agent: Supported frontmatter fields](https://code.claude.com/docs/en/sub-agents#write-subagent-files)
+- [Claude Code - Sub Agent: Supported frontmatter fields](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields)

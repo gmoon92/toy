@@ -1,6 +1,6 @@
 ---
 name: agent-consolidation-plan
-description: docs/와 blog/ 에이전트 통합 작업 계획서 - 오케스트레이션 스킬 설계 및 구현 가이드
+description: blog/ 에이전트 통합 작업 계획서 - 8개 에이전트를 reviewer/writer/translator 3개로 통합하는 아키텍처 설계 및 구현 가이드
 color: blue
 ---
 
@@ -613,7 +613,7 @@ task:
 ```yaml
 # 에이전트가 다른 에이전트에게 메시지 전송
 message:
-  to: "reviewer"
+  to: "blog-reviewer"
   type: "review_request"
   payload:
     mode: "critical"
