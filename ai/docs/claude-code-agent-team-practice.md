@@ -86,32 +86,54 @@ Agent Team은 동시에 실행되므로 시간 관리가 중요합니다.
 
 ---
 
-## 4. Span Mode 설정
+## 4. 멀티플렉서 설정
 
-### 4.1 it2 설치 및 설정
+### 4.1 it2 / tmux 설치
 
-Agent Team을 효과적으로 사용하려면 터미널 멀티플렉서가 필요합니다.
+Agent Team을 분할 화면으로 실행하려면 iTerm2 또는 tmux가 필요합니다.
+
+**iTerm2 + it2 CLI** (macOS 전용)
+
+`it2`는 iTerm2의 Python API를 제어하는 CLI 도구입니다. iTerm2 앱 설치와는 별개로 Python 패키지 매니저로 설치합니다.
 
 ```bash
-# it2 설치 (macOS)
-brew install --cask iterm2
+# uv 사용 (권장)
+uv tool install it2
 
-# 또는 tmux
-brew install tmux
+# pipx 사용
+pipx install it2
+
+# pip 사용 (fallback)
+pip install --user it2
+```
+
+**tmux** (크로스 플랫폼 대안)
+
+```bash
+brew install tmux   # macOS
 ```
 
 ### 4.2 CLI 옵션
 
+실제 CLI 플래그는 다음과 같습니다.
+
 ```bash
-# Agent Team 실행
-claude --team --agents architect,developer,reviewer
+# 에이전트 정의 (JSON 오브젝트 형식)
+claude --agents '{"architect": {"description": "시스템 설계 담당", "prompt": "You are a software architect."}, "reviewer": {"description": "코드 검토 담당", "prompt": "You are a code reviewer."}}'
 
-# Span Mode 활성화
-claude --span --team
+# 멀티플렉서 백엔드 선택 (auto가 기본값, 환경을 자동 감지)
+claude --teammate-mode auto      # 환경 자동 감지
+claude --teammate-mode tmux      # tmux 강제 사용
+claude --teammate-mode in-process  # 단일 프로세스 내 실행
 
-# 시간 제한 설정
-claude --team --timeout 30m
+# 최대 턴 수 제한 (비대화형 모드, --print와 함께 사용)
+claude --print --max-turns 20
+
+# 예산 제한 (--print 모드)
+claude --print --max-budget-usd 1.00
 ```
+
+> `--team`, `--span`, `--timeout` 플래그는 존재하지 않습니다. 에이전트 정의는 `--agents`에 JSON으로, 실행 제한은 `--max-turns` 또는 `--max-budget-usd`로 설정합니다.
 
 ---
 
@@ -127,8 +149,8 @@ git worktree add ../feature-a feature-a
 git worktree add ../feature-b feature-b
 
 # 각 worktree에서 독립적 Agent 실행
-cd ../feature-a && claude --team
-cd ../feature-b && claude --team
+cd ../feature-a && claude
+cd ../feature-b && claude
 ```
 
 **장점:**

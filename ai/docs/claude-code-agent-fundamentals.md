@@ -51,7 +51,11 @@ Input → Processing → Output
 
 ### 3.1 프론트매터
 
-에이전트 .md 파일은 `.claude/agents/{filename}.md` yaml 프론트매터와 system prompt로 구성됩니다.
+에이전트 .md 파일은 yaml 프론트매터와 system prompt로 구성됩니다. 파일은 다음 세 위치에서 로드됩니다.
+
+- **프로젝트**: `{project}/.claude/agents/{filename}.md`
+- **사용자 전역**: `~/.claude/agents/{filename}.md`
+- **관리자 정책**: 별도 관리 경로
 
 ```markdown
 ---
@@ -67,9 +71,22 @@ You are a software architect responsible for designing system architecture based
 
 | 필드 | 필수 | 설명 |
 |------|------|------|
-| `name` | 필수 | 에이전트 식별자 |
-| `description` | 필수 | 사용 상황 설명 (Agent 선택 힌트) |
-| `model` | 선택 | 사용 모델 (sonnet/opus/haiku) |
+| `name` | 필수 | 에이전트 식별자. 없으면 파일이 조용히 스킵됨 |
+| `description` | 필수 | 사용 상황 설명 (Agent 선택 힌트). 없으면 로드 실패 |
+| `model` | 선택 | 사용 모델 (예: sonnet, opus, haiku, 또는 구체적인 모델 이름). `inherit`를 지정하면 부모 세션 모델을 상속 |
+| `tools` | 선택 | 허용 도구 목록. 미설정 시 모든 도구 허용, 빈 값 설정 시 도구 없음 |
+| `disallowedTools` | 선택 | 금지 도구 목록 |
+| `skills` | 선택 | 사전 로드할 스킬 이름 목록 |
+| `effort` | 선택 | 사고 노력 수준: `low`, `medium`, `high`, `max` 또는 정수 |
+| `permissionMode` | 선택 | 권한 모드 설정 |
+| `maxTurns` | 선택 | 최대 agentic 턴 수 (양의 정수) |
+| `mcpServers` | 선택 | 에이전트 전용 MCP 서버 설정 목록 |
+| `hooks` | 선택 | 에이전트 실행 시 등록할 훅 설정 |
+| `background` | 선택 | 백그라운드 태스크로 실행 여부 (`true`/`false`) |
+| `memory` | 선택 | 지속 메모리 스코프: `user`, `project`, `local` |
+| `isolation` | 선택 | 격리 실행 환경: `worktree` |
+| `color` | 선택 | 에이전트 UI 표시 색상 |
+| `initialPrompt` | 선택 | 첫 번째 사용자 턴에 자동으로 추가되는 프롬프트 |
 
 > description은 **Agent 선택 힌트**로 사용됩니다. description은 행동 지시가 아니라 **사용 상황 설명**입니다.
 

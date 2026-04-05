@@ -82,6 +82,8 @@ description: Processes PDFs by extracting text and tables.
 
 스킬이 수십 개가 되면, 각 스킬마다 절약되는 토큰이 누적되어 의미 있는 차이를 만듭니다.
 
+> **참고**: 위 예시는 명명 철학 설명을 위해 `name`과 `description` 두 필드만 사용했습니다. 실제 SKILL.md 프론트매터는 `when_to_use`, `allowed-tools`, `user-invocable`, `context`, `effort`, `model` 등 더 많은 필드를 지원합니다. 전체 필드 목록과 활용법은 [claude-code-agent-skills.md](claude-code-agent-skills.md)를 참고하세요.
+
 ### 의미적 명확성
 
 스킬 이름이 의미적으로 명확하면 관련 있는 상황에서 더 쉽게 연상됩니다.
