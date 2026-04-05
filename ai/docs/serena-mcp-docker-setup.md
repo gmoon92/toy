@@ -29,7 +29,6 @@
 
 ```yaml
 name: claude-code
-version: 'v1'
 
 services:
   # https://github.com/oraios/serena/blob/main/DOCKER.md
@@ -76,6 +75,8 @@ services:
   }
 }
 ```
+
+> **참고**: `"type": "stdio"` 필드는 이전 버전 호환성을 위해 선택사항(optional)이므로 생략해도 동작합니다. Claude Code는 `.mcp.json`을 프로젝트 루트(현재 작업 디렉토리)에서 로드하며, 루트에 없을 경우 부모 디렉토리를 순차적으로 탐색합니다.
 
 ---
 

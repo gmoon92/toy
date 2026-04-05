@@ -52,7 +52,7 @@ claude mcp add --scope project --transport http paypal https://mcp.paypal.com/mc
 claude mcp add --scope user --transport http hubspot https://mcp.hubspot.com/anthropic
 ```
 
-- `local`은 기본값이며 현재 작업 디렉토리의 `.claude.json`에 저장되고 현재 프로젝트에서만 사용됩니다.
+- `local`은 기본값이며 `~/.claude.json`의 현재 프로젝트 키 하위에 저장되고 현재 프로젝트에서만 사용됩니다. 팀과 공유되지 않으며 gitignore 대상입니다.
 - `project`는 프로젝트 루트의 `.mcp.json`에 저장되며 팀과 공유할 수 있습니다.
 - `user`는 홈 디렉토리의 `~/.claude.json`에 저장되며 모든 프로젝트에서 사용됩니다.
 
@@ -62,9 +62,9 @@ claude mcp add --scope user --transport http hubspot https://mcp.hubspot.com/ant
 
 Claude Code는 기본적으로 다음 순서로 설정 파일을 로드합니다.
 
-1. global (`user` 사용자)
+1. global (`user` — `~/.claude.json`)
 2. project (`.mcp.json`)
-3. local (`claude.json`)
+3. local (`~/.claude.json` 내 프로젝트 키)
 
 이때 설정값은 역순으로 적용되며, 동일한 이름이 여러 범위에 있으면 `local > project > user` 순서로 우선 적용됩니다.
 
