@@ -108,12 +108,12 @@ Claude Code에서 `.local`은 Git으로 공유하지 않는 개인 설정을 의
 | `model`                      | 사용할 Claude 모델                                            |
 | `language`                   | Claude CLI 인터페이스 기본 언어                                   |
 | `autoUpdatesChannel`         | 자동 업데이트 채널 (`latest`, `stable`)                          |
-| `teammateMode`               | 멀티 에이전트 팀 동기화 방식 (`in-process`, `tmux`)       |
-| `alwaysThinkingEnabled`      | Claude의 심층 추론(`Extended Thinking`) 모드 기본 활성화             |
+| `teammateMode`               | 멀티 에이전트 팀 동기화 방식 (`auto`, `in-process`, `tmux`) |
+| `alwaysThinkingEnabled`      | `false`이면 thinking 비활성화. 설정하지 않거나 `true`이면 지원 모델에서 자동 활성화 |
 | `enableAllProjectMcpServers` | 프로젝트 MCP 서버 설정 파일(`.claude/mcp.json`)에 정의된 MCP 서버 자동 활성화 |
 | `env`                        | Claude Code에서 사용할 환경 변수                                  |
 | `attribution`                | 커밋/PR 작성자 정보                                             |
-| `companyAnnouncements`       | CLI 시작 시 표시할 배너 정보                                       |
+| `companyAnnouncements`       | CLI 시작 시 표시할 배너 정보 (배열로 여러 개 지정 시 랜덤 선택)               |
 | `hooks`                      | 특정 이벤트 발생 시 실행할 동작                                       |
 | `permissions`                | 자동 승인할 도구/명령어 패턴                                         |
 

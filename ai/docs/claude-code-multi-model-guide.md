@@ -90,10 +90,12 @@ _Auth conflict: Both a token (ANTHROPIC_AUTH_TOKEN) and an API key..._
 
 이 충돌은 Claude Code의 설정 적용 우선순위에서 비롯됩니다:
 
-1. 시스템 환경 변수
-2. `claude --<options>`
-3. `settings.json`
-4. `settings.local.json`
+1. `/model` 명령 (세션 중 실시간 변경) — 최우선
+2. `claude --<options>` (예: `--model`)
+3. 시스템 환경 변수 (예: `ANTHROPIC_MODEL`)
+4. `settings.local.json` (프로젝트 로컬, gitignore 권장)
+5. `settings.json` (프로젝트 공유)
+6. `~/.claude/settings.json` (사용자 전역)
 
 충돌을 일으키는 아래 설정을 `settings.json`에서 제거하세요.
 

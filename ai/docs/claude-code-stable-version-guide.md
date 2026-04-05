@@ -9,7 +9,7 @@ Claude Code CLI 최신 버전을 통해 개발 중 [API 400 (tool_reference)](is
 
 ## 최신 버전에서 stable 버전으로 마이그레이션
 
-Claude Code 버전은 `claude install <stable|latest|version>` 명령으로 지정할 수 있습니다.
+Claude Code 버전은 `claude install [stable|latest|version]` 명령으로 지정할 수 있습니다.
 
 ```bash
 claude install stable
@@ -23,10 +23,13 @@ Claude Code의 latest/stable 버전은 아래 링크를 통해 확인할 수 있
 - [GitHub Releases](https://github.com/anthropics/claude-code/releases)
 
 > 기존 Claude Code가 설치되어 있어도 `install` 명령을 실행하면 해당 버전으로 다시 설치됩니다.
+> `claude install stable` 또는 `claude install latest`를 실행하면 업데이트 채널(`autoUpdatesChannel`)이 해당 채널로 자동 저장됩니다.
+> 채널을 직접 바꾸지 않는 한 이후 `claude update`도 같은 채널을 기준으로 동작합니다.
 
 ### 업데이트 채널 stable 설정
 
-마지막으로 CLI 설정에서 `/config` 명령어를 입력하여 업데이트 채널을 `stable`로 지정해야 합니다.
+`claude install stable` 명령만으로 채널이 자동 설정되지만, CLI 설정에서 `/config` 명령어로 직접 확인하거나 변경할 수도 있습니다.
+채널 값은 `latest`와 `stable` 중 하나만 선택할 수 있습니다.
 
 ```bash
 # Settings 화면에서 Auto-update channel을 stable로 변경
