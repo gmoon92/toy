@@ -405,4 +405,4 @@ sequenceDiagram
 - [RFC 5705 — Keying Material Exporters for TLS (채널 바인딩), 2010](https://datatracker.ietf.org/doc/html/rfc5705)
 - [W3C WebAuthn Level 2, 2021](https://www.w3.org/TR/webauthn-2/)
 
-*관련 문서: [DPoP/PoP 정공법 아키텍처](./dpop-pop-architecture.md) · [비HTTP 실시간 릴레이 DPoP 응용](./dpop-on-tcp-relay-architecture.md) · [릴레이 vs 티켓 head-to-head](./research/head-to-head-relay-vs-ticket.md)*
+*관련 문서: [DPoP/PoP 정공법 아키텍처](./dpop-pop-architecture.md) · [비HTTP 실시간 릴레이 DPoP 응용](sender-constrained-relay-architecture.md) · [릴레이 vs 티켓 head-to-head](./research/head-to-head-relay-vs-ticket.md)*
