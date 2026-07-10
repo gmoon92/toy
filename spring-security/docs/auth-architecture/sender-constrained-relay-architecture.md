@@ -186,18 +186,21 @@ sequenceDiagram
     participant S as 인가 서버 (Authorization Server)
     participant R as 리소스 서버 (데이터 중계/Relay)
 
-    Note over S, R: [서버 초기화] 인가 서버 서명키 생성 및 검증 서버 JWKS 로드 (서버 구동 시 1회)
+    Note over S, R: [서버 초기화] <br/>인가 서버 서명키 생성 및 검증 서버 JWKS 로드 <br/>(서버 구동 시 1회)
     S ->> S: JWS 서명용 EC P-256 키쌍 미리 생성<br/>kid 부여해 서명키 저장소(DB) 관리
     R ->> S: startup 시 GET /jwk (공개키 요청)
     S -->> R: JWKS (공개키 목록, kid별)
     R ->> R: kid별 공개키 로컬 캐시
 
-    Note over C, S: [세션 발급 — 뷰어] 원격제어 시작 웹 요청 (HTTPS)
+    Note over C, S: [토큰 발급 — 뷰어] <br/>원격제어 시작 웹 요청 (HTTPS)
     C ->> C: 키쌍 생성<br/>(priv 은닉, pub=JWK) — 뷰어는 세션성
-    C ->> S: 원격제어 시작 요청 + 공개키(JWK) + 제어 대상 agent_id<br/>(RoomID·UserID는 클라가 보내지 않음)
-    S ->> S: 세션에서 user_id 추출 + agent_id 제어 권한 검증<br/>space_id(RoomID)를 서버가 결정/생성<br/>cnf=공개키 바인딩 + space_id·user_id·type=viewer<br/>서명키(kid=2)로 JWS 서명·발급
+    C ->> S: 기존 API에 공개키만 추가 요청<br/>(RoomID·UserID는 클라가 보내지 않음)
+    S ->> S: 사용자 에이전트 제어 권한 검증
+    S ->> S: RoomId 생성
+    Note right of S: cnf=공개키 바인딩<br/>space_id=RoomId<br/>user_id=user.id<br/>type=viewer|agent<br/>서명키(kid)로 JWS 서명·발급
+    S ->> S: JWS 서명·발급
     S -->> C: JWS (cnf · space_id · type=viewer 포함)
-    Note over C, S: [세션 발급 — 에이전트] 원격제어마다의 웹 요청 없음<br/>로그인 시 등록한 공개키로 서버가 type=agent 토큰을 발급,<br/>기존 에이전트 제어 채널로 전달 (§3.2 Step 2 · §5 P1-e)
+    Note over C, S: [세션 발급 — 에이전트]<br/>원격제어마다의 웹 요청 없음<br/>로그인 시 등록한 공개키로 서버가 type=agent 토큰을 발급,<br/>기존 에이전트 제어 채널로 전달 (§3.2 Step 2 · §5 P1-e)
 
     Note over C, R: [연결] 순수 TCP over TLS — 실시간 챌린지-리스폰스 (1-RTT)
     C ->> R: ① Connect: JWS 전송 (cnf·space_id 포함)
