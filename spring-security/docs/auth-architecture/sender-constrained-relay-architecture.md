@@ -184,7 +184,7 @@ flowchart LR
 sequenceDiagram
     participant C as Client (뷰어/호스트)
     participant S as 인가 서버 (Authorization Server)
-    participant R as 리소스 서버 (데이터 중계/Relay)
+    participant R as 리소스 서버 (Relay)
 
     Note over S, R: [서버 초기화] <br/>인가 서버 서명키 생성 및 검증 서버 JWKS 로드 <br/>(서버 구동 시 1회)
     S ->> S: JWS 서명용 EC P-256 키쌍 미리 생성<br/>kid 부여해 서명키 저장소(DB) 관리
