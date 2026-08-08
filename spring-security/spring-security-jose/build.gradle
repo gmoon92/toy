@@ -4,8 +4,8 @@ plugins {
     id "io.spring.dependency-management"
 }
 
-group = "com.gmoon.spring-security.spring-security-jwk"
-description = "spring-security-csrf-jwk"
+group = "com.gmoon.spring-security.spring-security-jose"
+description = "spring-security-jose"
 
 dependencies {
     implementation project(":java-core")
@@ -14,6 +14,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-security")
+
+    implementation(libs.nimbus.jose.jwt)
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

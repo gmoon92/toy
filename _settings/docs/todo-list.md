@@ -1,6 +1,5 @@
 - spring-reactive
 - spring-batch
-- spring-security-jwk
 - hibernate-search
 - pns
 - async merged

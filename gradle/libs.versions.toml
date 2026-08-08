@@ -55,6 +55,7 @@ embedded-redis-kstyrc = { module = "com.github.kstyrc:embedded-redis", version =
 
 ####### security
 auth0-java-jwt = { module = "com.auth0:java-jwt", version = "3.8.2" }
+nimbus-jose-jwt = { module = "com.nimbusds:nimbus-jose-jwt", version = "10.9.1" }
 
 bouncycastle-bcprov-jdk15 = { module = "org.bouncycastle:bcprov-jdk15on", version = "1.70" }
 bouncycastle-bcprov-jdk18 = { module = "org.bouncycastle:bcprov-jdk18on", version = "1.81" }

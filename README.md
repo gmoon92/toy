@@ -53,7 +53,7 @@
 - [spring-security](spring-security/README.md)
     - [spring-security-cors](spring-security/spring-security-cors/README.md)
     - [spring-security-csrf-aspect](spring-security/spring-security-csrf-aspect/README.md)
-    - [spring-security-jwk](spring-security/spring-security-jwk/README.md)
+    - [spring-security-jose](spring-security/spring-security-jose/README.md)
     - [spring-security-jwt](spring-security/spring-security-jwt/README.md)
     - [spring-security-password-encoder](spring-security/spring-security-password-encoder/README.md)
     - [spring-security-whiteship](spring-security/spring-security-whiteship/doc)
