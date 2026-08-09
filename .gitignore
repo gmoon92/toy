@@ -47,3 +47,6 @@
 **/bin/
 
 **/.serena/
+
+### macOS ###
+**/.DS_Store
