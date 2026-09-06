@@ -1,0 +1,38 @@
+plugins {
+    id "java-library"
+    id "java-test-fixtures"
+}
+
+group = "com.gmoon.spring-cache.cache-invalidation-strategy.cache-invalidation-core"
+description = "cache-invalidation-core"
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    api("org.springframework.boot:spring-boot-starter-data-redis")
+    api("org.springframework.boot:spring-boot-starter-cache")
+    api("org.springframework.boot:spring-boot-starter-json")
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    runtimeOnly(libs.jdbc.mysql)
+
+    testFixturesApi("org.springframework.boot:spring-boot-starter-test")
+    testFixturesApi("org.springframework.boot:spring-boot-testcontainers")
+    testFixturesApi(platform(libs.testcontainers.bom))
+    testFixturesApi(libs.testcontainers.junit5)
+    testFixturesApi(libs.testcontainers.mysql)
+    testFixturesApi(libs.awaitility)
+    testFixturesCompileOnly("org.projectlombok:lombok")
+    testFixturesAnnotationProcessor("org.projectlombok:lombok")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
