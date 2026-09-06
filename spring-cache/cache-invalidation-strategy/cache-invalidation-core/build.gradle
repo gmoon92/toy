@@ -1,6 +1,5 @@
 plugins {
     id "java-library"
-    id "java-test-fixtures"
 }
 
 group = "com.gmoon.spring-cache.cache-invalidation-strategy.cache-invalidation-core"
@@ -24,15 +23,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     runtimeOnly(libs.jdbc.mysql)
-
-    testFixturesApi("org.springframework.boot:spring-boot-starter-test")
-    testFixturesApi("org.springframework.boot:spring-boot-testcontainers")
-    testFixturesApi(platform(libs.testcontainers.bom))
-    testFixturesApi(libs.testcontainers.junit5)
-    testFixturesApi(libs.testcontainers.mysql)
-    testFixturesApi(libs.awaitility)
-    testFixturesCompileOnly("org.projectlombok:lombok")
-    testFixturesAnnotationProcessor("org.projectlombok:lombok")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

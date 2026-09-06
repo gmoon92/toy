@@ -1,0 +1,28 @@
+plugins {
+    id "java-library"
+}
+
+group = "com.gmoon.spring-cache.cache-invalidation-strategy.cache-invalidation-test"
+description = "cache-invalidation-test"
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    api project(":spring-cache:cache-invalidation-strategy:cache-invalidation-core")
+
+    api("org.springframework.boot:spring-boot-starter-test")
+    api("org.springframework.boot:spring-boot-testcontainers")
+    api(platform(libs.testcontainers.bom))
+    api(libs.testcontainers.junit5)
+    api(libs.testcontainers.mysql)
+    api(libs.awaitility)
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+}

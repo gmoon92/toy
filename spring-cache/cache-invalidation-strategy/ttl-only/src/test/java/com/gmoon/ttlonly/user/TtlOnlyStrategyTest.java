@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 
 import com.gmoon.cacheinvalidation.core.metrics.DatabaseQueryCounter;
-import com.gmoon.cacheinvalidation.core.testsupport.CacheIntegrationTest;
+import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
 
 @CacheIntegrationTest
 @DisplayName("TTL Only 전략")

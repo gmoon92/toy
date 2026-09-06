@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.testsupport;
+package com.gmoon.cacheinvalidation.test;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

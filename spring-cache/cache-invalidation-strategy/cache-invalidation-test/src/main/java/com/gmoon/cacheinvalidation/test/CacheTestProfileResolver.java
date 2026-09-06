@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.testsupport;
+package com.gmoon.cacheinvalidation.test;
 
 import org.springframework.test.context.ActiveProfilesResolver;
 

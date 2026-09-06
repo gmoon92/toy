@@ -17,6 +17,16 @@
 | 캐시별 타입 직렬화 | `withInitialCacheConfigurations` | `CachePolicy.valueType()` |
 | `clear()` 시 SCAN 사용 | `BatchStrategies.scan(n)` | — |
 
+## 모듈 구성
+
+| 모듈 | 소비 방식 | 담는 것 |
+|-----|---------|-------|
+| `cache-invalidation-core` | `implementation` | 캐시 정책, 무효화 규칙, 이벤트 어댑터, 회복력 |
+| `cache-invalidation-test` | **`testImplementation`** | 컨테이너 설정, 프로파일 해석기, 통합 테스트 애노테이션 |
+
+테스트 지원을 별도 모듈로 둔 이유는 전략 모듈이 7~8개로 늘어나기 때문이다.
+각 모듈이 컨테이너 설정을 복사하면 같은 코드가 그만큼 중복된다.
+
 ## 구성 요소
 
 ```mermaid

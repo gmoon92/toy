@@ -84,6 +84,16 @@ CUD    DB 변경 → 기존 Cache를 어떻게 처리할 것인가?
 | 모듈 | 역할 |
 |-----|-----|
 | `cache-invalidation-core` | 공통 틀 — 캐시 정책, 무효화 규칙, 엔티티 이벤트 어댑터, 측정 하네스 |
+| `cache-invalidation-test` | 전략 모듈이 공유하는 테스트 지원 — 컨테이너 설정, 통합 테스트 애노테이션 |
 | 전략별 모듈 | 코어를 사용해 각 전략의 세부 구현만 담당 |
+
+전략 모듈은 `testImplementation` 으로만 테스트 모듈을 의존한다.
+
+```gradle
+dependencies {
+    implementation project(":spring-cache:cache-invalidation-strategy:cache-invalidation-core")
+    testImplementation project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test")
+}
+```
 
 시나리오와 측정 계획은 [poc-scenarios](docs/poc-scenarios.md) 참조.

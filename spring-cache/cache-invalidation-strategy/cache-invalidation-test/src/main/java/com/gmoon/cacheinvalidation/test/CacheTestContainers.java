@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.testsupport;
+package com.gmoon.cacheinvalidation.test;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
