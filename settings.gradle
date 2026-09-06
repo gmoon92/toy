@@ -15,6 +15,10 @@ include(
         'spring-cache:jpa-second-level-cache',
         'spring-cache:spring-data-redis',
 
+        'spring-cache:cache-invalidation-strategy',
+        'spring-cache:cache-invalidation-strategy:cache-invalidation-core',
+        'spring-cache:cache-invalidation-strategy:ttl-only',
+
         'spring-cloud',
         'spring-cloud:spring-cloud-bus',
         'spring-cloud:spring-cloud-bus:spring-cloud-bus-common',

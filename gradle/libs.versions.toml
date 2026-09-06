@@ -124,6 +124,7 @@ testcontainers-bom = { group = "org.testcontainers", name = "testcontainers-bom"
 testcontainers-kafka = { group = "org.testcontainers", name = "kafka", version.ref = "testcontainers" }
 testcontainers-junit5 = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
 testcontainers-localstack = { group = "org.testcontainers", name = "localstack", version.ref = "testcontainers" }
+testcontainers-mysql = { group = "org.testcontainers", name = "mysql", version.ref = "testcontainers" }
 
 rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 rest-assured-spirngmockmvc = { module = "io.rest-assured:spring-mock-mvc", version.ref = "rest-assured" }
