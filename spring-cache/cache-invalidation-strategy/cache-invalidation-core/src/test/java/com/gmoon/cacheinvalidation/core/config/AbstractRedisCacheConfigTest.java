@@ -53,8 +53,10 @@ class AbstractRedisCacheConfigTest {
 			contextRunner.withUserConfiguration(DefaultCacheConfig.class)
 				 .run(context -> {
 					 assertThat(context.getBean(SerializerFactory.class))
+						  .as("직렬화 전략의 기본 구현")
 						  .isInstanceOf(JsonSerializerFactory.class);
 					 assertThat(context.getBean(TtlResolver.class))
+						  .as("만료 전략의 기본 구현")
 						  .isInstanceOf(JitteredTtlResolver.class);
 				 });
 		}

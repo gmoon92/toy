@@ -35,6 +35,7 @@ class CacheEvictorTest {
 			cacheManager.getCache(TestCachePolicy.Name.USER).put("1", "cached");
 
 			assertThat(cacheEvictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 1L)))
+				 .as("값이 있을 때의 결과")
 				 .isEqualTo(EvictionOutcome.EVICT_REQUESTED);
 			assertThat(cacheEvictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 2L)))
 				 .as("Cache.evictIfPresent 의 기본 구현은 항상 false 를 반환하고 RedisCache 는 이를 재정의하지 않는다."

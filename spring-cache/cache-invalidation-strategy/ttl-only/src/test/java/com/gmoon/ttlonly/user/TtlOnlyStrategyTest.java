@@ -95,6 +95,7 @@ class TtlOnlyStrategyTest {
 				 .atMost(ttlUpperBound())
 				 .pollInterval(Duration.ofMillis(100))
 				 .untilAsserted(() -> assertThat(userQueryService.findById(userId).email())
+					  .as("TTL 안에 새 값이 보여야 한다")
 					  .isEqualTo(CHANGED_EMAIL));
 
 			assertThat(Duration.ofNanos(System.nanoTime() - startedAt))
@@ -111,7 +112,9 @@ class TtlOnlyStrategyTest {
 		@DisplayName("not-found도 캐시되어 DB를 반복 조회하지 않는다")
 		void cachesNotFoundToPreventPenetration() {
 			long unknownId = -1L;
-			assertThat(userQueryService.findById(unknownId)).isNull();
+			assertThat(userQueryService.findById(unknownId))
+				 .as("존재하지 않는 사용자는 null 로 응답한다")
+				 .isNull();
 			long afterFirstRead = databaseQueryCounter.executedStatementCount();
 
 			userQueryService.findById(unknownId);

@@ -88,8 +88,12 @@ class EntityStateTest {
 		@Test
 		@DisplayName("빈 상태로 취급한다")
 		void treatedAsEmpty() {
-			assertThat(EntityState.of(null, null)).isEqualTo(EntityState.EMPTY);
-			assertThat(EntityState.EMPTY.isEmpty()).isTrue();
+			assertThat(EntityState.of(null, null))
+				 .as("null 입력은 빈 상태로 정규화된다")
+				 .isEqualTo(EntityState.EMPTY);
+			assertThat(EntityState.EMPTY.isEmpty())
+				 .as("빈 상태는 스스로를 비었다고 답해야 한다")
+				 .isTrue();
 		}
 	}
 

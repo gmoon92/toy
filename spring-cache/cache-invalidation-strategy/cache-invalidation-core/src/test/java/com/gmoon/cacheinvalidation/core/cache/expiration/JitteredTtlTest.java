@@ -25,8 +25,12 @@ class JitteredTtlTest {
 			JitteredTtl maxOffset = new JitteredTtl(JITTER_RATIO, bound -> bound);
 			JitteredTtl minOffset = new JitteredTtl(JITTER_RATIO, bound -> -bound);
 
-			assertThat(maxOffset.apply(BASE_TTL)).isEqualTo(Duration.ofMinutes(11));
-			assertThat(minOffset.apply(BASE_TTL)).isEqualTo(Duration.ofMinutes(9));
+			assertThat(maxOffset.apply(BASE_TTL))
+				 .as("흔들림이 최대일 때의 상한")
+				 .isEqualTo(Duration.ofMinutes(11));
+			assertThat(minOffset.apply(BASE_TTL))
+				 .as("흔들림이 최소일 때의 하한")
+				 .isEqualTo(Duration.ofMinutes(9));
 		}
 
 		@Test

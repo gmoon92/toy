@@ -103,8 +103,12 @@ class FallbackCacheErrorHandlerTest {
 			handler.handleCacheEvictError(REDIS_DOWN, cache, 1L);
 			handler.handleCacheClearError(REDIS_DOWN, cache);
 
-			assertThat(recorder.totalFailureCount()).isEqualTo(3);
-			assertThat(recorder.failureCount(CacheOperation.PUT)).isZero();
+			assertThat(recorder.totalFailureCount())
+				 .as("발생한 실패 횟수의 합")
+				 .isEqualTo(3);
+			assertThat(recorder.failureCount(CacheOperation.PUT))
+				 .as("일어나지 않은 연산까지 집계되면 종류 구분이 무의미하다")
+				 .isZero();
 		}
 	}
 }

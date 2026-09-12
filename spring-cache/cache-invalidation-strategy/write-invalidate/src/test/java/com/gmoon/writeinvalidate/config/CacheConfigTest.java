@@ -27,8 +27,12 @@ class CacheConfigTest {
 		@Test
 		@DisplayName("모두 등록된다")
 		void areAllRegistered() {
-			assertThat(context.getBeanNamesForType(JpaEntityChangeListener.class)).hasSize(1);
-			assertThat(context.getBeanNamesForType(PublishedEntityChangeListener.class)).hasSize(1);
+			assertThat(context.getBeanNamesForType(JpaEntityChangeListener.class))
+				 .as("JPA 엔티티 변경 감지")
+				 .hasSize(1);
+			assertThat(context.getBeanNamesForType(PublishedEntityChangeListener.class))
+				 .as("애플리케이션 이벤트 감지")
+				 .hasSize(1);
 		}
 	}
 
@@ -42,7 +46,9 @@ class CacheConfigTest {
 			assertThat(context.getBean(SerializerFactory.class))
 				 .as("모듈이 재정의하지 않아도 기본 전략으로 동작해야 한다")
 				 .isNotNull();
-			assertThat(context.getBean(TtlResolver.class)).isNotNull();
+			assertThat(context.getBean(TtlResolver.class))
+				 .as("만료 전략도 기본 구현으로 채워져야 한다")
+				 .isNotNull();
 		}
 	}
 }

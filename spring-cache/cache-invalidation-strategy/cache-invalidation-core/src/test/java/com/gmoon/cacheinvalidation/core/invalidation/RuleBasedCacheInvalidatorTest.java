@@ -51,8 +51,12 @@ class RuleBasedCacheInvalidatorTest {
 
 			invalidator.invalidate(EntityChange.updated(new CacheableUser(1L), 1L, null, null), SOURCE);
 
-			assertThat(cachedValue(TestCachePolicy.Name.USER, "1")).isNull();
-			assertThat(cachedValue(TestCachePolicy.Name.USER_SUMMARY, "1")).isNull();
+			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
+				 .as("엔티티가 선언한 첫 번째 캐시")
+				 .isNull();
+			assertThat(cachedValue(TestCachePolicy.Name.USER_SUMMARY, "1"))
+				 .as("엔티티가 선언한 두 번째 캐시도 함께 지워져야 한다")
+				 .isNull();
 		}
 	}
 
@@ -73,7 +77,9 @@ class RuleBasedCacheInvalidatorTest {
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "before"))
 				 .as("옛 키를 지우지 않으면 자연키 캐시가 영구히 stale로 남는다")
 				 .isNull();
-			assertThat(cachedValue(TestCachePolicy.Name.USER, "after")).isNull();
+			assertThat(cachedValue(TestCachePolicy.Name.USER, "after"))
+				 .as("새 키도 함께 지워야 다음 조회가 DB 를 읽는다")
+				 .isNull();
 		}
 	}
 

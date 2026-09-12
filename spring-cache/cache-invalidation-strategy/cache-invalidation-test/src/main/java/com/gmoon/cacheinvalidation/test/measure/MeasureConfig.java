@@ -1,7 +1,6 @@
 package com.gmoon.cacheinvalidation.test.measure;
 
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 
 import jakarta.persistence.EntityManagerFactory;
@@ -18,8 +17,4 @@ public class MeasureConfig {
 		return new DatabaseQueryCounter(entityManagerFactory);
 	}
 
-	@Bean
-	public CacheStatisticsReporter cacheStatisticsReporter(CacheManager cacheManager) {
-		return new CacheStatisticsReporter(cacheManager);
-	}
 }
