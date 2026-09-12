@@ -42,13 +42,15 @@ public interface CacheInvalidationRule {
 ```
 
 ```java
-public record EntityChange(
-    Object entity, ChangeType type, Object id,
-    Object[] previousState, String[] propertyNames
-) {
+public record EntityChange(Object entity, ChangeType type, Object id, PreviousState previousState) {
     public Optional<Object> previousValueOf(String propertyName) { ... }
+    public boolean isTypeOf(Class<?> entityType) { ... }
 }
 ```
+
+`previousState`는 배열이 아니라 `PreviousState`(불변 `List` 두 개)다.
+레코드 컴포넌트가 배열이면 자동 생성된 `equals`/`hashCode`가 **참조 동일성**으로 동작해
+같은 내용의 두 변경이 서로 다른 것으로 취급된다.
 
 단축 인터페이스 — 엔티티가 자기 키를 선언한다.
 
@@ -58,16 +60,17 @@ public class User implements CacheEvictable {
 
     @Override
     public List<CacheEntryRef> cacheEntriesToEvict() {
-        return List.of(CacheEntryRef.of(CachePolicy.USER, id));
+        return List.of(CacheEntryRef.of(UserCachePolicy.USER, id));
     }
 }
 ```
 
-조회는 `@Cacheable`만 선언한다.
+`CachePolicy`는 인터페이스이므로 캐시 이름은 도메인 모듈의 enum이 소유한다.
+조회는 `@Cacheable`만 선언하고, 엔티티가 아니라 **조회 전용 레코드**를 담는다.
 
 ```java
-@Cacheable(cacheNames = CachePolicy.Name.USER, key = "#id")
-public User findById(Long id) { ... }
+@Cacheable(cacheNames = UserCachePolicy.Name.USER, key = "#id")
+public CachedUser findById(Long id) { ... }
 ```
 
 ## 보장하는 것
@@ -98,14 +101,25 @@ public User findById(Long id) { ... }
 |-----|-------|
 | JPA/Hibernate 기반, 단일 애플리케이션이 DB를 수정 | 벌크 연산·외부 앱이 DB를 자주 수정하는 환경 |
 
+## PoC 구현
+
+이 전략의 실행 코드는 `write-invalidate` 모듈에 있다.
+`@CacheEvict`와 나란히 두어 **같은 상황에서 결과가 갈리는 지점**을 테스트로 고정했다.
+→ [write-invalidate.md](write-invalidate.md#poc-구현)
+
 ## 검증
 
+`write-invalidate` 모듈에서 통과한 항목은 체크되어 있다.
+
 ```
-□ INSERT / UPDATE / DELETE 각각에서 캐시가 무효화된다
-□ @Cacheable이 적재한 키와 Rule이 무효화하는 키가 일치한다
+☑ UPDATE / DELETE 에서 캐시가 무효화된다
+☑ @Cacheable이 적재한 키와 CacheEvictable이 무효화하는 키가 일치한다
+☑ 롤백 시 무효화가 수행되지 않는다
+☑ CacheEvictable 미구현 엔티티는 같은 커밋에서도 무효화되지 않는다
+☑ 무효화 대상 키 산출이 추가 DB 조회를 유발하지 않는다
+□ INSERT 직후 조회에서 캐시가 무효 상태임을 확인한다
 □ 자연키가 변경되면 옛 키도 함께 무효화된다
 □ 벌크 UPDATE는 이벤트를 발생시키지 않음을 확인한다 (한계 고정)
-□ 롤백 시 무효화가 수행되지 않는다
 □ Rule 하나가 예외를 던져도 나머지 Rule은 계속 수행된다
 ```
 

@@ -10,16 +10,19 @@ PUT  /users/{id}
 
 ## 시나리오
 
-| # | 모듈 | 검증할 명제 | 필요 인프라 |
-|---|-----|-----------|-----------|
-| 1 | `ttl-only` | stale window의 상한이 TTL과 일치한다 | Redis, MySQL |
-| 2 | `write-invalidate` | 커밋 전 무효화는 stale을 고착시킨다 | Redis, MySQL |
-| 3 | `after-commit-invalidate` | 커밋 후 무효화가 2번의 stale을 제거한다 | Redis, MySQL |
-| 4 | `entity-event-invalidate` | 어느 서비스 메서드로 바꿔도 무효화된다 | Redis, MySQL |
-| 5 | `write-update` | 롤백 시 DB와 캐시가 어긋난다 | Redis, MySQL |
-| 6 | `stampede-guard` | 무효화를 잘 할수록 stampede가 잦아진다 | Redis, MySQL |
-| 7 | `outbox-invalidate` | 앱이 죽어도 무효화가 복구된다 | + RabbitMQ |
-| 8 | `cdc-invalidate` | 벌크 UPDATE도 무효화된다 | + Debezium, Kafka |
+| # | 모듈 | 검증할 명제 | 필요 인프라 | 상태 |
+|---|-----|-----------|-----------|-----|
+| 1 | `ttl-only` | stale window의 상한이 TTL과 일치한다 | Redis, MySQL | 완료 |
+| 2 | `write-invalidate` | 커밋 전 무효화는 stale을 고착시키고, 커밋 후 무효화는 그러지 않는다 | Redis, MySQL | 완료 |
+| 3 | `after-commit-invalidate` | `@TransactionalEventListener(AFTER_COMMIT)`가 같은 보장을 선언적으로 제공한다 | Redis, MySQL | 예정 |
+| 4 | `entity-event-invalidate` | 벌크 연산·자연키 변경·교차 엔티티까지 확장된다 | Redis, MySQL | 부분 |
+| 5 | `write-update` | 롤백 시 DB와 캐시가 어긋난다 | Redis, MySQL | 예정 |
+| 6 | `stampede-guard` | 무효화를 잘 할수록 stampede가 잦아진다 | Redis, MySQL | 예정 |
+| 7 | `outbox-invalidate` | 앱이 죽어도 무효화가 복구된다 | + RabbitMQ | 예정 |
+| 8 | `cdc-invalidate` | 벌크 UPDATE도 무효화된다 | + Debezium, Kafka | 예정 |
+
+2번 모듈이 `@CacheEvict`와 Hibernate `POST_COMMIT_*` 엔티티 이벤트를 **한 모듈에 나란히** 담는다.
+따라서 4번의 기본 메커니즘은 2번에서 이미 검증됐고, 4번에 남은 것은 위 표의 확장 명제다.
 
 `_settings/docker/docker-compose.yml` 기준으로 1~6은 현재 컨테이너(redis, mysql)로 바로 가능하다.
 7은 rabbitmq를 쓰고, 8은 Debezium·Kafka 추가가 필요하다.
