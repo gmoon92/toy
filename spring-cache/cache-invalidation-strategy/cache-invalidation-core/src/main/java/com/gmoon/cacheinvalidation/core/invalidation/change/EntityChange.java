@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation;
+package com.gmoon.cacheinvalidation.core.invalidation.change;
 
 import java.util.Optional;
 

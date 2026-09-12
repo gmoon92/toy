@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
 import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListenerRegistrar;
 

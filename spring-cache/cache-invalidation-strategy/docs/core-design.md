@@ -48,14 +48,34 @@ flowchart TD
     subgraph 회복력
         CEH[FallbackCacheErrorHandler]
         CFR[CacheFailureRecorder]
+    end
+    subgraph 관측
         IR[InvalidationRecorder]
     end
-    REG --> CFG[AbstractCacheConfig]
+    REG --> CFG[AbstractRedisCacheConfig]
     CFG --> CEH
     CEH --> CFR
     EVI --> CFR
     EVI --> IR
 ```
+
+회복력과 관측은 다른 책임이다.
+회복력은 캐시가 죽어도 서비스를 살리고, 관측은 무효화가 **성공했든 실패했든** 결과를 남긴다.
+한 패키지에 두면 패키지 순환이 생겨서 분리했다.
+
+## 패키지 배치
+
+```text
+cache/          policy · eviction · serialization · expiration  (네 축) + RedisCacheConfig(조립)
+invalidation/   무효화 규칙과 실행 + change/(변경 사실)
+listener/       변경을 감지해 무효화를 호출하는 어댑터
+metrics/        무효화 결과 기록
+resilience/     캐시 장애 시 서비스 보호
+config/         스프링 배선과 프로퍼티
+```
+
+의존은 한 방향으로만 흐른다. `cache.policy`, `cache.expiration`, `invalidation.change`, `resilience` 는
+아무것도 참조하지 않는 말단이고, `config` 만 전부를 안다. 순환은 없다.
 
 무효화가 필요 없는 모듈은 신호 소스를 선언하지 않는다.
 `ttl-only` 가 그 경우이며, 리스너 빈이 하나도 등록되지 않는다는 것을 테스트로 고정한다.
@@ -113,7 +133,7 @@ record의 `equals`/`hashCode`가 **참조 동일성**으로 동작해 내용이 
 
 ```java
 @EnableCaching
-public abstract class AbstractCacheConfig implements CachingConfigurer {
+public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
     @Bean
     @Override

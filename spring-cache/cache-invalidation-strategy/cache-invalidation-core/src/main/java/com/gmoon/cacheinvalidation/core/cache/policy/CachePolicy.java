@@ -18,7 +18,7 @@ public interface CachePolicy {
 		return spec().valueType();
 	}
 
-	default InvalidationMode invalidationMode() {
-		return spec().invalidationMode();
+	default InvalidationOwner invalidationOwner() {
+		return spec().invalidationOwner();
 	}
 }

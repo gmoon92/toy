@@ -111,7 +111,7 @@ flowchart LR
 ```java
 @Configuration
 @Import({JpaEntityChangeConfig.class, EntityChangeEventConfig.class})
-public class CacheConfig extends AbstractCacheConfig {
+public class CacheConfig extends AbstractRedisCacheConfig {
 
     @Override
     protected CachePolicies cachePolicies() {
@@ -125,7 +125,7 @@ public class CacheConfig extends AbstractCacheConfig {
 }
 ```
 
-`AbstractCacheConfig` 는 파이프라인만 확정하고 나머지는 재정의 가능한 메서드로 연다.
+`AbstractRedisCacheConfig` 는 파이프라인만 확정하고 나머지는 재정의 가능한 메서드로 연다.
 
 | 확장점 | 기본값 | 언제 재정의하나 |
 |-------|------|--------------|
@@ -134,7 +134,9 @@ public class CacheConfig extends AbstractCacheConfig {
 | `cacheSerialization()` | `JsonCacheSerialization` | 직렬화 형식을 바꿀 때 |
 | `cacheExpiration(..)` | `JitteredCacheExpiration` | 만료·지터 규칙을 바꿀 때 |
 
-신호 소스는 `@Import` 로 고른다. 선언하지 않으면 그 리스너 빈은 등록되지 않는다.
+변경 감지 방식만 상속이 아니라 `@Import` 다. 자바가 단일 상속이라
+JPA 와 이벤트를 **함께** 쓰는 이 모듈을 상속으로는 표현할 수 없기 때문이다.
+선언하지 않으면 그 리스너 빈은 등록되지 않는다.
 
 ## 개발자가 작성하는 것
 

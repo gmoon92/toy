@@ -20,7 +20,9 @@ import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @DisplayName("엔티티 변경 무효화 실행")
 class RuleBasedCacheInvalidatorTest {

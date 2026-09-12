@@ -28,16 +28,22 @@ import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.invalidation.RuleBasedCacheInvalidator;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.resilience.FallbackCacheErrorHandler;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
 
 /**
- * 캐시 전략 모듈이 상속하는 설정의 기반이다.
+ * Redis 를 캐시 저장소로 쓰는 전략 모듈이 상속하는 설정의 기반이다.
+ * <p>
+ * 이름이 밝히듯 <strong>Redis 전용</strong>이다. 다른 저장소를 쓸 때 이 클래스를 일반화하지 말고
+ * 형제 기반 클래스를 따로 두고, 공통이 실제로 드러난 뒤에 뽑아낸다.
  * <p>
  * 이 클래스는 <strong>무효화 파이프라인만</strong> 배선한다.
  * 변경을 무엇으로 감지할지는 정하지 않으므로, 무효화가 필요한 모듈은
  * {@link JpaEntityChangeConfig} 또는 {@link EntityChangeEventConfig} 를 함께 선언한다.
  * TTL 로만 만료시키는 모듈은 아무것도 선언하지 않는다.
+ *
+ * <p>변경 감지 방식은 조합 가능한 선택이므로 상속이 아니라 {@code @Import} 로 켠다.
+ * 자바는 단일 상속이라 JPA 와 이벤트를 함께 쓰는 모듈을 상속만으로 표현할 수 없다.
  *
  * <p>재정의 가능한 확장점
  * <ul>
@@ -49,7 +55,7 @@ import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
  */
 @EnableCaching
 @EnableConfigurationProperties(ServiceCacheProperties.class)
-public abstract class AbstractCacheConfig implements CachingConfigurer {
+public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	protected abstract CachePolicies cachePolicies();
 

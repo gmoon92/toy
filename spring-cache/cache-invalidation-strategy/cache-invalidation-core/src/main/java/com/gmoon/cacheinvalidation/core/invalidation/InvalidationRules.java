@@ -7,10 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @Slf4j
 @RequiredArgsConstructor

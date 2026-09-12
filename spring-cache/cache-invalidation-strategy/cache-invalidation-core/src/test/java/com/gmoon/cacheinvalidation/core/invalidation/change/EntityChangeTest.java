@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation;
+package com.gmoon.cacheinvalidation.core.invalidation.change;
 
 import static org.assertj.core.api.Assertions.*;
 

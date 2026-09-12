@@ -35,7 +35,7 @@ import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 
 @DisplayName("캐시 설정 확장점")
-class AbstractCacheConfigTest {
+class AbstractRedisCacheConfigTest {
 
 	private static final Duration FIXED_TTL = Duration.ofMinutes(42);
 
@@ -141,7 +141,7 @@ class AbstractCacheConfigTest {
 	}
 
 	@Configuration
-	static class DefaultCacheConfig extends AbstractCacheConfig {
+	static class DefaultCacheConfig extends AbstractRedisCacheConfig {
 
 		@Override
 		protected CachePolicies cachePolicies() {

@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @DisplayName("무효화 규칙 레지스트리")
 class InvalidationRulesTest {

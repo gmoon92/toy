@@ -3,7 +3,7 @@ package com.gmoon.ttlonly.config;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
-import com.gmoon.cacheinvalidation.core.config.AbstractCacheConfig;
+import com.gmoon.cacheinvalidation.core.config.AbstractRedisCacheConfig;
 import com.gmoon.ttlonly.user.UserCachePolicy;
 
 /**
@@ -11,7 +11,7 @@ import com.gmoon.ttlonly.user.UserCachePolicy;
  * 변경을 캐시에 전파하는 경로가 없으므로 최신성은 TTL 만료로만 회복된다.
  */
 @Configuration
-public class CacheConfig extends AbstractCacheConfig {
+public class CacheConfig extends AbstractRedisCacheConfig {
 
 	@Override
 	protected CachePolicies cachePolicies() {

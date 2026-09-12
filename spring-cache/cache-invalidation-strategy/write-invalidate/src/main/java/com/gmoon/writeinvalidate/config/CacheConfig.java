@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
-import com.gmoon.cacheinvalidation.core.config.AbstractCacheConfig;
+import com.gmoon.cacheinvalidation.core.config.AbstractRedisCacheConfig;
 import com.gmoon.cacheinvalidation.core.config.JpaEntityChangeConfig;
 import com.gmoon.cacheinvalidation.core.config.EntityChangeEventConfig;
 import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
@@ -20,7 +20,7 @@ import com.gmoon.writeinvalidate.user.UserCachePolicy;
  */
 @Configuration
 @Import({JpaEntityChangeConfig.class, EntityChangeEventConfig.class})
-public class CacheConfig extends AbstractCacheConfig {
+public class CacheConfig extends AbstractRedisCacheConfig {
 
 	@Override
 	protected CachePolicies cachePolicies() {

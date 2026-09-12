@@ -4,8 +4,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 public interface InvalidationRule {
 

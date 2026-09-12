@@ -16,8 +16,9 @@ import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.policy.CacheSpec;
-import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationMode;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationOwner;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @DisplayName("무효화 소유권 기동 검증")
 class CacheOwnershipValidatorTest {
@@ -30,7 +31,7 @@ class CacheOwnershipValidatorTest {
 		@DisplayName("기동을 중단한다")
 		void failsFast() {
 			CacheOwnershipValidator validator = validatorOf(
-				 policyOf("ORPHAN", InvalidationMode.RULE));
+				 policyOf("ORPHAN", InvalidationOwner.RULE));
 
 			assertThatIllegalStateException()
 				 .as("소유자 없는 캐시를 허용하면 무효화 누락이 운영 중에만 드러난다")
@@ -47,7 +48,7 @@ class CacheOwnershipValidatorTest {
 		@DisplayName("소유 규칙이 없어도 기동한다")
 		void startsWithoutOwner() {
 			CacheOwnershipValidator validator = validatorOf(
-				 policyOf("TTL_BOUND", InvalidationMode.TTL_ONLY));
+				 policyOf("TTL_BOUND", InvalidationOwner.TTL_ONLY));
 
 			assertThatNoException()
 				 .as("TTL 만으로 최신성을 보장하겠다는 선언은 유효한 선택이다")
@@ -62,7 +63,7 @@ class CacheOwnershipValidatorTest {
 		@Test
 		@DisplayName("기동을 중단한다")
 		void failsFast() {
-			CachePolicy registered = policyOf("REGISTERED", InvalidationMode.TTL_ONLY);
+			CachePolicy registered = policyOf("REGISTERED", InvalidationOwner.TTL_ONLY);
 			CacheOwnershipValidator validator = new CacheOwnershipValidator(
 				 new CachePolicyRegistry(List.of(policiesOf(registered))),
 				 rulesOf(ruleOwning("TYPO_CACHE")));
@@ -81,7 +82,7 @@ class CacheOwnershipValidatorTest {
 		@Test
 		@DisplayName("기동한다")
 		void starts() {
-			CachePolicy owned = policyOf("OWNED", InvalidationMode.RULE);
+			CachePolicy owned = policyOf("OWNED", InvalidationOwner.RULE);
 			CacheOwnershipValidator validator = new CacheOwnershipValidator(
 				 new CachePolicyRegistry(List.of(policiesOf(owned))),
 				 rulesOf(ruleOwning("OWNED")));
@@ -104,9 +105,9 @@ class CacheOwnershipValidatorTest {
 		return () -> List.of(policy);
 	}
 
-	private CachePolicy policyOf(String cacheName, InvalidationMode mode) {
+	private CachePolicy policyOf(String cacheName, InvalidationOwner mode) {
 		CacheSpec spec = CacheSpec.of(cacheName, Duration.ofMinutes(1), String.class);
-		CacheSpec applied = mode == InvalidationMode.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
+		CacheSpec applied = mode == InvalidationOwner.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
 		return () -> applied;
 	}
 

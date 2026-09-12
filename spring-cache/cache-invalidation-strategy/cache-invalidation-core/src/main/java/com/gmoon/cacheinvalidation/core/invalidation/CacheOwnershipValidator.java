@@ -7,7 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
-import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationMode;
+import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationOwner;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +27,7 @@ public class CacheOwnershipValidator implements InitializingBean {
 	private void rejectCachesWithoutOwner(Set<String> ownedCacheNames) {
 		List<String> withoutOwner = registry.all()
 			 .stream()
-			 .filter(policy -> policy.invalidationMode() == InvalidationMode.RULE)
+			 .filter(policy -> policy.invalidationOwner() == InvalidationOwner.RULE)
 			 .map(CachePolicy::cacheName)
 			 .filter(cacheName -> !ownedCacheNames.contains(cacheName))
 			 .toList();
@@ -35,7 +35,7 @@ public class CacheOwnershipValidator implements InitializingBean {
 		if (!withoutOwner.isEmpty()) {
 			throw new IllegalStateException(
 				 "No InvalidationRule owns these caches: " + withoutOwner
-					  + ". Declare an owning rule, or set invalidationMode() to TTL_ONLY.");
+					  + ". Declare an owning rule, or set invalidationOwner() to TTL_ONLY.");
 		}
 	}
 

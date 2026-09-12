@@ -15,10 +15,10 @@ import jakarta.persistence.EntityManager;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.listener.EntityChangeEvent;
-import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.PreviousState;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.PreviousState;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 

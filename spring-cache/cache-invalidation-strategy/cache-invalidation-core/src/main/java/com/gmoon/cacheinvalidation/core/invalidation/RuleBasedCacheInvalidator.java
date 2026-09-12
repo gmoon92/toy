@@ -3,9 +3,11 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @RequiredArgsConstructor
 public class RuleBasedCacheInvalidator implements CacheInvalidator {
