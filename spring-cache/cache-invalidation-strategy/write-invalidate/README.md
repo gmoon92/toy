@@ -93,7 +93,7 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
-    P["EntityChangeEventListener<br/>AFTER_COMMIT"] --> S
+    P["PublishedEntityChangeListener<br/>AFTER_COMMIT"] --> S
     S["CacheInvalidator"] --> I[RuleBasedCacheInvalidator]
     I --> RU[InvalidationRules]
     RU --> EV[CacheEvictor]
@@ -110,7 +110,7 @@ flowchart LR
 
 ```java
 @Configuration
-@Import({JpaEntityChangeConfig.class, EntityChangeEventConfig.class})
+@Import({JpaEntityChangeConfig.class, PublishedEntityChangeConfig.class})
 public class CacheConfig extends AbstractRedisCacheConfig {
 
     @Override

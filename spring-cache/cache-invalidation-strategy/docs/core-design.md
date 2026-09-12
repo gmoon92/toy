@@ -37,7 +37,7 @@ flowchart TD
     end
     subgraph 신호 소스 (모듈이 선택)
         HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
-        SP[ApplicationEvent AFTER_COMMIT] --> SL[EntityChangeEventListener]
+        SP[ApplicationEvent AFTER_COMMIT] --> SL[PublishedEntityChangeListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
         HL --> SINK[CacheInvalidator]
@@ -67,14 +67,15 @@ flowchart TD
 
 ```text
 cache/          policy · eviction · serialization · expiration  (네 축) + RedisCacheConfig(조립)
-invalidation/   무효화 규칙과 실행 + change/(변경 사실)
+invalidation/   무효화 규칙과 실행
+event/          변경 사실을 표현하는 공용 어휘
 listener/       변경을 감지해 무효화를 호출하는 어댑터
 metrics/        무효화 결과 기록
 resilience/     캐시 장애 시 서비스 보호
 config/         스프링 배선과 프로퍼티
 ```
 
-의존은 한 방향으로만 흐른다. `cache.policy`, `cache.expiration`, `invalidation.change`, `resilience` 는
+의존은 한 방향으로만 흐른다. `cache.policy`, `cache.expiration`, `event`, `resilience` 는
 아무것도 참조하지 않는 말단이고, `config` 만 전부를 안다. 순환은 없다.
 
 무효화가 필요 없는 모듈은 신호 소스를 선언하지 않는다.

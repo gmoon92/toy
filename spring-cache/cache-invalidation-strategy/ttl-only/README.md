@@ -59,7 +59,7 @@ sequenceDiagram
 | `UserQueryService` | `@Cacheable` 만 선언한다 |
 | `UserCommandService` | 캐시를 전혀 모른다 |
 
-`CacheSpec.invalidatedByTtlOnly()` 는 단순한 표시가 아니다.
+`CachePolicy.Spec.invalidatedByTtlOnly()` 는 단순한 표시가 아니다.
 코어의 기동 검증이 "규칙이 소유하지 않는 캐시"를 기본적으로 거부하기 때문에,
 이 선언이 없으면 애플리케이션이 뜨지 않는다.
 TTL에만 의존하겠다는 결정을 코드에 남기도록 강제하는 장치다.
@@ -79,7 +79,7 @@ public class CacheConfig extends AbstractRedisCacheConfig {
 }
 ```
 
-`JpaEntityChangeConfig` 나 `EntityChangeEventConfig` 를 선언하지 않았으므로
+`JpaEntityChangeConfig` 나 `PublishedEntityChangeConfig` 를 선언하지 않았으므로
 리스너 빈이 컨텍스트에 존재하지 않는다. 쓰지 않는 전략의 빈을 떠안지 않는다는 뜻이고,
 이것을 `CacheConfigTest` 가 테스트로 고정한다.
 

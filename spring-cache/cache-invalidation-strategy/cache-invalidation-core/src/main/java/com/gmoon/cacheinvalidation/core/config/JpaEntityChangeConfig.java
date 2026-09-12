@@ -22,10 +22,10 @@ public class JpaEntityChangeConfig {
 
 	@Bean
 	public JpaEntityChangeListener jpaEntityChangeListener(
-		 CacheInvalidator sink,
+		 CacheInvalidator cacheInvalidator,
 		 InvalidationRecorder recorder
 	) {
-		return new JpaEntityChangeListener(sink, recorder);
+		return new JpaEntityChangeListener(cacheInvalidator, recorder);
 	}
 
 	@Bean

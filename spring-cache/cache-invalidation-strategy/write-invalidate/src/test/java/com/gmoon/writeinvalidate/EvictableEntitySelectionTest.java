@@ -23,8 +23,8 @@ import com.gmoon.writeinvalidate.user.UserCommandService;
 import com.gmoon.writeinvalidate.user.UserQueryService;
 
 @IntegrationTest
-@DisplayName("엔티티 이벤트 리스너의 대상 선별")
-class CacheEvictableSelectionTest {
+@DisplayName("무효화 대상 엔티티 선별")
+class EvictableEntitySelectionTest {
 
 	private static final String ORIGINAL_TITLE = "cache invalidation";
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";

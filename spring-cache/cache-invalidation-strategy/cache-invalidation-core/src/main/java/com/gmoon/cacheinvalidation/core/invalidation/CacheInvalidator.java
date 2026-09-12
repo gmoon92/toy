@@ -1,7 +1,7 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
 
 public interface CacheInvalidator {
 

@@ -11,24 +11,24 @@ import org.springframework.context.ApplicationContext;
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
 import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
-import com.gmoon.cacheinvalidation.core.listener.EntityChangeEventListener;
+import com.gmoon.cacheinvalidation.core.listener.PublishedEntityChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
-@DisplayName("두 신호 소스를 켠 모듈의 설정")
+@DisplayName("두 감지 방식을 모두 켠 모듈의 설정")
 class CacheConfigTest {
 
 	@Autowired ApplicationContext context;
 
 	@Nested
-	@DisplayName("선언한 신호 소스는")
-	class DeclaredSignalSources {
+	@DisplayName("선언한 감지 방식은")
+	class DeclaredChangeDetections {
 
 		@Test
 		@DisplayName("모두 등록된다")
 		void areAllRegistered() {
 			assertThat(context.getBeanNamesForType(JpaEntityChangeListener.class)).hasSize(1);
-			assertThat(context.getBeanNamesForType(EntityChangeEventListener.class)).hasSize(1);
+			assertThat(context.getBeanNamesForType(PublishedEntityChangeListener.class)).hasSize(1);
 		}
 	}
 

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictable;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
 
 public class EvictableEntityRule implements InvalidationRule {
 

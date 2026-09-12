@@ -11,7 +11,7 @@ import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
 
 @Slf4j
 @RequiredArgsConstructor

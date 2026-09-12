@@ -6,8 +6,8 @@ import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
 
 @RequiredArgsConstructor
 public class RuleBasedCacheInvalidator implements CacheInvalidator {

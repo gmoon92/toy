@@ -11,9 +11,9 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.event.EntityState;
 import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
@@ -26,17 +26,17 @@ public class JpaEntityChangeListener
 
 	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
 
-	private final CacheInvalidator sink;
+	private final CacheInvalidator cacheInvalidator;
 	private final InvalidationRecorder recorder;
 
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		signalWithoutDisruptingCommit(() -> EntityChange.inserted(event.getEntity(), event.getId()));
+		invalidateWithoutDisruptingCommit(() -> EntityChange.inserted(event.getEntity(), event.getId()));
 	}
 
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		signalWithoutDisruptingCommit(() -> EntityChange.updated(
+		invalidateWithoutDisruptingCommit(() -> EntityChange.updated(
 			 event.getEntity(),
 			 event.getId(),
 			 EntityState.of(event.getPersister().getPropertyNames(), event.getOldState())));
@@ -44,7 +44,7 @@ public class JpaEntityChangeListener
 
 	@Override
 	public void onPostDelete(PostDeleteEvent event) {
-		signalWithoutDisruptingCommit(() -> EntityChange.deleted(event.getEntity(), event.getId()));
+		invalidateWithoutDisruptingCommit(() -> EntityChange.deleted(event.getEntity(), event.getId()));
 	}
 
 	@Override
@@ -67,9 +67,9 @@ public class JpaEntityChangeListener
 		logCommitFailed(event.getEntity());
 	}
 
-	private void signalWithoutDisruptingCommit(Supplier<EntityChange> change) {
+	private void invalidateWithoutDisruptingCommit(Supplier<EntityChange> change) {
 		try {
-			sink.invalidate(change.get(), SOURCE);
+			cacheInvalidator.invalidate(change.get(), SOURCE);
 		} catch (RuntimeException e) {
 			recorder.recordPipelineFailure(SOURCE);
 			log.warn("cache invalidation failed after commit. the transaction stays committed", e);

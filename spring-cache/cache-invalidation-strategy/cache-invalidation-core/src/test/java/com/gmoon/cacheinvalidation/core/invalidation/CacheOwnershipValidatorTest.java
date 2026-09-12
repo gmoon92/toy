@@ -15,10 +15,9 @@ import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
-import com.gmoon.cacheinvalidation.core.cache.policy.CacheSpec;
 import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationOwner;
 import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
 
 @DisplayName("무효화 소유권 기동 검증")
 class CacheOwnershipValidatorTest {
@@ -106,8 +105,8 @@ class CacheOwnershipValidatorTest {
 	}
 
 	private CachePolicy policyOf(String cacheName, InvalidationOwner mode) {
-		CacheSpec spec = CacheSpec.of(cacheName, Duration.ofMinutes(1), String.class);
-		CacheSpec applied = mode == InvalidationOwner.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
+		CachePolicy.Spec spec = CachePolicy.Spec.of(cacheName, Duration.ofMinutes(1), String.class);
+		CachePolicy.Spec applied = mode == InvalidationOwner.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
 		return () -> applied;
 	}
 

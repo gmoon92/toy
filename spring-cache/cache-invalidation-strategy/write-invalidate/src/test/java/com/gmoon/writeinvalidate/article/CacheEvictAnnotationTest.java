@@ -14,8 +14,8 @@ import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
 @IntegrationTest
-@DisplayName("@CacheEvict 무효화 - CacheEvictable 을 구현하지 않은 엔티티")
-class AnnotationEvictStrategyTest {
+@DisplayName("@CacheEvict 로 무효화하는 엔티티")
+class CacheEvictAnnotationTest {
 
 	private static final String ORIGINAL_TITLE = "cache invalidation";
 	private static final String CHANGED_TITLE = "cache invalidation, revised";

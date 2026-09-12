@@ -14,17 +14,16 @@ import org.springframework.transaction.support.TransactionTemplate;
 import jakarta.persistence.EntityManager;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.listener.EntityChangeEvent;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
+import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.event.EntityState;
 import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
 @IntegrationTest
-@DisplayName("엔티티 이벤트 무효화 - CacheEvictable 을 구현한 엔티티")
-class EntityEventEvictStrategyTest {
+@DisplayName("JPA 엔티티 변경으로 무효화하는 엔티티")
+class JpaEntityChangeTest {
 
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";
 	private static final String CHANGED_EMAIL = "alice.changed@mail.com";
@@ -155,8 +154,7 @@ class EntityEventEvictStrategyTest {
 		}
 
 		private void publishChangeOf(Long id) {
-			eventPublisher.publishEvent(new EntityChangeEvent(
-				 EntityChange.updated(entityManager.find(User.class, id), id, EntityState.EMPTY)));
+			eventPublisher.publishEvent((EntityChange.updated(entityManager.find(User.class, id), id, EntityState.EMPTY)));
 		}
 	}
 

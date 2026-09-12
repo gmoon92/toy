@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.event.ChangeSource;
 
 public class InvalidationRecorder {
 

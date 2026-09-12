@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
-import com.gmoon.cacheinvalidation.core.listener.EntityChangeEventListener;
+import com.gmoon.cacheinvalidation.core.listener.PublishedEntityChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
@@ -20,8 +20,8 @@ class CacheConfigTest {
 	@Autowired ApplicationContext context;
 
 	@Nested
-	@DisplayName("무효화 신호 소스를 선언하지 않으면")
-	class WhenNoSignalSourceDeclared {
+	@DisplayName("변경 감지 방식을 선언하지 않으면")
+	class WhenNoChangeDetectionDeclared {
 
 		@Test
 		@DisplayName("Hibernate 리스너가 등록되지 않는다")
@@ -34,14 +34,14 @@ class CacheConfigTest {
 		@Test
 		@DisplayName("Spring 이벤트 리스너가 등록되지 않는다")
 		void doesNotRegisterSpringListener() {
-			assertThat(context.getBeanNamesForType(EntityChangeEventListener.class))
+			assertThat(context.getBeanNamesForType(PublishedEntityChangeListener.class))
 				 .isEmpty();
 		}
 	}
 
 	@Nested
-	@DisplayName("신호 소스가 없어도")
-	class EvenWithoutSignalSource {
+	@DisplayName("변경 감지가 없어도")
+	class EvenWithoutChangeDetection {
 
 		@Test
 		@DisplayName("무효화 파이프라인은 그대로 조립된다")

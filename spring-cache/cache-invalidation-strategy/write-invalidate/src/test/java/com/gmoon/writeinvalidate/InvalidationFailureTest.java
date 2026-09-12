@@ -20,7 +20,7 @@ import com.gmoon.writeinvalidate.user.UserQueryService;
 
 @IntegrationTest
 @DisplayName("무효화 실패가 트랜잭션에 미치는 영향")
-class CommitResilienceTest {
+class InvalidationFailureTest {
 
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";
 	private static final String CHANGED_EMAIL = "alice.changed@mail.com";

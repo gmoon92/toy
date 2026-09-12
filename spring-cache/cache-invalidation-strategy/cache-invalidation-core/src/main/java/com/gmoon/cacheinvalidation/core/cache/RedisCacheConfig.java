@@ -30,12 +30,12 @@ public class RedisCacheConfig {
 	}
 
 	public Map<String, RedisCacheConfiguration> byCacheName(CachePolicyRegistry registry) {
-		Map<String, RedisCacheConfiguration> configurations = new HashMap<>();
+		Map<String, RedisCacheConfiguration> byCacheName = new HashMap<>();
 		for (CachePolicy policy : registry.all()) {
-			configurations.put(policy.cacheName(),
+			byCacheName.put(policy.cacheName(),
 				 configurationOf(policy.ttl(), serialization.valueSerializerFor(policy)));
 		}
-		return configurations;
+		return byCacheName;
 	}
 
 	private Duration defaultTtl() {
