@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.event;
+package com.gmoon.cacheinvalidation.core.invalidation.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;

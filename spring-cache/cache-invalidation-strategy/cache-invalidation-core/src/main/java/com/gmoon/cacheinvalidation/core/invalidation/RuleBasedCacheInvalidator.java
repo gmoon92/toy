@@ -3,16 +3,16 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
-import com.gmoon.cacheinvalidation.core.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @RequiredArgsConstructor
 public class RuleBasedCacheInvalidator implements CacheInvalidator {
 
-	private final InvalidationRules rules;
+	private final InvalidationRuleSet rules;
 	private final CacheEvictor cacheEvictor;
 	private final InvalidationRecorder recorder;
 

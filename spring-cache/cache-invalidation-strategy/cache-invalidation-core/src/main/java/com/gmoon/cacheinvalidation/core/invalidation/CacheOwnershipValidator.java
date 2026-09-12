@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class CacheOwnershipValidator implements InitializingBean {
 
 	private final CachePolicyRegistry registry;
-	private final InvalidationRules rules;
+	private final InvalidationRuleSet rules;
 
 	@Override
 	public void afterPropertiesSet() {

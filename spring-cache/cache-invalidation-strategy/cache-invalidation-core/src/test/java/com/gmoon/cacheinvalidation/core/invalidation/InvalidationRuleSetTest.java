@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @DisplayName("무효화 규칙 레지스트리")
-class InvalidationRulesTest {
+class InvalidationRuleSetTest {
 
 	private final EntityChange change = EntityChange.inserted(new Object(), 1L);
 	private final InvalidationRecorder recorder = new InvalidationRecorder();
@@ -24,7 +24,7 @@ class InvalidationRulesTest {
 	@DisplayName("변경 하나에 여러 규칙이 반응하면")
 	class WhenMultipleRulesMatch {
 
-		private final InvalidationRules rules = new InvalidationRules(List.of(
+		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER_SUMMARY, 1L))
 		), recorder);
@@ -44,7 +44,7 @@ class InvalidationRulesTest {
 	@DisplayName("서로 다른 규칙이 같은 대상을 지목하면")
 	class WhenRulesOverlap {
 
-		private final InvalidationRules rules = new InvalidationRules(List.of(
+		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
 		), recorder);
@@ -60,7 +60,7 @@ class InvalidationRulesTest {
 	@DisplayName("반응하는 규칙이 없으면")
 	class WhenNoRuleMatches {
 
-		private final InvalidationRules rules = new InvalidationRules(List.of(
+		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
 			 ruleOf(false, CacheEntryRef.of(TestCachePolicy.USER, 1L))
 		), recorder);
 
@@ -75,7 +75,7 @@ class InvalidationRulesTest {
 	@DisplayName("규칙 하나가 예외를 던지면")
 	class WhenRuleThrows {
 
-		private final InvalidationRules rules = new InvalidationRules(List.of(
+		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
 			 failingRule(),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
 		), recorder);

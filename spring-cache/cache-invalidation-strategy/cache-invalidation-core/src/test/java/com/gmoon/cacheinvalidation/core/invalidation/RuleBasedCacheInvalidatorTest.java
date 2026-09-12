@@ -16,13 +16,12 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictable;
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
+import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
-import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @DisplayName("엔티티 변경 무효화 실행")
 class RuleBasedCacheInvalidatorTest {
@@ -31,13 +30,11 @@ class RuleBasedCacheInvalidatorTest {
 	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
 
 	private CacheManager cacheManager;
-	private CacheFailureRecorder failureRecorder;
 	private InvalidationRecorder invalidationRecorder;
 
 	@BeforeEach
 	void setUp() {
 		cacheManager = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER, TestCachePolicy.Name.USER_SUMMARY);
-		failureRecorder = new CacheFailureRecorder();
 		invalidationRecorder = new InvalidationRecorder();
 	}
 
@@ -88,22 +85,25 @@ class RuleBasedCacheInvalidatorTest {
 		@DisplayName("예외를 전파하지 않고 실패를 기록한다")
 		void recordsFailureWithoutPropagating() {
 			RuleBasedCacheInvalidator invalidator = new RuleBasedCacheInvalidator(
-				 new InvalidationRules(List.of(EvictableEntityRule.owning(TestCachePolicy.USER)),
+				 new InvalidationRuleSet(List.of(EvictableEntityRule.owning(TestCachePolicy.USER)),
 					  invalidationRecorder),
-				 new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder),
+				 new CacheEvictor(FailingCacheManager.of("redis down")),
 				 invalidationRecorder);
 
 			assertThatNoException()
 				 .as("무효화 실패가 전파되면 커밋된 트랜잭션 이후 흐름이 깨진다")
 				 .isThrownBy(() -> invalidator.invalidate(EntityChange.deleted(new CacheableUser(1L), 1L), SOURCE));
-			assertThat(failureRecorder.failureCount(CacheOperation.EVICT)).isEqualTo(2);
+			assertThat(invalidationRecorder.evictionCount(
+				 TestCachePolicy.Name.USER, SOURCE, EvictionOutcome.FAILED))
+				 .as("실패가 결과로 기록되지 않으면 무효화 유실이 조용히 묻힌다")
+				 .isEqualTo(1);
 		}
 	}
 
 	private RuleBasedCacheInvalidator invalidatorOf(InvalidationRule... rules) {
 		return new RuleBasedCacheInvalidator(
-			 new InvalidationRules(List.of(rules), invalidationRecorder),
-			 new CacheEvictor(cacheManager, failureRecorder),
+			 new InvalidationRuleSet(List.of(rules), invalidationRecorder),
+			 new CacheEvictor(cacheManager),
 			 invalidationRecorder);
 	}
 

@@ -28,13 +28,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record ServiceCacheProperties(Expiration expiration, Invalidation invalidation) {
 
 	public ServiceCacheProperties {
-		expiration = expiration == null ? Expiration.withDefaults() : expiration;
-		invalidation = invalidation == null ? Invalidation.withDefaults() : invalidation;
+		expiration = expiration == null ? new Expiration(null, 0) : expiration;
+		invalidation = invalidation == null ? new Invalidation(0) : invalidation;
 	}
 
-	public static ServiceCacheProperties withDefaults() {
-		return new ServiceCacheProperties(null, null);
-	}
 
 	/**
 	 * 값이 만료되는 방식.
@@ -49,9 +46,6 @@ public record ServiceCacheProperties(Expiration expiration, Invalidation invalid
 			jitterRatio = jitterRatio <= 0 ? DEFAULT_JITTER_RATIO : jitterRatio;
 		}
 
-		public static Expiration withDefaults() {
-			return new Expiration(null, 0);
-		}
 	}
 
 	/**
@@ -65,8 +59,5 @@ public record ServiceCacheProperties(Expiration expiration, Invalidation invalid
 			clearScanBatchSize = clearScanBatchSize <= 0 ? DEFAULT_CLEAR_SCAN_BATCH_SIZE : clearScanBatchSize;
 		}
 
-		public static Invalidation withDefaults() {
-			return new Invalidation(0);
-		}
 	}
 }

@@ -14,10 +14,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import jakarta.persistence.EntityManager;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
-import com.gmoon.cacheinvalidation.core.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.event.EntityState;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityState;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 

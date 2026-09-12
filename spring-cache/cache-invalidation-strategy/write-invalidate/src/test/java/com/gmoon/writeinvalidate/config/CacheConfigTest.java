@@ -10,8 +10,8 @@ import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
-import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
-import com.gmoon.cacheinvalidation.core.listener.PublishedEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.PublishedEntityChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest

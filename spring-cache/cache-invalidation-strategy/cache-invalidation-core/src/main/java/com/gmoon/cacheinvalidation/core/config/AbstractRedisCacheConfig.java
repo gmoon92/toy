@@ -1,5 +1,6 @@
 package com.gmoon.cacheinvalidation.core.config;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
@@ -16,20 +17,19 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
 import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredCacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.serialization.JsonCacheSerialization;
 import com.gmoon.cacheinvalidation.core.invalidation.CacheOwnershipValidator;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRules;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.invalidation.RuleBasedCacheInvalidator;
-import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
-import com.gmoon.cacheinvalidation.core.resilience.FallbackCacheErrorHandler;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
+import com.gmoon.cacheinvalidation.core.cache.resilience.CacheFailureRecorder;
+import com.gmoon.cacheinvalidation.core.cache.resilience.FallbackCacheErrorHandler;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
 
 /**
  * Redis 를 캐시 저장소로 쓰는 전략 모듈이 상속하는 설정의 기반이다.
@@ -57,7 +57,7 @@ import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
 @EnableConfigurationProperties(ServiceCacheProperties.class)
 public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
-	protected abstract CachePolicies cachePolicies();
+	protected abstract Collection<CachePolicy> cachePolicies();
 
 	protected List<InvalidationRule> invalidationRules() {
 		return List.of();
@@ -76,25 +76,25 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	public CachePolicyRegistry cachePolicyRegistry() {
-		return new CachePolicyRegistry(List.of(cachePolicies()));
+		return new CachePolicyRegistry(cachePolicies());
 	}
 
 	@Bean
-	public InvalidationRules invalidationRules(InvalidationRecorder recorder) {
-		return new InvalidationRules(invalidationRules(), recorder);
+	public InvalidationRuleSet invalidationRules(InvalidationRecorder recorder) {
+		return new InvalidationRuleSet(invalidationRules(), recorder);
 	}
 
 	@Bean
 	public CacheOwnershipValidator cacheOwnershipValidator(
 		 CachePolicyRegistry registry,
-		 InvalidationRules rules
+		 InvalidationRuleSet rules
 	) {
 		return new CacheOwnershipValidator(registry, rules);
 	}
 
 	@Bean
 	public CacheInvalidator cacheInvalidator(
-		 InvalidationRules rules,
+		 InvalidationRuleSet rules,
 		 CacheEvictor cacheEvictor,
 		 InvalidationRecorder recorder
 	) {
@@ -102,8 +102,8 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public CacheEvictor cacheEvictor(CacheManager cacheManager, CacheFailureRecorder failureRecorder) {
-		return new CacheEvictor(cacheManager, failureRecorder);
+	public CacheEvictor cacheEvictor(CacheManager cacheManager) {
+		return new CacheEvictor(cacheManager);
 	}
 
 	@Bean
@@ -132,22 +132,22 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public RedisCacheConfig redisCacheConfigurations(
+	public RedisCacheSettings redisCacheConfigurations(
 		 CacheSerialization serialization,
 		 CacheExpiration expiration,
 		 CacheProperties cacheProperties
 	) {
-		return new RedisCacheConfig(serialization, expiration, cacheProperties.getRedis());
+		return new RedisCacheSettings(serialization, expiration, cacheProperties.getRedis());
 	}
 
 	@Bean
 	public RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
 		 CachePolicyRegistry registry,
-		 RedisCacheConfig redisCacheConfig
+		 RedisCacheSettings redisCacheSettings
 	) {
 		return builder -> builder
 			 .disableCreateOnMissingCache()
-			 .cacheDefaults(redisCacheConfig.unregisteredCacheDefaults())
-			 .withInitialCacheConfigurations(redisCacheConfig.byCacheName(registry));
+			 .cacheDefaults(redisCacheSettings.unregisteredCacheDefaults())
+			 .withInitialCacheConfigurations(redisCacheSettings.byCacheName(registry));
 	}
 }

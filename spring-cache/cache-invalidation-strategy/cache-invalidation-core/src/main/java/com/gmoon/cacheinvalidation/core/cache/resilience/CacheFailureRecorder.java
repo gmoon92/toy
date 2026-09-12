@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.resilience;
+package com.gmoon.cacheinvalidation.core.cache.resilience;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

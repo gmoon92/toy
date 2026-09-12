@@ -6,26 +6,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
 import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
-import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
 
 @DisplayName("캐시 무효화 실행 결과")
 class CacheEvictorTest {
 
 	private CacheManager cacheManager;
-	private CacheFailureRecorder failureRecorder;
 	private CacheEvictor cacheEvictor;
 
 	@BeforeEach
 	void setUp() {
 		cacheManager = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER);
-		failureRecorder = new CacheFailureRecorder();
-		cacheEvictor = new CacheEvictor(cacheManager, failureRecorder);
+		cacheEvictor = new CacheEvictor(cacheManager);
 	}
 
 	@Nested
@@ -75,9 +72,9 @@ class CacheEvictorTest {
 	class WhenCacheThrows {
 
 		@Test
-		@DisplayName("FAILED 를 반환하고 예외를 전파하지 않는다")
-		void returnsFailedWithoutPropagating() {
-			CacheEvictor evictor = new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder);
+		@DisplayName("캐시를 찾는 단계에서 터져도 FAILED 를 반환한다")
+		void returnsFailedWhenResolvingCacheThrows() {
+			CacheEvictor evictor = new CacheEvictor(FailingCacheManager.of("redis down"));
 
 			assertThat(evictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 1L)))
 				 .as("커밋 이후 실행되므로 예외를 던지면 이미 커밋된 트랜잭션의 호출자가 깨진다")
@@ -85,16 +82,75 @@ class CacheEvictorTest {
 		}
 
 		@Test
-		@DisplayName("캐시 조회 단계에서 터져도 실패로 기록한다")
-		void recordsFailureRaisedWhileResolvingCache() {
-			CacheEvictor evictor = new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder);
+		@DisplayName("삭제 단계에서 터져도 FAILED 를 반환한다")
+		void returnsFailedWhenEvictThrows() {
+			CacheEvictor evictor = new CacheEvictor(new EvictThrowingCacheManager());
 
-			evictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 1L));
-
-			assertThat(failureRecorder.failureCount(CacheOperation.EVICT))
-				 .as("getCache 단계의 예외가 방어 밖에 있으면 커밋 스레드로 새어나간다")
-				 .isEqualTo(1);
+			assertThat(evictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 1L)))
+				 .as("방어가 캐시 조회만 감싸면 삭제 단계의 예외가 커밋 스레드로 새어나간다")
+				 .isEqualTo(EvictionOutcome.FAILED);
 		}
 	}
 
+	static class EvictThrowingCacheManager extends ConcurrentMapCacheManager {
+
+		EvictThrowingCacheManager() {
+			super(TestCachePolicy.Name.USER);
+		}
+
+		@Override
+		public Cache getCache(String name) {
+			Cache delegate = super.getCache(name);
+			return new ConcurrentMapCacheWrapper(delegate);
+		}
+	}
+
+	static class ConcurrentMapCacheWrapper implements Cache {
+
+		private final Cache delegate;
+
+		ConcurrentMapCacheWrapper(Cache delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public String getName() {
+			return delegate.getName();
+		}
+
+		@Override
+		public Object getNativeCache() {
+			return delegate.getNativeCache();
+		}
+
+		@Override
+		public ValueWrapper get(Object key) {
+			return delegate.get(key);
+		}
+
+		@Override
+		public <T> T get(Object key, Class<T> type) {
+			return delegate.get(key, type);
+		}
+
+		@Override
+		public <T> T get(Object key, java.util.concurrent.Callable<T> valueLoader) {
+			return delegate.get(key, valueLoader);
+		}
+
+		@Override
+		public void put(Object key, Object value) {
+			delegate.put(key, value);
+		}
+
+		@Override
+		public void evict(Object key) {
+			throw new IllegalStateException("redis down");
+		}
+
+		@Override
+		public void clear() {
+			delegate.clear();
+		}
+	}
 }

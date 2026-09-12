@@ -2,7 +2,6 @@ package com.gmoon.cacheinvalidation.core.cache.policy;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,8 +9,8 @@ public class CachePolicyRegistry {
 
 	private final Map<String, CachePolicy> policiesByCacheName;
 
-	public CachePolicyRegistry(List<CachePolicies> sources) {
-		this.policiesByCacheName = index(sources);
+	public CachePolicyRegistry(Collection<CachePolicy> policies) {
+		this.policiesByCacheName = index(policies);
 	}
 
 	public Collection<CachePolicy> all() {
@@ -27,13 +26,11 @@ public class CachePolicyRegistry {
 			 .orElseThrow(() -> new IllegalArgumentException("Unregistered cache name: " + cacheName));
 	}
 
-	private Map<String, CachePolicy> index(List<CachePolicies> sources) {
+	private Map<String, CachePolicy> index(Collection<CachePolicy> policies) {
 		Map<String, CachePolicy> indexed = new LinkedHashMap<>();
-		for (CachePolicies source : sources) {
-			for (CachePolicy policy : source.all()) {
-				rejectDuplicate(indexed, policy);
-				indexed.put(policy.cacheName(), policy);
-			}
+		for (CachePolicy policy : policies) {
+			rejectDuplicate(indexed, policy);
+			indexed.put(policy.cacheName(), policy);
 		}
 		return Map.copyOf(indexed);
 	}

@@ -1,8 +1,10 @@
 package com.gmoon.ttlonly.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.config.AbstractRedisCacheConfig;
 import com.gmoon.ttlonly.user.UserCachePolicy;
 
@@ -14,7 +16,7 @@ import com.gmoon.ttlonly.user.UserCachePolicy;
 public class CacheConfig extends AbstractRedisCacheConfig {
 
 	@Override
-	protected CachePolicies cachePolicies() {
-		return CachePolicies.of(UserCachePolicy.values());
+	protected List<CachePolicy> cachePolicies() {
+		return List.of(UserCachePolicy.values());
 	}
 }

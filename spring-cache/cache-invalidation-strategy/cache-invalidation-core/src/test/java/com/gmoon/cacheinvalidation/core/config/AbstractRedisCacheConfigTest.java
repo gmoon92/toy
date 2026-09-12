@@ -23,8 +23,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
@@ -102,7 +100,7 @@ class AbstractRedisCacheConfigTest {
 		@DisplayName("재정의한 TTL 이 캐시 설정에 반영된다")
 		void reachesCacheConfiguration() {
 			contextRunner.withUserConfiguration(OverriddenExpirationConfig.class)
-				 .run(context -> assertThat(ttlOf(context.getBean(RedisCacheConfig.class),
+				 .run(context -> assertThat(ttlOf(context.getBean(RedisCacheSettings.class),
 					  context.getBean(CachePolicyRegistry.class)))
 					  .as("정책이 선언한 TTL 대신 재정의한 만료 전략이 이겨야 한다")
 					  .isEqualTo(FIXED_TTL));
@@ -118,19 +116,19 @@ class AbstractRedisCacheConfigTest {
 	}
 
 	private String serializedValueOf(ApplicationContext context) {
-		ByteBuffer written = configurationOf(context.getBean(RedisCacheConfig.class),
+		ByteBuffer written = configurationOf(context.getBean(RedisCacheSettings.class),
 			 context.getBean(CachePolicyRegistry.class))
 			 .getValueSerializationPair()
 			 .write("hello");
 		return StandardCharsets.UTF_8.decode(written).toString();
 	}
 
-	private Duration ttlOf(RedisCacheConfig config, CachePolicyRegistry registry) {
+	private Duration ttlOf(RedisCacheSettings config, CachePolicyRegistry registry) {
 		return configurationOf(config, registry).getTtlFunction().getTimeToLive("key", "value");
 	}
 
 	private RedisCacheConfiguration configurationOf(
-		 RedisCacheConfig config,
+		 RedisCacheSettings config,
 		 CachePolicyRegistry registry
 	) {
 		return config.byCacheName(registry).get(TestCachePolicy.Name.USER);
@@ -145,8 +143,8 @@ class AbstractRedisCacheConfigTest {
 	static class DefaultCacheConfig extends AbstractRedisCacheConfig {
 
 		@Override
-		protected CachePolicies cachePolicies() {
-			return CachePolicies.of(TestCachePolicy.USER);
+		protected List<CachePolicy> cachePolicies() {
+			return List.of(TestCachePolicy.USER);
 		}
 
 		@Override

@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.resilience;
+package com.gmoon.cacheinvalidation.core.cache.resilience;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;

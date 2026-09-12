@@ -7,15 +7,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @Slf4j
 @RequiredArgsConstructor
-public class InvalidationRules {
+public class InvalidationRuleSet {
 
 	private final List<InvalidationRule> rules;
 	private final InvalidationRecorder recorder;

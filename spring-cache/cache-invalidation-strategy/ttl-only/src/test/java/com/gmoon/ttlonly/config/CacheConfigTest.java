@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
-import com.gmoon.cacheinvalidation.core.listener.PublishedEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.PublishedEntityChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest

@@ -95,7 +95,7 @@ flowchart LR
     H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
     P["PublishedEntityChangeListener<br/>AFTER_COMMIT"] --> S
     S["CacheInvalidator"] --> I[RuleBasedCacheInvalidator]
-    I --> RU[InvalidationRules]
+    I --> RU[InvalidationRuleSet]
     RU --> EV[CacheEvictor]
     EV --> C[(Redis DEL)]
 ```
@@ -114,8 +114,8 @@ flowchart LR
 public class CacheConfig extends AbstractRedisCacheConfig {
 
     @Override
-    protected CachePolicies cachePolicies() {
-        return CachePolicies.of(UserCachePolicy.USER, ArticleCachePolicy.ARTICLE);
+    protected List<CachePolicy> cachePolicies() {
+        return List.of(UserCachePolicy.USER, ArticleCachePolicy.ARTICLE);
     }
 
     @Override

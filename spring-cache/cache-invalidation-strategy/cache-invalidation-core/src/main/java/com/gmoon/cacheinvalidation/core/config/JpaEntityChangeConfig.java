@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
-import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListenerRegistrar;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListenerRegistrar;
 
 import jakarta.persistence.EntityManagerFactory;
 

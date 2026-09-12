@@ -23,7 +23,7 @@ Hibernate post-commit 엔티티 이벤트로 무효화한다.
 flowchart LR
     TX[트랜잭션 COMMIT] --> EV["POST_COMMIT_INSERT<br/>POST_COMMIT_UPDATE<br/>POST_COMMIT_DELETE"]
     EV --> EC[EntityChange 생성]
-    EC --> RU[InvalidationRules]
+    EC --> RU[InvalidationRuleSet]
     RU --> KEYS[무효화 대상 키 산출]
     KEYS --> DEL[(Cache DEL)]
 ```

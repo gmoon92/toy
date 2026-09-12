@@ -32,8 +32,7 @@
 ```mermaid
 flowchart TD
     subgraph 정책
-        CP[CachePolicy] --> CPS[CachePolicies]
-        CPS --> REG[CachePolicyRegistry]
+        CP[CachePolicy] --> REG[CachePolicyRegistry]
     end
     subgraph 신호 소스 (모듈이 선택)
         HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
@@ -42,7 +41,7 @@ flowchart TD
     subgraph 무효화 파이프라인 (코어가 확정)
         HL --> SINK[CacheInvalidator]
         SL --> SINK
-        SINK --> RU[InvalidationRules]
+        SINK --> RU[InvalidationRuleSet]
         RU --> EVI[CacheEvictor]
     end
     subgraph 회복력
@@ -65,18 +64,31 @@ flowchart TD
 
 ## 패키지 배치
 
+최상위는 셋뿐이다. 열면 하위 축이 바로 보인다.
+
 ```text
-cache/          policy · eviction · serialization · expiration  (네 축) + RedisCacheConfig(조립)
-invalidation/   무효화 규칙과 실행
-event/          변경 사실을 표현하는 공용 어휘
-listener/       변경을 감지해 무효화를 호출하는 어댑터
-metrics/        무효화 결과 기록
-resilience/     캐시 장애 시 서비스 보호
-config/         스프링 배선과 프로퍼티
+cache/              캐시를 어떻게 다루나
+    policy/         어떤 캐시가 있고 수명이 얼마인가
+    eviction/       어떻게 지우나
+    expiration/     언제 만료되나
+    serialization/  어떤 형식으로 저장하나
+    resilience/     캐시가 죽어도 서비스를 살린다
+invalidation/       언제 무엇을 지우나
+    event/          변경 사실
+    listener/       변경을 감지하는 어댑터
+    metrics/        무효화 결과 기록
+config/             스프링 배선과 프로퍼티
 ```
 
-의존은 한 방향으로만 흐른다. `cache.policy`, `cache.expiration`, `event`, `resilience` 는
-아무것도 참조하지 않는 말단이고, `config` 만 전부를 안다. 순환은 없다.
+의존은 아래에서 위로만 흐른다.
+
+| 계층 | 참조 대상 |
+|-----|---------|
+| `cache/**` | 같은 `cache` 안에서만 (바깥을 모른다) |
+| `invalidation/**` | `cache` + 자기 하위 |
+| `config/` | 전부 |
+
+`cache.policy` · `cache.expiration` · `cache.resilience` · `invalidation.event` 은 말단이다. 순환은 없다.
 
 무효화가 필요 없는 모듈은 신호 소스를 선언하지 않는다.
 `ttl-only` 가 그 경우이며, 리스너 빈이 하나도 등록되지 않는다는 것을 테스트로 고정한다.
@@ -99,7 +111,7 @@ public enum UserCachePolicy implements CachePolicy {
 }
 ```
 
-모듈은 `CachePolicies` 빈으로 자기 정책을 등록하고,
+모듈은 `cachePolicies()` 를 구현해 자기 정책을 등록하고,
 `CachePolicyRegistry`가 모아 캐시명 중복을 거부한다.
 
 ## 무효화 — Rule이 기본, 인터페이스는 단축키

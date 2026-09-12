@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.config;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RedisCacheConfig {
+public class RedisCacheSettings {
 
 	private static final Duration FALLBACK_TTL = Duration.ofMinutes(5);
 

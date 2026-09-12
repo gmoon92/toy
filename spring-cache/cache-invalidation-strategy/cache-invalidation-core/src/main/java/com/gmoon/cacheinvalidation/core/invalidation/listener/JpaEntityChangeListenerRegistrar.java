@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.listener;
+package com.gmoon.cacheinvalidation.core.invalidation.listener;
 
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;

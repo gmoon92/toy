@@ -12,12 +12,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationOwner;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @DisplayName("무효화 소유권 기동 검증")
 class CacheOwnershipValidatorTest {
@@ -64,7 +63,7 @@ class CacheOwnershipValidatorTest {
 		void failsFast() {
 			CachePolicy registered = policyOf("REGISTERED", InvalidationOwner.TTL_ONLY);
 			CacheOwnershipValidator validator = new CacheOwnershipValidator(
-				 new CachePolicyRegistry(List.of(policiesOf(registered))),
+				 new CachePolicyRegistry(List.of(registered)),
 				 rulesOf(ruleOwning("TYPO_CACHE")));
 
 			assertThatIllegalStateException()
@@ -83,7 +82,7 @@ class CacheOwnershipValidatorTest {
 		void starts() {
 			CachePolicy owned = policyOf("OWNED", InvalidationOwner.RULE);
 			CacheOwnershipValidator validator = new CacheOwnershipValidator(
-				 new CachePolicyRegistry(List.of(policiesOf(owned))),
+				 new CachePolicyRegistry(List.of(owned)),
 				 rulesOf(ruleOwning("OWNED")));
 
 			assertThatNoException().isThrownBy(validator::afterPropertiesSet);
@@ -92,17 +91,14 @@ class CacheOwnershipValidatorTest {
 
 	private CacheOwnershipValidator validatorOf(CachePolicy policy) {
 		return new CacheOwnershipValidator(
-			 new CachePolicyRegistry(List.of(policiesOf(policy))),
+			 new CachePolicyRegistry(List.of(policy)),
 			 rulesOf());
 	}
 
-	private InvalidationRules rulesOf(InvalidationRule... rules) {
-		return new InvalidationRules(List.of(rules), new InvalidationRecorder());
+	private InvalidationRuleSet rulesOf(InvalidationRule... rules) {
+		return new InvalidationRuleSet(List.of(rules), new InvalidationRecorder());
 	}
 
-	private CachePolicies policiesOf(CachePolicy policy) {
-		return () -> List.of(policy);
-	}
 
 	private CachePolicy policyOf(String cacheName, InvalidationOwner mode) {
 		CachePolicy.Spec spec = CachePolicy.Spec.of(cacheName, Duration.ofMinutes(1), String.class);

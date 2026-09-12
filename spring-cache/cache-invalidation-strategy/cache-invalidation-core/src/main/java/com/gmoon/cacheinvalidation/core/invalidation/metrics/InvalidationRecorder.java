@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.metrics;
+package com.gmoon.cacheinvalidation.core.invalidation.metrics;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
 
 public class InvalidationRecorder {
 

@@ -73,8 +73,8 @@ TTL에만 의존하겠다는 결정을 코드에 남기도록 강제하는 장�
 public class CacheConfig extends AbstractRedisCacheConfig {
 
     @Override
-    protected CachePolicies cachePolicies() {
-        return CachePolicies.of(UserCachePolicy.values());
+    protected List<CachePolicy> cachePolicies() {
+        return List.of(UserCachePolicy.values());
     }
 }
 ```

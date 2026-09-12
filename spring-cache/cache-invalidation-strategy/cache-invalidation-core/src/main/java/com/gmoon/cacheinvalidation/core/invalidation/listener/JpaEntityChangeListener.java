@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.listener;
+package com.gmoon.cacheinvalidation.core.invalidation.listener;
 
 import java.util.function.Supplier;
 
@@ -11,10 +11,10 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.event.EntityChange;
-import com.gmoon.cacheinvalidation.core.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.event.EntityState;
-import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.event.EntityState;
+import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
