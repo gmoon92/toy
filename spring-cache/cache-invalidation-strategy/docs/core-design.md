@@ -36,13 +36,13 @@ flowchart TD
         CPS --> REG[CachePolicyRegistry]
     end
     subgraph 신호 소스 (모듈이 선택)
-        HB[Hibernate POST_COMMIT] --> HL[HibernateCommitSignalListener]
-        SP[ApplicationEvent AFTER_COMMIT] --> SL[SpringCommitSignalListener]
+        HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
+        SP[ApplicationEvent AFTER_COMMIT] --> SL[EntityChangeEventListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
-        HL --> SINK[CommitSignalSink]
+        HL --> SINK[CacheInvalidator]
         SL --> SINK
-        SINK --> RU[CacheInvalidationRules]
+        SINK --> RU[InvalidationRules]
         RU --> EVI[CacheEvictor]
     end
     subgraph 회복력
@@ -84,7 +84,7 @@ public enum UserCachePolicy implements CachePolicy {
 ## 무효화 — Rule이 기본, 인터페이스는 단축키
 
 ```java
-public interface CacheInvalidationRule {
+public interface InvalidationRule {
     boolean supports(EntityChange change);
     Collection<CacheEntryRef> resolve(EntityChange change);
 }
@@ -93,7 +93,7 @@ public interface CacheInvalidationRule {
 | 방식 | 언제 |
 |-----|-----|
 | `CacheEvictable` 구현 | 엔티티가 자기 키만 알면 되는 단순한 경우 |
-| `CacheInvalidationRule` 빈 | 키 변경, 교차 엔티티, 목록 캐시 등 |
+| `InvalidationRule` 빈 | 키 변경, 교차 엔티티, 목록 캐시 등 |
 
 `EntityChange`가 **변경 전 상태**를 함께 실어 옛 키를 재구성할 수 있다.
 
@@ -180,8 +180,8 @@ Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 | 테스트 | 고정하는 명제 |
 |------|------------|
 | `PreviousStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
-| `EntityChangeInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화된다 |
-| `CacheInvalidationRulesTest` | 규칙 하나가 실패해도 나머지는 수행된다 |
+| `RuleBasedCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화된다 |
+| `InvalidationRulesTest` | 규칙 하나가 실패해도 나머지는 수행된다 |
 | `FallbackCacheErrorHandlerTest` | 기본 처리기는 전파하고, 폴백 처리기는 삼키되 기록한다 |
 | `JitteredTtlTest` | 흔들림이 기준 TTL 비율을 넘지 않고 최소 1초를 확보한다 |
 

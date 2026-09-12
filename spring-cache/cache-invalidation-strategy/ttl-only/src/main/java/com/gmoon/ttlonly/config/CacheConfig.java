@@ -2,7 +2,7 @@ package com.gmoon.ttlonly.config;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
 import com.gmoon.cacheinvalidation.core.config.AbstractCacheConfig;
 import com.gmoon.ttlonly.user.UserCachePolicy;
 

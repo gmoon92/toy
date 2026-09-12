@@ -79,7 +79,7 @@ public class CacheConfig extends AbstractCacheConfig {
 }
 ```
 
-`HibernateCommitSignalConfig` 나 `SpringCommitSignalConfig` 를 선언하지 않았으므로
+`JpaEntityChangeConfig` 나 `EntityChangeEventConfig` 를 선언하지 않았으므로
 리스너 빈이 컨텍스트에 존재하지 않는다. 쓰지 않는 전략의 빈을 떠안지 않는다는 뜻이고,
 이것을 `CacheConfigTest` 가 테스트로 고정한다.
 

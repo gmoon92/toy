@@ -92,10 +92,10 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    H["HibernateCommitSignalListener<br/>POST_COMMIT_*"] --> S
-    P["SpringCommitSignalListener<br/>AFTER_COMMIT"] --> S
-    S["CommitSignalSink"] --> I[EntityChangeInvalidator]
-    I --> RU[CacheInvalidationRules]
+    H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
+    P["EntityChangeEventListener<br/>AFTER_COMMIT"] --> S
+    S["CacheInvalidator"] --> I[RuleBasedCacheInvalidator]
+    I --> RU[InvalidationRules]
     RU --> EV[CacheEvictor]
     EV --> C[(Redis DEL)]
 ```
@@ -110,7 +110,7 @@ flowchart LR
 
 ```java
 @Configuration
-@Import({HibernateCommitSignalConfig.class, SpringCommitSignalConfig.class})
+@Import({JpaEntityChangeConfig.class, EntityChangeEventConfig.class})
 public class CacheConfig extends AbstractCacheConfig {
 
     @Override
@@ -119,8 +119,8 @@ public class CacheConfig extends AbstractCacheConfig {
     }
 
     @Override
-    protected List<CacheInvalidationRule> invalidationRules() {
-        return List.of(CacheEvictableRule.owning(UserCachePolicy.USER));
+    protected List<InvalidationRule> invalidationRules() {
+        return List.of(EvictableEntityRule.owning(UserCachePolicy.USER));
     }
 }
 ```
@@ -142,7 +142,7 @@ public class CacheConfig extends AbstractCacheConfig {
 |---------|-------------|
 | `CachePolicy` enum (캐시 이름·TTL·값 타입) | evict 호출 코드 |
 | 조회 메서드의 `@Cacheable` | 쓰기 메서드의 `@CacheEvict` |
-| 엔티티의 `CacheEvictable` 또는 별도 `CacheInvalidationRule` | 트랜잭션 훅 등록 |
+| 엔티티의 `CacheEvictable` 또는 별도 `InvalidationRule` | 트랜잭션 훅 등록 |
 
 `UserCommandService` 에는 캐시라는 단어가 등장하지 않는다.
 무효화가 서비스 메서드 선언이 아니라 **엔티티가 커밋됐다는 사실**에서 파생되기 때문이다.

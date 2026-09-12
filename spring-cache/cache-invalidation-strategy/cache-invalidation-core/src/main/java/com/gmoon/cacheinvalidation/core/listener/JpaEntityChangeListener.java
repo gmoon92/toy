@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.signal;
+package com.gmoon.cacheinvalidation.core.listener;
 
 import java.util.function.Supplier;
 
@@ -10,9 +10,9 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
-import com.gmoon.cacheinvalidation.core.invalidation.CommitSignalSink;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
+import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
 import com.gmoon.cacheinvalidation.core.invalidation.PreviousState;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
@@ -21,12 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HibernateCommitSignalListener
+public class JpaEntityChangeListener
 	 implements PostCommitInsertEventListener, PostCommitUpdateEventListener, PostCommitDeleteEventListener {
 
-	private static final InvalidationSource SOURCE = InvalidationSource.HIBERNATE_POST_COMMIT;
+	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
 
-	private final CommitSignalSink sink;
+	private final CacheInvalidator sink;
 	private final InvalidationRecorder recorder;
 
 	@Override
@@ -69,7 +69,7 @@ public class HibernateCommitSignalListener
 
 	private void signalWithoutDisruptingCommit(Supplier<EntityChange> change) {
 		try {
-			sink.accept(change.get(), SOURCE);
+			sink.invalidate(change.get(), SOURCE);
 		} catch (RuntimeException e) {
 			recorder.recordPipelineFailure(SOURCE);
 			log.warn("cache invalidation failed after commit. the transaction stays committed", e);

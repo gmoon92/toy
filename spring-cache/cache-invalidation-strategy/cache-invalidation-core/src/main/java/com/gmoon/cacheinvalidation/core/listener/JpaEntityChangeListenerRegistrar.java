@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.signal;
+package com.gmoon.cacheinvalidation.core.listener;
 
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -12,10 +12,10 @@ import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class HibernateCommitSignalRegistrar {
+public class JpaEntityChangeListenerRegistrar {
 
 	private final ObjectProvider<EntityManagerFactory> entityManagerFactories;
-	private final HibernateCommitSignalListener listener;
+	private final JpaEntityChangeListener listener;
 
 	@PostConstruct
 	public void register() {

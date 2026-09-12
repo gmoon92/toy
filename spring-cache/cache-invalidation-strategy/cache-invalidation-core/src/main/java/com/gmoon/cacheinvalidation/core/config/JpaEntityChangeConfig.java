@@ -4,10 +4,10 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.cacheinvalidation.core.invalidation.CommitSignalSink;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.signal.HibernateCommitSignalListener;
-import com.gmoon.cacheinvalidation.core.signal.HibernateCommitSignalRegistrar;
+import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListenerRegistrar;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -18,21 +18,21 @@ import jakarta.persistence.EntityManagerFactory;
  * 벌크 연산({@code @Modifying} JPQL, 네이티브 UPDATE)은 신호를 만들지 않는다.
  */
 @Configuration
-public class HibernateCommitSignalConfig {
+public class JpaEntityChangeConfig {
 
 	@Bean
-	public HibernateCommitSignalListener hibernateCommitSignalListener(
-		 CommitSignalSink sink,
+	public JpaEntityChangeListener jpaEntityChangeListener(
+		 CacheInvalidator sink,
 		 InvalidationRecorder recorder
 	) {
-		return new HibernateCommitSignalListener(sink, recorder);
+		return new JpaEntityChangeListener(sink, recorder);
 	}
 
 	@Bean
-	public HibernateCommitSignalRegistrar hibernateCommitSignalRegistrar(
+	public JpaEntityChangeListenerRegistrar jpaEntityChangeListenerRegistrar(
 		 ObjectProvider<EntityManagerFactory> entityManagerFactories,
-		 HibernateCommitSignalListener listener
+		 JpaEntityChangeListener listener
 	) {
-		return new HibernateCommitSignalRegistrar(entityManagerFactories, listener);
+		return new JpaEntityChangeListenerRegistrar(entityManagerFactories, listener);
 	}
 }

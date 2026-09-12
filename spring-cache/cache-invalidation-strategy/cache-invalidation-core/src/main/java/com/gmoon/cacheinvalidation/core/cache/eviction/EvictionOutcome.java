@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.cache.eviction;
 
 public enum EvictionOutcome {
 	EVICT_REQUESTED,

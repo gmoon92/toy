@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.cache.eviction;
 
 import java.util.List;
 

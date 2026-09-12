@@ -3,9 +3,9 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 import java.util.Collection;
 import java.util.Set;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 
-public interface CacheInvalidationRule {
+public interface InvalidationRule {
 
 	boolean supports(EntityChange change);
 

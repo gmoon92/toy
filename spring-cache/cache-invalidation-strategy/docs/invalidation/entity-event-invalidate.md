@@ -23,7 +23,7 @@ Hibernate post-commit 엔티티 이벤트로 무효화한다.
 flowchart LR
     TX[트랜잭션 COMMIT] --> EV["POST_COMMIT_INSERT<br/>POST_COMMIT_UPDATE<br/>POST_COMMIT_DELETE"]
     EV --> EC[EntityChange 생성]
-    EC --> RU[CacheInvalidationRules]
+    EC --> RU[InvalidationRules]
     RU --> KEYS[무효화 대상 키 산출]
     KEYS --> DEL[(Cache DEL)]
 ```
@@ -35,7 +35,7 @@ flowchart LR
 무효화 대상 산출은 규칙(Rule)이 담당하고, 단순한 엔티티는 단축 인터페이스를 쓴다.
 
 ```java
-public interface CacheInvalidationRule {
+public interface InvalidationRule {
     boolean supports(EntityChange change);
     Collection<CacheEntryRef> resolve(EntityChange change);
 }

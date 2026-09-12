@@ -9,12 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
 @DisplayName("무효화 규칙 레지스트리")
-class CacheInvalidationRulesTest {
+class InvalidationRulesTest {
 
 	private final EntityChange change = EntityChange.inserted(new Object(), 1L);
 	private final InvalidationRecorder recorder = new InvalidationRecorder();
@@ -23,7 +23,7 @@ class CacheInvalidationRulesTest {
 	@DisplayName("변경 하나에 여러 규칙이 반응하면")
 	class WhenMultipleRulesMatch {
 
-		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
+		private final InvalidationRules rules = new InvalidationRules(List.of(
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER_SUMMARY, 1L))
 		), recorder);
@@ -43,7 +43,7 @@ class CacheInvalidationRulesTest {
 	@DisplayName("서로 다른 규칙이 같은 대상을 지목하면")
 	class WhenRulesOverlap {
 
-		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
+		private final InvalidationRules rules = new InvalidationRules(List.of(
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
 		), recorder);
@@ -59,7 +59,7 @@ class CacheInvalidationRulesTest {
 	@DisplayName("반응하는 규칙이 없으면")
 	class WhenNoRuleMatches {
 
-		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
+		private final InvalidationRules rules = new InvalidationRules(List.of(
 			 ruleOf(false, CacheEntryRef.of(TestCachePolicy.USER, 1L))
 		), recorder);
 
@@ -74,7 +74,7 @@ class CacheInvalidationRulesTest {
 	@DisplayName("규칙 하나가 예외를 던지면")
 	class WhenRuleThrows {
 
-		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
+		private final InvalidationRules rules = new InvalidationRules(List.of(
 			 failingRule(),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
 		), recorder);
@@ -88,8 +88,8 @@ class CacheInvalidationRulesTest {
 		}
 	}
 
-	private static CacheInvalidationRule ruleOf(boolean supported, CacheEntryRef entry) {
-		return new CacheInvalidationRule() {
+	private static InvalidationRule ruleOf(boolean supported, CacheEntryRef entry) {
+		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
 				return supported;
@@ -102,8 +102,8 @@ class CacheInvalidationRulesTest {
 		};
 	}
 
-	private static CacheInvalidationRule failingRule() {
-		return new CacheInvalidationRule() {
+	private static InvalidationRule failingRule() {
+		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
 				return true;

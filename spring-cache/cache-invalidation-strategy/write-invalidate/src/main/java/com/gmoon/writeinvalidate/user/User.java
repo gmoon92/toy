@@ -2,8 +2,8 @@ package com.gmoon.writeinvalidate.user;
 
 import java.util.List;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.cache.CacheEvictable;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

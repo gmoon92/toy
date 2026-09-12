@@ -22,15 +22,16 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicyRegistry;
+import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredCacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
 import com.gmoon.cacheinvalidation.core.cache.serialization.JsonCacheSerialization;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictableRule;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidationRule;
+import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 
 @DisplayName("캐시 설정 확장점")
@@ -100,7 +101,7 @@ class AbstractCacheConfigTest {
 		@DisplayName("재정의한 TTL 이 캐시 설정에 반영된다")
 		void reachesCacheConfiguration() {
 			contextRunner.withUserConfiguration(OverriddenExpirationConfig.class)
-				 .run(context -> assertThat(ttlOf(context.getBean(RedisCacheConfigurations.class),
+				 .run(context -> assertThat(ttlOf(context.getBean(RedisCacheConfig.class),
 					  context.getBean(CachePolicyRegistry.class)))
 					  .as("정책이 선언한 TTL 대신 재정의한 만료 전략이 이겨야 한다")
 					  .isEqualTo(FIXED_TTL));
@@ -116,22 +117,22 @@ class AbstractCacheConfigTest {
 	}
 
 	private String serializedValueOf(org.springframework.context.ApplicationContext context) {
-		ByteBuffer written = configurationOf(context.getBean(RedisCacheConfigurations.class),
+		ByteBuffer written = configurationOf(context.getBean(RedisCacheConfig.class),
 			 context.getBean(CachePolicyRegistry.class))
 			 .getValueSerializationPair()
 			 .write("hello");
 		return StandardCharsets.UTF_8.decode(written).toString();
 	}
 
-	private Duration ttlOf(RedisCacheConfigurations configurations, CachePolicyRegistry registry) {
-		return configurationOf(configurations, registry).getTtlFunction().getTimeToLive("key", "value");
+	private Duration ttlOf(RedisCacheConfig config, CachePolicyRegistry registry) {
+		return configurationOf(config, registry).getTtlFunction().getTimeToLive("key", "value");
 	}
 
 	private RedisCacheConfiguration configurationOf(
-		 RedisCacheConfigurations configurations,
+		 RedisCacheConfig config,
 		 CachePolicyRegistry registry
 	) {
-		return configurations.byCacheName(registry).get(TestCachePolicy.Name.USER);
+		return config.byCacheName(registry).get(TestCachePolicy.Name.USER);
 	}
 
 	@Configuration(proxyBeanMethods = false)
@@ -148,8 +149,8 @@ class AbstractCacheConfigTest {
 		}
 
 		@Override
-		protected List<CacheInvalidationRule> invalidationRules() {
-			return List.of(CacheEvictableRule.owning(TestCachePolicy.USER));
+		protected List<InvalidationRule> invalidationRules() {
+			return List.of(EvictableEntityRule.owning(TestCachePolicy.USER));
 		}
 	}
 

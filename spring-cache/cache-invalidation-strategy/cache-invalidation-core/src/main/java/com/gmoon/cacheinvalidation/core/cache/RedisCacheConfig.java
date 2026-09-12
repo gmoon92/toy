@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.config;
+package com.gmoon.cacheinvalidation.core.cache;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -10,14 +10,14 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicyRegistry;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RedisCacheConfigurations {
+public class RedisCacheConfig {
 
 	private static final Duration FALLBACK_TTL = Duration.ofMinutes(5);
 

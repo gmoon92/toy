@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.cache.eviction;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

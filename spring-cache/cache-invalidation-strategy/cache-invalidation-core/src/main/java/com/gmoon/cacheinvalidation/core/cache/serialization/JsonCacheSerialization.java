@@ -3,7 +3,7 @@ package com.gmoon.cacheinvalidation.core.cache.serialization;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import org.springframework.data.redis.serializer.SerializationException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;

@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.cache.policy;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

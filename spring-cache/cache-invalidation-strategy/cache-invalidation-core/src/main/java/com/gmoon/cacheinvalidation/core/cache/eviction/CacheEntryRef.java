@@ -1,8 +1,9 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.cache.eviction;
 
 import java.time.Duration;
 
 import org.springframework.util.Assert;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 
 public record CacheEntryRef(CachePolicy policy, String key) {
 

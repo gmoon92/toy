@@ -5,19 +5,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
-import com.gmoon.cacheinvalidation.core.cache.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
+import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
+import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
 
 public class InvalidationRecorder {
 
 	private final Map<EvictionKey, LongAdder> evictions = new ConcurrentHashMap<>();
 	private final Map<String, LongAdder> ruleFailures = new ConcurrentHashMap<>();
-	private final Map<InvalidationSource, LongAdder> pipelineFailures = new ConcurrentHashMap<>();
+	private final Map<ChangeSource, LongAdder> pipelineFailures = new ConcurrentHashMap<>();
 
-	public record EvictionKey(String cacheName, InvalidationSource source, EvictionOutcome outcome) {
+	public record EvictionKey(String cacheName, ChangeSource source, EvictionOutcome outcome) {
 	}
 
-	public void recordEviction(String cacheName, InvalidationSource source, EvictionOutcome outcome) {
+	public void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome) {
 		counterOf(evictions, new EvictionKey(cacheName, source, outcome)).increment();
 	}
 
@@ -25,11 +25,11 @@ public class InvalidationRecorder {
 		counterOf(ruleFailures, ruleName).increment();
 	}
 
-	public void recordPipelineFailure(InvalidationSource source) {
+	public void recordPipelineFailure(ChangeSource source) {
 		counterOf(pipelineFailures, source).increment();
 	}
 
-	public long evictionCount(String cacheName, InvalidationSource source, EvictionOutcome outcome) {
+	public long evictionCount(String cacheName, ChangeSource source, EvictionOutcome outcome) {
 		return counterOf(evictions, new EvictionKey(cacheName, source, outcome)).sum();
 	}
 
@@ -37,7 +37,7 @@ public class InvalidationRecorder {
 		return counterOf(ruleFailures, ruleName).sum();
 	}
 
-	public long pipelineFailureCount(InvalidationSource source) {
+	public long pipelineFailureCount(ChangeSource source) {
 		return counterOf(pipelineFailures, source).sum();
 	}
 
@@ -49,7 +49,7 @@ public class InvalidationRecorder {
 		return snapshotOf(ruleFailures);
 	}
 
-	public Map<InvalidationSource, Long> pipelineFailureSnapshot() {
+	public Map<ChangeSource, Long> pipelineFailureSnapshot() {
 		return snapshotOf(pipelineFailures);
 	}
 

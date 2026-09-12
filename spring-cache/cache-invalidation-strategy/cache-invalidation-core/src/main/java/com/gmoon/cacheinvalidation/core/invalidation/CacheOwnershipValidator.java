@@ -5,17 +5,17 @@ import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
 
-import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicyRegistry;
-import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
+import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationMode;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CacheInvalidationOwnershipValidator implements InitializingBean {
+public class CacheOwnershipValidator implements InitializingBean {
 
 	private final CachePolicyRegistry registry;
-	private final CacheInvalidationRules rules;
+	private final InvalidationRules rules;
 
 	@Override
 	public void afterPropertiesSet() {
@@ -34,7 +34,7 @@ public class CacheInvalidationOwnershipValidator implements InitializingBean {
 
 		if (!withoutOwner.isEmpty()) {
 			throw new IllegalStateException(
-				 "No CacheInvalidationRule owns these caches: " + withoutOwner
+				 "No InvalidationRule owns these caches: " + withoutOwner
 					  + ". Declare an owning rule, or set invalidationMode() to TTL_ONLY.");
 		}
 	}

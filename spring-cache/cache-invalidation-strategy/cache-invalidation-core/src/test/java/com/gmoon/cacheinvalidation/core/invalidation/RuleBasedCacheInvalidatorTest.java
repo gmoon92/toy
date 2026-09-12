@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.cache.CacheEvictable;
-import com.gmoon.cacheinvalidation.core.cache.CacheEvictor;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictable;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
@@ -23,10 +23,10 @@ import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
 @DisplayName("엔티티 변경 무효화 실행")
-class EntityChangeInvalidatorTest {
+class RuleBasedCacheInvalidatorTest {
 
 	private static final String CACHED_VALUE = "cached";
-	private static final InvalidationSource SOURCE = InvalidationSource.HIBERNATE_POST_COMMIT;
+	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
 
 	private CacheManager cacheManager;
 	private CacheFailureRecorder failureRecorder;
@@ -48,9 +48,9 @@ class EntityChangeInvalidatorTest {
 		void evictsEveryDeclaredEntry() {
 			putCached(TestCachePolicy.Name.USER, "1");
 			putCached(TestCachePolicy.Name.USER_SUMMARY, "1");
-			EntityChangeInvalidator invalidator = invalidatorOf(CacheEvictableRule.owning(TestCachePolicy.USER, TestCachePolicy.USER_SUMMARY));
+			RuleBasedCacheInvalidator invalidator = invalidatorOf(EvictableEntityRule.owning(TestCachePolicy.USER, TestCachePolicy.USER_SUMMARY));
 
-			invalidator.accept(EntityChange.updated(new CacheableUser(1L), 1L, null, null), SOURCE);
+			invalidator.invalidate(EntityChange.updated(new CacheableUser(1L), 1L, null, null), SOURCE);
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1")).isNull();
 			assertThat(cachedValue(TestCachePolicy.Name.USER_SUMMARY, "1")).isNull();
@@ -66,9 +66,9 @@ class EntityChangeInvalidatorTest {
 		void evictsPreviousKeyAsWell() {
 			putCached(TestCachePolicy.Name.USER, "before");
 			putCached(TestCachePolicy.Name.USER, "after");
-			EntityChangeInvalidator invalidator = invalidatorOf(previousUsernameRule(), currentUsernameRule());
+			RuleBasedCacheInvalidator invalidator = invalidatorOf(previousUsernameRule(), currentUsernameRule());
 
-			invalidator.accept(EntityChange.updated(
+			invalidator.invalidate(EntityChange.updated(
 				 new NaturalKeyUser("after"), 1L, new Object[] {"before"}, new String[] {"username"}), SOURCE);
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "before"))
@@ -85,22 +85,22 @@ class EntityChangeInvalidatorTest {
 		@Test
 		@DisplayName("예외를 전파하지 않고 실패를 기록한다")
 		void recordsFailureWithoutPropagating() {
-			EntityChangeInvalidator invalidator = new EntityChangeInvalidator(
-				 new CacheInvalidationRules(List.of(CacheEvictableRule.owning(TestCachePolicy.USER)),
+			RuleBasedCacheInvalidator invalidator = new RuleBasedCacheInvalidator(
+				 new InvalidationRules(List.of(EvictableEntityRule.owning(TestCachePolicy.USER)),
 					  invalidationRecorder),
 				 new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder),
 				 invalidationRecorder);
 
 			assertThatNoException()
 				 .as("무효화 실패가 전파되면 커밋된 트랜잭션 이후 흐름이 깨진다")
-				 .isThrownBy(() -> invalidator.accept(EntityChange.deleted(new CacheableUser(1L), 1L), SOURCE));
+				 .isThrownBy(() -> invalidator.invalidate(EntityChange.deleted(new CacheableUser(1L), 1L), SOURCE));
 			assertThat(failureRecorder.failureCount(CacheOperation.EVICT)).isEqualTo(2);
 		}
 	}
 
-	private EntityChangeInvalidator invalidatorOf(CacheInvalidationRule... rules) {
-		return new EntityChangeInvalidator(
-			 new CacheInvalidationRules(List.of(rules), invalidationRecorder),
+	private RuleBasedCacheInvalidator invalidatorOf(InvalidationRule... rules) {
+		return new RuleBasedCacheInvalidator(
+			 new InvalidationRules(List.of(rules), invalidationRecorder),
 			 new CacheEvictor(cacheManager, failureRecorder),
 			 invalidationRecorder);
 	}
@@ -113,19 +113,19 @@ class EntityChangeInvalidatorTest {
 		return cacheManager.getCache(cacheName).get(key, String.class);
 	}
 
-	private CacheInvalidationRule previousUsernameRule() {
+	private InvalidationRule previousUsernameRule() {
 		return rule(change -> change.previousValueOf("username")
 			 .map(username -> List.of(CacheEntryRef.of(TestCachePolicy.USER, username)))
 			 .orElse(List.of()));
 	}
 
-	private CacheInvalidationRule currentUsernameRule() {
+	private InvalidationRule currentUsernameRule() {
 		return rule(change -> List.of(
 			 CacheEntryRef.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
 	}
 
-	private CacheInvalidationRule rule(Function<EntityChange, List<CacheEntryRef>> resolver) {
-		return new CacheInvalidationRule() {
+	private InvalidationRule rule(Function<EntityChange, List<CacheEntryRef>> resolver) {
+		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
 				return true;

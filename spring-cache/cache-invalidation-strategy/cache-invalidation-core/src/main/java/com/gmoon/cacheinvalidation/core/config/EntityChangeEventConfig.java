@@ -3,9 +3,9 @@ package com.gmoon.cacheinvalidation.core.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.cacheinvalidation.core.invalidation.CommitSignalSink;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.signal.SpringCommitSignalListener;
+import com.gmoon.cacheinvalidation.core.listener.EntityChangeEventListener;
 
 /**
  * 애플리케이션이 발행한 변경 이벤트를 무효화 신호로 삼는다.
@@ -14,13 +14,13 @@ import com.gmoon.cacheinvalidation.core.signal.SpringCommitSignalListener;
  * 이벤트를 발행하는 코드가 누락되면 무효화도 함께 누락된다.
  */
 @Configuration
-public class SpringCommitSignalConfig {
+public class EntityChangeEventConfig {
 
 	@Bean
-	public SpringCommitSignalListener springCommitSignalListener(
-		 CommitSignalSink sink,
+	public EntityChangeEventListener entityChangeEventListener(
+		 CacheInvalidator sink,
 		 InvalidationRecorder recorder
 	) {
-		return new SpringCommitSignalListener(sink, recorder);
+		return new EntityChangeEventListener(sink, recorder);
 	}
 }

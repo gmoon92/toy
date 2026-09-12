@@ -6,20 +6,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.cache.CacheEvictable;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictable;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 
-public class CacheEvictableRule implements CacheInvalidationRule {
+public class EvictableEntityRule implements InvalidationRule {
 
 	private final Set<String> ownedCacheNames;
 
-	private CacheEvictableRule(Set<String> ownedCacheNames) {
+	private EvictableEntityRule(Set<String> ownedCacheNames) {
 		this.ownedCacheNames = ownedCacheNames;
 	}
 
-	public static CacheEvictableRule owning(CachePolicy... policies) {
-		return new CacheEvictableRule(Arrays.stream(policies)
+	public static EvictableEntityRule owning(CachePolicy... policies) {
+		return new EvictableEntityRule(Arrays.stream(policies)
 			 .map(CachePolicy::cacheName)
 			 .collect(Collectors.toUnmodifiableSet()));
 	}

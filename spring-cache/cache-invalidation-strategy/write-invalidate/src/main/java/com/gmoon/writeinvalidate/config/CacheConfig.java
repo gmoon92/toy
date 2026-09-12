@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
 import com.gmoon.cacheinvalidation.core.config.AbstractCacheConfig;
-import com.gmoon.cacheinvalidation.core.config.HibernateCommitSignalConfig;
-import com.gmoon.cacheinvalidation.core.config.SpringCommitSignalConfig;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictableRule;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidationRule;
+import com.gmoon.cacheinvalidation.core.config.JpaEntityChangeConfig;
+import com.gmoon.cacheinvalidation.core.config.EntityChangeEventConfig;
+import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.writeinvalidate.article.ArticleCachePolicy;
 import com.gmoon.writeinvalidate.user.UserCachePolicy;
 
@@ -19,7 +19,7 @@ import com.gmoon.writeinvalidate.user.UserCachePolicy;
  * {@code ARTICLE} 은 규칙이 없으므로 {@code @CacheEvict} 와 TTL 로만 만료된다.
  */
 @Configuration
-@Import({HibernateCommitSignalConfig.class, SpringCommitSignalConfig.class})
+@Import({JpaEntityChangeConfig.class, EntityChangeEventConfig.class})
 public class CacheConfig extends AbstractCacheConfig {
 
 	@Override
@@ -28,7 +28,7 @@ public class CacheConfig extends AbstractCacheConfig {
 	}
 
 	@Override
-	protected List<CacheInvalidationRule> invalidationRules() {
-		return List.of(CacheEvictableRule.owning(UserCachePolicy.USER));
+	protected List<InvalidationRule> invalidationRules() {
+		return List.of(EvictableEntityRule.owning(UserCachePolicy.USER));
 	}
 }

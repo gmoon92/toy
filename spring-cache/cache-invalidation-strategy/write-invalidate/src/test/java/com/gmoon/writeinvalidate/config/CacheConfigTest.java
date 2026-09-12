@@ -10,8 +10,8 @@ import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
-import com.gmoon.cacheinvalidation.core.signal.HibernateCommitSignalListener;
-import com.gmoon.cacheinvalidation.core.signal.SpringCommitSignalListener;
+import com.gmoon.cacheinvalidation.core.listener.JpaEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.listener.EntityChangeEventListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
@@ -27,8 +27,8 @@ class CacheConfigTest {
 		@Test
 		@DisplayName("모두 등록된다")
 		void areAllRegistered() {
-			assertThat(context.getBeanNamesForType(HibernateCommitSignalListener.class)).hasSize(1);
-			assertThat(context.getBeanNamesForType(SpringCommitSignalListener.class)).hasSize(1);
+			assertThat(context.getBeanNamesForType(JpaEntityChangeListener.class)).hasSize(1);
+			assertThat(context.getBeanNamesForType(EntityChangeEventListener.class)).hasSize(1);
 		}
 	}
 

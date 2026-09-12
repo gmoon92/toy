@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class CacheInvalidationRules {
+public class InvalidationRules {
 
-	private final List<CacheInvalidationRule> rules;
+	private final List<InvalidationRule> rules;
 	private final InvalidationRecorder recorder;
 
 	public Set<CacheEntryRef> resolve(EntityChange change) {
@@ -28,12 +28,12 @@ public class CacheInvalidationRules {
 
 	public Set<String> ownedCacheNames() {
 		return rules.stream()
-			 .map(CacheInvalidationRule::ownedCacheNames)
+			 .map(InvalidationRule::ownedCacheNames)
 			 .flatMap(Collection::stream)
 			 .collect(Collectors.toUnmodifiableSet());
 	}
 
-	private Collection<CacheEntryRef> resolveInIsolation(CacheInvalidationRule rule, EntityChange change) {
+	private Collection<CacheEntryRef> resolveInIsolation(InvalidationRule rule, EntityChange change) {
 		try {
 			return rule.supports(change) ? rule.resolve(change) : List.of();
 		} catch (RuntimeException e) {

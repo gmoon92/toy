@@ -14,28 +14,29 @@ import org.springframework.data.redis.cache.BatchStrategies;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-import com.gmoon.cacheinvalidation.core.cache.CacheEvictor;
+import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
-import com.gmoon.cacheinvalidation.core.cache.CachePolicyRegistry;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicies;
+import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
 import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredCacheExpiration;
 import com.gmoon.cacheinvalidation.core.cache.serialization.JsonCacheSerialization;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidationOwnershipValidator;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidationRule;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidationRules;
-import com.gmoon.cacheinvalidation.core.invalidation.CommitSignalSink;
-import com.gmoon.cacheinvalidation.core.invalidation.EntityChangeInvalidator;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheOwnershipValidator;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRules;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.core.invalidation.RuleBasedCacheInvalidator;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.resilience.FallbackCacheErrorHandler;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.cache.RedisCacheConfig;
 
 /**
  * 캐시 전략 모듈이 상속하는 설정의 기반이다.
  * <p>
  * 이 클래스는 <strong>무효화 파이프라인만</strong> 배선한다.
  * 변경을 무엇으로 감지할지는 정하지 않으므로, 무효화가 필요한 모듈은
- * {@link HibernateCommitSignalConfig} 또는 {@link SpringCommitSignalConfig} 를 함께 선언한다.
+ * {@link JpaEntityChangeConfig} 또는 {@link EntityChangeEventConfig} 를 함께 선언한다.
  * TTL 로만 만료시키는 모듈은 아무것도 선언하지 않는다.
  *
  * <p>재정의 가능한 확장점
@@ -52,7 +53,7 @@ public abstract class AbstractCacheConfig implements CachingConfigurer {
 
 	protected abstract CachePolicies cachePolicies();
 
-	protected List<CacheInvalidationRule> invalidationRules() {
+	protected List<InvalidationRule> invalidationRules() {
 		return List.of();
 	}
 
@@ -73,25 +74,25 @@ public abstract class AbstractCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public CacheInvalidationRules cacheInvalidationRules(InvalidationRecorder recorder) {
-		return new CacheInvalidationRules(invalidationRules(), recorder);
+	public InvalidationRules invalidationRules(InvalidationRecorder recorder) {
+		return new InvalidationRules(invalidationRules(), recorder);
 	}
 
 	@Bean
-	public CacheInvalidationOwnershipValidator cacheInvalidationOwnershipValidator(
+	public CacheOwnershipValidator cacheOwnershipValidator(
 		 CachePolicyRegistry registry,
-		 CacheInvalidationRules rules
+		 InvalidationRules rules
 	) {
-		return new CacheInvalidationOwnershipValidator(registry, rules);
+		return new CacheOwnershipValidator(registry, rules);
 	}
 
 	@Bean
-	public CommitSignalSink commitSignalSink(
-		 CacheInvalidationRules rules,
+	public CacheInvalidator cacheInvalidator(
+		 InvalidationRules rules,
 		 CacheEvictor cacheEvictor,
 		 InvalidationRecorder recorder
 	) {
-		return new EntityChangeInvalidator(rules, cacheEvictor, recorder);
+		return new RuleBasedCacheInvalidator(rules, cacheEvictor, recorder);
 	}
 
 	@Bean
@@ -125,18 +126,18 @@ public abstract class AbstractCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public RedisCacheConfigurations redisCacheConfigurations(
+	public RedisCacheConfig redisCacheConfigurations(
 		 CacheSerialization serialization,
 		 CacheExpiration expiration,
 		 CacheProperties cacheProperties
 	) {
-		return new RedisCacheConfigurations(serialization, expiration, cacheProperties.getRedis());
+		return new RedisCacheConfig(serialization, expiration, cacheProperties.getRedis());
 	}
 
 	@Bean
 	public RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
 		 CachePolicyRegistry registry,
-		 RedisCacheConfigurations configurations
+		 RedisCacheConfig configurations
 	) {
 		return builder -> builder
 			 .disableCreateOnMissingCache()

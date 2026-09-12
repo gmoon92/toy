@@ -1,10 +1,10 @@
-package com.gmoon.cacheinvalidation.core.signal;
+package com.gmoon.cacheinvalidation.core.listener;
 
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.gmoon.cacheinvalidation.core.invalidation.CommitSignalSink;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
@@ -12,17 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SpringCommitSignalListener {
+public class EntityChangeEventListener {
 
-	private static final InvalidationSource SOURCE = InvalidationSource.SPRING_AFTER_COMMIT;
+	private static final ChangeSource SOURCE = ChangeSource.APPLICATION_EVENT;
 
-	private final CommitSignalSink sink;
+	private final CacheInvalidator sink;
 	private final InvalidationRecorder recorder;
 
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
-	public void onEntityChanged(EntityChangedEvent event) {
+	public void onEntityChanged(EntityChangeEvent event) {
 		try {
-			sink.accept(event.change(), SOURCE);
+			sink.invalidate(event.change(), SOURCE);
 		} catch (RuntimeException e) {
 			recorder.recordPipelineFailure(SOURCE);
 			log.warn("cache invalidation failed after commit. the transaction stays committed", e);
