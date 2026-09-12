@@ -16,18 +16,19 @@ public class CacheEvictor {
 	private final CacheManager cacheManager;
 	private final CacheFailureRecorder failureRecorder;
 
-	public void evict(CacheEntryRef entry) {
-		Cache cache = cacheManager.getCache(entry.cacheName());
-		if (cache == null) {
-			log.warn("cache not found. name: {}", entry.cacheName());
-			return;
-		}
-
+	public EvictionOutcome evict(CacheEntryRef entry) {
 		try {
-			cache.evictIfPresent(entry.key());
+			Cache cache = cacheManager.getCache(entry.cacheName());
+			if (cache == null) {
+				log.warn("cache not registered. name: {}", entry.cacheName());
+				return EvictionOutcome.CACHE_NOT_REGISTERED;
+			}
+			cache.evict(entry.key());
+			return EvictionOutcome.EVICT_REQUESTED;
 		} catch (RuntimeException e) {
 			failureRecorder.record(CacheOperation.EVICT);
 			log.warn("cache eviction failed. entry: {}", entry, e);
+			return EvictionOutcome.FAILED;
 		}
 	}
 }

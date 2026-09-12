@@ -7,29 +7,37 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
+import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class CacheInvalidationRules {
 
 	private final List<CacheInvalidationRule> rules;
-
-	public CacheInvalidationRules(List<CacheInvalidationRule> rules) {
-		this.rules = List.copyOf(rules);
-	}
+	private final InvalidationRecorder recorder;
 
 	public Set<CacheEntryRef> resolve(EntityChange change) {
 		return rules.stream()
-			 .map(rule -> resolveQuietly(rule, change))
+			 .map(rule -> resolveInIsolation(rule, change))
 			 .flatMap(Collection::stream)
 			 .collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
-	private Collection<CacheEntryRef> resolveQuietly(CacheInvalidationRule rule, EntityChange change) {
+	public Set<String> ownedCacheNames() {
+		return rules.stream()
+			 .map(CacheInvalidationRule::ownedCacheNames)
+			 .flatMap(Collection::stream)
+			 .collect(Collectors.toUnmodifiableSet());
+	}
+
+	private Collection<CacheEntryRef> resolveInIsolation(CacheInvalidationRule rule, EntityChange change) {
 		try {
 			return rule.supports(change) ? rule.resolve(change) : List.of();
 		} catch (RuntimeException e) {
+			recorder.recordRuleFailure(rule.getClass().getSimpleName());
 			log.warn("cache invalidation rule failed. rule: {}", rule.getClass().getSimpleName(), e);
 			return List.of();
 		}

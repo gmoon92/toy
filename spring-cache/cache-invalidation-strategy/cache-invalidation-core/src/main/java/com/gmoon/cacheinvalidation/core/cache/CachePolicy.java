@@ -9,4 +9,8 @@ public interface CachePolicy {
 	Duration ttl();
 
 	Class<?> valueType();
+
+	default InvalidationMode invalidationMode() {
+		return InvalidationMode.RULE;
+	}
 }

@@ -1,13 +1,12 @@
-package com.gmoon.ttlonly.user;
+package com.gmoon.writeinvalidate.user;
 
 import java.time.Duration;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
 
 public enum UserCachePolicy implements CachePolicy {
 
-	USER(Name.USER, Duration.ofSeconds(3), CachedUser.class);
+	USER(Name.USER, Duration.ofMinutes(10), CachedUser.class);
 
 	private final String cacheName;
 	private final Duration ttl;
@@ -32,11 +31,6 @@ public enum UserCachePolicy implements CachePolicy {
 	@Override
 	public Class<?> valueType() {
 		return valueType;
-	}
-
-	@Override
-	public InvalidationMode invalidationMode() {
-		return InvalidationMode.TTL_ONLY;
 	}
 
 	public static final class Name {

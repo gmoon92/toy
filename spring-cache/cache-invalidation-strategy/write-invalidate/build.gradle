@@ -1,0 +1,14 @@
+group = "com.gmoon.spring-cache.cache-invalidation-strategy.write-invalidate"
+description = "write-invalidate"
+
+dependencies {
+    implementation project(":spring-cache:cache-invalidation-strategy:cache-invalidation-core")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    testImplementation project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test")
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+}

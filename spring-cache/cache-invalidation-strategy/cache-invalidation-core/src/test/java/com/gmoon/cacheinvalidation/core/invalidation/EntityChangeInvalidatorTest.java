@@ -17,19 +17,23 @@ import com.gmoon.cacheinvalidation.core.cache.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
+import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
 @DisplayName("엔티티 변경 무효화 실행")
 class EntityChangeInvalidatorTest {
 
 	private static final String CACHED_VALUE = "cached";
+	private static final InvalidationSource SOURCE = InvalidationSource.HIBERNATE_POST_COMMIT;
 
 	private CacheManager cacheManager;
 	private CacheFailureRecorder failureRecorder;
+	private InvalidationRecorder invalidationRecorder;
 
 	@BeforeEach
 	void setUp() {
 		cacheManager = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER, TestCachePolicy.Name.USER_SUMMARY);
 		failureRecorder = new CacheFailureRecorder();
+		invalidationRecorder = new InvalidationRecorder();
 	}
 
 	@Nested
@@ -41,9 +45,9 @@ class EntityChangeInvalidatorTest {
 		void evictsEveryDeclaredEntry() {
 			putCached(TestCachePolicy.Name.USER, "1");
 			putCached(TestCachePolicy.Name.USER_SUMMARY, "1");
-			EntityChangeInvalidator invalidator = invalidatorOf(new CacheEvictableRule());
+			EntityChangeInvalidator invalidator = invalidatorOf(CacheEvictableRule.owning(TestCachePolicy.USER, TestCachePolicy.USER_SUMMARY));
 
-			invalidator.invalidate(EntityChange.updated(new CacheableUser(1L), 1L, null, null));
+			invalidator.accept(EntityChange.updated(new CacheableUser(1L), 1L, null, null), SOURCE);
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1")).isNull();
 			assertThat(cachedValue(TestCachePolicy.Name.USER_SUMMARY, "1")).isNull();
@@ -61,8 +65,8 @@ class EntityChangeInvalidatorTest {
 			putCached(TestCachePolicy.Name.USER, "after");
 			EntityChangeInvalidator invalidator = invalidatorOf(previousUsernameRule(), currentUsernameRule());
 
-			invalidator.invalidate(EntityChange.updated(
-				 new NaturalKeyUser("after"), 1L, new Object[] {"before"}, new String[] {"username"}));
+			invalidator.accept(EntityChange.updated(
+				 new NaturalKeyUser("after"), 1L, new Object[] {"before"}, new String[] {"username"}), SOURCE);
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "before"))
 				 .as("옛 키를 지우지 않으면 자연키 캐시가 영구히 stale로 남는다")
@@ -95,20 +99,23 @@ class EntityChangeInvalidatorTest {
 				}
 			};
 			EntityChangeInvalidator invalidator = new EntityChangeInvalidator(
-				 new CacheInvalidationRules(List.of(new CacheEvictableRule())),
-				 new CacheEvictor(failing, failureRecorder));
+				 new CacheInvalidationRules(List.of(CacheEvictableRule.owning(TestCachePolicy.USER)),
+					  invalidationRecorder),
+				 new CacheEvictor(failing, failureRecorder),
+				 invalidationRecorder);
 
 			assertThatNoException()
 				 .as("무효화 실패가 전파되면 커밋된 트랜잭션 이후 흐름이 깨진다")
-				 .isThrownBy(() -> invalidator.invalidate(EntityChange.deleted(new CacheableUser(1L), 1L)));
+				 .isThrownBy(() -> invalidator.accept(EntityChange.deleted(new CacheableUser(1L), 1L), SOURCE));
 			assertThat(failureRecorder.failureCount(CacheOperation.EVICT)).isEqualTo(2);
 		}
 	}
 
 	private EntityChangeInvalidator invalidatorOf(CacheInvalidationRule... rules) {
 		return new EntityChangeInvalidator(
-			 new CacheInvalidationRules(List.of(rules)),
-			 new CacheEvictor(cacheManager, failureRecorder));
+			 new CacheInvalidationRules(List.of(rules), invalidationRecorder),
+			 new CacheEvictor(cacheManager, failureRecorder),
+			 invalidationRecorder);
 	}
 
 	private void putCached(String cacheName, String key) {

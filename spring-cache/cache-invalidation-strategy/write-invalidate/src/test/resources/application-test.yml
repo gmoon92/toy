@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/cache_write_invalidate?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 111111
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 3000
+      timeout: 1000
+  cache:
+    redis:
+      key-prefix: "cache-write-invalidate-test:"
+      enable-statistics: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        generate_statistics: true
+
+cache-invalidation:
+  ttl-jitter-ratio: 0.01

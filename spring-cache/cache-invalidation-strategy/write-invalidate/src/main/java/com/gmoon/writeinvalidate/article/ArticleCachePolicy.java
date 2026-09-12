@@ -1,19 +1,18 @@
-package com.gmoon.ttlonly.user;
+package com.gmoon.writeinvalidate.article;
 
 import java.time.Duration;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
 
-public enum UserCachePolicy implements CachePolicy {
+public enum ArticleCachePolicy implements CachePolicy {
 
-	USER(Name.USER, Duration.ofSeconds(3), CachedUser.class);
+	ARTICLE(Name.ARTICLE, Duration.ofMinutes(10), CachedArticle.class);
 
 	private final String cacheName;
 	private final Duration ttl;
 	private final Class<?> valueType;
 
-	UserCachePolicy(String cacheName, Duration ttl, Class<?> valueType) {
+	ArticleCachePolicy(String cacheName, Duration ttl, Class<?> valueType) {
 		this.cacheName = cacheName;
 		this.ttl = ttl;
 		this.valueType = valueType;
@@ -34,13 +33,8 @@ public enum UserCachePolicy implements CachePolicy {
 		return valueType;
 	}
 
-	@Override
-	public InvalidationMode invalidationMode() {
-		return InvalidationMode.TTL_ONLY;
-	}
-
 	public static final class Name {
-		public static final String USER = "USER";
+		public static final String ARTICLE = "ARTICLE";
 
 		private Name() {
 		}

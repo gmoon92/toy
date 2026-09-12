@@ -11,11 +11,13 @@ import org.junit.jupiter.api.Test;
 
 import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
+import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
 @DisplayName("무효화 규칙 레지스트리")
 class CacheInvalidationRulesTest {
 
 	private final EntityChange change = EntityChange.inserted(new Object(), 1L);
+	private final InvalidationRecorder recorder = new InvalidationRecorder();
 
 	@Nested
 	@DisplayName("변경 하나에 여러 규칙이 반응하면")
@@ -24,7 +26,7 @@ class CacheInvalidationRulesTest {
 		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER_SUMMARY, 1L))
-		));
+		), recorder);
 
 		@Test
 		@DisplayName("모든 규칙의 대상을 합쳐 반환한다")
@@ -44,7 +46,7 @@ class CacheInvalidationRulesTest {
 		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
-		));
+		), recorder);
 
 		@Test
 		@DisplayName("중복을 제거해 한 번만 무효화한다")
@@ -59,7 +61,7 @@ class CacheInvalidationRulesTest {
 
 		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
 			 ruleOf(false, CacheEntryRef.of(TestCachePolicy.USER, 1L))
-		));
+		), recorder);
 
 		@Test
 		@DisplayName("무효화 대상이 비어 있다")
@@ -75,7 +77,7 @@ class CacheInvalidationRulesTest {
 		private final CacheInvalidationRules rules = new CacheInvalidationRules(List.of(
 			 failingRule(),
 			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
-		));
+		), recorder);
 
 		@Test
 		@DisplayName("나머지 규칙은 계속 수행된다")
