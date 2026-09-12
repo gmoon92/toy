@@ -11,15 +11,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class JsonCacheSerialization implements CacheSerialization {
+public class JsonSerializerFactory implements SerializerFactory {
 
 	private final ObjectMapper objectMapper;
 
-	public JsonCacheSerialization() {
+	public JsonSerializerFactory() {
 		this(defaultObjectMapper());
 	}
 
-	public JsonCacheSerialization(ObjectMapper objectMapper) {
+	public JsonSerializerFactory(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 

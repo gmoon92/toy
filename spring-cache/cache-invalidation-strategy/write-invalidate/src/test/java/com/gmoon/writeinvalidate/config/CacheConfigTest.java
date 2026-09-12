@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
+import com.gmoon.cacheinvalidation.core.cache.expiration.TtlResolver;
+import com.gmoon.cacheinvalidation.core.cache.serialization.SerializerFactory;
 import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListener;
 import com.gmoon.cacheinvalidation.core.invalidation.listener.PublishedEntityChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
@@ -39,10 +39,10 @@ class CacheConfigTest {
 		@Test
 		@DisplayName("코어의 기본 구현이 쓰인다")
 		void fallBackToCoreDefaults() {
-			assertThat(context.getBean(CacheSerialization.class))
+			assertThat(context.getBean(SerializerFactory.class))
 				 .as("모듈이 재정의하지 않아도 기본 전략으로 동작해야 한다")
 				 .isNotNull();
-			assertThat(context.getBean(CacheExpiration.class)).isNotNull();
+			assertThat(context.getBean(TtlResolver.class)).isNotNull();
 		}
 	}
 }

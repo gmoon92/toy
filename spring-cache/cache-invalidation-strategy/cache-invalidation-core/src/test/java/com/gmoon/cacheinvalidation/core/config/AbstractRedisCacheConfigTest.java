@@ -25,10 +25,10 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
-import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredCacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
-import com.gmoon.cacheinvalidation.core.cache.serialization.JsonCacheSerialization;
+import com.gmoon.cacheinvalidation.core.cache.expiration.TtlResolver;
+import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredTtlResolver;
+import com.gmoon.cacheinvalidation.core.cache.serialization.SerializerFactory;
+import com.gmoon.cacheinvalidation.core.cache.serialization.JsonSerializerFactory;
 import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
@@ -52,10 +52,10 @@ class AbstractRedisCacheConfigTest {
 		void usesCoreDefaults() {
 			contextRunner.withUserConfiguration(DefaultCacheConfig.class)
 				 .run(context -> {
-					 assertThat(context.getBean(CacheSerialization.class))
-						  .isInstanceOf(JsonCacheSerialization.class);
-					 assertThat(context.getBean(CacheExpiration.class))
-						  .isInstanceOf(JitteredCacheExpiration.class);
+					 assertThat(context.getBean(SerializerFactory.class))
+						  .isInstanceOf(JsonSerializerFactory.class);
+					 assertThat(context.getBean(TtlResolver.class))
+						  .isInstanceOf(JitteredTtlResolver.class);
 				 });
 		}
 	}
@@ -68,7 +68,7 @@ class AbstractRedisCacheConfigTest {
 		@DisplayName("재정의한 구현이 빈으로 등록된다")
 		void registersOverriddenBean() {
 			contextRunner.withUserConfiguration(OverriddenSerializationConfig.class)
-				 .run(context -> assertThat(context.getBean(CacheSerialization.class))
+				 .run(context -> assertThat(context.getBean(SerializerFactory.class))
 					  .as("상속으로 연 확장점이 실제로 기본 구현을 대체해야 한다")
 					  .isInstanceOf(FixedSerialization.class));
 		}
@@ -158,7 +158,7 @@ class AbstractRedisCacheConfigTest {
 
 		@Bean
 		@Override
-		public CacheSerialization cacheSerialization() {
+		public SerializerFactory serializerFactory() {
 			return new FixedSerialization();
 		}
 	}
@@ -168,12 +168,12 @@ class AbstractRedisCacheConfigTest {
 
 		@Bean
 		@Override
-		public CacheExpiration cacheExpiration(ServiceCacheProperties properties) {
+		public TtlResolver ttlResolver(ServiceCacheProperties properties) {
 			return baseTtl -> (key, value) -> FIXED_TTL;
 		}
 	}
 
-	static class FixedSerialization implements CacheSerialization {
+	static class FixedSerialization implements SerializerFactory {
 
 		@Override
 		public RedisSerializer<?> valueSerializerFor(CachePolicy policy) {

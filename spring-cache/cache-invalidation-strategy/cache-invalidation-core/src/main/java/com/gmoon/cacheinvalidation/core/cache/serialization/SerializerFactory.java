@@ -4,7 +4,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 
-public interface CacheSerialization {
+public interface SerializerFactory {
 
 	RedisSerializer<?> valueSerializerFor(CachePolicy policy);
 

@@ -131,8 +131,8 @@ public class CacheConfig extends AbstractRedisCacheConfig {
 |-------|------|--------------|
 | `cachePolicies()` | 없음 (필수) | 항상 |
 | `invalidationRules()` | 빈 목록 | 무효화 대상을 산출해야 할 때 |
-| `cacheSerialization()` | `JsonCacheSerialization` | 직렬화 형식을 바꿀 때 |
-| `cacheExpiration(..)` | `JitteredCacheExpiration` | 만료·지터 규칙을 바꿀 때 |
+| `serializerFactory()` | `JsonSerializerFactory` | 직렬화 형식을 바꿀 때 |
+| `ttlResolver(..)` | `JitteredTtlResolver` | 만료·지터 규칙을 바꿀 때 |
 
 변경 감지 방식만 상속이 아니라 `@Import` 다. 자바가 단일 상속이라
 JPA 와 이벤트를 **함께** 쓰는 이 모듈을 상속으로는 표현할 수 없기 때문이다.

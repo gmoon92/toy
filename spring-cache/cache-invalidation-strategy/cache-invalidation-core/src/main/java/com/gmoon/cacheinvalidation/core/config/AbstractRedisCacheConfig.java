@@ -16,12 +16,12 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
-import com.gmoon.cacheinvalidation.core.cache.expiration.CacheExpiration;
+import com.gmoon.cacheinvalidation.core.cache.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
-import com.gmoon.cacheinvalidation.core.cache.serialization.CacheSerialization;
-import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredCacheExpiration;
-import com.gmoon.cacheinvalidation.core.cache.serialization.JsonCacheSerialization;
+import com.gmoon.cacheinvalidation.core.cache.serialization.SerializerFactory;
+import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredTtlResolver;
+import com.gmoon.cacheinvalidation.core.cache.serialization.JsonSerializerFactory;
 import com.gmoon.cacheinvalidation.core.invalidation.CacheOwnershipValidator;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
@@ -49,8 +49,8 @@ import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorde
  * <ul>
  *     <li>{@link #cachePolicies()} — 필수. 이 모듈이 소유한 캐시 목록</li>
  *     <li>{@link #invalidationRules()} — 무효화 대상 산출 규칙</li>
- *     <li>{@link #cacheSerialization()} — 직렬화 전략</li>
- *     <li>{@link #cacheExpiration(ServiceCacheProperties)} — 만료 정책</li>
+ *     <li>{@link #serializerFactory()} — 직렬화 전략</li>
+ *     <li>{@link #ttlResolver(ServiceCacheProperties)} — 만료 정책</li>
  * </ul>
  */
 @EnableCaching
@@ -64,13 +64,13 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public CacheSerialization cacheSerialization() {
-		return new JsonCacheSerialization();
+	public SerializerFactory serializerFactory() {
+		return new JsonSerializerFactory();
 	}
 
 	@Bean
-	public CacheExpiration cacheExpiration(ServiceCacheProperties properties) {
-		return new JitteredCacheExpiration(properties.expiration().jitterRatio(),
+	public TtlResolver ttlResolver(ServiceCacheProperties properties) {
+		return new JitteredTtlResolver(properties.expiration().jitterRatio(),
 			 properties.expiration().notFoundTtl());
 	}
 
@@ -133,8 +133,8 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	public RedisCacheSettings redisCacheConfigurations(
-		 CacheSerialization serialization,
-		 CacheExpiration expiration,
+		 SerializerFactory serialization,
+		 TtlResolver expiration,
 		 CacheProperties cacheProperties
 	) {
 		return new RedisCacheSettings(serialization, expiration, cacheProperties.getRedis());
