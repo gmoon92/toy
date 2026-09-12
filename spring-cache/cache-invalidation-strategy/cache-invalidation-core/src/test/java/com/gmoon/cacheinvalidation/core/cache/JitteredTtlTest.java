@@ -3,6 +3,7 @@ package com.gmoon.cacheinvalidation.core.cache;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,7 +60,7 @@ class JitteredTtlTest {
 		void producesVaryingValues() {
 			JitteredTtl jitteredTtl = new JitteredTtl(JITTER_RATIO);
 
-			long distinct = java.util.stream.IntStream.range(0, 200)
+			long distinct = IntStream.range(0, 200)
 				 .mapToObj(attempt -> jitteredTtl.apply(BASE_TTL))
 				 .distinct()
 				 .count();

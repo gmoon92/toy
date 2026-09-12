@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 
 import com.gmoon.cacheinvalidation.core.metrics.DatabaseQueryCounter;
-import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
+import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
-@CacheIntegrationTest
+@IntegrationTest
 @DisplayName("TTL Only 전략")
 class TtlOnlyStrategyTest {
 

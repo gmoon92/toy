@@ -3,6 +3,7 @@ package com.gmoon.cacheinvalidation.core.resilience;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.stream.Collectors;
 
 import com.gmoon.cacheinvalidation.core.cache.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
@@ -65,6 +66,6 @@ public class InvalidationRecorder {
 	private <K> Map<K, Long> snapshotOf(Map<K, LongAdder> counters) {
 		return counters.entrySet()
 			 .stream()
-			 .collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().sum()));
+			 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().sum()));
 	}
 }

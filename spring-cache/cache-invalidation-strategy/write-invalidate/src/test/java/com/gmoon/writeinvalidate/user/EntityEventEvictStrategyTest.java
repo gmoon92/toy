@@ -19,10 +19,10 @@ import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
 import com.gmoon.cacheinvalidation.core.invalidation.PreviousState;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
+import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
-@CacheIntegrationTest
+@IntegrationTest
 @DisplayName("엔티티 이벤트 무효화 - CacheEvictable 을 구현한 엔티티")
 class EntityEventEvictStrategyTest {
 

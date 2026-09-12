@@ -12,7 +12,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.gmoon.cacheinvalidation.core.metrics.DatabaseQueryCounter;
-import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
+import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.writeinvalidate.article.ArticleCachePolicy;
 import com.gmoon.writeinvalidate.article.ArticleCommandService;
 import com.gmoon.writeinvalidate.article.ArticleQueryService;
@@ -22,7 +22,7 @@ import com.gmoon.writeinvalidate.user.UserCachePolicy;
 import com.gmoon.writeinvalidate.user.UserCommandService;
 import com.gmoon.writeinvalidate.user.UserQueryService;
 
-@CacheIntegrationTest
+@IntegrationTest
 @DisplayName("엔티티 이벤트 리스너의 대상 선별")
 class CacheEvictableSelectionTest {
 

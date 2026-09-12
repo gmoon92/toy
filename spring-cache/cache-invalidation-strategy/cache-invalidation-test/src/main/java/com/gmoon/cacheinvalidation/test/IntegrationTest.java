@@ -24,7 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @SpringBootTest
-@Import(CacheContainerConfig.class)
-@ActiveProfiles(resolver = CacheTestProfileResolver.class)
-public @interface CacheIntegrationTest {
+@Import(ContainerConfig.class)
+@ActiveProfiles(resolver = ProfileResolver.class)
+public @interface IntegrationTest {
 }

@@ -3,40 +3,21 @@ package com.gmoon.ttlonly.user;
 import java.time.Duration;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
+import com.gmoon.cacheinvalidation.core.cache.CacheSpec;
 
 public enum UserCachePolicy implements CachePolicy {
 
-	USER(Name.USER, Duration.ofSeconds(3), CachedUser.class);
+	USER(CacheSpec.of(Name.USER, Duration.ofSeconds(3), CachedUser.class).invalidatedByTtlOnly());
 
-	private final String cacheName;
-	private final Duration ttl;
-	private final Class<?> valueType;
+	private final CacheSpec spec;
 
-	UserCachePolicy(String cacheName, Duration ttl, Class<?> valueType) {
-		this.cacheName = cacheName;
-		this.ttl = ttl;
-		this.valueType = valueType;
+	UserCachePolicy(CacheSpec spec) {
+		this.spec = spec;
 	}
 
 	@Override
-	public String cacheName() {
-		return cacheName;
-	}
-
-	@Override
-	public Duration ttl() {
-		return ttl;
-	}
-
-	@Override
-	public Class<?> valueType() {
-		return valueType;
-	}
-
-	@Override
-	public InvalidationMode invalidationMode() {
-		return InvalidationMode.TTL_ONLY;
+	public CacheSpec spec() {
+		return spec;
 	}
 
 	public static final class Name {

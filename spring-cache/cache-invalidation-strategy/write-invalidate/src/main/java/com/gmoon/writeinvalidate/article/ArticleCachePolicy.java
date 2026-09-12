@@ -3,40 +3,21 @@ package com.gmoon.writeinvalidate.article;
 import java.time.Duration;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
+import com.gmoon.cacheinvalidation.core.cache.CacheSpec;
 
 public enum ArticleCachePolicy implements CachePolicy {
 
-	ARTICLE(Name.ARTICLE, Duration.ofMinutes(10), CachedArticle.class);
+	ARTICLE(CacheSpec.of(Name.ARTICLE, Duration.ofMinutes(10), CachedArticle.class).invalidatedByTtlOnly());
 
-	private final String cacheName;
-	private final Duration ttl;
-	private final Class<?> valueType;
+	private final CacheSpec spec;
 
-	ArticleCachePolicy(String cacheName, Duration ttl, Class<?> valueType) {
-		this.cacheName = cacheName;
-		this.ttl = ttl;
-		this.valueType = valueType;
+	ArticleCachePolicy(CacheSpec spec) {
+		this.spec = spec;
 	}
 
 	@Override
-	public String cacheName() {
-		return cacheName;
-	}
-
-	@Override
-	public Duration ttl() {
-		return ttl;
-	}
-
-	@Override
-	public Class<?> valueType() {
-		return valueType;
-	}
-
-	@Override
-	public InvalidationMode invalidationMode() {
-		return InvalidationMode.TTL_ONLY;
+	public CacheSpec spec() {
+		return spec;
 	}
 
 	public static final class Name {

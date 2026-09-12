@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
+import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
-@CacheIntegrationTest
+@IntegrationTest
 @DisplayName("@CacheEvict 무효화 - CacheEvictable 을 구현하지 않은 엔티티")
 class AnnotationEvictStrategyTest {
 

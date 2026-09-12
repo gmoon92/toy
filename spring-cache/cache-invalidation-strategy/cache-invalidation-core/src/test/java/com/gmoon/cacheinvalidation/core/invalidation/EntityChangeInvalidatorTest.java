@@ -2,7 +2,9 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +16,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.CacheEvictable;
 import com.gmoon.cacheinvalidation.core.cache.CacheEvictor;
+import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
@@ -82,26 +85,10 @@ class EntityChangeInvalidatorTest {
 		@Test
 		@DisplayName("예외를 전파하지 않고 실패를 기록한다")
 		void recordsFailureWithoutPropagating() {
-			CacheManager failing = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER) {
-				@Override
-				public org.springframework.cache.Cache getCache(String name) {
-					org.springframework.cache.Cache delegate = super.getCache(name);
-					return new org.springframework.cache.support.AbstractValueAdaptingCache(false) {
-						@Override public String getName() { return delegate.getName(); }
-						@Override public Object getNativeCache() { return delegate.getNativeCache(); }
-						@Override protected Object lookup(Object key) { return null; }
-						@Override public <T> T get(Object key, java.util.concurrent.Callable<T> valueLoader) { return null; }
-						@Override public void put(Object key, Object value) { }
-						@Override public void evict(Object key) { throw new IllegalStateException("redis down"); }
-						@Override public boolean evictIfPresent(Object key) { throw new IllegalStateException("redis down"); }
-						@Override public void clear() { }
-					};
-				}
-			};
 			EntityChangeInvalidator invalidator = new EntityChangeInvalidator(
 				 new CacheInvalidationRules(List.of(CacheEvictableRule.owning(TestCachePolicy.USER)),
 					  invalidationRecorder),
-				 new CacheEvictor(failing, failureRecorder),
+				 new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder),
 				 invalidationRecorder);
 
 			assertThatNoException()
@@ -137,7 +124,7 @@ class EntityChangeInvalidatorTest {
 			 CacheEntryRef.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
 	}
 
-	private CacheInvalidationRule rule(java.util.function.Function<EntityChange, List<CacheEntryRef>> resolver) {
+	private CacheInvalidationRule rule(Function<EntityChange, List<CacheEntryRef>> resolver) {
 		return new CacheInvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
@@ -145,7 +132,7 @@ class EntityChangeInvalidatorTest {
 			}
 
 			@Override
-			public java.util.Collection<CacheEntryRef> resolve(EntityChange change) {
+			public Collection<CacheEntryRef> resolve(EntityChange change) {
 				return resolver.apply(change);
 			}
 		};

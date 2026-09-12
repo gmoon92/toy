@@ -3,6 +3,7 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import com.gmoon.cacheinvalidation.core.cache.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.CachePolicyRegistry;
+import com.gmoon.cacheinvalidation.core.cache.CacheSpec;
 import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
 import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 
@@ -103,27 +105,9 @@ class CacheInvalidationOwnershipValidatorTest {
 	}
 
 	private CachePolicy policyOf(String cacheName, InvalidationMode mode) {
-		return new CachePolicy() {
-			@Override
-			public String cacheName() {
-				return cacheName;
-			}
-
-			@Override
-			public Duration ttl() {
-				return Duration.ofMinutes(1);
-			}
-
-			@Override
-			public Class<?> valueType() {
-				return String.class;
-			}
-
-			@Override
-			public InvalidationMode invalidationMode() {
-				return mode;
-			}
-		};
+		CacheSpec spec = CacheSpec.of(cacheName, Duration.ofMinutes(1), String.class);
+		CacheSpec applied = mode == InvalidationMode.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
+		return () -> applied;
 	}
 
 	private CacheInvalidationRule ruleOwning(String cacheName) {
@@ -134,7 +118,7 @@ class CacheInvalidationOwnershipValidatorTest {
 			}
 
 			@Override
-			public java.util.Collection<CacheEntryRef> resolve(EntityChange change) {
+			public Collection<CacheEntryRef> resolve(EntityChange change) {
 				return List.of();
 			}
 

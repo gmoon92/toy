@@ -10,10 +10,10 @@ import com.gmoon.ttlonly.user.UserCachePolicy;
 
 @Configuration
 @Import(CacheInvalidationConfig.class)
-public class TtlOnlyCacheConfig {
+public class CacheConfig {
 
 	@Bean
-	public CachePolicies ttlOnlyCachePolicies() {
-		return () -> java.util.List.of(UserCachePolicy.values());
+	public CachePolicies cachePolicies() {
+		return CachePolicies.of(UserCachePolicy.values());
 	}
 }

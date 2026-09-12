@@ -3,34 +3,21 @@ package com.gmoon.writeinvalidate.user;
 import java.time.Duration;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.CacheSpec;
 
 public enum UserCachePolicy implements CachePolicy {
 
-	USER(Name.USER, Duration.ofMinutes(10), CachedUser.class);
+	USER(CacheSpec.of(Name.USER, Duration.ofMinutes(10), CachedUser.class));
 
-	private final String cacheName;
-	private final Duration ttl;
-	private final Class<?> valueType;
+	private final CacheSpec spec;
 
-	UserCachePolicy(String cacheName, Duration ttl, Class<?> valueType) {
-		this.cacheName = cacheName;
-		this.ttl = ttl;
-		this.valueType = valueType;
+	UserCachePolicy(CacheSpec spec) {
+		this.spec = spec;
 	}
 
 	@Override
-	public String cacheName() {
-		return cacheName;
-	}
-
-	@Override
-	public Duration ttl() {
-		return ttl;
-	}
-
-	@Override
-	public Class<?> valueType() {
-		return valueType;
+	public CacheSpec spec() {
+		return spec;
 	}
 
 	public static final class Name {

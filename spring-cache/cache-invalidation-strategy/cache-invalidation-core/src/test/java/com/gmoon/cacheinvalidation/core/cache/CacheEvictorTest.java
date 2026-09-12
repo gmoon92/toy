@@ -6,10 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
+import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
 import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.resilience.CacheOperation;
@@ -77,7 +77,7 @@ class CacheEvictorTest {
 		@Test
 		@DisplayName("FAILED 를 반환하고 예외를 전파하지 않는다")
 		void returnsFailedWithoutPropagating() {
-			CacheEvictor evictor = new CacheEvictor(throwingCacheManager(), failureRecorder);
+			CacheEvictor evictor = new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder);
 
 			assertThat(evictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 1L)))
 				 .as("커밋 이후 실행되므로 예외를 던지면 이미 커밋된 트랜잭션의 호출자가 깨진다")
@@ -87,7 +87,7 @@ class CacheEvictorTest {
 		@Test
 		@DisplayName("캐시 조회 단계에서 터져도 실패로 기록한다")
 		void recordsFailureRaisedWhileResolvingCache() {
-			CacheEvictor evictor = new CacheEvictor(throwingCacheManager(), failureRecorder);
+			CacheEvictor evictor = new CacheEvictor(FailingCacheManager.of("redis down"), failureRecorder);
 
 			evictor.evict(CacheEntryRef.of(TestCachePolicy.USER, 1L));
 
@@ -97,17 +97,4 @@ class CacheEvictorTest {
 		}
 	}
 
-	private CacheManager throwingCacheManager() {
-		return new CacheManager() {
-			@Override
-			public Cache getCache(String name) {
-				throw new IllegalStateException("redis down");
-			}
-
-			@Override
-			public java.util.Collection<String> getCacheNames() {
-				return java.util.List.of();
-			}
-		};
-	}
 }

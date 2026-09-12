@@ -13,12 +13,12 @@ import org.springframework.dao.QueryTimeoutException;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
+import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.writeinvalidate.user.UserCachePolicy;
 import com.gmoon.writeinvalidate.user.UserCommandService;
 import com.gmoon.writeinvalidate.user.UserQueryService;
 
-@CacheIntegrationTest
+@IntegrationTest
 @DisplayName("무효화 실패가 트랜잭션에 미치는 영향")
 class CommitResilienceTest {
 

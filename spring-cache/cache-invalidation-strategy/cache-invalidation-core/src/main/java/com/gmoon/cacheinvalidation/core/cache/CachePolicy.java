@@ -4,13 +4,21 @@ import java.time.Duration;
 
 public interface CachePolicy {
 
-	String cacheName();
+	CacheSpec spec();
 
-	Duration ttl();
+	default String cacheName() {
+		return spec().cacheName();
+	}
 
-	Class<?> valueType();
+	default Duration ttl() {
+		return spec().ttl();
+	}
+
+	default Class<?> valueType() {
+		return spec().valueType();
+	}
 
 	default InvalidationMode invalidationMode() {
-		return InvalidationMode.RULE;
+		return spec().invalidationMode();
 	}
 }

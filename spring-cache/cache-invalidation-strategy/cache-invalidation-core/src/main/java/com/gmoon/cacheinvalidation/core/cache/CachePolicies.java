@@ -1,6 +1,7 @@
 package com.gmoon.cacheinvalidation.core.cache;
 
 import java.util.Collection;
+import java.util.List;
 
 @FunctionalInterface
 public interface CachePolicies {
@@ -8,6 +9,6 @@ public interface CachePolicies {
 	Collection<CachePolicy> all();
 
 	static CachePolicies of(CachePolicy... policies) {
-		return () -> java.util.List.of(policies);
+		return () -> List.of(policies);
 	}
 }
