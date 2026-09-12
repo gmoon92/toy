@@ -3,6 +3,7 @@ package com.gmoon.writeinvalidate.article;
 import java.time.Duration;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
+import com.gmoon.cacheinvalidation.core.cache.InvalidationMode;
 
 public enum ArticleCachePolicy implements CachePolicy {
 
@@ -31,6 +32,11 @@ public enum ArticleCachePolicy implements CachePolicy {
 	@Override
 	public Class<?> valueType() {
 		return valueType;
+	}
+
+	@Override
+	public InvalidationMode invalidationMode() {
+		return InvalidationMode.TTL_ONLY;
 	}
 
 	public static final class Name {

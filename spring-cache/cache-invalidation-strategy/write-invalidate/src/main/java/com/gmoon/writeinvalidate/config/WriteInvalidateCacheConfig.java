@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Import;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
 import com.gmoon.cacheinvalidation.core.config.CacheInvalidationConfig;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictableRule;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidationRule;
 import com.gmoon.writeinvalidate.article.ArticleCachePolicy;
 import com.gmoon.writeinvalidate.user.UserCachePolicy;
 
@@ -18,5 +20,10 @@ public class WriteInvalidateCacheConfig {
 	@Bean
 	public CachePolicies writeInvalidateCachePolicies() {
 		return () -> List.of(UserCachePolicy.USER, ArticleCachePolicy.ARTICLE);
+	}
+
+	@Bean
+	public CacheInvalidationRule userCacheInvalidationRule() {
+		return CacheEvictableRule.owning(UserCachePolicy.USER);
 	}
 }

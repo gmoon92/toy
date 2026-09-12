@@ -8,8 +8,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import jakarta.persistence.EntityManager;
+
+import com.gmoon.cacheinvalidation.core.cache.EvictionOutcome;
+import com.gmoon.cacheinvalidation.core.event.EntityChangedEvent;
+import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
+import com.gmoon.cacheinvalidation.core.invalidation.PreviousState;
+import com.gmoon.cacheinvalidation.core.resilience.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.test.CacheIntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
@@ -24,6 +33,9 @@ class EntityEventEvictStrategyTest {
 	@Autowired UserCommandService userCommandService;
 	@Autowired CacheManager cacheManager;
 	@Autowired TransactionTemplate transactionTemplate;
+	@Autowired EntityManager entityManager;
+	@Autowired ApplicationEventPublisher eventPublisher;
+	@Autowired InvalidationRecorder invalidationRecorder;
 
 	private Long userId;
 
@@ -31,6 +43,7 @@ class EntityEventEvictStrategyTest {
 	void setUp() {
 		cacheManager.getCache(UserCachePolicy.Name.USER).clear();
 		userId = userCommandService.register("alice-" + System.nanoTime(), ORIGINAL_EMAIL);
+		invalidationRecorder.reset();
 	}
 
 	@Nested
@@ -95,6 +108,73 @@ class EntityEventEvictStrategyTest {
 			assertThat(userQueryService.findById(userId).email())
 				 .as("무효화가 커밋 이후이므로 커밋 전에 적재된 값까지 함께 지워진다")
 				 .isEqualTo(CHANGED_EMAIL);
+		}
+	}
+
+	@Nested
+	@DisplayName("JPA 를 거치지 않은 변경을 애플리케이션 이벤트로 알리면")
+	class WhenChangeReportedByApplicationEvent {
+
+		@Test
+		@DisplayName("같은 무효화 파이프라인이 캐시를 지운다")
+		void invalidatesThroughSamePipeline() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status -> publishChangeOf(userId));
+
+			assertThat(cachedEmail())
+				 .as("Hibernate 를 거치지 않은 쓰기도 같은 규칙과 같은 evictor 를 통과해야 한다")
+				 .isNull();
+		}
+
+		@Test
+		@DisplayName("커밋 이전에는 캐시를 건드리지 않는다")
+		void keepsCacheUntilCommit() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status -> {
+				publishChangeOf(userId);
+
+				assertThat(cachedEmail())
+					 .as("AFTER_COMMIT 단계이므로 커밋 전에는 실행되지 않는다")
+					 .isEqualTo(ORIGINAL_EMAIL);
+			});
+		}
+
+		@Test
+		@DisplayName("무효화가 Spring 이벤트 소스로 기록된다")
+		void recordsSpringEventAsSource() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status -> publishChangeOf(userId));
+
+			assertThat(invalidationRecorder.evictionCount(
+				 UserCachePolicy.Name.USER, InvalidationSource.SPRING_AFTER_COMMIT, EvictionOutcome.EVICT_REQUESTED))
+				 .as("두 소스를 함께 쓰면 어느 쪽이 무효화했는지 구분되어야 운영에서 추적할 수 있다")
+				 .isEqualTo(1);
+		}
+
+		private void publishChangeOf(Long id) {
+			eventPublisher.publishEvent(new EntityChangedEvent(
+				 EntityChange.updated(entityManager.find(User.class, id), id, PreviousState.EMPTY)));
+		}
+	}
+
+	@Nested
+	@DisplayName("지연 로딩 프록시로 얻은 엔티티를 변경해도")
+	class WhenEntityLoadedAsLazyProxy {
+
+		@Test
+		@DisplayName("캐시가 무효화된다")
+		void evictsCacheOfProxiedEntity() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status ->
+				 entityManager.getReference(User.class, userId).changeEmail(CHANGED_EMAIL));
+
+			assertThat(cachedEmail())
+				 .as("리스너가 받는 엔티티가 프록시여도 CacheEvictable 판정과 키 산출이 성립해야 한다")
+				 .isNull();
 		}
 	}
 
