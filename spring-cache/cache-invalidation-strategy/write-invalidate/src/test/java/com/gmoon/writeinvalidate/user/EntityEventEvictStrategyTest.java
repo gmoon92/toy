@@ -17,7 +17,7 @@ import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.listener.EntityChangeEvent;
 import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.PreviousState;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
 import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
@@ -156,7 +156,7 @@ class EntityEventEvictStrategyTest {
 
 		private void publishChangeOf(Long id) {
 			eventPublisher.publishEvent(new EntityChangeEvent(
-				 EntityChange.updated(entityManager.find(User.class, id), id, PreviousState.EMPTY)));
+				 EntityChange.updated(entityManager.find(User.class, id), id, EntityState.EMPTY)));
 		}
 	}
 

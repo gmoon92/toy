@@ -42,13 +42,13 @@ public interface InvalidationRule {
 ```
 
 ```java
-public record EntityChange(Object entity, ChangeType type, Object id, PreviousState previousState) {
+public record EntityChange(Object entity, ChangeType type, Object id, EntityState previousState) {
     public Optional<Object> previousValueOf(String propertyName) { ... }
     public boolean isTypeOf(Class<?> entityType) { ... }
 }
 ```
 
-`previousState`는 배열이 아니라 `PreviousState`(불변 `List` 두 개)다.
+`previousState`는 배열이 아니라 `EntityState`(불변 `List` 두 개)다.
 레코드 컴포넌트가 배열이면 자동 생성된 `equals`/`hashCode`가 **참조 동일성**으로 동작해
 같은 내용의 두 변경이 서로 다른 것으로 취급된다.
 

@@ -13,7 +13,7 @@ import org.hibernate.persister.entity.EntityPersister;
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.PreviousState;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
 import com.gmoon.cacheinvalidation.core.metrics.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class JpaEntityChangeListener
 		signalWithoutDisruptingCommit(() -> EntityChange.updated(
 			 event.getEntity(),
 			 event.getId(),
-			 PreviousState.of(event.getPersister().getPropertyNames(), event.getOldState())));
+			 EntityState.of(event.getPersister().getPropertyNames(), event.getOldState())));
 	}
 
 	@Override

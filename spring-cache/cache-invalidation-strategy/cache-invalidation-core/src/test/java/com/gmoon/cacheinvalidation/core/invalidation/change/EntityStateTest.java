@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("변경 전 상태")
-class PreviousStateTest {
+class EntityStateTest {
 
 	private static final String[] PROPERTY_NAMES = {"username", "email"};
 
@@ -17,7 +17,7 @@ class PreviousStateTest {
 	@DisplayName("속성명으로 값을 조회하면")
 	class WhenLookedUpByPropertyName {
 
-		private final PreviousState state = PreviousState.of(PROPERTY_NAMES,
+		private final EntityState state = EntityState.of(PROPERTY_NAMES,
 			 new Object[] {"before", "before@mail.com"});
 
 		@Test
@@ -37,7 +37,7 @@ class PreviousStateTest {
 	@DisplayName("값이 null인 속성은")
 	class WhenValueIsNull {
 
-		private final PreviousState state = PreviousState.of(PROPERTY_NAMES, new Object[] {"before", null});
+		private final EntityState state = EntityState.of(PROPERTY_NAMES, new Object[] {"before", null});
 
 		@Test
 		@DisplayName("예외 없이 빈 값을 반환한다")
@@ -55,8 +55,8 @@ class PreviousStateTest {
 		@Test
 		@DisplayName("서로 동등하다")
 		void areEqualToEachOther() {
-			PreviousState one = PreviousState.of(PROPERTY_NAMES, new Object[] {"before", null});
-			PreviousState other = PreviousState.of(PROPERTY_NAMES, new Object[] {"before", null});
+			EntityState one = EntityState.of(PROPERTY_NAMES, new Object[] {"before", null});
+			EntityState other = EntityState.of(PROPERTY_NAMES, new Object[] {"before", null});
 
 			assertThat(one)
 				 .as("배열을 record 컴포넌트로 두면 참조 비교가 되어 동등성이 깨진다")
@@ -73,7 +73,7 @@ class PreviousStateTest {
 		@DisplayName("보관된 값은 영향을 받지 않는다")
 		void keepsSnapshotUnaffected() {
 			Object[] source = {"before", "before@mail.com"};
-			PreviousState state = PreviousState.of(PROPERTY_NAMES, source);
+			EntityState state = EntityState.of(PROPERTY_NAMES, source);
 
 			source[0] = "mutated";
 
@@ -88,8 +88,8 @@ class PreviousStateTest {
 		@Test
 		@DisplayName("빈 상태로 취급한다")
 		void treatedAsEmpty() {
-			assertThat(PreviousState.of(null, null)).isEqualTo(PreviousState.EMPTY);
-			assertThat(PreviousState.EMPTY.isEmpty()).isTrue();
+			assertThat(EntityState.of(null, null)).isEqualTo(EntityState.EMPTY);
+			assertThat(EntityState.EMPTY.isEmpty()).isTrue();
 		}
 	}
 
@@ -100,7 +100,7 @@ class PreviousStateTest {
 		@Test
 		@DisplayName("수정할 수 없다")
 		void isUnmodifiable() {
-			PreviousState state = PreviousState.of(PROPERTY_NAMES, new Object[] {"before", "x"});
+			EntityState state = EntityState.of(PROPERTY_NAMES, new Object[] {"before", "x"});
 
 			assertThatThrownBy(() -> state.values().add("injected"))
 				 .isInstanceOf(UnsupportedOperationException.class);
@@ -114,7 +114,7 @@ class PreviousStateTest {
 		@Test
 		@DisplayName("범위를 벗어난 속성은 빈 값을 반환한다")
 		void returnsEmptyForOutOfRange() {
-			PreviousState state = new PreviousState(List.of("username", "email"), List.of("before"));
+			EntityState state = new EntityState(List.of("username", "email"), List.of("before"));
 
 			assertThat(state.valueOf("email")).isEmpty();
 		}

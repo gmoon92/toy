@@ -127,7 +127,7 @@ change.previousValueOf("username")   // 자연키가 바뀐 경우 옛 키 산�
 record의 `equals`/`hashCode`가 **참조 동일성**으로 동작해 내용이 같아도 다르다고 판정한다.
 접근자가 가변 배열을 그대로 노출하는 문제도 있다.
 
-그래서 `PreviousState` record가 불변 `List`로 감싸고 조회 책임까지 가진다.
+그래서 `EntityState` record가 불변 `List`로 감싸고 조회 책임까지 가진다.
 
 ## 회복력 — 캐시가 죽어도 서비스는 산다
 
@@ -199,7 +199,7 @@ Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 
 | 테스트 | 고정하는 명제 |
 |------|------------|
-| `PreviousStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
+| `EntityStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
 | `RuleBasedCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화된다 |
 | `InvalidationRulesTest` | 규칙 하나가 실패해도 나머지는 수행된다 |
 | `FallbackCacheErrorHandlerTest` | 기본 처리기는 전파하고, 폴백 처리기는 삼키되 기록한다 |
