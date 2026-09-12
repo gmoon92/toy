@@ -1,19 +1,20 @@
 package com.gmoon.ttlonly.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import com.gmoon.cacheinvalidation.core.cache.CachePolicies;
-import com.gmoon.cacheinvalidation.core.config.CacheInvalidationConfig;
+import com.gmoon.cacheinvalidation.core.config.AbstractCacheConfig;
 import com.gmoon.ttlonly.user.UserCachePolicy;
 
+/**
+ * 무효화 신호 소스를 선언하지 않는다.
+ * 변경을 캐시에 전파하는 경로가 없으므로 최신성은 TTL 만료로만 회복된다.
+ */
 @Configuration
-@Import(CacheInvalidationConfig.class)
-public class CacheConfig {
+public class CacheConfig extends AbstractCacheConfig {
 
-	@Bean
-	public CachePolicies cachePolicies() {
+	@Override
+	protected CachePolicies cachePolicies() {
 		return CachePolicies.of(UserCachePolicy.values());
 	}
 }

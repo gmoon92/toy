@@ -35,22 +35,30 @@ flowchart TD
         CP[CachePolicy] --> CPS[CachePolicies]
         CPS --> REG[CachePolicyRegistry]
     end
-    subgraph 무효화
-        EV[Hibernate POST_COMMIT] --> AD[CacheEvictEventListener]
-        AD --> EC[EntityChange]
-        EC --> RU[CacheInvalidationRules]
-        RU --> INV[EntityChangeInvalidator]
-        INV --> EVI[CacheEvictor]
+    subgraph 신호 소스 (모듈이 선택)
+        HB[Hibernate POST_COMMIT] --> HL[HibernateCommitSignalListener]
+        SP[ApplicationEvent AFTER_COMMIT] --> SL[SpringCommitSignalListener]
+    end
+    subgraph 무효화 파이프라인 (코어가 확정)
+        HL --> SINK[CommitSignalSink]
+        SL --> SINK
+        SINK --> RU[CacheInvalidationRules]
+        RU --> EVI[CacheEvictor]
     end
     subgraph 회복력
         CEH[FallbackCacheErrorHandler]
         CFR[CacheFailureRecorder]
+        IR[InvalidationRecorder]
     end
-    REG --> CFG[RedisCacheConfig]
+    REG --> CFG[AbstractCacheConfig]
     CFG --> CEH
     CEH --> CFR
     EVI --> CFR
+    EVI --> IR
 ```
+
+무효화가 필요 없는 모듈은 신호 소스를 선언하지 않는다.
+`ttl-only` 가 그 경우이며, 리스너 빈이 하나도 등록되지 않는다는 것을 테스트로 고정한다.
 
 ## 캐시 정책 — 코어는 이름을 모른다
 
@@ -104,14 +112,13 @@ record의 `equals`/`hashCode`가 **참조 동일성**으로 동작해 내용이 
 ## 회복력 — 캐시가 죽어도 서비스는 산다
 
 ```java
-@Configuration
 @EnableCaching
-public class RedisCacheConfig implements CachingConfigurer {
+public abstract class AbstractCacheConfig implements CachingConfigurer {
 
     @Bean
     @Override
     public CacheErrorHandler errorHandler() {
-        return new FallbackCacheErrorHandler(cacheFailureRecorder);
+        return new FallbackCacheErrorHandler(cacheFailureRecorder());
     }
 }
 ```

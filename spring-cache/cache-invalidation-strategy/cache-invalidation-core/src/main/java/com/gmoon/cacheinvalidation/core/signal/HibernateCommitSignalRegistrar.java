@@ -1,11 +1,11 @@
-package com.gmoon.cacheinvalidation.core.config;
+package com.gmoon.cacheinvalidation.core.signal;
 
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.factory.ObjectProvider;
 
-import com.gmoon.cacheinvalidation.core.event.HibernateCommitSignalListener;
+
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;

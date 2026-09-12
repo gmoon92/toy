@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.gmoon.cacheinvalidation.core.metrics.DatabaseQueryCounter;
+import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.writeinvalidate.article.ArticleCachePolicy;
 import com.gmoon.writeinvalidate.article.ArticleCommandService;

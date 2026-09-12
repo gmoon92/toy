@@ -23,6 +23,8 @@ spring:
       hibernate:
         generate_statistics: true
 
-cache-invalidation:
-  not-found-ttl: 30s
-  ttl-jitter-ratio: 0.1
+service:
+  cache:
+    expiration:
+      not-found-ttl: 30s
+      jitter-ratio: 0.1

@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache;
+package com.gmoon.cacheinvalidation.core.cache.expiration;
 
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;

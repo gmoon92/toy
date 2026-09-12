@@ -104,6 +104,38 @@ flowchart LR
 `InvalidationSource` 로 어느 쪽이 무효화했는지만 구분해 기록하므로,
 두 소스를 함께 켜도 운영에서 추적이 가능하다.
 
+## 설정 확장
+
+모듈은 코어 설정을 **상속**하고, 필요한 신호 소스만 골라 켠다.
+
+```java
+@Configuration
+@Import({HibernateCommitSignalConfig.class, SpringCommitSignalConfig.class})
+public class CacheConfig extends AbstractCacheConfig {
+
+    @Override
+    protected CachePolicies cachePolicies() {
+        return CachePolicies.of(UserCachePolicy.USER, ArticleCachePolicy.ARTICLE);
+    }
+
+    @Override
+    protected List<CacheInvalidationRule> invalidationRules() {
+        return List.of(CacheEvictableRule.owning(UserCachePolicy.USER));
+    }
+}
+```
+
+`AbstractCacheConfig` 는 파이프라인만 확정하고 나머지는 재정의 가능한 메서드로 연다.
+
+| 확장점 | 기본값 | 언제 재정의하나 |
+|-------|------|--------------|
+| `cachePolicies()` | 없음 (필수) | 항상 |
+| `invalidationRules()` | 빈 목록 | 무효화 대상을 산출해야 할 때 |
+| `cacheSerialization()` | `JsonCacheSerialization` | 직렬화 형식을 바꿀 때 |
+| `cacheExpiration(..)` | `JitteredCacheExpiration` | 만료·지터 규칙을 바꿀 때 |
+
+신호 소스는 `@Import` 로 고른다. 선언하지 않으면 그 리스너 빈은 등록되지 않는다.
+
 ## 개발자가 작성하는 것
 
 | 작성한다 | 작성하지 않는다 |

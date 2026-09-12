@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 
-import com.gmoon.cacheinvalidation.core.metrics.DatabaseQueryCounter;
+import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest

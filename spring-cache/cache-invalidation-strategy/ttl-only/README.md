@@ -64,6 +64,35 @@ sequenceDiagram
 이 선언이 없으면 애플리케이션이 뜨지 않는다.
 TTL에만 의존하겠다는 결정을 코드에 남기도록 강제하는 장치다.
 
+## 설정
+
+무효화 신호 소스를 **하나도 선언하지 않는다.**
+
+```java
+@Configuration
+public class CacheConfig extends AbstractCacheConfig {
+
+    @Override
+    protected CachePolicies cachePolicies() {
+        return CachePolicies.of(UserCachePolicy.values());
+    }
+}
+```
+
+`HibernateCommitSignalConfig` 나 `SpringCommitSignalConfig` 를 선언하지 않았으므로
+리스너 빈이 컨텍스트에 존재하지 않는다. 쓰지 않는 전략의 빈을 떠안지 않는다는 뜻이고,
+이것을 `CacheConfigTest` 가 테스트로 고정한다.
+
+TTL·지터 같은 값은 `service.cache` 아래에 모은다.
+
+```yaml
+service:
+  cache:
+    expiration:
+      not-found-ttl: 30s
+      jitter-ratio: 0.1
+```
+
 ## TTL 을 3초로 둔 이유
 
 운영 값이 아니라 **관측을 위한 값**이다.

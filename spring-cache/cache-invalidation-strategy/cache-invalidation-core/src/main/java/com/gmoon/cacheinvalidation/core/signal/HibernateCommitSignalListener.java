@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.event;
+package com.gmoon.cacheinvalidation.core.signal;
 
 import java.util.function.Supplier;
 

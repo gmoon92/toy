@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.metrics;
+package com.gmoon.cacheinvalidation.test.measure;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;

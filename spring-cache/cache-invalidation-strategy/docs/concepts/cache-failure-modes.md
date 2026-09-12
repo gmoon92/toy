@@ -108,7 +108,7 @@ Spring Cache의 기본 `CacheErrorHandler`는 `SimpleCacheErrorHandler`이고,
 ```java
 @Configuration
 @EnableCaching
-public class RedisCacheConfig implements CachingConfigurer {
+public abstract class AbstractCacheConfig implements CachingConfigurer {
 
     @Bean
     @Override

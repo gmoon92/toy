@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.event;
+package com.gmoon.cacheinvalidation.core.signal;
 
 import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
 

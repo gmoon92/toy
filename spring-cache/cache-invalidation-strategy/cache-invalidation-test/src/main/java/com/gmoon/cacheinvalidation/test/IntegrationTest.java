@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.gmoon.cacheinvalidation.test.measure.MeasureConfig;
+
 /**
  * 데이터소스 출처만 프로파일로 갈아끼운다.
  * <ul>
@@ -24,7 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @SpringBootTest
-@Import(ContainerConfig.class)
+@Import({ContainerConfig.class, MeasureConfig.class})
 @ActiveProfiles(resolver = ProfileResolver.class)
 public @interface IntegrationTest {
 }

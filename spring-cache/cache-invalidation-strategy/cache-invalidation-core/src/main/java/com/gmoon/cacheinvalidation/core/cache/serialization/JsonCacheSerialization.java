@@ -1,7 +1,9 @@
-package com.gmoon.cacheinvalidation.core.config;
+package com.gmoon.cacheinvalidation.core.cache.serialization;
 
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+
+import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
 import org.springframework.data.redis.serializer.SerializationException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -9,29 +11,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import com.gmoon.cacheinvalidation.core.cache.CachePolicy;
-
-public class CacheSerializerFactory {
+public class JsonCacheSerialization implements CacheSerialization {
 
 	private final ObjectMapper objectMapper;
 
-	public CacheSerializerFactory() {
+	public JsonCacheSerialization() {
 		this(defaultObjectMapper());
 	}
 
-	public CacheSerializerFactory(ObjectMapper objectMapper) {
+	public JsonCacheSerialization(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
-	public RedisSerializer<?> serializerFor(CachePolicy policy) {
+	@Override
+	public RedisSerializer<?> valueSerializerFor(CachePolicy policy) {
 		return new Jackson2JsonRedisSerializer<>(objectMapper, policy.valueType());
 	}
 
-	public RedisSerializer<Object> rejectingSerializer() {
+	@Override
+	public RedisSerializer<?> unregisteredCacheSerializer() {
 		return new UnregisteredCacheSerializer();
 	}
 
-	private static ObjectMapper defaultObjectMapper() {
+	public static ObjectMapper defaultObjectMapper() {
 		return new ObjectMapper()
 			 .registerModule(new JavaTimeModule())
 			 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

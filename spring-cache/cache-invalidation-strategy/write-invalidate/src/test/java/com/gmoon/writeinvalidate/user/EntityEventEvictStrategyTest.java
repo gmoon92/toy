@@ -14,7 +14,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import jakarta.persistence.EntityManager;
 
 import com.gmoon.cacheinvalidation.core.cache.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.event.EntityChangedEvent;
+import com.gmoon.cacheinvalidation.core.signal.EntityChangedEvent;
 import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationSource;
 import com.gmoon.cacheinvalidation.core.invalidation.PreviousState;
