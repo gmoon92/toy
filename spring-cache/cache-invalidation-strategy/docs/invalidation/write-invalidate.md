@@ -94,6 +94,30 @@ sequenceDiagram
 단 `evictIfPresent`/`invalidate`는 **지연되지 않고 즉시** 수행된다(Spring 5.2+).
 `@CacheEvict(beforeInvocation = true)`는 내부적으로 이 즉시 경로를 타므로 transactionAware의 지연이 적용되지 않는다.
 
+**실측.** PoC 모듈에 `transactionAware()` 를 켜고 테스트를 재실행하면 세 케이스가 뒤집힌다.
+
+| 테스트 명제 | `transactionAware()` 적용 시 |
+|-----------|---------------------------|
+| 커밋을 기다리지 않고 캐시를 지운다 | 더 이상 성립하지 않음 (커밋까지 유지) |
+| 커밋 전 조회가 옛 값을 재적재한다 | **stale 고착이 닫힘** |
+| 롤백해도 캐시는 지워져 있다 | 롤백 시 evict 자체가 취소됨 |
+
+즉 `@CacheEvict` 의 **시점 문제는 설정으로 해결된다.**
+남는 것은 누락 축이다 — 어노테이션을 붙이지 않은 쓰기 경로는 여전히 조용히 stale을 남긴다.
+
+**다만 엔티티 이벤트와 함께 쓰면 위험하다.** `transactionAware()` 는 `put` 도 지연시키는데,
+`CacheEvictor` 는 커밋 이후에 실행되므로 지연된 `put` 이 `evict` 보다 늦게 착지할 수 있다.
+두 축을 섞을 때는 켜지 않는다.
+
+### evictIfPresent 의 반환값은 Redis 에서 의미가 없다
+
+`Cache.evictIfPresent` 의 **기본 구현은 `evict()` 를 호출한 뒤 무조건 `false` 를 반환**하고,
+`RedisCache` 는 이를 재정의하지 않는다(spring-context 6.2.7 / spring-data-redis 3.5.0 바이트코드 확인).
+
+따라서 "실제로 지웠는지"를 반환값으로 판별할 수 없다.
+`ConcurrentMapCache` 는 참을 반환하므로, 이 값을 결과로 노출하면 **캐시 구현에 따라 의미가 달라진다.**
+코어는 `EVICT_REQUESTED` / `CACHE_NOT_REGISTERED` / `FAILED` 세 값만 기록한다.
+
 ## 선택 기준
 
 | 적합 | 부적합 |

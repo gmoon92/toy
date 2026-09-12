@@ -14,6 +14,23 @@ CUD    DB 변경 → 기존 Cache를 어떻게 처리할 것인가?
 - Redis / MySQL: `_settings/docker/docker-compose.yml`
 - 문서 지도: [docs/README.md](docs/README.md)
 
+## 실행 가능한 모듈
+
+문서가 전략을 설명한다면, 아래 모듈은 그 전략이 실제로 무엇을 보장하고 무엇을 보장하지 않는지를 테스트로 고정한다.
+
+| 모듈 | 증명하는 명제 | README |
+|-----|-------------|--------|
+| `cache-invalidation-core` | 무효화 파이프라인과 기동 검증 | [core-design](docs/core-design.md) |
+| `ttl-only` | 옛 값이 보이는 기간의 상한이 TTL과 일치한다 | [ttl-only](ttl-only/README.md) |
+| `write-invalidate` | 커밋 전 무효화는 옛 값을 고착시키고, 커밋 후 무효화는 그러지 않는다 | [write-invalidate](write-invalidate/README.md) |
+
+```bash
+./gradlew :spring-cache:cache-invalidation-strategy:build
+./gradlew :spring-cache:cache-invalidation-strategy:write-invalidate:test -Ptestcontainers
+```
+
+`-Ptestcontainers` 없이 실행하면 로컬 공유 DB를 쓴다. CI는 이 기본 경로로 동작한다.
+
 ## 네 축
 
 읽기·쓰기 전략, 무효화 시점, 메모리 축출은 **서로 직교한다.**
