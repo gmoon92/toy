@@ -2,11 +2,11 @@ package com.gmoon.writeinvalidate.user;
 
 import java.time.Duration;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 public enum UserCachePolicy implements CachePolicy {
 
-	USER(Spec.of(Name.USER, Duration.ofMinutes(10), CachedUser.class));
+	USER(new Spec(Name.USER, Duration.ofMinutes(10), CachedUser.class));
 
 	private final Spec spec;
 

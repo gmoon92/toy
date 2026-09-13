@@ -2,12 +2,12 @@ package com.gmoon.cacheinvalidation.core.fixture;
 
 import java.time.Duration;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 public enum TestCachePolicy implements CachePolicy {
 
-	USER(Spec.of(Name.USER, Duration.ofMinutes(10), String.class)),
-	USER_SUMMARY(Spec.of(Name.USER_SUMMARY, Duration.ofMinutes(5), String.class));
+	USER(new Spec(Name.USER, Duration.ofMinutes(10), String.class)),
+	USER_SUMMARY(new Spec(Name.USER_SUMMARY, Duration.ofMinutes(5), String.class));
 
 	private final Spec spec;
 

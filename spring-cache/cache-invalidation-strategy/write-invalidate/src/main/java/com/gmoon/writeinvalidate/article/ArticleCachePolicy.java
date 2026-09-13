@@ -2,11 +2,11 @@ package com.gmoon.writeinvalidate.article;
 
 import java.time.Duration;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 public enum ArticleCachePolicy implements CachePolicy {
 
-	ARTICLE(Spec.of(Name.ARTICLE, Duration.ofMinutes(10), CachedArticle.class).invalidatedByTtlOnly());
+	ARTICLE(new Spec(Name.ARTICLE, Duration.ofMinutes(10), CachedArticle.class));
 
 	private final Spec spec;
 

@@ -2,11 +2,11 @@ package com.gmoon.ttlonly.user;
 
 import java.time.Duration;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 public enum UserCachePolicy implements CachePolicy {
 
-	USER(Spec.of(Name.USER, Duration.ofSeconds(3), CachedUser.class).invalidatedByTtlOnly());
+	USER(new Spec(Name.USER, Duration.ofSeconds(3), CachedUser.class));
 
 	private final Spec spec;
 
