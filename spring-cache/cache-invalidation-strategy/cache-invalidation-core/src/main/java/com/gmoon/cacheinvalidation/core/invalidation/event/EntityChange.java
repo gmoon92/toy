@@ -4,7 +4,13 @@ import java.util.Optional;
 
 import org.springframework.util.Assert;
 
-public record EntityChange(Object entity, ChangeType type, Object id, EntityState previousState) {
+public record EntityChange(Object entity, Type type, Object id, EntityState previousState) {
+
+	public enum Type {
+		INSERT,
+		UPDATE,
+		DELETE
+	}
 
 	public EntityChange {
 		Assert.notNull(entity, "entity must not be null");
@@ -13,11 +19,11 @@ public record EntityChange(Object entity, ChangeType type, Object id, EntityStat
 	}
 
 	public static EntityChange inserted(Object entity, Object id) {
-		return new EntityChange(entity, ChangeType.INSERT, id, EntityState.EMPTY);
+		return new EntityChange(entity, Type.INSERT, id, EntityState.EMPTY);
 	}
 
 	public static EntityChange updated(Object entity, Object id, EntityState previousState) {
-		return new EntityChange(entity, ChangeType.UPDATE, id, previousState);
+		return new EntityChange(entity, Type.UPDATE, id, previousState);
 	}
 
 	public static EntityChange updated(Object entity, Object id, Object[] previousValues, String[] propertyNames) {
@@ -25,7 +31,7 @@ public record EntityChange(Object entity, ChangeType type, Object id, EntityStat
 	}
 
 	public static EntityChange deleted(Object entity, Object id) {
-		return new EntityChange(entity, ChangeType.DELETE, id, EntityState.EMPTY);
+		return new EntityChange(entity, Type.DELETE, id, EntityState.EMPTY);
 	}
 
 	public Optional<Object> previousValueOf(String propertyName) {

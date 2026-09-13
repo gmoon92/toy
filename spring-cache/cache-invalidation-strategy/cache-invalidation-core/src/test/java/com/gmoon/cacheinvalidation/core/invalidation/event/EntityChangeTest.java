@@ -48,7 +48,7 @@ class EntityChangeTest {
 		@Test
 		@DisplayName("변경 유형은 INSERT 이다")
 		void isInsertType() {
-			assertThat(change.type()).isEqualTo(ChangeType.INSERT);
+			assertThat(change.type()).isEqualTo(EntityChange.Type.INSERT);
 		}
 	}
 
@@ -59,7 +59,7 @@ class EntityChangeTest {
 		@Test
 		@DisplayName("변경 유형은 DELETE 이다")
 		void isDeleteType() {
-			assertThat(EntityChange.deleted(new Object(), 1L).type()).isEqualTo(ChangeType.DELETE);
+			assertThat(EntityChange.deleted(new Object(), 1L).type()).isEqualTo(EntityChange.Type.DELETE);
 		}
 	}
 }
