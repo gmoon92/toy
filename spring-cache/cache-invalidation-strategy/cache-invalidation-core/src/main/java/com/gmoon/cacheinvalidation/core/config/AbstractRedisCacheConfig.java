@@ -1,7 +1,10 @@
 package com.gmoon.cacheinvalidation.core.config;
 
 import java.util.Collection;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
@@ -12,8 +15,11 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.BatchStrategies;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.cache.expiration.TtlResolver;
@@ -56,6 +62,8 @@ import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorde
 @EnableCaching
 @EnableConfigurationProperties(ServiceCacheProperties.class)
 public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
+
+	private static final Duration FALLBACK_TTL = Duration.ofMinutes(5);
 
 	protected abstract Collection<CachePolicy> cachePolicies();
 
@@ -132,22 +140,61 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public RedisCacheSettings redisCacheConfigurations(
-		 SerializerFactory serialization,
-		 TtlResolver expiration,
-		 CacheProperties cacheProperties
-	) {
-		return new RedisCacheSettings(serialization, expiration, cacheProperties.getRedis());
-	}
-
-	@Bean
 	public RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
 		 CachePolicyRegistry registry,
-		 RedisCacheSettings redisCacheSettings
+		 ServiceCacheProperties properties,
+		 CacheProperties cacheProperties
 	) {
+		CacheProperties.Redis redis = cacheProperties.getRedis();
+		SerializerFactory serializers = serializerFactory();
+		TtlResolver ttl = ttlResolver(properties);
+
 		return builder -> builder
 			 .disableCreateOnMissingCache()
-			 .cacheDefaults(redisCacheSettings.unregisteredCacheDefaults())
-			 .withInitialCacheConfigurations(redisCacheSettings.byCacheName(registry));
+			 .cacheDefaults(configurationOf(declaredTtlOf(redis), serializers.unregisteredCacheSerializer(),
+				  serializers, ttl, redis))
+			 .withInitialCacheConfigurations(configurationsByCacheName(registry, serializers, ttl, redis));
+	}
+
+	private Map<String, RedisCacheConfiguration> configurationsByCacheName(
+		 CachePolicyRegistry registry,
+		 SerializerFactory serializers,
+		 TtlResolver ttl,
+		 CacheProperties.Redis redis
+	) {
+		Map<String, RedisCacheConfiguration> byCacheName = new HashMap<>();
+		for (CachePolicy policy : registry.all()) {
+			byCacheName.put(policy.cacheName(),
+				 configurationOf(policy.ttl(), serializers.valueSerializerFor(policy), serializers, ttl, redis));
+		}
+		return byCacheName;
+	}
+
+	private RedisCacheConfiguration configurationOf(
+		 Duration declaredTtl,
+		 RedisSerializer<?> valueSerializer,
+		 SerializerFactory serializers,
+		 TtlResolver ttl,
+		 CacheProperties.Redis redis
+	) {
+		RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
+			 .entryTtl(ttl.resolveFrom(declaredTtl))
+			 .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
+			 .serializeValuesWith(SerializationPair.fromSerializer(valueSerializer));
+
+		return applyKeyPrefix(configuration, redis);
+	}
+
+	private RedisCacheConfiguration applyKeyPrefix(RedisCacheConfiguration configuration, CacheProperties.Redis redis) {
+		if (!redis.isUseKeyPrefix()) {
+			return configuration.disableKeyPrefix();
+		}
+		return redis.getKeyPrefix() == null
+			 ? configuration
+			 : configuration.prefixCacheNameWith(redis.getKeyPrefix());
+	}
+
+	private Duration declaredTtlOf(CacheProperties.Redis redis) {
+		return redis.getTimeToLive() == null ? FALLBACK_TTL : redis.getTimeToLive();
 	}
 }
