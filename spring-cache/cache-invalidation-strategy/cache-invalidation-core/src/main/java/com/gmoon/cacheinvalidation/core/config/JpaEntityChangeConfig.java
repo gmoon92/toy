@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.config.listener;
+package com.gmoon.cacheinvalidation.core.config;
 
 import java.util.List;
 
@@ -9,10 +9,12 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListener;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
+
 import lombok.RequiredArgsConstructor;
 
 /**

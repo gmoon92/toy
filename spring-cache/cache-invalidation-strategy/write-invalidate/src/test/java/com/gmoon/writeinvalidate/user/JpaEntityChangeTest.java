@@ -13,11 +13,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.persistence.EntityManager;
 
-import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityState;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.EvictionOutcome;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
@@ -154,7 +154,7 @@ class JpaEntityChangeTest {
 		}
 
 		private void publishChangeOf(Long id) {
-			eventPublisher.publishEvent((EntityChange.updated(entityManager.find(User.class, id), id, EntityState.EMPTY)));
+			eventPublisher.publishEvent((EntityChange.updated(entityManager.find(User.class, id), EntityState.EMPTY)));
 		}
 	}
 

@@ -1,10 +1,10 @@
-package com.gmoon.cacheinvalidation.core.config.listener;
+package com.gmoon.cacheinvalidation.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.listener.ApplicationEventChangeListener;
 
 /**
  * 애플리케이션이 발행한 변경 이벤트를 무효화 신호로 삼는다.
@@ -16,10 +16,7 @@ import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorde
 public class ApplicationEventChangeConfig {
 
 	@Bean
-	public ApplicationEventChangeListener applicationEventChangeListener(
-		 CacheInvalidator cacheInvalidator,
-		 InvalidationRecorder recorder
-	) {
-		return new ApplicationEventChangeListener(cacheInvalidator, recorder);
+	public ApplicationEventChangeListener applicationEventChangeListener(CacheInvalidator cacheInvalidator) {
+		return new ApplicationEventChangeListener(cacheInvalidator);
 	}
 }

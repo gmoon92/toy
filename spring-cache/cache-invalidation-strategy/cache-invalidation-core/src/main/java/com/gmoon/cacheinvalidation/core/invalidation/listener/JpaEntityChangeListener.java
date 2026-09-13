@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.config.listener;
+package com.gmoon.cacheinvalidation.core.invalidation.listener;
 
 import java.util.function.Supplier;
 
@@ -11,10 +11,10 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityState;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,20 +31,19 @@ public class JpaEntityChangeListener
 
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		invalidateWithoutDisruptingCommit(() -> EntityChange.inserted(event.getEntity(), event.getId()));
+		invalidate(() -> EntityChange.inserted(event.getEntity()));
 	}
 
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		invalidateWithoutDisruptingCommit(() -> EntityChange.updated(
+		invalidate(() -> EntityChange.updated(
 			 event.getEntity(),
-			 event.getId(),
 			 EntityState.of(event.getPersister().getPropertyNames(), event.getOldState())));
 	}
 
 	@Override
 	public void onPostDelete(PostDeleteEvent event) {
-		invalidateWithoutDisruptingCommit(() -> EntityChange.deleted(event.getEntity(), event.getId()));
+		invalidate(() -> EntityChange.deleted(event.getEntity()));
 	}
 
 	@Override
@@ -67,13 +66,16 @@ public class JpaEntityChangeListener
 		logCommitFailed(event.getEntity());
 	}
 
-	private void invalidateWithoutDisruptingCommit(Supplier<EntityChange> change) {
+	private void invalidate(Supplier<EntityChange> change) {
+		EntityChange read;
 		try {
-			cacheInvalidator.invalidate(change.get(), SOURCE);
+			read = change.get();
 		} catch (RuntimeException e) {
 			recorder.recordPipelineFailure(SOURCE);
-			log.warn("cache invalidation failed after commit. the transaction stays committed", e);
+			log.warn("failed to read the committed entity state. cache eviction skipped", e);
+			return;
 		}
+		cacheInvalidator.invalidate(read, SOURCE);
 	}
 
 	private void logCommitFailed(Object entity) {
