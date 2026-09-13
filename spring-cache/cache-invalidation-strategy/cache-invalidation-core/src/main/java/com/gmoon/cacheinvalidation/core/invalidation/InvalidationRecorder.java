@@ -1,12 +1,10 @@
-package com.gmoon.cacheinvalidation.core.invalidation.metrics;
+package com.gmoon.cacheinvalidation.core.invalidation;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.stream.Collectors;
 
-import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
 
 public class InvalidationRecorder {
 
@@ -41,18 +39,6 @@ public class InvalidationRecorder {
 		return counterOf(pipelineFailures, source).sum();
 	}
 
-	public Map<EvictionKey, Long> evictionSnapshot() {
-		return snapshotOf(evictions);
-	}
-
-	public Map<String, Long> ruleFailureSnapshot() {
-		return snapshotOf(ruleFailures);
-	}
-
-	public Map<ChangeSource, Long> pipelineFailureSnapshot() {
-		return snapshotOf(pipelineFailures);
-	}
-
 	public void reset() {
 		evictions.clear();
 		ruleFailures.clear();
@@ -61,11 +47,5 @@ public class InvalidationRecorder {
 
 	private <K> LongAdder counterOf(Map<K, LongAdder> counters, K key) {
 		return counters.computeIfAbsent(key, ignored -> new LongAdder());
-	}
-
-	private <K> Map<K, Long> snapshotOf(Map<K, LongAdder> counters) {
-		return counters.entrySet()
-			 .stream()
-			 .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().sum()));
 	}
 }

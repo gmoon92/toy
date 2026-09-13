@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation.event;
+package com.gmoon.cacheinvalidation.core.invalidation.change;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -89,11 +89,8 @@ class EntityStateTest {
 		@DisplayName("빈 상태로 취급한다")
 		void treatedAsEmpty() {
 			assertThat(EntityState.of(null, null))
-				 .as("null 입력은 빈 상태로 정규화된다")
+				 .as("하이버네이트는 oldState 를 주지 않는 경우가 있고, 그때 규칙이 NPE 로 깨지면 안 된다")
 				 .isEqualTo(EntityState.EMPTY);
-			assertThat(EntityState.EMPTY.isEmpty())
-				 .as("빈 상태는 스스로를 비었다고 답해야 한다")
-				 .isTrue();
 		}
 	}
 

@@ -1,29 +1,19 @@
-package com.gmoon.cacheinvalidation.core.cache.policy;
+package com.gmoon.cacheinvalidation.core.policy;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class CachePolicyRegistry {
+public class CacheCatalog {
 
 	private final Map<String, CachePolicy> policiesByCacheName;
 
-	public CachePolicyRegistry(Collection<CachePolicy> policies) {
+	public CacheCatalog(Collection<CachePolicy> policies) {
 		this.policiesByCacheName = index(policies);
 	}
 
 	public Collection<CachePolicy> all() {
 		return policiesByCacheName.values();
-	}
-
-	public Optional<CachePolicy> findByCacheName(String cacheName) {
-		return Optional.ofNullable(policiesByCacheName.get(cacheName));
-	}
-
-	public CachePolicy getByCacheName(String cacheName) {
-		return findByCacheName(cacheName)
-			 .orElseThrow(() -> new IllegalArgumentException("Unregistered cache name: " + cacheName));
 	}
 
 	private Map<String, CachePolicy> index(Collection<CachePolicy> policies) {
