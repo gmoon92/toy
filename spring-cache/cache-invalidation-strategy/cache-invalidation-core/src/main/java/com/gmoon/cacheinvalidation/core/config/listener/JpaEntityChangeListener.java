@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation.listener;
+package com.gmoon.cacheinvalidation.core.config.listener;
 
 import java.util.function.Supplier;
 

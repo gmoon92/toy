@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Import;
 
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.config.AbstractRedisCacheConfig;
-import com.gmoon.cacheinvalidation.core.config.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.core.config.PublishedEntityChangeConfig;
+import com.gmoon.cacheinvalidation.core.config.listener.JpaEntityChangeConfig;
+import com.gmoon.cacheinvalidation.core.config.listener.PublishedEntityChangeConfig;
 import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.writeinvalidate.article.ArticleCachePolicy;

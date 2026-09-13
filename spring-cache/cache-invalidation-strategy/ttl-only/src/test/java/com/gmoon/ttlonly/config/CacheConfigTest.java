@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.listener.JpaEntityChangeListener;
-import com.gmoon.cacheinvalidation.core.invalidation.listener.PublishedEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.config.listener.JpaEntityChangeConfig;
+import com.gmoon.cacheinvalidation.core.config.listener.PublishedEntityChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
@@ -24,10 +24,10 @@ class CacheConfigTest {
 	class WhenNoChangeDetectionDeclared {
 
 		@Test
-		@DisplayName("Hibernate 리스너가 등록되지 않는다")
-		void doesNotRegisterHibernateListener() {
-			assertThat(context.getBeanNamesForType(JpaEntityChangeListener.class))
-				 .as("쓰지 않는 전략의 빈까지 떠안으면 코어가 모듈을 무겁게 만든다")
+		@DisplayName("JPA 변경 감지가 설치되지 않는다")
+		void doesNotInstallJpaChangeDetection() {
+			assertThat(context.getBeanNamesForType(JpaEntityChangeConfig.class))
+				 .as("쓰지 않는 전략까지 떠안으면 코어가 모듈을 무겁게 만든다")
 				 .isEmpty();
 		}
 
