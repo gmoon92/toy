@@ -13,13 +13,13 @@ import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorde
  * 이벤트를 발행하는 코드가 누락되면 무효화도 함께 누락된다.
  */
 @Configuration
-public class PublishedEntityChangeConfig {
+public class ApplicationEventChangeConfig {
 
 	@Bean
-	public PublishedEntityChangeListener publishedEntityChangeListener(
+	public ApplicationEventChangeListener applicationEventChangeListener(
 		 CacheInvalidator cacheInvalidator,
 		 InvalidationRecorder recorder
 	) {
-		return new PublishedEntityChangeListener(cacheInvalidator, recorder);
+		return new ApplicationEventChangeListener(cacheInvalidator, recorder);
 	}
 }

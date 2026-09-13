@@ -39,7 +39,7 @@ import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorde
  * <p>
  * 이 클래스는 <strong>무효화 파이프라인만</strong> 배선한다.
  * 변경을 무엇으로 감지할지는 정하지 않으므로, 무효화가 필요한 모듈은
- * {@link JpaEntityChangeConfig} 또는 {@link PublishedEntityChangeConfig} 를 함께 선언한다.
+ * {@link JpaEntityChangeConfig} 또는 {@link ApplicationEventChangeConfig} 를 함께 선언한다.
  * TTL 로만 만료시키는 모듈은 아무것도 선언하지 않는다.
  *
  * <p>변경 감지 방식은 조합 가능한 선택이므로 상속이 아니라 {@code @Import} 로 켠다.

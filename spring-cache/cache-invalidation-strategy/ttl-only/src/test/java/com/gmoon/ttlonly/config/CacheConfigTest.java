@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.config.listener.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.core.config.listener.PublishedEntityChangeListener;
+import com.gmoon.cacheinvalidation.core.config.listener.ApplicationEventChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
@@ -34,7 +34,7 @@ class CacheConfigTest {
 		@Test
 		@DisplayName("Spring 이벤트 리스너가 등록되지 않는다")
 		void doesNotRegisterSpringListener() {
-			assertThat(context.getBeanNamesForType(PublishedEntityChangeListener.class))
+			assertThat(context.getBeanNamesForType(ApplicationEventChangeListener.class))
 				 .isEmpty();
 		}
 	}

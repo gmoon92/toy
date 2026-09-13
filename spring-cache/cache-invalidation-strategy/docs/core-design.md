@@ -36,7 +36,7 @@ flowchart TD
     end
     subgraph 신호 소스 (모듈이 선택)
         HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
-        SP[ApplicationEvent AFTER_COMMIT] --> SL[PublishedEntityChangeListener]
+        SP[ApplicationEvent AFTER_COMMIT] --> SL[ApplicationEventChangeListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
         HL --> SINK[CacheInvalidator]

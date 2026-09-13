@@ -13,7 +13,7 @@ import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PublishedEntityChangeListener {
+public class ApplicationEventChangeListener {
 
 	private static final ChangeSource SOURCE = ChangeSource.APPLICATION_EVENT;
 
