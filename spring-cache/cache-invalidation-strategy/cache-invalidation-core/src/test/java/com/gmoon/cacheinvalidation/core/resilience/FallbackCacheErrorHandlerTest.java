@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache.resilience;
+package com.gmoon.cacheinvalidation.core.resilience;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;

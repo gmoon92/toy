@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.config.AbstractRedisCacheConfig;
 import com.gmoon.ttlonly.user.UserCachePolicy;
 

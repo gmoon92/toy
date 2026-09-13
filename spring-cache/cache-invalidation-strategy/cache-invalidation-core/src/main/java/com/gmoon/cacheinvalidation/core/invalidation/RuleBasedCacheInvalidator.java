@@ -1,13 +1,9 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
-import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
-import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 import lombok.RequiredArgsConstructor;
-import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
 @RequiredArgsConstructor
 public class RuleBasedCacheInvalidator implements CacheInvalidator {
@@ -18,7 +14,7 @@ public class RuleBasedCacheInvalidator implements CacheInvalidator {
 
 	@Override
 	public void invalidate(EntityChange change, ChangeSource source) {
-		for (CacheEntryRef entry : rules.resolve(change)) {
+		for (CacheKey entry : rules.resolve(change)) {
 			EvictionOutcome outcome = cacheEvictor.evict(entry);
 			recorder.recordEviction(entry.cacheName(), source, outcome);
 		}

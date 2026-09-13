@@ -9,15 +9,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @DisplayName("무효화 규칙 레지스트리")
 class InvalidationRuleSetTest {
 
-	private final EntityChange change = EntityChange.inserted(new Object(), 1L);
+	private final EntityChange change = EntityChange.inserted(new Object());
 	private final InvalidationRecorder recorder = new InvalidationRecorder();
 
 	@Nested
@@ -25,8 +23,8 @@ class InvalidationRuleSetTest {
 	class WhenMultipleRulesMatch {
 
 		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
-			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
-			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER_SUMMARY, 1L))
+			 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
+			 ruleOf(true, CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L))
 		), recorder);
 
 		@Test
@@ -35,8 +33,8 @@ class InvalidationRuleSetTest {
 			assertThat(rules.resolve(change))
 				 .as("교차 엔티티 규칙이 추가되어도 기존 규칙과 함께 동작해야 한다")
 				 .containsExactlyInAnyOrder(
-					  CacheEntryRef.of(TestCachePolicy.USER, 1L),
-					  CacheEntryRef.of(TestCachePolicy.USER_SUMMARY, 1L));
+					  CacheKey.of(TestCachePolicy.USER, 1L),
+					  CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L));
 		}
 	}
 
@@ -45,8 +43,8 @@ class InvalidationRuleSetTest {
 	class WhenRulesOverlap {
 
 		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
-			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L)),
-			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
+			 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
+			 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L))
 		), recorder);
 
 		@Test
@@ -61,7 +59,7 @@ class InvalidationRuleSetTest {
 	class WhenNoRuleMatches {
 
 		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
-			 ruleOf(false, CacheEntryRef.of(TestCachePolicy.USER, 1L))
+			 ruleOf(false, CacheKey.of(TestCachePolicy.USER, 1L))
 		), recorder);
 
 		@Test
@@ -77,7 +75,7 @@ class InvalidationRuleSetTest {
 
 		private final InvalidationRuleSet rules = new InvalidationRuleSet(List.of(
 			 failingRule(),
-			 ruleOf(true, CacheEntryRef.of(TestCachePolicy.USER, 1L))
+			 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L))
 		), recorder);
 
 		@Test
@@ -85,11 +83,11 @@ class InvalidationRuleSetTest {
 		void keepsResolvingRemainingRules() {
 			assertThat(rules.resolve(change))
 				 .as("규칙 하나의 실패가 다른 캐시의 무효화를 막으면 stale이 남는다")
-				 .containsExactly(CacheEntryRef.of(TestCachePolicy.USER, 1L));
+				 .containsExactly(CacheKey.of(TestCachePolicy.USER, 1L));
 		}
 	}
 
-	private static InvalidationRule ruleOf(boolean supported, CacheEntryRef entry) {
+	private static InvalidationRule ruleOf(boolean supported, CacheKey entry) {
 		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
@@ -97,7 +95,7 @@ class InvalidationRuleSetTest {
 			}
 
 			@Override
-			public Collection<CacheEntryRef> resolve(EntityChange change) {
+			public Collection<CacheKey> resolve(EntityChange change) {
 				return List.of(entry);
 			}
 		};
@@ -111,7 +109,7 @@ class InvalidationRuleSetTest {
 			}
 
 			@Override
-			public Collection<CacheEntryRef> resolve(EntityChange change) {
+			public Collection<CacheKey> resolve(EntityChange change) {
 				throw new IllegalStateException("rule failed");
 			}
 		};

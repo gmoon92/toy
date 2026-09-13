@@ -13,15 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
-import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
-import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictable;
-import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
-import com.gmoon.cacheinvalidation.core.cache.eviction.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.invalidation.event.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
+import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
 
 @DisplayName("엔티티 변경 무효화 실행")
 class RuleBasedCacheInvalidatorTest {
@@ -49,7 +45,7 @@ class RuleBasedCacheInvalidatorTest {
 			putCached(TestCachePolicy.Name.USER_SUMMARY, "1");
 			RuleBasedCacheInvalidator invalidator = invalidatorOf(EvictableEntityRule.owning(TestCachePolicy.USER, TestCachePolicy.USER_SUMMARY));
 
-			invalidator.invalidate(EntityChange.updated(new CacheableUser(1L), 1L, null, null), SOURCE);
+			invalidator.invalidate(EntityChange.updated(new CacheableUser(1L), null), SOURCE);
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
 				 .as("엔티티가 선언한 첫 번째 캐시")
@@ -71,8 +67,8 @@ class RuleBasedCacheInvalidatorTest {
 			putCached(TestCachePolicy.Name.USER, "after");
 			RuleBasedCacheInvalidator invalidator = invalidatorOf(previousUsernameRule(), currentUsernameRule());
 
-			invalidator.invalidate(EntityChange.updated(
-				 new NaturalKeyUser("after"), 1L, new Object[] {"before"}, new String[] {"username"}), SOURCE);
+			invalidator.invalidate(EntityChange.updated(new NaturalKeyUser("after"),
+				 EntityState.of(new String[] {"username"}, new Object[] {"before"})), SOURCE);
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "before"))
 				 .as("옛 키를 지우지 않으면 자연키 캐시가 영구히 stale로 남는다")
@@ -98,7 +94,7 @@ class RuleBasedCacheInvalidatorTest {
 
 			assertThatNoException()
 				 .as("무효화 실패가 전파되면 커밋된 트랜잭션 이후 흐름이 깨진다")
-				 .isThrownBy(() -> invalidator.invalidate(EntityChange.deleted(new CacheableUser(1L), 1L), SOURCE));
+				 .isThrownBy(() -> invalidator.invalidate(EntityChange.deleted(new CacheableUser(1L)), SOURCE));
 			assertThat(invalidationRecorder.evictionCount(
 				 TestCachePolicy.Name.USER, SOURCE, EvictionOutcome.FAILED))
 				 .as("실패가 결과로 기록되지 않으면 무효화 유실이 조용히 묻힌다")
@@ -123,16 +119,16 @@ class RuleBasedCacheInvalidatorTest {
 
 	private InvalidationRule previousUsernameRule() {
 		return rule(change -> change.previousValueOf("username")
-			 .map(username -> List.of(CacheEntryRef.of(TestCachePolicy.USER, username)))
+			 .map(username -> List.of(CacheKey.of(TestCachePolicy.USER, username)))
 			 .orElse(List.of()));
 	}
 
 	private InvalidationRule currentUsernameRule() {
 		return rule(change -> List.of(
-			 CacheEntryRef.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
+			 CacheKey.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
 	}
 
-	private InvalidationRule rule(Function<EntityChange, List<CacheEntryRef>> resolver) {
+	private InvalidationRule rule(Function<EntityChange, List<CacheKey>> resolver) {
 		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
@@ -140,7 +136,7 @@ class RuleBasedCacheInvalidatorTest {
 			}
 
 			@Override
-			public Collection<CacheEntryRef> resolve(EntityChange change) {
+			public Collection<CacheKey> resolve(EntityChange change) {
 				return resolver.apply(change);
 			}
 		};
@@ -151,10 +147,10 @@ class RuleBasedCacheInvalidatorTest {
 
 	private record CacheableUser(Long id) implements CacheEvictable {
 		@Override
-		public List<CacheEntryRef> cacheEntriesToEvict() {
+		public List<CacheKey> cacheEntriesToEvict() {
 			return List.of(
-				 CacheEntryRef.of(TestCachePolicy.USER, id),
-				 CacheEntryRef.of(TestCachePolicy.USER_SUMMARY, id));
+				 CacheKey.of(TestCachePolicy.USER, id),
+				 CacheKey.of(TestCachePolicy.USER_SUMMARY, id));
 		}
 	}
 }

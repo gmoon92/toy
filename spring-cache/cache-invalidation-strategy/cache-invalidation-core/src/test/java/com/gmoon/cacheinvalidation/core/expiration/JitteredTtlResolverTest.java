@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache.expiration;
+package com.gmoon.cacheinvalidation.core.expiration;
 
 import static org.assertj.core.api.Assertions.*;
 

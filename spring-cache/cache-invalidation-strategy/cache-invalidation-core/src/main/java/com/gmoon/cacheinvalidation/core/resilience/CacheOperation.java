@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.cache.resilience;
+package com.gmoon.cacheinvalidation.core.resilience;
 
 public enum CacheOperation {
 	GET,

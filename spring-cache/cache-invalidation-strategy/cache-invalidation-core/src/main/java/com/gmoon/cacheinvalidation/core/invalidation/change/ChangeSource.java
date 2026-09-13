@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation.event;
+package com.gmoon.cacheinvalidation.core.invalidation.change;
 
 public enum ChangeSource {
 	JPA_ENTITY,

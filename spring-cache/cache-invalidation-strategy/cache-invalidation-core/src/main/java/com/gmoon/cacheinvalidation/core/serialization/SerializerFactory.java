@@ -1,8 +1,8 @@
-package com.gmoon.cacheinvalidation.core.cache.serialization;
+package com.gmoon.cacheinvalidation.core.serialization;
 
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 public interface SerializerFactory {
 
