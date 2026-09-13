@@ -120,10 +120,17 @@ public class CacheConfig extends AbstractRedisCacheConfig {
 
     @Override
     protected List<InvalidationRule> invalidationRules() {
-        return List.of(EvictableEntityRule.owning(UserCachePolicy.USER));
+        return List.of(
+            EvictableEntityRule.owning(UserCachePolicy.USER),
+            TtlOnlyRule.covering(ArticleCachePolicy.ARTICLE)
+        );
     }
 }
 ```
+
+`ARTICLE` 은 `@CacheEvict` 와 TTL 로만 만료되므로 지우는 규칙이 없다.
+그래도 `TtlOnlyRule` 로 밝혀야 한다 — 규칙을 쓰기 시작한 모듈에서
+주인 없는 캐시는 의도인지 실수인지 구분되지 않고, 빠뜨리면 기동이 멈춘다.
 
 `AbstractRedisCacheConfig` 는 파이프라인만 확정하고 나머지는 재정의 가능한 메서드로 연다.
 

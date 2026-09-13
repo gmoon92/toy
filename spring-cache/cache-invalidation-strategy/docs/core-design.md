@@ -32,63 +32,73 @@
 ```mermaid
 flowchart TD
     subgraph 정책
-        CP[CachePolicy] --> REG[CachePolicyRegistry]
+        CP[CachePolicy] --> REG[CacheCatalog]
     end
     subgraph 신호 소스 (모듈이 선택)
         HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
         SP[ApplicationEvent AFTER_COMMIT] --> SL[ApplicationEventChangeListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
-        HL --> SINK[CacheInvalidator]
-        SL --> SINK
+        HL --> SAFE[FailSafeCacheInvalidator]
+        SL --> SAFE
+        SAFE --> SINK[RuleBasedCacheInvalidator]
         SINK --> RU[InvalidationRuleSet]
-        RU --> EVI[CacheEvictor]
+        SINK --> EVI[CacheEvictor]
     end
     subgraph 회복력
-        CEH[FallbackCacheErrorHandler]
-        CFR[CacheFailureRecorder]
+        CEH[FallbackCacheErrorHandler] --> CFR[CacheFailureRecorder]
     end
     subgraph 관측
         IR[InvalidationRecorder]
     end
     REG --> CFG[AbstractRedisCacheConfig]
     CFG --> CEH
-    CEH --> CFR
-    EVI --> CFR
-    EVI --> IR
+    SINK --> IR
+    RU --> IR
+    SAFE --> IR
 ```
 
 회복력과 관측은 다른 책임이다.
 회복력은 캐시가 죽어도 서비스를 살리고, 관측은 무효화가 **성공했든 실패했든** 결과를 남긴다.
-한 패키지에 두면 패키지 순환이 생겨서 분리했다.
+기록기를 한 곳에 합치려면 `InvalidationRecorder` 가 참조하는 `ChangeSource` · `EvictionOutcome` 까지
+끌고 나가야 하므로 패키지 순환이 생긴다. 각자 자기 관심사 옆에 둔다.
+
+`CacheEvictor` 는 어디에도 기록하지 않는다. 결과만 돌려주고 기록은 호출자가 한다.
+지우는 쪽과 세는 쪽이 모두 기록하면 같은 실패가 두 번 쌓인다.
 
 ## 패키지 배치
 
-최상위는 셋뿐이다. 열면 하위 축이 바로 보인다.
+최상위를 열면 캐시를 다루는 축이 목차처럼 늘어선다.
 
 ```text
-cache/              캐시를 어떻게 다루나
-    policy/         어떤 캐시가 있고 수명이 얼마인가
-    eviction/       어떻게 지우나
-    expiration/     언제 만료되나
-    serialization/  어떤 형식으로 저장하나
-    resilience/     캐시가 죽어도 서비스를 살린다
+policy/             어떤 캐시가 있고 수명이 얼마인가
+expiration/         언제 만료되나
+serialization/      어떤 형식으로 저장하나
+resilience/         캐시가 죽어도 서비스를 살린다
 invalidation/       언제 무엇을 지우나
-    event/          변경 사실
+    change/         변경 사실
     listener/       변경을 감지하는 어댑터
-    metrics/        무효화 결과 기록
 config/             스프링 배선과 프로퍼티
 ```
 
-의존은 아래에서 위로만 흐른다.
+모듈명이 이미 캐시를 말하므로 `cache/` 로 한 번 더 감싸지 않는다.
+`eviction` 이라는 이름도 쓰지 않는다 — 이 저장소에서 그 말은
+[메모리 압박에 의한 축출](eviction/)을 뜻하고, 여기서 하는 일은 명시적 삭제다.
 
-| 계층 | 참조 대상 |
+의존은 한 방향으로만 흐른다.
+
+| 패키지 | 참조 대상 |
 |-----|---------|
-| `cache/**` | 같은 `cache` 안에서만 (바깥을 모른다) |
-| `invalidation/**` | `cache` + 자기 하위 |
-| `config/` | 전부 |
+| `policy` · `expiration` · `resilience` | 없음 (말단) |
+| `serialization` | `policy` |
+| `invalidation` | `policy` · `invalidation.change` |
+| `invalidation.listener` | `invalidation` · `invalidation.change` |
+| `config` | 전부 |
 
-`cache.policy` · `cache.expiration` · `cache.resilience` · `invalidation.event` 은 말단이다. 순환은 없다.
+순환은 0이다. 특히 **`policy` 는 무효화를 모른다.**
+정책이 `InvalidationOwner` 같은 무효화 어휘를 들고 있으면 import 그래프는 깨끗해 보여도
+개념은 이미 역류한 상태다. 소유권은 정책의 속성이 아니라 정책과 규칙 사이의 관계이므로
+[규칙 쪽에서만](#무효화-소유권) 선언한다.
 
 무효화가 필요 없는 모듈은 신호 소스를 선언하지 않는다.
 `ttl-only` 가 그 경우이며, 리스너 빈이 하나도 등록되지 않는다는 것을 테스트로 고정한다.
@@ -100,26 +110,54 @@ config/             스프링 배선과 프로퍼티
 
 ```java
 public interface CachePolicy {
-    String cacheName();
-    Duration ttl();
+    Spec spec();
+
+    record Spec(String cacheName, Duration ttl, Class<?> valueType) { }
 }
 ```
 
 ```java
 public enum UserCachePolicy implements CachePolicy {
-    USER(Name.USER, Duration.ofMinutes(10));
+    USER(new Spec(Name.USER, Duration.ofMinutes(10), CachedUser.class));
 }
 ```
 
+값을 `Spec` 에 모은 덕에 구현 enum 은 필드 하나만 들고,
+무효화를 쓰지 않는 모듈은 무효화 어휘를 한 번도 만나지 않는다.
+
 모듈은 `cachePolicies()` 를 구현해 자기 정책을 등록하고,
-`CachePolicyRegistry`가 모아 캐시명 중복을 거부한다.
+`CacheCatalog` 가 모아 캐시명 중복을 거부한다.
+
+## 무효화 소유권
+
+캐시를 등록해 놓고 아무도 지우지 않으면, 그 사실은 운영 중에만 드러난다.
+그래서 규칙이 자기가 책임지는 캐시를 밝히고, 기동할 때 선언 목록과 대조한다.
+
+```java
+@Override
+protected List<InvalidationRule> invalidationRules() {
+    return List.of(
+        EvictableEntityRule.owning(UserCachePolicy.USER),
+        TtlOnlyRule.covering(ArticleCachePolicy.ARTICLE)
+    );
+}
+```
+
+`TtlOnlyRule` 은 아무것도 지우지 않지만 주인은 된다.
+시간 만료에 맡기겠다는 판단과 그냥 빠뜨린 것을 구분하기 위해서다.
+
+소유 대상은 캐시명 문자열이 아니라 `CachePolicy` 그 자체다.
+문자열로 내리면 오타가 컴파일을 통과하고, 그 구멍을 메우려고 기동 검증이 더 필요해진다.
+
+규칙을 하나도 선언하지 않은 모듈은 대조하지 않는다.
+무효화를 쓰지 않으면 TTL 이 유일한 수단이므로 주인을 물을 대상이 없다.
 
 ## 무효화 — Rule이 기본, 인터페이스는 단축키
 
 ```java
 public interface InvalidationRule {
     boolean supports(EntityChange change);
-    Collection<CacheEntryRef> resolve(EntityChange change);
+    Collection<CacheKey> resolve(EntityChange change);
 }
 ```
 
@@ -159,12 +197,13 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 `CachingConfigurer` 구현이 **필수**다. `@Bean CacheErrorHandler`만으로는 등록되지 않는다.
 자세한 근거는 [cache-failure-modes.md](concepts/cache-failure-modes.md).
 
-| 경로 | 처리 |
-|-----|-----|
-| 애노테이션 기반(`@Cacheable` 등) | `CacheErrorHandler`가 감싼다 |
-| 프로그래밍 방식(`CacheEvictor`) | 직접 try/catch 후 `CacheFailureRecorder`에 기록 |
+| 경로 | 처리 | 기록 |
+|-----|-----|-----|
+| 애노테이션 기반(`@Cacheable` 등) | `CacheErrorHandler` 가 감싼다 | `CacheFailureRecorder` |
+| 프로그래밍 방식(`CacheEvictor`) | 결과 코드로 돌려준다 | `InvalidationRecorder` |
 
-두 경로 모두 실패를 **같은 레코더**에 모아 관측 지점을 하나로 유지한다.
+기록처는 둘이고, 묻는 질문이 다르다.
+앞은 "캐시 인프라가 성한가", 뒤는 "무효화가 목적을 이뤘는가"를 센다.
 
 ## 설정
 

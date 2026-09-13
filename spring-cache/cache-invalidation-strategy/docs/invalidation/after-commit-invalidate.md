@@ -35,7 +35,7 @@ public void updateUser(Long userId, UpdateUserCommand command) {
 ```java
 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 public void evictOnUserChanged(UserChangedEvent event) {
-    cacheEvictor.evict(CacheEntryRef.of(CachePolicy.USER, event.userId()));
+    cacheEvictor.evict(CacheKey.of(CachePolicy.USER, event.userId()));
 }
 ```
 

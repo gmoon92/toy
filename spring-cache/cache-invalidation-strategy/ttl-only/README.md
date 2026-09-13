@@ -55,14 +55,17 @@ sequenceDiagram
 
 | 클래스 | 역할 |
 |-------|-----|
-| `UserCachePolicy` | 캐시 이름·TTL·값 타입을 선언한다. `invalidatedByTtlOnly()` 로 무효화 주인이 없음을 명시 |
+| `UserCachePolicy` | 캐시 이름·TTL·값 타입을 선언한다 |
 | `UserQueryService` | `@Cacheable` 만 선언한다 |
 | `UserCommandService` | 캐시를 전혀 모른다 |
 
-`CachePolicy.Spec.invalidatedByTtlOnly()` 는 단순한 표시가 아니다.
-코어의 기동 검증이 "규칙이 소유하지 않는 캐시"를 기본적으로 거부하기 때문에,
-이 선언이 없으면 애플리케이션이 뜨지 않는다.
-TTL에만 의존하겠다는 결정을 코드에 남기도록 강제하는 장치다.
+정책에는 무효화에 관한 말이 한 마디도 없다.
+무효화 규칙을 하나도 선언하지 않았으므로 코어가 소유권을 따지지 않고,
+이 모듈은 `invalidation` 패키지를 제품 코드에서 한 번도 import 하지 않는다.
+
+규칙을 쓰기 시작한 모듈이라면 이야기가 달라진다.
+그때부터는 TTL 에 맡길 캐시도 `TtlOnlyRule` 로 밝혀야 하고,
+빠뜨리면 기동이 멈춘다 — [write-invalidate](../write-invalidate/README.md) 가 그 경우다.
 
 ## 설정
 
