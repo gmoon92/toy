@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation;
+package com.gmoon.cacheinvalidation.core.config;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -13,27 +13,29 @@ import org.junit.jupiter.api.Test;
 
 import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEntryRef;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
 import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationOwner;
-import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.core.invalidation.event.EntityChange;
 
+/**
+ * 무효화 주인이 없는 캐시를 기동에서 막는다.
+ * 검증이 설정 안에 있으므로 컨텍스트 없이 설정 객체를 직접 만들어 확인한다.
+ */
 @DisplayName("무효화 소유권 기동 검증")
-class CacheOwnershipValidatorTest {
+class CacheOwnershipTest {
 
 	@Nested
 	@DisplayName("RULE 로 선언한 캐시를 아무 규칙도 소유하지 않으면")
-	class WhenRuleModeCacheHasNoOwner {
+	class WhenRuleOwnedCacheHasNoRule {
 
 		@Test
 		@DisplayName("기동을 중단한다")
 		void failsFast() {
-			CacheOwnershipValidator validator = validatorOf(
-				 policyOf("ORPHAN", InvalidationOwner.RULE));
+			AbstractRedisCacheConfig config = configOf(policyOf("ORPHAN", InvalidationOwner.RULE));
 
 			assertThatIllegalStateException()
 				 .as("소유자 없는 캐시를 허용하면 무효화 누락이 운영 중에만 드러난다")
-				 .isThrownBy(validator::afterPropertiesSet)
+				 .isThrownBy(config::validateInvalidationOwnership)
 				 .withMessageContaining("ORPHAN");
 		}
 	}
@@ -44,65 +46,69 @@ class CacheOwnershipValidatorTest {
 
 		@Test
 		@DisplayName("소유 규칙이 없어도 기동한다")
-		void startsWithoutOwner() {
-			CacheOwnershipValidator validator = validatorOf(
-				 policyOf("TTL_BOUND", InvalidationOwner.TTL_ONLY));
+		void startsWithoutRule() {
+			AbstractRedisCacheConfig config = configOf(policyOf("TTL_BOUND", InvalidationOwner.TTL_ONLY));
 
 			assertThatNoException()
 				 .as("TTL 만으로 최신성을 보장하겠다는 선언은 유효한 선택이다")
-				 .isThrownBy(validator::afterPropertiesSet);
+				 .isThrownBy(config::validateInvalidationOwnership);
 		}
 	}
 
 	@Nested
 	@DisplayName("규칙이 등록되지 않은 캐시명을 소유하겠다고 선언하면")
-	class WhenRuleOwnsUnregisteredCache {
+	class WhenRuleOwnsUnknownCache {
 
 		@Test
 		@DisplayName("기동을 중단한다")
 		void failsFast() {
-			CachePolicy registered = policyOf("REGISTERED", InvalidationOwner.TTL_ONLY);
-			CacheOwnershipValidator validator = new CacheOwnershipValidator(
-				 new CachePolicyRegistry(List.of(registered)),
-				 rulesOf(ruleOwning("TYPO_CACHE")));
+			AbstractRedisCacheConfig config = configOf(
+				 List.of(policyOf("REGISTERED", InvalidationOwner.TTL_ONLY)),
+				 ruleOwning("TYPO_CACHE"));
 
 			assertThatIllegalStateException()
 				 .as("캐시명 오타는 조용한 무효화 실패로 이어진다")
-				 .isThrownBy(validator::afterPropertiesSet)
+				 .isThrownBy(config::validateInvalidationOwnership)
 				 .withMessageContaining("TYPO_CACHE");
 		}
 	}
 
 	@Nested
 	@DisplayName("RULE 캐시를 소유하는 규칙이 있으면")
-	class WhenOwnerExists {
+	class WhenRuleOwnsCache {
 
 		@Test
 		@DisplayName("기동한다")
 		void starts() {
-			CachePolicy owned = policyOf("OWNED", InvalidationOwner.RULE);
-			CacheOwnershipValidator validator = new CacheOwnershipValidator(
-				 new CachePolicyRegistry(List.of(owned)),
-				 rulesOf(ruleOwning("OWNED")));
+			AbstractRedisCacheConfig config = configOf(
+				 List.of(policyOf("OWNED", InvalidationOwner.RULE)),
+				 ruleOwning("OWNED"));
 
-			assertThatNoException().isThrownBy(validator::afterPropertiesSet);
+			assertThatNoException().isThrownBy(config::validateInvalidationOwnership);
 		}
 	}
 
-	private CacheOwnershipValidator validatorOf(CachePolicy policy) {
-		return new CacheOwnershipValidator(
-			 new CachePolicyRegistry(List.of(policy)),
-			 rulesOf());
+	private AbstractRedisCacheConfig configOf(CachePolicy policy) {
+		return configOf(List.of(policy));
 	}
 
-	private InvalidationRuleSet rulesOf(InvalidationRule... rules) {
-		return new InvalidationRuleSet(List.of(rules), new InvalidationRecorder());
+	private AbstractRedisCacheConfig configOf(List<CachePolicy> policies, InvalidationRule... rules) {
+		return new AbstractRedisCacheConfig() {
+			@Override
+			protected List<CachePolicy> cachePolicies() {
+				return policies;
+			}
+
+			@Override
+			protected List<InvalidationRule> invalidationRules() {
+				return List.of(rules);
+			}
+		};
 	}
 
-
-	private CachePolicy policyOf(String cacheName, InvalidationOwner mode) {
+	private CachePolicy policyOf(String cacheName, InvalidationOwner owner) {
 		CachePolicy.Spec spec = CachePolicy.Spec.of(cacheName, Duration.ofMinutes(1), String.class);
-		CachePolicy.Spec applied = mode == InvalidationOwner.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
+		CachePolicy.Spec applied = owner == InvalidationOwner.TTL_ONLY ? spec.invalidatedByTtlOnly() : spec;
 		return () -> applied;
 	}
 

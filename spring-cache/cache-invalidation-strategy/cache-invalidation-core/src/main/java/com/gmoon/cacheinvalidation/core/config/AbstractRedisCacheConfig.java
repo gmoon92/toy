@@ -3,7 +3,10 @@ package com.gmoon.cacheinvalidation.core.config;
 import java.util.Collection;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Map;
 
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
@@ -25,14 +28,16 @@ import com.gmoon.cacheinvalidation.core.cache.eviction.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.cache.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
+import com.gmoon.cacheinvalidation.core.cache.policy.InvalidationOwner;
 import com.gmoon.cacheinvalidation.core.cache.serialization.SerializerFactory;
 import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredTtlResolver;
 import com.gmoon.cacheinvalidation.core.cache.serialization.JsonSerializerFactory;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheOwnershipValidator;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.invalidation.RuleBasedCacheInvalidator;
+
+import jakarta.annotation.PostConstruct;
 import com.gmoon.cacheinvalidation.core.cache.resilience.CacheFailureRecorder;
 import com.gmoon.cacheinvalidation.core.cache.resilience.FallbackCacheErrorHandler;
 import com.gmoon.cacheinvalidation.core.invalidation.metrics.InvalidationRecorder;
@@ -82,6 +87,46 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 			 properties.expiration().notFoundTtl());
 	}
 
+	@PostConstruct
+	public void validateInvalidationOwnership() {
+		Set<String> owned = invalidationRules().stream()
+			 .map(InvalidationRule::ownedCacheNames)
+			 .flatMap(Collection::stream)
+			 .collect(Collectors.toUnmodifiableSet());
+
+		rejectCachesWithoutOwner(owned);
+		rejectOwnershipOfUnregisteredCaches(owned);
+	}
+
+	private void rejectCachesWithoutOwner(Set<String> ownedCacheNames) {
+		List<String> withoutOwner = cachePolicies().stream()
+			 .filter(policy -> policy.invalidationOwner() == InvalidationOwner.RULE)
+			 .map(CachePolicy::cacheName)
+			 .filter(cacheName -> !ownedCacheNames.contains(cacheName))
+			 .toList();
+
+		if (!withoutOwner.isEmpty()) {
+			throw new IllegalStateException(
+				 "No InvalidationRule owns these caches: " + withoutOwner
+					  + ". Declare an owning rule, or set invalidationOwner() to TTL_ONLY.");
+		}
+	}
+
+	private void rejectOwnershipOfUnregisteredCaches(Set<String> ownedCacheNames) {
+		Set<String> registered = cachePolicies().stream()
+			 .map(CachePolicy::cacheName)
+			 .collect(Collectors.toUnmodifiableSet());
+
+		List<String> unregistered = ownedCacheNames.stream()
+			 .filter(cacheName -> !registered.contains(cacheName))
+			 .toList();
+
+		if (!unregistered.isEmpty()) {
+			throw new IllegalStateException(
+				 "Rules claim ownership of unregistered caches: " + unregistered);
+		}
+	}
+
 	@Bean
 	public CachePolicyRegistry cachePolicyRegistry() {
 		return new CachePolicyRegistry(cachePolicies());
@@ -92,13 +137,6 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		return new InvalidationRuleSet(invalidationRules(), recorder);
 	}
 
-	@Bean
-	public CacheOwnershipValidator cacheOwnershipValidator(
-		 CachePolicyRegistry registry,
-		 InvalidationRuleSet rules
-	) {
-		return new CacheOwnershipValidator(registry, rules);
-	}
 
 	@Bean
 	public CacheInvalidator cacheInvalidator(
