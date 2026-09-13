@@ -12,20 +12,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.gmoon.cacheinvalidation.core.cache.expiration.JitteredTtlResolver;
-import com.gmoon.cacheinvalidation.core.cache.expiration.TtlResolver;
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicy;
-import com.gmoon.cacheinvalidation.core.cache.policy.CachePolicyRegistry;
-import com.gmoon.cacheinvalidation.core.cache.serialization.JsonSerializerFactory;
-import com.gmoon.cacheinvalidation.core.cache.serialization.SerializerFactory;
+import com.gmoon.cacheinvalidation.core.expiration.JitteredTtlResolver;
+import com.gmoon.cacheinvalidation.core.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
+import com.gmoon.cacheinvalidation.core.invalidation.FailSafeCacheInvalidator;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
+import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
+import com.gmoon.cacheinvalidation.core.policy.CacheCatalog;
+import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.core.serialization.JsonSerializerFactory;
+import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 
 /**
  * 확장점은 모두 {@code public} 메서드이므로 스프링 컨텍스트 없이 직접 호출해 검증한다.
@@ -119,6 +124,71 @@ class AbstractRedisCacheConfigTest {
 		}
 	}
 
+	@Nested
+	@DisplayName("무효화기를 조립하면")
+	class WhenInvalidatorAssembled {
+
+		@Test
+		@DisplayName("실패를 삼키는 껍데기로 감싼다")
+		void wrapsWithFailSafe() {
+			AbstractRedisCacheConfig config = new TestCacheConfig();
+			InvalidationRecorder recorder = new InvalidationRecorder();
+
+			assertThat(config.cacheInvalidator(
+				 new InvalidationRuleSet(List.of(), recorder),
+				 new CacheEvictor(new ConcurrentMapCacheManager()),
+				 recorder))
+				 .as("리스너가 각자 try/catch 하던 것을 한 곳으로 모았으므로, 배선이 빠지면 보호가 사라진다")
+				 .isInstanceOf(FailSafeCacheInvalidator.class);
+		}
+	}
+
+	@Nested
+	@DisplayName("무효화 규칙을 선언하지 않으면")
+	class WhenNoRuleDeclared {
+
+		@Test
+		@DisplayName("소유권을 따지지 않고 기동한다")
+		void skipsOwnershipCheck() {
+			AbstractRedisCacheConfig config = new AbstractRedisCacheConfig() {
+				@Override
+				protected List<CachePolicy> cachePolicies() {
+					return List.of(TestCachePolicy.USER);
+				}
+			};
+
+			assertThatNoException()
+				 .as("무효화를 쓰지 않는 모듈은 TTL 이 유일한 수단이므로 주인을 물을 대상이 없다")
+				 .isThrownBy(config::validateInvalidationOwnership);
+		}
+	}
+
+	@Nested
+	@DisplayName("무효화 규칙을 하나라도 선언하면")
+	class WhenRuleDeclared {
+
+		@Test
+		@DisplayName("주인 없는 캐시를 기동에서 막는다")
+		void rejectsPolicyWithoutOwner() {
+			AbstractRedisCacheConfig config = new AbstractRedisCacheConfig() {
+				@Override
+				protected List<CachePolicy> cachePolicies() {
+					return List.of(TestCachePolicy.USER, TestCachePolicy.USER_SUMMARY);
+				}
+
+				@Override
+				protected List<InvalidationRule> invalidationRules() {
+					return List.of(EvictableEntityRule.owning(TestCachePolicy.USER));
+				}
+			};
+
+			assertThatIllegalStateException()
+				 .as("규칙을 쓰기 시작하면 어떤 캐시를 지우고 어떤 캐시를 시간에 맡기는지 밝혀야 한다")
+				 .isThrownBy(config::validateInvalidationOwnership)
+				 .withMessageContaining(TestCachePolicy.Name.USER_SUMMARY);
+		}
+	}
+
 	private String serializedValueOf(AbstractRedisCacheConfig config) {
 		ByteBuffer written = configurationOf(config).getValueSerializationPair().write("hello");
 		return StandardCharsets.UTF_8.decode(written).toString();
@@ -133,8 +203,9 @@ class AbstractRedisCacheConfigTest {
 			 RedisCacheManager.builder(mock(RedisConnectionFactory.class));
 
 		config.cachePolicyCustomizer(
-			 new CachePolicyRegistry(config.cachePolicies()),
-			 PROPERTIES,
+			 new CacheCatalog(config.cachePolicies()),
+			 config.serializerFactory(),
+			 config.ttlResolver(PROPERTIES),
 			 new CacheProperties()
 		).customize(builder);
 
