@@ -1,6 +1,7 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +32,7 @@ class RuleBasedCacheInvalidatorTest {
 	@BeforeEach
 	void setUp() {
 		cacheManager = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER, TestCachePolicy.Name.USER_SUMMARY);
-		invalidationRecorder = new InvalidationRecorder();
+		invalidationRecorder = mock(InvalidationRecorder.class);
 	}
 
 	@Nested
@@ -95,10 +96,8 @@ class RuleBasedCacheInvalidatorTest {
 			assertThatNoException()
 				 .as("무효화 실패가 전파되면 커밋된 트랜잭션 이후 흐름이 깨진다")
 				 .isThrownBy(() -> invalidator.invalidate(EntityChange.deleted(new CacheableUser(1L)), SOURCE));
-			assertThat(invalidationRecorder.evictionCount(
-				 TestCachePolicy.Name.USER, SOURCE, EvictionOutcome.FAILED))
-				 .as("실패가 결과로 기록되지 않으면 무효화 유실이 조용히 묻힌다")
-				 .isEqualTo(1);
+			verify(invalidationRecorder, description("실패가 결과로 기록되지 않으면 무효화 유실이 조용히 묻힌다"))
+				 .recordEviction(TestCachePolicy.Name.USER, SOURCE, EvictionOutcome.FAILED);
 		}
 	}
 

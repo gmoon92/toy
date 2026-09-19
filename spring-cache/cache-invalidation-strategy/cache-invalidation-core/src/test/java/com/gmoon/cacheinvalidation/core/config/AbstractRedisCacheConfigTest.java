@@ -132,7 +132,7 @@ class AbstractRedisCacheConfigTest {
 		@DisplayName("실패를 삼키는 껍데기로 감싼다")
 		void wrapsWithFailSafe() {
 			AbstractRedisCacheConfig config = new TestCacheConfig();
-			InvalidationRecorder recorder = new InvalidationRecorder();
+			InvalidationRecorder recorder = InvalidationRecorder.NONE;
 
 			assertThat(config.cacheInvalidator(
 				 new InvalidationRuleSet(List.of(), recorder),

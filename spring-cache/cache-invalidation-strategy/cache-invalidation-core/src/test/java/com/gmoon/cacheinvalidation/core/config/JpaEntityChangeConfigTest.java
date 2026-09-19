@@ -20,7 +20,7 @@ class JpaEntityChangeConfigTest {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 		 .withBean(CacheInvalidator.class, () -> mock(CacheInvalidator.class))
-		 .withBean(InvalidationRecorder.class, InvalidationRecorder::new)
+		 .withBean(InvalidationRecorder.class, () -> InvalidationRecorder.NONE)
 		 .withUserConfiguration(JpaEntityChangeConfig.class);
 
 	@Nested

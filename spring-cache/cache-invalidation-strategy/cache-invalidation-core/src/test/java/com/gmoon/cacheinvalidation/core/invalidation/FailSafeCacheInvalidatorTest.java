@@ -1,6 +1,7 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ class FailSafeCacheInvalidatorTest {
 
 	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
 
-	private final InvalidationRecorder recorder = new InvalidationRecorder();
+	private final InvalidationRecorder recorder = mock(InvalidationRecorder.class);
 
 	@Nested
 	@DisplayName("무효화가 예외를 던지면")
@@ -41,12 +42,10 @@ class FailSafeCacheInvalidatorTest {
 		void recordsFailureBySource() {
 			invalidator.invalidate(EntityChange.inserted(new Object()), SOURCE);
 
-			assertThat(recorder.pipelineFailureCount(SOURCE))
-				 .as("조용히 삼키기만 하면 무효화 누락을 알아챌 방법이 없다")
-				 .isOne();
-			assertThat(recorder.pipelineFailureCount(ChangeSource.APPLICATION_EVENT))
-				 .as("실패한 소스만 세어야 어느 경로가 깨졌는지 가려진다")
-				 .isZero();
+			verify(recorder, description("조용히 삼키기만 하면 무효화 누락을 알아챌 방법이 없다"))
+				 .recordPipelineFailure(SOURCE);
+			verify(recorder, never().description("실패한 소스만 세어야 어느 경로가 깨졌는지 가려진다"))
+				 .recordPipelineFailure(ChangeSource.APPLICATION_EVENT);
 		}
 	}
 
@@ -67,9 +66,8 @@ class FailSafeCacheInvalidatorTest {
 			assertThat(delegated)
 				 .as("감싸는 과정에서 신호가 바뀌거나 사라지면 안 된다")
 				 .containsExactly(change);
-			assertThat(recorder.pipelineFailureCount(SOURCE))
-				 .as("성공을 실패로 세면 지표가 거짓말을 한다")
-				 .isZero();
+			verify(recorder, never().description("성공을 실패로 세면 지표가 거짓말을 한다"))
+				 .recordPipelineFailure(SOURCE);
 		}
 	}
 }

@@ -17,7 +17,7 @@ import com.gmoon.cacheinvalidation.core.invalidation.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
 import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.test.measure.InvalidationCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
@@ -34,7 +34,7 @@ class JpaEntityChangeTest {
 	@Autowired TransactionTemplate transactionTemplate;
 	@Autowired EntityManager entityManager;
 	@Autowired ApplicationEventPublisher eventPublisher;
-	@Autowired InvalidationRecorder invalidationRecorder;
+	@Autowired InvalidationCounter invalidationCounter;
 
 	private Long userId;
 
@@ -42,7 +42,7 @@ class JpaEntityChangeTest {
 	void setUp() {
 		cacheManager.getCache(UserCachePolicy.Name.USER).clear();
 		userId = userCommandService.register("alice-" + System.nanoTime(), ORIGINAL_EMAIL);
-		invalidationRecorder.reset();
+		invalidationCounter.reset();
 	}
 
 	@Nested
@@ -147,7 +147,7 @@ class JpaEntityChangeTest {
 
 			transactionTemplate.executeWithoutResult(status -> publishChangeOf(userId));
 
-			assertThat(invalidationRecorder.evictionCount(
+			assertThat(invalidationCounter.evictionCount(
 				 UserCachePolicy.Name.USER, ChangeSource.APPLICATION_EVENT, EvictionOutcome.EVICT_REQUESTED))
 				 .as("두 소스를 함께 쓰면 어느 쪽이 무효화했는지 구분되어야 운영에서 추적할 수 있다")
 				 .isEqualTo(1);

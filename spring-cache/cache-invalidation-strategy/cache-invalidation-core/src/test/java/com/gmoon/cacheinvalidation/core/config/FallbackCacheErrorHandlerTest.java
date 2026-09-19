@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.resilience;
+package com.gmoon.cacheinvalidation.core.config;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
+
+import com.gmoon.cacheinvalidation.core.config.CacheFailureRecorder.Operation;
 
 @DisplayName("캐시 장애 처리")
 class FallbackCacheErrorHandlerTest {
@@ -23,7 +25,7 @@ class FallbackCacheErrorHandlerTest {
 
 	@BeforeEach
 	void setUp() {
-		recorder = new CacheFailureRecorder();
+		recorder = mock(CacheFailureRecorder.class);
 		handler = new FallbackCacheErrorHandler(recorder);
 		cache = mock(Cache.class);
 		when(cache.getName()).thenReturn(CACHE_NAME);
@@ -61,7 +63,7 @@ class FallbackCacheErrorHandlerTest {
 		void recordsFailure() {
 			handler.handleCacheGetError(REDIS_DOWN, cache, 1L);
 
-			assertThat(recorder.failureCount(CacheOperation.GET)).isOne();
+			verify(recorder).record(Operation.GET);
 		}
 	}
 
@@ -73,7 +75,7 @@ class FallbackCacheErrorHandlerTest {
 		@DisplayName("예외를 삼켜 응답에 영향을 주지 않는다")
 		void swallowsWithoutAffectingResponse() {
 			assertThatNoException().isThrownBy(() -> handler.handleCachePutError(REDIS_DOWN, cache, 1L, "value"));
-			assertThat(recorder.failureCount(CacheOperation.PUT)).isOne();
+			verify(recorder).record(Operation.PUT);
 		}
 	}
 
@@ -86,9 +88,8 @@ class FallbackCacheErrorHandlerTest {
 		void swallowsButRecords() {
 			assertThatNoException().isThrownBy(() -> handler.handleCacheEvictError(REDIS_DOWN, cache, 1L));
 
-			assertThat(recorder.failureCount(CacheOperation.EVICT))
-				 .as("무효화 유실은 stale을 남기므로 반드시 관측되어야 한다")
-				 .isOne();
+			verify(recorder, description("무효화 유실은 stale을 남기므로 반드시 관측되어야 한다"))
+				 .record(Operation.EVICT);
 		}
 	}
 
@@ -103,12 +104,9 @@ class FallbackCacheErrorHandlerTest {
 			handler.handleCacheEvictError(REDIS_DOWN, cache, 1L);
 			handler.handleCacheClearError(REDIS_DOWN, cache);
 
-			assertThat(recorder.totalFailureCount())
-				 .as("발생한 실패 횟수의 합")
-				 .isEqualTo(3);
-			assertThat(recorder.failureCount(CacheOperation.PUT))
-				 .as("일어나지 않은 연산까지 집계되면 종류 구분이 무의미하다")
-				 .isZero();
+			verify(recorder, times(3).description("발생한 실패 횟수의 합")).record(any(Operation.class));
+			verify(recorder, never().description("일어나지 않은 연산까지 집계되면 종류 구분이 무의미하다"))
+				 .record(Operation.PUT);
 		}
 	}
 }

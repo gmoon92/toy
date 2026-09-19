@@ -30,8 +30,6 @@ import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
 import com.gmoon.cacheinvalidation.core.invalidation.RuleBasedCacheInvalidator;
 import com.gmoon.cacheinvalidation.core.policy.CacheCatalog;
 import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
-import com.gmoon.cacheinvalidation.core.resilience.CacheFailureRecorder;
-import com.gmoon.cacheinvalidation.core.resilience.FallbackCacheErrorHandler;
 import com.gmoon.cacheinvalidation.core.serialization.JsonSerializerFactory;
 import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 
@@ -120,12 +118,12 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	public CacheFailureRecorder cacheFailureRecorder() {
-		return new CacheFailureRecorder();
+		return CacheFailureRecorder.NONE;
 	}
 
 	@Bean
 	public InvalidationRecorder invalidationRecorder() {
-		return new InvalidationRecorder();
+		return InvalidationRecorder.NONE;
 	}
 
 	@Bean

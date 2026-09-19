@@ -16,7 +16,7 @@ import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 class InvalidationRuleSetTest {
 
 	private final EntityChange change = EntityChange.inserted(new Object());
-	private final InvalidationRecorder recorder = new InvalidationRecorder();
+	private final InvalidationRecorder recorder = InvalidationRecorder.NONE;
 
 	@Nested
 	@DisplayName("변경 하나에 여러 규칙이 반응하면")

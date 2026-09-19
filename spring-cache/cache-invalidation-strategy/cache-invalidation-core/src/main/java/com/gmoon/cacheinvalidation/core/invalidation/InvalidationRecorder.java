@@ -1,51 +1,33 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
-
 import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
 
-public class InvalidationRecorder {
+/**
+ * 무효화 파이프라인이 결과를 내보내는 쓰기 전용 포트다.
+ * <p>
+ * 코어는 집계하지 않는다. 기본 구현 {@link #NONE} 은 아무것도 하지 않으며,
+ * 세는 구현은 측정이 필요한 쪽이 제공한다.
+ */
+public interface InvalidationRecorder {
 
-	private final Map<EvictionKey, LongAdder> evictions = new ConcurrentHashMap<>();
-	private final Map<String, LongAdder> ruleFailures = new ConcurrentHashMap<>();
-	private final Map<ChangeSource, LongAdder> pipelineFailures = new ConcurrentHashMap<>();
+	InvalidationRecorder NONE = new InvalidationRecorder() {
 
-	public record EvictionKey(String cacheName, ChangeSource source, EvictionOutcome outcome) {
-	}
+		@Override
+		public void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome) {
+		}
 
-	public void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome) {
-		counterOf(evictions, new EvictionKey(cacheName, source, outcome)).increment();
-	}
+		@Override
+		public void recordRuleFailure(String ruleName) {
+		}
 
-	public void recordRuleFailure(String ruleName) {
-		counterOf(ruleFailures, ruleName).increment();
-	}
+		@Override
+		public void recordPipelineFailure(ChangeSource source) {
+		}
+	};
 
-	public void recordPipelineFailure(ChangeSource source) {
-		counterOf(pipelineFailures, source).increment();
-	}
+	void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome);
 
-	public long evictionCount(String cacheName, ChangeSource source, EvictionOutcome outcome) {
-		return counterOf(evictions, new EvictionKey(cacheName, source, outcome)).sum();
-	}
+	void recordRuleFailure(String ruleName);
 
-	public long ruleFailureCount(String ruleName) {
-		return counterOf(ruleFailures, ruleName).sum();
-	}
-
-	public long pipelineFailureCount(ChangeSource source) {
-		return counterOf(pipelineFailures, source).sum();
-	}
-
-	public void reset() {
-		evictions.clear();
-		ruleFailures.clear();
-		pipelineFailures.clear();
-	}
-
-	private <K> LongAdder counterOf(Map<K, LongAdder> counters, K key) {
-		return counters.computeIfAbsent(key, ignored -> new LongAdder());
-	}
+	void recordPipelineFailure(ChangeSource source);
 }
