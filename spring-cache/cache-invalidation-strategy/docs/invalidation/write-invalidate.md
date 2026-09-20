@@ -106,7 +106,7 @@ sequenceDiagram
 남는 것은 누락 축이다 — 어노테이션을 붙이지 않은 쓰기 경로는 여전히 조용히 stale을 남긴다.
 
 **다만 엔티티 이벤트와 함께 쓰면 위험하다.** `transactionAware()` 는 `put` 도 지연시키는데,
-`CacheEvictor` 는 커밋 이후에 실행되므로 지연된 `put` 이 `evict` 보다 늦게 착지할 수 있다.
+프로그래밍 방식 무효화는 커밋 이후에 실행되므로 지연된 `put` 이 `evict` 보다 늦게 착지할 수 있다.
 두 축을 섞을 때는 켜지 않는다.
 
 ### evictIfPresent 의 반환값은 Redis 에서 의미가 없다

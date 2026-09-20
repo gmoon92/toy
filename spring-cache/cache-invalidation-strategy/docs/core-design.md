@@ -36,14 +36,14 @@ flowchart TD
     end
     subgraph 신호 소스 (모듈이 선택)
         HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
-        SP[ApplicationEvent AFTER_COMMIT] --> SL[ApplicationEventChangeListener]
+        SP[ApplicationEvent AFTER_COMMIT] --> SL[PublishedEntityChangeListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
         HL --> SAFE[FailSafeCacheInvalidator]
         SL --> SAFE
-        SAFE --> SINK[RuleBasedCacheInvalidator]
-        SINK --> RU[InvalidationRuleSet]
-        SINK --> EVI[CacheEvictor]
+        SAFE --> SINK[DefaultCacheInvalidator]
+        SINK --> RU[규칙으로 대상 산출]
+        SINK --> EVI[캐시 삭제]
     end
     subgraph 기록 포트 (코어는 세지 않는다)
         CFR[CacheFailureRecorder]
@@ -65,24 +65,28 @@ flowchart TD
 세는 구현은 측정이 필요한 쪽이 제공한다 — `cache-invalidation-test` 의 `InvalidationCounter` 가 그것이다.
 운영에서 남는 신호는 리스너와 evictor 의 WARN 로그다. 부하 측정을 시작하면 Micrometer 로 올린다.
 
-`CacheEvictor` 는 어디에도 기록하지 않는다. 결과만 돌려주고 기록은 호출자가 한다.
-지우는 쪽과 세는 쪽이 모두 기록하면 같은 실패가 두 번 쌓인다.
+규칙 산출과 삭제는 `DefaultCacheInvalidator` 하나가 맡는다.
+`DefaultRedisCacheWriter` 가 연결·배치·통계를 혼자 처리하는 것과 같은 결이다.
+쪼개 두면 결과 코드가 클래스 경계를 넘나들고, 지우는 쪽과 세는 쪽이 모두 기록해 같은 실패가 두 번 쌓인다.
 
 ## 패키지 배치
 
 최상위를 열면 캐시를 다루는 축이 목차처럼 늘어선다.
 
 ```text
-policy/             어떤 캐시가 있고 수명이 얼마인가
+(루트)              무효화 계약과 그 구현 — 모듈의 주 책임
+serializer/         어떤 형식으로 저장하나
 expiration/         언제 만료되나
-serialization/      어떤 형식으로 저장하나
-invalidation/       언제 무엇을 지우나 — 변경 사실·감지 어댑터·규칙·실행을 모두 포함
 config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시의 폴백
 ```
 
-하위 패키지를 두지 않는다. 자바 package-private 은 **하위 패키지도 남**이므로,
-`invalidation/change` 와 `invalidation/listener` 를 나누는 순간 그 안의 타입은 전부 공개될 수밖에 없다.
-`resilience/` 도 없앴다 — 축이 아니라 품질 속성 이름이었고, 폴백이 도는 상황은
+**계약과 구현을 같은 패키지에 둔다.** 자바 package-private 은 하위 패키지도 남이므로,
+구현을 감추려면 그것을 만드는 정적 팩토리와 같은 패키지여야 한다.
+`spring-data-redis` 의 `serializer` 가 `RedisSerializer` 계약과 구현 8종을 한자리에 두는 이유가 이것이다.
+`connection` → `connection.lettuce` 같은 분할은 조직화일 뿐 접근 강제가 아니다 (Lettuce 구현은 public).
+
+모듈명이 이미 무효화를 말하므로 루트 아래 `invalidation/` 을 한 번 더 두지 않는다.
+`resilience/` 도 두지 않는다 — 축이 아니라 품질 속성 이름이고, 폴백이 도는 상황은
 `CachingConfigurer.errorHandler()` 가 사는 `config/` 그대로다.
 
 모듈명이 이미 캐시를 말하므로 `cache/` 로 한 번 더 감싸지 않는다.
@@ -91,12 +95,12 @@ config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시�
 
 의존은 한 방향으로만 흐른다.
 
-| 패키지 | 참조 대상 |
-|-----|---------|
-| `policy` · `expiration` | 없음 (말단) |
-| `serialization` | `policy` |
-| `invalidation` | `policy` |
-| `config` | 전부 |
+| 패키지 | 참조 대상 | 역방향이 막히는 근거 |
+|-----|---------|----------------|
+| (루트) | 없음 | — |
+| `expiration` | 없음 | 구현이 package-private |
+| `serializer` | 루트(`CachePolicy`) | 〃 |
+| `config` | 루트 · `serializer` · `expiration` 의 **공개 계약만** | 구현체가 보이지 않아 `new` 자체가 컴파일되지 않는다 |
 
 순환은 0이다. 특히 **`policy` 는 무효화를 모른다.**
 정책이 `InvalidationOwner` 같은 무효화 어휘를 들고 있으면 import 그래프는 깨끗해 보여도
@@ -115,10 +119,10 @@ config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시�
 |-----|-----------|
 | `AbstractRedisCacheConfig` | 상속해서 모듈 설정을 만든다 |
 | `CachePolicy` | 캐시 이름·TTL·값 타입을 enum 으로 선언한다 |
-| `JpaEntityChangeConfig` · `ApplicationEventChangeConfig` | 감지 방식을 `@Import` 로 켠다 |
+| `JpaEntityChangeConfig` · `PublishedEntityChangeConfig` | 감지 방식을 `@Import` 로 켠다 |
 | `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheKey` | 무효화 대상을 선언한다 |
-| `EntityChange` · `EntityState` · `ChangeSource` | JPA 밖 변경을 이벤트로 알린다 |
-| `InvalidationRecorder` · `CacheFailureRecorder` · `EvictionOutcome` | 측정 구현을 끼운다 |
+| `EntityChange` | JPA 밖 변경을 직접 발행한다. `State` · `Source` · `Type` 은 그 안에 중첩 |
+| `InvalidationRecorder` · `CacheFailureRecorder` | 측정 구현을 끼운다. `Outcome` 은 기록기 안에 중첩 |
 | `TtlResolver` · `SerializerFactory` | 만료·직렬화 전략을 재정의한다 |
 
 조립은 계약 위 정적 팩토리가 맡는다. 그래야 구현체가 `config` 에 보일 필요가 없다.
@@ -130,9 +134,13 @@ CacheInvalidator.failSafe(rules, cacheManager, recorder)
 InvalidationRule.verifyOwnership(rules, declaredPolicies)
 ```
 
-`CacheEvictor` · `InvalidationRuleSet` · `RuleBasedCacheInvalidator` · `FailSafeCacheInvalidator` ·
-`InvalidationOwnership` · `JpaEntityChangeListener` · `JitteredTtlResolver` · `JsonSerializerFactory` ·
-`CacheConfigurationFactory` · `FallbackCacheErrorHandler` 는 package-private 이다.
+`DefaultCacheInvalidator` · `FailSafeCacheInvalidator` · `JpaEntityChangeListener` ·
+`PublishedEntityChangeListener` · `JitteredTtlResolver` · `JsonSerializerFactory` ·
+`FallbackCacheErrorHandler` 는 package-private 이다.
+
+전략 전용 규칙은 코어에 두지 않는다. `CacheEvictable` 과 `EvictableEntityRule` 은
+"엔티티가 자기 캐시 키를 안다" 는 특정 전략의 관례이므로 `write-invalidate` 가 소유한다.
+코어는 계약 `InvalidationRule` 과 아무것도 지우지 않는 `TtlOnlyRule` 만 제공한다.
 
 `AbstractRedisCacheConfig` 의 `@Bean` 메서드도 `protected` 다.
 `CachingConfigurer` 구현인 `errorHandler()` 만 `public` 이어야 한다.
@@ -213,7 +221,7 @@ change.previousValueOf("username")   // 자연키가 바뀐 경우 옛 키 산�
 record의 `equals`/`hashCode`가 **참조 동일성**으로 동작해 내용이 같아도 다르다고 판정한다.
 접근자가 가변 배열을 그대로 노출하는 문제도 있다.
 
-그래서 `EntityState` record가 불변 `List`로 감싸고 조회 책임까지 가진다.
+그래서 중첩 record `EntityChange.State` 가 불변 `List` 로 감싸고 조회 책임까지 가진다.
 
 ## 회복력 — 캐시가 죽어도 서비스는 산다
 
@@ -235,7 +243,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 | 경로 | 처리 | 내보내는 포트 |
 |-----|-----|-----|
 | 애노테이션 기반(`@Cacheable` 등) | `CacheErrorHandler` 가 감싼다 | `CacheFailureRecorder` |
-| 프로그래밍 방식(`CacheEvictor`) | 결과 코드로 돌려준다 | `InvalidationRecorder` |
+| 프로그래밍 방식(`DefaultCacheInvalidator`) | 결과 코드로 돌려준다 | `InvalidationRecorder` |
 
 두 포트 모두 코어의 기본 구현은 무연산이다. [구성 요소](#구성-요소) 참조.
 
@@ -289,9 +297,8 @@ Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 
 | 테스트 | 고정하는 명제 |
 |------|------------|
-| `EntityStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
-| `RuleBasedCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화된다 |
-| `InvalidationRuleSetTest` | 규칙 하나가 실패해도 나머지는 수행된다 |
+| `EntityChangeStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
+| `DefaultCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화되고, 규칙 하나가 실패해도 나머지는 수행된다 |
 | `FallbackCacheErrorHandlerTest` | 기본 처리기는 전파하고, 폴백 처리기는 삼키되 기록한다 |
 | `JitteredTtlResolverTest` | 흔들림이 기준 TTL 비율을 넘지 않고 최소 1초를 확보한다 |
 | `AbstractRedisCacheConfigTest` | 재정의한 직렬화·만료 전략이 캐시 설정까지 닿는다 |

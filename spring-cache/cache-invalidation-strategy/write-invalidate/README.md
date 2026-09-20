@@ -93,7 +93,7 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
-    P["ApplicationEventChangeListener<br/>AFTER_COMMIT"] --> S
+    P["PublishedEntityChangeListener<br/>AFTER_COMMIT"] --> S
     S["CacheInvalidator.failSafe(..)"] --> RU[규칙으로 대상 산출]
     RU --> EV[캐시 삭제]
     EV --> C[(Redis DEL)]
@@ -102,7 +102,7 @@ flowchart LR
 조립 단계는 `CacheInvalidator.failSafe(..)` 안에 있고 구현체는 패키지 밖으로 나오지 않는다.
 
 어느 경로로 들어오든 같은 규칙과 같은 evictor를 통과한다.
-`ChangeSource` 로 어느 쪽이 무효화했는지만 구분해 기록하므로,
+`EntityChange.Source` 로 어느 쪽이 무효화했는지만 구분해 기록하므로,
 두 소스를 함께 켜도 운영에서 추적이 가능하다.
 
 ## 설정 확장
@@ -111,7 +111,7 @@ flowchart LR
 
 ```java
 @Configuration
-@Import({JpaEntityChangeConfig.class, ApplicationEventChangeConfig.class})
+@Import({JpaEntityChangeConfig.class, PublishedEntityChangeConfig.class})
 public class CacheConfig extends AbstractRedisCacheConfig {
 
     @Override
