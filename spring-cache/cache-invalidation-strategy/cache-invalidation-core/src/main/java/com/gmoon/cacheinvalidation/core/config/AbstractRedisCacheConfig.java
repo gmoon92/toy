@@ -59,7 +59,6 @@ import jakarta.annotation.PostConstruct;
 @EnableConfigurationProperties(ServiceCacheProperties.class)
 public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
-
 	protected abstract Collection<CachePolicy> cachePolicies();
 
 	protected List<InvalidationRule> invalidationRules() {

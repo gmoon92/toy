@@ -32,7 +32,6 @@ public record ServiceCacheProperties(Expiration expiration, Invalidation invalid
 		invalidation = invalidation == null ? new Invalidation(0) : invalidation;
 	}
 
-
 	/**
 	 * 값이 만료되는 방식.
 	 */

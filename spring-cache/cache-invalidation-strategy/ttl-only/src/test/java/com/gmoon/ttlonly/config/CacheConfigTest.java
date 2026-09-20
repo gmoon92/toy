@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.core.config.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.core.invalidation.listener.ApplicationEventChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.ApplicationEventChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest

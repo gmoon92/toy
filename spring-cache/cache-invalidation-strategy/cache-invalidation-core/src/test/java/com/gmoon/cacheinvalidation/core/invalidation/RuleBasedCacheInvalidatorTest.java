@@ -16,9 +16,6 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
 import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
 
 @DisplayName("엔티티 변경 무효화 실행")
 class RuleBasedCacheInvalidatorTest {

@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.listener.ApplicationEventChangeListener;
+import com.gmoon.cacheinvalidation.core.invalidation.ApplicationEventChangeListener;
 
 /**
  * 애플리케이션이 발행한 변경 이벤트를 무효화 신호로 삼는다.

@@ -1,8 +1,5 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

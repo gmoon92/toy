@@ -3,7 +3,6 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 import java.util.Collection;
 import java.util.Set;
 
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 /**

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
 public class EvictableEntityRule implements InvalidationRule {

@@ -1,7 +1,5 @@
 package com.gmoon.cacheinvalidation.core.invalidation;
 
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-
 /**
  * 무효화 파이프라인이 결과를 내보내는 쓰기 전용 포트다.
  * <p>

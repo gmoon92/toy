@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.invalidation.listener;
+package com.gmoon.cacheinvalidation.core.invalidation;
 
 import java.util.function.Supplier;
 
@@ -9,12 +9,6 @@ import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
-
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityState;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 import com.gmoon.cacheinvalidation.core.invalidation.EvictionOutcome;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
 
 /**
  * 무효화 결과를 세는 검증용 구현이다.

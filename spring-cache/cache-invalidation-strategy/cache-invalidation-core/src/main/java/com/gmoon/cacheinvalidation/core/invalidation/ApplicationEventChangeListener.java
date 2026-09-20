@@ -1,11 +1,7 @@
-package com.gmoon.cacheinvalidation.core.invalidation.listener;
+package com.gmoon.cacheinvalidation.core.invalidation;
 
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.change.ChangeSource;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 import lombok.RequiredArgsConstructor;
 

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.invalidation.change.EntityChange;
 
 @DisplayName("무효화 규칙 레지스트리")
 class InvalidationRuleSetTest {
