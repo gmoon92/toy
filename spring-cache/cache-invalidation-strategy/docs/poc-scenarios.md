@@ -31,7 +31,7 @@ PUT  /users/{id}
 
 ```mermaid
 flowchart LR
-    C["cache-invalidation-core<br/>측정 하네스"] --> T[ttl-only]
+    C["cache-invalidation-core<br/>무효화 파이프라인"] --> T[ttl-only]
     T --> W[write-invalidate]
     W --> A[after-commit-invalidate]
     A --> E[entity-event-invalidate]
@@ -50,8 +50,8 @@ flowchart LR
 | 지표 | 수집 방법 |
 |-----|---------|
 | DB Query Count | Hibernate `Statistics.getPrepareStatementCount()` |
-| Cache DEL Count | `CacheEvictionRecorder` |
-| Invalidation Failure | `CacheEvictionRecorder` |
+| Cache DEL Count | `InvalidationCounter` (테스트 모듈) |
+| Invalidation Failure | `InvalidationCounter` (테스트 모듈) |
 | Stale Read Count | 조회 결과와 DB 최신값을 대조하는 검증 컴포넌트 |
 | Invalidation Lag | commit 타임스탬프와 DEL 타임스탬프의 차이 |
 

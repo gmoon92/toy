@@ -94,14 +94,15 @@ sequenceDiagram
 flowchart LR
     H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
     P["ApplicationEventChangeListener<br/>AFTER_COMMIT"] --> S
-    S["CacheInvalidator"] --> I[RuleBasedCacheInvalidator]
-    I --> RU[InvalidationRuleSet]
-    RU --> EV[CacheEvictor]
+    S["CacheInvalidator.failSafe(..)"] --> RU[규칙으로 대상 산출]
+    RU --> EV[캐시 삭제]
     EV --> C[(Redis DEL)]
 ```
 
+조립 단계는 `CacheInvalidator.failSafe(..)` 안에 있고 구현체는 패키지 밖으로 나오지 않는다.
+
 어느 경로로 들어오든 같은 규칙과 같은 evictor를 통과한다.
-`InvalidationSource` 로 어느 쪽이 무효화했는지만 구분해 기록하므로,
+`ChangeSource` 로 어느 쪽이 무효화했는지만 구분해 기록하므로,
 두 소스를 함께 켜도 운영에서 추적이 가능하다.
 
 ## 설정 확장
@@ -138,8 +139,8 @@ public class CacheConfig extends AbstractRedisCacheConfig {
 |-------|------|--------------|
 | `cachePolicies()` | 없음 (필수) | 항상 |
 | `invalidationRules()` | 빈 목록 | 무효화 대상을 산출해야 할 때 |
-| `serializerFactory()` | `JsonSerializerFactory` | 직렬화 형식을 바꿀 때 |
-| `ttlResolver(..)` | `JitteredTtlResolver` | 만료·지터 규칙을 바꿀 때 |
+| `serializerFactory()` | `SerializerFactory.json()` | 직렬화 형식을 바꿀 때 |
+| `ttlResolver(..)` | `TtlResolver.jittered(..)` | 만료·지터 규칙을 바꿀 때 |
 
 변경 감지 방식만 상속이 아니라 `@Import` 다. 자바가 단일 상속이라
 JPA 와 이벤트를 **함께** 쓰는 이 모듈을 상속으로는 표현할 수 없기 때문이다.

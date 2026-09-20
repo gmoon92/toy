@@ -8,7 +8,7 @@
 | 필요한 것 | 사용하는 것 | 직접 만든 것 |
 |---------|-----------|-----------|
 | hit·miss·put·delete 집계 | `RedisCacheManagerBuilder.enableStatistics()` | — |
-| Micrometer 연동 | Actuator `RedisCacheMeterBinderProvider` | — |
+| 캐시 실패·무효화 결과 관측 | — | 쓰기 전용 포트 2종 (기본 구현은 무연산) |
 | 캐시 장애 폴백 | `CachingConfigurer.errorHandler()` | 폴백 처리기 구현체 (기본 제공 없음) |
 | 엔트리별 TTL | `RedisCacheWriter.TtlFunction` (3.2+) | jitter 계산 |
 | DB 문장 수 | Hibernate `Statistics` | 얇은 래퍼 |
@@ -21,8 +21,8 @@
 
 | 모듈 | 소비 방식 | 담는 것 |
 |-----|---------|-------|
-| `cache-invalidation-core` | `implementation` | 캐시 정책, 무효화 규칙, 이벤트 어댑터, 회복력 |
-| `cache-invalidation-test` | **`testImplementation`** | 컨테이너 설정, 프로파일 해석기, 통합 테스트 애노테이션 |
+| `cache-invalidation-core` | `implementation` | 캐시 정책, 무효화 규칙, 이벤트 어댑터, 캐시 장애 폴백 |
+| `cache-invalidation-test` | **`testImplementation`** | 컨테이너 설정, 프로파일 해석기, 통합 테스트 애노테이션, 측정 구현 |
 
 테스트 지원을 별도 모듈로 둔 이유는 전략 모듈이 7~8개로 늘어나기 때문이다.
 각 모듈이 컨테이너 설정을 복사하면 같은 코드가 그만큼 중복된다.
@@ -32,7 +32,7 @@
 ```mermaid
 flowchart TD
     subgraph 정책
-        CP[CachePolicy] --> REG[CacheCatalog]
+        CP[CachePolicy]
     end
     subgraph 신호 소스 (모듈이 선택)
         HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
@@ -45,23 +45,25 @@ flowchart TD
         SINK --> RU[InvalidationRuleSet]
         SINK --> EVI[CacheEvictor]
     end
-    subgraph 회복력
-        CEH[FallbackCacheErrorHandler] --> CFR[CacheFailureRecorder]
-    end
-    subgraph 관측
+    subgraph 기록 포트 (코어는 세지 않는다)
+        CFR[CacheFailureRecorder]
         IR[InvalidationRecorder]
     end
-    REG --> CFG[AbstractRedisCacheConfig]
-    CFG --> CEH
+    CP --> CFG[AbstractRedisCacheConfig]
+    CFG --> CEH[FallbackCacheErrorHandler]
+    CEH --> CFR
     SINK --> IR
     RU --> IR
     SAFE --> IR
 ```
 
-회복력과 관측은 다른 책임이다.
-회복력은 캐시가 죽어도 서비스를 살리고, 관측은 무효화가 **성공했든 실패했든** 결과를 남긴다.
-기록기를 한 곳에 합치려면 `InvalidationRecorder` 가 참조하는 `ChangeSource` · `EvictionOutcome` 까지
-끌고 나가야 하므로 패키지 순환이 생긴다. 각자 자기 관심사 옆에 둔다.
+기록기는 둘이고 묻는 질문이 다르다.
+`CacheFailureRecorder` 는 "캐시 인프라가 성한가", `InvalidationRecorder` 는 "무효화가 목적을 이뤘는가"를 센다.
+
+둘 다 **쓰기 전용 포트**이고 코어의 기본 구현은 아무것도 하지 않는다.
+제품 코드는 기록만 하고 아무도 읽지 않으므로, 코어가 집계하면 관측되지 않는 카운터만 쌓인다.
+세는 구현은 측정이 필요한 쪽이 제공한다 — `cache-invalidation-test` 의 `InvalidationCounter` 가 그것이다.
+운영에서 남는 신호는 리스너와 evictor 의 WARN 로그다. 부하 측정을 시작하면 Micrometer 로 올린다.
 
 `CacheEvictor` 는 어디에도 기록하지 않는다. 결과만 돌려주고 기록은 호출자가 한다.
 지우는 쪽과 세는 쪽이 모두 기록하면 같은 실패가 두 번 쌓인다.
@@ -74,12 +76,14 @@ flowchart TD
 policy/             어떤 캐시가 있고 수명이 얼마인가
 expiration/         언제 만료되나
 serialization/      어떤 형식으로 저장하나
-resilience/         캐시가 죽어도 서비스를 살린다
-invalidation/       언제 무엇을 지우나
-    change/         변경 사실
-    listener/       변경을 감지하는 어댑터
-config/             스프링 배선과 프로퍼티
+invalidation/       언제 무엇을 지우나 — 변경 사실·감지 어댑터·규칙·실행을 모두 포함
+config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시의 폴백
 ```
+
+하위 패키지를 두지 않는다. 자바 package-private 은 **하위 패키지도 남**이므로,
+`invalidation/change` 와 `invalidation/listener` 를 나누는 순간 그 안의 타입은 전부 공개될 수밖에 없다.
+`resilience/` 도 없앴다 — 축이 아니라 품질 속성 이름이었고, 폴백이 도는 상황은
+`CachingConfigurer.errorHandler()` 가 사는 `config/` 그대로다.
 
 모듈명이 이미 캐시를 말하므로 `cache/` 로 한 번 더 감싸지 않는다.
 `eviction` 이라는 이름도 쓰지 않는다 — 이 저장소에서 그 말은
@@ -89,10 +93,9 @@ config/             스프링 배선과 프로퍼티
 
 | 패키지 | 참조 대상 |
 |-----|---------|
-| `policy` · `expiration` · `resilience` | 없음 (말단) |
+| `policy` · `expiration` | 없음 (말단) |
 | `serialization` | `policy` |
-| `invalidation` | `policy` · `invalidation.change` |
-| `invalidation.listener` | `invalidation` · `invalidation.change` |
+| `invalidation` | `policy` |
 | `config` | 전부 |
 
 순환은 0이다. 특히 **`policy` 는 무효화를 모른다.**
@@ -102,6 +105,37 @@ config/             스프링 배선과 프로퍼티
 
 무효화가 필요 없는 모듈은 신호 소스를 선언하지 않는다.
 `ttl-only` 가 그 경우이며, 리스너 빈이 하나도 등록되지 않는다는 것을 테스트로 고정한다.
+
+## 공개 표면 — 전략 모듈이 만나는 것만 public
+
+코어 타입이 전부 `public` 이면 전략 모듈 개발자는 자동완성에서 무엇을 써야 할지 구분할 수 없다.
+그래서 **밖에서 실제로 쓰는 것만 공개하고 나머지는 패키지 안에 둔다.**
+
+| 공개 | 무엇에 쓰나 |
+|-----|-----------|
+| `AbstractRedisCacheConfig` | 상속해서 모듈 설정을 만든다 |
+| `CachePolicy` | 캐시 이름·TTL·값 타입을 enum 으로 선언한다 |
+| `JpaEntityChangeConfig` · `ApplicationEventChangeConfig` | 감지 방식을 `@Import` 로 켠다 |
+| `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheKey` | 무효화 대상을 선언한다 |
+| `EntityChange` · `EntityState` · `ChangeSource` | JPA 밖 변경을 이벤트로 알린다 |
+| `InvalidationRecorder` · `CacheFailureRecorder` · `EvictionOutcome` | 측정 구현을 끼운다 |
+| `TtlResolver` · `SerializerFactory` | 만료·직렬화 전략을 재정의한다 |
+
+조립은 계약 위 정적 팩토리가 맡는다. 그래야 구현체가 `config` 에 보일 필요가 없다.
+
+```java
+SerializerFactory.json()
+TtlResolver.jittered(jitterRatio, notFoundTtl)
+CacheInvalidator.failSafe(rules, cacheManager, recorder)
+InvalidationRule.verifyOwnership(rules, declaredPolicies)
+```
+
+`CacheEvictor` · `InvalidationRuleSet` · `RuleBasedCacheInvalidator` · `FailSafeCacheInvalidator` ·
+`InvalidationOwnership` · `JpaEntityChangeListener` · `JitteredTtlResolver` · `JsonSerializerFactory` ·
+`CacheConfigurationFactory` · `FallbackCacheErrorHandler` 는 package-private 이다.
+
+`AbstractRedisCacheConfig` 의 `@Bean` 메서드도 `protected` 다.
+`CachingConfigurer` 구현인 `errorHandler()` 만 `public` 이어야 한다.
 
 ## 캐시 정책 — 코어는 이름을 모른다
 
@@ -126,7 +160,8 @@ public enum UserCachePolicy implements CachePolicy {
 무효화를 쓰지 않는 모듈은 무효화 어휘를 한 번도 만나지 않는다.
 
 모듈은 `cachePolicies()` 를 구현해 자기 정책을 등록하고,
-`CacheCatalog` 가 모아 캐시명 중복을 거부한다.
+`CachePolicy.distinct()` 가 모아 캐시명 중복을 거부한다.
+중복을 허용하면 어느 쪽 TTL 과 값 타입이 이겼는지 런타임에만 드러난다.
 
 ## 무효화 소유권
 
@@ -197,13 +232,12 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 `CachingConfigurer` 구현이 **필수**다. `@Bean CacheErrorHandler`만으로는 등록되지 않는다.
 자세한 근거는 [cache-failure-modes.md](concepts/cache-failure-modes.md).
 
-| 경로 | 처리 | 기록 |
+| 경로 | 처리 | 내보내는 포트 |
 |-----|-----|-----|
 | 애노테이션 기반(`@Cacheable` 등) | `CacheErrorHandler` 가 감싼다 | `CacheFailureRecorder` |
 | 프로그래밍 방식(`CacheEvictor`) | 결과 코드로 돌려준다 | `InvalidationRecorder` |
 
-기록처는 둘이고, 묻는 질문이 다르다.
-앞은 "캐시 인프라가 성한가", 뒤는 "무효화가 목적을 이뤘는가"를 센다.
+두 포트 모두 코어의 기본 구현은 무연산이다. [구성 요소](#구성-요소) 참조.
 
 ## 설정
 
@@ -217,20 +251,26 @@ spring:
       time-to-live: 5m                # 기본 TTL
       enable-statistics: true         # hit/miss/put/delete 집계
 
-cache-invalidation:
-  not-found-ttl: 30s                  # 표준에 없음 — null 값 전용 짧은 TTL
-  ttl-jitter-ratio: 0.1               # 표준에 없음
-  clear-scan-batch-size: 1000         # 표준에 없음
+service:
+  cache:
+    expiration:
+      not-found-ttl: 30s              # 표준에 없음 — null 값 전용 짧은 TTL
+      jitter-ratio: 0.1               # 표준에 없음
+    invalidation:
+      clear-scan-batch-size: 1000     # 표준에 없음
 ```
+
+자체 프로퍼티는 `service.cache` 한 트리에 모으고 축별로 중첩한다.
+전략마다 최상위 키를 따로 만들면 설정이 흩어진다.
 
 | 항목 | 출처 | 이유 |
 |-----|-----|-----|
 | `spring.cache.redis.key-prefix` | **Boot 표준** | 최종 키는 `{prefix}{cacheName}::{key}` |
 | `spring.cache.redis.time-to-live` | **Boot 표준** | 정책에 없는 캐시의 기본값 |
 | `spring.cache.redis.enable-statistics` | **Boot 표준** | 코드로 강제하지 않고 설정에 위임 |
-| `cache-invalidation.not-found-ttl` | 자체 | Penetration 방어 — 표준에 대응 항목 없음 |
-| `cache-invalidation.ttl-jitter-ratio` | 자체 | 동시 만료 방지 — 표준 미제공 |
-| `cache-invalidation.clear-scan-batch-size` | 자체 | `clear()`가 `KEYS`+`DEL`을 쓰는 문제 회피 |
+| `service.cache.expiration.not-found-ttl` | 자체 | Penetration 방어 — 표준에 대응 항목 없음 |
+| `service.cache.expiration.jitter-ratio` | 자체 | 동시 만료 방지 — 표준 미제공 |
+| `service.cache.invalidation.clear-scan-batch-size` | 자체 | `clear()`가 `KEYS`+`DEL`을 쓰는 문제 회피 |
 
 `spring.cache.redis.use-key-prefix: false` 도 그대로 존중한다.
 
@@ -242,8 +282,6 @@ Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 `disableCreateOnMissingCache()`로 이 경로를 막고,
 `cacheDefaults`에는 예외를 던지는 직렬화기를 두어 기본값으로 흘러가지 않게 한다.
 → [serialization.md](concepts/serialization.md)
-| `ttl-jitter-ratio` | 대량 키 동시 만료 방지 |
-| `clear-scan-batch-size` | `RedisCache#clear()` 기본이 `KEYS`+`DEL`이라 프로덕션에서 위험 |
 
 ## 검증
 
@@ -253,9 +291,10 @@ Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 |------|------------|
 | `EntityStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
 | `RuleBasedCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화된다 |
-| `InvalidationRulesTest` | 규칙 하나가 실패해도 나머지는 수행된다 |
+| `InvalidationRuleSetTest` | 규칙 하나가 실패해도 나머지는 수행된다 |
 | `FallbackCacheErrorHandlerTest` | 기본 처리기는 전파하고, 폴백 처리기는 삼키되 기록한다 |
-| `JitteredTtlTest` | 흔들림이 기준 TTL 비율을 넘지 않고 최소 1초를 확보한다 |
+| `JitteredTtlResolverTest` | 흔들림이 기준 TTL 비율을 넘지 않고 최소 1초를 확보한다 |
+| `AbstractRedisCacheConfigTest` | 재정의한 직렬화·만료 전략이 캐시 설정까지 닿는다 |
 
 ## 관련
 
