@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.Set;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,17 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
+
+import com.gmoon.cacheinvalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CachePolicy;
+import com.gmoon.cacheinvalidation.EntityChange;
+import com.gmoon.cacheinvalidation.FailingCacheManager;
+import com.gmoon.cacheinvalidation.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.InvalidationRule;
+import com.gmoon.cacheinvalidation.TestCachePolicy;
+import com.gmoon.cacheinvalidation.expiration.TtlResolver;
+import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
 
 /**
  * 확장점은 {@code protected} 이므로 같은 패키지인 이 테스트가 스프링 컨텍스트 없이 직접 호출해 검증한다.
@@ -118,12 +131,11 @@ class AbstractRedisCacheConfigTest {
 		@DisplayName("캐시가 죽어도 예외를 호출자에게 돌려주지 않는다")
 		void swallowsInvalidationFailure() {
 			CacheInvalidator invalidator = new TestCacheConfig().cacheInvalidator(
-				 FailingCacheManager.of("redis down"), InvalidationRecorder.NONE);
+				 FailingCacheManager.of("redis down"), InvalidationRecorder.none());
 
 			assertThatNoException()
 				 .as("리스너가 각자 try/catch 하던 것을 한 곳으로 모았으므로, 배선이 빠지면 보호가 사라진다")
-				 .isThrownBy(() -> invalidator.invalidate(
-					  EntityChange.deleted(new EvictableUser()), ChangeSource.JPA_ENTITY));
+				 .isThrownBy(() -> invalidator.invalidate(EntityChange.published(new Object(), EntityChange.Type.DELETE)));
 		}
 	}
 
@@ -162,7 +174,7 @@ class AbstractRedisCacheConfigTest {
 
 				@Override
 				protected List<InvalidationRule> invalidationRules() {
-					return List.of(EvictableEntityRule.owning(TestCachePolicy.USER));
+					return List.of(userCacheRule());
 				}
 			};
 
@@ -196,14 +208,6 @@ class AbstractRedisCacheConfigTest {
 			 .orElseThrow(() -> new AssertionError("정책이 등록한 캐시 설정이 없다"));
 	}
 
-	record EvictableUser() implements CacheEvictable {
-
-		@Override
-		public List<CacheKey> cacheEntriesToEvict() {
-			return List.of(CacheKey.of(TestCachePolicy.USER, 1L));
-		}
-	}
-
 	static class TestCacheConfig extends AbstractRedisCacheConfig {
 
 		@Override
@@ -213,8 +217,27 @@ class AbstractRedisCacheConfigTest {
 
 		@Override
 		protected List<InvalidationRule> invalidationRules() {
-			return List.of(EvictableEntityRule.owning(TestCachePolicy.USER));
+			return List.of(userCacheRule());
 		}
+	}
+
+	private static InvalidationRule userCacheRule() {
+		return new InvalidationRule() {
+			@Override
+			public boolean supports(EntityChange change) {
+				return true;
+			}
+
+			@Override
+			public Collection<CacheKey> resolve(EntityChange change) {
+				return List.of(CacheKey.of(TestCachePolicy.USER, 1L));
+			}
+
+			@Override
+			public Set<CachePolicy> owns() {
+				return Set.of(TestCachePolicy.USER);
+			}
+		};
 	}
 
 	static class StringSerializerFactory implements SerializerFactory {

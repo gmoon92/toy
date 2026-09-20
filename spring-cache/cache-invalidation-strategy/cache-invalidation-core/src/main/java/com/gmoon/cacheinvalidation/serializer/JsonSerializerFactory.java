@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.serializer;
 
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import com.gmoon.cacheinvalidation.CachePolicy;
 
 class JsonSerializerFactory implements SerializerFactory {
 

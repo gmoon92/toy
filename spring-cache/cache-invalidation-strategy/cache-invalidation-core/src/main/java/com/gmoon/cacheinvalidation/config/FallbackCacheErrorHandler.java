@@ -1,9 +1,9 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 
-import com.gmoon.cacheinvalidation.CacheFailureRecorder.Operation;
+import com.gmoon.cacheinvalidation.config.CacheFailureRecorder.Operation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

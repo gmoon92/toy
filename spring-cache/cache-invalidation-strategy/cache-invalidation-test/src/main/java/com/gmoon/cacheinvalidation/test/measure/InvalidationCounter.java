@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 
-import com.gmoon.cacheinvalidation.EvictionOutcome;
+import com.gmoon.cacheinvalidation.InvalidationRecorder.Outcome;
+import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.cacheinvalidation.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.ChangeSource;
+import com.gmoon.cacheinvalidation.EntityChange.Source;
 
 /**
  * 무효화 결과를 세는 검증용 구현이다.
@@ -18,13 +19,13 @@ public class InvalidationCounter implements InvalidationRecorder {
 
 	private final Map<Eviction, LongAdder> evictions = new ConcurrentHashMap<>();
 	private final Map<String, LongAdder> ruleFailures = new ConcurrentHashMap<>();
-	private final Map<ChangeSource, LongAdder> pipelineFailures = new ConcurrentHashMap<>();
+	private final Map<EntityChange.Source, LongAdder> pipelineFailures = new ConcurrentHashMap<>();
 
-	private record Eviction(String cacheName, ChangeSource source, EvictionOutcome outcome) {
+	private record Eviction(String cacheName, EntityChange.Source source, InvalidationRecorder.Outcome outcome) {
 	}
 
 	@Override
-	public void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome) {
+	public void recordEviction(String cacheName, EntityChange.Source source, InvalidationRecorder.Outcome outcome) {
 		counterOf(evictions, new Eviction(cacheName, source, outcome)).increment();
 	}
 
@@ -34,11 +35,11 @@ public class InvalidationCounter implements InvalidationRecorder {
 	}
 
 	@Override
-	public void recordPipelineFailure(ChangeSource source) {
+	public void recordPipelineFailure(EntityChange.Source source) {
 		counterOf(pipelineFailures, source).increment();
 	}
 
-	public long evictionCount(String cacheName, ChangeSource source, EvictionOutcome outcome) {
+	public long evictionCount(String cacheName, EntityChange.Source source, InvalidationRecorder.Outcome outcome) {
 		return counterOf(evictions, new Eviction(cacheName, source, outcome)).sum();
 	}
 
@@ -46,7 +47,7 @@ public class InvalidationCounter implements InvalidationRecorder {
 		return counterOf(ruleFailures, ruleName).sum();
 	}
 
-	public long pipelineFailureCount(ChangeSource source) {
+	public long pipelineFailureCount(EntityChange.Source source) {
 		return counterOf(pipelineFailures, source).sum();
 	}
 

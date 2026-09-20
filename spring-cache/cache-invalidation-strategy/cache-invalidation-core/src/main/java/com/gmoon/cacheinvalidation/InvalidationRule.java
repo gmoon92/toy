@@ -1,7 +1,10 @@
 package com.gmoon.cacheinvalidation;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * 변경 하나가 어떤 캐시 항목을 못 쓰게 만드는지 결정한다.
@@ -15,7 +18,26 @@ public interface InvalidationRule {
 	 * 선언된 캐시마다 주인이 있는지, 규칙이 선언되지 않은 캐시를 주장하지 않는지 대조한다.
 	 */
 	static void verifyOwnership(Collection<InvalidationRule> rules, Collection<CachePolicy> declaredPolicies) {
-		InvalidationOwnership.of(rules).verifyCovers(declaredPolicies);
+		Set<CachePolicy> owned = rules.stream()
+			 .map(InvalidationRule::owns)
+			 .flatMap(Collection::stream)
+			 .collect(Collectors.toUnmodifiableSet());
+
+		List<String> withoutOwner = namesOf(declaredPolicies, policy -> !owned.contains(policy));
+		if (!withoutOwner.isEmpty()) {
+			throw new IllegalStateException("No InvalidationRule owns these caches: " + withoutOwner
+				 + ". Declare an owning rule, or cover them with TtlOnlyRule.");
+		}
+
+		List<String> undeclared = namesOf(owned, policy -> !declaredPolicies.contains(policy));
+		if (!undeclared.isEmpty()) {
+			throw new IllegalStateException(
+				 "Rules claim ownership of caches this module does not declare: " + undeclared);
+		}
+	}
+
+	private static List<String> namesOf(Collection<CachePolicy> policies, Predicate<CachePolicy> filter) {
+		return policies.stream().filter(filter).map(CachePolicy::cacheName).toList();
 	}
 
 	boolean supports(EntityChange change);

@@ -17,11 +17,11 @@ class FailSafeCacheInvalidator implements CacheInvalidator {
 	private final InvalidationRecorder recorder;
 
 	@Override
-	public void invalidate(EntityChange change, ChangeSource source) {
+	public void invalidate(EntityChange change) {
 		try {
-			delegate.invalidate(change, source);
+			delegate.invalidate(change);
 		} catch (RuntimeException e) {
-			recorder.recordPipelineFailure(source);
+			recorder.recordPipelineFailure(change.source());
 			log.warn("cache invalidation failed after commit. the transaction stays committed", e);
 		}
 	}

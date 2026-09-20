@@ -1,8 +1,10 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.expiration;
 
 import java.time.Duration;
 
 import org.springframework.data.redis.cache.RedisCacheWriter;
+
+import com.gmoon.cacheinvalidation.CachePolicy;
 
 /**
  * 정책이 선언한 기준 TTL 을 실제 만료 동작으로 해석한다.

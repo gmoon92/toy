@@ -1,5 +1,6 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,17 @@ import org.springframework.data.redis.cache.BatchStrategies;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 import jakarta.annotation.PostConstruct;
+
+import com.gmoon.cacheinvalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.CachePolicy;
+import com.gmoon.cacheinvalidation.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.InvalidationRule;
+import com.gmoon.cacheinvalidation.expiration.TtlResolver;
+import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
 
 /**
  * Redis 를 캐시 저장소로 쓰는 전략 모듈이 상속하는 설정의 기반이다.
@@ -43,6 +53,8 @@ import jakarta.annotation.PostConstruct;
 @EnableCaching
 @EnableConfigurationProperties(ServiceCacheProperties.class)
 public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
+
+	private static final Duration UNREGISTERED_FALLBACK_TTL = Duration.ofMinutes(5);
 
 	protected abstract Collection<CachePolicy> cachePolicies();
 
@@ -88,7 +100,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	protected InvalidationRecorder invalidationRecorder() {
-		return InvalidationRecorder.NONE;
+		return InvalidationRecorder.none();
 	}
 
 	@Bean
@@ -106,16 +118,41 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		 TtlResolver ttlResolver,
 		 CacheProperties cacheProperties
 	) {
-		CacheConfigurationFactory configurations =
-			 new CacheConfigurationFactory(serializers, ttlResolver, cacheProperties.getRedis());
+		CacheProperties.Redis redis = cacheProperties.getRedis();
 
 		Map<String, RedisCacheConfiguration> byCacheName = CachePolicy.distinct(cachePolicies())
 			 .stream()
-			 .collect(Collectors.toMap(CachePolicy::cacheName, configurations::configurationOf));
+			 .collect(Collectors.toMap(CachePolicy::cacheName,
+				  policy -> configurationOf(policy.ttl(), serializers.valueSerializerFor(policy),
+					   serializers, ttlResolver, redis)));
+
+		RedisCacheConfiguration unregistered = configurationOf(
+			 redis.getTimeToLive() == null ? UNREGISTERED_FALLBACK_TTL : redis.getTimeToLive(),
+			 serializers.unregisteredCacheSerializer(), serializers, ttlResolver, redis);
 
 		return builder -> builder
 			 .disableCreateOnMissingCache()
-			 .cacheDefaults(configurations.unregisteredCacheConfiguration())
+			 .cacheDefaults(unregistered)
 			 .withInitialCacheConfigurations(byCacheName);
+	}
+
+	private RedisCacheConfiguration configurationOf(
+		 Duration declaredTtl,
+		 RedisSerializer<?> valueSerializer,
+		 SerializerFactory serializers,
+		 TtlResolver ttlResolver,
+		 CacheProperties.Redis redis
+	) {
+		RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
+			 .entryTtl(ttlResolver.resolveFrom(declaredTtl))
+			 .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
+			 .serializeValuesWith(SerializationPair.fromSerializer(valueSerializer));
+
+		if (!redis.isUseKeyPrefix()) {
+			return configuration.disableKeyPrefix();
+		}
+		return redis.getKeyPrefix() == null
+			 ? configuration
+			 : configuration.prefixCacheNameWith(redis.getKeyPrefix());
 	}
 }

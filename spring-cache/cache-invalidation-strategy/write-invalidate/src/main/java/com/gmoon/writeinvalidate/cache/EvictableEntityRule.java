@@ -1,4 +1,9 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.writeinvalidate.cache;
+
+import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CachePolicy;
+import com.gmoon.cacheinvalidation.EntityChange;
+import com.gmoon.cacheinvalidation.InvalidationRule;
 
 import java.util.Arrays;
 import java.util.Collection;

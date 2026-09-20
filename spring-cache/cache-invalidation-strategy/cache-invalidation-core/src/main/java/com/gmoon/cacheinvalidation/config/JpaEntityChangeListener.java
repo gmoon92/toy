@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
 import java.util.function.Supplier;
 
@@ -10,6 +10,10 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
+import com.gmoon.cacheinvalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.EntityChange;
+import com.gmoon.cacheinvalidation.InvalidationRecorder;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,26 +22,25 @@ import lombok.extern.slf4j.Slf4j;
 class JpaEntityChangeListener
 	 implements PostCommitInsertEventListener, PostCommitUpdateEventListener, PostCommitDeleteEventListener {
 
-	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
-
 	private final CacheInvalidator cacheInvalidator;
 	private final InvalidationRecorder recorder;
 
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		invalidate(() -> EntityChange.inserted(event.getEntity()));
+		invalidate(() -> EntityChange.committed(event.getEntity(), EntityChange.Type.INSERT, null));
 	}
 
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		invalidate(() -> EntityChange.updated(
+		invalidate(() -> EntityChange.committed(
 			 event.getEntity(),
-			 EntityState.of(event.getPersister().getPropertyNames(), event.getOldState())));
+			 EntityChange.Type.UPDATE,
+			 EntityChange.State.of(event.getPersister().getPropertyNames(), event.getOldState())));
 	}
 
 	@Override
 	public void onPostDelete(PostDeleteEvent event) {
-		invalidate(() -> EntityChange.deleted(event.getEntity()));
+		invalidate(() -> EntityChange.committed(event.getEntity(), EntityChange.Type.DELETE, null));
 	}
 
 	@Override
@@ -65,11 +68,11 @@ class JpaEntityChangeListener
 		try {
 			read = change.get();
 		} catch (RuntimeException e) {
-			recorder.recordPipelineFailure(SOURCE);
+			recorder.recordPipelineFailure(EntityChange.Source.JPA_ENTITY);
 			log.warn("failed to read the committed entity state. cache eviction skipped", e);
 			return;
 		}
-		cacheInvalidator.invalidate(read, SOURCE);
+		cacheInvalidator.invalidate(read);
 	}
 
 	private void logCommitFailed(Object entity) {

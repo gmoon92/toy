@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.gmoon.cacheinvalidation.TtlResolver;
-import com.gmoon.cacheinvalidation.SerializerFactory;
-import com.gmoon.cacheinvalidation.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.ApplicationEventChangeListener;
+import com.gmoon.cacheinvalidation.expiration.TtlResolver;
+import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
+import com.gmoon.cacheinvalidation.config.JpaEntityChangeConfig;
+import com.gmoon.cacheinvalidation.config.ApplicationEventChangeConfig;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
@@ -30,8 +30,8 @@ class CacheConfigTest {
 			assertThat(context.getBeanNamesForType(JpaEntityChangeConfig.class))
 				 .as("JPA 엔티티 변경 감지. 리스너는 하이버네이트가 소유하므로 설정 존재로 확인한다")
 				 .hasSize(1);
-			assertThat(context.getBeanNamesForType(ApplicationEventChangeListener.class))
-				 .as("애플리케이션 이벤트 감지. 이쪽은 스프링이 리스너를 찾아야 하므로 빈이어야 한다")
+			assertThat(context.getBeanNamesForType(ApplicationEventChangeConfig.class))
+				 .as("애플리케이션 이벤트 감지. 리스너는 코어가 감추므로 설정 존재로 확인한다")
 				 .hasSize(1);
 		}
 	}

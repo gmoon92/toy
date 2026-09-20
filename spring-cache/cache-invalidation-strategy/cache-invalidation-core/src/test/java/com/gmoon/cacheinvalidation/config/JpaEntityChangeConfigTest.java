@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -7,6 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+
+import com.gmoon.cacheinvalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.InvalidationRecorder;
 
 /**
  * 리스너가 실제로 동작하는지는 통합 테스트({@code JpaEntityChangeTest})가 증명한다.
@@ -17,7 +20,7 @@ class JpaEntityChangeConfigTest {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 		 .withBean(CacheInvalidator.class, () -> mock(CacheInvalidator.class))
-		 .withBean(InvalidationRecorder.class, () -> InvalidationRecorder.NONE)
+		 .withBean(InvalidationRecorder.class, () -> InvalidationRecorder.none())
 		 .withUserConfiguration(JpaEntityChangeConfig.class);
 
 	@Nested

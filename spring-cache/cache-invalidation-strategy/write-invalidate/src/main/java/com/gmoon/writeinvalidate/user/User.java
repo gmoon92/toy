@@ -3,7 +3,7 @@ package com.gmoon.writeinvalidate.user;
 import java.util.List;
 
 import com.gmoon.cacheinvalidation.CacheKey;
-import com.gmoon.cacheinvalidation.CacheEvictable;
+import com.gmoon.writeinvalidate.cache.CacheEvictable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

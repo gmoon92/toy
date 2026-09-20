@@ -1,17 +1,40 @@
 package com.gmoon.cacheinvalidation;
 
+import com.gmoon.cacheinvalidation.EntityChange.Source;
+
 /**
  * 무효화 파이프라인이 결과를 내보내는 쓰기 전용 포트다.
  * <p>
- * 코어는 집계하지 않는다. 기본 구현 {@link #NONE} 은 아무것도 하지 않으며,
+ * 코어는 집계하지 않는다. {@link #none()} 은 아무것도 하지 않으며,
  * 세는 구현은 측정이 필요한 쪽이 제공한다.
  */
 public interface InvalidationRecorder {
 
-	InvalidationRecorder NONE = new InvalidationRecorder() {
+	enum Outcome {
+		EVICT_REQUESTED,
+		CACHE_NOT_REGISTERED,
+		FAILED
+	}
+
+	static InvalidationRecorder none() {
+		return NoOp.INSTANCE;
+	}
+
+	void recordEviction(String cacheName, Source source, Outcome outcome);
+
+	void recordRuleFailure(String ruleName);
+
+	void recordPipelineFailure(Source source);
+
+	final class NoOp implements InvalidationRecorder {
+
+		private static final NoOp INSTANCE = new NoOp();
+
+		private NoOp() {
+		}
 
 		@Override
-		public void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome) {
+		public void recordEviction(String cacheName, Source source, Outcome outcome) {
 		}
 
 		@Override
@@ -19,13 +42,7 @@ public interface InvalidationRecorder {
 		}
 
 		@Override
-		public void recordPipelineFailure(ChangeSource source) {
+		public void recordPipelineFailure(Source source) {
 		}
-	};
-
-	void recordEviction(String cacheName, ChangeSource source, EvictionOutcome outcome);
-
-	void recordRuleFailure(String ruleName);
-
-	void recordPipelineFailure(ChangeSource source);
+	}
 }

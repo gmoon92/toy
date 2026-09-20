@@ -1,4 +1,6 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.writeinvalidate.cache;
+
+import com.gmoon.cacheinvalidation.CacheKey;
 
 import java.util.List;
 

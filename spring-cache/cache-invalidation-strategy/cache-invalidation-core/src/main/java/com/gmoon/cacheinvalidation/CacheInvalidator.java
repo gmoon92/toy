@@ -16,13 +16,9 @@ public interface CacheInvalidator {
 		 CacheManager cacheManager,
 		 InvalidationRecorder recorder
 	) {
-		CacheInvalidator ruleBased = new RuleBasedCacheInvalidator(
-			 new InvalidationRuleSet(rules, recorder),
-			 new CacheEvictor(cacheManager),
-			 recorder);
-
-		return new FailSafeCacheInvalidator(ruleBased, recorder);
+		return new FailSafeCacheInvalidator(
+			 new DefaultCacheInvalidator(rules, cacheManager, recorder), recorder);
 	}
 
-	void invalidate(EntityChange change, ChangeSource source);
+	void invalidate(EntityChange change);
 }

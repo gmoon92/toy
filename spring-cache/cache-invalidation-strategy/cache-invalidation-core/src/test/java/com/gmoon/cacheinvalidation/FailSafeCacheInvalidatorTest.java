@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("커밋 이후의 무효화 실패")
 class FailSafeCacheInvalidatorTest {
 
-	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
+	private static final EntityChange.Source SOURCE = EntityChange.Source.JPA_ENTITY;
 
 	private final InvalidationRecorder recorder = mock(InvalidationRecorder.class);
 
@@ -22,7 +22,7 @@ class FailSafeCacheInvalidatorTest {
 	class WhenInvalidationThrows {
 
 		private final CacheInvalidator invalidator = new FailSafeCacheInvalidator(
-			 (change, source) -> {
+			 change -> {
 				 throw new IllegalStateException("redis down");
 			 }, recorder);
 
@@ -31,18 +31,18 @@ class FailSafeCacheInvalidatorTest {
 		void doesNotPropagate() {
 			assertThatNoException()
 				 .as("신호는 커밋 이후에 도착하므로 예외가 새면 이미 끝난 트랜잭션의 호출자가 깨진다")
-				 .isThrownBy(() -> invalidator.invalidate(EntityChange.inserted(new Object()), SOURCE));
+				 .isThrownBy(() -> invalidator.invalidate(EntityChange.committed(new Object(), EntityChange.Type.INSERT, null)));
 		}
 
 		@Test
 		@DisplayName("삼킨 실패를 신호 소스별로 남긴다")
 		void recordsFailureBySource() {
-			invalidator.invalidate(EntityChange.inserted(new Object()), SOURCE);
+			invalidator.invalidate(EntityChange.committed(new Object(), EntityChange.Type.INSERT, null));
 
 			verify(recorder, description("조용히 삼키기만 하면 무효화 누락을 알아챌 방법이 없다"))
 				 .recordPipelineFailure(SOURCE);
 			verify(recorder, never().description("실패한 소스만 세어야 어느 경로가 깨졌는지 가려진다"))
-				 .recordPipelineFailure(ChangeSource.APPLICATION_EVENT);
+				 .recordPipelineFailure(EntityChange.Source.APPLICATION_EVENT);
 		}
 	}
 
@@ -55,10 +55,10 @@ class FailSafeCacheInvalidatorTest {
 		void delegatesUnchanged() {
 			List<EntityChange> delegated = new ArrayList<>();
 			CacheInvalidator invalidator = new FailSafeCacheInvalidator(
-				 (change, source) -> delegated.add(change), recorder);
-			EntityChange change = EntityChange.inserted(new Object());
+				 delegated::add, recorder);
+			EntityChange change = EntityChange.committed(new Object(), EntityChange.Type.INSERT, null);
 
-			invalidator.invalidate(change, SOURCE);
+			invalidator.invalidate(change);
 
 			assertThat(delegated)
 				 .as("감싸는 과정에서 신호가 바뀌거나 사라지면 안 된다")

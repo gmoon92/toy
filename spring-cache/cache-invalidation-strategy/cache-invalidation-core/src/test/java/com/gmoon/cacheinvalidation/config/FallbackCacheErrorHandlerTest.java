@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -11,7 +11,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
 
-import com.gmoon.cacheinvalidation.CacheFailureRecorder.Operation;
+import com.gmoon.cacheinvalidation.config.CacheFailureRecorder.Operation;
 
 @DisplayName("캐시 장애 처리")
 class FallbackCacheErrorHandlerTest {

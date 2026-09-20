@@ -15,8 +15,8 @@ class EntityChangeTest {
 	@DisplayName("수정 이벤트는 이전 상태를 함께 싣는다")
 	class WhenUpdated {
 
-		private final EntityChange change = EntityChange.updated(
-			 new Object(), EntityState.of(PROPERTY_NAMES, new Object[] {"before", "before@mail.com"}));
+		private final EntityChange change = EntityChange.committed(
+			 new Object(), EntityChange.Type.UPDATE, EntityChange.State.of(PROPERTY_NAMES, new Object[] {"before", "before@mail.com"}));
 
 		@Test
 		@DisplayName("속성명으로 변경 전 값을 되찾는다")
@@ -37,7 +37,7 @@ class EntityChangeTest {
 	@DisplayName("등록 이벤트는 이전 상태가 없다")
 	class WhenInserted {
 
-		private final EntityChange change = EntityChange.inserted(new Object());
+		private final EntityChange change = EntityChange.published(new Object(), EntityChange.Type.INSERT);
 
 		@Test
 		@DisplayName("어떤 속성을 물어도 빈 값을 반환한다")
@@ -56,9 +56,9 @@ class EntityChangeTest {
 		void insertAndDeleteAreDistinct() {
 			Object entity = new Object();
 
-			assertThat(EntityChange.inserted(entity))
+			assertThat(EntityChange.published(entity, EntityChange.Type.INSERT))
 				 .as("변경 종류를 잃으면 규칙이 등록과 삭제를 구분할 수 없는 같은 신호로 받는다")
-				 .isNotEqualTo(EntityChange.deleted(entity));
+				 .isNotEqualTo(EntityChange.published(entity, EntityChange.Type.DELETE));
 		}
 	}
 }

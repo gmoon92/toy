@@ -13,10 +13,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.persistence.EntityManager;
 
-import com.gmoon.cacheinvalidation.EvictionOutcome;
+import com.gmoon.cacheinvalidation.InvalidationRecorder.Outcome;
 import com.gmoon.cacheinvalidation.EntityChange;
-import com.gmoon.cacheinvalidation.ChangeSource;
-import com.gmoon.cacheinvalidation.EntityState;
+import com.gmoon.cacheinvalidation.InvalidationRecorder;
+import com.gmoon.cacheinvalidation.EntityChange.Source;
+import com.gmoon.cacheinvalidation.EntityChange.State;
 import com.gmoon.cacheinvalidation.test.measure.InvalidationCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
@@ -148,13 +149,13 @@ class JpaEntityChangeTest {
 			transactionTemplate.executeWithoutResult(status -> publishChangeOf(userId));
 
 			assertThat(invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, ChangeSource.APPLICATION_EVENT, EvictionOutcome.EVICT_REQUESTED))
+				 UserCachePolicy.Name.USER, EntityChange.Source.APPLICATION_EVENT, InvalidationRecorder.Outcome.EVICT_REQUESTED))
 				 .as("두 소스를 함께 쓰면 어느 쪽이 무효화했는지 구분되어야 운영에서 추적할 수 있다")
 				 .isEqualTo(1);
 		}
 
 		private void publishChangeOf(Long id) {
-			eventPublisher.publishEvent((EntityChange.updated(entityManager.find(User.class, id), EntityState.EMPTY)));
+			eventPublisher.publishEvent((EntityChange.published(entityManager.find(User.class, id), EntityChange.Type.UPDATE)));
 		}
 	}
 

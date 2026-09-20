@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation;
+package com.gmoon.cacheinvalidation.config;
 
 /**
  * 애노테이션 경로에서 캐시 접근이 실패했다는 사실을 내보내는 쓰기 전용 포트다.

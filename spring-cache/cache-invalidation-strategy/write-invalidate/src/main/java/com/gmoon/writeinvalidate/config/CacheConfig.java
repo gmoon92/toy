@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.gmoon.cacheinvalidation.AbstractRedisCacheConfig;
-import com.gmoon.cacheinvalidation.ApplicationEventChangeConfig;
-import com.gmoon.cacheinvalidation.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.EvictableEntityRule;
+import com.gmoon.cacheinvalidation.config.AbstractRedisCacheConfig;
+import com.gmoon.cacheinvalidation.config.ApplicationEventChangeConfig;
+import com.gmoon.cacheinvalidation.config.JpaEntityChangeConfig;
+import com.gmoon.writeinvalidate.cache.EvictableEntityRule;
 import com.gmoon.cacheinvalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.TtlOnlyRule;
 import com.gmoon.cacheinvalidation.CachePolicy;
