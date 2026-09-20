@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.gmoon.cacheinvalidation.config.AbstractRedisCacheConfig;
-import com.gmoon.cacheinvalidation.config.ApplicationEventChangeConfig;
+import com.gmoon.cacheinvalidation.config.PublishedEntityChangeConfig;
 import com.gmoon.cacheinvalidation.config.JpaEntityChangeConfig;
 import com.gmoon.writeinvalidate.cache.EvictableEntityRule;
 import com.gmoon.cacheinvalidation.InvalidationRule;
@@ -20,7 +20,7 @@ import com.gmoon.writeinvalidate.user.UserCachePolicy;
  * {@code ARTICLE} 은 {@code @CacheEvict} 와 TTL 로만 만료되므로 규칙이 지우지 않는다.
  */
 @Configuration
-@Import({JpaEntityChangeConfig.class, ApplicationEventChangeConfig.class})
+@Import({JpaEntityChangeConfig.class, PublishedEntityChangeConfig.class})
 public class CacheConfig extends AbstractRedisCacheConfig {
 
 	@Override

@@ -9,7 +9,7 @@ import com.gmoon.cacheinvalidation.EntityChange;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-class ApplicationEventChangeListener {
+class PublishedEntityChangeListener {
 
 	private final CacheInvalidator cacheInvalidator;
 

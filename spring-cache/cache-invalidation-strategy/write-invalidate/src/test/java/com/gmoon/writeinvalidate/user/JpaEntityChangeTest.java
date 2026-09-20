@@ -112,8 +112,8 @@ class JpaEntityChangeTest {
 	}
 
 	@Nested
-	@DisplayName("JPA 를 거치지 않은 변경을 애플리케이션 이벤트로 알리면")
-	class WhenChangeReportedByApplicationEvent {
+	@DisplayName("JPA 를 거치지 않은 변경을 직접 발행하면")
+	class WhenChangeReportedByPublishing {
 
 		@Test
 		@DisplayName("같은 무효화 파이프라인이 캐시를 지운다")
@@ -149,8 +149,29 @@ class JpaEntityChangeTest {
 			transactionTemplate.executeWithoutResult(status -> publishChangeOf(userId));
 
 			assertThat(invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, EntityChange.Source.APPLICATION_EVENT, InvalidationRecorder.Outcome.EVICT_REQUESTED))
+				 UserCachePolicy.Name.USER, EntityChange.Source.PUBLISHED, InvalidationRecorder.Outcome.EVICT_REQUESTED))
 				 .as("두 소스를 함께 쓰면 어느 쪽이 무효화했는지 구분되어야 운영에서 추적할 수 있다")
+				 .isEqualTo(1);
+		}
+
+		@Test
+		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 하면 두 번 무효화된다")
+		void invalidatesTwiceWhenSameChangeReportedByBothSources() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status -> {
+				userCommandService.changeEmail(userId, CHANGED_EMAIL);
+				publishChangeOf(userId);
+			});
+
+			assertThat(invalidationCounter.evictionCount(
+				 UserCachePolicy.Name.USER, Source.JPA_ENTITY, Outcome.EVICT_REQUESTED))
+				 .as("영속성 컨텍스트를 거친 쓰기라 JPA 경로가 한 번 지운다")
+				 .isEqualTo(1);
+			assertThat(invalidationCounter.evictionCount(
+				 UserCachePolicy.Name.USER, Source.PUBLISHED, Outcome.EVICT_REQUESTED))
+				 .as("두 경로는 서로 다른 쓰기를 덮으라고 있다."
+					  + " 같은 변경을 중복으로 알리면 DEL 이 멱등이라 정합성은 안전하지만 왕복과 지표가 두 배가 된다")
 				 .isEqualTo(1);
 		}
 

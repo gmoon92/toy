@@ -24,9 +24,16 @@ public record EntityChange(Object entity, Type type, Source source, State previo
 		DELETE
 	}
 
+	/**
+	 * 이 변경을 알려온 경로. 무효화가 어느 쪽에서 왔는지 운영에서 가려내는 데 쓴다.
+	 */
 	public enum Source {
+
+		/** 영속성 컨텍스트를 거쳐 하이버네이트가 자동으로 감지했다. */
 		JPA_ENTITY,
-		APPLICATION_EVENT
+
+		/** 애플리케이션이 직접 발행했다. JPA 를 우회한 쓰기가 여기에 해당한다. */
+		PUBLISHED
 	}
 
 	public EntityChange {
@@ -41,7 +48,7 @@ public record EntityChange(Object entity, Type type, Source source, State previo
 	}
 
 	public static EntityChange published(Object entity, Type type) {
-		return new EntityChange(entity, type, Source.APPLICATION_EVENT, State.EMPTY);
+		return new EntityChange(entity, type, Source.PUBLISHED, State.EMPTY);
 	}
 
 	public Optional<Object> previousValueOf(String propertyName) {

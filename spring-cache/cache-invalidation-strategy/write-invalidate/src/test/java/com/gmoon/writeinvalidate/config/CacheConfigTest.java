@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import com.gmoon.cacheinvalidation.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
 import com.gmoon.cacheinvalidation.config.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.config.ApplicationEventChangeConfig;
+import com.gmoon.cacheinvalidation.config.PublishedEntityChangeConfig;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
@@ -30,7 +30,7 @@ class CacheConfigTest {
 			assertThat(context.getBeanNamesForType(JpaEntityChangeConfig.class))
 				 .as("JPA 엔티티 변경 감지. 리스너는 하이버네이트가 소유하므로 설정 존재로 확인한다")
 				 .hasSize(1);
-			assertThat(context.getBeanNamesForType(ApplicationEventChangeConfig.class))
+			assertThat(context.getBeanNamesForType(PublishedEntityChangeConfig.class))
 				 .as("애플리케이션 이벤트 감지. 리스너는 코어가 감추므로 설정 존재로 확인한다")
 				 .hasSize(1);
 		}

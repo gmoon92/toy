@@ -42,7 +42,7 @@ class FailSafeCacheInvalidatorTest {
 			verify(recorder, description("조용히 삼키기만 하면 무효화 누락을 알아챌 방법이 없다"))
 				 .recordPipelineFailure(SOURCE);
 			verify(recorder, never().description("실패한 소스만 세어야 어느 경로가 깨졌는지 가려진다"))
-				 .recordPipelineFailure(EntityChange.Source.APPLICATION_EVENT);
+				 .recordPipelineFailure(EntityChange.Source.PUBLISHED);
 		}
 	}
 
