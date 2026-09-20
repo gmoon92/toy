@@ -2,9 +2,9 @@ package com.gmoon.cacheinvalidation.config;
 
 import java.util.function.Supplier;
 
-import org.hibernate.event.spi.PostCommitDeleteEventListener;
-import org.hibernate.event.spi.PostCommitInsertEventListener;
-import org.hibernate.event.spi.PostCommitUpdateEventListener;
+import org.hibernate.event.spi.PostDeleteEventListener;
+import org.hibernate.event.spi.PostInsertEventListener;
+import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 class JpaEntityChangeListener
-	 implements PostCommitInsertEventListener, PostCommitUpdateEventListener, PostCommitDeleteEventListener {
+	 implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
 
 	private final CacheInvalidator cacheInvalidator;
 	private final InvalidationRecorder recorder;
@@ -45,22 +45,7 @@ class JpaEntityChangeListener
 
 	@Override
 	public boolean requiresPostCommitHandling(EntityPersister persister) {
-		return true;
-	}
-
-	@Override
-	public void onPostInsertCommitFailed(PostInsertEvent event) {
-		logCommitFailed(event.getEntity());
-	}
-
-	@Override
-	public void onPostUpdateCommitFailed(PostUpdateEvent event) {
-		logCommitFailed(event.getEntity());
-	}
-
-	@Override
-	public void onPostDeleteCommitFailed(PostDeleteEvent event) {
-		logCommitFailed(event.getEntity());
+		return false;
 	}
 
 	private void invalidate(Supplier<EntityChange> change) {
@@ -75,7 +60,4 @@ class JpaEntityChangeListener
 		cacheInvalidator.invalidate(read);
 	}
 
-	private void logCommitFailed(Object entity) {
-		log.debug("commit failed. cache eviction skipped. entity: {}", entity.getClass().getSimpleName());
-	}
 }

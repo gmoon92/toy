@@ -1,14 +1,14 @@
 package com.gmoon.cacheinvalidation;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import com.gmoon.cacheinvalidation.EntityChange.Source;
 import com.gmoon.cacheinvalidation.InvalidationRecorder.Outcome;
 
 import lombok.RequiredArgsConstructor;
@@ -24,16 +24,15 @@ class DefaultCacheInvalidator implements CacheInvalidator {
 
 	@Override
 	public void invalidate(EntityChange change) {
-		for (CacheKey entry : resolve(change)) {
-			recorder.recordEviction(entry.cacheName(), change.source(), evict(entry));
-		}
+		PendingInvalidations.collect(resolve(change), this::evictAll);
 	}
 
-	private Set<CacheKey> resolve(EntityChange change) {
-		return rules.stream()
-			 .map(rule -> resolveInIsolation(rule, change))
-			 .flatMap(Collection::stream)
-			 .collect(Collectors.toCollection(LinkedHashSet::new));
+	private Map<CacheKey, Source> resolve(EntityChange change) {
+		Map<CacheKey, Source> entries = new LinkedHashMap<>();
+		for (InvalidationRule rule : rules) {
+			resolveInIsolation(rule, change).forEach(entry -> entries.putIfAbsent(entry, change.source()));
+		}
+		return entries;
 	}
 
 	private Collection<CacheKey> resolveInIsolation(InvalidationRule rule, EntityChange change) {
@@ -44,6 +43,11 @@ class DefaultCacheInvalidator implements CacheInvalidator {
 			log.warn("cache invalidation rule failed. rule: {}", rule.getClass().getSimpleName(), e);
 			return List.of();
 		}
+	}
+
+	private void evictAll(Map<CacheKey, Source> entries) {
+		entries.forEach((entry, source) ->
+			 recorder.recordEviction(entry.cacheName(), source, evict(entry)));
 	}
 
 	private Outcome evict(CacheKey entry) {

@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronizationUtils;
 
 import com.gmoon.cacheinvalidation.EntityChange.Source;
 import com.gmoon.cacheinvalidation.EntityChange.Type;
@@ -162,6 +165,41 @@ class DefaultCacheInvalidatorTest {
 	}
 
 	@Nested
+	@DisplayName("트랜잭션 안에서 여러 신호가 같은 키를 지목하면")
+	class WhenSeveralSignalsTargetSameKeyInTransaction {
+
+		@Test
+		@DisplayName("커밋 이후 한 번만 지운다")
+		void evictsOnceAfterCommit() {
+			CacheInvalidator invalidator = invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)));
+
+			inTransaction(TransactionSynchronization.STATUS_COMMITTED, () -> {
+				invalidator.invalidate(EntityChange.committed(new Object(), Type.UPDATE, null));
+				invalidator.invalidate(EntityChange.published(new Object(), Type.UPDATE));
+
+				verify(recorder, never().description("모으는 동안에는 캐시를 건드리지 않는다"))
+					 .recordEviction(any(), any(), any());
+			});
+
+			verify(recorder, times(1).description(
+				 "신호원마다 즉시 지우면 같은 키를 두 번 지운다. 모았다가 커밋 이후 한 번에 처리해야 한다"))
+				 .recordEviction(eq(TestCachePolicy.Name.USER), any(), eq(Outcome.EVICT_REQUESTED));
+		}
+
+		@Test
+		@DisplayName("롤백되면 모인 대상을 버린다")
+		void discardsOnRollback() {
+			CacheInvalidator invalidator = invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)));
+
+			inTransaction(TransactionSynchronization.STATUS_ROLLED_BACK, () ->
+				 invalidator.invalidate(EntityChange.committed(new Object(), Type.UPDATE, null)));
+
+			verify(recorder, never().description("커밋되지 않은 변경으로 캐시를 지우면 멀쩡한 값을 버린다"))
+				 .recordEviction(any(), any(), any());
+		}
+	}
+
+	@Nested
 	@DisplayName("등록되지 않은 캐시를 지목하면")
 	class WhenCacheNotRegistered {
 
@@ -200,6 +238,16 @@ class DefaultCacheInvalidatorTest {
 
 			verify(recorder, description("방어가 캐시 조회만 감싸면 삭제 단계의 예외가 커밋 스레드로 새어나간다"))
 				 .recordEviction(TestCachePolicy.Name.USER, SOURCE, Outcome.FAILED);
+		}
+	}
+
+	private static void inTransaction(int completionStatus, Runnable work) {
+		TransactionSynchronizationManager.initSynchronization();
+		try {
+			work.run();
+			TransactionSynchronizationUtils.triggerAfterCompletion(completionStatus);
+		} finally {
+			TransactionSynchronizationManager.clearSynchronization();
 		}
 	}
 

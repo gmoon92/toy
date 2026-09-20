@@ -48,7 +48,18 @@ public record EntityChange(Object entity, Type type, Source source, State previo
 	}
 
 	public static EntityChange published(Object entity, Type type) {
-		return new EntityChange(entity, type, Source.PUBLISHED, State.EMPTY);
+		return published(entity, type, State.EMPTY);
+	}
+
+	/**
+	 * 이전 상태를 아는 발행자가 옛 키 재구성까지 맡길 때 쓴다.
+	 * <p>
+	 * 영속성 컨텍스트를 거친 변경은 하이버네이트가 이전 상태를 채워 주지만,
+	 * 직접 발행하는 쪽은 아무도 채워 주지 않는다. 자연키가 바뀐 변경을 발행한다면
+	 * 발행자가 옛 값을 실어야 옛 키가 남지 않는다.
+	 */
+	public static EntityChange published(Object entity, Type type, State previousState) {
+		return new EntityChange(entity, type, Source.PUBLISHED, previousState);
 	}
 
 	public Optional<Object> previousValueOf(String propertyName) {

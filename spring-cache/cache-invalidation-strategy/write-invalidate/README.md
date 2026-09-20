@@ -24,7 +24,7 @@ DB를 바꾼 쪽이 옛 캐시를 지우는 전략이다.
 |-------|-----------|------------------------|-------------|
 | `Article` | `@CacheEvict` | 보인다 | 없음 |
 | `User` | Hibernate `POST_COMMIT_*` | 안 보인다 | 있다 |
-| `User` | Spring `@TransactionalEventListener(AFTER_COMMIT)` | 발행 코드만 | 있다 |
+| `User` | Spring `@TransactionalEventListener(BEFORE_COMMIT)` + 커밋 이후 일괄 삭제 | 발행 코드만 | 있다 |
 
 같은 엔티티에 두 방식을 함께 걸면 엔티티 이벤트가 `@CacheEvict` 의 실패를 가려버린다.
 그래서 엔티티를 나눴고, 이 분리 자체가 리스너의 대상 선별이 동작한다는 증거가 된다.
@@ -95,11 +95,13 @@ flowchart LR
     H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
     P["PublishedEntityChangeListener<br/>AFTER_COMMIT"] --> S
     S["CacheInvalidator.failSafe(..)"] --> RU[규칙으로 대상 산출]
-    RU --> EV[캐시 삭제]
+    RU --> PEND[트랜잭션 스코프 수집]
+    PEND --> EV[커밋 이후 한 번에 삭제]
     EV --> C[(Redis DEL)]
 ```
 
 조립 단계는 `CacheInvalidator.failSafe(..)` 안에 있고 구현체는 패키지 밖으로 나오지 않는다.
+두 소스를 함께 켜고 같은 변경을 양쪽으로 알려도 같은 키는 **한 번만** 지워진다.
 
 어느 경로로 들어오든 같은 규칙과 같은 evictor를 통과한다.
 `EntityChange.Source` 로 어느 쪽이 무효화했는지만 구분해 기록하므로,

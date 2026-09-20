@@ -11,11 +11,12 @@ import com.gmoon.cacheinvalidation.CacheInvalidator;
  * JPA 를 거치지 않는 쓰기(JDBC, jOOQ, 벌크 연산, 외부 연동)까지 덮을 수 있는 대신,
  * 발행하는 코드가 누락되면 무효화도 함께 누락된다.
  * <p>
- * 커밋 이후에만 실행된다 — 리스너가 {@code @TransactionalEventListener(AFTER_COMMIT)} 이다.
- * 이전 상태는 싣지 않으므로, 옛 키를 재구성하는 규칙은 이 경로에서 동작하지 않는다.
+ * 신호는 커밋 직전에 받지만 캐시를 지우는 것은 커밋 이후다. 롤백되면 수집분을 버린다.
+ * 이전 상태는 기본으로 비어 있다 — 옛 키를 재구성해야 한다면
+ * {@link EntityChange#published(Object, EntityChange.Type, EntityChange.State)} 로 실어 보낸다.
  * <p>
- * {@link JpaEntityChangeConfig} 와 함께 켜더라도 <b>같은 변경을 두 경로로 알리지 않는다.</b>
- * 둘은 서로 다른 쓰기를 덮으라고 있는 것이고, 같은 변경을 중복으로 알리면 캐시를 두 번 지운다.
+ * {@link JpaEntityChangeConfig} 와 함께 켜도 같은 키는 한 번만 지워진다.
+ * 한 트랜잭션의 무효화 대상은 모였다가 커밋 이후 한 번에 처리된다.
  */
 @Configuration
 public class PublishedEntityChangeConfig {

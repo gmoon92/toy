@@ -87,7 +87,7 @@ public CachedUser findById(Long id) { ... }
 
 | 경로 | 이유 |
 |-----|-----|
-| **벌크 연산** | `@Modifying` JPQL, 네이티브 UPDATE, Querydsl `update()` 는 영속성 컨텍스트를 거치지 않아 **이벤트가 발생하지 않는다** |
+| **벌크 연산** | `@Modifying` JPQL, 네이티브 UPDATE, Querydsl `update()` 는 영속성 컨텍스트를 거치지 않아 **이벤트가 발생하지 않는다**. 직접 발행으로 보완한다 |
 | 목록·검색 캐시 | 엔티티는 자기 키만 알 뿐, 자신이 속한 목록 캐시를 모른다 |
 | 다른 애플리케이션의 변경 | 리스너는 이 애플리케이션 안에서만 동작한다 → [cdc-invalidate](cdc-invalidate.md) |
 | 커밋 후 유실 | 커밋 직후 프로세스가 죽으면 DEL이 실행되지 않는다 |

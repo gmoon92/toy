@@ -155,8 +155,8 @@ class JpaEntityChangeTest {
 		}
 
 		@Test
-		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 하면 두 번 무효화된다")
-		void invalidatesTwiceWhenSameChangeReportedByBothSources() {
+		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 해도 한 번만 지운다")
+		void evictsOnceWhenSameChangeReportedByBothSources() {
 			userQueryService.findById(userId);
 
 			transactionTemplate.executeWithoutResult(status -> {
@@ -164,15 +164,35 @@ class JpaEntityChangeTest {
 				publishChangeOf(userId);
 			});
 
-			assertThat(invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, Source.JPA_ENTITY, Outcome.EVICT_REQUESTED))
-				 .as("영속성 컨텍스트를 거친 쓰기라 JPA 경로가 한 번 지운다")
+			assertThat(totalEvictionsOfUserCache())
+				 .as("신호원마다 즉시 지우면 같은 키를 두 번 지운다."
+					  + " 한 트랜잭션의 대상을 모았다가 커밋 이후 한 번에 처리해야 왕복과 지표가 부풀지 않는다")
 				 .isEqualTo(1);
-			assertThat(invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, Source.PUBLISHED, Outcome.EVICT_REQUESTED))
-				 .as("두 경로는 서로 다른 쓰기를 덮으라고 있다."
-					  + " 같은 변경을 중복으로 알리면 DEL 이 멱등이라 정합성은 안전하지만 왕복과 지표가 두 배가 된다")
+			assertThat(cachedEmail())
+				 .as("한 번만 지워도 결과는 같아야 한다")
+				 .isNull();
+		}
+
+		@Test
+		@DisplayName("한 트랜잭션에서 같은 엔티티를 여러 번 고쳐도 한 번만 지운다")
+		void evictsOnceForRepeatedChangesInSameTransaction() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status -> {
+				userCommandService.changeEmail(userId, CHANGED_EMAIL);
+				userCommandService.changeEmail(userId, "alice.again@mail.com");
+			});
+
+			assertThat(totalEvictionsOfUserCache())
+				 .as("같은 키를 반복해서 지우면 왕복만 늘고 결과는 같다")
 				 .isEqualTo(1);
+		}
+
+		private long totalEvictionsOfUserCache() {
+			return invalidationCounter.evictionCount(
+				 UserCachePolicy.Name.USER, Source.JPA_ENTITY, Outcome.EVICT_REQUESTED)
+				 + invalidationCounter.evictionCount(
+				 UserCachePolicy.Name.USER, Source.PUBLISHED, Outcome.EVICT_REQUESTED);
 		}
 
 		private void publishChangeOf(Long id) {
@@ -213,7 +233,7 @@ class JpaEntityChangeTest {
 			});
 
 			assertThat(cachedEmail())
-				 .as("커밋되지 않은 변경은 POST_COMMIT 이벤트를 만들지 않는다")
+				 .as("수집은 트랜잭션 안에서 하지만 롤백이면 모인 대상을 버린다")
 				 .isEqualTo(ORIGINAL_EMAIL);
 		}
 	}

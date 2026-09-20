@@ -34,16 +34,17 @@ flowchart TD
     subgraph 정책
         CP[CachePolicy]
     end
-    subgraph 신호 소스 (모듈이 선택)
-        HB[Hibernate POST_COMMIT] --> HL[JpaEntityChangeListener]
-        SP[ApplicationEvent AFTER_COMMIT] --> SL[PublishedEntityChangeListener]
+    subgraph 신호 소스 (모듈이 선택, 트랜잭션 안에서 수집)
+        HB[Hibernate POST_INSERT·UPDATE·DELETE] --> HL[JpaEntityChangeListener]
+        SP[ApplicationEvent BEFORE_COMMIT] --> SL[PublishedEntityChangeListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
         HL --> SAFE[FailSafeCacheInvalidator]
         SL --> SAFE
         SAFE --> SINK[DefaultCacheInvalidator]
         SINK --> RU[규칙으로 대상 산출]
-        SINK --> EVI[캐시 삭제]
+        RU --> PEND[PendingInvalidations<br/>트랜잭션 스코프 수집]
+        PEND --> EVI[커밋 이후 한 번에 삭제]
     end
     subgraph 기록 포트 (코어는 세지 않는다)
         CFR[CacheFailureRecorder]
@@ -170,6 +171,33 @@ public enum UserCachePolicy implements CachePolicy {
 모듈은 `cachePolicies()` 를 구현해 자기 정책을 등록하고,
 `CachePolicy.distinct()` 가 모아 캐시명 중복을 거부한다.
 중복을 허용하면 어느 쪽 TTL 과 값 타입이 이겼는지 런타임에만 드러난다.
+
+## 지우는 자리는 하나다
+
+신호원마다 즉시 지우면 같은 변경을 두 경로로 알렸을 때 같은 키를 두 번 지운다.
+정합성은 안전하지만(DEL 은 멱등) 왕복과 지표가 두 배가 된다.
+
+그래서 **수집은 트랜잭션 안에서 하고 실행은 커밋 이후에 한다.**
+
+```text
+flush       JpaEntityChangeListener       ─┐
+커밋 직전    PublishedEntityChangeListener ─┴→ PendingInvalidations (Set)
+커밋 이후    afterCompletion(COMMITTED)      → 한 번에 삭제
+```
+
+`TransactionSynchronization` 은 트랜잭션이 살아 있을 때만 등록할 수 있다.
+그래서 수집 시점만 커밋 전으로 당겼다. 실행 시점은 그대로 커밋 이후다.
+롤백이면 모인 대상을 버린다 — 흩어져 있던 `requiresPostCommitHandling` ·
+`onPost*CommitFailed` 처리가 여기 한곳으로 모였다.
+
+트랜잭션 밖에서 들어온 변경은 모으지 않고 그대로 지운다.
+
+신호원이 늘어도 지우는 자리는 하나다. 새 신호원은 수집기에 넣기만 하면 된다.
+
+| | 신호원 N개일 때 |
+|---|---|
+| 신호원마다 즉시 삭제 | 삭제 경로 N개, 중복 가능 |
+| 수집 후 일괄 삭제 | **삭제 경로 1개, 중복 없음** |
 
 ## 무효화 소유권
 
