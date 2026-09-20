@@ -10,16 +10,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 
-public class JsonSerializerFactory implements SerializerFactory {
+class JsonSerializerFactory implements SerializerFactory {
 
 	private final ObjectMapper objectMapper;
 
-	public JsonSerializerFactory() {
-		this(defaultObjectMapper());
-	}
-
-	public JsonSerializerFactory(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
+	JsonSerializerFactory() {
+		this.objectMapper = defaultObjectMapper();
 	}
 
 	@Override
@@ -32,14 +28,14 @@ public class JsonSerializerFactory implements SerializerFactory {
 		return new UnregisteredCacheSerializer();
 	}
 
-	public static ObjectMapper defaultObjectMapper() {
+	private static ObjectMapper defaultObjectMapper() {
 		return new ObjectMapper()
 			 .registerModule(new JavaTimeModule())
 			 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 			 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 	}
 
-	static final class UnregisteredCacheSerializer implements RedisSerializer<Object> {
+	private static final class UnregisteredCacheSerializer implements RedisSerializer<Object> {
 
 		private static final String MESSAGE =
 			 "No CachePolicy registered for this cache. Register a CachePolicy instead of relying on defaults.";

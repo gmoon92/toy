@@ -12,7 +12,7 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
  * <p>
  * 같은 시각에 적재된 키가 한꺼번에 만료되어 DB 로 몰리는 것을 막는다.
  */
-public class JitteredTtlResolver implements TtlResolver {
+class JitteredTtlResolver implements TtlResolver {
 
 	private static final long MINIMUM_JITTER_SECONDS = 1L;
 
@@ -20,7 +20,7 @@ public class JitteredTtlResolver implements TtlResolver {
 	private final Duration notFoundTtl;
 	private final LongUnaryOperator offsetGenerator;
 
-	public JitteredTtlResolver(double jitterRatio, Duration notFoundTtl) {
+	JitteredTtlResolver(double jitterRatio, Duration notFoundTtl) {
 		this(jitterRatio, notFoundTtl, bound -> ThreadLocalRandom.current().nextLong(-bound, bound + 1));
 	}
 

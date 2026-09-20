@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.config;
+package com.gmoon.cacheinvalidation.core.invalidation;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
 
 /**
  * 리스너가 실제로 동작하는지는 통합 테스트({@code JpaEntityChangeTest})가 증명한다.

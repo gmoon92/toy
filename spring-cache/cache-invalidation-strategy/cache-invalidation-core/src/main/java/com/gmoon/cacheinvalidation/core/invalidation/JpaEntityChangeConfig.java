@@ -1,4 +1,4 @@
-package com.gmoon.cacheinvalidation.core.config;
+package com.gmoon.cacheinvalidation.core.invalidation;
 
 import java.util.List;
 
@@ -8,9 +8,6 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Configuration;
 
-import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.core.invalidation.JpaEntityChangeListener;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;

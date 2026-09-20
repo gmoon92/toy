@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.cache.CacheProperties;
 
 import com.gmoon.cacheinvalidation.core.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.serialization.JsonSerializerFactory;
+import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 
 @DisplayName("정책을 캐시 설정으로 바꾸기")
 class CacheConfigurationFactoryTest {
@@ -77,6 +77,6 @@ class CacheConfigurationFactoryTest {
 	}
 
 	private CacheConfigurationFactory factoryOf(CacheProperties.Redis redis) {
-		return new CacheConfigurationFactory(new JsonSerializerFactory(), PASS_THROUGH, redis);
+		return new CacheConfigurationFactory(SerializerFactory.json(), PASS_THROUGH, redis);
 	}
 }

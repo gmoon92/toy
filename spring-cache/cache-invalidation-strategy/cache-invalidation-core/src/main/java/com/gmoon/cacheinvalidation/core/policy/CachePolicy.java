@@ -2,6 +2,11 @@ package com.gmoon.cacheinvalidation.core.policy;
 
 import java.time.Duration;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.util.Assert;
 
 /**
@@ -16,6 +21,22 @@ import org.springframework.util.Assert;
  * </pre>
  */
 public interface CachePolicy {
+
+	/**
+	 * 같은 캐시 이름을 두 정책이 선언하면 기동을 막는다.
+	 * <p>
+	 * 중복을 허용하면 어느 쪽 TTL 과 값 타입이 이겼는지 런타임에만 드러난다.
+	 */
+	static Collection<CachePolicy> distinct(Collection<CachePolicy> policies) {
+		Map<String, CachePolicy> byCacheName = new LinkedHashMap<>();
+		for (CachePolicy policy : policies) {
+			CachePolicy registered = byCacheName.get(policy.cacheName());
+			Assert.isTrue(registered == null || registered == policy,
+				 () -> "Duplicated cache name: " + policy.cacheName());
+			byCacheName.put(policy.cacheName(), policy);
+		}
+		return List.copyOf(byCacheName.values());
+	}
 
 	Spec spec();
 

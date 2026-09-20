@@ -13,6 +13,13 @@ import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
  */
 public interface InvalidationRule {
 
+	/**
+	 * 선언된 캐시마다 주인이 있는지, 규칙이 선언되지 않은 캐시를 주장하지 않는지 대조한다.
+	 */
+	static void verifyOwnership(Collection<InvalidationRule> rules, Collection<CachePolicy> declaredPolicies) {
+		InvalidationOwnership.of(rules).verifyCovers(declaredPolicies);
+	}
+
 	boolean supports(EntityChange change);
 
 	Collection<CacheKey> resolve(EntityChange change);

@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
  * 직렬화·만료·키 접두사는 캐시마다 같은 방식으로 조합되므로 이 타입이 그 조합을 쥐고 있는다.
  */
 @RequiredArgsConstructor
-public class CacheConfigurationFactory {
+class CacheConfigurationFactory {
 
 	private static final Duration FALLBACK_TTL = Duration.ofMinutes(5);
 

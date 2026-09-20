@@ -10,7 +10,7 @@ import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 /**
  * 규칙들이 밝힌 소유 캐시를 모아 모듈이 선언한 캐시 목록과 대조한다.
  */
-public record InvalidationOwnership(Set<CachePolicy> ownedPolicies) {
+record InvalidationOwnership(Set<CachePolicy> ownedPolicies) {
 
 	public InvalidationOwnership {
 		ownedPolicies = Set.copyOf(ownedPolicies);

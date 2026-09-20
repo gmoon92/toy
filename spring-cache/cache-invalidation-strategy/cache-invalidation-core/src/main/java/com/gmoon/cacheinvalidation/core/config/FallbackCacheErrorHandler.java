@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FallbackCacheErrorHandler implements CacheErrorHandler {
+class FallbackCacheErrorHandler implements CacheErrorHandler {
 
 	private final CacheFailureRecorder recorder;
 

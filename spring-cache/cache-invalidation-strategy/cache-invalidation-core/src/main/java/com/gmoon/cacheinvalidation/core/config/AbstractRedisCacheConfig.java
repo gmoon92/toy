@@ -18,19 +18,11 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-import com.gmoon.cacheinvalidation.core.expiration.JitteredTtlResolver;
 import com.gmoon.cacheinvalidation.core.expiration.TtlResolver;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictor;
 import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.FailSafeCacheInvalidator;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationOwnership;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
-import com.gmoon.cacheinvalidation.core.invalidation.RuleBasedCacheInvalidator;
-import com.gmoon.cacheinvalidation.core.policy.CacheCatalog;
 import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
-import com.gmoon.cacheinvalidation.core.serialization.JsonSerializerFactory;
 import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 
 import jakarta.annotation.PostConstruct;
@@ -40,8 +32,8 @@ import jakarta.annotation.PostConstruct;
  * <p>
  * 이 클래스는 무효화 파이프라인만 배선하고 변경 감지 방식은 정하지 않는다.
  * 무효화가 필요한 모듈은
- * {@link com.gmoon.cacheinvalidation.core.config.JpaEntityChangeConfig JpaEntityChangeConfig} 또는
- * {@link com.gmoon.cacheinvalidation.core.config.ApplicationEventChangeConfig ApplicationEventChangeConfig}
+ * {@link com.gmoon.cacheinvalidation.core.invalidation.JpaEntityChangeConfig JpaEntityChangeConfig} 또는
+ * {@link com.gmoon.cacheinvalidation.core.invalidation.ApplicationEventChangeConfig ApplicationEventChangeConfig}
  * 를 함께 선언하고, TTL 로만 만료시키는 모듈은 아무것도 선언하지 않는다.
  * <p>
  * 감지 방식은 조합 가능한 선택이므로 상속이 아니라 {@code @Import} 로 켠다.
@@ -67,12 +59,12 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	public SerializerFactory serializerFactory() {
-		return new JsonSerializerFactory();
+		return SerializerFactory.json();
 	}
 
 	@Bean
 	public TtlResolver ttlResolver(ServiceCacheProperties properties) {
-		return new JitteredTtlResolver(properties.expiration().jitterRatio(),
+		return TtlResolver.jittered(properties.expiration().jitterRatio(),
 			 properties.expiration().notFoundTtl());
 	}
 
@@ -82,31 +74,12 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		if (rules.isEmpty()) {
 			return;
 		}
-		InvalidationOwnership.of(rules).verifyCovers(cachePolicies());
+		InvalidationRule.verifyOwnership(rules, cachePolicies());
 	}
 
 	@Bean
-	public CacheCatalog cachePolicyRegistry() {
-		return new CacheCatalog(cachePolicies());
-	}
-
-	@Bean
-	public InvalidationRuleSet invalidationRuleSet(InvalidationRecorder recorder) {
-		return new InvalidationRuleSet(invalidationRules(), recorder);
-	}
-
-	@Bean
-	public CacheInvalidator cacheInvalidator(
-		 InvalidationRuleSet rules,
-		 CacheEvictor cacheEvictor,
-		 InvalidationRecorder recorder
-	) {
-		return new FailSafeCacheInvalidator(new RuleBasedCacheInvalidator(rules, cacheEvictor, recorder), recorder);
-	}
-
-	@Bean
-	public CacheEvictor cacheEvictor(CacheManager cacheManager) {
-		return new CacheEvictor(cacheManager);
+	public CacheInvalidator cacheInvalidator(CacheManager cacheManager, InvalidationRecorder recorder) {
+		return CacheInvalidator.failSafe(invalidationRules(), cacheManager, recorder);
 	}
 
 	@Bean
@@ -136,7 +109,6 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	public RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
-		 CacheCatalog catalog,
 		 SerializerFactory serializers,
 		 TtlResolver ttlResolver,
 		 CacheProperties cacheProperties
@@ -144,7 +116,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		CacheConfigurationFactory configurations =
 			 new CacheConfigurationFactory(serializers, ttlResolver, cacheProperties.getRedis());
 
-		Map<String, RedisCacheConfiguration> byCacheName = catalog.all()
+		Map<String, RedisCacheConfiguration> byCacheName = CachePolicy.distinct(cachePolicies())
 			 .stream()
 			 .collect(Collectors.toMap(CachePolicy::cacheName, configurations::configurationOf));
 

@@ -12,5 +12,9 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
  */
 public interface TtlResolver {
 
+	static TtlResolver jittered(double jitterRatio, Duration notFoundTtl) {
+		return new JitteredTtlResolver(jitterRatio, notFoundTtl);
+	}
+
 	RedisCacheWriter.TtlFunction resolveFrom(Duration declaredTtl);
 }

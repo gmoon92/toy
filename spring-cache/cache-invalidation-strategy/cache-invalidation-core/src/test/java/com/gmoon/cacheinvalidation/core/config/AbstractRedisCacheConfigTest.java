@@ -12,24 +12,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.gmoon.cacheinvalidation.core.expiration.JitteredTtlResolver;
 import com.gmoon.cacheinvalidation.core.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.core.fixture.TestCachePolicy;
-import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictor;
+import com.gmoon.cacheinvalidation.core.fixture.FailingCacheManager;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheEvictable;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.core.invalidation.CacheKey;
+import com.gmoon.cacheinvalidation.core.invalidation.ChangeSource;
+import com.gmoon.cacheinvalidation.core.invalidation.EntityChange;
 import com.gmoon.cacheinvalidation.core.invalidation.EvictableEntityRule;
-import com.gmoon.cacheinvalidation.core.invalidation.FailSafeCacheInvalidator;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRule;
-import com.gmoon.cacheinvalidation.core.invalidation.InvalidationRuleSet;
-import com.gmoon.cacheinvalidation.core.policy.CacheCatalog;
 import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
-import com.gmoon.cacheinvalidation.core.serialization.JsonSerializerFactory;
 import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 
 /**
@@ -40,6 +39,7 @@ import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 class AbstractRedisCacheConfigTest {
 
 	private static final Duration FIXED_TTL = Duration.ofMinutes(42);
+	private static final double DEFAULT_JITTER_RATIO = 0.1;
 	private static final ServiceCacheProperties PROPERTIES = new ServiceCacheProperties(null, null);
 
 	@Nested
@@ -49,14 +49,14 @@ class AbstractRedisCacheConfigTest {
 		private final AbstractRedisCacheConfig config = new TestCacheConfig();
 
 		@Test
-		@DisplayName("코어의 기본 구현이 쓰인다")
-		void usesCoreDefaults() {
-			assertThat(config.serializerFactory())
-				 .as("직렬화 전략의 기본 구현")
-				 .isInstanceOf(JsonSerializerFactory.class);
-			assertThat(config.ttlResolver(PROPERTIES))
-				 .as("만료 전략의 기본 구현")
-				 .isInstanceOf(JitteredTtlResolver.class);
+		@DisplayName("기본 만료 전략이 선언한 TTL 을 기준으로 흔들린 만료를 쓴다")
+		void appliesJitteredTtlByDefault() {
+			Duration declared = TestCachePolicy.USER.ttl();
+			long bound = Math.max(1L, (long)(declared.toSeconds() * DEFAULT_JITTER_RATIO));
+
+			assertThat(ttlOf(config))
+				 .as("기본 만료 전략이 캐시 설정까지 닿지 않으면 동시 만료를 막지 못한다")
+				 .isBetween(declared.minusSeconds(bound), declared.plusSeconds(bound));
 		}
 
 		@Test
@@ -129,17 +129,15 @@ class AbstractRedisCacheConfigTest {
 	class WhenInvalidatorAssembled {
 
 		@Test
-		@DisplayName("실패를 삼키는 껍데기로 감싼다")
-		void wrapsWithFailSafe() {
-			AbstractRedisCacheConfig config = new TestCacheConfig();
-			InvalidationRecorder recorder = InvalidationRecorder.NONE;
+		@DisplayName("캐시가 죽어도 예외를 호출자에게 돌려주지 않는다")
+		void swallowsInvalidationFailure() {
+			CacheInvalidator invalidator = new TestCacheConfig().cacheInvalidator(
+				 FailingCacheManager.of("redis down"), InvalidationRecorder.NONE);
 
-			assertThat(config.cacheInvalidator(
-				 new InvalidationRuleSet(List.of(), recorder),
-				 new CacheEvictor(new ConcurrentMapCacheManager()),
-				 recorder))
+			assertThatNoException()
 				 .as("리스너가 각자 try/catch 하던 것을 한 곳으로 모았으므로, 배선이 빠지면 보호가 사라진다")
-				 .isInstanceOf(FailSafeCacheInvalidator.class);
+				 .isThrownBy(() -> invalidator.invalidate(
+					  EntityChange.deleted(new EvictableUser()), ChangeSource.JPA_ENTITY));
 		}
 	}
 
@@ -203,7 +201,6 @@ class AbstractRedisCacheConfigTest {
 			 RedisCacheManager.builder(mock(RedisConnectionFactory.class));
 
 		config.cachePolicyCustomizer(
-			 new CacheCatalog(config.cachePolicies()),
 			 config.serializerFactory(),
 			 config.ttlResolver(PROPERTIES),
 			 new CacheProperties()
@@ -211,6 +208,14 @@ class AbstractRedisCacheConfigTest {
 
 		return builder.getCacheConfigurationFor(TestCachePolicy.Name.USER)
 			 .orElseThrow(() -> new AssertionError("정책이 등록한 캐시 설정이 없다"));
+	}
+
+	record EvictableUser() implements CacheEvictable {
+
+		@Override
+		public List<CacheKey> cacheEntriesToEvict() {
+			return List.of(CacheKey.of(TestCachePolicy.USER, 1L));
+		}
 	}
 
 	static class TestCacheConfig extends AbstractRedisCacheConfig {

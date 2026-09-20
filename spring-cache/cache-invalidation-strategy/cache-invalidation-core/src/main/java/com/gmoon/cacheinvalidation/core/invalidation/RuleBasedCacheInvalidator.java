@@ -3,7 +3,7 @@ package com.gmoon.cacheinvalidation.core.invalidation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RuleBasedCacheInvalidator implements CacheInvalidator {
+class RuleBasedCacheInvalidator implements CacheInvalidator {
 
 	private final InvalidationRuleSet rules;
 	private final CacheEvictor cacheEvictor;

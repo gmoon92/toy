@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class InvalidationRuleSet {
+class InvalidationRuleSet {
 
 	private final List<InvalidationRule> rules;
 	private final InvalidationRecorder recorder;

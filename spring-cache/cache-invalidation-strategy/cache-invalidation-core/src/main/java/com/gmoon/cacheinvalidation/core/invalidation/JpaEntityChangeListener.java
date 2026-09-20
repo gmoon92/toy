@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JpaEntityChangeListener
+class JpaEntityChangeListener
 	 implements PostCommitInsertEventListener, PostCommitUpdateEventListener, PostCommitDeleteEventListener {
 
 	private static final ChangeSource SOURCE = ChangeSource.JPA_ENTITY;
