@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.gmoon.cacheinvalidation.core.expiration.TtlResolver;
-import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
-import com.gmoon.cacheinvalidation.core.invalidation.JpaEntityChangeConfig;
-import com.gmoon.cacheinvalidation.core.invalidation.ApplicationEventChangeListener;
+import com.gmoon.cacheinvalidation.TtlResolver;
+import com.gmoon.cacheinvalidation.SerializerFactory;
+import com.gmoon.cacheinvalidation.JpaEntityChangeConfig;
+import com.gmoon.cacheinvalidation.ApplicationEventChangeListener;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest

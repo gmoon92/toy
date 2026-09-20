@@ -2,7 +2,7 @@ package com.gmoon.writeinvalidate.user;
 
 import java.time.Duration;
 
-import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.CachePolicy;
 
 public enum UserCachePolicy implements CachePolicy {
 

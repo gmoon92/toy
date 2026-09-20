@@ -2,7 +2,7 @@ package com.gmoon.writeinvalidate.article;
 
 import java.time.Duration;
 
-import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
+import com.gmoon.cacheinvalidation.CachePolicy;
 
 public enum ArticleCachePolicy implements CachePolicy {
 
