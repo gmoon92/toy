@@ -32,7 +32,7 @@ import com.gmoon.cacheinvalidation.core.policy.CachePolicy;
 import com.gmoon.cacheinvalidation.core.serialization.SerializerFactory;
 
 /**
- * 확장점은 모두 {@code public} 메서드이므로 스프링 컨텍스트 없이 직접 호출해 검증한다.
+ * 확장점은 {@code protected} 이므로 같은 패키지인 이 테스트가 스프링 컨텍스트 없이 직접 호출해 검증한다.
  * 다만 재정의한 전략이 실제 캐시 설정까지 닿는지는 {@code cachePolicyCustomizer} 를 거쳐 확인한다.
  */
 @DisplayName("캐시 설정 확장점")
@@ -74,7 +74,7 @@ class AbstractRedisCacheConfigTest {
 
 		private final AbstractRedisCacheConfig config = new TestCacheConfig() {
 			@Override
-			public SerializerFactory serializerFactory() {
+			protected SerializerFactory serializerFactory() {
 				return new StringSerializerFactory();
 			}
 		};
@@ -102,7 +102,7 @@ class AbstractRedisCacheConfigTest {
 
 		private final AbstractRedisCacheConfig config = new TestCacheConfig() {
 			@Override
-			public TtlResolver ttlResolver(ServiceCacheProperties properties) {
+			protected TtlResolver ttlResolver(ServiceCacheProperties properties) {
 				return declaredTtl -> (key, value) -> FIXED_TTL;
 			}
 		};

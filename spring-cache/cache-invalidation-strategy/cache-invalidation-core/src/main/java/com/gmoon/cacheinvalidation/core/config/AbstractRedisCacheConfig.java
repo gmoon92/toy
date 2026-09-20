@@ -58,18 +58,18 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public SerializerFactory serializerFactory() {
+	protected SerializerFactory serializerFactory() {
 		return SerializerFactory.json();
 	}
 
 	@Bean
-	public TtlResolver ttlResolver(ServiceCacheProperties properties) {
+	protected TtlResolver ttlResolver(ServiceCacheProperties properties) {
 		return TtlResolver.jittered(properties.expiration().jitterRatio(),
 			 properties.expiration().notFoundTtl());
 	}
 
 	@PostConstruct
-	public void validateInvalidationOwnership() {
+	protected void validateInvalidationOwnership() {
 		List<InvalidationRule> rules = invalidationRules();
 		if (rules.isEmpty()) {
 			return;
@@ -78,7 +78,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public CacheInvalidator cacheInvalidator(CacheManager cacheManager, InvalidationRecorder recorder) {
+	protected CacheInvalidator cacheInvalidator(CacheManager cacheManager, InvalidationRecorder recorder) {
 		return CacheInvalidator.failSafe(invalidationRules(), cacheManager, recorder);
 	}
 
@@ -89,17 +89,17 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public CacheFailureRecorder cacheFailureRecorder() {
+	protected CacheFailureRecorder cacheFailureRecorder() {
 		return CacheFailureRecorder.NONE;
 	}
 
 	@Bean
-	public InvalidationRecorder invalidationRecorder() {
+	protected InvalidationRecorder invalidationRecorder() {
 		return InvalidationRecorder.NONE;
 	}
 
 	@Bean
-	public RedisCacheWriter redisCacheWriter(
+	protected RedisCacheWriter redisCacheWriter(
 		 RedisConnectionFactory connectionFactory,
 		 ServiceCacheProperties properties
 	) {
@@ -108,7 +108,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	public RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
+	protected RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
 		 SerializerFactory serializers,
 		 TtlResolver ttlResolver,
 		 CacheProperties cacheProperties
