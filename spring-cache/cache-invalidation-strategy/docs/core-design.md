@@ -43,40 +43,29 @@ flowchart TD
         SP[ApplicationEvent BEFORE_COMMIT] --> SL[PublishedEntityChangeListener]
     end
     subgraph 무효화 파이프라인 (코어가 확정)
-        HL --> SAFE[FailSafeCacheInvalidator]
-        SL --> SAFE
-        SAFE --> SINK[DefaultCacheInvalidator]
-        SINK --> RU[규칙으로 대상 산출]
-        RU --> PEND[PendingInvalidations<br/>트랜잭션 스코프 수집]
-        PEND --> EVI[커밋 이후 한 번에 삭제]
-    end
-    subgraph 기록 포트 (코어는 세지 않는다)
-        CFR[CacheFailureRecorder]
+        HL --> SINK[RuleBasedCacheInvalidator<br/>규칙으로 대상 산출]
+        SL --> SINK
+        SINK --> EVI[AfterCommitEvictor<br/>트랜잭션 스코프 수집 → 커밋 이후 삭제]
+        EVI --> EXE[evictionExecutor<br/>기본: 커밋한 스레드]
     end
     CP --> CFG[AbstractRedisCacheConfig]
     CFG --> CEH[FallbackCacheErrorHandler]
-    CEH --> CFR
-    SINK --> IR
-    RU --> IR
-    SAFE --> IR
+    CFG --> EXE
 ```
 
 무효화 결과는 코어가 세지 않는다.
 
 한때 `InvalidationRecorder` 로 무효화 건수와 신호원을 기록했으나 걷어냈다.
 운영 빈이 무연산이라 **제품 코드에서는 아무 일도 하지 않았고**, 읽는 쪽은 테스트뿐이었다.
-그 하나를 위해 `Outcome` enum, `EntityChange.Source` enum, 수집기의 `Map<CacheKey, Source>`,
+그 하나를 위해 `Outcome` enum, `EntityChange.Source` enum, 수집기의 `Map<CacheEntry, Source>`,
 생성자 파라미터 세 자리, 테스트 모듈의 계수 구현이 딸려 있었다.
 
 운영에서 남는 신호는 WARN 로그다. 부하 측정을 시작하면 손으로 만든 카운터가 아니라
 Micrometer 로 넣는다 — 어차피 스크랩되지 않는 숫자는 지표가 아니다.
 
-`CacheFailureRecorder` 는 남아 있다. 이쪽은 애노테이션 경로의 캐시 접근 실패를 다루고
-`CacheErrorHandler` 계약에 묶여 있어 성격이 다르다.
-
-규칙 산출과 삭제는 `DefaultCacheInvalidator` 하나가 맡는다.
-`DefaultRedisCacheWriter` 가 연결·배치·통계를 혼자 처리하는 것과 같은 결이다.
-쪼개 두면 결과 코드가 클래스 경계를 넘나들고, 지우는 쪽과 세는 쪽이 모두 기록해 같은 실패가 두 번 쌓인다.
+규칙 산출은 `RuleBasedCacheInvalidator` 가, 모으기와 삭제는 `AfterCommitEvictor` 가 맡는다.
+흐름은 한 방향이다 — 신호원 → 대상 산출 → 커밋 이후 삭제.
+지우는 시점을 정하는 클래스가 지우는 일까지 맡으므로 삭제 코드를 찾으러 다른 클래스로 되돌아갈 일이 없다.
 
 ## 패키지 배치
 
@@ -129,7 +118,7 @@ config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시�
 | `AbstractRedisCacheConfig` | 상속해서 모듈 설정을 만든다 |
 | `CachePolicy` | 캐시 이름·TTL·값 타입을 enum 으로 선언한다 |
 | `JpaEntityChangeConfig` · `PublishedEntityChangeConfig` | 감지 방식을 `@Import` 로 켠다 |
-| `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheKey` | 무효화 대상을 선언한다 |
+| `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheEntry` | 무효화 대상을 선언한다 |
 | `EntityChange` | JPA 밖 변경을 직접 발행한다. `State` · `Type` 은 그 안에 중첩 |
 | `CacheFailureRecorder` | 캐시 접근 실패를 세는 구현을 끼운다 |
 | `TtlResolver` · `SerializerFactory` | 만료·직렬화 전략을 재정의한다 |
@@ -139,11 +128,11 @@ config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시�
 ```java
 SerializerFactory.json()
 TtlResolver.jittered(jitterRatio, notFoundTtl)
-CacheInvalidator.failSafe(rules, cacheManager, recorder)
+CacheInvalidator.of(rules, cacheManager, evictionExecutor)
 InvalidationRule.verifyOwnership(rules, declaredPolicies)
 ```
 
-`DefaultCacheInvalidator` · `FailSafeCacheInvalidator` · `JpaEntityChangeListener` ·
+`RuleBasedCacheInvalidator` · `AfterCommitEvictor` · `JpaEntityChangeListener` ·
 `PublishedEntityChangeListener` · `JitteredTtlResolver` · `JsonSerializerFactory` ·
 `FallbackCacheErrorHandler` 는 package-private 이다.
 
@@ -189,9 +178,12 @@ public enum UserCachePolicy implements CachePolicy {
 
 ```text
 flush       JpaEntityChangeListener       ─┐
-커밋 직전    PublishedEntityChangeListener ─┴→ PendingInvalidations (Set)
-커밋 이후    afterCompletion(COMMITTED)      → 한 번에 삭제
+커밋 직전    PublishedEntityChangeListener ─┴→ AfterCommitEvictor 의 트랜잭션별 수집함 (Set)
+커밋 이후    afterCompletion(COMMITTED)      → evictionExecutor 로 한 번에 삭제
 ```
+
+수집함은 삭제기 인스턴스를 키로 트랜잭션에 묶는다.
+삭제기가 둘이어도 서로의 수집함이 섞이지 않고, `REQUIRES_NEW` 안쪽은 `suspend()` 로 바깥 수집함을 떼어 낸 뒤 자기 수집함을 만든다.
 
 `TransactionSynchronization` 은 트랜잭션이 살아 있을 때만 등록할 수 있다.
 그래서 수집 시점만 커밋 전으로 당겼다. 실행 시점은 그대로 커밋 이후다.
@@ -207,6 +199,20 @@ flush       JpaEntityChangeListener       ─┐
 | 신호원마다 즉시 삭제 | 삭제 경로 N개, 중복 가능 |
 | 수집 후 일괄 삭제 | **삭제 경로 1개, 중복 없음** |
 
+### 비동기 삭제
+
+비동기로 넘기는 것은 **삭제뿐**이다. 모으기는 커밋 스레드에서 한다.
+수집함은 트랜잭션 동기화(ThreadLocal)에 묶여 있어서, `TaskDecorator` 로 다른 스레드에 넘기면
+커밋 콜백을 놓치거나 `Set` 을 두 스레드가 동시에 만진다.
+
+| | 기본 (`Runnable::run`) | 비동기 실행기 |
+|---|---|---|
+| 커밋 스레드 | Redis 왕복을 기다린다 | 기다리지 않는다 |
+| 저장 직후 본인 조회 | 항상 새 값 | 삭제 전이면 옛 값을 읽을 수 있다 |
+
+비동기는 `AbstractRedisCacheConfig.evictionExecutor()` 를 재정의해 켠다. 실행기는 빈으로 올리지 않는다.
+실행기에는 수집함의 사본을 넘기고, 실행기가 거부하면 호출한 스레드에서 직접 지운다.
+
 ## 무효화 소유권
 
 캐시를 등록해 놓고 아무도 지우지 않으면, 그 사실은 운영 중에만 드러난다.
@@ -217,7 +223,7 @@ flush       JpaEntityChangeListener       ─┐
 protected List<InvalidationRule> invalidationRules() {
     return List.of(
         EvictableEntityRule.owning(UserCachePolicy.USER),
-        TtlOnlyRule.covering(ArticleCachePolicy.ARTICLE)
+        TtlOnlyRule.owning(ArticleCachePolicy.ARTICLE)
     );
 }
 ```
@@ -236,7 +242,7 @@ protected List<InvalidationRule> invalidationRules() {
 ```java
 public interface InvalidationRule {
     boolean supports(EntityChange change);
-    Collection<CacheKey> resolve(EntityChange change);
+    Collection<CacheEntry> resolve(EntityChange change);
 }
 ```
 
@@ -279,7 +285,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 | 경로 | 처리 | 내보내는 포트 |
 |-----|-----|-----|
 | 애노테이션 기반(`@Cacheable` 등) | `CacheErrorHandler` 가 감싼다 | `CacheFailureRecorder` |
-| 프로그래밍 방식(`DefaultCacheInvalidator`) | 삼키고 WARN 로그로 남긴다 | 없음 |
+| 프로그래밍 방식(`RuleBasedCacheInvalidator`) | 삼키고 WARN 로그로 남긴다 | 없음 |
 
 두 포트 모두 코어의 기본 구현은 무연산이다. [구성 요소](#구성-요소) 참조.
 
@@ -300,8 +306,8 @@ service:
     expiration:
       not-found-ttl: 30s              # 표준에 없음 — null 값 전용 짧은 TTL
       jitter-ratio: 0.1               # 표준에 없음
-    invalidation:
-      clear-scan-batch-size: 1000     # 표준에 없음
+    clear:
+      scan-batch-size: 1000           # 표준에 없음
 ```
 
 자체 프로퍼티는 `service.cache` 한 트리에 모으고 축별로 중첩한다.
@@ -314,7 +320,7 @@ service:
 | `spring.cache.redis.enable-statistics` | **Boot 표준** | 코드로 강제하지 않고 설정에 위임 |
 | `service.cache.expiration.not-found-ttl` | 자체 | Penetration 방어 — 표준에 대응 항목 없음 |
 | `service.cache.expiration.jitter-ratio` | 자체 | 동시 만료 방지 — 표준 미제공 |
-| `service.cache.invalidation.clear-scan-batch-size` | 자체 | `clear()`가 `KEYS`+`DEL`을 쓰는 문제 회피 |
+| `service.cache.clear.scan-batch-size` | 자체 | `clear()`가 `KEYS`+`DEL`을 쓰는 문제 회피 |
 
 `spring.cache.redis.use-key-prefix: false` 도 그대로 존중한다.
 
@@ -336,8 +342,9 @@ Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 
 | 테스트 | 고정하는 명제 |
 |------|------------|
-| `EntityChangeStateTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
-| `DefaultCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화되고, 규칙 하나가 실패해도 나머지는 수행된다 |
+| `EntityChangeTest` | 내용이 같으면 동등하고, 원본 배열 변경에 영향받지 않는다 |
+| `RuleBasedCacheInvalidatorTest` | 키가 바뀐 수정에서 옛 키도 무효화되고, 규칙 하나가 실패해도 나머지는 수행된다 |
+| `AfterCommitEvictorTest` | 커밋 이후 한 번만 지우고, 롤백·`REQUIRES_NEW`·실행기 거부에서도 무효화를 잃지 않는다 |
 | `FallbackCacheErrorHandlerTest` | 기본 처리기는 전파하고, 폴백 처리기는 삼키되 기록한다 |
 | `JitteredTtlResolverTest` | 흔들림이 기준 TTL 비율을 넘지 않고 최소 1초를 확보한다 |
 | `AbstractRedisCacheConfigTest` | 재정의한 직렬화·만료 전략이 캐시 설정까지 닿는다 |

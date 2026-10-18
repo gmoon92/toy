@@ -125,7 +125,7 @@ public class CacheConfig extends AbstractRedisCacheConfig {
     protected List<InvalidationRule> invalidationRules() {
         return List.of(
             EvictableEntityRule.owning(UserCachePolicy.USER),
-            TtlOnlyRule.covering(ArticleCachePolicy.ARTICLE)
+            TtlOnlyRule.owning(ArticleCachePolicy.ARTICLE)
         );
     }
 }
