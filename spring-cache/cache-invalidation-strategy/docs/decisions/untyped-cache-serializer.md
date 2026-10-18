@@ -108,6 +108,18 @@ NullValue                          →  SerializationException
 | static initializer 로 실제 RCE 가 닿는 가젯이 현 클래스패스에 있는지 | `sec` 미조사 — 이론적 면만 |
 | (c) 기동 스캔의 사각지대 (JCache 애노테이션·커스텀 `cacheResolver`·프로그램적 `getCache`) | `alt` 가 열거, 미검증 |
 
+## 조사로 추가된 미해결 항목
+
+기동 시점 캐시명 검사를 넣은 뒤에도 남는 구멍이 둘 있다.
+
+| 항목 | 내용 |
+|-----|-----|
+| **`CacheManager` 교체** | `CacheAutoConfiguration` 은 `@ConditionalOnMissingBean(value = CacheManager.class, name = "cacheResolver")` 다 (3.5.0 소스 확인). 애플리케이션이 `CacheManager` 빈을 공급하지 못하면 **Boot 가 대신 꽂는다.** 그 순간 우리 정책·직렬화기·TTL 이 통째로 빠진다. 기동 시점에 "어떤 `CacheManager` 가 주입됐는가" 를 함께 단언하는 것이 가장 값싼 보강이다 |
+| **적중률을 아무도 읽지 않음** | `enable-statistics: true` 는 켜 두었으나 읽는 코드가 없다. 직렬화가 깨져도 에러가 아니라 적중률 0 으로만 나타난다 |
+
+규칙이 썩는 것을 막는 값싼 가드 둘도 검토 대상이다 — **TTL 상한**(24h 초과 선언 거부)과
+**값 타입 블랙리스트**(`Object`·`Map`·`String` 금지). 둘 다 정책 객체 생성 시점 검증이라 테스트 한둘로 끝난다.
+
 ## 권고
 
 **(c) + (d).** 기동 시점에 정책 없는 `@Cacheable` 을 찾아 실패시키고, opt-in 으로만 격리 캐시를 허용한다.
