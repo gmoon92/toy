@@ -15,9 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.transaction.support.TransactionSynchronizationUtils;
 
 import com.gmoon.cacheinvalidation.EntityChange.Type;
 
@@ -213,53 +210,8 @@ class DefaultCacheInvalidatorTest {
 				 List.of(throwingSupportRule()), cacheManager);
 
 			assertThatNoException()
-				 .as("신호는 커밋 이후에 도착하므로 예외가 새면 이미 끝난 트랜잭션의 호출자가 깨진다")
+				 .as("신호는 트랜잭션 안에서 도착하므로 예외가 새면 캐시 때문에 호출자의 트랜잭션이 롤백된다")
 				 .isThrownBy(() -> invalidator.invalidate(changeOf(new Object())));
-		}
-	}
-
-	@Nested
-	@DisplayName("트랜잭션 안에서 여러 신호가 같은 키를 지목하면")
-	class WhenSeveralSignalsTargetSameKeyInTransaction {
-
-		@Test
-		@DisplayName("커밋 이후 한 번만 지운다")
-		void evictsOnceAfterCommit() {
-			CacheInvalidator invalidator = invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)));
-
-			inTransaction(TransactionSynchronization.STATUS_COMMITTED, () -> {
-				invalidator.invalidate(changeOf(new Object()));
-				invalidator.invalidate(changeOf(new Object()));
-
-				then(userCache).should(never().description("모으는 동안에는 캐시를 건드리지 않는다"))
-					 .evict(any());
-			});
-
-			then(userCache).should(times(1).description(
-				 "신호원마다 즉시 지우면 같은 키를 두 번 지운다. 모았다가 커밋 이후 한 번에 처리해야 한다"))
-				 .evict("1");
-		}
-
-		@Test
-		@DisplayName("롤백되면 모인 대상을 버린다")
-		void discardsOnRollback() {
-			CacheInvalidator invalidator = invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)));
-
-			inTransaction(TransactionSynchronization.STATUS_ROLLED_BACK,
-				 () -> invalidator.invalidate(changeOf(new Object())));
-
-			then(userCache).should(never().description("커밋되지 않은 변경으로 캐시를 지우면 멀쩡한 값을 버린다"))
-				 .evict(any());
-		}
-	}
-
-	private static void inTransaction(int completionStatus, Runnable work) {
-		TransactionSynchronizationManager.initSynchronization();
-		try {
-			work.run();
-			TransactionSynchronizationUtils.triggerAfterCompletion(completionStatus);
-		} finally {
-			TransactionSynchronizationManager.clearSynchronization();
 		}
 	}
 

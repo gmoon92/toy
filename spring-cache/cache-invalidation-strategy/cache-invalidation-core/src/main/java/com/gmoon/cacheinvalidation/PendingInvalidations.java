@@ -18,6 +18,10 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * 커밋 이후에 도착하는 신호만으로는 이 자리를 만들 수 없다.
  * <p>
  * 트랜잭션 밖에서 들어온 변경은 모으지 않고 그대로 흘려보낸다.
+ * <p>
+ * {@link #suspend()} 와 {@link #resume()} 은 선택이 아니다.
+ * 스프링이 트랜잭션을 중단할 때 {@code bindResource} 로 묶은 리소스는 떼 주지 않으므로,
+ * 떼지 않으면 {@code REQUIRES_NEW} 안쪽이 바깥의 수집함에 모으게 된다.
  */
 final class PendingInvalidations implements TransactionSynchronization {
 
@@ -55,6 +59,19 @@ final class PendingInvalidations implements TransactionSynchronization {
 
 	private void merge(Set<CacheKey> more) {
 		entries.addAll(more);
+	}
+
+	@Override
+	public void suspend() {
+		TransactionSynchronizationManager.unbindResourceIfPossible(RESOURCE_KEY);
+	}
+
+	@Override
+	public void resume() {
+		TransactionSynchronizationManager.bindResource(
+			 RESOURCE_KEY,
+			 this
+		);
 	}
 
 	@Override
