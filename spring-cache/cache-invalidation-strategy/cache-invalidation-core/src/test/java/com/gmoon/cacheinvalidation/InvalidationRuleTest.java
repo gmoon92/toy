@@ -82,12 +82,7 @@ class InvalidationRuleTest {
 	private static InvalidationRule owningRule(CachePolicy... policies) {
 		return new InvalidationRule() {
 			@Override
-			public boolean supports(EntityChange change) {
-				return true;
-			}
-
-			@Override
-			public Collection<CacheEntry> resolve(EntityChange change) {
+			public Collection<CacheKey> resolve(EntityChange change) {
 				return List.of();
 			}
 

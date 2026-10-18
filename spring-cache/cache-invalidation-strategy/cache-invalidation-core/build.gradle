@@ -18,6 +18,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-data-redis")
     api("org.springframework.boot:spring-boot-starter-cache")
     api("org.springframework.boot:spring-boot-starter-json")
+    api("io.micrometer:micrometer-core")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

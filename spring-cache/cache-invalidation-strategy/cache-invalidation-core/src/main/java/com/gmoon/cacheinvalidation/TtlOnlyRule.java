@@ -24,12 +24,7 @@ public class TtlOnlyRule implements InvalidationRule {
 	}
 
 	@Override
-	public boolean supports(EntityChange change) {
-		return false;
-	}
-
-	@Override
-	public Collection<CacheEntry> resolve(EntityChange change) {
+	public Collection<CacheKey> resolve(EntityChange change) {
 		return List.of();
 	}
 

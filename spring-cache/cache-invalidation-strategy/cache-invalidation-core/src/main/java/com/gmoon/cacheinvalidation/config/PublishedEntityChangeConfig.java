@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.gmoon.cacheinvalidation.CacheInvalidator;
+import com.gmoon.cacheinvalidation.EntityChange;
 
 /**
  * 애플리케이션이 직접 발행한 변경을 무효화 신호로 삼는다.

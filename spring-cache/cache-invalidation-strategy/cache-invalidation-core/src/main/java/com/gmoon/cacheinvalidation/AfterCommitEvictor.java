@@ -29,8 +29,9 @@ final class AfterCommitEvictor {
 
 	private final CacheManager cacheManager;
 	private final Executor executor;
+	private final InvalidationMetrics metrics;
 
-	void evict(Set<CacheEntry> entries) {
+	void evict(Set<CacheKey> entries) {
 		if (entries.isEmpty()) {
 			return;
 		}
@@ -51,8 +52,8 @@ final class AfterCommitEvictor {
 		return pending;
 	}
 
-	private void dispatch(Collection<CacheEntry> entries) {
-		List<CacheEntry> snapshot = List.copyOf(entries);
+	private void dispatch(Collection<CacheKey> entries) {
+		List<CacheKey> snapshot = List.copyOf(entries);
 		try {
 			executor.execute(() -> evictEach(snapshot));
 		} catch (RejectedExecutionException e) {
@@ -64,11 +65,11 @@ final class AfterCommitEvictor {
 		}
 	}
 
-	private void evictEach(List<CacheEntry> entries) {
+	private void evictEach(List<CacheKey> entries) {
 		entries.forEach(this::evictOne);
 	}
 
-	private void evictOne(CacheEntry entry) {
+	private void evictOne(CacheKey entry) {
 		try {
 			Cache cache = cacheManager.getCache(entry.cacheName());
 			if (cache == null) {
@@ -76,6 +77,7 @@ final class AfterCommitEvictor {
 					 "cache not registered. name: {}",
 					 entry.cacheName()
 				);
+				metrics.evictionFailed(entry.cacheName());
 				return;
 			}
 			cache.evict(entry.key());
@@ -85,14 +87,15 @@ final class AfterCommitEvictor {
 				 entry,
 				 e
 			);
+			metrics.evictionFailed(entry.cacheName());
 		}
 	}
 
 	private final class Pending implements TransactionSynchronization {
 
-		private final Set<CacheEntry> entries = new LinkedHashSet<>();
+		private final Set<CacheKey> entries = new LinkedHashSet<>();
 
-		private void merge(Set<CacheEntry> more) {
+		private void merge(Set<CacheKey> more) {
 			entries.addAll(more);
 		}
 

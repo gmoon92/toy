@@ -28,12 +28,17 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
 @DisplayName("커밋 이후 캐시 삭제")
 class AfterCommitEvictorTest {
 
-	private static final CacheEntry USER_1 = CacheEntry.of(TestCachePolicy.USER, 1L);
-	private static final CacheEntry USER_2 = CacheEntry.of(TestCachePolicy.USER, 2L);
-	private static final CacheEntry SUMMARY_1 = CacheEntry.of(TestCachePolicy.USER_SUMMARY, 1L);
+	private static final InvalidationMetrics NO_METRICS = new InvalidationMetrics(null);
+
+	private static final CacheKey USER_1 = CacheKey.of(TestCachePolicy.USER, 1L);
+	private static final CacheKey USER_2 = CacheKey.of(TestCachePolicy.USER, 2L);
+	private static final CacheKey SUMMARY_1 = CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L);
 	private static final Executor CALLER_THREAD = Runnable::run;
 
 	private RecordingCacheManager caches;
@@ -45,7 +50,8 @@ class AfterCommitEvictorTest {
 		caches = new RecordingCacheManager(TestCachePolicy.Name.USER);
 		evictor = new AfterCommitEvictor(
 			 caches,
-			 CALLER_THREAD
+			 CALLER_THREAD,
+			 NO_METRICS
 		);
 		transactionManager = new StubTransactionManager();
 	}
@@ -184,7 +190,8 @@ class AfterCommitEvictorTest {
 			RecordingCacheManager otherCaches = new RecordingCacheManager(TestCachePolicy.Name.USER);
 			AfterCommitEvictor other = new AfterCommitEvictor(
 				 otherCaches,
-				 CALLER_THREAD
+				 CALLER_THREAD,
+				 NO_METRICS
 			);
 
 			inTransaction(() -> {
@@ -249,7 +256,8 @@ class AfterCommitEvictorTest {
 		void swallowsLookupFailure() {
 			AfterCommitEvictor failing = new AfterCommitEvictor(
 				 FailingCacheManager.of("redis down"),
-				 CALLER_THREAD
+				 CALLER_THREAD,
+				 NO_METRICS
 			);
 
 			assertThatNoException()
@@ -267,7 +275,8 @@ class AfterCommitEvictorTest {
 				 .willReturn(caches.getCache(TestCachePolicy.Name.USER));
 			AfterCommitEvictor evictorOverFailure = new AfterCommitEvictor(
 				 partlyFailing,
-				 CALLER_THREAD
+				 CALLER_THREAD,
+				 NO_METRICS
 			);
 
 			evictorOverFailure.evict(entriesOf(SUMMARY_1, USER_1));
@@ -275,6 +284,28 @@ class AfterCommitEvictorTest {
 			assertThat(caches.evictedKeys())
 				 .as("방어가 묶음 전체를 감싸면 첫 실패 뒤의 키가 모두 stale 로 남는다")
 				 .containsExactly(USER_1.key());
+		}
+	}
+
+	@Nested
+	@DisplayName("삭제가 실패하면")
+	class WhenEvictionFails {
+
+		@Test
+		@DisplayName("실패 수를 캐시 이름과 함께 센다")
+		void countsFailure() {
+			MeterRegistry registry = new SimpleMeterRegistry();
+			AfterCommitEvictor failing = new AfterCommitEvictor(
+				 FailingCacheManager.of("redis down"),
+				 CALLER_THREAD,
+				 new InvalidationMetrics(registry)
+			);
+
+			failing.evict(entriesOf(USER_1));
+
+			assertThat(registry.find("cache.invalidation.failures").counter().count())
+				 .as("로그만 남기면 집계하지 않는 한 stale 이 쌓이는 것을 아무도 모른다")
+				 .isEqualTo(1);
 		}
 	}
 
@@ -290,7 +321,8 @@ class AfterCommitEvictorTest {
 			queued = new ArrayList<>();
 			deferring = new AfterCommitEvictor(
 				 caches,
-				 queued::add
+				 queued::add,
+				 NO_METRICS
 			);
 		}
 
@@ -319,7 +351,7 @@ class AfterCommitEvictorTest {
 		@Test
 		@DisplayName("넘긴 뒤 원본이 바뀌어도 넘긴 대상만 지운다")
 		void evictsSnapshotOnly() {
-			Set<CacheEntry> entries = entriesOf(USER_1);
+			Set<CacheKey> entries = entriesOf(USER_1);
 			deferring.evict(entries);
 			entries.add(USER_2);
 
@@ -342,7 +374,8 @@ class AfterCommitEvictorTest {
 				 caches,
 				 task -> {
 					 throw new RejectedExecutionException("queue full");
-				 }
+				 },
+				 NO_METRICS
 			);
 
 			inTransaction(() -> rejecting.evict(entriesOf(USER_1)));
@@ -353,11 +386,11 @@ class AfterCommitEvictorTest {
 		}
 	}
 
-	private void evict(CacheEntry... entries) {
+	private void evict(CacheKey... entries) {
 		evictor.evict(entriesOf(entries));
 	}
 
-	private static Set<CacheEntry> entriesOf(CacheEntry... entries) {
+	private static Set<CacheKey> entriesOf(CacheKey... entries) {
 		return new LinkedHashSet<>(List.of(entries));
 	}
 

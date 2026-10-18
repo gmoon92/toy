@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.cacheinvalidation.CacheEntry;
+import com.gmoon.cacheinvalidation.CacheKey;
 import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.writeinvalidate.user.UserCachePolicy;
 
@@ -26,10 +26,9 @@ class EvictableEntityRuleTest {
 		void resolvesEveryDeclaredEntry() {
 			EntityChange change = EntityChange.of(new EvictableUser(1L), EntityChange.Type.UPDATE);
 
-			assertThat(rule.supports(change)).isTrue();
 			assertThat(rule.resolve(change))
 				 .as("엔티티가 자기 키를 안다는 전제가 깨지면 무효화 대상이 비어 stale 이 남는다")
-				 .containsExactly(CacheEntry.of(UserCachePolicy.USER, 1L));
+				 .containsExactly(CacheKey.of(UserCachePolicy.USER, 1L));
 		}
 	}
 
@@ -38,21 +37,21 @@ class EvictableEntityRuleTest {
 	class WhenEntityIsNotEvictable {
 
 		@Test
-		@DisplayName("같은 커밋에 섞여 있어도 반응하지 않는다")
-		void doesNotSupport() {
+		@DisplayName("같은 커밋에 섞여 있어도 대상을 내놓지 않는다")
+		void resolvesNothing() {
 			EntityChange change = EntityChange.of(new Object(), EntityChange.Type.UPDATE);
 
-			assertThat(rule.supports(change))
+			assertThat(rule.resolve(change))
 				 .as("선언하지 않은 엔티티까지 반응하면 남의 캐시를 지운다")
-				 .isFalse();
+				 .isEmpty();
 		}
 	}
 
 	private record EvictableUser(Long id) implements CacheEvictable {
 
 		@Override
-		public List<CacheEntry> cacheEntries() {
-			return List.of(CacheEntry.of(UserCachePolicy.USER, id));
+		public List<CacheKey> cacheKeys() {
+			return List.of(CacheKey.of(UserCachePolicy.USER, id));
 		}
 	}
 }

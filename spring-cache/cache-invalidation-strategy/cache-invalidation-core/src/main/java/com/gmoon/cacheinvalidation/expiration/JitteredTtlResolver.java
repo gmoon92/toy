@@ -57,6 +57,9 @@ class JitteredTtlResolver implements TtlResolver {
 	}
 
 	private long boundOf(Duration baseTtl) {
+		if (jitterRatio == 0) {
+			return 0;
+		}
 		long jitterSeconds = (long)(baseTtl.toSeconds() * jitterRatio);
 		return Math.max(MINIMUM_JITTER_SECONDS, jitterSeconds);
 	}

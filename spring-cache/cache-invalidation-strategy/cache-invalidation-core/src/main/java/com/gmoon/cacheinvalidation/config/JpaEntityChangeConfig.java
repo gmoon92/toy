@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
-import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Configuration;
 
@@ -52,7 +52,7 @@ public class JpaEntityChangeConfig {
 	}
 
 	private EventListenerRegistry registryOf(EntityManagerFactory entityManagerFactory) {
-		EventListenerRegistry registry = entityManagerFactory.unwrap(SessionFactoryImpl.class)
+		EventListenerRegistry registry = entityManagerFactory.unwrap(SessionFactoryImplementor.class)
 			 .getServiceRegistry()
 			 .getService(EventListenerRegistry.class);
 

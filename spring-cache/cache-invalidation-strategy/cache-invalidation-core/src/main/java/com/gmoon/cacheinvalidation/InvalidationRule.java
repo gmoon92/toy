@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
  * <p>
  * {@link #owns()} 로 책임지는 캐시를 밝힌다. 무효화 방식이 TTL 뿐이어도
  * {@link TtlOnlyRule} 로 선언해야 주인 없는 캐시가 생기지 않는다.
+ * <p>
+ * {@code owns()} 는 <b>선언</b>을 대조할 뿐 {@link #resolve(EntityChange)} 의 결과를 제한하지 않는다.
+ * 기동 시점에 주인 없는 캐시와 선언되지 않은 주장을 잡는 것이 이 검증의 범위다.
  */
 public interface InvalidationRule {
 
@@ -40,9 +43,12 @@ public interface InvalidationRule {
 		return policies.stream().filter(filter).map(CachePolicy::cacheName).toList();
 	}
 
-	boolean supports(EntityChange change);
-
-	Collection<CacheEntry> resolve(EntityChange change);
+	/**
+	 * 반응할 변경이 아니면 빈 목록을 돌려준다.
+	 * <p>
+	 * 반응 여부를 따로 묻지 않는다. 물으면 구현이 같은 판정을 두 번 하게 된다.
+	 */
+	Collection<CacheKey> resolve(EntityChange change);
 
 	default Set<CachePolicy> owns() {
 		return Set.of();

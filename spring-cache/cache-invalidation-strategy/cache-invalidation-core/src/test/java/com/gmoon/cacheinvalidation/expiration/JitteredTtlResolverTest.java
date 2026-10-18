@@ -102,6 +102,24 @@ class JitteredTtlResolverTest {
 	}
 
 	@Nested
+	@DisplayName("흔들림 비율이 0 이면")
+	class WhenJitterRatioIsZero {
+
+		@Test
+		@DisplayName("선언된 TTL 을 그대로 쓴다")
+		void doesNotJitterAtAll() {
+			JitteredTtlResolver resolver = new JitteredTtlResolver(0, NOT_FOUND_TTL);
+
+			assertThat(IntStream.range(0, 100)
+				 .mapToObj(attempt -> ttlOf(resolver, BASE_TTL))
+				 .distinct()
+				 .toList())
+				 .as("0 을 적었는데도 최소 흔들림이 얹히면 끌 방법이 없다")
+				 .containsExactly(BASE_TTL);
+		}
+	}
+
+	@Nested
 	@DisplayName("값이 비어 있으면")
 	class WhenValueIsAbsent {
 

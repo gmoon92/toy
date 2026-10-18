@@ -14,6 +14,7 @@ class RuleBasedCacheInvalidator implements CacheInvalidator {
 
 	private final List<InvalidationRule> rules;
 	private final AfterCommitEvictor evictor;
+	private final InvalidationMetrics metrics;
 
 	/**
 	 * 무효화 실패는 호출자의 데이터 변경을 되돌리지 않는다.
@@ -29,8 +30,8 @@ class RuleBasedCacheInvalidator implements CacheInvalidator {
 		}
 	}
 
-	private Set<CacheEntry> resolve(EntityChange change) {
-		Set<CacheEntry> entries = new LinkedHashSet<>();
+	private Set<CacheKey> resolve(EntityChange change) {
+		Set<CacheKey> entries = new LinkedHashSet<>();
 		for (InvalidationRule rule : rules) {
 			entries.addAll(
 				 resolveInIsolation(
@@ -42,11 +43,17 @@ class RuleBasedCacheInvalidator implements CacheInvalidator {
 		return entries;
 	}
 
-	private Collection<CacheEntry> resolveInIsolation(InvalidationRule rule, EntityChange change) {
+	private Collection<CacheKey> resolveInIsolation(InvalidationRule rule, EntityChange change) {
 		try {
-			return rule.supports(change) ? rule.resolve(change) : List.of();
+			return rule.resolve(change);
 		} catch (RuntimeException e) {
-			log.warn("cache invalidation rule failed. rule: {}", rule.getClass().getSimpleName(), e);
+			String ruleName = rule.getClass().getSimpleName();
+			log.warn(
+				 "cache invalidation rule failed. rule: {}",
+				 ruleName,
+				 e
+			);
+			metrics.resolutionFailed(ruleName);
 			return List.of();
 		}
 	}

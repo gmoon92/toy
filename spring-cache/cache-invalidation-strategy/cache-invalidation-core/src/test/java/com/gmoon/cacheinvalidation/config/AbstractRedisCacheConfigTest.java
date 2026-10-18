@@ -13,7 +13,10 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -22,8 +25,10 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
+import io.micrometer.core.instrument.MeterRegistry;
+
 import com.gmoon.cacheinvalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.CacheEntry;
+import com.gmoon.cacheinvalidation.CacheKey;
 import com.gmoon.cacheinvalidation.CachePolicy;
 import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.cacheinvalidation.FailingCacheManager;
@@ -42,7 +47,7 @@ class AbstractRedisCacheConfigTest {
 	private static final Duration FIXED_TTL = Duration.ofMinutes(42);
 	private static final TtlResolver PASS_THROUGH = declaredTtl -> (key, value) -> declaredTtl;
 	private static final double DEFAULT_JITTER_RATIO = 0.1;
-	private static final ServiceCacheProperties PROPERTIES = new ServiceCacheProperties(null, null);
+	private static final ServiceCacheProperties PROPERTIES = ServiceCacheProperties.defaults();
 
 	@Nested
 	@DisplayName("전략을 재정의하지 않으면")
@@ -133,7 +138,10 @@ class AbstractRedisCacheConfigTest {
 		@Test
 		@DisplayName("캐시가 죽어도 예외를 호출자에게 돌려주지 않는다")
 		void swallowsInvalidationFailure() {
-			CacheInvalidator invalidator = new TestCacheConfig().cacheInvalidator(FailingCacheManager.of("redis down"));
+			CacheInvalidator invalidator = new TestCacheConfig().cacheInvalidator(
+				 FailingCacheManager.of("redis down"),
+				 noMeterRegistry()
+			);
 
 			assertThatNoException()
 				 .as("리스너가 각자 try/catch 하던 것을 한 곳으로 모았으므로, 배선이 빠지면 보호가 사라진다")
@@ -187,6 +195,87 @@ class AbstractRedisCacheConfigTest {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private static ObjectProvider<MeterRegistry> noMeterRegistry() {
+		ObjectProvider<MeterRegistry> provider = mock(ObjectProvider.class);
+		given(provider.getIfAvailable()).willReturn(null);
+		return provider;
+	}
+
+	@Nested
+	@DisplayName("spring.cache.cache-names 에 정책 없는 이름이 섞이면")
+	class WhenCacheNameHasNoPolicy {
+
+		@Test
+		@DisplayName("기동을 막는다")
+		void rejectsAtStartup() {
+			CacheProperties properties = new CacheProperties();
+			properties.setCacheNames(List.of(TestCachePolicy.Name.USER, "ORPHAN"));
+
+			assertThatIllegalStateException()
+				 .as("Boot 가 커스터마이저보다 먼저 initialCacheNames 로 기본 설정을 복사하므로"
+					  + " 정책 없는 이름이 JDK 직렬화로 살아남고 disableCreateOnMissingCache 에도 걸리지 않는다")
+				 .isThrownBy(() -> customizerOf(new TestCacheConfig(), properties))
+				 .withMessageContaining("ORPHAN");
+		}
+	}
+
+	@Nested
+	@DisplayName("확장점을 여러 곳에서 쓰면")
+	class WhenExtensionPointsUsedRepeatedly {
+
+		@Test
+		@DisplayName("한 번만 평가해 같은 객체를 쓴다")
+		void evaluatesOnlyOnce() {
+			CountingCacheConfig config = new CountingCacheConfig();
+
+			config.validateInvalidationOwnership();
+			customizerOf(config, new CacheProperties());
+			config.cacheInvalidator(
+				 mock(CacheManager.class),
+				 noMeterRegistry()
+			);
+
+			assertThat(config.policyCalls)
+				 .as("호출마다 새로 만들면 기동 검증이 본 정책과 런타임이 쓰는 정책이 다른 객체가 된다")
+				 .isEqualTo(1);
+			assertThat(config.ruleCalls)
+				 .as("규칙도 마찬가지다. 규칙이 상태를 가지는 순간 조용히 어긋난다")
+				 .isEqualTo(1);
+		}
+	}
+
+	private static RedisCacheManagerBuilderCustomizer customizerOf(
+		 AbstractRedisCacheConfig config,
+		 CacheProperties properties
+	) {
+		return config.cacheManagerCustomizer(
+			 SerializerFactory.json(),
+			 PASS_THROUGH,
+			 properties,
+			 mock(RedisConnectionFactory.class),
+			 ServiceCacheProperties.defaults()
+		);
+	}
+
+	static class CountingCacheConfig extends TestCacheConfig {
+
+		private int policyCalls;
+		private int ruleCalls;
+
+		@Override
+		protected List<CachePolicy> cachePolicies() {
+			policyCalls++;
+			return super.cachePolicies();
+		}
+
+		@Override
+		protected List<InvalidationRule> invalidationRules() {
+			ruleCalls++;
+			return super.invalidationRules();
+		}
+	}
+
 	private String serializedValueOf(AbstractRedisCacheConfig config) {
 		ByteBuffer written = configurationOf(config).getValueSerializationPair().write("hello");
 		return StandardCharsets.UTF_8.decode(written).toString();
@@ -228,13 +317,8 @@ class AbstractRedisCacheConfigTest {
 	private static InvalidationRule userCacheRule() {
 		return new InvalidationRule() {
 			@Override
-			public boolean supports(EntityChange change) {
-				return true;
-			}
-
-			@Override
-			public Collection<CacheEntry> resolve(EntityChange change) {
-				return List.of(CacheEntry.of(TestCachePolicy.USER, 1L));
+			public Collection<CacheKey> resolve(EntityChange change) {
+				return List.of(CacheKey.of(TestCachePolicy.USER, 1L));
 			}
 
 			@Override

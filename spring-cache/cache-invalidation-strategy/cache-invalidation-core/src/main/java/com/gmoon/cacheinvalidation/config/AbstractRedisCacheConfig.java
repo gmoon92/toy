@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -21,6 +23,9 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.util.function.SingletonSupplier;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 import com.gmoon.cacheinvalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.CachePolicy;
@@ -35,8 +40,8 @@ import jakarta.annotation.PostConstruct;
  * <p>
  * 이 클래스는 무효화 파이프라인만 배선하고 변경 감지 방식은 정하지 않는다.
  * 무효화가 필요한 모듈은
- * {@link com.gmoon.cacheinvalidation.JpaEntityChangeConfig JpaEntityChangeConfig} 또는
- * {@link com.gmoon.cacheinvalidation.PublishedEntityChangeConfig PublishedEntityChangeConfig}
+ * {@link JpaEntityChangeConfig} 또는
+ * {@link PublishedEntityChangeConfig}
  * 를 함께 선언하고, TTL 로만 만료시키는 모듈은 아무것도 선언하지 않는다.
  * <p>
  * 감지 방식은 조합 가능한 선택이므로 상속이 아니라 {@code @Import} 로 켠다.
@@ -54,6 +59,16 @@ import jakarta.annotation.PostConstruct;
 @EnableCaching
 @EnableConfigurationProperties(ServiceCacheProperties.class)
 public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
+
+	/**
+	 * 확장점은 한 번만 평가해 고정한다.
+	 * <p>
+	 * 호출할 때마다 새로 만들면 기동 검증이 본 규칙과 런타임이 쓰는 규칙이 서로 다른 객체가 된다.
+	 */
+	private final Supplier<Collection<CachePolicy>> policies =
+		 SingletonSupplier.of(() -> CachePolicy.distinct(cachePolicies()));
+	private final Supplier<List<InvalidationRule>> rules =
+		 SingletonSupplier.of(() -> List.copyOf(invalidationRules()));
 
 	protected abstract Collection<CachePolicy> cachePolicies();
 
@@ -77,11 +92,13 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@PostConstruct
 	protected void validateInvalidationOwnership() {
-		List<InvalidationRule> rules = invalidationRules();
-		if (rules.isEmpty()) {
+		if (rules.get().isEmpty()) {
 			return;
 		}
-		InvalidationRule.verifyOwnership(rules, cachePolicies());
+		InvalidationRule.verifyOwnership(
+			 rules.get(),
+			 policies.get()
+		);
 	}
 
 	/**
@@ -96,11 +113,15 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	protected CacheInvalidator cacheInvalidator(CacheManager cacheManager) {
+	protected CacheInvalidator cacheInvalidator(
+		 CacheManager cacheManager,
+		 ObjectProvider<MeterRegistry> meterRegistry
+	) {
 		return CacheInvalidator.of(
-			 invalidationRules(),
+			 rules.get(),
 			 cacheManager,
-			 evictionExecutor()
+			 evictionExecutor(),
+			 meterRegistry.getIfAvailable()
 		);
 	}
 
@@ -120,7 +141,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	) {
 		CacheProperties.Redis redis = cacheProperties.getRedis();
 
-		Map<String, RedisCacheConfiguration> byCacheName = CachePolicy.distinct(cachePolicies())
+		Map<String, RedisCacheConfiguration> byCacheName = policies.get()
 			 .stream()
 			 .collect(Collectors.toMap(
 					   CachePolicy::cacheName,
@@ -134,6 +155,11 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 				  )
 			 );
 
+		rejectCacheNamesWithoutPolicy(
+			 cacheProperties.getCacheNames(),
+			 byCacheName.keySet()
+		);
+
 		return builder -> builder
 			 .cacheWriter(
 				  scanningCacheWriter(
@@ -143,6 +169,27 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 			 )
 			 .disableCreateOnMissingCache()
 			 .withInitialCacheConfigurations(byCacheName);
+	}
+
+	/**
+	 * {@code spring.cache.cache-names} 는 커스터마이저보다 먼저 적용된다.
+	 * <p>
+	 * Boot 가 {@code initialCacheNames} 로 그때의 기본 설정(JDK 직렬화)을 복사해 두므로
+	 * 정책 없는 이름이 섞이면 {@code disableCreateOnMissingCache} 에도 걸리지 않고 살아남는다.
+	 */
+	private void rejectCacheNamesWithoutPolicy(
+		 Collection<String> requestedCacheNames,
+		 Collection<String> declaredCacheNames
+	) {
+		List<String> withoutPolicy = requestedCacheNames.stream()
+			 .filter(name -> !declaredCacheNames.contains(name))
+			 .toList();
+
+		if (!withoutPolicy.isEmpty()) {
+			throw new IllegalStateException(
+				 "spring.cache.cache-names declares caches without a CachePolicy: " + withoutPolicy
+					  + ". Declare a CachePolicy, or remove them from the property.");
+		}
 	}
 
 	private RedisCacheWriter scanningCacheWriter(

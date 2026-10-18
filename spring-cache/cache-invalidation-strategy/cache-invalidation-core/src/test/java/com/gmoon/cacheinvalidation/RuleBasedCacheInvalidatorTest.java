@@ -20,6 +20,8 @@ import com.gmoon.cacheinvalidation.EntityChange.Type;
 @DisplayName("엔티티 변경 무효화 실행")
 class RuleBasedCacheInvalidatorTest {
 
+	private static final InvalidationMetrics NO_METRICS = new InvalidationMetrics(null);
+
 	private static final String CACHED_VALUE = "cached";
 
 	private ConcurrentMapCacheManager caches;
@@ -70,8 +72,8 @@ class RuleBasedCacheInvalidatorTest {
 			putCached(TestCachePolicy.Name.USER, "1");
 			putCached(TestCachePolicy.Name.USER_SUMMARY, "1");
 
-			invalidatorOf(ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)),
-				 ruleOf(true, CacheEntry.of(TestCachePolicy.USER_SUMMARY, 1L)))
+			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
+				 ruleOf(true, CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
@@ -90,8 +92,8 @@ class RuleBasedCacheInvalidatorTest {
 		@Test
 		@DisplayName("중복을 제거해 한 번만 지운다")
 		void deduplicatesEntries() {
-			invalidatorOf(ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)),
-				 ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)))
+			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
+				 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			then(userCache).should(times(1).description("같은 키를 두 번 지우면 왕복만 늘고 결과는 같다"))
@@ -106,7 +108,7 @@ class RuleBasedCacheInvalidatorTest {
 		@Test
 		@DisplayName("아무 캐시도 건드리지 않는다")
 		void evictsNothing() {
-			invalidatorOf(ruleOf(false, CacheEntry.of(TestCachePolicy.USER, 1L)))
+			invalidatorOf(ruleOf(false, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			then(userCache).should(never()).evict(any());
@@ -122,7 +124,7 @@ class RuleBasedCacheInvalidatorTest {
 		void keepsResolvingRemainingRules() {
 			putCached(TestCachePolicy.Name.USER, "1");
 
-			invalidatorOf(failingRule(), ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)))
+			invalidatorOf(failingRule(), ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
@@ -149,11 +151,13 @@ class RuleBasedCacheInvalidatorTest {
 	private CacheInvalidator invalidatorOf(InvalidationRule... rules) {
 		AfterCommitEvictor evictor = new AfterCommitEvictor(
 			 cacheManager,
-			 Runnable::run
+			 Runnable::run,
+			 NO_METRICS
 		);
 		return new RuleBasedCacheInvalidator(
 			 List.of(rules),
-			 evictor
+			 evictor,
+			 NO_METRICS
 		);
 	}
 
@@ -171,55 +175,32 @@ class RuleBasedCacheInvalidatorTest {
 
 	private static InvalidationRule previousUsernameRule() {
 		return rule(change -> change.previousValueOf("username")
-			 .map(username -> List.of(CacheEntry.of(TestCachePolicy.USER, username)))
+			 .map(username -> List.of(CacheKey.of(TestCachePolicy.USER, username)))
 			 .orElse(List.of()));
 	}
 
 	private static InvalidationRule currentUsernameRule() {
 		return rule(change -> List.of(
-			 CacheEntry.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
+			 CacheKey.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
 	}
 
-	private static InvalidationRule rule(Function<EntityChange, List<CacheEntry>> resolver) {
+	private static InvalidationRule rule(Function<EntityChange, List<CacheKey>> resolver) {
 		return new InvalidationRule() {
 			@Override
-			public boolean supports(EntityChange change) {
-				return true;
-			}
-
-			@Override
-			public Collection<CacheEntry> resolve(EntityChange change) {
+			public Collection<CacheKey> resolve(EntityChange change) {
 				return resolver.apply(change);
 			}
 		};
 	}
 
-	private static InvalidationRule ruleOf(boolean supported, CacheEntry entry) {
-		return new InvalidationRule() {
-			@Override
-			public boolean supports(EntityChange change) {
-				return supported;
-			}
-
-			@Override
-			public Collection<CacheEntry> resolve(EntityChange change) {
-				return List.of(entry);
-			}
-		};
+	private static InvalidationRule ruleOf(boolean supported, CacheKey entry) {
+		return rule(change -> supported ? List.of(entry) : List.of());
 	}
 
 	private static InvalidationRule throwingSupportRule() {
-		return new InvalidationRule() {
-			@Override
-			public boolean supports(EntityChange change) {
-				throw new IllegalStateException("rule blew up outside resolve");
-			}
-
-			@Override
-			public Collection<CacheEntry> resolve(EntityChange change) {
-				return List.of();
-			}
-		};
+		return rule(change -> {
+			throw new IllegalStateException("rule blew up while resolving");
+		});
 	}
 
 	private static InvalidationRule failingRule() {
