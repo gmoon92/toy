@@ -152,15 +152,32 @@ InvalidationRule.verifyOwnership(rules, declaredPolicies)
 public interface CachePolicy {
     Spec spec();
 
-    record Spec(String cacheName, Duration ttl, Class<?> valueType) { }
+    record Spec(String cacheName, @Nullable Duration ttl, Class<?> valueType) {
+        Spec(String cacheName, Class<?> valueType) { ... }   // TTL 을 정하지 않는다
+    }
 }
 ```
 
 ```java
 public enum UserCachePolicy implements CachePolicy {
-    USER(new Spec(Name.USER, Duration.ofMinutes(10), CachedUser.class));
+    USER(new Spec(Name.USER, Duration.ofMinutes(10), CachedUser.class)),   // TTL 을 덮어쓴다
+    PROFILE(new Spec(Name.PROFILE, CachedProfile.class));                  // Redis 기본 TTL 을 따른다
 }
 ```
+
+**TTL 은 Redis 캐시 기본 설정을 바탕으로 정책이 덮어쓴다.**
+정책별 캐시 설정은 Boot 가 `spring.cache.redis.*` 로 만든 기본 `RedisCacheConfiguration`
+(애플리케이션이 그 빈을 등록했다면 그 빈)에서 출발해 TTL·직렬화만 바꾼다.
+키 접두사·null 캐싱 같은 나머지는 기본 설정을 그대로 물려받는다.
+
+| 정책 TTL | `spring.cache.redis.time-to-live` | 적용 TTL |
+|---|---|---|
+| 있음 | 무관 | 정책 TTL |
+| 없음 | 있음 | 기본 TTL |
+| 없음 | 없음 | **기동을 막는다** — Redis 는 0 이하 TTL 을 만료 없음으로 저장해 키가 영구히 남는다 |
+
+TTL 은 옛 값이 보이는 기간의 상한이다. 기본 TTL 을 따르는 캐시는 yml 의 기본값이 늘면 stale 상한도 함께 는다.
+최신성이 중요한 캐시는 정책에 TTL 을 직접 적는다.
 
 값을 `Spec` 에 모은 덕에 구현 enum 은 필드 하나만 들고,
 무효화를 쓰지 않는 모듈은 무효화 어휘를 한 번도 만나지 않는다.
@@ -307,7 +324,7 @@ spring:
   cache:
     redis:
       key-prefix: "cache-ttl-only:"   # 키 네임스페이스
-      time-to-live: 5m                # 기본 TTL
+      time-to-live: 5m                # 정책에 TTL 이 없는 캐시의 기본 TTL
       enable-statistics: true         # hit/miss/put/delete 집계
 
 service:
@@ -322,16 +339,22 @@ service:
 자체 프로퍼티는 `service.cache` 한 트리에 모으고 축별로 중첩한다.
 전략마다 최상위 키를 따로 만들면 설정이 흩어진다.
 
+**`service.cache` 아래 값은 모두 필수다.** 기본값을 두지 않고 구현 모듈이 반드시 정한다.
+블록이나 값이 빠지면 빠진 키 이름을 담아 기동을 막는다.
+기본값으로 메우면 구현 모듈이 고르지 않은 만료 정책으로 모르는 사이에 돌고,
+원시 타입이면 빠진 값이 0 으로 바인딩되어 "안 적음" 과 "0 으로 끔" 이 구분되지 않는다.
+
 | 항목 | 출처 | 이유 |
 |-----|-----|-----|
 | `spring.cache.redis.key-prefix` | **Boot 표준** | 최종 키는 `{prefix}{cacheName}::{key}` |
-| `spring.cache.redis.time-to-live` | **Boot 표준** | 정책에 없는 캐시의 기본값 |
+| `spring.cache.redis.time-to-live` | **Boot 표준** | 정책에 TTL 이 없는 캐시의 기본 TTL. 정책 TTL 이 있으면 덮어쓴다 |
+| `spring.cache.redis.cache-null-values` | **Boot 표준** | 정책 캐시도 기본 설정을 물려받아 그대로 따른다 |
 | `spring.cache.redis.enable-statistics` | **Boot 표준** | 코드로 강제하지 않고 설정에 위임 |
 | `service.cache.expiration.not-found-ttl` | 자체 | Penetration 방어 — 표준에 대응 항목 없음 |
 | `service.cache.expiration.jitter-ratio` | 자체 | 동시 만료 방지 — 표준 미제공 |
 | `service.cache.clear.scan-batch-size` | 자체 | `clear()`가 `KEYS`+`DEL`을 쓰는 문제 회피 |
 
-`spring.cache.redis.use-key-prefix: false` 도 그대로 존중한다.
+`spring.cache.redis.use-key-prefix: false` 도 기본 설정에서 물려받아 그대로 존중한다.
 
 ### 왜 캐시명이 정책에 등록되어야만 하는가
 
