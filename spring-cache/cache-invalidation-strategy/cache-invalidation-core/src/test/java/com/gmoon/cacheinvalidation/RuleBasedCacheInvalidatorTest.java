@@ -5,7 +5,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import com.gmoon.cacheinvalidation.EntityChange.Type;
 
 @DisplayName("엔티티 변경 무효화 실행")
-class DefaultCacheInvalidatorTest {
+class RuleBasedCacheInvalidatorTest {
 
 	private static final String CACHED_VALUE = "cached";
 
@@ -71,8 +70,8 @@ class DefaultCacheInvalidatorTest {
 			putCached(TestCachePolicy.Name.USER, "1");
 			putCached(TestCachePolicy.Name.USER_SUMMARY, "1");
 
-			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
-				 ruleOf(true, CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L)))
+			invalidatorOf(ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)),
+				 ruleOf(true, CacheEntry.of(TestCachePolicy.USER_SUMMARY, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
@@ -91,8 +90,8 @@ class DefaultCacheInvalidatorTest {
 		@Test
 		@DisplayName("중복을 제거해 한 번만 지운다")
 		void deduplicatesEntries() {
-			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
-				 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
+			invalidatorOf(ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)),
+				 ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			then(userCache).should(times(1).description("같은 키를 두 번 지우면 왕복만 늘고 결과는 같다"))
@@ -107,7 +106,7 @@ class DefaultCacheInvalidatorTest {
 		@Test
 		@DisplayName("아무 캐시도 건드리지 않는다")
 		void evictsNothing() {
-			invalidatorOf(ruleOf(false, CacheKey.of(TestCachePolicy.USER, 1L)))
+			invalidatorOf(ruleOf(false, CacheEntry.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			then(userCache).should(never()).evict(any());
@@ -123,79 +122,12 @@ class DefaultCacheInvalidatorTest {
 		void keepsResolvingRemainingRules() {
 			putCached(TestCachePolicy.Name.USER, "1");
 
-			invalidatorOf(failingRule(), ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
+			invalidatorOf(failingRule(), ruleOf(true, CacheEntry.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
 				 .as("규칙 하나의 실패가 다른 캐시의 무효화를 막으면 stale 이 남는다")
 				 .isNull();
-		}
-	}
-
-	@Nested
-	@DisplayName("등록된 캐시를 지목하면")
-	class WhenCacheRegistered {
-
-		@Test
-		@DisplayName("값이 없어도 삭제를 요청한다")
-		void evictsEvenWhenAbsent() {
-			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 99L)))
-				 .invalidate(changeOf(new Object()));
-
-			then(userCache).should(description(
-				 "존재 여부를 미리 확인하면 왕복이 늘고, 확인과 삭제 사이에 값이 다시 적재될 수 있다"))
-				 .evict("99");
-		}
-
-		@Test
-		@DisplayName("실제로 캐시에서 값을 제거한다")
-		void removesCachedValue() {
-			putCached(TestCachePolicy.Name.USER, "1");
-
-			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
-				 .invalidate(changeOf(new Object()));
-
-			assertThat(cachedValue(TestCachePolicy.Name.USER, "1")).isNull();
-		}
-	}
-
-	@Nested
-	@DisplayName("등록되지 않은 캐시를 지목하면")
-	class WhenCacheNotRegistered {
-
-		@Test
-		@DisplayName("예외를 던지지 않고 넘어간다")
-		void skipsWithoutThrowing() {
-			CacheInvalidator invalidator = new DefaultCacheInvalidator(
-				 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L))),
-				 new ConcurrentMapCacheManager(TestCachePolicy.Name.USER));
-
-			assertThatNoException()
-				 .as("설정 실수가 이미 커밋된 트랜잭션의 호출자를 깨뜨리면 안 된다")
-				 .isThrownBy(() -> invalidator.invalidate(changeOf(new Object())));
-		}
-	}
-
-	@Nested
-	@DisplayName("캐시 인프라가 예외를 던지면")
-	class WhenCacheThrows {
-
-		@Test
-		@DisplayName("캐시를 찾는 단계에서 터져도 전파하지 않는다")
-		void swallowsWhenResolvingCacheThrows() {
-			assertThatNoException()
-				 .as("커밋 이후 실행되므로 예외를 던지면 이미 커밋된 트랜잭션의 호출자가 깨진다")
-				 .isThrownBy(() -> invalidatorOn(FailingCacheManager.of("redis down"))
-					  .invalidate(changeOf(new Object())));
-		}
-
-		@Test
-		@DisplayName("삭제 단계에서 터져도 전파하지 않는다")
-		void swallowsWhenEvictThrows() {
-			assertThatNoException()
-				 .as("방어가 캐시 조회만 감싸면 삭제 단계의 예외가 커밋 스레드로 새어나간다")
-				 .isThrownBy(() -> invalidatorOn(new EvictThrowingCacheManager())
-					  .invalidate(changeOf(new Object())));
 		}
 	}
 
@@ -206,8 +138,7 @@ class DefaultCacheInvalidatorTest {
 		@Test
 		@DisplayName("호출자에게 예외를 돌려주지 않는다")
 		void doesNotPropagate() {
-			CacheInvalidator invalidator = new DefaultCacheInvalidator(
-				 List.of(throwingSupportRule()), cacheManager);
+			CacheInvalidator invalidator = invalidatorOf(throwingSupportRule());
 
 			assertThatNoException()
 				 .as("신호는 트랜잭션 안에서 도착하므로 예외가 새면 캐시 때문에 호출자의 트랜잭션이 롤백된다")
@@ -216,12 +147,14 @@ class DefaultCacheInvalidatorTest {
 	}
 
 	private CacheInvalidator invalidatorOf(InvalidationRule... rules) {
-		return new DefaultCacheInvalidator(List.of(rules), cacheManager);
-	}
-
-	private CacheInvalidator invalidatorOn(CacheManager failing) {
-		return new DefaultCacheInvalidator(
-			 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L))), failing);
+		AfterCommitEvictor evictor = new AfterCommitEvictor(
+			 cacheManager,
+			 Runnable::run
+		);
+		return new RuleBasedCacheInvalidator(
+			 List.of(rules),
+			 evictor
+		);
 	}
 
 	private static EntityChange changeOf(Object entity) {
@@ -238,16 +171,16 @@ class DefaultCacheInvalidatorTest {
 
 	private static InvalidationRule previousUsernameRule() {
 		return rule(change -> change.previousValueOf("username")
-			 .map(username -> List.of(CacheKey.of(TestCachePolicy.USER, username)))
+			 .map(username -> List.of(CacheEntry.of(TestCachePolicy.USER, username)))
 			 .orElse(List.of()));
 	}
 
 	private static InvalidationRule currentUsernameRule() {
 		return rule(change -> List.of(
-			 CacheKey.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
+			 CacheEntry.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
 	}
 
-	private static InvalidationRule rule(Function<EntityChange, List<CacheKey>> resolver) {
+	private static InvalidationRule rule(Function<EntityChange, List<CacheEntry>> resolver) {
 		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
@@ -255,13 +188,13 @@ class DefaultCacheInvalidatorTest {
 			}
 
 			@Override
-			public Collection<CacheKey> resolve(EntityChange change) {
+			public Collection<CacheEntry> resolve(EntityChange change) {
 				return resolver.apply(change);
 			}
 		};
 	}
 
-	private static InvalidationRule ruleOf(boolean supported, CacheKey entry) {
+	private static InvalidationRule ruleOf(boolean supported, CacheEntry entry) {
 		return new InvalidationRule() {
 			@Override
 			public boolean supports(EntityChange change) {
@@ -269,7 +202,7 @@ class DefaultCacheInvalidatorTest {
 			}
 
 			@Override
-			public Collection<CacheKey> resolve(EntityChange change) {
+			public Collection<CacheEntry> resolve(EntityChange change) {
 				return List.of(entry);
 			}
 		};
@@ -283,7 +216,7 @@ class DefaultCacheInvalidatorTest {
 			}
 
 			@Override
-			public Collection<CacheKey> resolve(EntityChange change) {
+			public Collection<CacheEntry> resolve(EntityChange change) {
 				return List.of();
 			}
 		};
@@ -296,60 +229,5 @@ class DefaultCacheInvalidatorTest {
 	}
 
 	private record NaturalKeyUser(String username) {
-	}
-
-	static class EvictThrowingCacheManager extends ConcurrentMapCacheManager {
-
-		EvictThrowingCacheManager() {
-			super(TestCachePolicy.Name.USER);
-		}
-
-		@Override
-		public Cache getCache(String name) {
-			return new EvictThrowingCache(super.getCache(name));
-		}
-	}
-
-	record EvictThrowingCache(Cache delegate) implements Cache {
-
-		@Override
-		public String getName() {
-			return delegate.getName();
-		}
-
-		@Override
-		public Object getNativeCache() {
-			return delegate.getNativeCache();
-		}
-
-		@Override
-		public ValueWrapper get(Object key) {
-			return delegate.get(key);
-		}
-
-		@Override
-		public <T> T get(Object key, Class<T> type) {
-			return delegate.get(key, type);
-		}
-
-		@Override
-		public <T> T get(Object key, Callable<T> valueLoader) {
-			return delegate.get(key, valueLoader);
-		}
-
-		@Override
-		public void put(Object key, Object value) {
-			delegate.put(key, value);
-		}
-
-		@Override
-		public void evict(Object key) {
-			throw new IllegalStateException("redis down");
-		}
-
-		@Override
-		public void clear() {
-			delegate.clear();
-		}
 	}
 }

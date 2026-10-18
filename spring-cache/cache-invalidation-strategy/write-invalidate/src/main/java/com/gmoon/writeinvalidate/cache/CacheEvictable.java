@@ -1,10 +1,10 @@
 package com.gmoon.writeinvalidate.cache;
 
-import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CacheEntry;
 
 import java.util.List;
 
 public interface CacheEvictable {
 
-	List<CacheKey> cacheEntriesToEvict();
+	List<CacheEntry> cacheEntries();
 }

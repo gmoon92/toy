@@ -5,18 +5,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-class DefaultCacheInvalidator implements CacheInvalidator {
+class RuleBasedCacheInvalidator implements CacheInvalidator {
 
 	private final List<InvalidationRule> rules;
-	private final CacheManager cacheManager;
+	private final AfterCommitEvictor evictor;
 
 	/**
 	 * 무효화 실패는 호출자의 데이터 변경을 되돌리지 않는다.
@@ -26,14 +23,14 @@ class DefaultCacheInvalidator implements CacheInvalidator {
 	@Override
 	public void invalidate(EntityChange change) {
 		try {
-			PendingInvalidations.collect(resolve(change), this::evictAll);
+			evictor.evict(resolve(change));
 		} catch (RuntimeException e) {
 			log.warn("cache invalidation failed. the caller's transaction is not affected", e);
 		}
 	}
 
-	private Set<CacheKey> resolve(EntityChange change) {
-		Set<CacheKey> entries = new LinkedHashSet<>();
+	private Set<CacheEntry> resolve(EntityChange change) {
+		Set<CacheEntry> entries = new LinkedHashSet<>();
 		for (InvalidationRule rule : rules) {
 			entries.addAll(
 				 resolveInIsolation(
@@ -45,29 +42,12 @@ class DefaultCacheInvalidator implements CacheInvalidator {
 		return entries;
 	}
 
-	private Collection<CacheKey> resolveInIsolation(InvalidationRule rule, EntityChange change) {
+	private Collection<CacheEntry> resolveInIsolation(InvalidationRule rule, EntityChange change) {
 		try {
 			return rule.supports(change) ? rule.resolve(change) : List.of();
 		} catch (RuntimeException e) {
 			log.warn("cache invalidation rule failed. rule: {}", rule.getClass().getSimpleName(), e);
 			return List.of();
-		}
-	}
-
-	private void evictAll(Set<CacheKey> entries) {
-		entries.forEach(this::evict);
-	}
-
-	private void evict(CacheKey entry) {
-		try {
-			Cache cache = cacheManager.getCache(entry.cacheName());
-			if (cache == null) {
-				log.warn("cache not registered. name: {}", entry.cacheName());
-				return;
-			}
-			cache.evict(entry.key());
-		} catch (RuntimeException e) {
-			log.warn("cache eviction failed. entry: {}", entry, e);
 		}
 	}
 }

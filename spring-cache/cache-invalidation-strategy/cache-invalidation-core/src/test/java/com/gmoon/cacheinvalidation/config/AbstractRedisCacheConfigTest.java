@@ -23,7 +23,7 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.gmoon.cacheinvalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CacheEntry;
 import com.gmoon.cacheinvalidation.CachePolicy;
 import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.cacheinvalidation.FailingCacheManager;
@@ -34,7 +34,7 @@ import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
 
 /**
  * 확장점은 {@code protected} 이므로 같은 패키지인 이 테스트가 스프링 컨텍스트 없이 직접 호출해 검증한다.
- * 다만 재정의한 전략이 실제 캐시 설정까지 닿는지는 {@code cachePolicyCustomizer} 를 거쳐 확인한다.
+ * 다만 재정의한 전략이 실제 캐시 설정까지 닿는지는 {@code cacheManagerCustomizer} 를 거쳐 확인한다.
  */
 @DisplayName("캐시 설정 확장점")
 class AbstractRedisCacheConfigTest {
@@ -200,7 +200,7 @@ class AbstractRedisCacheConfigTest {
 		RedisCacheManager.RedisCacheManagerBuilder builder =
 			 RedisCacheManager.builder(mock(RedisConnectionFactory.class));
 
-		config.cachePolicyCustomizer(
+		config.cacheManagerCustomizer(
 			 config.serializerFactory(),
 			 config.ttlResolver(PROPERTIES),
 			 new CacheProperties(),
@@ -233,8 +233,8 @@ class AbstractRedisCacheConfigTest {
 			}
 
 			@Override
-			public Collection<CacheKey> resolve(EntityChange change) {
-				return List.of(CacheKey.of(TestCachePolicy.USER, 1L));
+			public Collection<CacheEntry> resolve(EntityChange change) {
+				return List.of(CacheEntry.of(TestCachePolicy.USER, 1L));
 			}
 
 			@Override
@@ -329,7 +329,7 @@ class AbstractRedisCacheConfigTest {
 		private RedisCacheManager cacheManagerOf(RedisConnectionFactory connectionFactory) {
 			RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.builder(connectionFactory);
 
-			config().cachePolicyCustomizer(
+			config().cacheManagerCustomizer(
 				 SerializerFactory.json(),
 				 PASS_THROUGH,
 				 new CacheProperties(),
@@ -359,7 +359,7 @@ class AbstractRedisCacheConfigTest {
 			RedisCacheManager.RedisCacheManagerBuilder builder =
 				 RedisCacheManager.builder(mock(RedisConnectionFactory.class));
 
-			config().cachePolicyCustomizer(
+			config().cacheManagerCustomizer(
 				 SerializerFactory.json(),
 				 PASS_THROUGH,
 				 properties,

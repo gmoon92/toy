@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
@@ -47,6 +48,7 @@ import jakarta.annotation.PostConstruct;
  *     <li>{@link #invalidationRules()} — 무효화 대상 산출 규칙</li>
  *     <li>{@link #serializerFactory()} — 직렬화 전략</li>
  *     <li>{@link #ttlResolver(ServiceCacheProperties)} — 만료 정책</li>
+ *     <li>{@link #evictionExecutor()} — 커밋 이후 캐시 삭제를 실행할 곳</li>
  * </ul>
  */
 @EnableCaching
@@ -82,9 +84,24 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		InvalidationRule.verifyOwnership(rules, cachePolicies());
 	}
 
+	/**
+	 * 커밋 이후 캐시 삭제를 실행할 곳. 기본은 커밋한 스레드다.
+	 * <p>
+	 * 다른 실행기로 바꾸면 커밋한 스레드가 Redis 왕복을 기다리지 않는 대신,
+	 * 저장 직후의 조회가 삭제 전의 옛 값을 읽을 수 있다.
+	 * 반환한 실행기의 생성과 종료는 재정의한 쪽이 관리한다.
+	 */
+	protected Executor evictionExecutor() {
+		return Runnable::run;
+	}
+
 	@Bean
 	protected CacheInvalidator cacheInvalidator(CacheManager cacheManager) {
-		return CacheInvalidator.of(invalidationRules(), cacheManager);
+		return CacheInvalidator.of(
+			 invalidationRules(),
+			 cacheManager,
+			 evictionExecutor()
+		);
 	}
 
 	@Bean
@@ -94,7 +111,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	protected RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
+	protected RedisCacheManagerBuilderCustomizer cacheManagerCustomizer(
 		 SerializerFactory serializers,
 		 TtlResolver ttlResolver,
 		 CacheProperties cacheProperties,
@@ -134,7 +151,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	) {
 		return RedisCacheWriter.nonLockingRedisCacheWriter(
 			 connectionFactory,
-			 BatchStrategies.scan(properties.invalidation().clearScanBatchSize())
+			 BatchStrategies.scan(properties.clear().scanBatchSize())
 		);
 	}
 
@@ -146,7 +163,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		 CacheProperties.Redis redis
 	) {
 		RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-			 .entryTtl(ttlResolver.resolveFrom(declaredTtl))
+			 .entryTtl(ttlResolver.functionFor(declaredTtl))
 			 .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
 			 .serializeValuesWith(SerializationPair.fromSerializer(valueSerializer));
 

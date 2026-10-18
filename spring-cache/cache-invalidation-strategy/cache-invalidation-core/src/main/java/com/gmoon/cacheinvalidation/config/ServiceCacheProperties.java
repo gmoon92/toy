@@ -20,16 +20,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *     expiration:
  *       not-found-ttl: 30s
  *       jitter-ratio: 0.1
- *     invalidation:
- *       clear-scan-batch-size: 1000
+ *     clear:
+ *       scan-batch-size: 1000
  * </pre>
  */
 @ConfigurationProperties(prefix = "service.cache")
-public record ServiceCacheProperties(Expiration expiration, Invalidation invalidation) {
+public record ServiceCacheProperties(
+	 Expiration expiration,
+	 Clear clear
+) {
 
 	public ServiceCacheProperties {
 		expiration = expiration == null ? new Expiration(null, 0) : expiration;
-		invalidation = invalidation == null ? new Invalidation(0) : invalidation;
+		clear = clear == null ? new Clear(0) : clear;
 	}
 
 	/**
@@ -48,14 +51,14 @@ public record ServiceCacheProperties(Expiration expiration, Invalidation invalid
 	}
 
 	/**
-	 * 무효화가 캐시를 다루는 방식.
+	 * 캐시 하나를 통째로 비울 때({@code Cache.clear()})의 방식.
 	 */
-	public record Invalidation(int clearScanBatchSize) {
+	public record Clear(int scanBatchSize) {
 
-		private static final int DEFAULT_CLEAR_SCAN_BATCH_SIZE = 1_000;
+		private static final int DEFAULT_SCAN_BATCH_SIZE = 1_000;
 
-		public Invalidation {
-			clearScanBatchSize = clearScanBatchSize <= 0 ? DEFAULT_CLEAR_SCAN_BATCH_SIZE : clearScanBatchSize;
+		public Clear {
+			scanBatchSize = scanBatchSize <= 0 ? DEFAULT_SCAN_BATCH_SIZE : scanBatchSize;
 		}
 
 	}

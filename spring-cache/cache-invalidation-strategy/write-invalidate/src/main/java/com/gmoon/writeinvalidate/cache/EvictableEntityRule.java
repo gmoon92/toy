@@ -1,6 +1,6 @@
 package com.gmoon.writeinvalidate.cache;
 
-import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CacheEntry;
 import com.gmoon.cacheinvalidation.CachePolicy;
 import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.cacheinvalidation.InvalidationRule;
@@ -24,13 +24,13 @@ public class EvictableEntityRule implements InvalidationRule {
 
 	@Override
 	public boolean supports(EntityChange change) {
-		return change.isTypeOf(CacheEvictable.class);
+		return change.isAbout(CacheEvictable.class);
 	}
 
 	@Override
-	public Collection<CacheKey> resolve(EntityChange change) {
+	public Collection<CacheEntry> resolve(EntityChange change) {
 		return change.entity() instanceof CacheEvictable target
-			 ? target.cacheEntriesToEvict()
+			 ? target.cacheEntries()
 			 : List.of();
 	}
 

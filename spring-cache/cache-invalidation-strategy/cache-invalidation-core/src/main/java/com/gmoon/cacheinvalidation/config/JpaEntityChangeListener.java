@@ -58,15 +58,15 @@ class JpaEntityChangeListener
 		return false;
 	}
 
-	private void invalidate(Supplier<EntityChange> change) {
-		EntityChange read;
+	private void invalidate(Supplier<EntityChange> readChange) {
+		EntityChange change;
 		try {
-			read = change.get();
+			change = readChange.get();
 		} catch (RuntimeException e) {
-			log.warn("failed to read the committed entity state. cache eviction skipped", e);
+			log.warn("failed to read the changed entity state. cache eviction skipped", e);
 			return;
 		}
-		cacheInvalidator.invalidate(read);
+		cacheInvalidator.invalidate(change);
 	}
 
 }

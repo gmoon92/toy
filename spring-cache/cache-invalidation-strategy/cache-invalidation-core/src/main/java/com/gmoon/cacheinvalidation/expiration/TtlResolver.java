@@ -18,5 +18,5 @@ public interface TtlResolver {
 		return new JitteredTtlResolver(jitterRatio, notFoundTtl);
 	}
 
-	RedisCacheWriter.TtlFunction resolveFrom(Duration declaredTtl);
+	RedisCacheWriter.TtlFunction functionFor(Duration declaredTtl);
 }

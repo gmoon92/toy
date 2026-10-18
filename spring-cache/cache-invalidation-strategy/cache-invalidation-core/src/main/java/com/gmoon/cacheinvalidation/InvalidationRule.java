@@ -26,7 +26,7 @@ public interface InvalidationRule {
 		List<String> withoutOwner = namesOf(declaredPolicies, policy -> !owned.contains(policy));
 		if (!withoutOwner.isEmpty()) {
 			throw new IllegalStateException("No InvalidationRule owns these caches: " + withoutOwner
-				 + ". Declare an owning rule, or cover them with TtlOnlyRule.");
+				 + ". Declare an owning rule, or own them with TtlOnlyRule.owning(...).");
 		}
 
 		List<String> undeclared = namesOf(owned, policy -> !declaredPolicies.contains(policy));
@@ -42,7 +42,7 @@ public interface InvalidationRule {
 
 	boolean supports(EntityChange change);
 
-	Collection<CacheKey> resolve(EntityChange change);
+	Collection<CacheEntry> resolve(EntityChange change);
 
 	default Set<CachePolicy> owns() {
 		return Set.of();

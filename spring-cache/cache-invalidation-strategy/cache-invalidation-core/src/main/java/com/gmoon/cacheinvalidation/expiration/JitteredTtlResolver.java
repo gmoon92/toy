@@ -42,7 +42,7 @@ class JitteredTtlResolver implements TtlResolver {
 	}
 
 	@Override
-	public RedisCacheWriter.TtlFunction resolveFrom(Duration declaredTtl) {
+	public RedisCacheWriter.TtlFunction functionFor(Duration declaredTtl) {
 		return (key, value) -> value instanceof NullValue
 			 ? jittered(notFoundTtl)
 			 : jittered(declaredTtl);

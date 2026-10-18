@@ -41,7 +41,7 @@ class InvalidationRuleTest {
 		void passesWithoutEvictingRule() {
 			List<InvalidationRule> rules = List.of(
 				 owningRule(TestCachePolicy.USER),
-				 TtlOnlyRule.covering(TestCachePolicy.USER_SUMMARY));
+				 TtlOnlyRule.owning(TestCachePolicy.USER_SUMMARY));
 
 			assertThatNoException()
 				 .as("시간 만료로 충분하다는 판단은 유효한 선택이고, 선언되면 실수와 구분된다")
@@ -87,7 +87,7 @@ class InvalidationRuleTest {
 			}
 
 			@Override
-			public Collection<CacheKey> resolve(EntityChange change) {
+			public Collection<CacheEntry> resolve(EntityChange change) {
 				return List.of();
 			}
 

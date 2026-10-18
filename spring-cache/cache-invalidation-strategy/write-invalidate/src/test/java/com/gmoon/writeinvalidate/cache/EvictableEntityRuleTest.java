@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CacheEntry;
 import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.writeinvalidate.user.UserCachePolicy;
 
@@ -29,7 +29,7 @@ class EvictableEntityRuleTest {
 			assertThat(rule.supports(change)).isTrue();
 			assertThat(rule.resolve(change))
 				 .as("엔티티가 자기 키를 안다는 전제가 깨지면 무효화 대상이 비어 stale 이 남는다")
-				 .containsExactly(CacheKey.of(UserCachePolicy.USER, 1L));
+				 .containsExactly(CacheEntry.of(UserCachePolicy.USER, 1L));
 		}
 	}
 
@@ -51,8 +51,8 @@ class EvictableEntityRuleTest {
 	private record EvictableUser(Long id) implements CacheEvictable {
 
 		@Override
-		public List<CacheKey> cacheEntriesToEvict() {
-			return List.of(CacheKey.of(UserCachePolicy.USER, id));
+		public List<CacheEntry> cacheEntries() {
+			return List.of(CacheEntry.of(UserCachePolicy.USER, id));
 		}
 	}
 }

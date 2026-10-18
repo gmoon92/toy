@@ -49,7 +49,7 @@ public record EntityChange(Object entity, Type type, State previousState) {
 		return previousState.valueOf(propertyName);
 	}
 
-	public boolean isTypeOf(Class<?> entityType) {
+	public boolean isAbout(Class<?> entityType) {
 		return entityType.isInstance(entity);
 	}
 

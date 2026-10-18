@@ -19,7 +19,7 @@ public class TtlOnlyRule implements InvalidationRule {
 		this.owned = owned;
 	}
 
-	public static TtlOnlyRule covering(CachePolicy... policies) {
+	public static TtlOnlyRule owning(CachePolicy... policies) {
 		return new TtlOnlyRule(Set.copyOf(Arrays.asList(policies)));
 	}
 
@@ -29,7 +29,7 @@ public class TtlOnlyRule implements InvalidationRule {
 	}
 
 	@Override
-	public Collection<CacheKey> resolve(EntityChange change) {
+	public Collection<CacheEntry> resolve(EntityChange change) {
 		return List.of();
 	}
 

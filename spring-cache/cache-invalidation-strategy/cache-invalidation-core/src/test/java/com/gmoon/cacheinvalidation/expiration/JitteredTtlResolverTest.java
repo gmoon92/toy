@@ -110,7 +110,7 @@ class JitteredTtlResolverTest {
 		void usesNotFoundTtl() {
 			JitteredTtlResolver resolver = new JitteredTtlResolver(JITTER_RATIO, NOT_FOUND_TTL, bound -> 0);
 
-			assertThat(resolver.resolveFrom(BASE_TTL).getTimeToLive("key", NullValue.INSTANCE))
+			assertThat(resolver.functionFor(BASE_TTL).getTimeToLive("key", NullValue.INSTANCE))
 				 .as("없는 키를 오래 붙들면 penetration 방어가 과해진다")
 				 .isEqualTo(NOT_FOUND_TTL);
 		}
@@ -121,6 +121,6 @@ class JitteredTtlResolverTest {
 	}
 
 	private Duration ttlOf(JitteredTtlResolver resolver, Duration declaredTtl) {
-		return resolver.resolveFrom(declaredTtl).getTimeToLive("key", "value");
+		return resolver.functionFor(declaredTtl).getTimeToLive("key", "value");
 	}
 }

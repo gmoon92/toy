@@ -2,7 +2,7 @@ package com.gmoon.writeinvalidate.user;
 
 import java.util.List;
 
-import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.cacheinvalidation.CacheEntry;
 import com.gmoon.writeinvalidate.cache.CacheEvictable;
 
 import jakarta.persistence.Column;
@@ -45,9 +45,9 @@ public class User implements CacheEvictable {
 	}
 
 	@Override
-	public List<CacheKey> cacheEntriesToEvict() {
+	public List<CacheEntry> cacheEntries() {
 		return List.of(
-			 CacheKey.of(
+			 CacheEntry.of(
 				  UserCachePolicy.USER,
 				  id
 			 )
