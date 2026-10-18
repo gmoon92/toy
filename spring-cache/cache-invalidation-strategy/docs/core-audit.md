@@ -239,7 +239,11 @@ RedisCacheWriter resolvedCacheWriter = !CacheStatisticsCollector.none().equals(t
         : this.cacheWriter;
 ```
 
-**검증 명제** — `clear()` 가 `KEYS` 를 실행하지 않는다.
+**검증 명제** — `AbstractRedisCacheConfigTest` 로 고정했다.
+모의 커넥션에 `clear()` 를 흘려 `keys(...)` 가 호출되지 않고 `scan(...)` 이 호출되는지 본다.
+배선을 빼면 곧바로 RED 가 된다.
+
+**조치 완료** — `@Bean` 을 지우고 커스터마이저 안에서 빌더에 직접 넘긴다.
 
 ## P0-3. 지터가 0 이하 TTL 을 만들면 영구 키가 된다
 
@@ -322,6 +326,11 @@ return builder -> builder
 `JsonSerializerFactory.UnregisteredCacheSerializer`.
 
 **검증 명제** — 등록하지 않은 캐시명은 `CacheManager` 가 돌려주지 않는다.
+
+> 교체 전 명제는 `cacheDefaults` 의 TTL 값을 단언하고 있었다.
+> **도달하지 않는 코드의 값을 검증해 통과하던 테스트**였고, 실제 보장을 검증하도록 바꿨다.
+
+**조치 완료**
 
 ## P1-2. `spring.cache.cache-names` 는 정책 검사를 통과하지 않는다
 
@@ -617,11 +626,12 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | 순서 | 항목 | 내용 | 회귀 테스트 |
 |:--:|-----|-----|-----|
 | ~~1~~ | ~~P0-1~~ | ~~`PendingInvalidations.suspend()`/`resume()` 구현~~ **완료** | `PendingInvalidationsTest` 8명제 |
-| **2** | P0-2 | 커스터마이저에서 `cacheWriter(...)`, `@Bean redisCacheWriter` 삭제 | `clear()` 가 `KEYS` 를 쓰지 않음 |
+| ~~2~~ | ~~P0-2~~ | ~~커스터마이저에서 `cacheWriter(...)`, `@Bean redisCacheWriter` 삭제~~ **완료** | `clear()` 가 `KEYS` 를 쓰지 않음 |
 | **3** | P0-3 | 지터 결과 하한 + `jitterRatio` 상한 검증 | `ttl=1s` 에서 0 이하 TTL 불가 |
-| 4 | P1-1 | `unregistered` 일체 제거 | `getCache("X") == null` |
+| ~~4~~ | ~~P1-1~~ | ~~`unregistered` 일체 제거~~ **완료** | `getCache("X") == null` |
 | 5 | P1-3 | `SessionFactoryImplementor` 로 전환 | 기존 통합 테스트로 충분 |
-| 6 | P1-4 · P1-5 | Javadoc 링크, `core-design.md` 3줄, `serialization.md` | — |
+| ~~6a~~ | ~~P1-5~~ | ~~`core-design.md` 3줄 + `serialization.md`~~ **완료** | — |
+| 6b | P1-4 | Javadoc 링크 2곳 | — |
 | 7 | P2-1 | `ObjectProvider<MeterRegistry>` 로 무효화 실패 계측 | 레지스트리 부재 시 무계측 |
 | 8 | P2-2 | `@DefaultValue`(바깥 파라미터 포함) + `@Validated` | 블록 누락 시 기본값, 잘못된 값은 기동 실패 |
 | 9 | O3 | 확장점 1회 평가 후 고정 | — |
@@ -640,3 +650,4 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | 2026-10-18 | 검토 B 운영 적합성 검토 | P0 4건 식별 (독립 수행) |
 | 2026-10-18 | 두 검토 통합 | P0 3 · P1 5 · P2 2 · P3 7 로 재편 |
 | 2026-10-18 | **P0-1 조치 완료** | `suspend()`/`resume()` 구현. `PendingInvalidationsTest` 신설(8명제). 수정 전 3명제 RED → 수정 후 GREEN 확인. 전체 91/91 통과 |
+| 2026-10-18 | **P0-2 · P1-1 · P1-5 조치 완료** | 빌더에 `cacheWriter(...)` 배선하고 `@Bean redisCacheWriter` 삭제. `unregistered` 일체 제거. 수정 전 SCAN 명제 RED → GREEN. `core-design.md`·`serialization.md` 교정. 전체 91/91 통과 |

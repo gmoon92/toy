@@ -12,14 +12,14 @@ TTL 만료나 메모리 압박에 의한 축출과는 다르다 — 그 둘은 R
 | 필요한 것 | 사용하는 것 | 직접 만든 것 |
 |---------|-----------|-----------|
 | hit·miss·put·delete 집계 | `RedisCacheManagerBuilder.enableStatistics()` | — |
-| 캐시 실패·무효화 결과 관측 | — | 쓰기 전용 포트 2종 (기본 구현은 무연산) |
+| 캐시 실패·무효화 결과 관측 | — | **없음.** 로그만 남는다 — [core-audit.md](core-audit.md#p2-1-무효화-실패가-어디에도-드러나지-않는다) |
 | 캐시 장애 폴백 | `CachingConfigurer.errorHandler()` | 폴백 처리기 구현체 (기본 제공 없음) |
 | 엔트리별 TTL | `RedisCacheWriter.TtlFunction` (3.2+) | jitter 계산 |
 | DB 문장 수 | Hibernate `Statistics` | 얇은 래퍼 |
 | 무효화 규칙 | — | 전부 (프레임워크 영역 밖) |
-| 미등록 캐시 차단 | `disableCreateOnMissingCache()` | 기본 도달 시 예외 던지는 직렬화기 |
+| 미등록 캐시 차단 | `disableCreateOnMissingCache()` | — |
 | 캐시별 타입 직렬화 | `withInitialCacheConfigurations` | `CachePolicy.valueType()` |
-| `clear()` 시 SCAN 사용 | `BatchStrategies.scan(n)` | — |
+| `clear()` 시 SCAN 사용 | `BatchStrategies.scan(n)` | 빌더에 `cacheWriter(...)` 로 직접 넘기는 배선 |
 
 ## 모듈 구성
 
@@ -323,9 +323,12 @@ service:
 Spring Data Redis는 미등록 캐시명을 **런타임에 조용히 생성**하고
 Boot 기본 설정(**JDK 직렬화**)을 적용한다.
 
-`disableCreateOnMissingCache()`로 이 경로를 막고,
-`cacheDefaults`에는 예외를 던지는 직렬화기를 두어 기본값으로 흘러가지 않게 한다.
-→ [serialization.md](concepts/serialization.md)
+`disableCreateOnMissingCache()` 하나로 막는다. `getCache()` 가 `null` 을 돌려주고
+스프링이 `Cannot find cache named ...` 로 실패시킨다.
+
+`cacheDefaults` 에 예외를 던지는 직렬화기를 두는 방법은 **쓰지 않는다.**
+`disableCreateOnMissingCache()` 가 켜지면 `getMissingCache()` 가 기본 설정을 **평가하지 않고** 끝나므로
+그 직렬화기에는 도달할 수 없다. → [serialization.md](concepts/serialization.md)
 
 ## 검증
 

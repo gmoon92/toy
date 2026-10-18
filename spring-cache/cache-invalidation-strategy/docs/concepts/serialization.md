@@ -205,11 +205,16 @@ protected RedisCache getMissingCache(String name) {
 
 ```java
 builder.disableCreateOnMissingCache()
-       .cacheDefaults(configWith(rejectingSerializer()))
 ```
 
 미등록 캐시명은 캐시가 생성되지 않아 즉시 드러난다.
-기본 설정에 도달하면 예외를 던지는 직렬화기를 두어 **JDK 직렬화로 흘러가는 경로 자체를 차단**한다.
+`getCache()` 가 `null` 을 돌려주고 스프링이 `Cannot find cache named ...` 로 실패시킨다.
+
+> **기본 설정에 예외를 던지는 직렬화기를 두는 방식은 더하지 않는다.**
+> `disableCreateOnMissingCache()` 가 켜진 순간 위 코드의 삼항이 `false` 로 끝나
+> `getDefaultCacheConfiguration()` 자체를 **평가하지 않는다.** 그 직렬화기에는 도달할 수 없다.
+> 모든 캐시를 `withInitialCacheConfigurations` 로 등록하면 `resolveCacheConfiguration` 도
+> 기본값으로 떨어지지 않는다. 두 경로가 다 막혀 있으므로 2중 방어가 아니라 죽은 코드다.
 
 ### `activateDefaultTyping` 안전 설정 — 통념 3가지가 틀렸다
 
@@ -320,7 +325,7 @@ JDK가 한 일은 제거가 아니라 필터링(JEP 290/415)이다. 계속 쓸 �
 | `clear()` 호출 | 기본이 `KEYS`+`DEL` — **프로덕션 금지 명령** | `BatchStrategies.scan(1000)` |
 | 직렬화기 버전 업 | Jackson 2→3 전환 시 **출력이 달라진다** | 스키마 변경으로 간주하고 키 버전 올림 |
 | 미등록 캐시명 사용 | **JDK 직렬화로 조용히 동작** | `disableCreateOnMissingCache()` |
-| `cacheDefaults` 미지정 | 전체가 JDK 직렬화 | 반드시 명시 |
+| `cacheDefaults` 미지정 | 전체가 JDK 직렬화 | 캐시마다 `withInitialCacheConfigurations` 로 등록 |
 | polymorphic 역직렬화 | 보안 표면 | `activateDefaultTyping` 제거 또는 allowlist validator |
 | 압축 무분별 적용 | 작은 값이 **더 커짐** | 임계값 필수 |
 | 캐시 전량 폐기 | 백엔드 부하 급증 | 히트율이 용량 전제인지 먼저 확인 |
