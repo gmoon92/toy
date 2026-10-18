@@ -25,7 +25,6 @@ import jakarta.annotation.PostConstruct;
 
 import com.gmoon.cacheinvalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.CachePolicy;
-import com.gmoon.cacheinvalidation.InvalidationRecorder;
 import com.gmoon.cacheinvalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
@@ -83,24 +82,14 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	protected CacheInvalidator cacheInvalidator(CacheManager cacheManager, InvalidationRecorder recorder) {
-		return CacheInvalidator.failSafe(invalidationRules(), cacheManager, recorder);
+	protected CacheInvalidator cacheInvalidator(CacheManager cacheManager) {
+		return CacheInvalidator.of(invalidationRules(), cacheManager);
 	}
 
 	@Bean
 	@Override
 	public CacheErrorHandler errorHandler() {
-		return new FallbackCacheErrorHandler(cacheFailureRecorder());
-	}
-
-	@Bean
-	protected CacheFailureRecorder cacheFailureRecorder() {
-		return CacheFailureRecorder.NONE;
-	}
-
-	@Bean
-	protected InvalidationRecorder invalidationRecorder() {
-		return InvalidationRecorder.none();
+		return new FallbackCacheErrorHandler();
 	}
 
 	@Bean

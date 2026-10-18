@@ -2,7 +2,6 @@ package com.gmoon.cacheinvalidation.test.measure;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -16,12 +15,6 @@ public class MeasureConfig {
 	@Bean
 	public DatabaseQueryCounter databaseQueryCounter(EntityManagerFactory entityManagerFactory) {
 		return new DatabaseQueryCounter(entityManagerFactory);
-	}
-
-	@Bean
-	@Primary
-	public InvalidationCounter invalidationCounter() {
-		return new InvalidationCounter();
 	}
 
 }

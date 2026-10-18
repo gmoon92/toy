@@ -13,7 +13,7 @@ import com.gmoon.cacheinvalidation.CacheInvalidator;
  * <p>
  * 신호는 커밋 직전에 받지만 캐시를 지우는 것은 커밋 이후다. 롤백되면 수집분을 버린다.
  * 이전 상태는 기본으로 비어 있다 — 옛 키를 재구성해야 한다면
- * {@link EntityChange#published(Object, EntityChange.Type, EntityChange.State)} 로 실어 보낸다.
+ * {@link EntityChange#of(Object, EntityChange.Type, EntityChange.State)} 로 실어 보낸다.
  * <p>
  * {@link JpaEntityChangeConfig} 와 함께 켜도 같은 키는 한 번만 지워진다.
  * 한 트랜잭션의 무효화 대상은 모였다가 커밋 이후 한 번에 처리된다.

@@ -24,8 +24,7 @@ class EvictableEntityRuleTest {
 		@Test
 		@DisplayName("엔티티가 선언한 캐시를 모두 대상으로 삼는다")
 		void resolvesEveryDeclaredEntry() {
-			EntityChange change = EntityChange.committed(
-				 new EvictableUser(1L), EntityChange.Type.UPDATE, null);
+			EntityChange change = EntityChange.of(new EvictableUser(1L), EntityChange.Type.UPDATE);
 
 			assertThat(rule.supports(change)).isTrue();
 			assertThat(rule.resolve(change))
@@ -41,7 +40,7 @@ class EvictableEntityRuleTest {
 		@Test
 		@DisplayName("같은 커밋에 섞여 있어도 반응하지 않는다")
 		void doesNotSupport() {
-			EntityChange change = EntityChange.committed(new Object(), EntityChange.Type.UPDATE, null);
+			EntityChange change = EntityChange.of(new Object(), EntityChange.Type.UPDATE);
 
 			assertThat(rule.supports(change))
 				 .as("선언하지 않은 엔티티까지 반응하면 남의 캐시를 지운다")

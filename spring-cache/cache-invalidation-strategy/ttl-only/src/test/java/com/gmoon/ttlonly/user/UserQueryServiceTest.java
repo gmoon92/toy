@@ -16,8 +16,8 @@ import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
 @IntegrationTest
-@DisplayName("TTL Only 전략")
-class TtlOnlyStrategyTest {
+@DisplayName("사용자 조회가 캐시를 쓰는 방식")
+class UserQueryServiceTest {
 
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";
 	private static final String CHANGED_EMAIL = "alice.changed@mail.com";

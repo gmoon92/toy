@@ -14,8 +14,8 @@ import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
 @IntegrationTest
-@DisplayName("@CacheEvict 로 무효화하는 엔티티")
-class CacheEvictAnnotationTest {
+@DisplayName("글 쓰기가 캐시에 미치는 영향")
+class ArticleCommandServiceTest {
 
 	private static final String ORIGINAL_TITLE = "cache invalidation";
 	private static final String CHANGED_TITLE = "cache invalidation, revised";

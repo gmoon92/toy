@@ -1,6 +1,8 @@
 package com.gmoon.writeinvalidate.user;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.SoftAssertions.*;
+import static org.mockito.BDDMockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,42 +10,49 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.dao.QueryTimeoutException;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.persistence.EntityManager;
 
-import com.gmoon.cacheinvalidation.InvalidationRecorder.Outcome;
 import com.gmoon.cacheinvalidation.EntityChange;
-import com.gmoon.cacheinvalidation.InvalidationRecorder;
-import com.gmoon.cacheinvalidation.EntityChange.Source;
-import com.gmoon.cacheinvalidation.EntityChange.State;
-import com.gmoon.cacheinvalidation.test.measure.InvalidationCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
+import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
+import com.gmoon.writeinvalidate.article.ArticleCachePolicy;
+import com.gmoon.writeinvalidate.article.ArticleCommandService;
+import com.gmoon.writeinvalidate.article.ArticleQueryService;
+import com.gmoon.writeinvalidate.article.CachedArticle;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
 @IntegrationTest
-@DisplayName("JPA 엔티티 변경으로 무효화하는 엔티티")
-class JpaEntityChangeTest {
+@DisplayName("사용자 쓰기가 캐시에 미치는 영향")
+class UserCommandServiceTest {
 
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";
 	private static final String CHANGED_EMAIL = "alice.changed@mail.com";
+	private static final String ORIGINAL_TITLE = "cache invalidation";
 
 	@Autowired UserQueryService userQueryService;
 	@Autowired UserCommandService userCommandService;
-	@Autowired CacheManager cacheManager;
+	@Autowired ArticleQueryService articleQueryService;
+	@Autowired ArticleCommandService articleCommandService;
+	@Autowired DatabaseQueryCounter databaseQueryCounter;
+	@MockitoSpyBean CacheManager cacheManager;
 	@Autowired TransactionTemplate transactionTemplate;
 	@Autowired EntityManager entityManager;
 	@Autowired ApplicationEventPublisher eventPublisher;
-	@Autowired InvalidationCounter invalidationCounter;
 
 	private Long userId;
+	private Long articleId;
 
 	@BeforeEach
 	void setUp() {
 		cacheManager.getCache(UserCachePolicy.Name.USER).clear();
+		cacheManager.getCache(ArticleCachePolicy.Name.ARTICLE).clear();
 		userId = userCommandService.register("alice-" + System.nanoTime(), ORIGINAL_EMAIL);
-		invalidationCounter.reset();
+		articleId = articleCommandService.publish(ORIGINAL_TITLE);
 	}
 
 	@Nested
@@ -142,20 +151,7 @@ class JpaEntityChangeTest {
 		}
 
 		@Test
-		@DisplayName("무효화가 Spring 이벤트 소스로 기록된다")
-		void recordsSpringEventAsSource() {
-			userQueryService.findById(userId);
-
-			transactionTemplate.executeWithoutResult(status -> publishChangeOf(userId));
-
-			assertThat(invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, EntityChange.Source.PUBLISHED, InvalidationRecorder.Outcome.EVICT_REQUESTED))
-				 .as("두 소스를 함께 쓰면 어느 쪽이 무효화했는지 구분되어야 운영에서 추적할 수 있다")
-				 .isEqualTo(1);
-		}
-
-		@Test
-		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 해도 한 번만 지운다")
+		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 해도 캐시는 한 번만 지워진다")
 		void evictsOnceWhenSameChangeReportedByBothSources() {
 			userQueryService.findById(userId);
 
@@ -164,18 +160,17 @@ class JpaEntityChangeTest {
 				publishChangeOf(userId);
 			});
 
-			assertThat(totalEvictionsOfUserCache())
-				 .as("신호원마다 즉시 지우면 같은 키를 두 번 지운다."
-					  + " 한 트랜잭션의 대상을 모았다가 커밋 이후 한 번에 처리해야 왕복과 지표가 부풀지 않는다")
-				 .isEqualTo(1);
 			assertThat(cachedEmail())
-				 .as("한 번만 지워도 결과는 같아야 한다")
+				 .as("한 트랜잭션의 대상을 모았다가 커밋 이후 한 번에 처리한다")
 				 .isNull();
+			assertThat(userQueryService.findById(userId).email())
+				 .as("지운 뒤 첫 조회는 DB 의 새 값을 읽는다")
+				 .isEqualTo(CHANGED_EMAIL);
 		}
 
 		@Test
-		@DisplayName("한 트랜잭션에서 같은 엔티티를 여러 번 고쳐도 한 번만 지운다")
-		void evictsOnceForRepeatedChangesInSameTransaction() {
+		@DisplayName("한 트랜잭션에서 같은 엔티티를 여러 번 고쳐도 마지막 값이 보인다")
+		void reflectsLastValueForRepeatedChangesInSameTransaction() {
 			userQueryService.findById(userId);
 
 			transactionTemplate.executeWithoutResult(status -> {
@@ -183,20 +178,13 @@ class JpaEntityChangeTest {
 				userCommandService.changeEmail(userId, "alice.again@mail.com");
 			});
 
-			assertThat(totalEvictionsOfUserCache())
-				 .as("같은 키를 반복해서 지우면 왕복만 늘고 결과는 같다")
-				 .isEqualTo(1);
-		}
-
-		private long totalEvictionsOfUserCache() {
-			return invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, Source.JPA_ENTITY, Outcome.EVICT_REQUESTED)
-				 + invalidationCounter.evictionCount(
-				 UserCachePolicy.Name.USER, Source.PUBLISHED, Outcome.EVICT_REQUESTED);
+			assertThat(userQueryService.findById(userId).email())
+				 .as("같은 키를 반복해서 지워도 결과는 같다")
+				 .isEqualTo("alice.again@mail.com");
 		}
 
 		private void publishChangeOf(Long id) {
-			eventPublisher.publishEvent((EntityChange.published(entityManager.find(User.class, id), EntityChange.Type.UPDATE)));
+			eventPublisher.publishEvent((EntityChange.of(entityManager.find(User.class, id), EntityChange.Type.UPDATE)));
 		}
 	}
 
@@ -242,5 +230,94 @@ class JpaEntityChangeTest {
 		CachedUser cached = cacheManager.getCache(UserCachePolicy.Name.USER)
 			 .get(userId, CachedUser.class);
 		return cached == null ? null : cached.email();
+	}
+
+	@Nested
+	@DisplayName("하나의 커밋에 두 종류의 엔티티가 섞여 있으면")
+	class WhenCommitMixesEntityTypes {
+
+		@Test
+		@DisplayName("CacheEvictable 구현체의 캐시만 지운다")
+		void evictsOnlyCacheEvictableEntities() {
+			userQueryService.findById(userId);
+			articleQueryService.findById(articleId);
+
+			transactionTemplate.executeWithoutResult(status -> {
+				userCommandService.changeEmail(userId, CHANGED_EMAIL);
+				articleCommandService.increaseViewCount(articleId);
+			});
+
+			assertSoftly(softly -> {
+				softly.assertThat(cachedEmail())
+					 .as("User 는 CacheEvictable 이므로 무효화된다")
+					 .isNull();
+				softly.assertThat(cachedTitle())
+					 .as("Article 은 CacheEvictable 이 아니므로 리스너가 건너뛴다")
+					 .isEqualTo(ORIGINAL_TITLE);
+			});
+		}
+	}
+
+	@Nested
+	@DisplayName("무효화가 수행될 때")
+	class WhenListenerInvalidates {
+
+		@Test
+		@DisplayName("무효화 대상 키를 얻으려고 DB 를 다시 읽지 않는다")
+		void resolvesKeysWithoutQueryingDatabase() {
+			databaseQueryCounter.reset();
+			articleCommandService.increaseViewCount(articleId);
+			long withoutEviction = databaseQueryCounter.executedStatementCount();
+
+			databaseQueryCounter.reset();
+			userCommandService.changeEmail(userId, CHANGED_EMAIL);
+			long withEviction = databaseQueryCounter.executedStatementCount();
+
+			assertThat(withEviction)
+				 .as("이벤트의 목적은 캐시 삭제뿐이다. 키는 이미 로딩된 엔티티에서 나온다")
+				 .isEqualTo(withoutEviction);
+		}
+	}
+
+	@Nested
+	@DisplayName("캐시 인프라가 예기치 못한 예외를 던지면")
+	class WhenCacheInfrastructureFails {
+
+		@Test
+		@DisplayName("커밋은 성공하고 호출자에게 예외가 새어나가지 않는다")
+		void keepsCommitSuccessfulWithoutLeakingException() {
+			willThrow(new QueryTimeoutException("redis down"))
+				 .given(cacheManager).getCache(UserCachePolicy.Name.USER);
+
+			assertThatNoException()
+				 .as("무효화 실패는 이미 커밋된 트랜잭션을 되돌릴 수 없다. 예외를 밖으로 내면 호출자가 롤백으로 오해한다")
+				 .isThrownBy(() -> transactionTemplate.executeWithoutResult(status ->
+					  userCommandService.changeEmail(userId, CHANGED_EMAIL)));
+		}
+
+		@Test
+		@DisplayName("DB 변경은 그대로 커밋되어 있다")
+		void persistsDatabaseChange() {
+			willThrow(new QueryTimeoutException("redis down"))
+				 .given(cacheManager).getCache(UserCachePolicy.Name.USER);
+
+			try {
+				transactionTemplate.executeWithoutResult(status ->
+					 userCommandService.changeEmail(userId, CHANGED_EMAIL));
+			} catch (RuntimeException ignored) {
+				// 결함이 남아 있는 동안에도 DB 상태를 확인하기 위해 통과시킨다
+			}
+
+			reset(cacheManager);
+			assertThat(userQueryService.findById(userId).email())
+				 .as("커밋은 물리적으로 끝난 뒤에 무효화가 실행되므로 DB 는 영향받지 않는다")
+				 .isEqualTo(CHANGED_EMAIL);
+		}
+	}
+
+	private String cachedTitle() {
+		CachedArticle cached = cacheManager.getCache(ArticleCachePolicy.Name.ARTICLE)
+			 .get(articleId, CachedArticle.class);
+		return cached == null ? null : cached.title();
 	}
 }

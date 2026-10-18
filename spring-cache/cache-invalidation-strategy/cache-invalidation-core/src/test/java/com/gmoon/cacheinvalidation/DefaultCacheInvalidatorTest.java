@@ -1,7 +1,7 @@
 package com.gmoon.cacheinvalidation;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,23 +19,26 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionSynchronizationUtils;
 
-import com.gmoon.cacheinvalidation.EntityChange.Source;
 import com.gmoon.cacheinvalidation.EntityChange.Type;
-import com.gmoon.cacheinvalidation.InvalidationRecorder.Outcome;
 
 @DisplayName("엔티티 변경 무효화 실행")
 class DefaultCacheInvalidatorTest {
 
 	private static final String CACHED_VALUE = "cached";
-	private static final Source SOURCE = Source.JPA_ENTITY;
 
+	private ConcurrentMapCacheManager caches;
+	private Cache userCache;
 	private CacheManager cacheManager;
-	private InvalidationRecorder recorder;
 
 	@BeforeEach
 	void setUp() {
-		cacheManager = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER, TestCachePolicy.Name.USER_SUMMARY);
-		recorder = mock(InvalidationRecorder.class);
+		caches = new ConcurrentMapCacheManager(TestCachePolicy.Name.USER, TestCachePolicy.Name.USER_SUMMARY);
+		userCache = spy(caches.getCache(TestCachePolicy.Name.USER));
+		cacheManager = mock(CacheManager.class);
+		given(cacheManager.getCache(anyString())).willAnswer(call -> {
+			String name = call.getArgument(0);
+			return TestCachePolicy.Name.USER.equals(name) ? userCache : caches.getCache(name);
+		});
 	}
 
 	@Nested
@@ -49,7 +52,7 @@ class DefaultCacheInvalidatorTest {
 			putCached(TestCachePolicy.Name.USER, "after");
 
 			invalidatorOf(previousUsernameRule(), currentUsernameRule())
-				 .invalidate(EntityChange.committed(new NaturalKeyUser("after"), Type.UPDATE,
+				 .invalidate(EntityChange.of(new NaturalKeyUser("after"), Type.UPDATE,
 					  EntityChange.State.of(new String[] {"username"}, new Object[] {"before"})));
 
 			assertThat(cachedValue(TestCachePolicy.Name.USER, "before"))
@@ -89,14 +92,14 @@ class DefaultCacheInvalidatorTest {
 	class WhenRulesOverlap {
 
 		@Test
-		@DisplayName("중복을 제거해 한 번만 무효화한다")
+		@DisplayName("중복을 제거해 한 번만 지운다")
 		void deduplicatesEntries() {
 			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)),
 				 ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
-			verify(recorder, times(1).description("같은 키를 두 번 지우면 무효화 지표가 부풀려진다"))
-				 .recordEviction(TestCachePolicy.Name.USER, SOURCE, Outcome.EVICT_REQUESTED);
+			then(userCache).should(times(1).description("같은 키를 두 번 지우면 왕복만 늘고 결과는 같다"))
+				 .evict("1");
 		}
 	}
 
@@ -110,7 +113,7 @@ class DefaultCacheInvalidatorTest {
 			invalidatorOf(ruleOf(false, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
-			verifyNoInteractions(recorder);
+			then(userCache).should(never()).evict(any());
 		}
 	}
 
@@ -121,12 +124,14 @@ class DefaultCacheInvalidatorTest {
 		@Test
 		@DisplayName("나머지 규칙은 계속 수행된다")
 		void keepsResolvingRemainingRules() {
+			putCached(TestCachePolicy.Name.USER, "1");
+
 			invalidatorOf(failingRule(), ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
-			verify(recorder, description("규칙 하나의 실패가 다른 캐시의 무효화를 막으면 stale 이 남는다"))
-				 .recordEviction(TestCachePolicy.Name.USER, SOURCE, Outcome.EVICT_REQUESTED);
-			verify(recorder).recordRuleFailure(anyString());
+			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
+				 .as("규칙 하나의 실패가 다른 캐시의 무효화를 막으면 stale 이 남는다")
+				 .isNull();
 		}
 	}
 
@@ -135,19 +140,14 @@ class DefaultCacheInvalidatorTest {
 	class WhenCacheRegistered {
 
 		@Test
-		@DisplayName("값이 있든 없든 EVICT_REQUESTED 로 기록한다")
-		void recordsEvictRequestedRegardlessOfPresence() {
-			putCached(TestCachePolicy.Name.USER, "1");
-
-			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
-				 .invalidate(changeOf(new Object()));
+		@DisplayName("값이 없어도 삭제를 요청한다")
+		void evictsEvenWhenAbsent() {
 			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 99L)))
 				 .invalidate(changeOf(new Object()));
 
-			verify(recorder, times(2).description(
-				 "Cache.evictIfPresent 의 기본 구현은 항상 false 를 반환하고 RedisCache 는 이를 재정의하지 않는다."
-					  + " 존재 여부를 결과로 노출하면 캐시 구현에 따라 의미가 달라진다"))
-				 .recordEviction(eq(TestCachePolicy.Name.USER), eq(SOURCE), eq(Outcome.EVICT_REQUESTED));
+			then(userCache).should(description(
+				 "존재 여부를 미리 확인하면 왕복이 늘고, 확인과 삭제 사이에 값이 다시 적재될 수 있다"))
+				 .evict("99");
 		}
 
 		@Test
@@ -158,9 +158,63 @@ class DefaultCacheInvalidatorTest {
 			invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)))
 				 .invalidate(changeOf(new Object()));
 
-			assertThat(cachedValue(TestCachePolicy.Name.USER, "1"))
-				 .as("결과 코드와 무관하게 삭제 자체는 반드시 수행되어야 한다")
-				 .isNull();
+			assertThat(cachedValue(TestCachePolicy.Name.USER, "1")).isNull();
+		}
+	}
+
+	@Nested
+	@DisplayName("등록되지 않은 캐시를 지목하면")
+	class WhenCacheNotRegistered {
+
+		@Test
+		@DisplayName("예외를 던지지 않고 넘어간다")
+		void skipsWithoutThrowing() {
+			CacheInvalidator invalidator = new DefaultCacheInvalidator(
+				 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L))),
+				 new ConcurrentMapCacheManager(TestCachePolicy.Name.USER));
+
+			assertThatNoException()
+				 .as("설정 실수가 이미 커밋된 트랜잭션의 호출자를 깨뜨리면 안 된다")
+				 .isThrownBy(() -> invalidator.invalidate(changeOf(new Object())));
+		}
+	}
+
+	@Nested
+	@DisplayName("캐시 인프라가 예외를 던지면")
+	class WhenCacheThrows {
+
+		@Test
+		@DisplayName("캐시를 찾는 단계에서 터져도 전파하지 않는다")
+		void swallowsWhenResolvingCacheThrows() {
+			assertThatNoException()
+				 .as("커밋 이후 실행되므로 예외를 던지면 이미 커밋된 트랜잭션의 호출자가 깨진다")
+				 .isThrownBy(() -> invalidatorOn(FailingCacheManager.of("redis down"))
+					  .invalidate(changeOf(new Object())));
+		}
+
+		@Test
+		@DisplayName("삭제 단계에서 터져도 전파하지 않는다")
+		void swallowsWhenEvictThrows() {
+			assertThatNoException()
+				 .as("방어가 캐시 조회만 감싸면 삭제 단계의 예외가 커밋 스레드로 새어나간다")
+				 .isThrownBy(() -> invalidatorOn(new EvictThrowingCacheManager())
+					  .invalidate(changeOf(new Object())));
+		}
+	}
+
+	@Nested
+	@DisplayName("규칙 산출 자체가 예외를 던지면")
+	class WhenResolutionThrows {
+
+		@Test
+		@DisplayName("호출자에게 예외를 돌려주지 않는다")
+		void doesNotPropagate() {
+			CacheInvalidator invalidator = new DefaultCacheInvalidator(
+				 List.of(throwingSupportRule()), cacheManager);
+
+			assertThatNoException()
+				 .as("신호는 커밋 이후에 도착하므로 예외가 새면 이미 끝난 트랜잭션의 호출자가 깨진다")
+				 .isThrownBy(() -> invalidator.invalidate(changeOf(new Object())));
 		}
 	}
 
@@ -174,16 +228,16 @@ class DefaultCacheInvalidatorTest {
 			CacheInvalidator invalidator = invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)));
 
 			inTransaction(TransactionSynchronization.STATUS_COMMITTED, () -> {
-				invalidator.invalidate(EntityChange.committed(new Object(), Type.UPDATE, null));
-				invalidator.invalidate(EntityChange.published(new Object(), Type.UPDATE));
+				invalidator.invalidate(changeOf(new Object()));
+				invalidator.invalidate(changeOf(new Object()));
 
-				verify(recorder, never().description("모으는 동안에는 캐시를 건드리지 않는다"))
-					 .recordEviction(any(), any(), any());
+				then(userCache).should(never().description("모으는 동안에는 캐시를 건드리지 않는다"))
+					 .evict(any());
 			});
 
-			verify(recorder, times(1).description(
+			then(userCache).should(times(1).description(
 				 "신호원마다 즉시 지우면 같은 키를 두 번 지운다. 모았다가 커밋 이후 한 번에 처리해야 한다"))
-				 .recordEviction(eq(TestCachePolicy.Name.USER), any(), eq(Outcome.EVICT_REQUESTED));
+				 .evict("1");
 		}
 
 		@Test
@@ -191,53 +245,11 @@ class DefaultCacheInvalidatorTest {
 		void discardsOnRollback() {
 			CacheInvalidator invalidator = invalidatorOf(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L)));
 
-			inTransaction(TransactionSynchronization.STATUS_ROLLED_BACK, () ->
-				 invalidator.invalidate(EntityChange.committed(new Object(), Type.UPDATE, null)));
+			inTransaction(TransactionSynchronization.STATUS_ROLLED_BACK,
+				 () -> invalidator.invalidate(changeOf(new Object())));
 
-			verify(recorder, never().description("커밋되지 않은 변경으로 캐시를 지우면 멀쩡한 값을 버린다"))
-				 .recordEviction(any(), any(), any());
-		}
-	}
-
-	@Nested
-	@DisplayName("등록되지 않은 캐시를 지목하면")
-	class WhenCacheNotRegistered {
-
-		@Test
-		@DisplayName("예외 대신 CACHE_NOT_REGISTERED 로 기록한다")
-		void recordsCacheNotRegistered() {
-			CacheInvalidator invalidator = new DefaultCacheInvalidator(
-				 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER_SUMMARY, 1L))),
-				 new ConcurrentMapCacheManager(TestCachePolicy.Name.USER),
-				 recorder);
-
-			invalidator.invalidate(changeOf(new Object()));
-
-			verify(recorder).recordEviction(
-				 TestCachePolicy.Name.USER_SUMMARY, SOURCE, Outcome.CACHE_NOT_REGISTERED);
-		}
-	}
-
-	@Nested
-	@DisplayName("캐시 인프라가 예외를 던지면")
-	class WhenCacheThrows {
-
-		@Test
-		@DisplayName("캐시를 찾는 단계에서 터져도 FAILED 로 기록한다")
-		void recordsFailedWhenResolvingCacheThrows() {
-			invalidatorOn(FailingCacheManager.of("redis down")).invalidate(changeOf(new Object()));
-
-			verify(recorder, description("커밋 이후 실행되므로 예외를 던지면 이미 커밋된 트랜잭션의 호출자가 깨진다"))
-				 .recordEviction(TestCachePolicy.Name.USER, SOURCE, Outcome.FAILED);
-		}
-
-		@Test
-		@DisplayName("삭제 단계에서 터져도 FAILED 로 기록한다")
-		void recordsFailedWhenEvictThrows() {
-			invalidatorOn(new EvictThrowingCacheManager()).invalidate(changeOf(new Object()));
-
-			verify(recorder, description("방어가 캐시 조회만 감싸면 삭제 단계의 예외가 커밋 스레드로 새어나간다"))
-				 .recordEviction(TestCachePolicy.Name.USER, SOURCE, Outcome.FAILED);
+			then(userCache).should(never().description("커밋되지 않은 변경으로 캐시를 지우면 멀쩡한 값을 버린다"))
+				 .evict(any());
 		}
 	}
 
@@ -252,24 +264,24 @@ class DefaultCacheInvalidatorTest {
 	}
 
 	private CacheInvalidator invalidatorOf(InvalidationRule... rules) {
-		return new DefaultCacheInvalidator(List.of(rules), cacheManager, recorder);
+		return new DefaultCacheInvalidator(List.of(rules), cacheManager);
 	}
 
 	private CacheInvalidator invalidatorOn(CacheManager failing) {
 		return new DefaultCacheInvalidator(
-			 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L))), failing, recorder);
+			 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L))), failing);
 	}
 
 	private static EntityChange changeOf(Object entity) {
-		return EntityChange.committed(entity, Type.UPDATE, null);
+		return EntityChange.of(entity, Type.UPDATE);
 	}
 
 	private void putCached(String cacheName, String key) {
-		cacheManager.getCache(cacheName).put(key, CACHED_VALUE);
+		caches.getCache(cacheName).put(key, CACHED_VALUE);
 	}
 
 	private Object cachedValue(String cacheName, String key) {
-		return cacheManager.getCache(cacheName).get(key, String.class);
+		return caches.getCache(cacheName).get(key, String.class);
 	}
 
 	private static InvalidationRule previousUsernameRule() {
@@ -307,6 +319,20 @@ class DefaultCacheInvalidatorTest {
 			@Override
 			public Collection<CacheKey> resolve(EntityChange change) {
 				return List.of(entry);
+			}
+		};
+	}
+
+	private static InvalidationRule throwingSupportRule() {
+		return new InvalidationRule() {
+			@Override
+			public boolean supports(EntityChange change) {
+				throw new IllegalStateException("rule blew up outside resolve");
+			}
+
+			@Override
+			public Collection<CacheKey> resolve(EntityChange change) {
+				return List.of();
 			}
 		};
 	}

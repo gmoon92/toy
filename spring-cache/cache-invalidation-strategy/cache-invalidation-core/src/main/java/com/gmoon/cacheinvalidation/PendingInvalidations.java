@@ -1,13 +1,11 @@
 package com.gmoon.cacheinvalidation;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-
-import com.gmoon.cacheinvalidation.EntityChange.Source;
 
 /**
  * 한 트랜잭션에서 모인 무효화 대상을 커밋 이후 한 번에 처리한다.
@@ -25,14 +23,14 @@ final class PendingInvalidations implements TransactionSynchronization {
 
 	private static final Object RESOURCE_KEY = PendingInvalidations.class;
 
-	private final Map<CacheKey, Source> entries = new LinkedHashMap<>();
-	private final Consumer<Map<CacheKey, Source>> eviction;
+	private final Set<CacheKey> entries = new LinkedHashSet<>();
+	private final Consumer<Set<CacheKey>> eviction;
 
-	private PendingInvalidations(Consumer<Map<CacheKey, Source>> eviction) {
+	private PendingInvalidations(Consumer<Set<CacheKey>> eviction) {
 		this.eviction = eviction;
 	}
 
-	static void collect(Map<CacheKey, Source> entries, Consumer<Map<CacheKey, Source>> eviction) {
+	static void collect(Set<CacheKey> entries, Consumer<Set<CacheKey>> eviction) {
 		if (entries.isEmpty()) {
 			return;
 		}
@@ -43,7 +41,7 @@ final class PendingInvalidations implements TransactionSynchronization {
 		boundTo(eviction).merge(entries);
 	}
 
-	private static PendingInvalidations boundTo(Consumer<Map<CacheKey, Source>> eviction) {
+	private static PendingInvalidations boundTo(Consumer<Set<CacheKey>> eviction) {
 		PendingInvalidations pending =
 			 (PendingInvalidations)TransactionSynchronizationManager.getResource(RESOURCE_KEY);
 
@@ -55,15 +53,8 @@ final class PendingInvalidations implements TransactionSynchronization {
 		return pending;
 	}
 
-	/**
-	 * 같은 키를 여러 소스가 지목하면 먼저 도착한 소스로 기록한다.
-	 * <p>
-	 * 한 신호원만 지목한 키는 그 신호원으로 정확히 귀속된다.
-	 * 여러 신호원이 같은 키를 지목하는 것은 같은 변경을 중복으로 알린 경우이고,
-	 * 그때의 귀속은 프레임워크의 단계 순서를 따르므로 의미를 두지 않는다.
-	 */
-	private void merge(Map<CacheKey, Source> more) {
-		more.forEach(entries::putIfAbsent);
+	private void merge(Set<CacheKey> more) {
+		entries.addAll(more);
 	}
 
 	@Override

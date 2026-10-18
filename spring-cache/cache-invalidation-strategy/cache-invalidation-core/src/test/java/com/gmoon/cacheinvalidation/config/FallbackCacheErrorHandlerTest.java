@@ -11,28 +11,24 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
 
-import com.gmoon.cacheinvalidation.config.CacheFailureRecorder.Operation;
-
 @DisplayName("캐시 장애 처리")
 class FallbackCacheErrorHandlerTest {
 
 	private static final String CACHE_NAME = "USER";
 	private static final RuntimeException REDIS_DOWN = new IllegalStateException("connection refused");
 
-	private CacheFailureRecorder recorder;
 	private CacheErrorHandler handler;
 	private Cache cache;
 
 	@BeforeEach
 	void setUp() {
-		recorder = mock(CacheFailureRecorder.class);
-		handler = new FallbackCacheErrorHandler(recorder);
+		handler = new FallbackCacheErrorHandler();
 		cache = mock(Cache.class);
 		when(cache.getName()).thenReturn(CACHE_NAME);
 	}
 
 	@Nested
-	@DisplayName("Spring 기본 처리기는")
+	@DisplayName("스프링 기본 처리기는")
 	class DefaultHandler {
 
 		@Test
@@ -47,66 +43,37 @@ class FallbackCacheErrorHandlerTest {
 	}
 
 	@Nested
-	@DisplayName("캐시 조회가 실패하면")
-	class WhenGetFails {
+	@DisplayName("폴백 처리기는")
+	class FallbackHandler {
 
 		@Test
-		@DisplayName("예외를 삼켜 원본 조회로 넘어가게 한다")
-		void swallowsSoOriginIsQueried() {
+		@DisplayName("조회 실패를 삼켜 원본 조회로 넘어가게 한다")
+		void swallowsGetSoOriginIsQueried() {
 			assertThatNoException()
 				 .as("조회 실패가 전파되면 캐시가 단일 장애점이 된다")
 				 .isThrownBy(() -> handler.handleCacheGetError(REDIS_DOWN, cache, 1L));
 		}
 
 		@Test
-		@DisplayName("실패 건수를 기록한다")
-		void recordsFailure() {
-			handler.handleCacheGetError(REDIS_DOWN, cache, 1L);
-
-			verify(recorder).record(Operation.GET);
+		@DisplayName("적재 실패를 삼켜 응답에 영향을 주지 않는다")
+		void swallowsPutWithoutAffectingResponse() {
+			assertThatNoException()
+				 .isThrownBy(() -> handler.handleCachePutError(REDIS_DOWN, cache, 1L, "value"));
 		}
-	}
-
-	@Nested
-	@DisplayName("캐시 적재가 실패하면")
-	class WhenPutFails {
 
 		@Test
-		@DisplayName("예외를 삼켜 응답에 영향을 주지 않는다")
-		void swallowsWithoutAffectingResponse() {
-			assertThatNoException().isThrownBy(() -> handler.handleCachePutError(REDIS_DOWN, cache, 1L, "value"));
-			verify(recorder).record(Operation.PUT);
+		@DisplayName("무효화 실패를 삼킨다")
+		void swallowsEvict() {
+			assertThatNoException()
+				 .as("무효화 유실은 stale 을 남기지만, 예외를 전파하면 요청 자체가 깨진다")
+				 .isThrownBy(() -> handler.handleCacheEvictError(REDIS_DOWN, cache, 1L));
 		}
-	}
-
-	@Nested
-	@DisplayName("캐시 무효화가 실패하면")
-	class WhenEvictFails {
 
 		@Test
-		@DisplayName("예외를 삼키되 실패를 반드시 기록한다")
-		void swallowsButRecords() {
-			assertThatNoException().isThrownBy(() -> handler.handleCacheEvictError(REDIS_DOWN, cache, 1L));
-
-			verify(recorder, description("무효화 유실은 stale을 남기므로 반드시 관측되어야 한다"))
-				 .record(Operation.EVICT);
-		}
-	}
-
-	@Nested
-	@DisplayName("연산별 실패는")
-	class FailureCounts {
-
-		@Test
-		@DisplayName("종류를 구분해 집계된다")
-		void areCountedPerOperation() {
-			handler.handleCacheGetError(REDIS_DOWN, cache, 1L);
-			handler.handleCacheEvictError(REDIS_DOWN, cache, 1L);
-			handler.handleCacheClearError(REDIS_DOWN, cache);
-
-			verify(recorder, times(3).description("발생한 실패 횟수의 합")).record(any(Operation.class));
-			verify(recorder, never().description("일어나지 않은 연산까지 집계되면 종류 구분이 무의미하다"))
-				 .record(Operation.PUT);
+		@DisplayName("전체 삭제 실패를 삼킨다")
+		void swallowsClear() {
+			assertThatNoException()
+				 .isThrownBy(() -> handler.handleCacheClearError(REDIS_DOWN, cache));
 		}
 	}
 }

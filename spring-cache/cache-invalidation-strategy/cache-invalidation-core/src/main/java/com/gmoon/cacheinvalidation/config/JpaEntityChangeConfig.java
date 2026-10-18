@@ -12,7 +12,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
 
 import com.gmoon.cacheinvalidation.CacheInvalidator;
-import com.gmoon.cacheinvalidation.InvalidationRecorder;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +33,6 @@ public class JpaEntityChangeConfig {
 
 	private final ObjectProvider<EntityManagerFactory> entityManagerFactories;
 	private final CacheInvalidator cacheInvalidator;
-	private final InvalidationRecorder recorder;
 
 	@PostConstruct
 	public void registerListener() {
@@ -43,7 +41,7 @@ public class JpaEntityChangeConfig {
 			throw new IllegalStateException("No EntityManagerFactory found to register cache invalidation listener");
 		}
 
-		JpaEntityChangeListener listener = new JpaEntityChangeListener(cacheInvalidator, recorder);
+		JpaEntityChangeListener listener = new JpaEntityChangeListener(cacheInvalidator);
 		targets.forEach(factory -> appendTo(registryOf(factory), listener));
 	}
 
