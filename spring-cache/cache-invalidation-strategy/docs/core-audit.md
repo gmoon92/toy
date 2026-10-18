@@ -291,11 +291,20 @@ private long boundOf(Duration baseTtl) {
 `jitterRatio` 에는 상한 검증이 없다. **합법적인 설정값으로 도달할 수 있는 잠복 결함**이다.
 기존 테스트는 `+bound` 쪽만 확인한다.
 
-**고치는 법** — 결과에 하한을 두고, `jitterRatio` 에 상한 검증을 건다.
+**고치는 법** — **폭이 아니라 결과에** 하한을 둔다.
+폭을 깎으면 "짧은 TTL 도 최소 1초는 흔든다" 는 기존 보장이 함께 사라진다.
+결과를 `max(1s, …)` 로 받치면 위로 흔드는 것은 그대로 두고 아래로만 막힌다.
+`jitterRatio` 는 `[0, 1)` 로 기동에서 검증한다.
 
 **검증 명제**
-- `ttl=1s` 에서 어떤 난수가 나와도 0 이하 TTL 을 만들지 않는다
-- `jitter-ratio >= 1` 은 기동 시점에 거부한다
+
+| 명제 | 수정 전 |
+|-----|:---:|
+| 만료 시간이 0 이하로 내려가지 않는다 (`ttl=1s`, 최소 오프셋) | **RED** — `0S` |
+| 어떤 난수가 뽑혀도 지켜진다 (500회) | **RED** — 표본에 `0S` 다수 |
+| 흔들림 비율이 1 이상이면 기동에서 거부한다 | **RED** |
+
+**조치 완료**
 
 ---
 
@@ -627,7 +636,7 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 |:--:|-----|-----|-----|
 | ~~1~~ | ~~P0-1~~ | ~~`PendingInvalidations.suspend()`/`resume()` 구현~~ **완료** | `PendingInvalidationsTest` 8명제 |
 | ~~2~~ | ~~P0-2~~ | ~~커스터마이저에서 `cacheWriter(...)`, `@Bean redisCacheWriter` 삭제~~ **완료** | `clear()` 가 `KEYS` 를 쓰지 않음 |
-| **3** | P0-3 | 지터 결과 하한 + `jitterRatio` 상한 검증 | `ttl=1s` 에서 0 이하 TTL 불가 |
+| ~~3~~ | ~~P0-3~~ | ~~지터 결과 하한 + `jitterRatio` 상한 검증~~ **완료** | `ttl=1s` 에서 0 이하 TTL 불가 |
 | ~~4~~ | ~~P1-1~~ | ~~`unregistered` 일체 제거~~ **완료** | `getCache("X") == null` |
 | 5 | P1-3 | `SessionFactoryImplementor` 로 전환 | 기존 통합 테스트로 충분 |
 | ~~6a~~ | ~~P1-5~~ | ~~`core-design.md` 3줄 + `serialization.md`~~ **완료** | — |
@@ -651,3 +660,5 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | 2026-10-18 | 두 검토 통합 | P0 3 · P1 5 · P2 2 · P3 7 로 재편 |
 | 2026-10-18 | **P0-1 조치 완료** | `suspend()`/`resume()` 구현. `PendingInvalidationsTest` 신설(8명제). 수정 전 3명제 RED → 수정 후 GREEN 확인. 전체 91/91 통과 |
 | 2026-10-18 | **P0-2 · P1-1 · P1-5 조치 완료** | 빌더에 `cacheWriter(...)` 배선하고 `@Bean redisCacheWriter` 삭제. `unregistered` 일체 제거. 수정 전 SCAN 명제 RED → GREEN. `core-design.md`·`serialization.md` 교정. 전체 91/91 통과 |
+| 2026-10-18 | **P0-3 조치 완료** | 지터 결과에 1초 하한, `jitterRatio` 를 `[0, 1)` 로 검증. 수정 전 3명제 RED(난수 표본에 `0S` 재현) → GREEN. 전체 94/94 통과 |
+| 2026-10-18 | **P0 전건 해소** | 남은 것은 P1-2 · P1-3 · P1-4 와 P2 · P3 |
