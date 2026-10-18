@@ -53,8 +53,6 @@ import jakarta.annotation.PostConstruct;
 @EnableConfigurationProperties(ServiceCacheProperties.class)
 public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
-	private static final Duration UNREGISTERED_FALLBACK_TTL = Duration.ofMinutes(5);
-
 	protected abstract Collection<CachePolicy> cachePolicies();
 
 	protected List<InvalidationRule> invalidationRules() {
@@ -96,19 +94,12 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	@Bean
-	protected RedisCacheWriter redisCacheWriter(
-		 RedisConnectionFactory connectionFactory,
-		 ServiceCacheProperties properties
-	) {
-		return RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory,
-			 BatchStrategies.scan(properties.invalidation().clearScanBatchSize()));
-	}
-
-	@Bean
 	protected RedisCacheManagerBuilderCustomizer cachePolicyCustomizer(
 		 SerializerFactory serializers,
 		 TtlResolver ttlResolver,
-		 CacheProperties cacheProperties
+		 CacheProperties cacheProperties,
+		 RedisConnectionFactory connectionFactory,
+		 ServiceCacheProperties properties
 	) {
 		CacheProperties.Redis redis = cacheProperties.getRedis();
 
@@ -126,14 +117,25 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 				  )
 			 );
 
-		RedisCacheConfiguration unregistered = configurationOf(
-			 redis.getTimeToLive() == null ? UNREGISTERED_FALLBACK_TTL : redis.getTimeToLive(),
-			 serializers.unregisteredCacheSerializer(), serializers, ttlResolver, redis);
-
 		return builder -> builder
+			 .cacheWriter(
+				  scanningCacheWriter(
+					   connectionFactory,
+					   properties
+				  )
+			 )
 			 .disableCreateOnMissingCache()
-			 .cacheDefaults(unregistered)
 			 .withInitialCacheConfigurations(byCacheName);
+	}
+
+	private RedisCacheWriter scanningCacheWriter(
+		 RedisConnectionFactory connectionFactory,
+		 ServiceCacheProperties properties
+	) {
+		return RedisCacheWriter.nonLockingRedisCacheWriter(
+			 connectionFactory,
+			 BatchStrategies.scan(properties.invalidation().clearScanBatchSize())
+		);
 	}
 
 	private RedisCacheConfiguration configurationOf(

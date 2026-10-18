@@ -1,7 +1,7 @@
 package com.gmoon.cacheinvalidation.config;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.gmoon.cacheinvalidation.CacheInvalidator;
@@ -200,7 +203,9 @@ class AbstractRedisCacheConfigTest {
 		config.cachePolicyCustomizer(
 			 config.serializerFactory(),
 			 config.ttlResolver(PROPERTIES),
-			 new CacheProperties()
+			 new CacheProperties(),
+			 mock(RedisConnectionFactory.class),
+			 PROPERTIES
 		).customize(builder);
 
 		return builder.getCacheConfigurationFor(TestCachePolicy.Name.USER)
@@ -245,11 +250,6 @@ class AbstractRedisCacheConfigTest {
 		public RedisSerializer<?> valueSerializerFor(CachePolicy policy) {
 			return RedisSerializer.string();
 		}
-
-		@Override
-		public RedisSerializer<?> unregisteredCacheSerializer() {
-			return RedisSerializer.string();
-		}
 	}
 
 	@Nested
@@ -288,24 +288,36 @@ class AbstractRedisCacheConfigTest {
 		}
 
 		@Nested
-		@DisplayName("정책이 없는 캐시의 기본 설정은")
+		@DisplayName("정책이 없는 캐시명을 요청하면")
 		class WhenCacheHasNoPolicy {
 
 			@Test
-			@DisplayName("spring.cache.redis.time-to-live 를 따른다")
-			void followsDeclaredTimeToLive() {
-				CacheProperties properties = new CacheProperties();
-				properties.getRedis().setTimeToLive(Duration.ofMinutes(7));
-
-				assertThat(unregisteredTtlOf(properties)).isEqualTo(Duration.ofMinutes(7));
+			@DisplayName("캐시를 돌려주지 않는다")
+			void returnsNoCache() {
+				assertThat(cacheManagerOf(mock(RedisConnectionFactory.class)).getCache("UNREGISTERED"))
+					 .as("기본 설정으로 만들어 주면 정책 없는 캐시가 조용히 생기고 TTL 도 타입도 없이 산다")
+					 .isNull();
 			}
+		}
+
+		@Nested
+		@DisplayName("캐시를 통째로 비우면")
+		class WhenCacheCleared {
 
 			@Test
-			@DisplayName("설정이 비어 있으면 5분으로 버틴다")
-			void fallsBackToFiveMinutes() {
-				assertThat(unregisteredTtlOf(new CacheProperties()))
-					 .as("무한 보관은 축출 대상이 없어 쓰기 실패로 이어지므로 기본값이 있어야 한다")
-					 .isEqualTo(Duration.ofMinutes(5));
+			@DisplayName("KEYS 가 아니라 SCAN 으로 훑는다")
+			void scansInsteadOfBlockingWithKeys() {
+				RedisConnection connection = connectionYieldingNoKeys();
+
+				cacheManagerOf(connectionFactoryOf(connection))
+					 .getCache(TestCachePolicy.Name.USER)
+					 .clear();
+
+				then(connection).should(never().description(
+					 "KEYS 는 키 개수만큼 레디스 단일 스레드를 점유해 운영 전체를 멈춘다")).keys(any());
+				then(connection).should(description(
+					 "RedisCacheWriter 를 빈으로만 두면 Boot 가 커넥션 팩토리로 직접 만들어 이 설정이 버려진다"))
+					 .scan(any(ScanOptions.class));
 			}
 		}
 
@@ -314,16 +326,46 @@ class AbstractRedisCacheConfigTest {
 				 .orElseThrow(() -> new AssertionError("정책이 등록한 캐시 설정이 없다"));
 		}
 
-		private Duration unregisteredTtlOf(CacheProperties properties) {
-			return builderWith(properties).cacheDefaults().getTtlFunction().getTimeToLive("key", "value");
+		private RedisCacheManager cacheManagerOf(RedisConnectionFactory connectionFactory) {
+			RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.builder(connectionFactory);
+
+			config().cachePolicyCustomizer(
+				 SerializerFactory.json(),
+				 PASS_THROUGH,
+				 new CacheProperties(),
+				 connectionFactory,
+				 PROPERTIES
+			).customize(builder);
+
+			RedisCacheManager cacheManager = builder.build();
+			cacheManager.afterPropertiesSet();
+			return cacheManager;
+		}
+
+		@SuppressWarnings("unchecked")
+		private RedisConnection connectionYieldingNoKeys() {
+			RedisConnection connection = mock(RedisConnection.class);
+			given(connection.scan(any(ScanOptions.class))).willReturn(mock(Cursor.class));
+			return connection;
+		}
+
+		private RedisConnectionFactory connectionFactoryOf(RedisConnection connection) {
+			RedisConnectionFactory connectionFactory = mock(RedisConnectionFactory.class);
+			given(connectionFactory.getConnection()).willReturn(connection);
+			return connectionFactory;
 		}
 
 		private RedisCacheManager.RedisCacheManagerBuilder builderWith(CacheProperties properties) {
 			RedisCacheManager.RedisCacheManagerBuilder builder =
 				 RedisCacheManager.builder(mock(RedisConnectionFactory.class));
 
-			config().cachePolicyCustomizer(SerializerFactory.json(), PASS_THROUGH, properties)
-				 .customize(builder);
+			config().cachePolicyCustomizer(
+				 SerializerFactory.json(),
+				 PASS_THROUGH,
+				 properties,
+				 mock(RedisConnectionFactory.class),
+				 PROPERTIES
+			).customize(builder);
 
 			return builder;
 		}

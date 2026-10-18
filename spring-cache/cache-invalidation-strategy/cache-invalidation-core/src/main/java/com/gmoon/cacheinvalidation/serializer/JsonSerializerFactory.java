@@ -2,7 +2,6 @@ package com.gmoon.cacheinvalidation.serializer;
 
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.SerializationException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,11 +23,6 @@ class JsonSerializerFactory implements SerializerFactory {
 		return new Jackson2JsonRedisSerializer<>(objectMapper, policy.valueType());
 	}
 
-	@Override
-	public RedisSerializer<?> unregisteredCacheSerializer() {
-		return new UnregisteredCacheSerializer();
-	}
-
 	private static ObjectMapper defaultObjectMapper() {
 		return new ObjectMapper()
 			 .registerModule(new JavaTimeModule())
@@ -36,19 +30,4 @@ class JsonSerializerFactory implements SerializerFactory {
 			 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 	}
 
-	private static final class UnregisteredCacheSerializer implements RedisSerializer<Object> {
-
-		private static final String MESSAGE =
-			 "No CachePolicy registered for this cache. Register a CachePolicy instead of relying on defaults.";
-
-		@Override
-		public byte[] serialize(Object value) {
-			throw new SerializationException(MESSAGE);
-		}
-
-		@Override
-		public Object deserialize(byte[] bytes) {
-			throw new SerializationException(MESSAGE);
-		}
-	}
 }

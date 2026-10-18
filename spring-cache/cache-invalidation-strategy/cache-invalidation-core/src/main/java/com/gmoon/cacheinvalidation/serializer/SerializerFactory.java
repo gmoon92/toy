@@ -12,8 +12,6 @@ public interface SerializerFactory {
 
 	RedisSerializer<?> valueSerializerFor(CachePolicy policy);
 
-	RedisSerializer<?> unregisteredCacheSerializer();
-
 	default RedisSerializer<String> keySerializer() {
 		return RedisSerializer.string();
 	}
