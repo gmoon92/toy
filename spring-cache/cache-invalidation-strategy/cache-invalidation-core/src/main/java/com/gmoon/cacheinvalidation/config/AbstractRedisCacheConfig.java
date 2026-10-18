@@ -2,6 +2,7 @@ package com.gmoon.cacheinvalidation.config;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -138,22 +139,51 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		 RedisConnectionFactory connectionFactory,
 		 ServiceCacheProperties properties
 	) {
-		rejectCacheNamesWithoutPolicy(cacheProperties.getCacheNames(), declaredCacheNames());
-
 		return builder -> {
-			Map<String, RedisCacheConfiguration> byCacheName = configurationsOver(
-				 builder.cacheDefaults(),
-				 serializers,
-				 ttlResolver
-			);
+			RedisCacheConfiguration untyped = untypedConfigurationOver(builder.cacheDefaults(), serializers, ttlResolver);
+
+			Map<String, RedisCacheConfiguration> byCacheName = new LinkedHashMap<>();
+			cacheProperties.getCacheNames().forEach(name -> byCacheName.put(name, untyped));
+			byCacheName.putAll(configurationsOver(builder.cacheDefaults(), serializers, ttlResolver));
+
 			builder.cacheWriter(scanningCacheWriter(connectionFactory, properties))
-				 .disableCreateOnMissingCache()
+				 .cacheDefaults(untyped)
 				 .withInitialCacheConfigurations(byCacheName);
 		};
 	}
 
-	private List<String> declaredCacheNames() {
-		return policies.get().stream().map(CachePolicy::cacheName).toList();
+	/**
+	 * 정책이 없는 캐시명에 적용할 설정.
+	 * <p>
+	 * 런타임에 처음 보는 이름이 와도 기본 TTL 과 타입 없는 JSON 으로 만든다.
+	 * Boot 기본 설정을 그대로 두면 JDK 직렬화가 되어, 역직렬화가 코드 실행이 되는 표면이 열리고
+	 * {@code Serializable} 이 아닌 값은 저장에 실패해 캐시가 영영 비어 있게 된다.
+	 * <p>
+	 * {@code spring.cache.cache-names} 로 선언한 이름은 Boot 가 커스터마이저보다 먼저
+	 * 그때의 기본 설정을 복사해 두므로, 여기서 다시 덮어써야 한다.
+	 */
+	private RedisCacheConfiguration untypedConfigurationOver(
+		 RedisCacheConfiguration defaults,
+		 SerializerFactory serializers,
+		 TtlResolver ttlResolver
+	) {
+		return defaults
+			 .entryTtl(ttlResolver.functionFor(requiredDefaultTtl(defaults)))
+			 .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
+			 .serializeValuesWith(SerializationPair.fromSerializer(serializers.untypedValueSerializer()));
+	}
+
+	/**
+	 * 정책 없는 캐시가 런타임에 생길 수 있으므로 기본 TTL 은 반드시 있어야 한다.
+	 * Redis 는 0 이하 TTL 을 "만료 없음" 으로 다뤄 키가 영구히 남는다.
+	 */
+	private static Duration requiredDefaultTtl(RedisCacheConfiguration defaults) {
+		Duration ttl = defaults.getTtlFunction().getTimeToLive(Object.class, null);
+		if (ttl == null || ttl.isNegative() || ttl.isZero()) {
+			throw new IllegalStateException("No default cache ttl. Caches without a CachePolicy would never expire."
+				 + " Set spring.cache.redis.time-to-live.");
+		}
+		return ttl;
 	}
 
 	/**
@@ -168,52 +198,18 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		 SerializerFactory serializers,
 		 TtlResolver ttlResolver
 	) {
-		Duration defaultTtl = defaults.getTtlFunction().getTimeToLive(Object.class, null);
+		Duration defaultTtl = requiredDefaultTtl(defaults);
 		return policies.get()
 			 .stream()
 			 .collect(Collectors.toMap(
 				  CachePolicy::cacheName,
 				  policy -> defaults
-					   .entryTtl(ttlResolver.functionFor(ttlOf(policy, defaultTtl)))
+					   .entryTtl(ttlResolver.functionFor(policy.ttl().orElse(defaultTtl)))
 					   .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
 					   .serializeValuesWith(SerializationPair.fromSerializer(serializers.valueSerializerFor(policy)))
 			 ));
 	}
 
-	/**
-	 * 정책이 TTL 을 정하지 않았고 기본 설정에도 TTL 이 없으면 기동을 막는다.
-	 * Redis 는 0 이하 TTL 을 "만료 없음" 으로 다뤄 키가 영구히 남는다.
-	 */
-	private static Duration ttlOf(CachePolicy policy, Duration defaultTtl) {
-		return policy.ttl().orElseGet(() -> {
-			if (defaultTtl == null || defaultTtl.isNegative() || defaultTtl.isZero()) {
-				throw new IllegalStateException("Cache '" + policy.cacheName() + "' declares no ttl and the redis cache"
-					 + " defaults have none. Declare a ttl on the CachePolicy, or set spring.cache.redis.time-to-live.");
-			}
-			return defaultTtl;
-		});
-	}
-
-	/**
-	 * {@code spring.cache.cache-names} 는 커스터마이저보다 먼저 적용된다.
-	 * <p>
-	 * Boot 가 {@code initialCacheNames} 로 그때의 기본 설정(JDK 직렬화)을 복사해 두므로
-	 * 정책 없는 이름이 섞이면 {@code disableCreateOnMissingCache} 에도 걸리지 않고 살아남는다.
-	 */
-	private void rejectCacheNamesWithoutPolicy(
-		 Collection<String> requestedCacheNames,
-		 Collection<String> declaredCacheNames
-	) {
-		List<String> withoutPolicy = requestedCacheNames.stream()
-			 .filter(name -> !declaredCacheNames.contains(name))
-			 .toList();
-
-		if (!withoutPolicy.isEmpty()) {
-			throw new IllegalStateException(
-				 "spring.cache.cache-names declares caches without a CachePolicy: " + withoutPolicy
-					  + ". Declare a CachePolicy, or remove them from the property.");
-		}
-	}
 
 	private RedisCacheWriter scanningCacheWriter(
 		 RedisConnectionFactory connectionFactory,
