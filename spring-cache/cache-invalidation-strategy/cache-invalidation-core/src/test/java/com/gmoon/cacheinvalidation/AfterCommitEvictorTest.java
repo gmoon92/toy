@@ -364,6 +364,53 @@ class AfterCommitEvictorTest {
 	}
 
 	@Nested
+	@DisplayName("실행기가 돌기 전에 애플리케이션이 내려가면")
+	class WhenShutdownBeforeExecutorRuns {
+
+		private final List<Runnable> queued = new ArrayList<>();
+		private AfterCommitEvictor deferring;
+
+		@BeforeEach
+		void setUp() {
+			deferring = new AfterCommitEvictor(caches, queued::add, NO_METRICS);
+		}
+
+		@Test
+		@DisplayName("큐에 남은 삭제를 종료 스레드에서 마저 지운다")
+		void drainsWhatExecutorNeverRan() {
+			inTransaction(() -> deferring.evict(entriesOf(USER_1, USER_2)));
+			assertThat(caches.evictedKeys()).isEmpty();
+
+			deferring.drainPending();
+
+			assertThat(caches.evictedKeys())
+				 .as("실행기에 넘긴 채로 프로세스가 내려가면 그 키는 TTL 이 끝날 때까지 stale 로 남는다")
+				 .containsExactly(USER_1.key(), USER_2.key());
+		}
+
+		@Test
+		@DisplayName("실행기가 이미 지운 것은 두 번 지우지 않는다")
+		void doesNotEvictTwice() {
+			inTransaction(() -> deferring.evict(entriesOf(USER_1)));
+			queued.forEach(Runnable::run);
+
+			deferring.drainPending();
+
+			assertThat(caches.evictedKeys())
+				 .as("종료 처리가 실행기와 겹쳐 같은 키를 두 번 지우면 왕복만 늘어난다")
+				 .containsExactly(USER_1.key());
+		}
+
+		@Test
+		@DisplayName("지울 것이 없으면 아무 일도 하지 않는다")
+		void drainsNothingWhenIdle() {
+			deferring.drainPending();
+
+			assertThat(caches.evictedKeys()).isEmpty();
+		}
+	}
+
+	@Nested
 	@DisplayName("실행기가 작업을 거부하면")
 	class WhenExecutorRejects {
 

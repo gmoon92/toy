@@ -3,6 +3,7 @@ package com.gmoon.cacheinvalidation;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -182,6 +183,31 @@ class RuleBasedCacheInvalidatorTest {
 	private static InvalidationRule currentUsernameRule() {
 		return rule(change -> List.of(
 			 CacheKey.of(TestCachePolicy.USER, ((NaturalKeyUser)change.entity()).username())));
+	}
+
+	@Nested
+	@DisplayName("애플리케이션이 내려가면")
+	class WhenApplicationShutsDown {
+
+		@Test
+		@DisplayName("실행기에 남은 삭제를 마저 수행한다")
+		void drainsPendingEvictions() throws Exception {
+			List<Runnable> queued = new ArrayList<>();
+			AfterCommitEvictor evictor = new AfterCommitEvictor(cacheManager, queued::add, NO_METRICS);
+			RuleBasedCacheInvalidator invalidator = new RuleBasedCacheInvalidator(
+				 List.of(ruleOf(true, CacheKey.of(TestCachePolicy.USER, 1L))),
+				 evictor,
+				 NO_METRICS
+			);
+
+			invalidator.invalidate(changeOf(new Object()));
+			then(userCache).should(never()).evict(any());
+
+			invalidator.destroy();
+
+			then(userCache).should(description(
+				 "종료 훅을 연결하지 않으면 비동기 실행기에 넘긴 삭제가 그대로 사라진다")).evict("1");
+		}
 	}
 
 	private static InvalidationRule rule(Function<EntityChange, List<CacheKey>> resolver) {

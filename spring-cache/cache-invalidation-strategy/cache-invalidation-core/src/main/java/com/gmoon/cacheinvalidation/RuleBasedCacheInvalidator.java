@@ -5,12 +5,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.DisposableBean;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-class RuleBasedCacheInvalidator implements CacheInvalidator {
+class RuleBasedCacheInvalidator implements CacheInvalidator, DisposableBean {
 
 	private final List<InvalidationRule> rules;
 	private final AfterCommitEvictor evictor;
@@ -28,6 +30,16 @@ class RuleBasedCacheInvalidator implements CacheInvalidator {
 		} catch (RuntimeException e) {
 			log.warn("cache invalidation failed. the caller's transaction is not affected", e);
 		}
+	}
+
+	/**
+	 * 애플리케이션이 내려갈 때 실행기에 남은 삭제를 마저 수행한다.
+	 * <p>
+	 * 이 빈은 {@code CacheManager} 에 의존하므로 스프링이 캐시보다 먼저 정리한다.
+	 */
+	@Override
+	public void destroy() {
+		evictor.drainPending();
 	}
 
 	private Set<CacheKey> resolve(EntityChange change) {
