@@ -112,10 +112,13 @@ NullValue                          →  SerializationException
 
 기동 시점 캐시명 검사를 넣은 뒤에도 남는 구멍이 둘 있다.
 
-| 항목 | 내용 |
+| 항목 | 상태 |
 |-----|-----|
-| **`CacheManager` 교체** | `CacheAutoConfiguration` 은 `@ConditionalOnMissingBean(value = CacheManager.class, name = "cacheResolver")` 다 (3.5.0 소스 확인). 애플리케이션이 `CacheManager` 빈을 공급하지 못하면 **Boot 가 대신 꽂는다.** 그 순간 우리 정책·직렬화기·TTL 이 통째로 빠진다. 기동 시점에 "어떤 `CacheManager` 가 주입됐는가" 를 함께 단언하는 것이 가장 값싼 보강이다 |
-| **적중률을 아무도 읽지 않음** | `enable-statistics: true` 는 켜 두었으나 읽는 코드가 없다. 직렬화가 깨져도 에러가 아니라 적중률 0 으로만 나타난다 |
+| **`CacheManager` 교체** | **해소.** `CacheAutoConfiguration` 은 `@ConditionalOnMissingBean(value = CacheManager.class, name = "cacheResolver")` 다 (3.5.0 소스 확인). Redis 자동설정이 물러나면 Boot 가 다른 제공자를 꽂고 우리 설정이 통째로 빠진 채 기동한다. `CacheManagerValidator` 가 기동 시점에 막는다 |
+| **적중률을 아무도 읽지 않음** | **직접 만들지 않는다.** `spring-boot-actuator` 에 `RedisCacheMetrics` 와 `RedisCacheMeterBinderProvider` 가 이미 있다(3.5.0 jar 확인). actuator 를 넣고 `spring.cache.redis.enable-statistics: true` 를 켜면 `cache.gets` 계열이 나온다. 다시 만들면 "프레임워크가 주는 것을 다시 만들지 않는다" 원칙을 어긴다 |
+
+무효화 실패 카운터(`cache.invalidation.failures`)는 별개다 —
+`Cache` 추상화 밖에서 일어나는 일이라 Boot 가 계측하지 않는다.
 
 규칙이 썩는 것을 막는 값싼 가드 둘도 검토 대상이다 — **TTL 상한**(24h 초과 선언 거부)과
 **값 타입 블랙리스트**(`Object`·`Map`·`String` 금지). 둘 다 정책 객체 생성 시점 검증이라 테스트 한둘로 끝난다.

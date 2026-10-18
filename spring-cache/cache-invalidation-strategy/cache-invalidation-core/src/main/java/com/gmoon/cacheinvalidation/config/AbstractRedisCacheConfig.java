@@ -118,6 +118,14 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	}
 
 	/**
+	 * 설정한 캐시 관리자가 실제로 주입됐는지 배포 시점에 확인한다.
+	 */
+	@Bean
+	protected SmartInitializingSingleton cacheManagerValidator(CacheManager cacheManager) {
+		return new CacheManagerValidator(cacheManager);
+	}
+
+	/**
 	 * 정책 없이 쓰이는 캐시명을 배포 시점에 드러낸다.
 	 */
 	@Bean

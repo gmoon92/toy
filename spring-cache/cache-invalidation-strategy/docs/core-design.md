@@ -12,7 +12,8 @@ TTL 만료나 메모리 압박에 의한 축출과는 다르다 — 그 둘은 R
 | 필요한 것 | 사용하는 것 | 직접 만든 것 |
 |---------|-----------|-----------|
 | hit·miss·put·delete 집계 | `RedisCacheManagerBuilder.enableStatistics()` | — |
-| 캐시 실패·무효화 결과 관측 | Micrometer `MeterRegistry` (선택) | `cache.invalidation.failures` 카운터 |
+| 적중률·miss 집계 | `spring-boot-actuator` 의 `RedisCacheMetrics` | — |
+| 무효화 실패 관측 | Micrometer `MeterRegistry` (선택) | `cache.invalidation.failures` 카운터 — `Cache` 추상화 밖이라 Boot 가 안 센다 |
 | 캐시 장애 폴백 | `CachingConfigurer.errorHandler()` | 폴백 처리기 구현체 (기본 제공 없음) |
 | 엔트리별 TTL | `RedisCacheWriter.TtlFunction` (3.2+) | jitter 계산 |
 | DB 문장 수 | Hibernate `Statistics` | 얇은 래퍼 |
@@ -368,8 +369,13 @@ service:
 
 | 겹 | 수단 | 잡히는 것 |
 |---|-----|---------|
+| 기동 | `CacheManagerValidator` | **설정이 통째로 빠진 경우** — Redis 자동설정이 물러나 Boot 가 다른 제공자를 꽂았을 때 |
 | 기동 | `AnnotatedCacheNameValidator` | `@Cacheable`·`@CacheEvict`·`@CachePut` 에 적힌 이름, `spring.cache.cache-names` |
 | 호출 | `disableCreateOnMissingCache()` | 애노테이션에 안 적힌 경로 — 커스텀 `cacheResolver`, 코드에서 `getCache(name)` |
+
+첫 번째 겹이 없으면 나머지 둘도 함께 사라진다.
+`CacheAutoConfiguration` 이 `@ConditionalOnMissingBean(CacheManager.class)` 라
+**설정이 빠진 채로도 애플리케이션은 정상 기동한다.**
 
 기동 검사가 먼저 걸리므로 **선언 누락은 트래픽이 아니라 배포에서 드러난다.**
 캐시 예외는 서비스를 살리려고 삼켜지기 때문에, 런타임에는 "적중률 0" 으로만 보인다.
