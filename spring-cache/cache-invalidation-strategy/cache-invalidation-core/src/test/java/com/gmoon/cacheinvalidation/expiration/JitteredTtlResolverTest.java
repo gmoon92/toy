@@ -43,6 +43,45 @@ class JitteredTtlResolverTest {
 	}
 
 	@Nested
+	@DisplayName("흔들림이 기준 TTL 을 깎아내려도")
+	class WhenJitterWouldExhaustTtl {
+
+		@Test
+		@DisplayName("만료 시간이 0 이하로 내려가지 않는다")
+		void neverFallsToZeroOrBelow() {
+			assertThat(ttlOf(resolverWithOffset(bound -> -bound), Duration.ofSeconds(1)))
+				 .as("Spring Data Redis 는 0 이하 TTL 을 만료 없음으로 해석해 키가 영구히 남는다")
+				 .isEqualTo(Duration.ofSeconds(1));
+		}
+
+		@Test
+		@DisplayName("어떤 난수가 뽑혀도 지켜진다")
+		void keepsMinimumForEveryDraw() {
+			JitteredTtlResolver resolver = new JitteredTtlResolver(JITTER_RATIO, NOT_FOUND_TTL);
+
+			assertThat(IntStream.range(0, 500)
+				 .mapToObj(attempt -> ttlOf(resolver, Duration.ofSeconds(1)))
+				 .toList())
+				 .as("한 번만 새어도 그 키는 축출 전까지 영원히 stale 로 남는다")
+				 .allMatch(ttl -> !ttl.isZero() && !ttl.isNegative());
+		}
+	}
+
+	@Nested
+	@DisplayName("흔들림 비율이 1 이상이면")
+	class WhenJitterRatioTooLarge {
+
+		@Test
+		@DisplayName("기동에서 거부한다")
+		void rejectsAtStartup() {
+			assertThatIllegalArgumentException()
+				 .as("기준 TTL 전체만큼 흔들면 선언한 수명이 의미를 잃는다")
+				 .isThrownBy(() -> new JitteredTtlResolver(1.0, NOT_FOUND_TTL))
+				 .withMessageContaining("jitter ratio");
+		}
+	}
+
+	@Nested
 	@DisplayName("같은 TTL을 여러 번 해석하면")
 	class WhenResolvedRepeatedly {
 
