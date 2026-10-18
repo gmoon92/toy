@@ -23,6 +23,7 @@
 | 캐시 값을 어떤 형식으로 저장하나 | [concepts/serialization.md](concepts/serialization.md) |
 | 배포 중 캐시 스키마가 바뀌면 | [concepts/schema-evolution.md](concepts/schema-evolution.md) |
 | 코어 모듈은 어떻게 구성되어 있나 | [core-design.md](core-design.md) |
+| 코어에 남은 결함과 과잉은 무엇인가 | [core-audit.md](core-audit.md) |
 | 조회 시 캐시를 어떻게 읽나 | [read/](read/) |
 | 쓰기가 캐시를 거쳐야 하나 | [write/](write/) |
 | DB가 바뀌면 옛 캐시를 언제 지우나 | [invalidation/](invalidation/) |
