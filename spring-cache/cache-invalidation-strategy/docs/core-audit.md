@@ -40,7 +40,7 @@ R1(`KEYS` 실행)·R2(도달 불가 설정)·설정 기본값 결함·`EntityCha
 | ID | 내용 |
 |----|-----|
 | [P1-1](#p1-1-unregistered-cachedefaults-는-도달하지-않는다) | `unregistered` cacheDefaults 도달 불가 — 죽은 코드 |
-| [P1-2](#p1-2-springcachecache-names-는-정책-검사를-통과하지-않는다) | `spring.cache.cache-names` 가 정책 검사를 우회한다 |
+| ~~[P1-2](#p1-2-springcachecache-names-는-정책-검사를-통과하지-않는다)~~ **완료** | `spring.cache.cache-names` 가 정책 검사를 우회한다 |
 | [P1-3](#p1-3-하이버네이트-내부-클래스에-의존한다) | Hibernate 내부 클래스 `SessionFactoryImpl` 의존 |
 | [P1-4](#p1-4-javadoc-링크-2곳이-깨졌다) | Javadoc 링크 2곳 파손 |
 | [P1-5](#4-문서-정합성) | `core-design.md` 에 사실과 다른 3줄 |
@@ -532,7 +532,10 @@ P0-2(빈은 있는데 아무도 안 씀)와 P1-1(쓰이지 않는 cacheDefaults)
 ### O5. `FallbackCacheErrorHandler` 는 로그 4줄에 87줄이다
 
 인자 4개짜리 오버라이드 네 개에 개행 규칙을 적용한 결과다.
-규칙은 유지하되 "중첩이 깊으면 먼저 펼친다" 조항으로 줄일 여지가 있다. 우선순위는 낮다.
+
+**조치하지 않는다.** 길이의 원인은 중복이 아니라 **인자 개행 규칙 자체**다.
+네 메서드는 각각 리터럴 하나만 다르고 이미 공통 메서드로 모여 있어 더 줄일 중복이 없다.
+줄이려면 개행을 되돌려야 하는데, 그것은 규칙을 어기는 것이지 개선이 아니다.
 
 ### O6. 소유권 검증의 보장이 이름뿐이다
 
@@ -638,14 +641,14 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | ~~2~~ | ~~P0-2~~ | ~~커스터마이저에서 `cacheWriter(...)`, `@Bean redisCacheWriter` 삭제~~ **완료** | `clear()` 가 `KEYS` 를 쓰지 않음 |
 | ~~3~~ | ~~P0-3~~ | ~~지터 결과 하한 + `jitterRatio` 상한 검증~~ **완료** | `ttl=1s` 에서 0 이하 TTL 불가 |
 | ~~4~~ | ~~P1-1~~ | ~~`unregistered` 일체 제거~~ **완료** | `getCache("X") == null` |
-| 5 | P1-3 | `SessionFactoryImplementor` 로 전환 | 기존 통합 테스트로 충분 |
+| ~~5~~ | ~~P1-3~~ | ~~`SessionFactoryImplementor` 로 전환~~ **완료** | 기존 통합 테스트 |
 | ~~6a~~ | ~~P1-5~~ | ~~`core-design.md` 3줄 + `serialization.md`~~ **완료** | — |
-| 6b | P1-4 | Javadoc 링크 2곳 | — |
-| 7 | P2-1 | `ObjectProvider<MeterRegistry>` 로 무효화 실패 계측 | 레지스트리 부재 시 무계측 |
-| 8 | P2-2 | `@DefaultValue`(바깥 파라미터 포함) + `@Validated` | 블록 누락 시 기본값, 잘못된 값은 기동 실패 |
-| 9 | O3 | 확장점 1회 평가 후 고정 | — |
-| 10 | O1 · O6 | 이름 중복 제거, 소유권 검증 강화 또는 제거 | — |
-| 11 | O5 | `FallbackCacheErrorHandler` 축약 | — |
+| ~~6b~~ | ~~P1-4~~ | ~~Javadoc 링크 2곳~~ **완료** | — |
+| ~~7~~ | ~~P2-1~~ | ~~`ObjectProvider<MeterRegistry>` 로 무효화 실패 계측~~ **완료** | `InvalidationMetricsTest` |
+| ~~8~~ | ~~P2-2~~ | ~~`@DefaultValue`(바깥 파라미터 포함)~~ **완료** | `ServiceCachePropertiesTest` 4명제 |
+| ~~9~~ | ~~O3~~ | ~~확장점 1회 평가 후 고정~~ **완료** | 호출 횟수 단언 |
+| ~~10~~ | ~~O1 · O6~~ | ~~이름 드리프트 차단, `supports()` 제거~~ **완료** | `CachePolicyTest` |
+| — | O5 | `FallbackCacheErrorHandler` 축약 | **하지 않음** — [사유](#o5-fallbackcacheerrorhandler-는-로그-4줄에-87줄이다) |
 | — | O2 | 상속 제거 | **보류** |
 
 2·4 는 같은 메서드(`cachePolicyCustomizer`)를 건드리므로 한 커밋으로 묶는다.
@@ -662,3 +665,25 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | 2026-10-18 | **P0-2 · P1-1 · P1-5 조치 완료** | 빌더에 `cacheWriter(...)` 배선하고 `@Bean redisCacheWriter` 삭제. `unregistered` 일체 제거. 수정 전 SCAN 명제 RED → GREEN. `core-design.md`·`serialization.md` 교정. 전체 91/91 통과 |
 | 2026-10-18 | **P0-3 조치 완료** | 지터 결과에 1초 하한, `jitterRatio` 를 `[0, 1)` 로 검증. 수정 전 3명제 RED(난수 표본에 `0S` 재현) → GREEN. 전체 94/94 통과 |
 | 2026-10-18 | **P0 전건 해소** | 남은 것은 P1-2 · P1-3 · P1-4 와 P2 · P3 |
+| 2026-10-18 | 다른 세션 리팩터링 | 수집·삭제를 `AfterCommitEvictor` 로 일원화, 수집함 키를 인스턴스로, 비동기 삭제 확장점 (`fabbcf63`) |
+| 2026-10-18 | **잔여 전건 조치 완료** | P1-2 · P1-3 · P1-4 · P2-1 · P2-2 · O1 · O3 · O6 해소. O5 는 사유를 적고 보류, O2 는 보류 유지. 전체 113/113 통과 |
+
+## 이름 대응표
+
+이 문서는 `e37fc11f` 시점의 이름으로 적혀 있다. 소급 수정하면 무엇을 보고 무엇을 고쳤는지가 흐려지므로
+본문은 그대로 두고 대응만 남긴다.
+
+| 감사 문서 | 현재 |
+|---|---|
+| `PendingInvalidations` | `AfterCommitEvictor` (+ 내부 `Pending`) |
+| `DefaultCacheInvalidator` | `RuleBasedCacheInvalidator` |
+| `cachePolicyCustomizer` | `cacheManagerCustomizer` |
+| `ServiceCacheProperties.Invalidation` | `.Clear` |
+| `service.cache.invalidation.clear-scan-batch-size` | `service.cache.clear.scan-batch-size` |
+| `EntityChange.isTypeOf` | `isAbout` |
+| `TtlOnlyRule.covering` | `owning` |
+| `TtlResolver.resolveFrom` | `functionFor` |
+| `CacheEvictable.cacheEntriesToEvict` | `cacheKeys` |
+
+`CacheKey` 는 한때 `CacheEntry` 로 바뀌었다가 되돌아왔다 — entry 는 값을 포함한다는 뜻이라
+값을 들지 않는 이 레코드에는 맞지 않는다.

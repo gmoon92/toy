@@ -37,7 +37,7 @@ flowchart LR
 ```java
 public interface InvalidationRule {
     boolean supports(EntityChange change);
-    Collection<CacheEntry> resolve(EntityChange change);
+    Collection<CacheKey> resolve(EntityChange change);
 }
 ```
 
@@ -59,8 +59,8 @@ public record EntityChange(Object entity, Type type, Source source, State previo
 public class User implements CacheEvictable {
 
     @Override
-    public List<CacheEntry> cacheEntries() {
-        return List.of(CacheEntry.of(UserCachePolicy.USER, id));
+    public List<CacheKey> cacheKeys() {
+        return List.of(CacheKey.of(UserCachePolicy.USER, id));
     }
 }
 ```

@@ -12,7 +12,7 @@ TTL 만료나 메모리 압박에 의한 축출과는 다르다 — 그 둘은 R
 | 필요한 것 | 사용하는 것 | 직접 만든 것 |
 |---------|-----------|-----------|
 | hit·miss·put·delete 집계 | `RedisCacheManagerBuilder.enableStatistics()` | — |
-| 캐시 실패·무효화 결과 관측 | — | **없음.** 로그만 남는다 — [core-audit.md](core-audit.md#p2-1-무효화-실패가-어디에도-드러나지-않는다) |
+| 캐시 실패·무효화 결과 관측 | Micrometer `MeterRegistry` (선택) | `cache.invalidation.failures` 카운터 |
 | 캐시 장애 폴백 | `CachingConfigurer.errorHandler()` | 폴백 처리기 구현체 (기본 제공 없음) |
 | 엔트리별 TTL | `RedisCacheWriter.TtlFunction` (3.2+) | jitter 계산 |
 | DB 문장 수 | Hibernate `Statistics` | 얇은 래퍼 |
@@ -57,7 +57,7 @@ flowchart TD
 
 한때 `InvalidationRecorder` 로 무효화 건수와 신호원을 기록했으나 걷어냈다.
 운영 빈이 무연산이라 **제품 코드에서는 아무 일도 하지 않았고**, 읽는 쪽은 테스트뿐이었다.
-그 하나를 위해 `Outcome` enum, `EntityChange.Source` enum, 수집기의 `Map<CacheEntry, Source>`,
+그 하나를 위해 `Outcome` enum, `EntityChange.Source` enum, 수집기의 `Map<CacheKey, Source>`,
 생성자 파라미터 세 자리, 테스트 모듈의 계수 구현이 딸려 있었다.
 
 운영에서 남는 신호는 WARN 로그다. 부하 측정을 시작하면 손으로 만든 카운터가 아니라
@@ -118,7 +118,7 @@ config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시�
 | `AbstractRedisCacheConfig` | 상속해서 모듈 설정을 만든다 |
 | `CachePolicy` | 캐시 이름·TTL·값 타입을 enum 으로 선언한다 |
 | `JpaEntityChangeConfig` · `PublishedEntityChangeConfig` | 감지 방식을 `@Import` 로 켠다 |
-| `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheEntry` | 무효화 대상을 선언한다 |
+| `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheKey` | 무효화 대상을 선언한다 |
 | `EntityChange` | JPA 밖 변경을 직접 발행한다. `State` · `Type` 은 그 안에 중첩 |
 | `CacheFailureRecorder` | 캐시 접근 실패를 세는 구현을 끼운다 |
 | `TtlResolver` · `SerializerFactory` | 만료·직렬화 전략을 재정의한다 |
@@ -209,6 +209,11 @@ flush       JpaEntityChangeListener       ─┐
 |---|---|---|
 | 커밋 스레드 | Redis 왕복을 기다린다 | 기다리지 않는다 |
 | 저장 직후 본인 조회 | 항상 새 값 | 삭제 전이면 옛 값을 읽을 수 있다 |
+| 프로세스 종료 | 커밋 전에 끝나 있다 | **큐에 남은 삭제를 잃는다** |
+| 실행기 거부 | 해당 없음 | 호출 스레드에서 직접 지운다 |
+
+종료 시 유실은 거부와 달리 폴백이 걸리지 않는다. 비동기를 켠다면 실행기에 종료 대기를 걸고,
+그래도 남는 유실은 TTL 이 상한이 된다. 실패 수는 `cache.invalidation.failures` 로 센다.
 
 비동기는 `AbstractRedisCacheConfig.evictionExecutor()` 를 재정의해 켠다. 실행기는 빈으로 올리지 않는다.
 실행기에는 수집함의 사본을 넘기고, 실행기가 거부하면 호출한 스레드에서 직접 지운다.
@@ -242,7 +247,7 @@ protected List<InvalidationRule> invalidationRules() {
 ```java
 public interface InvalidationRule {
     boolean supports(EntityChange change);
-    Collection<CacheEntry> resolve(EntityChange change);
+    Collection<CacheKey> resolve(EntityChange change);
 }
 ```
 
