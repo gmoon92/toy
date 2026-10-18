@@ -50,8 +50,8 @@ flowchart LR
 | 지표 | 수집 방법 |
 |-----|---------|
 | DB Query Count | Hibernate `Statistics.getPrepareStatementCount()` |
-| Cache DEL Count | `InvalidationCounter` (테스트 모듈) |
-| Invalidation Failure | `InvalidationCounter` (테스트 모듈) |
+| Cache DEL Count | 미구현 — 측정 시작 시 Micrometer |
+| Invalidation Failure | 미구현 — 측정 시작 시 Micrometer |
 | Stale Read Count | 조회 결과와 DB 최신값을 대조하는 검증 컴포넌트 |
 | Invalidation Lag | commit 타임스탬프와 DEL 타임스탬프의 차이 |
 

@@ -3,6 +3,10 @@
 `cache-invalidation-core`는 전략 모듈들이 공유하는 **틀만** 제공한다.
 도메인 캐시명이나 전략별 구현은 담지 않는다.
 
+이 문서에서 **무효화**는 "DB가 바뀌어 낡아진 캐시 항목을 지우는 일"을 뜻한다.
+TTL 만료나 메모리 압박에 의한 축출과는 다르다 — 그 둘은 Redis가 하고, 무효화는 우리가 한다.
+구분은 [문서 지도](README.md#말부터) 참조.
+
 ## 원칙 — 프레임워크가 주는 것을 다시 만들지 않는다
 
 | 필요한 것 | 사용하는 것 | 직접 만든 것 |
@@ -48,7 +52,6 @@ flowchart TD
     end
     subgraph 기록 포트 (코어는 세지 않는다)
         CFR[CacheFailureRecorder]
-        IR[InvalidationRecorder]
     end
     CP --> CFG[AbstractRedisCacheConfig]
     CFG --> CEH[FallbackCacheErrorHandler]
@@ -58,13 +61,18 @@ flowchart TD
     SAFE --> IR
 ```
 
-기록기는 둘이고 묻는 질문이 다르다.
-`CacheFailureRecorder` 는 "캐시 인프라가 성한가", `InvalidationRecorder` 는 "무효화가 목적을 이뤘는가"를 센다.
+무효화 결과는 코어가 세지 않는다.
 
-둘 다 **쓰기 전용 포트**이고 코어의 기본 구현은 아무것도 하지 않는다.
-제품 코드는 기록만 하고 아무도 읽지 않으므로, 코어가 집계하면 관측되지 않는 카운터만 쌓인다.
-세는 구현은 측정이 필요한 쪽이 제공한다 — `cache-invalidation-test` 의 `InvalidationCounter` 가 그것이다.
-운영에서 남는 신호는 리스너와 evictor 의 WARN 로그다. 부하 측정을 시작하면 Micrometer 로 올린다.
+한때 `InvalidationRecorder` 로 무효화 건수와 신호원을 기록했으나 걷어냈다.
+운영 빈이 무연산이라 **제품 코드에서는 아무 일도 하지 않았고**, 읽는 쪽은 테스트뿐이었다.
+그 하나를 위해 `Outcome` enum, `EntityChange.Source` enum, 수집기의 `Map<CacheKey, Source>`,
+생성자 파라미터 세 자리, 테스트 모듈의 계수 구현이 딸려 있었다.
+
+운영에서 남는 신호는 WARN 로그다. 부하 측정을 시작하면 손으로 만든 카운터가 아니라
+Micrometer 로 넣는다 — 어차피 스크랩되지 않는 숫자는 지표가 아니다.
+
+`CacheFailureRecorder` 는 남아 있다. 이쪽은 애노테이션 경로의 캐시 접근 실패를 다루고
+`CacheErrorHandler` 계약에 묶여 있어 성격이 다르다.
 
 규칙 산출과 삭제는 `DefaultCacheInvalidator` 하나가 맡는다.
 `DefaultRedisCacheWriter` 가 연결·배치·통계를 혼자 처리하는 것과 같은 결이다.
@@ -122,8 +130,8 @@ config/             스프링 배선과 프로퍼티, 캐시 접근 실패 시�
 | `CachePolicy` | 캐시 이름·TTL·값 타입을 enum 으로 선언한다 |
 | `JpaEntityChangeConfig` · `PublishedEntityChangeConfig` | 감지 방식을 `@Import` 로 켠다 |
 | `InvalidationRule` · `EvictableEntityRule` · `TtlOnlyRule` · `CacheEvictable` · `CacheKey` | 무효화 대상을 선언한다 |
-| `EntityChange` | JPA 밖 변경을 직접 발행한다. `State` · `Source` · `Type` 은 그 안에 중첩 |
-| `InvalidationRecorder` · `CacheFailureRecorder` | 측정 구현을 끼운다. `Outcome` 은 기록기 안에 중첩 |
+| `EntityChange` | JPA 밖 변경을 직접 발행한다. `State` · `Type` 은 그 안에 중첩 |
+| `CacheFailureRecorder` | 캐시 접근 실패를 세는 구현을 끼운다 |
 | `TtlResolver` · `SerializerFactory` | 만료·직렬화 전략을 재정의한다 |
 
 조립은 계약 위 정적 팩토리가 맡는다. 그래야 구현체가 `config` 에 보일 필요가 없다.
@@ -271,7 +279,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 | 경로 | 처리 | 내보내는 포트 |
 |-----|-----|-----|
 | 애노테이션 기반(`@Cacheable` 등) | `CacheErrorHandler` 가 감싼다 | `CacheFailureRecorder` |
-| 프로그래밍 방식(`DefaultCacheInvalidator`) | 결과 코드로 돌려준다 | `InvalidationRecorder` |
+| 프로그래밍 방식(`DefaultCacheInvalidator`) | 삼키고 WARN 로그로 남긴다 | 없음 |
 
 두 포트 모두 코어의 기본 구현은 무연산이다. [구성 요소](#구성-요소) 참조.
 
