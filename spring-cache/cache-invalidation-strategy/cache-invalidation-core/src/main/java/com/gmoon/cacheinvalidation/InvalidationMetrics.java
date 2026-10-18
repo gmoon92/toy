@@ -25,17 +25,11 @@ final class InvalidationMetrics {
 	}
 
 	void evictionFailed(String cacheName) {
-		count(
-			 "evict",
-			 cacheName
-		);
+		count("evict", cacheName);
 	}
 
 	void resolutionFailed(String ruleName) {
-		count(
-			 "resolve",
-			 ruleName
-		);
+		count("resolve", ruleName);
 	}
 
 	private void count(String phase, String target) {

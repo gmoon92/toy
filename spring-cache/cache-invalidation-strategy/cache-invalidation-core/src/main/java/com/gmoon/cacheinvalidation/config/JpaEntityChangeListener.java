@@ -40,10 +40,7 @@ class JpaEntityChangeListener
 			 () -> EntityChange.of(
 				  event.getEntity(),
 				  EntityChange.Type.UPDATE,
-				  EntityChange.State.of(
-					   event.getPersister().getPropertyNames(),
-					   event.getOldState()
-				  )
+				  EntityChange.State.of(event.getPersister().getPropertyNames(), event.getOldState())
 			 )
 		);
 	}

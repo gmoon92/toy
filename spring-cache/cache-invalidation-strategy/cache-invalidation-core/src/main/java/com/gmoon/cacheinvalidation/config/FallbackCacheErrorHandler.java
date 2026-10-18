@@ -15,67 +15,26 @@ import lombok.extern.slf4j.Slf4j;
 class FallbackCacheErrorHandler implements CacheErrorHandler {
 
 	@Override
-	public void handleCacheGetError(
-		 RuntimeException exception,
-		 Cache cache,
-		 Object key
-	) {
-		degradeToOrigin(
-			 "get",
-			 exception,
-			 cache,
-			 key
-		);
+	public void handleCacheGetError(RuntimeException exception, Cache cache, Object key) {
+		degradeToOrigin("get", exception, cache, key);
 	}
 
 	@Override
-	public void handleCachePutError(
-		 RuntimeException exception,
-		 Cache cache,
-		 Object key,
-		 Object value
-	) {
-		degradeToOrigin(
-			 "put",
-			 exception,
-			 cache,
-			 key
-		);
+	public void handleCachePutError(RuntimeException exception, Cache cache, Object key, Object value) {
+		degradeToOrigin("put", exception, cache, key);
 	}
 
 	@Override
-	public void handleCacheEvictError(
-		 RuntimeException exception,
-		 Cache cache,
-		 Object key
-	) {
-		degradeToOrigin(
-			 "evict",
-			 exception,
-			 cache,
-			 key
-		);
+	public void handleCacheEvictError(RuntimeException exception, Cache cache, Object key) {
+		degradeToOrigin("evict", exception, cache, key);
 	}
 
 	@Override
-	public void handleCacheClearError(
-		 RuntimeException exception,
-		 Cache cache
-	) {
-		degradeToOrigin(
-			 "clear",
-			 exception,
-			 cache,
-			 null
-		);
+	public void handleCacheClearError(RuntimeException exception, Cache cache) {
+		degradeToOrigin("clear", exception, cache, null);
 	}
 
-	private void degradeToOrigin(
-		 String operation,
-		 RuntimeException exception,
-		 Cache cache,
-		 Object key
-	) {
+	private void degradeToOrigin(String operation, RuntimeException exception, Cache cache, Object key) {
 		log.warn(
 			 "cache {} failed. falling back to origin. cache: {}, key: {}",
 			 operation,

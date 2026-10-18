@@ -20,16 +20,8 @@ public interface CacheInvalidator {
 		 @Nullable MeterRegistry meterRegistry
 	) {
 		InvalidationMetrics metrics = new InvalidationMetrics(meterRegistry);
-		AfterCommitEvictor evictor = new AfterCommitEvictor(
-			 cacheManager,
-			 evictionExecutor,
-			 metrics
-		);
-		return new RuleBasedCacheInvalidator(
-			 rules,
-			 evictor,
-			 metrics
-		);
+		AfterCommitEvictor evictor = new AfterCommitEvictor(cacheManager, evictionExecutor, metrics);
+		return new RuleBasedCacheInvalidator(rules, evictor, metrics);
 	}
 
 	void invalidate(EntityChange change);
