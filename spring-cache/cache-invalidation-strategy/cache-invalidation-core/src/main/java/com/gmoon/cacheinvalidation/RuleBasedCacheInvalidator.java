@@ -43,16 +43,11 @@ class RuleBasedCacheInvalidator implements CacheInvalidator, DisposableBean {
 	}
 
 	private Set<CacheKey> resolve(EntityChange change) {
-		Set<CacheKey> entries = new LinkedHashSet<>();
+		Set<CacheKey> cacheKeys = new LinkedHashSet<>();
 		for (InvalidationRule rule : rules) {
-			entries.addAll(
-				 resolveInIsolation(
-					  rule,
-					  change
-				 )
-			);
+			cacheKeys.addAll(resolveInIsolation(rule, change));
 		}
-		return entries;
+		return cacheKeys;
 	}
 
 	private Collection<CacheKey> resolveInIsolation(InvalidationRule rule, EntityChange change) {
@@ -60,11 +55,7 @@ class RuleBasedCacheInvalidator implements CacheInvalidator, DisposableBean {
 			return rule.resolve(change);
 		} catch (RuntimeException e) {
 			String ruleName = rule.getClass().getSimpleName();
-			log.warn(
-				 "cache invalidation rule failed. rule: {}",
-				 ruleName,
-				 e
-			);
+			log.warn("cache invalidation rule failed. rule: {}", ruleName, e);
 			metrics.resolutionFailed(ruleName);
 			return List.of();
 		}

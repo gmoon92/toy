@@ -39,15 +39,15 @@ final class AfterCommitEvictor {
 
 	private final Map<Object, List<CacheKey>> handedOff = new ConcurrentHashMap<>();
 
-	void evict(Set<CacheKey> entries) {
-		if (entries.isEmpty()) {
+	void evict(Set<CacheKey> cacheKeys) {
+		if (cacheKeys.isEmpty()) {
 			return;
 		}
 		if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-			dispatch(entries);
+			dispatch(cacheKeys);
 			return;
 		}
-		pendingOfCurrentTransaction().merge(entries);
+		pendingOfCurrentTransaction().merge(cacheKeys);
 	}
 
 	private Pending pendingOfCurrentTransaction() {
@@ -71,8 +71,8 @@ final class AfterCommitEvictor {
 		handedOff.keySet().forEach(this::evictIfNotTakenYet);
 	}
 
-	private void dispatch(Collection<CacheKey> entries) {
-		List<CacheKey> snapshot = List.copyOf(entries);
+	private void dispatch(Collection<CacheKey> cacheKeys) {
+		List<CacheKey> snapshot = List.copyOf(cacheKeys);
 		Object ticket = new Object();
 		handedOff.put(ticket, snapshot);
 
@@ -94,35 +94,31 @@ final class AfterCommitEvictor {
 		}
 	}
 
-	private void evictEach(List<CacheKey> entries) {
-		entries.forEach(this::evictOne);
+	private void evictEach(List<CacheKey> cacheKeys) {
+		cacheKeys.forEach(this::evictOne);
 	}
 
-	private void evictOne(CacheKey entry) {
+	private void evictOne(CacheKey cacheKey) {
 		try {
-			Cache cache = cacheManager.getCache(entry.cacheName());
+			Cache cache = cacheManager.getCache(cacheKey.cacheName());
 			if (cache == null) {
-				log.warn("cache not registered. name: {}", entry.cacheName());
-				metrics.evictionFailed(entry.cacheName());
+				log.warn("cache not registered. name: {}", cacheKey.cacheName());
+				metrics.evictionFailed(cacheKey.cacheName());
 				return;
 			}
-			cache.evict(entry.key());
+			cache.evict(cacheKey.key());
 		} catch (RuntimeException e) {
-			log.warn(
-				 "cache eviction failed. entry: {}",
-				 entry,
-				 e
-			);
-			metrics.evictionFailed(entry.cacheName());
+			log.warn("cache eviction failed. key: {}", cacheKey, e);
+			metrics.evictionFailed(cacheKey.cacheName());
 		}
 	}
 
 	private final class Pending implements TransactionSynchronization {
 
-		private final Set<CacheKey> entries = new LinkedHashSet<>();
+		private final Set<CacheKey> cacheKeys = new LinkedHashSet<>();
 
 		private void merge(Set<CacheKey> more) {
-			entries.addAll(more);
+			cacheKeys.addAll(more);
 		}
 
 		private void bind() {
@@ -147,7 +143,7 @@ final class AfterCommitEvictor {
 		public void afterCompletion(int status) {
 			unbind();
 			if (status == STATUS_COMMITTED) {
-				dispatch(entries);
+				dispatch(cacheKeys);
 			}
 		}
 	}

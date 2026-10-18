@@ -425,7 +425,11 @@ clearScanBatchSize = clearScanBatchSize <= 0 ? DEFAULT : clearScanBatchSize;
 `0`(끄기)과 미설정을 구분하지 못한다. 장애 조사 중 "지터를 빼고 재현" 이 불가능하고,
 설정을 잘못 넣어도 조용히 묻힌다.
 
-기본값은 바인딩 시점(`@DefaultValue`)에, 검증은 `@Validated` 로 기동 시점에 실패시킨다.
+기본값은 바인딩 시점(`@DefaultValue`)에, 검증은 기동 시점에 실패시킨다.
+
+> **이후 더 나아갔다.** 기본값을 두면 `@DefaultValue` 문자열과 상수 두 곳에 같은 값이 적힌다.
+> 어긋나면 테스트가 운영과 다른 값으로 돈다. 그래서 **기본값을 없애고 전부 필수**로 바꿨다 —
+> 값이 빠지면 키 이름을 담아 기동을 막는다.
 
 > **중첩 record 의 함정** — `expiration` 블록 자체가 yml 에 없으면 중첩 record 가 `null` 로 바인딩된다.
 > 따라서 **바깥 파라미터(`Expiration expiration`)에도 `@DefaultValue` 를 붙여야** 한다.
@@ -479,6 +483,11 @@ public enum UserCachePolicy implements CachePolicy {
 ```
 
 캐시 1개당 12줄, 이름이 두 곳이라 **드리프트가 가능**하다.
+
+> **이 지적은 철회한다.** enum 상수명과 캐시명이 어긋나도 아무 일도 일어나지 않는다 —
+> 삭제 키와 `@Cacheable` 이 **같은 `Name` 상수**를 참조하므로 둘이 갈라질 수 없고,
+> enum 상수명은 어떤 키에도 쓰이지 않는다. 이를 강제하던 가드는 `user:v2` 같은 정상 설정을
+> 거부해서 제거했다.
 `ttl-only/UserCachePolicy`, `write-invalidate/UserCachePolicy`, `ArticleCachePolicy`, `TestCachePolicy`
 네 곳에 글자 그대로 복제돼 있다.
 
@@ -648,9 +657,9 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | ~~6a~~ | ~~P1-5~~ | ~~`core-design.md` 3줄 + `serialization.md`~~ **완료** | — |
 | ~~6b~~ | ~~P1-4~~ | ~~Javadoc 링크 2곳~~ **완료** | — |
 | ~~7~~ | ~~P2-1~~ | ~~`ObjectProvider<MeterRegistry>` 로 무효화 실패 계측~~ **완료** | `InvalidationMetricsTest` |
-| ~~8~~ | ~~P2-2~~ | ~~`@DefaultValue`(바깥 파라미터 포함)~~ **완료** | `ServiceCachePropertiesTest` 4명제 |
+| ~~8~~ | ~~P2-2~~ | ~~`@DefaultValue`~~ → **설정 전부 필수로 변경** | `ServiceCachePropertiesTest` |
 | ~~9~~ | ~~O3~~ | ~~확장점 1회 평가 후 고정~~ **완료** | 호출 횟수 단언 |
-| ~~10~~ | ~~O1 · O6~~ | ~~이름 드리프트 차단, `supports()` 제거~~ **완료** | `CachePolicyTest` |
+| ~~10~~ | ~~O6~~ | ~~`supports()` 제거~~ **완료** · O1 은 **철회** | `CachePolicyTest` |
 | ~~11~~ | ~~O5~~ | ~~`FallbackCacheErrorHandler` 축약~~ **완료** — 개행 규칙을 고쳐 87줄 → 46줄 | — |
 | — | O2 | 상속 제거 | **보류** |
 
@@ -670,7 +679,10 @@ O4(`EntityChange.State` 미사용) · O6(소유권 검증의 허약함) · O2(�
 | 2026-10-18 | **P0 전건 해소** | 남은 것은 P1-2 · P1-3 · P1-4 와 P2 · P3 |
 | 2026-10-18 | 다른 세션 리팩터링 | 수집·삭제를 `AfterCommitEvictor` 로 일원화, 수집함 키를 인스턴스로, 비동기 삭제 확장점 (`fabbcf63`) |
 | 2026-10-18 | **잔여 전건 조치 완료** | P1-2 · P1-3 · P1-4 · P2-1 · P2-2 · O1 · O3 · O6 해소. 전체 113/113 통과 |
-| 2026-10-18 | **O5 · 비동기 유실 해소** | 개행 규칙의 방아쇠를 길이·중첩으로 바꿔 `FallbackCacheErrorHandler` 87→46줄. 실행기에 넘긴 삭제를 추적해 종료 시 드레인. 드레인을 무력화하면 2명제 RED. 전체 117/117 통과. **O2 외 전건 해소** |
+| 2026-10-18 | **O5 · 비동기 유실 해소** | 개행 규칙의 방아쇠를 길이·중첩으로 바꿔 `FallbackCacheErrorHandler` 87→46줄. 실행기에 넘긴 삭제를 추적해 종료 시 드레인. 드레인을 무력화하면 2명제 RED. 전체 117/117 통과 |
+| 2026-10-18 | **O1 철회 · P2-2 재조치** | 캐시명 드리프트 가드가 근거 없는 것으로 확인돼 제거. 설정은 기본값 대신 전부 필수로 |
+| 2026-10-18 | **정책 없는 캐시명 결정** | 타입 없는 JSON 기본값을 되돌리고 기동 시점 캐시명 검사 도입. 근거는 [decisions/untyped-cache-serializer.md](decisions/untyped-cache-serializer.md) |
+| 2026-10-18 | **코어 정리 완료** | 변수명 `entry`→`cacheKey`, 개행 7곳, `micrometer-core` 를 `api`→`implementation`. 전체 127/127 통과 |
 
 ## 이름 대응표
 

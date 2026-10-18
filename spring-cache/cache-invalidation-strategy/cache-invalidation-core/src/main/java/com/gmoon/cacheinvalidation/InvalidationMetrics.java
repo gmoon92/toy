@@ -36,10 +36,6 @@ final class InvalidationMetrics {
 		if (registry == null) {
 			return;
 		}
-		registry.counter(
-			 FAILURE_COUNT,
-			 "phase", phase,
-			 "target", target
-		).increment();
+		registry.counter(FAILURE_COUNT, "phase", phase, "target", target).increment();
 	}
 }

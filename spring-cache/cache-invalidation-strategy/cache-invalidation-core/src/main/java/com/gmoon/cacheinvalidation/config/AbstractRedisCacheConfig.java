@@ -87,10 +87,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 	@Bean
 	protected TtlResolver ttlResolver(ServiceCacheProperties properties) {
 		ServiceCacheProperties.Expiration expiration = properties.expiration();
-		return TtlResolver.jittered(
-			 expiration.jitterRatio(),
-			 expiration.notFoundTtl()
-		);
+		return TtlResolver.jittered(expiration.jitterRatio(), expiration.notFoundTtl());
 	}
 
 	@PostConstruct
@@ -98,10 +95,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		if (rules.get().isEmpty()) {
 			return;
 		}
-		InvalidationRule.verifyOwnership(
-			 rules.get(),
-			 policies.get()
-		);
+		InvalidationRule.verifyOwnership(rules.get(), policies.get());
 	}
 
 	/**
@@ -120,12 +114,7 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		 CacheManager cacheManager,
 		 ObjectProvider<MeterRegistry> meterRegistry
 	) {
-		return CacheInvalidator.of(
-			 rules.get(),
-			 cacheManager,
-			 evictionExecutor(),
-			 meterRegistry.getIfAvailable()
-		);
+		return CacheInvalidator.of(rules.get(), cacheManager, evictionExecutor(), meterRegistry.getIfAvailable());
 	}
 
 	/**
