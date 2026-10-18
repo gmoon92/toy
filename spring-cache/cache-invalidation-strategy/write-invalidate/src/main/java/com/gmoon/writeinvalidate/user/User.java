@@ -46,6 +46,11 @@ public class User implements CacheEvictable {
 
 	@Override
 	public List<CacheKey> cacheEntriesToEvict() {
-		return List.of(CacheKey.of(UserCachePolicy.USER, id));
+		return List.of(
+			 CacheKey.of(
+				  UserCachePolicy.USER,
+				  id
+			 )
+		);
 	}
 }

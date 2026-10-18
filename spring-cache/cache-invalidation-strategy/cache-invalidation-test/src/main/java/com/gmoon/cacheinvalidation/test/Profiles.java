@@ -10,6 +10,10 @@ public final class Profiles {
 	}
 
 	public static boolean containersEnabled() {
-		return Boolean.parseBoolean(System.getProperty(CONTAINERS_ENABLED_PROPERTY, "false"));
+		String enabled = System.getProperty(
+			 CONTAINERS_ENABLED_PROPERTY,
+			 "false"
+		);
+		return Boolean.parseBoolean(enabled);
 	}
 }

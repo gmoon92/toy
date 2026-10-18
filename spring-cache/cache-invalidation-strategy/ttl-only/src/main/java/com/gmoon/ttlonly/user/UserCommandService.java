@@ -13,7 +13,11 @@ public class UserCommandService {
 
 	@Transactional
 	public Long register(String username, String email) {
-		return userRepository.save(User.of(username, email)).getId();
+		User user = User.of(
+			 username,
+			 email
+		);
+		return userRepository.save(user).getId();
 	}
 
 	@Transactional
