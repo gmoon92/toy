@@ -17,7 +17,7 @@ TTL 만료나 메모리 압박에 의한 축출과는 다르다 — 그 둘은 R
 | 엔트리별 TTL | `RedisCacheWriter.TtlFunction` (3.2+) | jitter 계산 |
 | DB 문장 수 | Hibernate `Statistics` | 얇은 래퍼 |
 | 무효화 규칙 | — | 전부 (프레임워크 영역 밖) |
-| 정책 없는 캐시의 안전한 기본값 | `cacheDefaults(...)` + `GenericJackson2JsonRedisSerializer` | 기본 TTL 강제 |
+| 미등록 캐시 차단 | `disableCreateOnMissingCache()` | 기동 시점 캐시명 검사 |
 | 캐시별 타입 직렬화 | `withInitialCacheConfigurations` | `CachePolicy.valueType()` |
 | `clear()` 시 SCAN 사용 | `BatchStrategies.scan(n)` | 빌더에 `cacheWriter(...)` 로 직접 넘기는 배선 |
 
@@ -358,31 +358,24 @@ service:
 
 ### 정책 없는 캐시명은 어떻게 되는가
 
-**막지 않는다. 안전한 기본값으로 만든다.**
+**배포 시점에 막는다.**
 
-Spring Data Redis 는 미등록 캐시명을 런타임에 생성하면서 Boot 기본 설정을 적용하는데,
-그 기본값이 **JDK 직렬화**다. 그대로 두면 두 가지가 터진다.
+값 타입을 모르는 캐시는 역직렬화 계약이 없다는 뜻이다. 그 캐시에 들어간 바이트의 수명을 아무도 책임지지 않는다.
+타입 정보를 값에 실어 넘기는 방법(`@class`)도 있지만 대가가 크다 —
+크기가 배로 늘고, 패키지를 옮기면 캐시를 못 읽으며, 값이 복원할 클래스를 지목하게 된다.
 
-| | |
-|---|---|
-| 보안 | 역직렬화가 코드 실행이 된다. Spring 공식 문서가 신뢰할 수 없는 환경에서 쓰지 말라고 경고한다 |
-| 동작 | `Serializable` 이 아닌 값(우리 record 대부분)은 저장에 실패하고, 폴백 처리기가 그 예외를 삼켜 **캐시가 영영 빈다** |
+그래서 포맷으로 덮지 않고 **선언을 강제한다.** 방어는 두 겹이다.
 
-그래서 기본 설정 자체를 바꾼다.
+| 겹 | 수단 | 잡히는 것 |
+|---|-----|---------|
+| 기동 | `AnnotatedCacheNameValidator` | `@Cacheable`·`@CacheEvict`·`@CachePut` 에 적힌 이름, `spring.cache.cache-names` |
+| 호출 | `disableCreateOnMissingCache()` | 애노테이션에 안 적힌 경로 — 커스텀 `cacheResolver`, 코드에서 `getCache(name)` |
 
-| 항목 | 정책 있는 캐시 | 정책 없는 캐시 |
-|-----|-------------|-------------|
-| TTL | 정책 TTL, 없으면 기본 TTL | 기본 TTL |
-| 값 직렬화 | `valueType` 고정 JSON | 타입 없는 JSON (`@class` 포함) |
+기동 검사가 먼저 걸리므로 **선언 누락은 트래픽이 아니라 배포에서 드러난다.**
+캐시 예외는 서비스를 살리려고 삼켜지기 때문에, 런타임에는 "적중률 0" 으로만 보인다.
 
-기본 TTL(`spring.cache.redis.time-to-live`)은 **필수**다.
-정책 없는 캐시가 언제든 생길 수 있는데 기본 TTL 이 없으면 그 키는 영구히 남는다.
-없으면 기동을 막는다.
-
-타입 없는 JSON 의 대가는 `@class` 로 들어가는 FQCN 이다 —
-패키지를 옮기면 그 캐시는 못 읽고, 노드마다 `len(FQCN)+12` 바이트가 는다.
-**값 타입이 정해진 캐시는 정책으로 선언해 이 대가를 피한다.**
-→ [serialization.md](concepts/serialization.md)
+캐시를 추가할 때 드는 비용은 정책 한 줄이다.
+→ [serialization.md](concepts/serialization.md) · [decisions/untyped-cache-serializer.md](decisions/untyped-cache-serializer.md)
 
 ## 검증
 

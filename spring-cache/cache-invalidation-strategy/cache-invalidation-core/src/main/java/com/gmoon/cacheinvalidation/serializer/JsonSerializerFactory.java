@@ -1,6 +1,5 @@
 package com.gmoon.cacheinvalidation.serializer;
 
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
@@ -22,11 +21,6 @@ class JsonSerializerFactory implements SerializerFactory {
 	@Override
 	public RedisSerializer<?> valueSerializerFor(CachePolicy policy) {
 		return new Jackson2JsonRedisSerializer<>(objectMapper, policy.valueType());
-	}
-
-	@Override
-	public RedisSerializer<?> untypedValueSerializer() {
-		return new GenericJackson2JsonRedisSerializer(defaultObjectMapper());
 	}
 
 	private static ObjectMapper defaultObjectMapper() {

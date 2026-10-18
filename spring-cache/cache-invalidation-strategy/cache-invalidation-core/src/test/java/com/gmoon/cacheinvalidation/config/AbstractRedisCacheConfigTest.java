@@ -213,26 +213,16 @@ class AbstractRedisCacheConfigTest {
 	class WhenCacheNameHasNoPolicy {
 
 		@Test
-		@DisplayName("기본 TTL 과 타입 없는 JSON 으로 등록한다")
-		void registersWithUntypedDefaults() {
+		@DisplayName("기동을 막는다")
+		void rejectsAtStartup() {
 			CacheProperties properties = new CacheProperties();
 			properties.setCacheNames(List.of(TestCachePolicy.Name.USER, "ORPHAN"));
 
-			RedisCacheManager.RedisCacheManagerBuilder builder =
-				 RedisCacheManager.builder(mock(RedisConnectionFactory.class))
-					  .cacheDefaults(defaultsWithTtl());
-			builder.initialCacheNames(new LinkedHashSet<>(properties.getCacheNames()));
-			customizerOf(new TestCacheConfig(), properties).customize(builder);
-
-			RedisCacheConfiguration orphan = builder.getCacheConfigurationFor("ORPHAN")
-				 .orElseThrow(() -> new AssertionError("정책 없는 이름이 등록되지 않았다"));
-
-			assertThat(orphan.getTtlFunction().getTimeToLive("key", "value"))
-				 .as("Boot 가 커스터마이저보다 먼저 복사해 둔 설정을 덮어쓰지 않으면 만료가 없는 채로 산다")
-				 .isEqualTo(DEFAULT_TTL);
-			assertThat(writeWith(orphan, new UntypedValue("kim")))
-				 .as("JDK 직렬화로 남으면 Serializable 이 아닌 값은 저장조차 못 하고 캐시가 영영 빈다")
-				 .contains("kim");
+			assertThatIllegalStateException()
+				 .as("Boot 가 커스터마이저보다 먼저 initialCacheNames 로 기본 설정을 복사하므로"
+					  + " 정책 없는 이름은 JDK 직렬화로 살아남고 disableCreateOnMissingCache 에도 걸리지 않는다")
+				 .isThrownBy(() -> customizerOf(new TestCacheConfig(), properties))
+				 .withMessageContaining("ORPHAN");
 		}
 	}
 
@@ -296,10 +286,6 @@ class AbstractRedisCacheConfigTest {
 		return RedisCacheConfiguration.defaultCacheConfig().entryTtl(DEFAULT_TTL);
 	}
 
-	private static String writeWith(RedisCacheConfiguration configuration, Object value) {
-		return StandardCharsets.UTF_8.decode(configuration.getValueSerializationPair().write(value)).toString();
-	}
-
 	private String serializedValueOf(AbstractRedisCacheConfig config) {
 		ByteBuffer written = configurationOf(config).getValueSerializationPair().write("hello");
 		return StandardCharsets.UTF_8.decode(written).toString();
@@ -360,10 +346,6 @@ class AbstractRedisCacheConfigTest {
 			return RedisSerializer.string();
 		}
 
-		@Override
-		public RedisSerializer<?> untypedValueSerializer() {
-			return RedisSerializer.string();
-		}
 	}
 
 	@Nested
@@ -471,27 +453,11 @@ class AbstractRedisCacheConfigTest {
 		class WhenCacheHasNoPolicy {
 
 			@Test
-			@DisplayName("기본 TTL 로 캐시를 만든다")
-			void createsCacheWithDefaultTtl() {
-				RedisCache cache = (RedisCache)cacheManagerOf(mock(RedisConnectionFactory.class))
-					 .getCache("UNREGISTERED");
-
-				assertThat(cache).as("런타임에 처음 보는 이름도 캐시로 쓸 수 있어야 한다").isNotNull();
-				assertThat(cache.getCacheConfiguration().getTtlFunction().getTimeToLive("key", "value"))
-					 .as("기본 TTL 이 없으면 정책 없는 캐시가 만료 없이 영구히 남는다")
-					 .isEqualTo(DEFAULT_TTL);
-			}
-
-			@Test
-			@DisplayName("JDK 직렬화가 아니라 타입 없는 JSON 으로 쓴다")
-			void writesUntypedJsonInsteadOfJdk() {
-				RedisCache cache = (RedisCache)cacheManagerOf(mock(RedisConnectionFactory.class))
-					 .getCache("UNREGISTERED");
-
-				assertThat(writeWith(cache.getCacheConfiguration(), new UntypedValue("kim")))
-					 .as("Boot 기본값인 JDK 직렬화는 역직렬화가 코드 실행이 되고"
-						  + " Serializable 이 아닌 값은 저장에 실패해 캐시가 조용히 비어 있게 된다")
-					 .contains("kim");
+			@DisplayName("캐시를 돌려주지 않는다")
+			void returnsNoCache() {
+				assertThat(cacheManagerOf(mock(RedisConnectionFactory.class)).getCache("UNREGISTERED"))
+					 .as("기본 설정으로 만들어 주면 TTL 도 값 타입도 없는 캐시가 조용히 생긴다")
+					 .isNull();
 			}
 		}
 
@@ -585,12 +551,6 @@ class AbstractRedisCacheConfigTest {
 				}
 			};
 		}
-	}
-
-	/**
-	 * {@code Serializable} 이 아니다. JDK 직렬화로 되돌아가면 저장 자체가 실패한다.
-	 */
-	private record UntypedValue(String name) {
 	}
 
 	private enum DefaultTtlPolicy implements CachePolicy {
