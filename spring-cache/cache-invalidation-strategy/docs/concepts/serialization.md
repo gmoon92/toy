@@ -201,20 +201,24 @@ protected RedisCache getMissingCache(String name) {
 }
 ```
 
-**대응 — 조용히 넘어가지 않게 만든다.**
+**대응 — 기본 설정 자체를 안전하게 바꾼다.**
 
 ```java
-builder.disableCreateOnMissingCache()
+builder.cacheDefaults(defaults
+     .entryTtl(...)                                             // 기본 TTL 필수
+     .serializeValuesWith(from(new GenericJackson2JsonRedisSerializer(mapper))))
 ```
 
-미등록 캐시명은 캐시가 생성되지 않아 즉시 드러난다.
-`getCache()` 가 `null` 을 돌려주고 스프링이 `Cannot find cache named ...` 로 실패시킨다.
+미등록 캐시명을 막는 선택지(`disableCreateOnMissingCache()`)도 있지만, 그러면
+`@Cacheable` 이 호출 시점에 `Cannot find cache named ...` 로 터진다.
+**캐시를 쓰려다 서비스가 죽는 것**이라 캐시의 목적과 어긋난다.
 
-> **기본 설정에 예외를 던지는 직렬화기를 두는 방식은 더하지 않는다.**
-> `disableCreateOnMissingCache()` 가 켜진 순간 위 코드의 삼항이 `false` 로 끝나
-> `getDefaultCacheConfiguration()` 자체를 **평가하지 않는다.** 그 직렬화기에는 도달할 수 없다.
-> 모든 캐시를 `withInitialCacheConfigurations` 로 등록하면 `resolveCacheConfiguration` 도
-> 기본값으로 떨어지지 않는다. 두 경로가 다 막혀 있으므로 2중 방어가 아니라 죽은 코드다.
+막는 대신 기본값을 안전하게 둔다. 타입을 모르므로 `@class` 가 들어가는 범용 JSON 을 쓰고,
+그 대가(패키지 이동 취약·크기)를 피하려면 **정책으로 값 타입을 선언**한다.
+
+> `cacheDefaults` 에 예외를 던지는 직렬화기를 두는 방식은 쓰지 않는다.
+> `disableCreateOnMissingCache()` 와 함께 쓰면 `getMissingCache()` 가 기본 설정을
+> **평가하지 않고** 끝나 그 직렬화기에 도달할 수 없다. 2중 방어가 아니라 죽은 코드다.
 
 ### `activateDefaultTyping` 안전 설정 — 통념 3가지가 틀렸다
 
@@ -324,7 +328,7 @@ JDK가 한 일은 제거가 아니라 필터링(JEP 290/415)이다. 계속 쓸 �
 | fail-open 단독 적용 | 구/신 write thrash, 히트율 0 | 버전 전략과 조합 |
 | `clear()` 호출 | 기본이 `KEYS`+`DEL` — **프로덕션 금지 명령** | `BatchStrategies.scan(1000)` |
 | 직렬화기 버전 업 | Jackson 2→3 전환 시 **출력이 달라진다** | 스키마 변경으로 간주하고 키 버전 올림 |
-| 미등록 캐시명 사용 | **JDK 직렬화로 조용히 동작** | `disableCreateOnMissingCache()` |
+| 미등록 캐시명 사용 | **JDK 직렬화로 조용히 동작** | `cacheDefaults` 를 범용 JSON + 기본 TTL 로 |
 | `cacheDefaults` 미지정 | 전체가 JDK 직렬화 | 캐시마다 `withInitialCacheConfigurations` 로 등록 |
 | polymorphic 역직렬화 | 보안 표면 | `activateDefaultTyping` 제거 또는 allowlist validator |
 | 압축 무분별 적용 | 작은 값이 **더 커짐** | 임계값 필수 |
