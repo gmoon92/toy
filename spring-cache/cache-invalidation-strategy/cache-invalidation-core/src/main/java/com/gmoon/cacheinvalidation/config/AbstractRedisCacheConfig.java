@@ -21,13 +21,13 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import jakarta.annotation.PostConstruct;
-
 import com.gmoon.cacheinvalidation.CacheInvalidator;
 import com.gmoon.cacheinvalidation.CachePolicy;
 import com.gmoon.cacheinvalidation.InvalidationRule;
 import com.gmoon.cacheinvalidation.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Redis 를 캐시 저장소로 쓰는 전략 모듈이 상속하는 설정의 기반이다.
@@ -68,8 +68,11 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 	@Bean
 	protected TtlResolver ttlResolver(ServiceCacheProperties properties) {
-		return TtlResolver.jittered(properties.expiration().jitterRatio(),
-			 properties.expiration().notFoundTtl());
+		ServiceCacheProperties.Expiration expiration = properties.expiration();
+		return TtlResolver.jittered(
+			 expiration.jitterRatio(),
+			 expiration.notFoundTtl()
+		);
 	}
 
 	@PostConstruct
@@ -111,9 +114,17 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 
 		Map<String, RedisCacheConfiguration> byCacheName = CachePolicy.distinct(cachePolicies())
 			 .stream()
-			 .collect(Collectors.toMap(CachePolicy::cacheName,
-				  policy -> configurationOf(policy.ttl(), serializers.valueSerializerFor(policy),
-					   serializers, ttlResolver, redis)));
+			 .collect(Collectors.toMap(
+					   CachePolicy::cacheName,
+					   policy -> configurationOf(
+							policy.ttl(),
+							serializers.valueSerializerFor(policy),
+							serializers,
+							ttlResolver,
+							redis
+					   )
+				  )
+			 );
 
 		RedisCacheConfiguration unregistered = configurationOf(
 			 redis.getTimeToLive() == null ? UNREGISTERED_FALLBACK_TTL : redis.getTimeToLive(),

@@ -19,15 +19,16 @@ class DefaultCacheInvalidator implements CacheInvalidator {
 	private final CacheManager cacheManager;
 
 	/**
-	 * 신호는 모두 커밋 이후에 도착한다. 여기서 예외가 새어나가면
-	 * 이미 끝난 트랜잭션의 호출자가 롤백으로 오해한다.
+	 * 무효화 실패는 호출자의 데이터 변경을 되돌리지 않는다.
+	 * 신호는 flush 중이거나 커밋 직전, 즉 트랜잭션 안에서 도착하므로
+	 * 여기서 예외가 새어나가면 캐시 때문에 트랜잭션이 롤백된다.
 	 */
 	@Override
 	public void invalidate(EntityChange change) {
 		try {
 			PendingInvalidations.collect(resolve(change), this::evictAll);
 		} catch (RuntimeException e) {
-			log.warn("cache invalidation failed after commit. the transaction stays committed", e);
+			log.warn("cache invalidation failed. the caller's transaction is not affected", e);
 		}
 	}
 
