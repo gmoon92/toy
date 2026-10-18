@@ -22,7 +22,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.function.SingletonSupplier;
 
 import io.micrometer.core.instrument.MeterRegistry;
@@ -139,36 +138,60 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 		 RedisConnectionFactory connectionFactory,
 		 ServiceCacheProperties properties
 	) {
-		CacheProperties.Redis redis = cacheProperties.getRedis();
+		rejectCacheNamesWithoutPolicy(cacheProperties.getCacheNames(), declaredCacheNames());
 
-		Map<String, RedisCacheConfiguration> byCacheName = policies.get()
+		return builder -> {
+			Map<String, RedisCacheConfiguration> byCacheName = configurationsOver(
+				 builder.cacheDefaults(),
+				 serializers,
+				 ttlResolver
+			);
+			builder.cacheWriter(scanningCacheWriter(connectionFactory, properties))
+				 .disableCreateOnMissingCache()
+				 .withInitialCacheConfigurations(byCacheName);
+		};
+	}
+
+	private List<String> declaredCacheNames() {
+		return policies.get().stream().map(CachePolicy::cacheName).toList();
+	}
+
+	/**
+	 * Redis 캐시 기본 설정을 바탕으로 정책별 설정을 만든다.
+	 * <p>
+	 * 기본 설정은 Boot 가 {@code spring.cache.redis.*} 로 만들거나,
+	 * 애플리케이션이 등록한 {@link RedisCacheConfiguration} 빈이다.
+	 * 정책은 TTL·직렬화만 덮어쓰고 키 접두사·null 캐싱 같은 나머지는 기본 설정을 물려받는다.
+	 */
+	private Map<String, RedisCacheConfiguration> configurationsOver(
+		 RedisCacheConfiguration defaults,
+		 SerializerFactory serializers,
+		 TtlResolver ttlResolver
+	) {
+		Duration defaultTtl = defaults.getTtlFunction().getTimeToLive(Object.class, null);
+		return policies.get()
 			 .stream()
 			 .collect(Collectors.toMap(
-					   CachePolicy::cacheName,
-					   policy -> configurationOf(
-							policy.ttl(),
-							serializers.valueSerializerFor(policy),
-							serializers,
-							ttlResolver,
-							redis
-					   )
-				  )
-			 );
+				  CachePolicy::cacheName,
+				  policy -> defaults
+					   .entryTtl(ttlResolver.functionFor(ttlOf(policy, defaultTtl)))
+					   .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
+					   .serializeValuesWith(SerializationPair.fromSerializer(serializers.valueSerializerFor(policy)))
+			 ));
+	}
 
-		rejectCacheNamesWithoutPolicy(
-			 cacheProperties.getCacheNames(),
-			 byCacheName.keySet()
-		);
-
-		return builder -> builder
-			 .cacheWriter(
-				  scanningCacheWriter(
-					   connectionFactory,
-					   properties
-				  )
-			 )
-			 .disableCreateOnMissingCache()
-			 .withInitialCacheConfigurations(byCacheName);
+	/**
+	 * 정책이 TTL 을 정하지 않았고 기본 설정에도 TTL 이 없으면 기동을 막는다.
+	 * Redis 는 0 이하 TTL 을 "만료 없음" 으로 다뤄 키가 영구히 남는다.
+	 */
+	private static Duration ttlOf(CachePolicy policy, Duration defaultTtl) {
+		return policy.ttl().orElseGet(() -> {
+			if (defaultTtl == null || defaultTtl.isNegative() || defaultTtl.isZero()) {
+				throw new IllegalStateException("Cache '" + policy.cacheName() + "' declares no ttl and the redis cache"
+					 + " defaults have none. Declare a ttl on the CachePolicy, or set spring.cache.redis.time-to-live.");
+			}
+			return defaultTtl;
+		});
 	}
 
 	/**
@@ -200,25 +223,5 @@ public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
 			 connectionFactory,
 			 BatchStrategies.scan(properties.clear().scanBatchSize())
 		);
-	}
-
-	private RedisCacheConfiguration configurationOf(
-		 Duration declaredTtl,
-		 RedisSerializer<?> valueSerializer,
-		 SerializerFactory serializers,
-		 TtlResolver ttlResolver,
-		 CacheProperties.Redis redis
-	) {
-		RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-			 .entryTtl(ttlResolver.functionFor(declaredTtl))
-			 .serializeKeysWith(SerializationPair.fromSerializer(serializers.keySerializer()))
-			 .serializeValuesWith(SerializationPair.fromSerializer(valueSerializer));
-
-		if (!redis.isUseKeyPrefix()) {
-			return configuration.disableKeyPrefix();
-		}
-		return redis.getKeyPrefix() == null
-			 ? configuration
-			 : configuration.prefixCacheNameWith(redis.getKeyPrefix());
 	}
 }

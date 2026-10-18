@@ -31,15 +31,14 @@ class CachePolicyTest {
 
 	@Nested
 	@DisplayName("enum 상수 이름과 캐시 이름이 다르면")
-	class WhenCacheNameDriftsFromConstant {
+	class WhenCacheNameDiffersFromConstant {
 
 		@Test
-		@DisplayName("기동을 막는다")
-		void rejectsAtStartup() {
-			assertThatIllegalArgumentException()
-				 .as("캐시 이름은 enum 상수와 @Cacheable 용 문자열 두 곳에 적힌다. 어긋나면 지우는 키가 달라진다")
-				 .isThrownBy(() -> CachePolicy.distinct(List.of(DriftedPolicy.USER)))
-				 .withMessageContaining("must match the enum constant name");
+		@DisplayName("그대로 등록한다")
+		void registersAsDeclared() {
+			assertThat(CachePolicy.distinct(List.of(RenamedPolicy.USER)))
+				 .as("삭제 키와 @Cacheable 은 모두 Spec 의 캐시명을 쓴다. 상수 이름은 어떤 키에도 쓰이지 않는다")
+				 .containsExactly(RenamedPolicy.USER);
 		}
 	}
 
@@ -58,13 +57,13 @@ class CachePolicyTest {
 		}
 	}
 
-	private enum DriftedPolicy implements CachePolicy {
+	private enum RenamedPolicy implements CachePolicy {
 
-		USER(new Spec("USER_CACHE", Duration.ofMinutes(1), String.class));
+		USER(new Spec("user:v2", Duration.ofMinutes(1), String.class));
 
 		private final Spec spec;
 
-		DriftedPolicy(Spec spec) {
+		RenamedPolicy(Spec spec) {
 			this.spec = spec;
 		}
 

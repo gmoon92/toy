@@ -3,7 +3,6 @@ package com.gmoon.cacheinvalidation.config;
 import java.time.Duration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.util.Assert;
 
 /**
@@ -13,11 +12,9 @@ import org.springframework.util.Assert;
  * 전략마다 최상위 프로퍼티를 따로 만들면 설정이 흩어진다.
  * <p>
  * Boot 표준 {@code spring.cache.redis.*} 로 표현 가능한 값은 여기에 두지 않는다.
- * 키 접두사는 {@code key-prefix}, 통계는 {@code enable-statistics} 를 그대로 쓴다.
+ * 키 접두사는 {@code key-prefix}, 기본 TTL 은 {@code time-to-live}, 통계는 {@code enable-statistics} 를 그대로 쓴다.
  * <p>
- * 기본값은 {@link DefaultValue} 로 바인딩 시점에 넣는다.
- * 생성자에서 0 을 기본값으로 바꾸면 "끄기" 를 표현할 수 없다.
- * 중첩 블록 자체가 없을 때를 위해 바깥 인자에도 붙인다.
+ * 모든 값은 필수다. 기본값을 두지 않고 구현 모듈이 반드시 정한다. 빠지면 기동을 막는다.
  *
  * <pre>
  * service:
@@ -30,44 +27,31 @@ import org.springframework.util.Assert;
  * </pre>
  */
 @ConfigurationProperties(prefix = "service.cache")
-public record ServiceCacheProperties(
-	 @DefaultValue Expiration expiration,
-	 @DefaultValue Clear clear
-) {
+public record ServiceCacheProperties(Expiration expiration, Clear clear) {
 
-	public static ServiceCacheProperties defaults() {
-		return new ServiceCacheProperties(
-			 Expiration.DEFAULT,
-			 Clear.DEFAULT
-		);
+	public ServiceCacheProperties {
+		Assert.notNull(expiration, "service.cache.expiration must be declared");
+		Assert.notNull(clear, "service.cache.clear must be declared");
 	}
 
 	/**
 	 * 값이 만료되는 방식.
 	 */
-	public record Expiration(
-		 @DefaultValue("30s") Duration notFoundTtl,
-		 @DefaultValue("0.1") double jitterRatio
-	) {
-
-		static final Expiration DEFAULT = new Expiration(
-			 Duration.ofSeconds(30),
-			 0.1
-		);
+	public record Expiration(Duration notFoundTtl, Double jitterRatio) {
 
 		public Expiration {
-			Assert.notNull(notFoundTtl, "not found ttl must not be null");
+			Assert.notNull(notFoundTtl, "service.cache.expiration.not-found-ttl must be declared");
+			Assert.notNull(jitterRatio, "service.cache.expiration.jitter-ratio must be declared");
 		}
 	}
 
 	/**
 	 * 캐시 하나를 통째로 비울 때({@code Cache.clear()})의 방식.
 	 */
-	public record Clear(@DefaultValue("1000") int scanBatchSize) {
-
-		static final Clear DEFAULT = new Clear(1_000);
+	public record Clear(Integer scanBatchSize) {
 
 		public Clear {
+			Assert.notNull(scanBatchSize, "service.cache.clear.scan-batch-size must be declared");
 			Assert.isTrue(scanBatchSize > 0, "scan batch size must be positive but was " + scanBatchSize);
 		}
 	}

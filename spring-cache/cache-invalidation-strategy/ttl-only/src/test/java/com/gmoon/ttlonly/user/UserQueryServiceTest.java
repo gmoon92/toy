@@ -144,7 +144,7 @@ class UserQueryServiceTest {
 	}
 
 	private Duration ttlUpperBound() {
-		Duration ttl = UserCachePolicy.USER.ttl();
+		Duration ttl = UserCachePolicy.USER.ttl().orElseThrow();
 		return ttl.plus(ttl.dividedBy(2));
 	}
 }

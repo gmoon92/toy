@@ -45,9 +45,13 @@ import com.gmoon.cacheinvalidation.serializer.SerializerFactory;
 class AbstractRedisCacheConfigTest {
 
 	private static final Duration FIXED_TTL = Duration.ofMinutes(42);
+	private static final Duration DEFAULT_TTL = Duration.ofMinutes(7);
 	private static final TtlResolver PASS_THROUGH = declaredTtl -> (key, value) -> declaredTtl;
-	private static final double DEFAULT_JITTER_RATIO = 0.1;
-	private static final ServiceCacheProperties PROPERTIES = ServiceCacheProperties.defaults();
+	private static final double DECLARED_JITTER_RATIO = 0.1;
+	private static final ServiceCacheProperties PROPERTIES = new ServiceCacheProperties(
+		 new ServiceCacheProperties.Expiration(Duration.ofSeconds(30), DECLARED_JITTER_RATIO),
+		 new ServiceCacheProperties.Clear(1_000)
+	);
 
 	@Nested
 	@DisplayName("전략을 재정의하지 않으면")
@@ -58,8 +62,8 @@ class AbstractRedisCacheConfigTest {
 		@Test
 		@DisplayName("기본 만료 전략이 선언한 TTL 을 기준으로 흔들린 만료를 쓴다")
 		void appliesJitteredTtlByDefault() {
-			Duration declared = TestCachePolicy.USER.ttl();
-			long bound = Math.max(1L, (long)(declared.toSeconds() * DEFAULT_JITTER_RATIO));
+			Duration declared = TestCachePolicy.USER.ttl().orElseThrow();
+			long bound = Math.max(1L, (long)(declared.toSeconds() * DECLARED_JITTER_RATIO));
 
 			assertThat(ttlOf(config))
 				 .as("기본 만료 전략이 캐시 설정까지 닿지 않으면 동시 만료를 막지 못한다")
@@ -125,7 +129,7 @@ class AbstractRedisCacheConfigTest {
 		@Test
 		@DisplayName("정책이 선언한 TTL 과 다른 값으로 검증한다")
 		void differsFromPolicyDeclaredTtl() {
-			assertThat(TestCachePolicy.USER.ttl())
+			assertThat(TestCachePolicy.USER.ttl().orElseThrow())
 				 .as("정책 TTL 과 재정의 TTL 이 같으면 위 테스트가 아무것도 증명하지 못한다")
 				 .isNotEqualTo(FIXED_TTL);
 		}
@@ -254,7 +258,7 @@ class AbstractRedisCacheConfigTest {
 			 PASS_THROUGH,
 			 properties,
 			 mock(RedisConnectionFactory.class),
-			 ServiceCacheProperties.defaults()
+			 PROPERTIES
 		);
 	}
 
@@ -341,33 +345,99 @@ class AbstractRedisCacheConfigTest {
 	class CachePolicyCustomizing {
 
 		@Nested
-		@DisplayName("키 접두사를 쓰지 않기로 하면")
-		class WhenKeyPrefixDisabled {
+		@DisplayName("Redis 기본 설정이 키 접두사를 끄면")
+		class WhenDefaultsDisableKeyPrefix {
 
 			@Test
-			@DisplayName("캐시명을 키 앞에 붙이지 않는다")
-			void writesKeyWithoutPrefix() {
-				CacheProperties properties = new CacheProperties();
-				properties.getRedis().setUseKeyPrefix(false);
+			@DisplayName("정책 캐시도 캐시명을 키 앞에 붙이지 않는다")
+			void inheritsDisabledPrefix() {
+				RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig().disableKeyPrefix();
 
-				assertThat(registeredCacheOf(properties).usePrefix())
-					 .as("getKeyPrefixFor 는 접두사를 쓴다면 무엇이 될지만 계산한다. 사용 여부는 usePrefix 가 쥔다")
+				RedisCacheConfiguration registered = registeredCacheOver(defaults, TestCachePolicy.USER);
+
+				assertThat(registered.usePrefix())
+					 .as("정책 설정을 기본 설정과 따로 새로 만들면 spring.cache.redis.use-key-prefix 가 무시된다")
 					 .isFalse();
 			}
 		}
 
 		@Nested
-		@DisplayName("키 접두사를 지정하면")
-		class WhenKeyPrefixGiven {
+		@DisplayName("Redis 기본 설정이 키 접두사를 정하면")
+		class WhenDefaultsGiveKeyPrefix {
 
 			@Test
-			@DisplayName("지정한 값이 키 앞에 붙는다")
-			void writesGivenPrefix() {
-				CacheProperties properties = new CacheProperties();
-				properties.getRedis().setKeyPrefix("svc:");
+			@DisplayName("정책 캐시도 같은 접두사를 키 앞에 붙인다")
+			void inheritsGivenPrefix() {
+				RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("svc:");
 
-				assertThat(registeredCacheOf(properties).getKeyPrefixFor(TestCachePolicy.Name.USER))
+				RedisCacheConfiguration registered = registeredCacheOver(defaults, TestCachePolicy.USER);
+
+				assertThat(registered.getKeyPrefixFor(TestCachePolicy.Name.USER))
+					 .as("접두사를 정책 쪽에서 다시 계산하면 Boot 기본 설정과 두 곳에서 어긋날 수 있다")
 					 .startsWith("svc:");
+			}
+		}
+
+		@Nested
+		@DisplayName("Redis 기본 설정이 null 캐싱을 끄면")
+		class WhenDefaultsDisableNullCaching {
+
+			@Test
+			@DisplayName("정책 캐시도 null 을 캐싱하지 않는다")
+			void inheritsDisabledNullCaching() {
+				RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig().disableCachingNullValues();
+
+				RedisCacheConfiguration registered = registeredCacheOver(defaults, TestCachePolicy.USER);
+
+				assertThat(registered.getAllowCacheNullValues())
+					 .as("spring.cache.redis.cache-null-values 를 꺼도 정책 캐시가 따르지 않으면 설정이 거짓말을 한다")
+					 .isFalse();
+			}
+		}
+
+		@Nested
+		@DisplayName("정책이 TTL 을 정하면")
+		class WhenPolicyDeclaresTtl {
+
+			@Test
+			@DisplayName("Redis 기본 TTL 을 덮어쓴다")
+			void overridesDefaultTtl() {
+				RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig().entryTtl(DEFAULT_TTL);
+
+				RedisCacheConfiguration registered = registeredCacheOver(defaults, TestCachePolicy.USER);
+
+				assertThat(ttlOf(registered))
+					 .as("최신성이 중요한 캐시는 정책에 적은 TTL 이 stale 상한이어야 한다")
+					 .isEqualTo(TestCachePolicy.USER.ttl().orElseThrow());
+			}
+		}
+
+		@Nested
+		@DisplayName("정책이 TTL 을 정하지 않으면")
+		class WhenPolicyOmitsTtl {
+
+			@Test
+			@DisplayName("Redis 기본 TTL 을 따른다")
+			void followsDefaultTtl() {
+				RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig().entryTtl(DEFAULT_TTL);
+
+				RedisCacheConfiguration registered = registeredCacheOver(defaults, DefaultTtlPolicy.PROFILE);
+
+				assertThat(ttlOf(registered))
+					 .as("TTL 을 적지 않은 정책은 spring.cache.redis.time-to-live 를 따라야 한다")
+					 .isEqualTo(DEFAULT_TTL);
+			}
+
+			@Test
+			@DisplayName("기본 TTL 도 없으면 기동을 막는다")
+			void rejectsWithoutAnyTtl() {
+				RedisCacheConfiguration persistent = RedisCacheConfiguration.defaultCacheConfig();
+
+				assertThatIllegalStateException()
+					 .as("둘 다 없을 때 넘어가면 Redis 가 만료 없음으로 저장해 키가 영구히 남는다")
+					 .isThrownBy(() -> registeredCacheOver(persistent, DefaultTtlPolicy.PROFILE))
+					 .withMessageContaining(DefaultTtlPolicy.PROFILE.cacheName())
+					 .withMessageContaining("spring.cache.redis.time-to-live");
 			}
 		}
 
@@ -405,9 +475,24 @@ class AbstractRedisCacheConfigTest {
 			}
 		}
 
-		private RedisCacheConfiguration registeredCacheOf(CacheProperties properties) {
-			return builderWith(properties).getCacheConfigurationFor(TestCachePolicy.Name.USER)
+		private RedisCacheConfiguration registeredCacheOver(RedisCacheConfiguration defaults, CachePolicy policy) {
+			RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.builder(mock(RedisConnectionFactory.class))
+				 .cacheDefaults(defaults);
+
+			configOf(policy).cacheManagerCustomizer(
+				 SerializerFactory.json(),
+				 PASS_THROUGH,
+				 new CacheProperties(),
+				 mock(RedisConnectionFactory.class),
+				 PROPERTIES
+			).customize(builder);
+
+			return builder.getCacheConfigurationFor(policy.cacheName())
 				 .orElseThrow(() -> new AssertionError("정책이 등록한 캐시 설정이 없다"));
+		}
+
+		private Duration ttlOf(RedisCacheConfiguration configuration) {
+			return configuration.getTtlFunction().getTimeToLive("key", "value");
 		}
 
 		private RedisCacheManager cacheManagerOf(RedisConnectionFactory connectionFactory) {
@@ -439,28 +524,33 @@ class AbstractRedisCacheConfigTest {
 			return connectionFactory;
 		}
 
-		private RedisCacheManager.RedisCacheManagerBuilder builderWith(CacheProperties properties) {
-			RedisCacheManager.RedisCacheManagerBuilder builder =
-				 RedisCacheManager.builder(mock(RedisConnectionFactory.class));
-
-			config().cacheManagerCustomizer(
-				 SerializerFactory.json(),
-				 PASS_THROUGH,
-				 properties,
-				 mock(RedisConnectionFactory.class),
-				 PROPERTIES
-			).customize(builder);
-
-			return builder;
+		private static AbstractRedisCacheConfig config() {
+			return configOf(TestCachePolicy.USER);
 		}
 
-		private static AbstractRedisCacheConfig config() {
+		private static AbstractRedisCacheConfig configOf(CachePolicy policy) {
 			return new AbstractRedisCacheConfig() {
 				@Override
 				protected List<CachePolicy> cachePolicies() {
-					return List.of(TestCachePolicy.USER);
+					return List.of(policy);
 				}
 			};
+		}
+	}
+
+	private enum DefaultTtlPolicy implements CachePolicy {
+
+		PROFILE(new Spec("PROFILE", String.class));
+
+		private final Spec spec;
+
+		DefaultTtlPolicy(Spec spec) {
+			this.spec = spec;
+		}
+
+		@Override
+		public Spec spec() {
+			return spec;
 		}
 	}
 }
