@@ -3,6 +3,8 @@ package com.gmoon.ttlonly.user;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
+import java.util.Comparator;
+import java.util.stream.IntStream;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 
+import org.springframework.data.redis.cache.RedisCacheWriter;
+
+import com.gmoon.cacheinvalidation.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 
@@ -21,11 +26,14 @@ class UserQueryServiceTest {
 
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";
 	private static final String CHANGED_EMAIL = "alice.changed@mail.com";
+	private static final int TTL_SAMPLES = 200;
+	private static final Duration SCHEDULING_SLACK = Duration.ofSeconds(2);
 
 	@Autowired UserQueryService userQueryService;
 	@Autowired UserCommandService userCommandService;
 	@Autowired CacheManager cacheManager;
 	@Autowired DatabaseQueryCounter databaseQueryCounter;
+	@Autowired TtlResolver ttlResolver;
 
 	private Long userId;
 
@@ -78,7 +86,7 @@ class UserQueryServiceTest {
 			userCommandService.changeEmail(userId, CHANGED_EMAIL);
 
 			Awaitility.await()
-				 .atMost(ttlUpperBound())
+				 .atMost(awaitTimeout())
 				 .pollInterval(Duration.ofMillis(200))
 				 .untilAsserted(() -> assertThat(userQueryService.findById(userId).email())
 					  .isEqualTo(CHANGED_EMAIL));
@@ -92,15 +100,15 @@ class UserQueryServiceTest {
 			long startedAt = System.nanoTime();
 
 			Awaitility.await()
-				 .atMost(ttlUpperBound())
+				 .atMost(awaitTimeout())
 				 .pollInterval(Duration.ofMillis(100))
 				 .untilAsserted(() -> assertThat(userQueryService.findById(userId).email())
 					  .as("TTL 안에 새 값이 보여야 한다")
 					  .isEqualTo(CHANGED_EMAIL));
 
 			assertThat(Duration.ofNanos(System.nanoTime() - startedAt))
-				 .as("관측된 stale 지속시간이 TTL을 넘지 않아야 한다")
-				 .isLessThanOrEqualTo(ttlUpperBound());
+				 .as("관측된 stale 지속시간이 설정된 만료 상한을 넘지 않아야 한다")
+				 .isLessThanOrEqualTo(expiryUpperBound());
 		}
 	}
 
@@ -143,8 +151,25 @@ class UserQueryServiceTest {
 		}
 	}
 
-	private Duration ttlUpperBound() {
-		Duration ttl = UserCachePolicy.USER.ttl().orElseThrow();
-		return ttl.plus(ttl.dividedBy(2));
+	/**
+	 * 설정된 만료 전략이 실제로 낼 수 있는 가장 긴 TTL.
+	 * <p>
+	 * 지터 폭을 테스트가 다시 계산하면 전략이 바뀔 때 조용히 어긋난다.
+	 * 전략에 직접 물어 가장 큰 값을 쓴다.
+	 */
+	private Duration expiryUpperBound() {
+		RedisCacheWriter.TtlFunction expiry = ttlResolver.functionFor(UserCachePolicy.USER.ttl().orElseThrow());
+
+		return IntStream.range(0, TTL_SAMPLES)
+			 .mapToObj(attempt -> expiry.getTimeToLive(String.valueOf(userId), ORIGINAL_EMAIL))
+			 .max(Comparator.naturalOrder())
+			 .orElseThrow();
+	}
+
+	/**
+	 * 폴링 간격과 왕복만큼의 여유. 만료 자체의 상한이 아니다.
+	 */
+	private Duration awaitTimeout() {
+		return expiryUpperBound().plus(SCHEDULING_SLACK);
 	}
 }
