@@ -8,6 +8,11 @@ import com.gmoon.ttlonly.user.UserView;
  * 이 모듈이 쓰는 캐시를 전부 여기에 선언한다.
  * <p>
  * 이 모듈은 TTL 로만 최신성을 회복하므로 TTL 이 곧 stale 상한이다.
+ * <p>
+ * TTL 을 생략하면 5분이다. Spring Boot 표준 기본 TTL 은 {@code spring.cache.redis.time-to-live} 지만,
+ * 이 모듈의 캐시는 모두 이 enum 이 TTL 을 정하므로 그 속성은 쓰지 않는다.
+ * 쓰려면 TTL 을 생략한 정책이 {@code null} 을 갖게 하고,
+ * {@link CacheConfig} 에서 그 정책에 {@code builder.cacheDefaults()} 의 TTL 을 대신 쓰면 된다.
  */
 public enum CachePolicy {
 
