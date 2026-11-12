@@ -26,11 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CacheEvictListener extends JpaEntityEventListener<CacheEvictable> {
 
-	private final InvalidationMetrics metrics;
+	private final CacheEvictMetrics metrics;
 	private final AfterCommitEvictor evictor;
 
 	public CacheEvictListener(CacheManager cacheManager, @Nullable MeterRegistry meterRegistry) {
-		this.metrics = new InvalidationMetrics(meterRegistry);
+		this.metrics = new CacheEvictMetrics(meterRegistry);
 		this.evictor = new AfterCommitEvictor(cacheManager, metrics);
 	}
 
@@ -45,7 +45,7 @@ public class CacheEvictListener extends JpaEntityEventListener<CacheEvictable> {
 		try {
 			evictor.evict(cacheKeysOf(entity));
 		} catch (RuntimeException e) {
-			log.warn("cache invalidation failed. the caller's transaction is not affected", e);
+			log.warn("cache evict failed. the caller's transaction is not affected", e);
 		}
 	}
 

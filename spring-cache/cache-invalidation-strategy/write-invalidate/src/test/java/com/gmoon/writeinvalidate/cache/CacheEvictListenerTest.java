@@ -94,7 +94,7 @@ class CacheEvictListenerTest {
 		void countsFailure() {
 			listener.onEntityChanged(broken);
 
-			assertThat(registry.find("cache.invalidation.failures")
+			assertThat(registry.find("cache.evict.failures")
 				 .tag("phase", "resolve")
 				 .tag("target", BrokenEvictable.class.getSimpleName())
 				 .counter()

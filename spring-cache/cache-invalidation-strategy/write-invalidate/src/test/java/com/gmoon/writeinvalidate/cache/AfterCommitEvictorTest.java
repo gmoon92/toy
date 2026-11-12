@@ -34,7 +34,7 @@ import com.gmoon.writeinvalidate.config.CachePolicy;
 @DisplayName("커밋 이후 캐시 삭제")
 class AfterCommitEvictorTest {
 
-	private static final InvalidationMetrics NO_METRICS = new InvalidationMetrics(null);
+	private static final CacheEvictMetrics NO_METRICS = new CacheEvictMetrics(null);
 
 	private static final CacheKey USER_1 = CacheKey.of(CachePolicy.USER, 1L);
 	private static final CacheKey USER_2 = CacheKey.of(CachePolicy.USER, 2L);
@@ -253,12 +253,12 @@ class AfterCommitEvictorTest {
 			MeterRegistry registry = new SimpleMeterRegistry();
 			AfterCommitEvictor failing = new AfterCommitEvictor(
 				 FailingCacheManager.of("redis down"),
-				 new InvalidationMetrics(registry)
+				 new CacheEvictMetrics(registry)
 			);
 
 			failing.evict(entriesOf(USER_1));
 
-			assertThat(registry.find("cache.invalidation.failures").counter().count())
+			assertThat(registry.find("cache.evict.failures").counter().count())
 				 .as("로그만 남기면 집계하지 않는 한 stale 이 쌓이는 것을 아무도 모른다")
 				 .isEqualTo(1);
 		}

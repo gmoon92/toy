@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 final class AfterCommitEvictor {
 
 	private final CacheManager cacheManager;
-	private final InvalidationMetrics metrics;
+	private final CacheEvictMetrics metrics;
 
 	void evict(Set<CacheKey> cacheKeys) {
 		if (cacheKeys.isEmpty()) {

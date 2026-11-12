@@ -13,14 +13,14 @@ import io.micrometer.core.instrument.MeterRegistry;
  * {@link MeterRegistry} 빈이 없는 애플리케이션(actuator 미사용)에서는 세지 않는다.
  * 무효화 때문에 관측 스택을 강제하지 않기 위해서다.
  */
-final class InvalidationMetrics {
+final class CacheEvictMetrics {
 
-	private static final String FAILURE_COUNT = "cache.invalidation.failures";
+	private static final String FAILURE_COUNT = "cache.evict.failures";
 
 	@Nullable
 	private final MeterRegistry registry;
 
-	InvalidationMetrics(@Nullable MeterRegistry registry) {
+	CacheEvictMetrics(@Nullable MeterRegistry registry) {
 		this.registry = registry;
 	}
 

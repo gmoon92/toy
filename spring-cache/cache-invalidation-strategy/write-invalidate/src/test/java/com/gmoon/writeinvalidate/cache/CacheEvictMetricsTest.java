@@ -12,16 +12,16 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import com.gmoon.writeinvalidate.config.CachePolicy;
 
 @DisplayName("무효화 실패 계측")
-class InvalidationMetricsTest {
+class CacheEvictMetricsTest {
 
-	private static final String FAILURE_COUNT = "cache.invalidation.failures";
+	private static final String FAILURE_COUNT = "cache.evict.failures";
 
 	@Nested
 	@DisplayName("레지스트리가 있으면")
 	class WhenRegistryPresent {
 
 		private final MeterRegistry registry = new SimpleMeterRegistry();
-		private final InvalidationMetrics metrics = new InvalidationMetrics(registry);
+		private final CacheEvictMetrics metrics = new CacheEvictMetrics(registry);
 
 		@Test
 		@DisplayName("삭제 실패를 캐시 이름과 함께 센다")
@@ -63,10 +63,10 @@ class InvalidationMetricsTest {
 		@Test
 		@DisplayName("세지 않고 그냥 넘어간다")
 		void doesNothing() {
-			InvalidationMetrics metrics = new InvalidationMetrics(null);
+			CacheEvictMetrics metrics = new CacheEvictMetrics(null);
 
 			assertThatNoException()
-				 .as("코어가 관측 스택을 강제하면 actuator 없는 애플리케이션이 기동하지 못한다")
+				 .as("관측 스택을 강제하면 actuator 없는 애플리케이션이 기동하지 못한다")
 				 .isThrownBy(() -> metrics.evictionFailed(CachePolicy.Name.USER));
 		}
 	}

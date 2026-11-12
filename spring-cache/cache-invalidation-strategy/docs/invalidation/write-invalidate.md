@@ -116,7 +116,7 @@ sequenceDiagram
 
 따라서 "실제로 지웠는지"를 반환값으로 판별할 수 없다.
 `ConcurrentMapCache` 는 참을 반환하므로, 이 값을 결과로 노출하면 **캐시 구현에 따라 의미가 달라진다.**
-그래서 무효화는 결과를 반환값으로 판단하지 않고, 실패만 세어 기록한다(`cache.invalidation.failures`).
+그래서 무효화는 결과를 반환값으로 판단하지 않고, 실패만 세어 기록한다(`cache.evict.failures`).
 
 ## 선택 기준
 
