@@ -17,13 +17,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.persistence.EntityManager;
 
-import com.gmoon.cacheinvalidation.EntityChange;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
-import com.gmoon.writeinvalidate.article.ArticleCachePolicy;
 import com.gmoon.writeinvalidate.article.ArticleCommandService;
 import com.gmoon.writeinvalidate.article.ArticleQueryService;
-import com.gmoon.writeinvalidate.article.CachedArticle;
+import com.gmoon.writeinvalidate.article.ArticleView;
+import com.gmoon.writeinvalidate.config.CachePolicy;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
 
 @IntegrationTest
@@ -49,8 +48,8 @@ class UserCommandServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		cacheManager.getCache(UserCachePolicy.Name.USER).clear();
-		cacheManager.getCache(ArticleCachePolicy.Name.ARTICLE).clear();
+		cacheManager.getCache(CachePolicy.Name.USER).clear();
+		cacheManager.getCache(CachePolicy.Name.ARTICLE).clear();
 		userId = userCommandService.register("alice-" + System.nanoTime(), ORIGINAL_EMAIL);
 		articleId = articleCommandService.publish(ORIGINAL_TITLE);
 	}
@@ -151,7 +150,7 @@ class UserCommandServiceTest {
 		}
 
 		@Test
-		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 해도 캐시는 한 번만 지워진다")
+		@DisplayName("같은 변경을 JPA 로도 쓰고 발행까지 해도 커밋 이후에 지워진다")
 		void evictsOnceWhenSameChangeReportedByBothSources() {
 			userQueryService.findById(userId);
 
@@ -161,7 +160,7 @@ class UserCommandServiceTest {
 			});
 
 			assertThat(cachedEmail())
-				 .as("한 트랜잭션의 대상을 모았다가 커밋 이후 한 번에 처리한다")
+				 .as("두 신호원 모두 커밋 이후에 지운다")
 				 .isNull();
 			assertThat(userQueryService.findById(userId).email())
 				 .as("지운 뒤 첫 조회는 DB 의 새 값을 읽는다")
@@ -184,7 +183,7 @@ class UserCommandServiceTest {
 		}
 
 		private void publishChangeOf(Long id) {
-			eventPublisher.publishEvent((EntityChange.of(entityManager.find(User.class, id), EntityChange.Type.UPDATE)));
+			eventPublisher.publishEvent(entityManager.find(User.class, id));
 		}
 	}
 
@@ -221,14 +220,14 @@ class UserCommandServiceTest {
 			});
 
 			assertThat(cachedEmail())
-				 .as("수집은 트랜잭션 안에서 하지만 롤백이면 모인 대상을 버린다")
+				 .as("삭제 요청은 트랜잭션 안에서 받지만 롤백이면 버린다")
 				 .isEqualTo(ORIGINAL_EMAIL);
 		}
 	}
 
 	private String cachedEmail() {
-		CachedUser cached = cacheManager.getCache(UserCachePolicy.Name.USER)
-			 .get(userId, CachedUser.class);
+		UserView cached = cacheManager.getCache(CachePolicy.Name.USER)
+			 .get(userId, UserView.class);
 		return cached == null ? null : cached.email();
 	}
 
@@ -287,7 +286,7 @@ class UserCommandServiceTest {
 		@DisplayName("커밋은 성공하고 호출자에게 예외가 새어나가지 않는다")
 		void keepsCommitSuccessfulWithoutLeakingException() {
 			willThrow(new QueryTimeoutException("redis down"))
-				 .given(cacheManager).getCache(UserCachePolicy.Name.USER);
+				 .given(cacheManager).getCache(CachePolicy.Name.USER);
 
 			assertThatNoException()
 				 .as("무효화 실패는 이미 커밋된 트랜잭션을 되돌릴 수 없다. 예외를 밖으로 내면 호출자가 롤백으로 오해한다")
@@ -299,7 +298,7 @@ class UserCommandServiceTest {
 		@DisplayName("DB 변경은 그대로 커밋되어 있다")
 		void persistsDatabaseChange() {
 			willThrow(new QueryTimeoutException("redis down"))
-				 .given(cacheManager).getCache(UserCachePolicy.Name.USER);
+				 .given(cacheManager).getCache(CachePolicy.Name.USER);
 
 			try {
 				transactionTemplate.executeWithoutResult(status ->
@@ -316,8 +315,8 @@ class UserCommandServiceTest {
 	}
 
 	private String cachedTitle() {
-		CachedArticle cached = cacheManager.getCache(ArticleCachePolicy.Name.ARTICLE)
-			 .get(articleId, CachedArticle.class);
+		ArticleView cached = cacheManager.getCache(CachePolicy.Name.ARTICLE)
+			 .get(articleId, ArticleView.class);
 		return cached == null ? null : cached.title();
 	}
 }

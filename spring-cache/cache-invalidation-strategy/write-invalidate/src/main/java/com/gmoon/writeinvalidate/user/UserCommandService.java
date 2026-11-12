@@ -5,13 +5,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class UserCommandService {
 
 	private final UserRepository userRepository;
 
-	@Transactional
 	public Long register(String username, String email) {
 		User user = User.of(
 			 username,
@@ -20,12 +20,10 @@ public class UserCommandService {
 		return userRepository.save(user).getId();
 	}
 
-	@Transactional
 	public void changeEmail(Long id, String email) {
 		findUser(id).changeEmail(email);
 	}
 
-	@Transactional
 	public void unregister(Long id) {
 		userRepository.delete(findUser(id));
 	}

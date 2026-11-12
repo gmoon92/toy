@@ -14,7 +14,7 @@ spring:
   cache:
     redis:
       key-prefix: "cache-write-invalidate:"
-      time-to-live: 10m
+      # time-to-live: 10m   # 스프링 표준 기본 TTL. 지금은 CachePolicy 가 TTL 을 정하므로 쓰지 않는다
       enable-statistics: true
   jpa:
     hibernate:
@@ -25,8 +25,5 @@ spring:
 
 service:
   cache:
-    expiration:
-      not-found-ttl: 30s
-      jitter-ratio: 0.1
     clear:
       scan-batch-size: 1000

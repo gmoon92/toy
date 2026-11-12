@@ -12,6 +12,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
 import com.gmoon.cacheinvalidation.test.SeparateTransaction;
+import com.gmoon.writeinvalidate.config.CachePolicy;
 
 @IntegrationTest
 @DisplayName("글 쓰기가 캐시에 미치는 영향")
@@ -29,7 +30,7 @@ class ArticleCommandServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		cacheManager.getCache(ArticleCachePolicy.Name.ARTICLE).clear();
+		cacheManager.getCache(CachePolicy.Name.ARTICLE).clear();
 		articleId = articleCommandService.publish(ORIGINAL_TITLE);
 	}
 
@@ -127,8 +128,8 @@ class ArticleCommandServiceTest {
 	}
 
 	private String cachedTitle() {
-		CachedArticle cached = cacheManager.getCache(ArticleCachePolicy.Name.ARTICLE)
-			 .get(articleId, CachedArticle.class);
+		ArticleView cached = cacheManager.getCache(CachePolicy.Name.ARTICLE)
+			 .get(articleId, ArticleView.class);
 		return cached == null ? null : cached.title();
 	}
 }

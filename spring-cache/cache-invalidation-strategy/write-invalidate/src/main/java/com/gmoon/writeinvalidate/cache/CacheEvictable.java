@@ -1,10 +1,11 @@
 package com.gmoon.writeinvalidate.cache;
 
-import com.gmoon.cacheinvalidation.CacheKey;
+import java.util.Set;
 
-import java.util.List;
-
+/**
+ * 커밋되면 지워야 할 캐시 키를 엔티티가 스스로 밝힌다.
+ */
 public interface CacheEvictable {
 
-	List<CacheKey> cacheKeys();
+	Set<CacheKey> cacheKeys();
 }

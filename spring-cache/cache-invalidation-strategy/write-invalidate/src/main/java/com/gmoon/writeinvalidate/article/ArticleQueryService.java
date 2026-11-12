@@ -4,19 +4,21 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gmoon.writeinvalidate.config.CachePolicy;
+
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ArticleQueryService {
 
 	private final ArticleRepository articleRepository;
 
-	@Transactional(readOnly = true)
-	@Cacheable(cacheNames = ArticleCachePolicy.Name.ARTICLE, key = "#id")
-	public CachedArticle findById(Long id) {
+	@Cacheable(cacheNames = CachePolicy.Name.ARTICLE, key = "#id")
+	public ArticleView findById(Long id) {
 		return articleRepository.findById(id)
-			 .map(CachedArticle::from)
+			 .map(ArticleView::from)
 			 .orElse(null);
 	}
 }

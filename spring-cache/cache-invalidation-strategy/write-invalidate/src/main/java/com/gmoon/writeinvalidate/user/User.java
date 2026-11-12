@@ -1,9 +1,10 @@
 package com.gmoon.writeinvalidate.user;
 
-import java.util.List;
+import java.util.Set;
 
-import com.gmoon.cacheinvalidation.CacheKey;
+import com.gmoon.writeinvalidate.cache.CacheKey;
 import com.gmoon.writeinvalidate.cache.CacheEvictable;
+import com.gmoon.writeinvalidate.config.CachePolicy;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,10 +16,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class User implements CacheEvictable {
 
 	@Id
@@ -45,12 +46,9 @@ public class User implements CacheEvictable {
 	}
 
 	@Override
-	public List<CacheKey> cacheKeys() {
-		return List.of(
-			 CacheKey.of(
-				  UserCachePolicy.USER,
-				  id
-			 )
+	public Set<CacheKey> cacheKeys() {
+		return Set.of(
+			 CacheKey.of(CachePolicy.USER, id)
 		);
 	}
 }

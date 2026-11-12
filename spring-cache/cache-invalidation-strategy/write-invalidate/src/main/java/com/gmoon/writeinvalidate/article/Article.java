@@ -10,10 +10,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "articles")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Article {
 
 	@Id

@@ -23,8 +23,8 @@ DB를 바꾼 쪽이 옛 캐시를 지우는 전략이다.
 | 엔티티 | 무효화 경로 | 쓰기 코드에 캐시가 보이는가 | 커밋 이후 보장 |
 |-------|-----------|------------------------|-------------|
 | `Article` | `@CacheEvict` | 보인다 | 없음 |
-| `User` | Hibernate `POST_COMMIT_*` | 안 보인다 | 있다 |
-| `User` | Spring `@TransactionalEventListener(BEFORE_COMMIT)` + 커밋 이후 일괄 삭제 | 발행 코드만 | 있다 |
+| `User` | 하이버네이트 엔티티 이벤트 + 커밋 이후 일괄 삭제 | 안 보인다 | 있다 |
+| `User` | 엔티티 직접 발행(`@TransactionalEventListener(BEFORE_COMMIT)`) + 커밋 이후 일괄 삭제 | 발행 코드만 | 있다 |
 
 같은 엔티티에 두 방식을 함께 걸면 엔티티 이벤트가 `@CacheEvict` 의 실패를 가려버린다.
 그래서 엔티티를 나눴고, 이 분리 자체가 리스너의 대상 선별이 동작한다는 증거가 된다.
@@ -80,84 +80,65 @@ sequenceDiagram
     R->>D: SELECT (옛 값)
     R->>C: SET 옛 값
     F->>D: COMMIT
-    D->>C: POST_COMMIT → DEL
+    D->>C: 커밋 이후 DEL
     Note over C: 커밋 전에 적재된 값까지 함께 지워진다
 ```
 
 커밋 전에 끼어든 조회가 옛 값을 다시 심어도, 무효화가 그 뒤에 오므로 함께 걷어낸다.
 
-## 무효화 파이프라인
+## 무효화 경로
 
-두 소스는 발생원일 뿐이고, 그 아래는 공유한다.
+두 신호원은 같은 리스너, 같은 메서드로 들어온다.
 
 ```mermaid
 flowchart LR
-    H["JpaEntityChangeListener<br/>POST_COMMIT_*"] --> S
-    P["PublishedEntityChangeListener<br/>AFTER_COMMIT"] --> S
-    S["CacheInvalidator.failSafe(..)"] --> RU[규칙으로 대상 산출]
-    RU --> PEND[트랜잭션 스코프 수집]
-    PEND --> EV[커밋 이후 한 번에 삭제]
+    H["하이버네이트 POST_INSERT·UPDATE·DELETE<br/>(flush 시점)"] --> J["JpaEntityEventListener<br/>CacheEvictable 만 넘김"]
+    P["publishEvent(user)<br/>@TransactionalEventListener(BEFORE_COMMIT)"] --> L
+    J --> L["CacheEvictListener.onEntityChanged<br/>엔티티가 밝힌 키"]
+    L --> PEND["AfterCommitEvictor<br/>트랜잭션에 커밋 콜백 등록"]
+    PEND --> EV[커밋 이후 삭제]
     EV --> C[(Redis DEL)]
 ```
 
-조립 단계는 `CacheInvalidator.failSafe(..)` 안에 있고 구현체는 패키지 밖으로 나오지 않는다.
-두 소스를 함께 켜고 같은 변경을 양쪽으로 알려도 같은 키는 **한 번만** 지워진다.
+- 하이버네이트 이벤트는 `JpaEntityEventListener` 가 받는다. 타입 인자(`CacheEvictable`)인 엔티티만 `onEntityChanged` 로 넘긴다.
+- 직접 발행은 엔티티를 그대로 `publishEvent` 한다. Spring 이 `PayloadApplicationEvent` 로 감싸 `CacheEvictable` 구현체만 같은 메서드로 넘긴다.
+- 신호는 flush 시점이나 커밋 직전에 오지만 지우는 것은 커밋 이후다. 롤백이면 지우지 않는다.
+- 같은 키를 여러 번 지목하면 `DEL` 도 그만큼 나간다. 몇 번 지워도 결과가 같으므로 걸러내지 않는다.
+  걸러내려면 트랜잭션마다 수집함을 스레드에 묶고 `REQUIRES_NEW` 의 중단·재개까지 직접 다뤄야 해서 코드가 두 배가 된다.
 
-어느 경로로 들어오든 같은 규칙과 같은 evictor를 통과한다.
-한 트랜잭션에서 나온 대상은 모였다가 커밋 이후 한 번에 처리되므로,
-두 소스를 함께 켜고 같은 변경을 양쪽으로 알려도 같은 키는 한 번만 지워진다.
+## 설정
 
-## 설정 확장
+**코어 모듈에 의존하지 않는다.** 이 모듈에 필요한 것만 복사해 직접 선언한다. 다른 모듈과 코드가 겹치는 것은 감수한다.
 
-모듈은 코어 설정을 **상속**하고, 필요한 신호 소스만 골라 켠다.
+| 클래스 | 역할 |
+|-------|-----|
+| `config/CachePolicy` | 캐시 이름·값 타입·TTL. TTL 을 생략하면 10분 |
+| `config/CacheConfig` | 캐시 관리자에 정책을 얹고(TTL·직렬화·`SCAN`·정책 없는 캐시 차단·`cache-names` 금지), `CacheEvictListener` 빈과 에러 처리기를 등록 |
+| `config/JpaConfig` | `CacheEvictListener` 를 하이버네이트 `EventListenerRegistry` 에 붙인다 |
+| `config/ServiceCacheProperties` | `service.cache.clear.scan-batch-size` |
+| `config/JpaEntityEventListener<T>` | 하이버네이트 이벤트 세 개를 하나로 모으고 타입 인자 `T` 인 엔티티만 넘긴다 |
+| `cache/CacheEvictListener` | `CacheEvictable` 엔티티의 키를 커밋 이후에 지운다 |
+| `cache/AfterCommitEvictor` | 트랜잭션 안이면 커밋 콜백을 등록해 커밋 이후에, 밖이면 바로 지운다 |
+| `cache/InvalidationMetrics` | 실패 수 `cache.invalidation.failures` |
+| `cache/CacheEvictable`, `cache/CacheKey` | 엔티티가 지울 키를 밝힌다 |
 
-```java
-@Configuration
-@Import({JpaEntityChangeConfig.class, PublishedEntityChangeConfig.class})
-public class CacheConfig extends AbstractRedisCacheConfig {
+코어에서 걷어낸 것은 규칙 추상화(`InvalidationRule`, `TtlOnlyRule`, 소유권 검증), `RuleBasedCacheInvalidator`,
+변경 종류와 이전 상태를 싣던 `EntityChange`, 지터와 not-found TTL, 비동기 삭제 실행기다.
+이 모듈의 규칙은 "엔티티가 `CacheEvictable` 이면 그 키를 지운다" 하나뿐이라 추상화가 필요 없다.
 
-    @Override
-    protected List<CachePolicy> cachePolicies() {
-        return List.of(UserCachePolicy.USER, ArticleCachePolicy.ARTICLE);
-    }
-
-    @Override
-    protected List<InvalidationRule> invalidationRules() {
-        return List.of(
-            EvictableEntityRule.owning(UserCachePolicy.USER),
-            TtlOnlyRule.owning(ArticleCachePolicy.ARTICLE)
-        );
-    }
-}
-```
-
-`ARTICLE` 은 `@CacheEvict` 와 TTL 로만 만료되므로 지우는 규칙이 없다.
-그래도 `TtlOnlyRule` 로 밝혀야 한다 — 규칙을 쓰기 시작한 모듈에서
-주인 없는 캐시는 의도인지 실수인지 구분되지 않고, 빠뜨리면 기동이 멈춘다.
-
-`AbstractRedisCacheConfig` 는 파이프라인만 확정하고 나머지는 재정의 가능한 메서드로 연다.
-
-| 확장점 | 기본값 | 언제 재정의하나 |
-|-------|------|--------------|
-| `cachePolicies()` | 없음 (필수) | 항상 |
-| `invalidationRules()` | 빈 목록 | 무효화 대상을 산출해야 할 때 |
-| `serializerFactory()` | `SerializerFactory.json()` | 직렬화 형식을 바꿀 때 |
-| `ttlResolver(..)` | `TtlResolver.jittered(..)` | 만료·지터 규칙을 바꿀 때 |
-
-변경 감지 방식만 상속이 아니라 `@Import` 다. 자바가 단일 상속이라
-JPA 와 이벤트를 **함께** 쓰는 이 모듈을 상속으로는 표현할 수 없기 때문이다.
-선언하지 않으면 그 리스너 빈은 등록되지 않는다.
+`Article` 은 `CacheEvictable` 을 구현하지 않으므로 리스너가 건너뛴다. `@CacheEvict` 와 TTL 로만 만료된다.
 
 ## 개발자가 작성하는 것
 
 | 작성한다 | 작성하지 않는다 |
 |---------|-------------|
-| `CachePolicy` enum (캐시 이름·TTL·값 타입) | evict 호출 코드 |
+| `CachePolicy` 상수 | evict 호출 코드 |
 | 조회 메서드의 `@Cacheable` | 쓰기 메서드의 `@CacheEvict` |
-| 엔티티의 `CacheEvictable` 또는 별도 `InvalidationRule` | 트랜잭션 훅 등록 |
+| 엔티티의 `CacheEvictable` | 트랜잭션 훅 등록 |
+| JPA 를 거치지 않는 쓰기라면 `publishEvent(entity)` | |
 
 `UserCommandService` 에는 캐시라는 단어가 등장하지 않는다.
-무효화가 서비스 메서드 선언이 아니라 **엔티티가 커밋됐다는 사실**에서 파생되기 때문이다.
+무효화가 서비스 메서드 선언이 아니라 **엔티티가 바뀌었다는 사실**에서 파생되기 때문이다.
 새 쓰기 경로를 추가해도 빠뜨릴 자리가 없다.
 
 ## 실행
