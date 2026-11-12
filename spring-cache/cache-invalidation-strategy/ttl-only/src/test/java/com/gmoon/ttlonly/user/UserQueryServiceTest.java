@@ -1,10 +1,10 @@
 package com.gmoon.ttlonly.user;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.SoftAssertions.*;
 
 import java.time.Duration;
-import java.util.Comparator;
-import java.util.stream.IntStream;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 
+import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 
-import com.gmoon.cacheinvalidation.expiration.TtlResolver;
 import com.gmoon.cacheinvalidation.test.measure.DatabaseQueryCounter;
 import com.gmoon.cacheinvalidation.test.IntegrationTest;
+import com.gmoon.ttlonly.config.CachePolicy;
 
 @IntegrationTest
 @DisplayName("사용자 조회가 캐시를 쓰는 방식")
@@ -26,20 +27,18 @@ class UserQueryServiceTest {
 
 	private static final String ORIGINAL_EMAIL = "alice@mail.com";
 	private static final String CHANGED_EMAIL = "alice.changed@mail.com";
-	private static final int TTL_SAMPLES = 200;
 	private static final Duration SCHEDULING_SLACK = Duration.ofSeconds(2);
 
 	@Autowired UserQueryService userQueryService;
 	@Autowired UserCommandService userCommandService;
 	@Autowired CacheManager cacheManager;
 	@Autowired DatabaseQueryCounter databaseQueryCounter;
-	@Autowired TtlResolver ttlResolver;
 
 	private Long userId;
 
 	@BeforeEach
 	void setUp() {
-		cacheManager.getCache(UserCachePolicy.Name.USER).clear();
+		cacheManager.getCache(CachePolicy.Name.USER).clear();
 		userId = userCommandService.register("alice-" + System.nanoTime(), ORIGINAL_EMAIL);
 		databaseQueryCounter.reset();
 	}
@@ -98,17 +97,24 @@ class UserQueryServiceTest {
 			userQueryService.findById(userId);
 			userCommandService.changeEmail(userId, CHANGED_EMAIL);
 			long startedAt = System.nanoTime();
+			AtomicLong lastStaleReadAt = new AtomicLong(startedAt);
 
 			Awaitility.await()
 				 .atMost(awaitTimeout())
 				 .pollInterval(Duration.ofMillis(100))
-				 .untilAsserted(() -> assertThat(userQueryService.findById(userId).email())
+				 .untilAsserted(() -> assertThat(emailRecordingStaleRead(lastStaleReadAt))
 					  .as("TTL 안에 새 값이 보여야 한다")
 					  .isEqualTo(CHANGED_EMAIL));
 
-			assertThat(Duration.ofNanos(System.nanoTime() - startedAt))
-				 .as("관측된 stale 지속시간이 설정된 만료 상한을 넘지 않아야 한다")
-				 .isLessThanOrEqualTo(expiryUpperBound());
+			Duration staleObservedFor = Duration.ofNanos(lastStaleReadAt.get() - startedAt);
+			assertSoftly(softly -> {
+				softly.assertThat(staleObservedFor)
+					 .as("옛 값을 한 번도 보지 못하면 이 명제는 저절로 성립한다")
+					 .isPositive();
+				softly.assertThat(staleObservedFor)
+					 .as("옛 값이 마지막으로 보인 시점이 설정된 만료 상한을 넘지 않아야 한다")
+					 .isLessThanOrEqualTo(expiryUpperBound());
+			});
 		}
 	}
 
@@ -143,27 +149,38 @@ class UserQueryServiceTest {
 		void hasNoTypeHint() {
 			userQueryService.findById(userId);
 
-			assertThat(cacheManager.getCache(UserCachePolicy.Name.USER).get(userId, CachedUser.class))
+			assertThat(cacheManager.getCache(CachePolicy.Name.USER).get(userId, UserView.class))
 				 .as("캐시별 타입 직렬화기를 쓰면 @class 없이도 복원된다")
 				 .isNotNull()
-				 .extracting(CachedUser::email)
+				 .extracting(UserView::email)
 				 .isEqualTo(ORIGINAL_EMAIL);
 		}
 	}
 
 	/**
-	 * 설정된 만료 전략이 실제로 낼 수 있는 가장 긴 TTL.
+	 * 캐시 설정에 실제로 등록된 TTL.
 	 * <p>
-	 * 지터 폭을 테스트가 다시 계산하면 전략이 바뀔 때 조용히 어긋난다.
-	 * 전략에 직접 물어 가장 큰 값을 쓴다.
+	 * 정책의 TTL 을 그대로 쓰면, 설정이 정책을 반영하지 않아도 테스트가 알아채지 못한다.
 	 */
 	private Duration expiryUpperBound() {
-		RedisCacheWriter.TtlFunction expiry = ttlResolver.functionFor(UserCachePolicy.USER.ttl().orElseThrow());
+		RedisCache userCache = (RedisCache)cacheManager.getCache(CachePolicy.Name.USER);
+		RedisCacheWriter.TtlFunction expiry = userCache.getCacheConfiguration().getTtlFunction();
+		return expiry.getTimeToLive(String.valueOf(userId), ORIGINAL_EMAIL);
+	}
 
-		return IntStream.range(0, TTL_SAMPLES)
-			 .mapToObj(attempt -> expiry.getTimeToLive(String.valueOf(userId), ORIGINAL_EMAIL))
-			 .max(Comparator.naturalOrder())
-			 .orElseThrow();
+	/**
+	 * 조회를 시작한 시각을 재고, 옛 값이 돌아왔다면 그 시각을 남긴다.
+	 * <p>
+	 * 새 값을 처음 본 시각으로 재면 폴링 간격과 그 조회 시간이 섞여 상한을 넘을 수 있다.
+	 * 옛 값이 보였다는 것은 그 순간 키가 아직 살아 있었다는 뜻이므로 언제나 만료 전이다.
+	 */
+	private String emailRecordingStaleRead(AtomicLong lastStaleReadAt) {
+		long readAt = System.nanoTime();
+		String email = userQueryService.findById(userId).email();
+		if (ORIGINAL_EMAIL.equals(email)) {
+			lastStaleReadAt.set(readAt);
+		}
+		return email;
 	}
 
 	/**

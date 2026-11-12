@@ -25,8 +25,5 @@ spring:
 
 service:
   cache:
-    expiration:
-      not-found-ttl: 30s
-      jitter-ratio: 0.1
     clear:
       scan-batch-size: 1000

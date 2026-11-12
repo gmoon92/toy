@@ -19,8 +19,3 @@ spring:
     properties:
       hibernate:
         generate_statistics: true
-
-service:
-  cache:
-    expiration:
-      jitter-ratio: 0.01

@@ -32,7 +32,7 @@ sequenceDiagram
     Q->>D: SELECT
     D-->>Q: User
     Q->>R: SET USER::1 (TTL 3s)
-    Q-->>C: CachedUser
+    Q-->>C: UserView
 
     Note over D: 다른 트랜잭션이 email 을 변경
     C->>Q: findById(1)
@@ -55,45 +55,68 @@ sequenceDiagram
 
 | 클래스 | 역할 |
 |-------|-----|
-| `UserCachePolicy` | 캐시 이름·TTL·값 타입을 선언한다 |
+| `CachePolicy` | 이 모듈의 캐시 이름·TTL·값 타입을 enum 하나에 선언한다 |
 | `UserQueryService` | `@Cacheable` 만 선언한다 |
 | `UserCommandService` | 캐시를 전혀 모른다 |
 
 정책에는 무효화에 관한 말이 한 마디도 없다.
-무효화 규칙을 하나도 선언하지 않았으므로 코어가 소유권을 따지지 않고,
-이 모듈은 `invalidation` 패키지를 제품 코드에서 한 번도 import 하지 않는다.
-
-규칙을 쓰기 시작한 모듈이라면 이야기가 달라진다.
-그때부터는 TTL 에 맡길 캐시도 `TtlOnlyRule` 로 밝혀야 하고,
-빠뜨리면 기동이 멈춘다 — [write-invalidate](../write-invalidate/README.md) 가 그 경우다.
 
 ## 설정
 
-무효화 신호 소스를 **하나도 선언하지 않는다.**
+**코어 모듈에 의존하지 않는다.** 이 모듈에 필요한 것만 복사해 `config` 패키지에 둔다.
+다른 모듈과 코드가 겹치는 것은 감수한다.
+
+| 클래스 | 역할 | 코어 원본에서 걷어낸 것 |
+|-------|-----|-------------------|
+| `CachePolicy` | 캐시 이름·TTL·값 타입 선언 | 인터페이스와 `Spec`. 구현 enum 대신 이 enum 하나에 선언한다. 이름 중복 검사 |
+| `JitteredTtlResolver` | 삭제. TTL 은 정책 값 그대로 | 클래스 전체 |
+| `CacheConfig` | 아래 빈 등록과 값 직렬화 | 상속 구조, 직렬화 인터페이스, 키 직렬화 지정 |
+| `ServiceCacheProperties` | `service.cache.*` 바인딩 | "다른 전략의 설정도 여기에 모은다"는 확장 |
+| `FallbackCacheErrorHandler` | 삭제. Spring `LoggingCacheErrorHandler` 를 쓴다 | 클래스 전체 |
+
+정책에 TTL 을 적으면 그 값을, 생략하면 `spring.cache.redis.time-to-live` 를 쓴다.
+이 모듈은 TTL 로만 최신성을 회복하므로 어느 쪽이든 그 값이 곧 stale 상한이다.
+둘 다 없으면 기동을 막는다. Redis 는 0 이하 TTL 을 "만료 없음" 으로 다뤄 키가 영구히 남는다.
 
 ```java
-@Configuration
-public class CacheConfig extends AbstractRedisCacheConfig {
-
-    @Override
-    protected List<CachePolicy> cachePolicies() {
-        return List.of(UserCachePolicy.values());
-    }
-}
+USER(Name.USER, Duration.ofSeconds(3), UserView.class),   // TTL 을 적으면 기본값을 덮어쓴다
+PROFILE(Name.PROFILE, ProfileView.class);                  // 생략하면 time-to-live 를 따른다
 ```
 
-`JpaEntityChangeConfig` 나 `PublishedEntityChangeConfig` 를 선언하지 않았으므로
-리스너 빈이 컨텍스트에 존재하지 않는다. 쓰지 않는 전략의 빈을 떠안지 않는다는 뜻이고,
-이것을 `CacheConfigTest` 가 테스트로 고정한다.
+이름이 겹치는 정책은 따로 검사하지 않는다. 캐시 설정을 만들 때 `Collectors.toMap` 이 같은 이름에서 기동을 막는다.
+키 직렬화기도 지정하지 않는다. Spring Data Redis 기본값이 이미 문자열이다.
 
-TTL·지터 같은 값은 `service.cache` 아래에 모은다.
+등록하는 빈은 둘이다.
+
+| 빈 | 이유 |
+|---|---|
+| `cacheManagerCustomizer` | 정책별 TTL·직렬화, `SCAN` 으로 비우기, 정책 없는 캐시명 조회 차단, `spring.cache.cache-names` 금지 |
+| `errorHandler` | Redis 가 죽으면 DB 조회로 넘어간다 |
+
+무효화 파이프라인과 기동 검증기는 등록하지 않는다. 앞의 것은 지우는 일이 없어 쓸 데가 없고,
+검증기는 설정 실수를 막는 보조 장치라 TTL 명제와 무관하다.
+
+캐시 이름은 `CachePolicy` 에서만 나온다. `spring.cache.cache-names` 는 값이 무엇이든 기동을 막는다.
+Boot 는 그 속성의 캐시를 커스터마이저보다 먼저 기본 설정(JDK 직렬화, 만료 없음)으로 만들어 두므로,
+두 곳에서 이름을 받으면 어느 쪽이 빠졌는지 따지는 검사가 따로 필요해진다. 한 곳으로 모으면 그 검사가 필요 없다.
+
+테스트는 공용 테스트 모듈(`cache-invalidation-test`)을 쓰지만, 그 모듈이 끌고 오는 코어는 제외한다.
+`CacheConfigTest` 가 코어 클래스가 클래스패스에 없다는 것까지 고정한다.
+
+Boot 표준으로 표현할 수 있는 값은 `spring.cache.redis.*` 에, 그렇지 않은 값만 `service.cache` 아래에 둔다.
 
 ```yaml
+spring:
+  cache:
+    redis:
+      key-prefix: "cache-ttl-only:"
+      time-to-live: 5m          # TTL 을 생략한 정책이 따른다
+      enable-statistics: true
+
 service:
   cache:
-    expiration:
-      not-found-ttl: 30s
-      jitter-ratio: 0.1
+    clear:
+      scan-batch-size: 1000
 ```
 
 ## TTL 을 3초로 둔 이유
@@ -102,8 +125,13 @@ service:
 stale 지속시간을 실제로 재려면 테스트가 만료를 기다려야 하는데,
 10분으로 두면 그 명제를 검증할 수 없다.
 
-TTL에는 `ttl-jitter-ratio` 만큼의 흔들림이 함께 적용된다.
-같은 시각에 적재된 키들이 동시에 만료되면서 DB로 몰리는 것을 막기 위해서다.
+TTL 에 지터(무작위 흔들림)를 얹지 않는다. 그래서 stale 상한이 정책 TTL 과 정확히 같다.
+같은 시각에 적재된 키가 한꺼번에 만료되어 DB 로 몰리는 위험은 남는다. 그 위험은 이 모듈이 다루지 않는다.
+
+없는 사용자(null)도 같은 TTL 로 캐시한다. not-found TTL 을 따로 두었다가 걷어냈다.
+`@Cacheable` 은 null 결과를 그대로 `put()` 에 넘기고 `RedisCache` 는 그 null 을 TTL 함수에 넘기므로,
+`NullValue` 를 보고 TTL 을 바꾸던 분기는 한 번도 타지 않았다. Redis 에 남은 TTL 로 확인했다.
+설령 동작했더라도 not-found TTL(30초)이 정책 TTL(3초)보다 길어, 새로 가입한 사용자가 stale 상한보다 오래 "없음" 으로 보였을 것이다.
 
 ## 검증
 
@@ -121,9 +149,15 @@ TTL에는 `ttl-jitter-ratio` 만큼의 흔들림이 함께 적용된다.
 | 첫 조회만 DB를 읽고 이후는 캐시가 응답한다 |
 | TTL 만료 전에는 변경 전 값을 반환한다 |
 | TTL이 만료되면 변경된 값을 반환한다 |
-| 관측된 stale 지속시간이 TTL을 넘지 않는다 |
+| 옛 값이 마지막으로 보인 시점이 TTL 상한을 넘지 않는다 |
 | not-found도 캐시되어 존재하지 않는 키가 DB를 반복해서 때리지 않는다 |
 | 캐시에 저장된 값에 타입 힌트(`@class`)가 없다 |
+| 코어 모듈 없이 조립된다 |
+| 정책에 적은 TTL 은 양수다 |
+| 기동한 뒤 모든 정책 캐시가 만료를 가진다 |
+| `spring.cache.cache-names` 를 적으면 기동을 막는다 |
+| 정책 TTL 이 Redis 기본 TTL 을 덮어쓰고, 키 접두사·null 캐싱 설정은 물려받는다 |
+| 캐시를 비울 때 `KEYS` 대신 `SCAN` 을 쓴다 |
 
 ## 언제 이 전략으로 충분한가
 
