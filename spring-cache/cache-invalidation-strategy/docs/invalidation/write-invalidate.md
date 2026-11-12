@@ -116,7 +116,7 @@ sequenceDiagram
 
 따라서 "실제로 지웠는지"를 반환값으로 판별할 수 없다.
 `ConcurrentMapCache` 는 참을 반환하므로, 이 값을 결과로 노출하면 **캐시 구현에 따라 의미가 달라진다.**
-코어는 `EVICT_REQUESTED` / `CACHE_NOT_REGISTERED` / `FAILED` 세 값만 기록한다.
+그래서 무효화는 결과를 반환값으로 판단하지 않고, 실패만 세어 기록한다(`cache.invalidation.failures`).
 
 ## 선택 기준
 
@@ -137,11 +137,11 @@ sequenceDiagram
 
 `write-invalidate` 모듈은 두 방식을 한 모듈에 나란히 둔다.
 같은 엔티티에 둘 다 걸면 엔티티 이벤트가 `@CacheEvict`의 실패를 가려버리므로 **엔티티로 분리**했다.
-이 분리 자체가 리스너의 `instanceof` 선별을 증명한다.
+이 분리 자체가 리스너의 대상 선별(`CacheEvictable` 만 받음)을 증명한다.
 
 | 엔티티 | `CacheEvictable` | 무효화 경로 | 쓰기 서비스 |
 |-------|-----------------|-----------|-----------|
-| `User` | 구현 | Hibernate `POST_COMMIT_*` | 캐시 코드 없음 |
+| `User` | 구현 | 하이버네이트 엔티티 이벤트 + 커밋 이후 삭제 | 캐시 코드 없음 |
 | `Article` | 미구현 | Spring `@CacheEvict` | `@CacheEvict` 선언 |
 
 ### 테스트로 고정한 명제

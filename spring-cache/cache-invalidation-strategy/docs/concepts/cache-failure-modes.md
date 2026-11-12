@@ -108,15 +108,19 @@ Spring Cache의 기본 `CacheErrorHandler`는 `SimpleCacheErrorHandler`이고,
 ```java
 @Configuration
 @EnableCaching
-public abstract class AbstractRedisCacheConfig implements CachingConfigurer {
+public class CacheConfig implements CachingConfigurer {
 
     @Bean
     @Override
     public CacheErrorHandler errorHandler() {
-        return new FallbackCacheErrorHandler(cacheFailureRecorder);
+        boolean logStackTraces = true;
+        return new LoggingCacheErrorHandler(logStackTraces);
     }
 }
 ```
+
+Spring 이 주는 `LoggingCacheErrorHandler` 로 충분하다. 기본값은 스택 트레이스를 남기지 않아
+실패 원인이 로그에서 빠지므로 `logStackTraces` 를 켠다.
 
 **`CachingConfigurer`를 구현해야 한다.**
 `@Bean CacheErrorHandler` 만으로는 등록되지 않는다 —

@@ -8,7 +8,7 @@
 
 ---
 
-Hibernate post-commit 엔티티 이벤트로 무효화한다.
+하이버네이트 엔티티 이벤트로 지울 키를 모으고, 커밋 이후에 지운다.
 무효화가 **메서드마다 선언되는 것이 아니라 엔티티 변경에서 파생**된다.
 
 ## 왜 이 방식인가
@@ -21,56 +21,54 @@ Hibernate post-commit 엔티티 이벤트로 무효화한다.
 
 ```mermaid
 flowchart LR
-    TX[트랜잭션 COMMIT] --> EV["POST_COMMIT_INSERT<br/>POST_COMMIT_UPDATE<br/>POST_COMMIT_DELETE"]
-    EV --> EC[EntityChange 생성]
-    EC --> RU[규칙으로 대상 산출]
-    RU --> KEYS[무효화 대상 키 산출]
-    KEYS --> DEL[(Cache DEL)]
+    FL[flush] --> EV["POST_INSERT<br/>POST_UPDATE<br/>POST_DELETE"]
+    EV --> KEYS["엔티티가 밝힌 키<br/>(CacheEvictable)"]
+    KEYS --> PEND[커밋 콜백 등록]
+    TX[COMMIT] --> DEL[(Cache DEL)]
+    PEND --> DEL
 ```
+
+`POST_COMMIT_*` 이벤트를 쓰지 않는다. 직접 발행한 엔티티와 같은 방식으로 지우기 위해,
+flush 시점의 `POST_*` 로 받아 스프링 트랜잭션의 커밋 콜백에서 지운다.
 
 조회는 `@Cacheable`만 남고, 쓰기 경로에는 캐시 코드가 없다.
 
 ## 구현
 
-무효화 대상 산출은 규칙(Rule)이 담당하고, 단순한 엔티티는 단축 인터페이스를 쓴다.
-
-```java
-public interface InvalidationRule {
-    boolean supports(EntityChange change);
-    Collection<CacheKey> resolve(EntityChange change);
-}
-```
-
-```java
-public record EntityChange(Object entity, Type type, Source source, State previousState) {
-    public Optional<Object> previousValueOf(String propertyName) { ... }
-    public boolean isAbout(Class<?> entityType) { ... }
-}
-```
-
-`previousState`는 배열이 아니라 중첩 record `EntityChange.State`(불변 `List` 두 개)다.
-레코드 컴포넌트가 배열이면 자동 생성된 `equals`/`hashCode`가 **참조 동일성**으로 동작해
-같은 내용의 두 변경이 서로 다른 것으로 취급된다.
-
-단축 인터페이스 — 엔티티가 자기 키를 선언한다.
+엔티티가 자기 키를 밝히고, 리스너는 그 엔티티만 골라 받는다.
 
 ```java
 @Entity
 public class User implements CacheEvictable {
 
     @Override
-    public List<CacheKey> cacheKeys() {
-        return List.of(CacheKey.of(UserCachePolicy.USER, id));
+    public Set<CacheKey> cacheKeys() {
+        return Set.of(
+             CacheKey.of(CachePolicy.USER, id)
+        );
     }
 }
 ```
 
-`CachePolicy`는 인터페이스이므로 캐시 이름은 도메인 모듈의 enum이 소유한다.
-조회는 `@Cacheable`만 선언하고, 엔티티가 아니라 **조회 전용 레코드**를 담는다.
+```java
+public class CacheEvictListener extends JpaEntityEventListener<CacheEvictable> {
+
+    @Override
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT, fallbackExecution = true)
+    public void onEntityChanged(CacheEvictable entity) {   // 하이버네이트 이벤트와 직접 발행이 모두 여기로
+        evictor.evict(cacheKeysOf(entity));
+    }
+}
+```
+
+`JpaEntityEventListener<T>` 는 타입 인자 `T` 를 읽어 그 타입의 엔티티만 넘긴다.
+JPA 를 거치지 않는 쓰기는 엔티티를 그대로 `publishEvent` 하면 같은 메서드로 들어온다.
+
+조회는 `@Cacheable` 만 선언하고, 엔티티가 아니라 **조회 전용 레코드**를 담는다.
 
 ```java
-@Cacheable(cacheNames = UserCachePolicy.Name.USER, key = "#id")
-public CachedUser findById(Long id) { ... }
+@Cacheable(cacheNames = CachePolicy.Name.USER, key = "#id")
+public UserView findById(Long id) { ... }
 ```
 
 ## 보장하는 것
@@ -78,9 +76,8 @@ public CachedUser findById(Long id) { ... }
 | 항목 | 내용 |
 |-----|-----|
 | 누락 방지 | 어느 서비스 메서드로 변경하든 영속성 컨텍스트를 거치면 무효화된다 |
-| 실행 시점 확정 | `POST_COMMIT_*` 이므로 커밋 이후가 보장된다 |
-| 옛 키 산출 | `previousState`로 변경 전 자연키를 재구성할 수 있다 |
-| 교차 엔티티 | 별도 Rule 빈을 추가하면 다른 엔티티의 캐시도 무효화할 수 있다 |
+| 실행 시점 확정 | flush 시점에 모아 커밋 이후에 지운다. 롤백이면 버린다 |
+| 교차 엔티티 | 엔티티가 `cacheKeys()` 에 다른 캐시의 키를 함께 내놓으면 된다 |
 | 책임 분리 | 조회는 `@Cacheable`만, 쓰기는 캐시를 모른다 |
 
 ## 보장하지 않는 것
@@ -91,7 +88,8 @@ public CachedUser findById(Long id) { ... }
 | 목록·검색 캐시 | 엔티티는 자기 키만 알 뿐, 자신이 속한 목록 캐시를 모른다 |
 | 다른 애플리케이션의 변경 | 리스너는 이 애플리케이션 안에서만 동작한다 → [cdc-invalidate](cdc-invalidate.md) |
 | 커밋 후 유실 | 커밋 직후 프로세스가 죽으면 DEL이 실행되지 않는다 |
-| 키 합의 | `@Cacheable`이 만든 키와 Rule이 만든 키가 **다르면 조용히 실패한다** |
+| 키 합의 | `@Cacheable`이 만든 키와 `cacheKeys()` 가 만든 키가 **다르면 조용히 실패한다** |
+| 옛 키 | 자연키가 바뀌면 바뀐 뒤의 키만 안다. 이전 상태를 싣지 않으므로 옛 키는 TTL 이 지운다 |
 
 벌크 연산 경로가 존재한다면 TTL이 유일한 복구 수단이 된다.
 
@@ -118,9 +116,8 @@ public CachedUser findById(Long id) { ... }
 ☑ CacheEvictable 미구현 엔티티는 같은 커밋에서도 무효화되지 않는다
 ☑ 무효화 대상 키 산출이 추가 DB 조회를 유발하지 않는다
 □ INSERT 직후 조회에서 캐시가 무효 상태임을 확인한다
-□ 자연키가 변경되면 옛 키도 함께 무효화된다
+☑ 엔티티가 키를 내놓다 예외를 던져도 트랜잭션은 그대로 커밋된다
 □ 벌크 UPDATE는 이벤트를 발생시키지 않음을 확인한다 (한계 고정)
-□ Rule 하나가 예외를 던져도 나머지 Rule은 계속 수행된다
 ```
 
 ## 관련
