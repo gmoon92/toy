@@ -8,13 +8,13 @@ import com.gmoon.ttlonly.config.CachePolicy;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class UserQueryService {
 
 	private final UserRepository userRepository;
 
-	@Transactional(readOnly = true)
 	@Cacheable(cacheNames = CachePolicy.Name.USER, key = "#id")
 	public UserView findById(Long id) {
 		return userRepository.findById(id)
