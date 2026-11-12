@@ -14,8 +14,6 @@ jar {
 }
 
 dependencies {
-    api project(":spring-cache:cache-invalidation-strategy:cache-invalidation-core")
-
     api("org.springframework.boot:spring-boot-starter-test")
     api("org.springframework.boot:spring-boot-testcontainers")
     api(platform(libs.testcontainers.bom))
@@ -23,6 +21,7 @@ dependencies {
     api(libs.testcontainers.mysql)
     api(libs.awaitility)
 
+    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 }

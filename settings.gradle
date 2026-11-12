@@ -16,7 +16,6 @@ include(
         'spring-cache:spring-data-redis',
 
         'spring-cache:cache-invalidation-strategy',
-        'spring-cache:cache-invalidation-strategy:cache-invalidation-core',
         'spring-cache:cache-invalidation-strategy:cache-invalidation-test',
         'spring-cache:cache-invalidation-strategy:ttl-only',
         'spring-cache:cache-invalidation-strategy:write-invalidate',

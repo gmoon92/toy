@@ -12,9 +12,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    testImplementation(project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test")) {
-        exclude module: "cache-invalidation-core"
-    }
+    testImplementation(project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test"))
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 }

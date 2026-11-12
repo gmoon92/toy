@@ -35,19 +35,6 @@ class CacheConfigTest {
 	);
 
 	@Nested
-	@DisplayName("만료에만 맡기므로")
-	class WhenOnlyExpirationIsUsed {
-
-		@Test
-		@DisplayName("코어 모듈 없이 조립된다")
-		void assemblesWithoutCoreModule() {
-			assertThatExceptionOfType(ClassNotFoundException.class)
-				 .as("무효화 파이프라인이 든 코어가 클래스패스에 있으면 쓰지 않는 빈과 설정을 다시 떠안게 된다")
-				 .isThrownBy(() -> Class.forName("com.gmoon.cacheinvalidation.CachePolicy"));
-		}
-	}
-
-	@Nested
 	@DisplayName("기동하면")
 	class WhenStarted {
 
