@@ -14,7 +14,7 @@ PUT  /users/{id}
 |---|-----|-----------|-----------|-----|
 | 1 | `ttl-only` | stale window의 상한이 TTL과 일치한다 | Redis, MySQL | 완료 |
 | 2 | `write-invalidate` | 커밋 전 무효화는 stale을 고착시키고, 커밋 후 무효화는 그러지 않는다 | Redis, MySQL | 완료 |
-| 3 | `after-commit-invalidate` | `@TransactionalEventListener(AFTER_COMMIT)`가 같은 보장을 선언적으로 제공한다 | Redis, MySQL | 예정 |
+| 3 | `after-commit-invalidate` | `@TransactionalEventListener(AFTER_COMMIT)`가 같은 보장을 선언적으로 제공하고, 트랜잭션 없는 경로에서 조용히 누락된다 | Redis, MySQL | 완료 |
 | 4 | `entity-event-invalidate` | 벌크 연산·자연키 변경·교차 엔티티까지 확장된다 | Redis, MySQL | 부분 |
 | 5 | `write-update` | 롤백 시 DB와 캐시가 어긋난다 | Redis, MySQL | 예정 |
 | 6 | `stampede-guard` | 무효화를 잘 할수록 stampede가 잦아진다 | Redis, MySQL | 예정 |
@@ -31,8 +31,7 @@ PUT  /users/{id}
 
 ```mermaid
 flowchart LR
-    C["cache-invalidation-core<br/>무효화 파이프라인"] --> T[ttl-only]
-    T --> W[write-invalidate]
+    T[ttl-only] --> W[write-invalidate]
     W --> A[after-commit-invalidate]
     A --> E[entity-event-invalidate]
     E --> U[write-update]

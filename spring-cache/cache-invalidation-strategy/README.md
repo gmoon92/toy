@@ -20,9 +20,9 @@ CUD    DB 변경 → 기존 Cache를 어떻게 처리할 것인가?
 
 | 모듈 | 증명하는 명제 | README |
 |-----|-------------|--------|
-| `cache-invalidation-core` | 무효화 파이프라인과 기동 검증 | [core-design](docs/core-design.md) |
 | `ttl-only` | 옛 값이 보이는 기간의 상한이 TTL과 일치한다 | [ttl-only](ttl-only/README.md) |
 | `write-invalidate` | 커밋 전 무효화는 옛 값을 고착시키고, 커밋 후 무효화는 그러지 않는다 | [write-invalidate](write-invalidate/README.md) |
+| `after-commit-invalidate` | 선언적 커밋 후 무효화가 보장하는 것과, 트랜잭션 없는 경로에서 누락되는 것 | [after-commit-invalidate](after-commit-invalidate/README.md) |
 
 ```bash
 ./gradlew :spring-cache:cache-invalidation-strategy:build
@@ -100,16 +100,17 @@ CUD    DB 변경 → 기존 Cache를 어떻게 처리할 것인가?
 
 | 모듈 | 역할 |
 |-----|-----|
-| `cache-invalidation-core` | 공통 틀 — 캐시 정책, 무효화 규칙, 엔티티 이벤트 어댑터, 캐시 장애 폴백 |
 | `cache-invalidation-test` | 전략 모듈이 공유하는 테스트 지원 — 컨테이너 설정, 통합 테스트 애노테이션, 측정 하네스 |
-| 전략별 모듈 | 코어를 사용해 각 전략의 세부 구현만 담당 |
+| 전략별 모듈 | 각 전략에 필요한 캐시 설정·정책·무효화를 직접 선언 |
+
+공통 제품 모듈은 두지 않는다. 모든 전략의 기능을 한 틀에 모으면 쓰지 않는 빈까지 등록되어 복잡도만 커진다.
+모듈마다 필요한 것만 직접 선언하고, 다른 모듈과 코드가 겹치는 것은 감수한다.
 
 전략 모듈은 `testImplementation` 으로만 테스트 모듈을 의존한다.
 
 ```gradle
 dependencies {
-    implementation project(":spring-cache:cache-invalidation-strategy:cache-invalidation-core")
-    testImplementation project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test")
+    testImplementation(project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test"))
 }
 ```
 

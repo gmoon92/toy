@@ -63,16 +63,14 @@ sequenceDiagram
 
 ## 설정
 
-**코어 모듈에 의존하지 않는다.** 이 모듈에 필요한 것만 복사해 `config` 패키지에 둔다.
+이 모듈에 필요한 것만 `config` 패키지에 직접 선언한다.
 다른 모듈과 코드가 겹치는 것은 감수한다.
 
-| 클래스 | 역할 | 코어 원본에서 걷어낸 것 |
-|-------|-----|-------------------|
-| `CachePolicy` | 캐시 이름·TTL·값 타입 선언 | 인터페이스와 `Spec`. 구현 enum 대신 이 enum 하나에 선언한다. 이름 중복 검사 |
-| `JitteredTtlResolver` | 삭제. TTL 은 정책 값 그대로 | 클래스 전체 |
-| `CacheConfig` | 아래 빈 등록과 값 직렬화 | 상속 구조, 직렬화 인터페이스, 키 직렬화 지정 |
-| `ServiceCacheProperties` | `service.cache.*` 바인딩 | "다른 전략의 설정도 여기에 모은다"는 확장 |
-| `FallbackCacheErrorHandler` | 삭제. Spring `LoggingCacheErrorHandler` 를 쓴다 | 클래스 전체 |
+| 클래스 | 역할 |
+|-------|-----|
+| `CachePolicy` | 캐시 이름·TTL·값 타입 선언 |
+| `CacheConfig` | 아래 빈 등록과 값 직렬화 |
+| `ServiceCacheProperties` | `service.cache.*` 바인딩 |
 
 TTL 은 `CachePolicy` 가 정한다. 이 모듈은 TTL 로만 최신성을 회복하므로 그 값이 곧 stale 상한이다.
 생략하면 5분이고, 적으면 뒤에 덧붙인다. 선택값인 TTL 을 맨 뒤에 두어 기본값과 다른 캐시만 눈에 띄게 한다.
@@ -98,9 +96,6 @@ PROFILE(Name.PROFILE, ProfileView.class);                  // 생략하면 5분
 캐시 이름은 `CachePolicy` 에서만 나온다. `spring.cache.cache-names` 는 값이 무엇이든 기동을 막는다.
 Boot 는 그 속성의 캐시를 커스터마이저보다 먼저 기본 설정(JDK 직렬화, 만료 없음)으로 만들어 두므로,
 두 곳에서 이름을 받으면 어느 쪽이 빠졌는지 따지는 검사가 따로 필요해진다. 한 곳으로 모으면 그 검사가 필요 없다.
-
-테스트는 공용 테스트 모듈(`cache-invalidation-test`)을 쓰지만, 그 모듈이 끌고 오는 코어는 제외한다.
-`CacheConfigTest` 가 코어 클래스가 클래스패스에 없다는 것까지 고정한다.
 
 Boot 표준으로 표현할 수 있는 값은 `spring.cache.redis.*` 에, 그렇지 않은 값만 `service.cache` 아래에 둔다.
 
@@ -151,7 +146,6 @@ TTL 에 지터(무작위 흔들림)를 얹지 않는다. 그래서 stale 상한�
 | 옛 값이 마지막으로 보인 시점이 TTL 상한을 넘지 않는다 |
 | not-found도 캐시되어 존재하지 않는 키가 DB를 반복해서 때리지 않는다 |
 | 캐시에 저장된 값에 타입 힌트(`@class`)가 없다 |
-| 코어 모듈 없이 조립된다 |
 | 모든 정책이 양수 TTL 을 가진다 |
 | 기동한 뒤 모든 정책 캐시가 만료를 가진다 |
 | `spring.cache.cache-names` 를 적으면 기동을 막는다 |

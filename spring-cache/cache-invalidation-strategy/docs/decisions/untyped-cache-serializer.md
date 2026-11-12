@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| 상태 | **결정 대기** — 현재 구현은 깨져 있어 어느 쪽으로든 고쳐야 한다 |
+| 상태 | **종결** — 2026-11-13 코어 모듈을 삭제하면서 대상이 사라졌다. 전략 모듈은 `disableCreateOnMissingCache` 로 정책 없는 캐시를 만들지 않는다 |
 | 일시 | 2026-10-18 |
 | 대상 | `AbstractRedisCacheConfig` 의 `cacheDefaults` 값 직렬화기 |
 | 대조 | Boot 3.5.0 · spring-data-redis 3.5.0 · jackson-databind 2.19.0 · spring-context 6.2.7 (전부 로컬 소스·바이트코드 직접 확인) |

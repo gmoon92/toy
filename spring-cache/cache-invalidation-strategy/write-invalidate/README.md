@@ -108,7 +108,7 @@ flowchart LR
 
 ## 설정
 
-**코어 모듈에 의존하지 않는다.** 이 모듈에 필요한 것만 복사해 직접 선언한다. 다른 모듈과 코드가 겹치는 것은 감수한다.
+이 모듈에 필요한 것만 직접 선언한다. 다른 모듈과 코드가 겹치는 것은 감수한다.
 
 | 클래스 | 역할 |
 |-------|-----|
@@ -119,12 +119,10 @@ flowchart LR
 | `config/JpaEntityEventListener<T>` | 하이버네이트 이벤트 세 개를 하나로 모으고 타입 인자 `T` 인 엔티티만 넘긴다 |
 | `cache/CacheEvictListener` | `CacheEvictable` 엔티티의 키를 커밋 이후에 지운다 |
 | `cache/AfterCommitEvictor` | 트랜잭션 안이면 커밋 콜백을 등록해 커밋 이후에, 밖이면 바로 지운다 |
-| `cache/InvalidationMetrics` | 실패 수 `cache.invalidation.failures` |
+| `cache/CacheEvictMetrics` | 실패 수 `cache.evict.failures` |
 | `cache/CacheEvictable`, `cache/CacheKey` | 엔티티가 지울 키를 밝힌다 |
 
-코어에서 걷어낸 것은 규칙 추상화(`InvalidationRule`, `TtlOnlyRule`, 소유권 검증), `RuleBasedCacheInvalidator`,
-변경 종류와 이전 상태를 싣던 `EntityChange`, 지터와 not-found TTL, 비동기 삭제 실행기다.
-이 모듈의 규칙은 "엔티티가 `CacheEvictable` 이면 그 키를 지운다" 하나뿐이라 추상화가 필요 없다.
+이 모듈의 규칙은 "엔티티가 `CacheEvictable` 이면 그 키를 지운다" 하나뿐이라 규칙 추상화를 두지 않는다.
 
 `Article` 은 `CacheEvictable` 을 구현하지 않으므로 리스너가 건너뛴다. `@CacheEvict` 와 TTL 로만 만료된다.
 

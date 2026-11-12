@@ -20,7 +20,7 @@ public void evict(CacheEvictable entity) {
 쓰기 코드는 바뀐 엔티티를 알리기만 하고, 지우는 일은 이 리스너가 맡는다.
 Spring 이 엔티티를 `PayloadApplicationEvent` 로 감싸 `CacheEvictable` 구현체만 리스너에 넘긴다.
 지울 키는 엔티티가 안다. 리스너는 어느 캐시인지 모르므로 엔티티가 늘어도 그대로다.
-코어 모듈을 쓰지 않고, 하이버네이트 엔티티 이벤트도 받지 않는다. 증명 대상이 그 선언 자체이기 때문이다.
+하이버네이트 엔티티 이벤트는 받지 않는다. 증명 대상이 그 선언 자체이기 때문이다.
 
 ## Environment
 
@@ -159,7 +159,7 @@ write-invalidate 는 하이버네이트 이벤트로도 받아 JPA 경로에서�
 
 ## 설정
 
-**코어 모듈에 의존하지 않는다.** [ttl-only](../ttl-only/README.md#설정) 와 같은 설정을 복사해 쓴다.
+[ttl-only](../ttl-only/README.md#설정) 와 같은 설정을 복사해 직접 선언한다.
 
 | 클래스 | 역할 |
 |-------|-----|
