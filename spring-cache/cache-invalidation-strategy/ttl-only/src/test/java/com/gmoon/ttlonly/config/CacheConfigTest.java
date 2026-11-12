@@ -57,7 +57,7 @@ class CacheConfigTest {
 		@DisplayName("모든 정책 캐시가 만료를 가진다")
 		void everyPolicyCacheExpires() {
 			assertThat(CachePolicy.values())
-				 .as("TTL 을 생략한 정책은 time-to-live 를 따른다. 둘 다 없으면 키가 영구히 남는다")
+				 .as("Redis 는 0 이하 TTL 을 만료 없음으로 다뤄 키가 영구히 남는다")
 				 .allSatisfy(policy -> assertThat(registeredTtlOf(policy)).isPositive());
 		}
 
@@ -82,7 +82,7 @@ class CacheConfigTest {
 
 				assertThat(ttlOf(registered))
 					 .as("이 모듈의 stale 상한은 정책에 적은 TTL 이어야 한다")
-					 .isEqualTo(CachePolicy.USER.ttl().orElseThrow());
+					 .isEqualTo(CachePolicy.USER.ttl());
 			}
 		}
 

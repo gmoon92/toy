@@ -1,6 +1,5 @@
 package com.gmoon.ttlonly.config;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -98,29 +97,13 @@ public class CacheConfig implements CachingConfigurer {
 		 Collection<CachePolicy> policies,
 		 RedisCacheConfiguration defaults
 	) {
-		Duration defaultTtl = defaults.getTtlFunction().getTimeToLive(Object.class, null);
 		return policies.stream()
 			 .collect(Collectors.toMap(
 				  CachePolicy::cacheName,
 				  policy -> defaults
-					   .entryTtl(ttlOf(policy, defaultTtl))
+					   .entryTtl(policy.ttl())
 					   .serializeValuesWith(SerializationPair.fromSerializer(valueSerializerFor(policy)))
 			 ));
-	}
-
-	/**
-	 * 정책이 TTL 을 정하지 않았고 기본 설정에도 TTL 이 없으면 기동을 막는다.
-	 * Redis 는 0 이하 TTL 을 "만료 없음" 으로 다뤄 키가 영구히 남는다.
-	 */
-	private Duration ttlOf(CachePolicy policy, Duration defaultTtl) {
-		return policy.ttl().orElseGet(() -> {
-			if (defaultTtl == null || defaultTtl.isNegative() || defaultTtl.isZero()) {
-				throw new IllegalStateException("Cache '" + policy.cacheName() + "' declares no ttl"
-					 + " and the redis cache defaults have none."
-					 + " Declare a ttl on the CachePolicy, or set spring.cache.redis.time-to-live.");
-			}
-			return defaultTtl;
-		});
 	}
 
 	private RedisCacheWriter scanningCacheWriter(

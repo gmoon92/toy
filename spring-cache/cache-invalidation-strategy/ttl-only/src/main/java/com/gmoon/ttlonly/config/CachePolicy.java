@@ -1,9 +1,6 @@
 package com.gmoon.ttlonly.config;
 
 import java.time.Duration;
-import java.util.Optional;
-
-import org.springframework.lang.Nullable;
 
 import com.gmoon.ttlonly.user.UserView;
 
@@ -11,43 +8,35 @@ import com.gmoon.ttlonly.user.UserView;
  * 이 모듈이 쓰는 캐시를 전부 여기에 선언한다.
  * <p>
  * 이 모듈은 TTL 로만 최신성을 회복하므로 TTL 이 곧 stale 상한이다.
- * TTL 을 정하지 않은 캐시는 {@code spring.cache.redis.time-to-live} 를 따른다.
  */
 public enum CachePolicy {
 
-	USER(Name.USER, Duration.ofSeconds(3), UserView.class);
+	USER(Name.USER, UserView.class, Duration.ofSeconds(3));
 
 	private final String cacheName;
-	@Nullable
-	private final Duration ttl;
 	private final Class<?> valueType;
+	private final Duration ttl;
 
-	CachePolicy(String cacheName, @Nullable Duration ttl, Class<?> valueType) {
-		this.cacheName = cacheName;
-		this.ttl = ttl;
-		this.valueType = valueType;
+	CachePolicy(String cacheName, Class<?> valueType) {
+		this(cacheName, valueType, Duration.ofMinutes(5));
 	}
 
-	/**
-	 * TTL 을 정하지 않는다. {@code spring.cache.redis.time-to-live} 를 따른다.
-	 */
-	CachePolicy(String cacheName, Class<?> valueType) {
-		this(cacheName, null, valueType);
+	CachePolicy(String cacheName, Class<?> valueType, Duration ttl) {
+		this.cacheName = cacheName;
+		this.valueType = valueType;
+		this.ttl = ttl;
 	}
 
 	public String cacheName() {
 		return cacheName;
 	}
 
-	/**
-	 * 정책이 정한 TTL. 비어 있으면 {@code spring.cache.redis.time-to-live} 를 따른다.
-	 */
-	public Optional<Duration> ttl() {
-		return Optional.ofNullable(ttl);
-	}
-
 	public Class<?> valueType() {
 		return valueType;
+	}
+
+	public Duration ttl() {
+		return ttl;
 	}
 
 	/**

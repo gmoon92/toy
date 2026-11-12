@@ -74,13 +74,12 @@ sequenceDiagram
 | `ServiceCacheProperties` | `service.cache.*` 바인딩 | "다른 전략의 설정도 여기에 모은다"는 확장 |
 | `FallbackCacheErrorHandler` | 삭제. Spring `LoggingCacheErrorHandler` 를 쓴다 | 클래스 전체 |
 
-정책에 TTL 을 적으면 그 값을, 생략하면 `spring.cache.redis.time-to-live` 를 쓴다.
-이 모듈은 TTL 로만 최신성을 회복하므로 어느 쪽이든 그 값이 곧 stale 상한이다.
-둘 다 없으면 기동을 막는다. Redis 는 0 이하 TTL 을 "만료 없음" 으로 다뤄 키가 영구히 남는다.
+TTL 은 `CachePolicy` 가 정한다. 이 모듈은 TTL 로만 최신성을 회복하므로 그 값이 곧 stale 상한이다.
+생략하면 5분이고, 적으면 뒤에 덧붙인다. 선택값인 TTL 을 맨 뒤에 두어 기본값과 다른 캐시만 눈에 띄게 한다.
 
 ```java
-USER(Name.USER, Duration.ofSeconds(3), UserView.class),   // TTL 을 적으면 기본값을 덮어쓴다
-PROFILE(Name.PROFILE, ProfileView.class);                  // 생략하면 time-to-live 를 따른다
+USER(Name.USER, UserView.class, Duration.ofSeconds(3)),   // TTL 을 적으면 기본값(5분)을 덮어쓴다
+PROFILE(Name.PROFILE, ProfileView.class);                  // 생략하면 5분
 ```
 
 이름이 겹치는 정책은 따로 검사하지 않는다. 캐시 설정을 만들 때 `Collectors.toMap` 이 같은 이름에서 기동을 막는다.
@@ -110,7 +109,7 @@ spring:
   cache:
     redis:
       key-prefix: "cache-ttl-only:"
-      time-to-live: 5m          # TTL 을 생략한 정책이 따른다
+      # time-to-live: 5m        # 스프링 표준 기본 TTL. 지금은 CachePolicy 가 TTL 을 정하므로 쓰지 않는다
       enable-statistics: true
 
 service:
@@ -153,7 +152,7 @@ TTL 에 지터(무작위 흔들림)를 얹지 않는다. 그래서 stale 상한�
 | not-found도 캐시되어 존재하지 않는 키가 DB를 반복해서 때리지 않는다 |
 | 캐시에 저장된 값에 타입 힌트(`@class`)가 없다 |
 | 코어 모듈 없이 조립된다 |
-| 정책에 적은 TTL 은 양수다 |
+| 모든 정책이 양수 TTL 을 가진다 |
 | 기동한 뒤 모든 정책 캐시가 만료를 가진다 |
 | `spring.cache.cache-names` 를 적으면 기동을 막는다 |
 | 정책 TTL 이 Redis 기본 TTL 을 덮어쓰고, 키 접두사·null 캐싱 설정은 물려받는다 |

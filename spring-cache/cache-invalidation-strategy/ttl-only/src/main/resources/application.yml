@@ -14,7 +14,7 @@ spring:
   cache:
     redis:
       key-prefix: "cache-ttl-only:"
-      time-to-live: 5m
+      # time-to-live: 5m   # 스프링 표준 기본 TTL. 지금은 CachePolicy 가 TTL 을 정하므로 쓰지 않는다
       enable-statistics: true
   jpa:
     hibernate:
