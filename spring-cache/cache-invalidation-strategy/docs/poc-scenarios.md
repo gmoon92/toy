@@ -16,7 +16,7 @@ PUT  /users/{id}
 | 2 | `write-invalidate` | 커밋 전 무효화는 stale을 고착시키고, 커밋 후 무효화는 그러지 않는다 | Redis, MySQL | 완료 |
 | 3 | `after-commit-invalidate` | `@TransactionalEventListener(AFTER_COMMIT)`가 같은 보장을 선언적으로 제공하고, 트랜잭션 없는 경로에서 조용히 누락된다 | Redis, MySQL | 완료 |
 | 4 | `entity-event-invalidate` | 무효화가 메서드 선언이 아니라 엔티티 변경에서 파생되고, 벌크 연산에서는 누락된다 | Redis, MySQL | 완료 |
-| 5 | `write-update` | 롤백 시 DB와 캐시가 어긋난다 | Redis, MySQL | 예정 |
+| 5 | `write-update` | 롤백 시 DB와 캐시가 어긋나고, 커밋 전 값이 캐시로 노출된다 | Redis, MySQL | 완료 |
 | 6 | `stampede-guard` | 무효화를 잘 할수록 stampede가 잦아진다 | Redis, MySQL | 예정 |
 | 7 | `outbox-invalidate` | 앱이 죽어도 무효화가 복구된다 | + RabbitMQ | 예정 |
 | 8 | `cdc-invalidate` | 벌크 UPDATE도 무효화된다 | + Debezium, Kafka | 예정 |

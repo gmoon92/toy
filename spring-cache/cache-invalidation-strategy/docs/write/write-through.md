@@ -23,6 +23,18 @@ flowchart LR
 
 두 형태를 같은 이름으로 부르는 자료가 많지만, 실패 특성이 다르다.
 
+### 삭제는 어떻게 하나
+
+삭제에는 덮어쓸 새 값이 없다. 두 형태 모두 삭제는 **캐시에서 지우는 것**으로 처리한다.
+
+| 형태 | 수정 | 삭제 |
+|-----|-----|-----|
+| 정통 Write-Through | `put` → `CacheStore.store` 로 DB 반영 | `remove` → `CacheStore.erase` 로 DB 삭제 |
+| 애플리케이션 갱신 | `@CachePut` | `@CacheEvict` |
+
+Spring 레퍼런스도 `@CachePut` 을 "cache population" 에, `@CacheEvict` 를 "removing stale or unused data" 에 쓰라고 구분한다.
+애플리케이션 갱신에서 삭제에 `@CacheEvict` 를 빠뜨리면 지운 데이터가 TTL 동안 계속 조회된다.
+
 ## 동작
 
 ```mermaid
@@ -66,7 +78,10 @@ public User update(Long id, UpdateRequest request) {
 | 항목 | 내용 |
 |-----|-----|
 | **롤백 불일치** | 롤백되면 DB=기존값, Cache=새값으로 **불일치가 지속된다** |
+| **커밋 전 노출** | 바깥 트랜잭션에 참여하면 메서드 반환 시점에 적재되어, 다른 트랜잭션이 미커밋 값을 캐시로 읽는다 |
 | 실행 순서 | `@CachePut`도 `@CacheEvict`와 같은 order 불확실성을 갖는다 |
+
+롤백 불일치와 커밋 전 노출은 [`write-update`](../../write-update/README.md) 모듈이 테스트로 고정한다.
 
 | 방식 | 실패 시 비용 |
 |-----|-----------|
@@ -96,4 +111,5 @@ Redis 공식 cache-aside 가이드의 권고는 반대 방향이다 →
 ## Reference
 
 - [Oracle Coherence - Write-Through Caching](https://docs.oracle.com/cd/E16459_01/coh.350/e14510/readthrough.htm)
+- [Spring Framework - Declarative Annotation-based Caching](https://docs.spring.io/spring-framework/reference/integration/cache/annotations.html)
 - [Microsoft - Cache-Aside pattern (staleness after writes)](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside)
