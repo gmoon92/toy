@@ -206,6 +206,62 @@ class UserCommandServiceTest {
 	}
 
 	@Nested
+	@DisplayName("새 엔티티를 저장하면")
+	class WhenEntityInserted {
+
+		@Test
+		@DisplayName("커밋 전에 캐시된 '없음' 을 커밋 이후에 지운다")
+		void evictsNotFoundCachedBeforeCommit() {
+			Long insertedId = transactionTemplate.execute(status -> {
+				Long id = userCommandService.register("bob-" + System.nanoTime(), ORIGINAL_EMAIL);
+				SeparateTransaction.read(() -> userQueryService.findById(id));
+
+				assertThat(cacheManager.getCache(CachePolicy.Name.USER).get(id))
+					 .as("커밋 전 조회는 아직 보이지 않는 사용자를 '없음' 으로 캐시에 적재한다")
+					 .isNotNull();
+				return id;
+			});
+
+			assertThat(userQueryService.findById(insertedId))
+				 .as("POST_INSERT 도 무효화 신호이므로 '없음' 이 남아 새 사용자를 가리지 않는다")
+				 .isNotNull();
+		}
+	}
+
+	@Nested
+	@DisplayName("벌크 UPDATE 로 바꾸면")
+	class WhenChangedByBulkUpdate {
+
+		@Test
+		@DisplayName("엔티티 이벤트가 없어 DB 만 바뀌고 옛 값이 남는다")
+		void leavesStaleValueWithoutEntityEvent() {
+			userQueryService.findById(userId);
+
+			transactionTemplate.executeWithoutResult(status -> bulkUpdateEmail(userId, CHANGED_EMAIL));
+
+			assertSoftly(softly -> {
+				softly.assertThat(emailInDatabase())
+					 .as("벌크 UPDATE 자체는 커밋된다")
+					 .isEqualTo(CHANGED_EMAIL);
+				softly.assertThat(cachedEmail())
+					 .as("영속성 컨텍스트를 거치지 않아 하이버네이트가 엔티티 이벤트를 만들지 않는다")
+					 .isEqualTo(ORIGINAL_EMAIL);
+			});
+		}
+
+		private void bulkUpdateEmail(Long id, String email) {
+			entityManager.createQuery("update User u set u.email = :email where u.id = :id")
+				 .setParameter("email", email)
+				 .setParameter("id", id)
+				 .executeUpdate();
+		}
+
+		private String emailInDatabase() {
+			return transactionTemplate.execute(status -> entityManager.find(User.class, userId).getEmail());
+		}
+	}
+
+	@Nested
 	@DisplayName("바깥 트랜잭션이 롤백되면")
 	class WhenOuterTransactionRolledBack {
 
