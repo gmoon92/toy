@@ -83,6 +83,29 @@ class CacheEvictorTest {
 	}
 
 	@Nested
+	@DisplayName("새 사용자를 등록하면")
+	class WhenUserRegistered {
+
+		@Test
+		@DisplayName("커밋 전에 캐시된 '없음' 을 커밋 이후에 지운다")
+		void evictsNotFoundCachedBeforeCommit() {
+			Long registeredId = transactionTemplate.execute(status -> {
+				Long id = userCommandService.register("bob-" + System.nanoTime(), ORIGINAL_EMAIL);
+				SeparateTransaction.read(() -> userQueryService.findById(id));
+
+				assertThat(cacheManager.getCache(CachePolicy.Name.USER).get(id))
+					 .as("커밋 전 조회는 아직 보이지 않는 사용자를 '없음' 으로 캐시에 적재한다")
+					 .isNotNull();
+				return id;
+			});
+
+			assertThat(userQueryService.findById(registeredId))
+				 .as("등록도 알리지 않으면 '없음' 이 TTL 동안 새 사용자를 가린다")
+				 .isNotNull();
+		}
+	}
+
+	@Nested
 	@DisplayName("바깥 트랜잭션이 아직 커밋되지 않았으면")
 	class WhenOuterTransactionStillOpen {
 
