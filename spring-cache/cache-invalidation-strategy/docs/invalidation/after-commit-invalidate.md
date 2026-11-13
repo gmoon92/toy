@@ -24,20 +24,31 @@ sequenceDiagram
 
 ## 구현
 
+쓰기 코드는 바뀐 엔티티를 그대로 발행하고, 지울 키는 엔티티가 `CacheEvictable` 로 밝힌다.
+별도 이벤트 타입을 만들지 않는다.
+
 ```java
-@Transactional
-public void updateUser(Long userId, UpdateUserCommand command) {
-    userRepository.update(userId, command);
-    eventPublisher.publishEvent(new UserChangedEvent(userId));
+public void changeEmail(Long id, String email) {
+    User user = findUser(id);
+    user.changeEmail(email);
+    eventPublisher.publishEvent(user);
 }
 ```
 
 ```java
 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-public void evictOnUserChanged(UserChangedEvent event) {
-    cacheEvictor.evict(CacheKey.of(CachePolicy.USER, event.userId()));
+public void evict(CacheEvictable entity) {
+    entity.cacheKeys().forEach(this::evictOne);
 }
 ```
+
+Spring 이 엔티티를 `PayloadApplicationEvent` 로 감싸고, 인터페이스 타입으로 리스너를 고른다.
+
+| 역할 | 소스 |
+|-----|-----|
+| 발행 | `after-commit-invalidate/.../user/UserCommandService.java` |
+| 지울 키 선언 | `after-commit-invalidate/.../user/User.java` (`cacheKeys()`) |
+| 삭제 | `after-commit-invalidate/.../cache/CacheEvictor.java` |
 
 ## 보장하는 것
 
@@ -85,12 +96,12 @@ public void evictOnUserChanged(UserChangedEvent event) {
 ## 검증
 
 ```
-□ 커밋 성공 시에만 캐시가 삭제된다
-□ 롤백 시 캐시가 삭제되지 않는다
-□ 트랜잭션 없이 이벤트를 발행하면 리스너가 호출되지 않음을 확인한다
-□ 앞 순번 콜백이 터져도 삭제가 실행되고 호출자에게 전파되지 않음을 확인한다
-□ 캐시 저장소 장애 시 커밋이 성공하고 무효화만 유실됨을 확인한다
-□ write-invalidate 대비 stale read 건수가 감소한다
+☑ 커밋 성공 시에만 캐시가 삭제된다
+☑ 롤백 시 캐시가 삭제되지 않는다
+☑ 트랜잭션 없이 이벤트를 발행하면 리스너가 호출되지 않음을 확인한다
+☑ 앞 순번 콜백이 터져도 삭제가 실행되고 호출자에게 전파되지 않음을 확인한다
+☑ 캐시 저장소 장애 시 커밋이 성공하고 무효화만 유실됨을 확인한다
+□ write-invalidate 대비 stale read 건수가 감소한다 (미측정)
 ```
 
 구현 모듈: [`after-commit-invalidate`](../../after-commit-invalidate/README.md)
