@@ -20,6 +20,7 @@ include(
         'spring-cache:cache-invalidation-strategy:ttl-only',
         'spring-cache:cache-invalidation-strategy:write-invalidate',
         'spring-cache:cache-invalidation-strategy:after-commit-invalidate',
+        'spring-cache:cache-invalidation-strategy:write-update',
 
         'spring-cloud',
         'spring-cloud:spring-cloud-bus',

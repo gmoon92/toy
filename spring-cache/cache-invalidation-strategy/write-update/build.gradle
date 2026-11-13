@@ -1,0 +1,17 @@
+group = "com.gmoon.spring-cache.cache-invalidation-strategy.write-update"
+description = "write-update"
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    runtimeOnly(libs.jdbc.mysql)
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    testImplementation(project(":spring-cache:cache-invalidation-strategy:cache-invalidation-test"))
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+}
