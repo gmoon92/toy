@@ -69,7 +69,7 @@ CUD    DB 변경 → 기존 Cache를 어떻게 처리할 것인가?
 | TTL Only | 아무것도 안 함 | 매우 낮음 | 높음 | [ttl-only](docs/invalidation/ttl-only.md) |
 | Write Invalidate | 즉시 `DEL` | 낮음 | 중간 | [write-invalidate](docs/invalidation/write-invalidate.md) |
 | After Commit Invalidate | 커밋 후 `DEL` | 낮음~중간 | 중간 | [after-commit-invalidate](docs/invalidation/after-commit-invalidate.md) |
-| Entity Event Invalidate | 엔티티 post-commit 이벤트로 `DEL` | 중간 | 중간 | [entity-event-invalidate](docs/invalidation/entity-event-invalidate.md) |
+| Entity Event Invalidate | 엔티티 변경 이벤트로 키를 모아 커밋 후 `DEL` | 중간 | 중간 | [entity-event-invalidate](docs/invalidation/entity-event-invalidate.md) |
 | Event Driven Invalidate | 이벤트 소비자가 `DEL` | 중간~높음 | 높음 | [event-driven-invalidate](docs/invalidation/event-driven-invalidate.md) |
 | Outbox Invalidate | Outbox → MQ → `DEL` | 높음 | 높음 | [outbox-invalidate](docs/invalidation/outbox-invalidate.md) |
 | CDC Invalidate | binlog → 이벤트 → `DEL` | 높음 | 높음 | [cdc-invalidate](docs/invalidation/cdc-invalidate.md) |
