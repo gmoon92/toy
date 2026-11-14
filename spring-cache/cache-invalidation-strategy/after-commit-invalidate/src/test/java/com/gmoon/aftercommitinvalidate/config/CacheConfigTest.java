@@ -123,8 +123,8 @@ class CacheConfigTest {
 			RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.builder(connectionFactory)
 				 .cacheDefaults(defaults);
 
-			new CacheConfig()
-				 .cacheManagerCustomizer(new CacheProperties(), connectionFactory, PROPERTIES)
+			new CacheConfig(new CacheProperties())
+				 .cacheManagerCustomizer(connectionFactory, PROPERTIES)
 				 .customize(builder);
 
 			return builder.getCacheConfigurationFor(policy.cacheName())
@@ -186,11 +186,7 @@ class CacheConfigTest {
 
 				assertThatIllegalStateException()
 					 .as("캐시 이름이 속성과 정책 두 곳에서 오면, 어느 쪽이 빠졌는지 따지는 검사가 따로 필요해진다")
-					 .isThrownBy(() -> new CacheConfig().cacheManagerCustomizer(
-						  cacheProperties,
-						  mock(RedisConnectionFactory.class),
-						  PROPERTIES
-					 ))
+					 .isThrownBy(() -> new CacheConfig(cacheProperties).rejectCacheNamesProperty())
 					 .withMessageContaining("spring.cache.cache-names");
 			}
 		}
@@ -199,8 +195,8 @@ class CacheConfigTest {
 			RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.builder(connectionFactory)
 				 .cacheDefaults(defaultsWithTtl());
 
-			new CacheConfig()
-				 .cacheManagerCustomizer(new CacheProperties(), connectionFactory, PROPERTIES)
+			new CacheConfig(new CacheProperties())
+				 .cacheManagerCustomizer(connectionFactory, PROPERTIES)
 				 .customize(builder);
 
 			RedisCacheManager cacheManager = builder.build();
@@ -228,7 +224,7 @@ class CacheConfigTest {
 
 		private static final RuntimeException REDIS_DOWN = new IllegalStateException("connection refused");
 
-		private final CacheErrorHandler handler = new CacheConfig().errorHandler();
+		private final CacheErrorHandler handler = new CacheConfig(new CacheProperties()).errorHandler();
 		private final Cache cache = mock(Cache.class);
 
 		@BeforeEach
