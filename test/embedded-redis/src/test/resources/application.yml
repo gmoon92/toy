@@ -4,4 +4,4 @@ spring:
     redis:
       host: localhost
       port: 6379
-      connect-timeout: 3000
+      connect-timeout: 3s

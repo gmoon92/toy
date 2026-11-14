@@ -13,7 +13,7 @@ spring:
   #    jedis, lettuce
       client-type: lettuce
       client-name: gmoon-redis-client
-      connect-timeout: 10
+      connect-timeout: 10s
       host: localhost
       port: 6379
 

@@ -7,8 +7,8 @@ spring:
     redis:
       host: localhost
       port: 6379
-      connect-timeout: 3000
-      timeout: 1000
+      connect-timeout: 3s
+      timeout: 1s
   cache:
     redis:
       key-prefix: "cache-write-invalidate-test:"
