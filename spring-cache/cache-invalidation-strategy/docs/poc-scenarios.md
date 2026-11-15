@@ -18,7 +18,7 @@ PUT  /users/{id}
 | 4 | `entity-event-invalidate` | 무효화가 메서드 선언이 아니라 엔티티 변경에서 파생되고, 벌크 연산에서는 누락된다 | Redis, MySQL | 완료 |
 | 5 | `write-update` | 롤백 시 DB와 캐시가 어긋나고, 커밋 전 값이 캐시로 노출된다 | Redis, MySQL | 완료 |
 | 6 | `stampede-guard` | 무효화 직후 동시 MISS 는 요청마다 DB 를 읽고, Spring 기본 대응은 락 writer 와 함께일 때만 막는다 | Redis, MySQL | 완료 |
-| 7 | `outbox-invalidate` | 앱이 죽어도 무효화가 복구된다 | + RabbitMQ | 예정 |
+| 7 | `outbox-invalidate` | 앱이 죽어도 무효화가 복구된다 | + RabbitMQ | 완료 |
 | 8 | `cdc-invalidate` | 벌크 UPDATE도 무효화된다 | + Debezium, Kafka | 예정 |
 
 2번 모듈이 `@CacheEvict`와 Hibernate `POST_COMMIT_*` 엔티티 이벤트를 **한 모듈에 나란히** 담는다.

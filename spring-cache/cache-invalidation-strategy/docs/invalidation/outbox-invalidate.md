@@ -73,6 +73,9 @@ Outbox가 해결하는 것은 **dual-write 원자성**이지 중복 제거가 �
 □ 커밋부터 DEL까지 Invalidation Lag P99를 측정한다
 ```
 
+위 항목 중 앞의 셋은 [outbox-invalidate 모듈](../../outbox-invalidate/README.md) 이 테스트로 고정한다.
+Invalidation Lag 측정은 [poc-scenarios.md](../poc-scenarios.md) 의 측정 단계에서 한다.
+
 ## 관련
 
 - [dual-write.md](../concepts/dual-write.md) · [cdc-invalidate.md](cdc-invalidate.md) · [event-driven-invalidate.md](event-driven-invalidate.md)
