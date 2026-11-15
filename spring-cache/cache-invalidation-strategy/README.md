@@ -24,6 +24,7 @@ CUD    DB 변경 → 기존 Cache를 어떻게 처리할 것인가?
 | `write-invalidate` | 커밋 전 무효화는 옛 값을 고착시키고, 커밋 후 무효화는 그러지 않는다 | [write-invalidate](write-invalidate/README.md) |
 | `after-commit-invalidate` | 선언적 커밋 후 무효화가 보장하는 것과, 트랜잭션 없는 경로에서 누락되는 것 | [after-commit-invalidate](after-commit-invalidate/README.md) |
 | `write-update` | 캐시를 덮어쓰면 롤백 시 DB 와 어긋나고, 커밋 전 값이 노출된다 | [write-update](write-update/README.md) |
+| `stampede-guard` | `sync = true` 는 락 writer 와 함께여야 동시 MISS 를 한 번의 적재로 줄이고, 그 락은 캐시 이름 단위다 | [stampede-guard](stampede-guard/README.md) |
 
 ```bash
 ./gradlew :spring-cache:cache-invalidation-strategy:build
