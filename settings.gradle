@@ -22,6 +22,7 @@ include(
         'spring-cache:cache-invalidation-strategy:after-commit-invalidate',
         'spring-cache:cache-invalidation-strategy:write-update',
         'spring-cache:cache-invalidation-strategy:stampede-guard',
+        'spring-cache:cache-invalidation-strategy:outbox-invalidate',
 
         'spring-cloud',
         'spring-cloud:spring-cloud-bus',

@@ -1,0 +1,54 @@
+package com.gmoon.outboxinvalidate.user;
+
+import java.util.Set;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import com.gmoon.outboxinvalidate.cache.CacheEvictable;
+import com.gmoon.outboxinvalidate.cache.CacheKey;
+import com.gmoon.outboxinvalidate.config.CachePolicy;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class User implements CacheEvictable {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false, unique = true)
+	private String username;
+
+	@Column(nullable = false)
+	private String email;
+
+	private User(String username, String email) {
+		this.username = username;
+		this.email = email;
+	}
+
+	public static User of(String username, String email) {
+		return new User(username, email);
+	}
+
+	public void changeEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public Set<CacheKey> cacheKeys() {
+		return Set.of(
+			 CacheKey.of(CachePolicy.USER, id)
+		);
+	}
+}

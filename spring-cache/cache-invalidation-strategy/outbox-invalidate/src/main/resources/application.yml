@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: outbox-invalidate
+  datasource:
+    url: jdbc:mysql://localhost:3306/cache_outbox_invalidate?createDatabaseIfNotExist=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 111111
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 3s
+      timeout: 1s
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirm-type: simple
+  cache:
+    redis:
+      key-prefix: "cache-outbox-invalidate:"
+      # time-to-live: 10m   # 스프링 표준 기본 TTL. 지금은 CachePolicy 가 TTL 을 정하므로 쓰지 않는다
+      enable-statistics: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        generate_statistics: true
+
+service:
+  cache:
+    clear:
+      scan-batch-size: 1000
+    outbox:
+      queue: cache-outbox-invalidate.evict
+      relay-interval: 1s
+      relay-batch-size: 100
