@@ -1,0 +1,15 @@
+group = "com.gmoon.spring-cache.cache-serializer-strategy"
+description = "cache-serializer-strategy"
+
+bootJar {
+    enabled = false
+}
+
+subprojects {
+    tasks.named("bootJar") {
+        enabled = false
+    }
+    tasks.named("jar") {
+        enabled = true
+    }
+}

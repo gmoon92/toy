@@ -14,6 +14,12 @@ include(
 //        ./gradlew :spring-cache:jpa-second-level-cache:dependencies --configuration testCompileClasspath
         'spring-cache:jpa-second-level-cache',
         'spring-cache:spring-data-redis',
+        'spring-cache:cache-serializer-strategy',
+        'spring-cache:cache-serializer-strategy:cache-serializer-test',
+        'spring-cache:cache-serializer-strategy:typed-json',
+        'spring-cache:cache-serializer-strategy:polymorphic-json',
+        'spring-cache:cache-serializer-strategy:filtered-jdk',
+        'spring-cache:cache-serializer-strategy:format-migration',
 
         'spring-cache:cache-invalidation-strategy',
         'spring-cache:cache-invalidation-strategy:cache-invalidation-test',

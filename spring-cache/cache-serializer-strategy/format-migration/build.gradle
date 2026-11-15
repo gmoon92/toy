@@ -1,0 +1,14 @@
+plugins {
+    id "java-library"
+}
+
+group = "com.gmoon.spring-cache.cache-serializer-strategy.format-migration"
+description = "format-migration"
+
+dependencies {
+    api("org.springframework.boot:spring-boot-starter-data-redis")
+
+    testImplementation(project(":spring-cache:cache-serializer-strategy:cache-serializer-test"))
+    testImplementation(project(":spring-cache:cache-serializer-strategy:typed-json"))
+    testImplementation(project(":spring-cache:cache-serializer-strategy:filtered-jdk"))
+}

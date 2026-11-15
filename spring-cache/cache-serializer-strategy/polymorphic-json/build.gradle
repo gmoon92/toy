@@ -1,0 +1,13 @@
+plugins {
+    id "java-library"
+}
+
+group = "com.gmoon.spring-cache.cache-serializer-strategy.polymorphic-json"
+description = "polymorphic-json"
+
+dependencies {
+    api("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-json")
+
+    testImplementation(project(":spring-cache:cache-serializer-strategy:cache-serializer-test"))
+}
